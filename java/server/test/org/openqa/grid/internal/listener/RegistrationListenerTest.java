@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 
 public class RegistrationListenerTest {
@@ -45,7 +45,7 @@ public class RegistrationListenerTest {
   public static void prepareReqRequest() {
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
-    config.put(REMOTE_URL, "http://machine1:4444");
+    config.put(REMOTE_HOST, "http://machine1:4444");
     req = new RegistrationRequest();
     req.addDesiredCapabilitiy(app1);
     req.setConfiguration(config);

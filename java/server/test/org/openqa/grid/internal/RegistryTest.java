@@ -17,7 +17,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 public class RegistryTest {
 
@@ -79,7 +79,7 @@ public class RegistryTest {
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(CapabilityType.BROWSER_NAME, "app1");
     app2.put(CapabilityType.BROWSER_NAME, "app2");
-    config.put(REMOTE_URL, "http://machine1:4444");
+    config.put(REMOTE_HOST, "http://machine1:4444");
     config.put(MAX_SESSION, 5);
     req = new RegistrationRequest();
     req.addDesiredCapabilitiy(app1);

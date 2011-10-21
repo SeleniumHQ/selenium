@@ -3,7 +3,7 @@ package org.openqa.grid.internal;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -36,7 +36,7 @@ public class LoadBalancedTests {
 
     // add 5 proxies. Total = 5 proxies * 5 slots each = 25 firefox.
     for (int i = 0; i < 5; i++) {
-      config.put(REMOTE_URL, "http://machine" + i + ":4444");
+      config.put(REMOTE_HOST, "http://machine" + i + ":4444");
       request.setConfiguration(config);
       registry.add(new RemoteProxy(request, registry));
     }

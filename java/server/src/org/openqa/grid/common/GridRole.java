@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum GridRole {
-  NOT_GRID, HUB, REMOTE_CONTROL, WEBDRIVER;
+  NOT_GRID, HUB, NODE;
 
   /**
    * finds the requested role from the parameters.
@@ -25,15 +25,13 @@ public enum GridRole {
               "-role needs to be followed by the role of this component in the grid.");
         } else {
           String role = args[i + 1].toLowerCase();
-          if (RCAliases().contains(role)) {
-            return REMOTE_CONTROL;
-          } else if (WDAliases().contains(role)) {
-            return WEBDRIVER;
+          if (NodeAliases().contains(role)) {
+            return NODE;
           } else if ("hub".equals(role)) {
             return HUB;
           } else {
-            throw new GridConfigurationException("The role specified :" + role +
-                " doesn't match a recognized role for grid.");
+            throw new GridConfigurationException("The role specified :" + role
+                + " doesn't match a recognized role for grid.");
           }
         }
       }
@@ -41,7 +39,15 @@ public enum GridRole {
     return NOT_GRID;
   }
 
-  private static List<String> RCAliases() {
+  private static List<String> NodeAliases() {
+    List<String> res = new ArrayList<String>();
+    res.add("node");
+    res.addAll(RCAliases());
+    res.addAll(WDAliases());
+    return res;
+  }
+  
+  public static List<String> RCAliases() {
     List<String> res = new ArrayList<String>();
     res.add("rc");
     res.add("remotecontrol");
@@ -49,7 +55,7 @@ public enum GridRole {
     return res;
   }
 
-  private static List<String> WDAliases() {
+  public static List<String> WDAliases() {
     List<String> res = new ArrayList<String>();
     res.add("wd");
     res.add("webdriver");

@@ -1,4 +1,4 @@
-package org.openqa.grid.e2e.wd;
+package org.openqa.grid.e2e.misc;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -25,7 +25,7 @@ public class GridSerializeExceptionTests {
     hub = GridTestHelper.getHub();
 
     SelfRegisteringRemote remote =
-        GridTestHelper.getRemoteWithoutCapabilities(hub, GridRole.WEBDRIVER);
+        GridTestHelper.getRemoteWithoutCapabilities(hub, GridRole.NODE);
 
     remote.startRemoteServer();
     remote.sendRegistrationRequest();

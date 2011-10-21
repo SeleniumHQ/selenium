@@ -1,25 +1,26 @@
 /*
-Copyright 2007-2011 WebDriver committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+ * Copyright 2007-2011 WebDriver committers
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.openqa.grid.internal;
 
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.Map;
@@ -35,12 +36,11 @@ import java.util.logging.Logger;
  * The listener ({@link TestSessionListener} attached to the test session of this test slot is
  * thread safe. If 2 threads are trying to execute the before / after session, only 1 will be
  * executed.The other one will be discarded.
- *
- * This class sees multiple threads but is currently sort-of protected by the lock in
- * Registry. Unfortunately the CleanUpThread also messes around in here, so it should
- * be thread safe on its own. Which probably means the lock in the registry is just
- * nonsense.
- *
+ * 
+ * This class sees multiple threads but is currently sort-of protected by the lock in Registry.
+ * Unfortunately the CleanUpThread also messes around in here, so it should be thread safe on its
+ * own. Which probably means the lock in the registry is just nonsense.
+ * 
  */
 public class TestSlot {
 
@@ -48,14 +48,22 @@ public class TestSlot {
 
   private final Map<String, Object> capabilities;
   private final RemoteProxy proxy;
+  private final SeleniumProtocol protocol;
+  private final String path;
   private final CapabilityMatcher matcher;
+
   private volatile TestSession currentSession;
+
 
   private final Lock lock = new ReentrantLock();
   volatile boolean beingReleased = false;
 
-  public TestSlot(RemoteProxy proxy, Map<String, Object> capabilities) {
+  public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, String path,
+      Map<String, Object> capabilities) {
     this.proxy = proxy;
+    this.protocol = protocol;
+    this.path = path;
+
     CapabilityMatcher c = proxy.getCapabilityHelper();
     if (c == null) {
       throw new InvalidParameterException("the proxy needs to have a valid "
@@ -65,6 +73,8 @@ public class TestSlot {
     this.capabilities = capabilities;
 
   }
+
+
 
   public Map<String, Object> getCapabilities() {
     return Collections.unmodifiableMap(capabilities);
@@ -106,6 +116,28 @@ public class TestSlot {
       lock.unlock();
     }
 
+  }
+
+
+
+  /**
+   * the type of protocol for the TestSlot.Ideally should always be webdriver, but can also be
+   * selenium1 protocol for backward compatibility purposes.
+   * 
+   * @return the protocol for this TestSlot
+   */
+  public SeleniumProtocol getProtocol() {
+    return protocol;
+  }
+
+  /**
+   * the path the server is using to handle the request. Typically /wd/hub for a webdriver based
+   * protocol and /selenium-server/driver/ for a selenium1 based protocol
+   * 
+   * @return the path the server is using for the requests of this slot.
+   */
+  public String getPath() {
+    return path;
   }
 
   /**
@@ -230,10 +262,10 @@ public class TestSlot {
    */
   public void release() {
     new Thread(new Runnable() { // Thread safety reviewed
-      public void run() {
-        _release();
-      }
-    }).start();
+          public void run() {
+            _release();
+          }
+        }).start();
   }
 
   @Override
@@ -243,5 +275,22 @@ public class TestSlot {
 
   public HttpClientFactory getHttpClientFactory() {
     return getProxy().getHttpClientFactory();
+  }
+
+
+
+  /**
+   * get the full URL the underlying server is listening on for selenium / webdriver commands.
+   * 
+   * @return 
+   */
+  public URL getRemoteURL() {
+    String u = getProxy().getRemoteHost() + getPath();
+    try {
+      URL res = new URL(u);
+      return res;
+    } catch (MalformedURLException e) {
+      throw new GridException("Configuration error for the node." + u + " isn't a valid URL");
+    }
   }
 }

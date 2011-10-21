@@ -1,7 +1,11 @@
 package org.openqa.grid.e2e.utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
@@ -10,9 +14,6 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class GridTestHelper {
 
   public static SelfRegisteringRemote getRemoteWithoutCapabilities(Hub hub, GridRole role) {
@@ -20,31 +21,16 @@ public class GridTestHelper {
   }
 
   public static SelfRegisteringRemote getRemoteWithoutCapabilities(URL hub, GridRole role) {
-    RegistrationRequest req;
-    if (role == GridRole.REMOTE_CONTROL) {
-      req = RegistrationRequest.build("-role", "rc");
-    } else {
-      req = RegistrationRequest.build("-role", "wd");
-    }
+    RegistrationRequest req = RegistrationRequest.build("-role", "node");
+
 
     req.getConfiguration().put(RegistrationRequest.PORT, PortProber.findFreePort());
 
     // some values have to be computed again after changing internals.
-    String base =
-        "http://" + req.getConfiguration().get(RegistrationRequest.HOST) + ":" +
-        req.getConfiguration().get(RegistrationRequest.PORT);
-    String url;
-    switch (req.getRole()) {
-      case REMOTE_CONTROL:
-        url = base + "/selenium-server/driver";
-        break;
-      case WEBDRIVER:
-        url = base + "/wd/hub";
-        break;
-      default:
-        throw new GridConfigurationException("Cannot launch a node with role " + req.getRole());
-    }
-    req.getConfiguration().put(RegistrationRequest.REMOTE_URL, url);
+    String url =
+        "http://" + req.getConfiguration().get(RegistrationRequest.HOST) + ":"
+            + req.getConfiguration().get(RegistrationRequest.PORT);
+    req.getConfiguration().put(RegistrationRequest.REMOTE_HOST, url);
 
     req.getConfiguration().put(RegistrationRequest.HUB_HOST, hub.getHost());
     req.getConfiguration().put(RegistrationRequest.HUB_PORT, hub.getPort());
@@ -53,6 +39,15 @@ public class GridTestHelper {
     remote.deleteAllBrowsers();
     return remote;
   }
+
+  public static DesiredCapabilities getSelenium1FirefoxCapability() {
+    DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
+    firefoxOnSeleniumCapability.setBrowserName("*firefox");
+    firefoxOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,
+        SeleniumProtocol.Selenium);
+    return firefoxOnSeleniumCapability;
+  }
+
 
   public static Hub getHub() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
@@ -66,8 +61,8 @@ public class GridTestHelper {
     return hub;
   }
 
-  public static void getRemoteWebDriver(DesiredCapabilities ff, Hub hub) throws
-                                                                         MalformedURLException {
+  public static void getRemoteWebDriver(DesiredCapabilities ff, Hub hub)
+      throws MalformedURLException {
     new RemoteWebDriver(getGridDriver(hub), ff);
   }
 

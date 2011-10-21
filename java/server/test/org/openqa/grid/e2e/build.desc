@@ -2,9 +2,8 @@
 java_test(name = "test",
   srcs = [
     "misc/**/*.java",
-    "selenium/**/*.java",
+    "node/**/*.java",
     "utils/**/*.java",
-    "wd/**/*.java",
   ],
   main = "org.testng.TestNG",
   args = "grid-e2e-tests.xml",

@@ -1,16 +1,15 @@
 package org.openqa.grid.selenium.utils;
 
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import java.util.Map;
 
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.grid.selenium.proxy.WebRemoteProxy;
+import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.utils.BrowserNameUtils;
-
-import java.util.Map;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class WebProxyHtmlRenderer implements HtmlRenderer {
 
@@ -28,9 +27,9 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
     StringBuilder builder = new StringBuilder();
     builder.append("<fieldset>");
     builder.append("<legend>").append(proxy.getClass().getSimpleName()).append("</legend>");
-    builder.append("listening on ").append(proxy.getRemoteURL());
+    builder.append("listening on ").append(proxy.getRemoteHost());
 
-    if (((WebRemoteProxy) proxy).isDown()) {
+    if (((DefaultRemoteProxy) proxy).isDown()) {
       builder.append("(cannot be reached at the moment)");
     }
     builder.append("<br />");
@@ -58,7 +57,10 @@ public class WebProxyHtmlRenderer implements HtmlRenderer {
         builder.append(" class='busy' ");
         builder.append(" title='").append(session.get("lastCommand")).append("' ");
       } else {
-        builder.append(" title='").append(slot.getCapabilities()).append("' ");
+        builder.append(" title='")
+        .append(slot.getCapabilities())
+        .append("type="+slot.getProtocol())
+        .append("' ");
       }
 
       if (icon != null) {

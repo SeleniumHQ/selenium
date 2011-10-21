@@ -15,11 +15,18 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+/**
+ * by specifing a RegistrationRequest.REGISTER_CYCLE= -1 , the node to not try to register against
+ * the hub all the time. For such a node, if the hub crash, the node won't reconnect after the hub
+ * is restarted.
+ * 
+ * @author freynaud
+ * 
+ */
 public class HubRestartNeg {
   private Hub hub;
   private Registry registry;
   private SelfRegisteringRemote remote;
-  private SelfRegisteringRemote remote2;
   private GridHubConfiguration config = new GridHubConfiguration();
 
   @BeforeClass(alwaysRun = false)
@@ -30,14 +37,11 @@ public class HubRestartNeg {
     registry = hub.getRegistry();
     hub.start();
 
-    remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
-    remote2 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
     remote.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, -1);
-    remote2.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, -1);
 
     remote.startRemoteServer();
-    remote2.startRemoteServer();
 
   }
 
@@ -46,12 +50,10 @@ public class HubRestartNeg {
 
     // every 5 sec, the node register themselves again.
     Assert.assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), -1);
-    Assert.assertEquals(remote2.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), -1);
     remote.startRegistrationProcess();
-    remote2.startRegistrationProcess();
 
     // should be up
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 
     // crashing the hub.
     hub.stop();
@@ -75,7 +77,6 @@ public class HubRestartNeg {
   public void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
-    remote2.stopRemoteServer();
 
   }
 }

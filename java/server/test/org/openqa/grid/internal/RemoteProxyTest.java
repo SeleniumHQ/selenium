@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 public class RemoteProxyTest {
 
@@ -57,7 +57,7 @@ public class RemoteProxyTest {
     cap.put(APP, "corrupted");
 
     Map<String, Object> config = new HashMap<String, Object>();
-    config.put(REMOTE_URL, "ebay.com");
+    config.put(REMOTE_HOST, "ebay.com");
 
     RegistrationRequest request = new RegistrationRequest();
     request.addDesiredCapabilitiy(cap);

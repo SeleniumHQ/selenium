@@ -15,12 +15,18 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+/**
+ * A node will try to contact the hub it's registered to every RegistrationRequest.REGISTER_CYCLE
+ * millisec. If the hub crash, and is restarted, the node will register themselves again.
+ * 
+ * @author freynaud
+ * 
+ */
 public class HubRestart {
 
   private Hub hub;
   private Registry registry;
   private SelfRegisteringRemote remote;
-  private SelfRegisteringRemote remote2;
   private GridHubConfiguration config = new GridHubConfiguration();
 
   @BeforeClass(alwaysRun = false)
@@ -30,14 +36,11 @@ public class HubRestart {
     hub = GridTestHelper.getHub(config);
     registry = hub.getRegistry();
 
-    remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
-    remote2 = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
     remote.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, 250);
-    remote2.getConfiguration().put(RegistrationRequest.REGISTER_CYCLE, 250);
 
     remote.startRemoteServer();
-    remote2.startRemoteServer();
 
   }
 
@@ -46,12 +49,10 @@ public class HubRestart {
 
     // every 5 sec, the node register themselves again.
     Assert.assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), 250);
-    Assert.assertEquals(remote2.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), 250);
     remote.startRegistrationProcess();
-    remote2.startRegistrationProcess();
 
     // should be up
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 
     // crashing the hub.
     hub.stop();
@@ -67,7 +68,7 @@ public class HubRestart {
     hub.start();
 
     // the node will appear again after 250 ms.
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 2);
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
 
   }
 
@@ -75,7 +76,6 @@ public class HubRestart {
   public void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
-    remote2.stopRemoteServer();
 
   }
 }

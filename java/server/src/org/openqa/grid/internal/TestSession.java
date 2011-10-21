@@ -1,34 +1,17 @@
 /*
-Copyright 2007-2011 WebDriver committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+ * Copyright 2007-2011 WebDriver committers
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.openqa.grid.internal;
-
-import com.google.common.io.ByteStreams;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.openqa.grid.internal.listeners.CommandListener;
-import org.openqa.grid.web.Hub;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -50,10 +33,26 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
+import org.openqa.grid.internal.listeners.CommandListener;
+import org.openqa.grid.web.Hub;
+
+import com.google.common.io.ByteStreams;
+
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
- * available for a test. <p/> The session is destroyed when the test ends ( ended by the client or
- * timed out)
+ * available for a test.
+ * <p/>
+ * The session is destroyed when the test ends ( ended by the client or timed out)
  */
 public class TestSession {
 
@@ -94,7 +93,7 @@ public class TestSession {
   /**
    * Get the session key from the remote. It's up to the remote to guarantee the key is unique. If 2
    * remotes return the same session key, the tests will overwrite each other.
-   *
+   * 
    * @return the key that was provided by the remote when the POST /session command was sent.
    */
   public String getExternalKey() {
@@ -112,7 +111,7 @@ public class TestSession {
   /**
    * give the time in milliseconds since the last access to this test session, or 0 is ignore time
    * out has been set to true.
-   *
+   * 
    * @return time in millis
    * @see TestSession#setIgnoreTimeout(boolean)
    */
@@ -130,8 +129,7 @@ public class TestSession {
     // The session needs to have been open for at least the time interval and we need to have not
     // seen any new
     // commands during that time frame.
-    return (((now - sessionCreatedAt) > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED) && (
-        sessionCreatedAt == lastActivity));
+    return (((now - sessionCreatedAt) > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED) && (sessionCreatedAt == lastActivity));
   }
 
   /**
@@ -166,8 +164,8 @@ public class TestSession {
 
   @Override
   public String toString() {
-    return externalKey != null ? "ext. key " + externalKey : internalKey +
-                                                             " (int. key, remote not contacted yet.)";
+    return externalKey != null ? "ext. key " + externalKey : internalKey
+        + " (int. key, remote not contacted yet.)";
   }
 
   /**
@@ -178,20 +176,19 @@ public class TestSession {
   }
 
   private HttpClient getClient() {
-     return slot.getHttpClientFactory().getGridHttpClient();
+    return slot.getHttpClientFactory().getGridHttpClient();
   }
 
   /**
    * Forward the request to the remote.
-   *
-   * @param content               Overwrite the body. Useful when the body of the request was
-   *                              already read.
+   * 
+   * @param content Overwrite the body. Useful when the body of the request was already read.
    * @param interceptResponseBody for selenium1 protocol, you need to read the content of the
-   *                              response to find the session.
+   *        response to find the session.
    * @return the content of the response if interceptResponseBody=true. null otherwise
    */
   public String forward(HttpServletRequest request, HttpServletResponse response, String content,
-                        boolean interceptResponseBody) throws IOException {
+      boolean interceptResponseBody) throws IOException {
     String res = null;
 
     if (slot.getProxy() instanceof CommandListener) {
@@ -199,13 +196,14 @@ public class TestSession {
     }
 
     lastActivity = System.currentTimeMillis();
-    URL remoteURL = slot.getProxy().getRemoteURL();
+    URL remoteURL = slot.getRemoteURL();
+
 
     String pathSpec = request.getServletPath() + request.getContextPath();
     String path = request.getRequestURI();
     if (!path.startsWith(pathSpec)) {
-      throw new IllegalStateException("Expected path " + path + " to start with pathSpec " +
-                                      pathSpec);
+      throw new IllegalStateException("Expected path " + path + " to start with pathSpec "
+          + pathSpec);
     }
     String end = path.substring(pathSpec.length());
     String ok = remoteURL + end;
@@ -231,7 +229,7 @@ public class TestSession {
       proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
     }
 
-    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements(); ) {
+    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
       String headerName = (String) e.nextElement();
 
       if ("Content-Length".equalsIgnoreCase(headerName)) {
@@ -276,10 +274,14 @@ public class TestSession {
       try {
         byte[] rawBody = ByteStreams.toByteArray(in);
 
-        // We need to set the Content-Length header before we write to the output stream. Usually the
-        // Content-Length header is already set because we take it from the proxied request. But, it won't
-        // be set when we consume chunked content, since that doesn't use Content-Length. As we're not
-        // going to send a chunked response, we need to set the Content-Length in order for the response
+        // We need to set the Content-Length header before we write to the output stream. Usually
+        // the
+        // Content-Length header is already set because we take it from the proxied request. But, it
+        // won't
+        // be set when we consume chunked content, since that doesn't use Content-Length. As we're
+        // not
+        // going to send a chunked response, we need to set the Content-Length in order for the
+        // response
         // to be valid.
         if (!response.containsHeader("Content-Length")) {
           response.setIntHeader("Content-Length", rawBody.length);
@@ -323,15 +325,18 @@ public class TestSession {
   }
 
   private void processResponseHeaders(HttpServletResponse response, URL remoteURL, String pathSpec,
-                                      HttpResponse proxyResponse) throws MalformedURLException {
+      HttpResponse proxyResponse) throws MalformedURLException {
     for (Header header : proxyResponse.getAllHeaders()) {
       String name = header.getName();
       String value = header.getValue();
 
       // HttpEntity#getContent() chews up the chunk-size octet (i.e., the InputStream does not
-      // actually map 1:1 to the underlying response body). This breaks any client expecting the chunk size. We could
-      // try to recreate it, but since the chunks are already read in and decoded, you'd end up with a
-      // single chunk, which isn't all that useful. So, we return the response as a traditional response with a
+      // actually map 1:1 to the underlying response body). This breaks any client expecting the
+      // chunk size. We could
+      // try to recreate it, but since the chunks are already read in and decoded, you'd end up with
+      // a
+      // single chunk, which isn't all that useful. So, we return the response as a traditional
+      // response with a
       // Content-Length header, obviating the need for the Transfer-Encoding header.
       if (name.equalsIgnoreCase("Transfer-Encoding") && value.equalsIgnoreCase("chunked")) {
         continue;
@@ -356,7 +361,7 @@ public class TestSession {
 
   /**
    * Allow you to retrieve an object previously stored on the test session.
-   *
+   * 
    * @return the object you stored
    */
   public Object get(String key) {
@@ -365,7 +370,7 @@ public class TestSession {
 
   /**
    * Allows you to store an object on the test session.
-   *
+   * 
    * @param key a non-null string
    */
   public void put(String key, Object value) {
@@ -384,31 +389,46 @@ public class TestSession {
 
   /**
    * shouldn't be use other than in unit tests for the grid. Tests are not supposed to care about
-   * the grid state. <p/> use instead
-   *
+   * the grid state.
+   * <p/>
+   * use instead
+   * 
    * @see TestSession#terminate()
    */
   void terminateSynchronousFOR_TEST_ONLY() {
     slot._release();
   }
 
+
   /**
-   * Sends a DELETE session command to the remote, following web driver protocol.
-   *
+   * Sends a DELETE/testComplete (webdriver/selenium) session command to the remote, following web driver protocol.
+   * 
    * @return true is the remote replied successfully to the request.
    */
   public boolean sendDeleteSessionRequest() {
-    if (externalKey == null) {
-      return false;
+    URL remoteURL = slot.getRemoteURL();
+
+    HttpRequest request;
+    switch (slot.getProtocol()) {
+      case Selenium:
+        request =
+            new BasicHttpRequest("POST", remoteURL.toExternalForm()
+                + "/?cmd=testComplete&sessionId=" + getExternalKey());
+        break;
+      case WebDriver:
+        String uri = remoteURL.toString() + "/session/" + externalKey;
+        request = new BasicHttpRequest("DELETE", uri);
+        break;
+      default:
+        throw new GridException("Error, protocol not implemented.");
     }
-    URL remoteURL = slot.getProxy().getRemoteURL();
-    String uri = remoteURL.toString() + "/session/" + externalKey;
-    HttpRequest request = new BasicHttpRequest("DELETE", uri);
-    HttpClient client = getClient();
+    
+    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
+
     boolean ok;
     try {
-      HttpResponse response =
-          client.execute(new HttpHost(remoteURL.getHost(), remoteURL.getPort()), request);
+      HttpClient client = getClient();
+      HttpResponse response = client.execute(host, request);
       int code = response.getStatusLine().getStatusCode();
       ok = (code >= 200) && (code <= 299);
     } catch (Throwable e) {
@@ -419,32 +439,8 @@ public class TestSession {
     return ok;
   }
 
-  /**
-   * Sends a cmd=testComplete command to the remote, following selenium1 protocol.
-   *
-   * @return true is the remote replied successfully to the request.
-   */
-  public boolean sendSelenium1TestComplete(TestSession session) {
-    URL url = slot.getProxy().getRemoteURL();
-    BasicHttpRequest req =
-        new BasicHttpRequest("POST", url.toExternalForm() + "/?cmd=testComplete&sessionId=" +
-                                     session.getExternalKey());
-    HttpClient client = getClient();
-
-    HttpHost host = new HttpHost(url.getHost(), url.getPort());
-
-    boolean ok;
-    try {
-      HttpResponse response = client.execute(host, req);
-      int code = response.getStatusLine().getStatusCode();
-      ok = (code >= 200) && (code <= 299);
-    } catch (Throwable e) {
-      ok = false;
-      // corrupted or the something else already sent the DELETE.
-      log.severe("Error releasing. Server corrupted ?");
-    }
-    return ok;
-  }
+ 
+ 
 
   /**
    * allow to bypass time out for this session. ignore = true => the session will not time out.

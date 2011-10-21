@@ -3,7 +3,7 @@ package org.openqa.grid.internal;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -38,7 +38,7 @@ public class ParallelTest {
     app2.put(APP, "app2");
     app2.put(MAX_INSTANCES, 1);
 
-    config.put(REMOTE_URL, "http://machine1:4444");
+    config.put(REMOTE_HOST, "http://machine1:4444");
     config.put(MAX_SESSION, 5);
 
     req = new RegistrationRequest();
@@ -204,7 +204,7 @@ public class ParallelTest {
     app2.put(APP, "app2");
     app2.put(MAX_INSTANCES, 1);
 
-    config.put(REMOTE_URL, "http://machine1:4444");
+    config.put(REMOTE_HOST, "http://machine1:4444");
     config.put(MAX_SESSION, 5);
 
     req = new RegistrationRequest();

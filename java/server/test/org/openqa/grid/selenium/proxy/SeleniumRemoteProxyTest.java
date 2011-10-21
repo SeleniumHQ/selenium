@@ -27,16 +27,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_URL;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 public class SeleniumRemoteProxyTest {
-  private SeleniumRemoteProxy proxy;
+ /* private SeleniumRemoteProxy proxy;
   private Registry registry;
 
   @Before
   public void setup() {
     Map<String, Object> config = new HashMap<String, Object>();
-    config.put(REMOTE_URL, "http://machine1:4444");
+    config.put(REMOTE_HOST, "http://machine1:4444");
     config.put(MAX_SESSION, 5);
 
     Map<String, Object> app1 = new HashMap<String, Object>();
@@ -66,5 +66,5 @@ public class SeleniumRemoteProxyTest {
 
     proxy.beforeRelease(session);
     registry.stop();
-  }
+  }*/
 }

@@ -70,7 +70,7 @@ public class StatusServletTests {
     req.addDesiredCapabilitiy(capability);
 
     Map<String, Object> config = new HashMap<String, Object>();
-    config.put("url", "http://machine5:4444/");
+    config.put(RegistrationRequest.REMOTE_HOST, "http://machine5:4444/");
     req.setConfiguration(config);
     RemoteProxy customProxy = new MyCustomProxy(req, registry);
 

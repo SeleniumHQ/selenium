@@ -2,21 +2,6 @@
   "capabilities":
       [
         {
-          "browserName": "*firefox",
-          "maxInstances": 5,
-          "seleniumProtocol": "Selenium"
-        },
-        {
-          "browserName": "*googlechrome",
-          "maxInstances": 5,
-          "seleniumProtocol": "Selenium"
-        },
-        {
-          "browserName": "*iexplore",
-          "maxInstances": 1,
-          "seleniumProtocol": "Selenium"
-        },
-        {
           "browserName": "firefox",
           "maxInstances": 5,
           "seleniumProtocol": "WebDriver"

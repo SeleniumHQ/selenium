@@ -1,7 +1,8 @@
-package org.openqa.grid.e2e.wd;
+package org.openqa.grid.e2e.node;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
@@ -13,6 +14,9 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,8 +33,14 @@ public class SmokeTest {
 
 
     SelfRegisteringRemote remote =
-        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.WEBDRIVER);
+        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    
+    DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
+    firefoxOnSeleniumCapability.setBrowserName("*firefox");
+    firefoxOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.Selenium);
+    
+    remote.addBrowser(firefoxOnSeleniumCapability, 1);
 
     remote.startRemoteServer();
 
@@ -40,7 +50,7 @@ public class SmokeTest {
   }
 
   @Test
-  public void test() throws MalformedURLException {
+  public void firefoxOnWebDriver() throws MalformedURLException {
     WebDriver driver = null;
     try {
       DesiredCapabilities ff = DesiredCapabilities.firefox();
@@ -50,6 +60,25 @@ public class SmokeTest {
     } finally {
       if (driver != null) {
         driver.quit();
+      }
+    }
+  }
+  
+  
+  @Test
+  public void firefoxOnSelenium() throws MalformedURLException {
+    Selenium selenium = null;
+    try {
+      selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hub.getUrl() + "");
+      Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+      selenium.start();
+      Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
+      selenium.open(hub.getUrl() + "/grid/console");
+      Assert.assertTrue(selenium.getTitle().contains("Grid overview"));
+      
+    } finally {
+      if (selenium != null) {
+        selenium.stop();
       }
     }
   }

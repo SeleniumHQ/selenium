@@ -1,4 +1,4 @@
-package org.openqa.grid.selenium.utils;
+package org.openqa.grid.common;
 
 public enum SeleniumProtocol {
   Selenium, WebDriver

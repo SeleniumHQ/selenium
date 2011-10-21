@@ -88,7 +88,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
     new Thread(new Runnable() {  // Thread safety reviewed
       public void run() {
         getRegistry().add(proxy);
-        log.fine("proxy added " + proxy.getRemoteURL());
+        log.fine("proxy added " + proxy.getRemoteHost());
       }
     }).start();
   }

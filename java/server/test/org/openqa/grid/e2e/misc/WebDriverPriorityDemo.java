@@ -1,4 +1,4 @@
-package org.openqa.grid.e2e.wd;
+package org.openqa.grid.e2e.misc;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -42,7 +42,7 @@ public class WebDriverPriorityDemo {
     hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
     SelfRegisteringRemote remote =
-            GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.WEBDRIVER);
+            GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.NODE);
     remote.addBrowser(DesiredCapabilities.firefox(), 1);
 
     remote.startRemoteServer();

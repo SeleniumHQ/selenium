@@ -1,17 +1,15 @@
 /*
-Copyright 2007-2011 WebDriver committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+ * Copyright 2007-2011 WebDriver committers
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.openqa.grid.internal.utils;
@@ -66,20 +64,10 @@ public class SelfRegisteringRemote {
   }
 
   public URL getRemoteURL() {
-    String base = "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HOST) + ":"
-                  + nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
-    String url;
-    switch (nodeConfig.getRole()) {
-      case REMOTE_CONTROL:
-        url = base + "/selenium-server/driver";
-        break;
-      case WEBDRIVER:
-        url = base + "/wd/hub";
-        break;
-      default:
-        throw new GridConfigurationException("Cannot launch a node with role " +
-                                             nodeConfig.getRole());
-    }
+    String host = (String) nodeConfig.getConfiguration().get(RegistrationRequest.HOST);
+    String port = (String) nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
+    String url = "http://" + host + ":" + port;
+
     try {
       return new URL(url);
     } catch (MalformedURLException e) {
@@ -114,9 +102,8 @@ public class SelfRegisteringRemote {
             String path = "/" + servletClass.getSimpleName() + "/*";
             String clazz = servletClass.getCanonicalName();
             handler.addServlet(path, clazz);
-            log.info("started extra node servlet visible at : http://xxx:" +
-                     nodeConfig.getConfiguration().get(RegistrationRequest.PORT)
-                     + "/extra" + path);
+            log.info("started extra node servlet visible at : http://xxx:"
+                + nodeConfig.getConfiguration().get(RegistrationRequest.PORT) + "/extra" + path);
           }
         }
         extra.addHandler(handler);
@@ -157,9 +144,11 @@ public class SelfRegisteringRemote {
   }
 
   /**
-   * register the hub following the configuration : <p/> - check if the proxy is already registered
-   * before sending a reg request. <p/> - register again every X ms is specified in the config of
-   * the node.
+   * register the hub following the configuration :
+   * <p/>
+   * - check if the proxy is already registered before sending a reg request.
+   * <p/>
+   * - register again every X ms is specified in the config of the node.
    */
   public void startRegistrationProcess() {
     log.info("using the json request : " + nodeConfig.toJSON());
@@ -172,30 +161,30 @@ public class SelfRegisteringRemote {
       final Integer o =
           (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE);
       if (o != null && o.intValue() > 0) {
-        new Thread(new Runnable() {  // Thread safety reviewed
+        new Thread(new Runnable() { // Thread safety reviewed
 
-          public void run() {
-            boolean first = true;
-            log.info("starting auto register thread. Will try to register every " + o + " ms.");
-            while (true) {
-              try {
-                boolean checkForPresence = true;
-                if (first) {
-                  first = false;
-                  checkForPresence = false;
+              public void run() {
+                boolean first = true;
+                log.info("starting auto register thread. Will try to register every " + o + " ms.");
+                while (true) {
+                  try {
+                    boolean checkForPresence = true;
+                    if (first) {
+                      first = false;
+                      checkForPresence = false;
+                    }
+                    registerToHub(checkForPresence);
+                  } catch (GridException e) {
+                    log.info("couldn't register this node : " + e.getMessage());
+                  }
+                  try {
+                    Thread.sleep(o.intValue());
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
                 }
-                registerToHub(checkForPresence);
-              } catch (GridException e) {
-                log.info("couldn't register this node : " + e.getMessage());
               }
-              try {
-                Thread.sleep(o.intValue());
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-        }).start();
+            }).start();
       } else {
         registerToHub(false);
       }
@@ -222,7 +211,7 @@ public class SelfRegisteringRemote {
     if (ok) {
       String tmp =
           "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
-          + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
+              + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
 
       HttpClient client = httpClientFactory.getHttpClient();
       try {
@@ -252,14 +241,15 @@ public class SelfRegisteringRemote {
 
     HttpClient client = httpClientFactory.getHttpClient();
     try {
-      String tmp = "http://" + node.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
-                   + node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/proxy";
+      String tmp =
+          "http://" + node.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
+              + node.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/proxy";
       URL api = new URL(tmp);
       HttpHost host = new HttpHost(api.getHost(), api.getPort());
 
-      BasicHttpRequest r = new BasicHttpRequest("GET", api.toExternalForm() + "?id="
-                                                       + node.getConfiguration()
-          .get(RegistrationRequest.REMOTE_URL));
+      BasicHttpRequest r =
+          new BasicHttpRequest("GET", api.toExternalForm() + "?id="
+              + node.getConfiguration().get(RegistrationRequest.REMOTE_HOST));
 
       HttpResponse response = client.execute(host, r);
       if (response.getStatusLine().getStatusCode() != 200) {

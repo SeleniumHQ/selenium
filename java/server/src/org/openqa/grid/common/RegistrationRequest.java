@@ -16,19 +16,6 @@ limitations under the License.
 
 package org.openqa.grid.common;
 
-import com.google.common.collect.Maps;
-
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.common.exception.GridConfigurationException;
-
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,6 +27,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
+
+import com.google.common.collect.Maps;
 
 /**
  * helper to register to the grid. Using JSON to exchange the object between the node and grid.
@@ -63,6 +62,9 @@ public class RegistrationRequest {
   // some special param for capability
   public static final String APP = "applicationName";
   public static final String MAX_INSTANCES = "maxInstances";
+  // see enum SeleniumProtocol
+  public static final String SELENIUM_PROTOCOL = "seleniumProtocol";
+  public static final String PATH = "path";
   public static final String BROWSER = CapabilityType.BROWSER_NAME;
   public static final String PLATFORM = CapabilityType.PLATFORM;
   public static final String VERSION = CapabilityType.VERSION;
@@ -73,7 +75,8 @@ public class RegistrationRequest {
   public static final String CLEAN_UP_CYCLE = "cleanUpCycle";
   public static final String TIME_OUT = "timeout";
 
-  public static final String REMOTE_URL = "url";
+  // TODO delete to keep only HUB_HOSt and HUB_PORT
+  public static final String REMOTE_HOST = "remoteHost";
 
   public static final String MAX_SESSION = "maxSession";
   public static final String AUTO_REGISTER = "register";
@@ -285,11 +288,10 @@ public class RegistrationRequest {
       RegistrationRequest request = new RegistrationRequest();
 
       Map<String, Object> configuration = Maps.newHashMap();
-      configuration.put(PROXY_CLASS,
-          "org.openqa.grid.selenium.proxy.SeleniumRemoteProxy");
+      configuration.put(SELENIUM_PROTOCOL,SeleniumProtocol.Selenium.toString());
       configuration
-          .put(REMOTE_URL, String.format(
-              "http://%s:%s/selenium-server/driver",
+          .put(REMOTE_HOST, String.format(
+              "http://%s:%s",
               registrationInfo.get("host"),
               registrationInfo.get("port")));
       request.setConfiguration(configuration);
@@ -321,15 +323,21 @@ public class RegistrationRequest {
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
 
     res.role = GridRole.find(args);
-    // default
+    
+    
     String defaultConfig = "defaults/DefaultNode.json";
+    String nodeType = helper.getParamValue("-role");
+    if (GridRole.RCAliases().contains(nodeType)){
+      defaultConfig = "defaults/DefaultNodeSelenium.json";
+    }
+    if (GridRole.WDAliases().contains(nodeType)){
+      defaultConfig = "defaults/DefaultNodeWebDriver.json";
+    }
+    
+    
     res.loadFromJSON(defaultConfig);
 
-    if (res.role == GridRole.REMOTE_CONTROL) {
-      res.configuration.put(PROXY_CLASS, "org.openqa.grid.selenium.proxy.SeleniumRemoteProxy");
-    }
-
-    // -file *.json ?
+        // -file *.json ?
     if (helper.isParamPresent("-nodeConfig")) {
       String value = helper.getParamValue("-nodeConfig");
       res.nodeJSON = value;
@@ -351,20 +359,9 @@ public class RegistrationRequest {
     res.loadFromCommandLine(args);
 
     // some values can be calculated.
-    if (res.configuration.get(REMOTE_URL) == null) {
-      String base = "http://" + res.configuration.get(HOST) + ":" + res.configuration.get(PORT);
-      String url;
-      switch (res.getRole()) {
-        case REMOTE_CONTROL:
-          url = base + "/selenium-server/driver";
-          break;
-        case WEBDRIVER:
-          url = base + "/wd/hub";
-          break;
-        default:
-          throw new GridConfigurationException("Cannot launch a node with role " + res.getRole());
-      }
-      res.configuration.put(REMOTE_URL, url);
+    if (res.configuration.get(REMOTE_HOST) == null) {
+      String url = "http://" + res.configuration.get(HOST) + ":" + res.configuration.get(PORT);
+      res.configuration.put(REMOTE_HOST, url);
     }
     String u = (String) res.configuration.get("hub");
     if (u != null) {
@@ -509,11 +506,6 @@ public class RegistrationRequest {
           for (Iterator iterator = cap.keys(); iterator.hasNext();) {
             String name = (String) iterator.next();
             Object value = cap.get(name);
-            if (role == GridRole.REMOTE_CONTROL
-                && CapabilityType.BROWSER_NAME.equals(name)) {
-              value = Utils
-                  .getSelenium1Equivalent((String) value);
-            }
             c.setCapability(name, value);
           }
           capabilities.add(c);

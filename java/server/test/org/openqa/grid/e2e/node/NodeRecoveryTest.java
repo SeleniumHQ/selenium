@@ -1,12 +1,5 @@
-package org.openqa.grid.e2e.selenium;
+package org.openqa.grid.e2e.node;
 
-
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -15,10 +8,21 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.net.PortProber;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
+
+/**
+ * a node should be allowed to stop / crash and restart. When the node restarts, it replaces the old
+ * one, updating its configuration is necessary.
+ * 
+ * @author freynaud
+ * 
+ */
 public class NodeRecoveryTest {
 
   private Hub hub;
@@ -35,9 +39,10 @@ public class NodeRecoveryTest {
 
     hub.start();
 
-    node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.REMOTE_CONTROL);
+    node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     // register a selenium 1 with a timeout of 3 sec
-    node.addBrowser(new DesiredCapabilities("*firefox", "3.6", Platform.getCurrent()), 1);
+    
+    node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
     node.setTimeout(originalTimeout, 1000);
     node.startRemoteServer();
     node.sendRegistrationRequest();
@@ -45,7 +50,7 @@ public class NodeRecoveryTest {
   }
 
   @Test
-  public void test() throws Exception {
+  public void nodeServerCanStopAndRestart() throws Exception {
 
     Assert.assertEquals(hub.getRegistry().getAllProxies().size(), 1);
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
