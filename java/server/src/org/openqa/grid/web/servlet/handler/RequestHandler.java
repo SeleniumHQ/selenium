@@ -60,7 +60,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   private RequestType requestType = null;
   private volatile TestSession session = null;
 
-  private boolean showWarning = true;
 
   private final CountDownLatch sessionAssigned = new CountDownLatch(1);
 
@@ -197,11 +196,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   private void beforeSessionEvent() {
     RemoteProxy p = session.getSlot().getProxy();
     if (p instanceof TestSessionListener) {
-      if (showWarning && p.getMaxNumberOfConcurrentTestSessions() != 1) {
-        showWarning = false;
-        log.warning(
-            "WARNING : using a beforeSession on a proxy that can support multiple tests is risky.");
-      }
       try {
         ((TestSessionListener) p).beforeSession(session);
       } catch (Throwable t) {
