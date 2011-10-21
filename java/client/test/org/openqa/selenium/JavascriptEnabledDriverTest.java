@@ -38,6 +38,9 @@ import org.openqa.selenium.internal.Locatable;
 
 import org.hamcrest.Matchers;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Test case for browsers that support using Javascript
  */
@@ -272,13 +275,22 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     String handle = driver.getWindowHandle();
     driver.findElement(By.id("new_window")).click();
 
-    driver.switchTo().window("close_me");
+    waitFor(openAndSwitchToWindow("close_me", driver));
 
     driver.findElement(By.id("close")).click();
 
     driver.switchTo().window(handle);
 
     // If we haven't seen an exception or hung the test has passed
+  }
+
+  private Callable<Boolean> openAndSwitchToWindow(final String name, final WebDriver driver) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        driver.switchTo().window("close_me");
+        return Boolean.TRUE;
+      }
+    };
   }
 
   private void moveFocus() {

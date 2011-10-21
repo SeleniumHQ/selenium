@@ -33,17 +33,13 @@ class JavascriptExecutor {
    *
    * @param jsCode JavaScript code to execute.
    */
-  public static void executeJs(final WebView webview, Activity activity,
+  public static void executeJs(final WebView webview,
       JavascriptResultNotifier notifier, final String jsCode) {
     resNotifier = notifier;
-    activity.runOnUiThread(new Runnable() {
-      public void run() {
-        if (webview.getUrl() == null) {
-          return;
-        }
-        webview.loadUrl("javascript:" + jsCode);
-      }
-    });
+    if (webview.getUrl() == null) {
+      return;
+    }
+    webview.loadUrl("javascript:" + jsCode);
   }
 
   /**

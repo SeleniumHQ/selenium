@@ -177,7 +177,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     localStorage = new AndroidLocalStorage(this);
     sessionStorage = new AndroidSessionStorage(this);
     targetLocator = new AndroidTargetLocator();
-    viewManager = new WebViewManager(activity);
+    viewManager = new WebViewManager();
     // Create a new view and delete existing windows.
     newWebView( /*Delete existing windows*/true);
     // Needs to be called before CookieMAnager::getInstance()
@@ -365,9 +365,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     activity.runOnUiThread(new Runnable() {
       public void run() {
         webview.destroy();
+        viewManager.removeView(webview);
       }
     });
-    viewManager.removeView(webview);
     webview = null;
   }
 
@@ -571,19 +571,20 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       return AndroidWebDriver.this;
     }
 
-    public WebDriver window(String nameOrHandle) {
-      WebView v = viewManager.getView(nameOrHandle);
-      if (v != null) {
-        webview = v;
-        activity.runOnUiThread(new Runnable() {
-          public void run() {
-            activity.setContentView(webview);
+    public WebDriver window(final String nameOrHandle) {
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          WebView v = viewManager.getView(nameOrHandle);
+          if (v != null) {
+            webview = v;
+          } else {
+            throw new NoSuchWindowException(
+                "Window '" + nameOrHandle + "' does not exist.");
           }
-        });
-      } else {
-        throw new NoSuchWindowException(
-            "Window '" + nameOrHandle + "' does not exist.");
-      }
+          activity.setContentView(webview);
+        }
+      });
+
       return AndroidWebDriver.this;
     }
 
@@ -858,7 +859,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       activity.runOnUiThread(new Runnable() {
         public void run() {
           org.openqa.selenium.android.JavascriptExecutor.executeJs(
-              webview, activity, notifier, script);
+              webview, notifier, script);
         }
       });
       long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;

@@ -35,10 +35,6 @@ class WebViewManager implements JavascriptResultNotifier {
   private Object syncObject = new Object();
   private Activity activity;
 
-  public WebViewManager(Activity activity) {
-    this.activity = activity;
-  }
-
   public WebView getView(String nameOrHandle) {
     synchronized (syncObject) {
       WebView toReturn = searchForViewByHandle(nameOrHandle);
@@ -91,7 +87,7 @@ class WebViewManager implements JavascriptResultNotifier {
       for (WebView view : map.inverse().keySet()) {
         done = false;
         JavascriptExecutor.executeJs(
-            view, activity, this, "window.webdriver.resultMethod(window.name);");
+            view, this, "window.webdriver.resultMethod(window.name);");
         long timeout = System.currentTimeMillis() + AndroidWebDriver.RESPONSE_TIMEOUT;
         while (!done && (System.currentTimeMillis() < timeout)) {
           try {
