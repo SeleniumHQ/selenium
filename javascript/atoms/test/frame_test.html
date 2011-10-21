@@ -18,14 +18,14 @@ limitations under the License.
 <html>
 <head>
     <title>frame_test.html</title>
-    <script src="test_bootstrap.js"></script>
+    <script src="test_bootstrap.js" type="text/javascript"></script>
     <script type="text/javascript">
         goog.require('bot');
         goog.require('bot.frame');
         goog.require('goog.testing.jsunit');
     </script>
 
-    <script>
+    <script type="text/javascript">
         function testFindFrameByName() {
             var first = bot.frame.findFrameByNameOrId("first");
             assertEquals(window.frames[0], first);

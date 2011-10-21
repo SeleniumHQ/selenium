@@ -65,6 +65,7 @@ bot.frame.getFrameWindow = function(element) {
  *
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element is a frame (or iframe).
+ * @private
  */
 bot.frame.isFrame_ = function(element) {
   return bot.dom.isElement(element, goog.dom.TagName.FRAME) ||
@@ -77,7 +78,8 @@ bot.frame.isFrame_ = function(element) {
  * under the given root. If no frame was found, we look for an
  * iframe by name or id.
  *
- * @param {(string|number)} nameOrId The frame's name or the frame's id.
+ * @param {(string|number)} nameOrId The frame's name, the frame's id, or the
+ *     index of the frame in the containing window.
  * @param {!Window=} opt_root The window to perform the search under.
  *     Defaults to {@code bot.getWindow()}.
  * @return {Window} The window if found, null otherwise.
@@ -98,10 +100,6 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   }
 
   // Lookup frame by id
-
-
-
-
   var elements = bot.locators.findElements({id: nameOrId},
       domWindow.document);
   for (var i = 0; i < elements.length; i++) {
@@ -126,14 +124,15 @@ bot.frame.findFrameByIndex = function(index, opt_root) {
   return domWindow.frames[index] || null;
 };
 
+
 /**
  * Gets the index of a frame in the given window. Note that the element must
  * be a frame or an iframe.
  *
  * @param {!(HTMLIFrameElement|HTMLFrameElement)} element The iframe or frame
  *     element.
- * @param {!Window=} opt_root The window to perform
- *     the search under. Defaults to {@code bot.getWindow()}.
+ * @param {!Window=} opt_root The window to perform the search under. Defaults
+ *     to {@code bot.getWindow()}.
  * @return {?number} The index of the frame if found, null otherwise.
  */
 bot.frame.getFrameIndex = function(element, opt_root) {
