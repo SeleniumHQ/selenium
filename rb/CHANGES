@@ -1,3 +1,17 @@
+2.9.0 (2011-10-21)
+==================
+
+* Support file uploads to the remote server (see Selenium::WebDriver::DriverExtensions::UploadsFiles)
+* New exception: Selenium::WebDriver::Error::MoveTargetOutOfBoundsError
+* Implemented Chrome::Profile#add_extension
+* Better respect for preformatted text in Element#text
+* Reduced scrolling during tests for IE and Firefox.
+* Firefox:
+  * Support for experimental page load detection.
+* IE:
+  * Better detection of where to click on links (#2675).
+  * Improve handling of modal dialogs (showModalDialog).
+
 2.8.0 (2011-10-06)
 ==================
 
