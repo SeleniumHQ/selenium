@@ -13,5 +13,6 @@ include py/selenium/selenium.py
 include py/selenium/__init__.py
 include docs/api/py/index.rst
 include py/CHANGES
+include py/README
 recursive-include selenium.egg-info *
 
