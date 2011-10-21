@@ -9,7 +9,7 @@
     goog.require('bot.html5');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.userAgent.product.isVersion');
+    goog.require('goog.userAgent.product');
   </script>
 
   <script type="text/javascript">
@@ -22,6 +22,11 @@
      */
     function testLocationWithinDefaultInterval() {
       if (!bot.html5.isSupported(bot.html5.API.GEOLOCATION)) {
+        return;
+      }
+
+      // Chrome does support location, but disabling due to b/5416356.
+      if (goog.userAgent.product.CHROME) {
         return;
       }
 
@@ -42,7 +47,7 @@
       } catch (e) {
         assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
       }
-    };
+    }
 
     /**
      * Tested with Chrome and Firefox. It checks if the device location cannot
@@ -59,7 +64,7 @@
       }
       var posOptions = {
         enableHighAccuracy: true,
-        maximumAge:0,
+        maximumAge: 0,
         timeout: 0
       };
 
@@ -78,7 +83,7 @@
       } catch (e) {
         assertEquals(e.code, bot.ErrorCode.UNKNOWN_ERROR);
       }
-    };
+    }
 
     // TODO(user): Add more tests to check the returned value.
   </script>

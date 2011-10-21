@@ -20,6 +20,7 @@
 goog.provide('bot.userAgent');
 
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 goog.require('goog.userAgent.product.isVersion');
 
 
@@ -61,4 +62,12 @@ bot.userAgent.isVersion = function(version) {
  */
 bot.userAgent.isFirefox4 = function() {
   return goog.userAgent.GECKO && bot.userAgent.isVersion('4.0b1');
+};
+
+
+/**
+ * @return {boolean} Whether this is iOS.
+ */
+bot.userAgent.isIOS = function() {
+  return goog.userAgent.product.IPAD || goog.userAgent.product.IPHONE;
 };
