@@ -19,7 +19,10 @@ package org.openqa.selenium.remote.server.rest;
 
 import org.openqa.selenium.remote.server.DriverSessions;
 
-import java.util.LinkedHashMap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +30,7 @@ import java.util.logging.Logger;
 
 public class UrlMapper {
 
-  private final Map<ResultType, Renderer> globals = new LinkedHashMap<ResultType, Renderer>();
+  private final Multimap<ResultType, Result> globals = LinkedHashMultimap.create();
   private final Set<ResultConfig> configs = new LinkedHashSet<ResultConfig>();
   private final DriverSessions sessions;
   private final Logger log;
@@ -45,8 +48,11 @@ public class UrlMapper {
 
     ResultConfig config = new ResultConfig(url, handlerClazz, sessions, log);
     configs.add(config);
-    for (Map.Entry<ResultType, Renderer> entry : globals.entrySet()) {
-      config.on(entry.getKey(), entry.getValue());
+    Map<ResultType, Collection<Result>> map = globals.asMap();
+    for (Map.Entry<ResultType, Collection<Result>> entry : map.entrySet()) {
+      for (Result result : entry.getValue()) {
+        config.on(entry.getKey(), result);
+      }
     }
     return config;
   }
@@ -61,11 +67,11 @@ public class UrlMapper {
     return null;
   }
 
-  public void addGlobalHandler(ResultType type, Renderer renderer) {
-    globals.put(type, renderer);
+  public void addGlobalHandler(ResultType type, Result result) {
+    globals.put(type, result);
 
     for (ResultConfig config : configs) {
-      config.on(type, renderer);
+      config.on(type, result);
     }
   }
 }

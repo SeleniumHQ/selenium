@@ -117,6 +117,7 @@ import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
 import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.Result;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
@@ -183,12 +184,11 @@ public class DriverServlet extends HttpServlet {
     postMapper = new UrlMapper(driverSessions, logger);
     deleteMapper = new UrlMapper(driverSessions, logger);
 
-    getMapper.addGlobalHandler(ResultType.EXCEPTION,
+    final Result jsonErrorResult = new Result("",
         new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
-    postMapper.addGlobalHandler(ResultType.EXCEPTION,
-        new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
-    deleteMapper.addGlobalHandler(ResultType.EXCEPTION,
-        new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
+    getMapper.addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
+    postMapper.addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
+    deleteMapper.addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
 
     postMapper.bind("/config/drivers", AddConfig.class)
         .on(ResultType.SUCCESS, emptyResponse);

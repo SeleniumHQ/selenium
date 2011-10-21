@@ -70,9 +70,10 @@ public class UrlMapperTest extends TestCase {
 
   public void testAppliesGlobalHandlersToNewConfigs() {
     Renderer renderer = new StubRenderer();
+    Result result = new Result("", renderer);
     HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
 
-    mapper.addGlobalHandler(ResultType.SUCCESS, renderer);
+    mapper.addGlobalHandler(ResultType.SUCCESS, result);
     mapper.bind("/example", SessionHandler.class);
 
     ResultConfig config = mapper.getConfig("/example");
@@ -81,10 +82,30 @@ public class UrlMapperTest extends TestCase {
 
   public void testAppliesNewGlobalHandlersToExistingConfigs() {
     Renderer renderer = new StubRenderer();
+    Result result = new Result("", renderer);
     HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
 
     mapper.bind("/example", SessionHandler.class);
-    mapper.addGlobalHandler(ResultType.SUCCESS, renderer);
+    mapper.addGlobalHandler(ResultType.SUCCESS, result);
+
+    ResultConfig config = mapper.getConfig("/example");
+    assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
+  }
+
+  public void testPermitsMultipleGlobalHandlersWithDifferentMimeTypes() {
+    Renderer renderer = new StubRenderer();
+
+    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    context.checking(new Expectations() {{
+      allowing(mockRequest).getHeader("Accept");
+      will(returnValue("application/json"));
+    }});
+
+    mapper.addGlobalHandler(ResultType.SUCCESS, new Result("", new StubRenderer()));
+    mapper.addGlobalHandler(ResultType.SUCCESS, new Result("application/json", renderer ));
+    mapper.bind("/example", SessionHandler.class)
+        .on(ResultType.SUCCESS, new Result("text/plain", new StubRenderer()));
 
     ResultConfig config = mapper.getConfig("/example");
     assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
