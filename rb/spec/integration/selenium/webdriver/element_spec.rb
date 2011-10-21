@@ -102,7 +102,7 @@ describe "Element" do
     loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
 
     loc.x.should >= 1
-    loc.y.should >= 1
+    loc.y.should >= 0 # can be 0 if scrolled to the top
   end
 
   it "should get size" do
