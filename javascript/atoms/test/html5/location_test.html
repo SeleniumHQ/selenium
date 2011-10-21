@@ -25,6 +25,7 @@
         return;
       }
 
+      // TODO(user): Use expected failures for this
       // Chrome does support location, but disabling due to b/5416356.
       if (goog.userAgent.product.CHROME) {
         return;
@@ -89,7 +90,7 @@
   </script>
 </head>
 <body>
-  <script>
+  <script type="text/javascript">
     asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
     asyncTestCase.stepTimeout = 15 * 1000;
   </script>
