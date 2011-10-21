@@ -27,9 +27,14 @@ module Selenium
 
         def error_message
           val = @payload['value']
-          msg = val['message'] or return ""
 
-          msg << " (#{ val['class'] })" if val['class']
+          case val
+          when Hash
+            msg = val['message'] or return "unknown error"
+            msg << " (#{ val['class'] })" if val['class']
+          when String
+            msg = val
+          end
 
           msg
         end
