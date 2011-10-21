@@ -77,11 +77,18 @@ module Android
   $properties = $sys_properties.read_properties()
   $sdk_path = ENV['androidsdkpath'] || $properties["androidsdkpath"]
   $platform =  $properties["androidplatform"]
-  $adb = Platform.path_for(File.join($sdk_path, "platform-tools", "adb"))
   $aapt = get_binary("aapt")
-  $builder = Platform.path_for(File.join($sdk_path, "tools", "apkbuilder"))
-  $android = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "android")))
-  $emulator = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "emulator")))
+  if windows?
+    $adb = Platform.path_for(File.join($sdk_path, "platform-tools", "adb.exe"))
+    $builder = Platform.path_for(File.join($sdk_path, "tools", "apkbuilder.bat"))
+    $android = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "android.bat")))
+    $emulator = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "emulator.exe")))
+  else
+    $adb = Platform.path_for(File.join($sdk_path, "platform-tools", "adb"))
+    $builder = Platform.path_for(File.join($sdk_path, "tools", "apkbuilder"))
+    $android = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "android")))
+    $emulator = Platform.path_for(File.expand_path(File.join($sdk_path, "tools", "emulator")))
+  end
 
   class CheckPreconditions
     def handle(fun, dir, args)
@@ -180,10 +187,17 @@ module Android
         if (android_installed?)
           android_target = $properties["androidtarget"].to_s
           sh "#{$android} update project -p android/app/ --target #{android_target}"
-          sh "cd android/app; ant debug; cd ../../;"
-          apk = File.join('build', 'android', 'app', 'android-server.apk')
-          sh "cp android/app/bin/MainActivity-debug.apk #{apk}"
-          copy_to_prebuilt(apk, fun)
+           Dir.chdir("android/app") do
+             if windows?
+               # ant -Dgo=go.bat overrides the go in the build file android/app/build.xml
+               sh "ant debug -Dgo=go.bat"
+             else
+              sh "ant debug; "  
+             end
+           end 
+           apk = File.join('build', 'android', 'app', 'android-server.apk')
+           sh "cp android/app/bin/MainActivity-debug.apk #{apk}"
+           copy_to_prebuilt(apk, fun)
         else
           puts apk
           puts "Android SDK not installed, copying from prebuilt."
