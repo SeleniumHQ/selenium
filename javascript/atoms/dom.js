@@ -840,6 +840,32 @@ bot.dom.getOpacity = function(elem) {
 
 
 /**
+ * Implementation of getOpacity for browsers that do support
+ * the "opacity" style.
+ *
+ * @param {!Element} elem Element whose opacity has to be found.
+ * @return {number} Opacity between 0 and 1.
+ * @private
+ */
+bot.dom.getOpacityNonIE_ = function(elem) {
+  // By default the element is opaque.
+  var elemOpacity = 1;
+
+  var opacityStyle = bot.dom.getEffectiveStyle(elem, 'opacity');
+  if (opacityStyle) {
+    elemOpacity = Number(opacityStyle);
+  }
+
+  // Let's apply the parent opacity to the element.
+  var parentElement = bot.dom.getParentElement(elem);
+  if (parentElement) {
+    elemOpacity = elemOpacity * bot.dom.getOpacityNonIE_(parentElement);
+  }
+  return elemOpacity;
+};
+
+
+/**
  * This function calculates the amount of scrolling necessary to bring the
  * target location into view.
  *
@@ -940,32 +966,6 @@ bot.dom.getInViewLocation =
   }
 
   return inViewLocation;
-};
-
-
-/**
- * Implementation of getOpacity for browsers that do support
- * the "opacity" style.
- *
- * @param {!Element} elem Element whose opacity has to be found.
- * @return {number} Opacity between 0 and 1.
- * @private
- */
-bot.dom.getOpacityNonIE_ = function(elem) {
-  // By default the element is opaque.
-  var elemOpacity = 1;
-
-  var opacityStyle = bot.dom.getEffectiveStyle(elem, 'opacity');
-  if (opacityStyle) {
-    elemOpacity = Number(opacityStyle);
-  }
-
-  // Let's apply the parent opacity to the element.
-  var parentElement = bot.dom.getParentElement(elem);
-  if (parentElement) {
-    elemOpacity = elemOpacity * bot.dom.getOpacityNonIE_(parentElement);
-  }
-  return elemOpacity;
 };
 
 
