@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>jsonpclient_test.html</title>
+  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../deps.js"></script>
+  <script src="testutil.js"></script>
+  <script>
+    goog.require('goog.dom.DomHelper');
+    goog.require('goog.json');
+    goog.require('goog.testing.mockmatchers.ArgumentMatcher');
+    goog.require('goog.testing.MockControl');
+    goog.require('goog.testing.PropertyReplacer');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.http.JsonpClient');
+    goog.require('webdriver.http.Request');
+    goog.require('webdriver.http.Response');
+    goog.require('webdriver.promise');
+  </script>
+  <script>
+    var URL = 'http://localhost:4444/wd/hub';
+    var REQUEST = new webdriver.http.Request('GET', '/session/s123/url');
+    var REQUEST_URL_PREFIX = URL +
+        '/jsonp?method=GET&path=%2Fsession%2Fs123%2Furl&body=%22%22';
+
+    var control = new goog.testing.MockControl();
+    var stubs = new goog.testing.PropertyReplacer();
+    var clock, mockDom, client, onCallback, onErrback;
+
+    function setUp() {
+      stubs.set(webdriver.http.JsonpClient, 'nextRequestId_', 0);
+      clock = createMockClock();
+
+      mockDom = control.createStrictMock(goog.dom.DomHelper);
+      client = new webdriver.http.JsonpClient(URL, mockDom);
+    }
+
+    function tearDown() {
+      stubs.reset();
+      control.$tearDown();
+      clock.reset();
+      clock.uninstall();
+    }
+
+    function assertSuccess() {
+      onErrback.assertNotCalled('Did not expect errback');
+      onCallback.assertCalled('Expected callback');
+    }
+
+    function expectCreateDom(callbackName) {
+      var expectedSrc = REQUEST_URL_PREFIX +
+          '&callback=' + callbackName + '&cacheBuster=' + goog.now();
+      var fakeScript = {src: expectedSrc};
+      mockDom.createDom('script',
+          new goog.testing.mockmatchers.ArgumentMatcher(function(attributes) {
+            _assertObjectEquals({'src': expectedSrc}, attributes);
+            return true;
+          }, 'JSONP script')).$returns(fakeScript);
+      return fakeScript;
+    }
+
+    function expectToSend(fakeScript) {
+      var fakeDoc = {documentElement: {}};
+      mockDom.getDocument().$returns(fakeDoc).$anyTimes();
+      return mockDom.appendChild(fakeDoc.documentElement, fakeScript);
+    }
+
+    function expectToClearRequest(fakeScript) {
+      mockDom.removeNode(fakeScript);
+    }
+
+    function testCreateCallbackName() {
+      var fn = webdriver.http.JsonpClient.createCallbackName_;
+      stubs.set(webdriver.http.JsonpClient, 'nextRequestId_', 0);
+
+      clock.tick(123);
+      assertEquals('wdJSONP_callback_0_123', fn());
+      assertEquals('wdJSONP_callback_1_123', fn());
+      assertEquals('wdJSONP_callback_2_123', fn());
+
+      clock.tick(4);
+      assertEquals('wdJSONP_callback_3_127', fn());
+      assertEquals('wdJSONP_callback_4_127', fn());
+      assertEquals('wdJSONP_callback_5_127', fn());
+    }
+
+    function testSend_requestFails() {
+      var fakeScript = expectCreateDom('wdJSONP_callback_0_0');
+      expectToSend(fakeScript).$does(function() {
+        fakeScript.onerror();
+      });
+      expectToClearRequest(fakeScript);
+      control.$replayAll();
+
+      webdriver.promise.when(client.send(REQUEST),
+          onCallback = callbackHelper(function(response) {
+            assertUndefined(goog.global['wdJSONP_callback_0_0']);
+            assertEquals(500, response.status);
+            _assertObjectEquals({}, response.headers);
+            assertEquals('Unable to send request: ' + REQUEST_URL_PREFIX +
+                '&callback=wdJSONP_callback_0_0&cacheBuster=0', response.body);
+          }),
+          onErrback = callbackHelper());
+      assertSuccess();
+    }
+
+    function testSend_requestSucceeds() {
+      var fakeScript = expectCreateDom('wdJSONP_callback_0_0');
+      expectToSend(fakeScript).$does(function() {
+        assertEquals('function', typeof goog.global['wdJSONP_callback_0_0']);
+        goog.global['wdJSONP_callback_0_0']('serverResponse');
+      });
+      expectToClearRequest(fakeScript);
+      control.$replayAll();
+
+      webdriver.promise.when(client.send(REQUEST),
+          onCallback = callbackHelper(function(response) {
+            assertUndefined(goog.global['wdJSONP_callback_0_0']);
+            assertEquals(200, response.status);
+            _assertObjectEquals({}, response.headers);
+            assertEquals('serverResponse', response.body);
+          }),
+          onErrback = callbackHelper());
+      assertSuccess();
+    }
+  </script>
+</head>
+</html>

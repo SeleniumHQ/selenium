@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
@@ -115,6 +117,7 @@ import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
+import org.openqa.selenium.remote.server.renderer.JsonpResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.Result;
@@ -122,17 +125,28 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
-import java.io.IOException;
-import java.util.logging.Logger;
+import com.google.common.base.Throwables;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.EnumSet;
+import java.util.logging.Logger;
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
 
+  private static final String JSONP_PATH = "/jsonp";
+
+  private static final String CALLBACK = ":callback";
   private static final String EXCEPTION = ":exception";
   private static final String RESPONSE = ":response";
 
@@ -156,11 +170,9 @@ public class DriverServlet extends HttpServlet {
 
     setupMappings(driverSessions, logger);
 
-    int sessionTimeOut =
-        Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
+    int sessionTimeOut = Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
     if (sessionTimeOut > 0) {
-      sessionCleaner =
-          new SessionCleaner((DefaultDriverSessions) attribute, logger, 1000 * sessionTimeOut);
+      sessionCleaner = new SessionCleaner(driverSessions, logger, 1000 * sessionTimeOut);
       sessionCleaner.start();
     }
   }
@@ -176,6 +188,12 @@ public class DriverServlet extends HttpServlet {
     return Logger.getLogger(getClass().getName());
   }
 
+  private void addGlobalHandler(ResultType type, Result result) {
+    getMapper.addGlobalHandler(type, result);
+    postMapper.addGlobalHandler(type, result);
+    deleteMapper.addGlobalHandler(type, result);
+  }
+
   private void setupMappings(DriverSessions driverSessions, Logger logger) {
     final EmptyResult emptyResponse = new EmptyResult();
     final JsonResult jsonResponse = new JsonResult(RESPONSE);
@@ -184,11 +202,16 @@ public class DriverServlet extends HttpServlet {
     postMapper = new UrlMapper(driverSessions, logger);
     deleteMapper = new UrlMapper(driverSessions, logger);
 
-    final Result jsonErrorResult = new Result("",
+    Result jsonErrorResult = new Result(MimeType.EMPTY,
         new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
-    getMapper.addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
-    postMapper.addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
-    deleteMapper.addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
+    addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
+    addGlobalHandler(ResultType.ERROR, jsonErrorResult);
+
+    Result jsonpResult = new Result(MimeType.JSONP,
+        new JsonpResult(RESPONSE, EXCEPTION, CALLBACK), true);
+    for (ResultType resultType : EnumSet.allOf(ResultType.class)) {
+      addGlobalHandler(resultType, jsonpResult);
+    }
 
     postMapper.bind("/config/drivers", AddConfig.class)
         .on(ResultType.SUCCESS, emptyResponse);
@@ -428,9 +451,39 @@ public class DriverServlet extends HttpServlet {
   }
 
   @Override
+  protected void service(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    if (request.getHeader("Origin") != null) {
+      setAccessControlHeaders(response);
+    }
+    super.service(request, response);
+  }
+
+  /**
+   * Sets access control headers to allow cross-origin resource sharing from
+   * any origin.
+   *
+   * @param response The response to modify.
+   * @see <a href="http://www.w3.org/TR/cors/">http://www.w3.org/TR/cors/</a>
+   */
+  private void setAccessControlHeaders(HttpServletResponse response) {
+    response.setHeader("Access-Control-Allow-Origin", "*");  // Real safe.
+    response.setHeader("Access-Control-Allow-Methods", "DELETE,GET,HEAD,POST");
+    response.setHeader("Access-Control-Allow-Headers", "Accept,Content-Type");
+  }
+
+  @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    handleRequest(getMapper, request, response);
+    // Make sure our browser-clients never cache GET responses.
+    response.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
+    response.setHeader("Cache-Control", "no-cache");
+
+    if (JSONP_PATH.equalsIgnoreCase(request.getPathInfo())) {
+      handleJsonpRequest(request, response);
+    } else {
+      handleRequest(getMapper, request, response);
+    }
   }
 
   @Override
@@ -439,11 +492,56 @@ public class DriverServlet extends HttpServlet {
     handleRequest(postMapper, request, response);
   }
 
-
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     handleRequest(deleteMapper, request, response);
+  }
+
+  private void handleJsonpRequest(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    UrlMapper urlMapper;
+    try {
+      String method = getRequiredJsonPParameter(request, "method")
+          .toUpperCase();
+      String path = getRequiredJsonPParameter(request, "path");
+      String callback = getRequiredJsonPParameter(request, "callback");
+
+      String body = request.getParameter("body");
+      if (body == null) {
+        body = "";
+      }
+
+      request = JsonpHttpServletRequestProxy.createProxy(request, method, path, body);
+      request.setAttribute(CALLBACK, callback);
+      urlMapper = getJsonPUrlMapper(method);
+    } catch (RuntimeException rte) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getOutputStream().println("Unknown method: " + rte.getMessage());
+      response.getOutputStream().flush();
+      return;
+    }
+
+    handleRequest(urlMapper, request, response);
+  }
+
+  private UrlMapper getJsonPUrlMapper(String method) {
+    if ("DELETE".equals(method)) {
+      return deleteMapper;
+    } else if ("GET".equals(method)) {
+      return getMapper;
+    } else if ("POST".equals(method)) {
+      return postMapper;
+    } else {
+      throw new IllegalArgumentException("Unknown method: " + method);
+    }
+  }
+
+  private String getRequiredJsonPParameter(HttpServletRequest request,
+      String parameterName) {
+    String parameter = request.getParameter(parameterName);
+    return checkNotNull(parameter,
+        "Request is missing required JSONP parameter '%s'", parameterName);
   }
 
   protected void handleRequest(UrlMapper mapper, HttpServletRequest request,
@@ -462,4 +560,75 @@ public class DriverServlet extends HttpServlet {
     }
   }
 
+  private static interface MimeType {
+    static final String EMPTY = "";
+    static final String JSONP = "application/jsonp";
+  }
+
+  private static class JsonpHttpServletRequestProxy implements InvocationHandler {
+
+    private final HttpServletRequest proxiedRequest;
+    private final String method;
+    private final String pathInfo;
+    private final String body;
+
+    private JsonpHttpServletRequestProxy(HttpServletRequest proxiedRequest,
+        String method, String pathInfo, String body) {
+      this.proxiedRequest = proxiedRequest;
+      this.method = method;
+      this.pathInfo = pathInfo;
+      this.body = body;
+    }
+
+    public static HttpServletRequest createProxy(HttpServletRequest request,
+        String method, String pathInfo, String body) {
+      checkNotNull(request);
+      return (HttpServletRequest) Proxy.newProxyInstance(
+          request.getClass().getClassLoader(),
+          request.getClass().getInterfaces(),
+          new JsonpHttpServletRequestProxy(request, method, pathInfo, body));
+    }
+
+    private String trimJsonpPath(String str) {
+      return str.substring(0, str.indexOf(JSONP_PATH));
+    }
+
+    public Object invoke(Object proxy, Method method, Object[] args)
+        throws Throwable {
+      if ("getMethod".equals(method.getName())) {
+        return this.method;
+      }
+
+      if ("getRequestURL".equals(method.getName())) {
+        return trimJsonpPath(proxiedRequest.getRequestURL().toString()) + pathInfo;
+      }
+
+      if ("getRequestURI".equals(method.getName())) {
+        return trimJsonpPath(proxiedRequest.getRequestURI()) + pathInfo;
+      }
+
+      if ("getPathInfo".equals(method.getName())) {
+        return pathInfo;
+      }
+
+      if ("getReader".equals(method.getName())) {
+        return new BufferedReader(new StringReader(body));
+      }
+
+      if ("getHeader".equals(method.getName())) {
+        String headerName = (String) args[0];
+        if ("accept".equalsIgnoreCase(headerName)) {
+          return MimeType.JSONP;
+        }
+      }
+
+      try {
+        return method.invoke(proxiedRequest, args);
+      } catch (InvocationTargetException e) {
+        throw e.getTargetException();
+      } catch (Exception e) {
+        throw Throwables.propagate(e);
+      }
+    }
+  }
 }

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>locators_test.html</title>
+  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../deps.js"></script>
+  <script src="testutil.js"></script>
+  <script>
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.Locator');
+    goog.require('webdriver.Locator.Strategy');
+  </script>
+  <script>
+
+    var TARGET = 'some-value';
+
+    function testCreatingLocatorsFromHashObjects() {
+      function doTest(expectedLocator, locator) {
+        locator = webdriver.Locator.createFromObj(locator);
+        assertEquals('Wrong type', expectedLocator.using, locator.using);
+        assertEquals('Wrong target', expectedLocator.value, locator.value);
+      }
+
+      for (var prop in webdriver.Locator.Strategy) {
+        var obj = {};
+        obj[prop] = TARGET;
+        doTest(webdriver.Locator.Strategy[prop](TARGET), obj);
+      }
+
+      try {
+        webdriver.Locator.createFromObj({unknownLocator: TARGET});
+        fail('Should reject unmappable locator object');
+      } catch (expected) {}
+
+      try {
+        webdriver.Locator.createFromObj({});
+        fail('Should reject unmappable locator object');
+      } catch (expected) {}
+    }
+
+
+    function testCheckLocator() {
+      function assertLocatorTypeAndTarget(expectedLocator, locator) {
+        assertEquals('Wrong type', expectedLocator.using, locator.using);
+        assertEquals('Wrong target', expectedLocator.value, locator.value);
+      }
+
+
+      for (var prop in webdriver.Locator.Strategy) {
+        var obj = {};
+        obj[prop] = TARGET;
+        assertLocatorTypeAndTarget(webdriver.Locator.Strategy[prop](TARGET),
+            webdriver.Locator.checkLocator(obj));
+        assertLocatorTypeAndTarget(webdriver.Locator.Strategy[prop](TARGET),
+            webdriver.Locator.checkLocator(By[prop](TARGET)));
+      }
+    }
+
+
+    function testCheckLocatorRejectsCompoundClassNames() {
+      function assertThrows(locator) {
+        try {
+          webdriver.Locator.checkLocator(locator);
+          fail('Should have thrown for locator: ' +
+               goog.json.serialize(locator));
+        } catch (expected) {
+          assertContains(
+              'Compound class names are not allowed for searches: ',
+              expected.message);
+        }
+      }
+
+      assertThrows({className: 'a b'});
+      assertThrows({className: '  a b'});
+      assertThrows({className: '  a b  '});
+      assertThrows({className: 'a b  '});
+      assertThrows({className: 'a  b'});
+      assertThrows({className: 'a   b'});
+      assertThrows({className: 'a b c'});
+      assertThrows({'class name': 'a b'});
+      assertThrows({'class name': '  a b'});
+      assertThrows({'class name': '  a b  '});
+      assertThrows({'class name': 'a b  '});
+      assertThrows({'class name': 'a  b'});
+      assertThrows({'class name': 'a   b'});
+      assertThrows({'class name': 'a b c'});
+      assertThrows(By.className('a b'));
+      assertThrows(By.className(' a b'));
+      assertThrows(By.className('a b '));
+      assertThrows(By.className(' a b '));
+      assertThrows(By.className('a   b'));
+      assertThrows(By.className('a b c'));
+
+      // These should not throw.
+      webdriver.Locator.checkLocator({className: '  a  '});
+      webdriver.Locator.checkLocator({className: '  a'});
+      webdriver.Locator.checkLocator({className: 'a  '});
+      webdriver.Locator.checkLocator(By.className('  a  '));
+      webdriver.Locator.checkLocator(By.className('  a'));
+      webdriver.Locator.checkLocator(By.className('a  '));
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>

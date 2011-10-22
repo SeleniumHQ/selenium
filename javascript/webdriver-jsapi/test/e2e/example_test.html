@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<title>example_test.html</title>
+<script src="../../../../third_party/closure/goog/base.js"></script>
+<script src="../../../deps.js"></script>
+<script src="testutil.js"></script>
+<script>
+  goog.require('goog.userAgent');
+  goog.require('goog.userAgent.product');
+  goog.require('webdriver.Builder');
+  goog.require('webdriver.jsunit');
+</script>
+<script>
+  var IOS = goog.userAgent.product.IPAD || goog.userAgent.product.IOS;
+
+  function setUpPage() {
+    if (!IOS)
+      TestUtil.openTestWindow();
+  }
+
+  function tearDownPage() {
+    if (!IOS)
+      TestUtil.closeTestWindow();
+  }
+
+  // If this doesn't pass, none of the WebDriverJS tests will!
+  function testCanAcquireDriverInstanceForCurrentBrowser() {
+    new webdriver.Builder().build();  // Yup, this is all we need to do.
+  }
+
+  function testCanType() {
+    var driver = new webdriver.Builder().build();
+
+    if (!IOS)
+      TestUtil.switchToMainWindow(driver);
+
+    var inputElement = driver.findElement(By.tagName('input'));
+    inputElement.sendKeys('foo');
+    assertThat(inputElement.getAttribute('value'), equals('foo'));
+  }
+
+  if (!IOS) {
+    var testShouldBeAbleToOpenAPage = function() {
+      var driver = new webdriver.Builder().build();
+
+      // Switch to our test window before navigating or we'll lose the page
+      // running this script.  Using an iframe won't work.  WebDriver's
+      // navigation commands always apply to window.top!
+      TestUtil.switchToTestWindow(driver);
+
+      driver.get(TestUtil.PAGES.formPage);
+      assertThat(driver.getTitle(), equals('We Leave From Here'));
+    };
+  }
+
+  function testShouldBeAbleToSwitchFrames() {
+    var driver = new webdriver.Builder().build();
+
+    // Make sure this window is selected.
+    if (!IOS)
+      TestUtil.switchToMainWindow(driver);
+
+    driver.switchTo().frame(0);
+    assertThat(driver.executeScript('return document.title'),
+               equals('We Leave From Here'));
+  }
+</script>
+<iframe id="testFrame"></iframe>
+<script>
+  document.getElementById("testFrame").src = TestUtil.PAGES.formPage;
+</script>
+<input type="text"/>
+</html>

@@ -58,7 +58,7 @@ public class ClosureTestSuite {
       String path = file.getAbsolutePath()
           .replace(testDir.getAbsolutePath() + File.separator, "")
           .replace(File.separator, "/");
-      TestCase test = new JsApiTestCase(urlPath + path);
+      TestCase test = new ClosureTestCase(urlPath + path);
       suite.addTest(new DriverTestDecorator(test, driverClazz,
           /* keepDriver= */true, /* freshDriver= */false, /* refreshDriver= */false));
     }

@@ -41,6 +41,18 @@ public class ResultConfigTest extends TestCase {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
 
+  private JUnit4Mockery context;
+
+  @Override
+  protected void setUp() {
+    context = new JUnit4Mockery();
+  }
+
+  @Override
+  protected void tearDown() {
+    context.assertIsSatisfied();
+  }
+
   public void testShouldMatchBasicUrls() throws Exception {
     ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);
 
@@ -116,7 +128,6 @@ public class ResultConfigTest extends TestCase {
 
   public void testFailsWhenUnableToDetermineResultTypeForRequest_noHandlersRegistered() {
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
-    JUnit4Mockery context = new JUnit4Mockery();
     final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
 
     context.checking(new Expectations());
@@ -129,7 +140,6 @@ public class ResultConfigTest extends TestCase {
   }
 
   public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypesSpecified() {
-    JUnit4Mockery context = new JUnit4Mockery();
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
     final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
@@ -147,7 +157,6 @@ public class ResultConfigTest extends TestCase {
   }
 
   public void testSelectsRenderWithMimeTypeMatch() {
-    JUnit4Mockery context = new JUnit4Mockery();
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
     final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
@@ -160,6 +169,40 @@ public class ResultConfigTest extends TestCase {
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
         .on(ResultType.SUCCESS, mockRenderer1)
         .on(ResultType.SUCCESS, mockRenderer2, "application/json");
+
+    assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
+  }
+
+  public void testUsesFirstRegisteredRendererWhenNoMimeTypeMatches() {
+    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
+    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    context.checking(new Expectations() {{
+      one(mockRequest).getHeader("Accept");
+      will(returnValue("application/json"));
+    }});
+
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
+        .on(ResultType.SUCCESS, mockRenderer1, "text/html")
+        .on(ResultType.SUCCESS, mockRenderer2);
+
+    assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
+  }
+
+  public void testSkipsRenderersThatRequrieASpecificTypeOfMimeType() {
+    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
+    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+
+    context.checking(new Expectations() {{
+      one(mockRequest).getHeader("Accept");
+      will(returnValue("application/json"));
+    }});
+
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
+        .on(ResultType.SUCCESS, new Result("text/html", mockRenderer1, true))
+        .on(ResultType.SUCCESS, mockRenderer2);
 
     assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }

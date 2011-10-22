@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>promise_test.html</title>
+  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../deps.js"></script>
+  <script src="testutil.js"></script>
+  <script>
+    goog.require('goog.json');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.promise');
+    goog.require('webdriver.promise.Deferred');
+  </script>
+</head>
+<body>
+<script>
+
+
+var uncaughtException;
+
+function setUp() {
+  clock = new goog.testing.MockClock(true);
+  uncaughtException = callbackHelper();
+  webdriver.promise.Application.
+      getInstance().
+      on(webdriver.promise.Application.UNCAUGHT_EXCEPTION,
+         uncaughtException);
+}
+
+
+function tearDown() {
+  consumeTimeouts();
+  clock.dispose();
+  webdriver.promise.Application.getInstance().reset();
+  uncaughtException.assertNotCalled();
+}
+
+
+function testCanDetectPromiseLikeObjects() {
+  assertIsPromise(new webdriver.promise.Promise());
+  assertIsPromise(new webdriver.promise.Deferred());
+  assertIsPromise(new webdriver.promise.Deferred().promise);
+  assertIsPromise({then:function() {}});
+
+  assertNotPromise(undefined);
+  assertNotPromise(null);
+  assertNotPromise('');
+  assertNotPromise(true);
+  assertNotPromise(false);
+  assertNotPromise(1);
+  assertNotPromise({});
+  assertNotPromise({then:1});
+  assertNotPromise({then:true});
+  assertNotPromise({then:''});
+
+}
+
+
+function testSimpleResolveScenario() {
+  var callback = callbackHelper(function(value) {
+    assertEquals(123, value);
+  });
+  
+  var deferred = new webdriver.promise.Deferred();
+  deferred.then(callback);
+  
+  callback.assertNotCalled();
+  deferred.resolve(123);
+  callback.assertCalled();
+}
+
+
+function testRegisteringACallbackPostResolution() {
+  var callback, deferred = new webdriver.promise.Deferred();
+
+  deferred.then((callback = callbackHelper(function(value) {
+    assertEquals(123, value);
+  })));
+  deferred.resolve(123);
+  callback.assertCalled();
+
+  deferred.then((callback = callbackHelper(function(value) {
+    assertEquals(123, value);
+  })));
+  callback.assertCalled();
+}
+
+
+function testRegisterACallbackViaDeferredPromise() {
+  var callback, deferred = new webdriver.promise.Deferred();
+
+  deferred.promise.then((callback = callbackHelper(function(value) {
+    assertEquals(123, value);
+  })));
+  deferred.resolve(123);
+  callback.assertCalled();
+
+  deferred.promise.then((callback = callbackHelper(function(value) {
+    assertEquals(123, value);
+  })));
+  callback.assertCalled();
+}
+
+
+function testTwoStepResolvedChain() {
+  var callback, start = new webdriver.promise.Deferred();
+
+  var next = start.then((callback = callbackHelper(function(value) {
+    assertEquals(123, value);
+    return value + 1;
+  })));
+
+  assertIsPromise(next);
+
+  callback.assertNotCalled();
+  start.resolve(123);
+  callback.assertCalled();
+
+  next.then((callback = callbackHelper(function(value) {
+    assertEquals(124, value);
+  })));
+  callback.assertCalled();
+}
+
+
+function testCanResolveOnlyOnce_resolved() {
+  var deferred = new webdriver.promise.Deferred();
+  deferred.resolve(1);
+  assertThrows(deferred.resolve);
+  assertThrows(deferred.reject);
+
+  var callback;
+  deferred.then(callback = callbackHelper(function(value) {
+    assertEquals(1, value);
+  }));
+  callback.assertCalled();
+}
+
+
+function testCanResolveOnlyOnce_rejected() {
+  var deferred = new webdriver.promise.Deferred();
+  deferred.reject(1);
+  assertThrows(deferred.resolve);
+  assertThrows(deferred.reject);
+
+  var callback;
+  deferred.then(null, callback = callbackHelper(function(value) {
+    assertEquals(1, value);
+  }));
+  callback.assertCalled();
+}
+
+
+function testOnlyGoesDownListenerPath_resolved() {
+  var callback = callbackHelper();
+  var errback = callbackHelper();
+
+  webdriver.promise.resolved().then(callback, errback);
+  callback.assertCalled();
+  errback.assertNotCalled();
+}
+
+
+function testOnlyGoesDownListenerPath_rejected() {
+  var callback = callbackHelper();
+  var errback = callbackHelper();
+
+  webdriver.promise.rejected().then(callback, errback);
+  callback.assertNotCalled();
+  errback.assertCalled();
+}
+
+
+function testCatchingAndSuppressingRejectionErrors() {
+  var errback = callbackHelper(function(error) {
+    assertEquals('foo', error);
+  });
+  var callback = callbackHelper(function() {
+    assertUndefined(arguments[0]);
+  });
+
+  webdriver.promise.rejected('foo').
+      addErrback(errback).
+      addCallback(callback);
+  errback.assertCalled();
+  callback.assertCalled();
+}
+
+
+function testThrowingNewRejectionErrors() {
+  var errback1 = callbackHelper(function(error) {
+    assertEquals('foo', error);
+    throw new Error('hi');
+  }, true);
+  var errback2 = callbackHelper(function(error) {
+    assertEquals('hi', error.message);
+  });
+
+  webdriver.promise.rejected('foo').
+      addErrback(errback1).
+      addErrback(errback2);
+  errback1.assertCalled();
+  errback2.assertCalled();
+}
+
+
+function testChainingThen_AllResolved() {
+  var callbacks = [
+    callbackHelper(function(value) {
+      assertEquals(128, value);
+      return value * 2;
+    }),
+    callbackHelper(function(value) {
+      assertEquals(256, value);
+      return value * 2;
+    }),
+    callbackHelper(function(value) {
+      assertEquals(512, value);
+    })
+  ];
+
+  var deferred = new webdriver.promise.Deferred();
+  deferred.
+      then(callbacks[0]).
+      then(callbacks[1]).
+      then(callbacks[2]);
+
+  callbacks[0].assertNotCalled();
+  callbacks[1].assertNotCalled();
+  callbacks[2].assertNotCalled();
+
+  deferred.resolve(128);
+
+  callbacks[0].assertCalled();
+  callbacks[1].assertCalled();
+  callbacks[2].assertCalled();
+}
+
+
+function testWhen_ReturnsAResolvedPromiseIfGivenANonPromiseValue() {
+  var ret = webdriver.promise.when('abc');
+  assertIsPromise(ret);
+
+  var callback;
+  ret.then(callback = callbackHelper(function (value) {
+    assertEquals('abc', value);
+  }));
+  callback.assertCalled();
+}
+
+
+function testWhen_PassesRawErrorsToCallbacks() {
+  var error = new Error('boo!'), callback;
+  webdriver.promise.when(error, callback = callbackHelper(function(value) {
+    assertEquals(error, value);
+  }));
+  callback.assertCalled();
+}
+
+
+function testWhen_WaitsForValueToBeResolvedBeforeInvokingCallback() {
+  var d = new webdriver.promise.Deferred(), callback;
+  webdriver.promise.when(d, callback = callbackHelper(function(value) {
+    assertEquals('hi', value);
+  }));
+  callback.assertNotCalled();
+  d.resolve('hi');
+  callback.assertCalled();
+}
+
+
+function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
+  var d = webdriver.promise.rejected('ouch');
+  var handler = callbackHelper(function(value) {
+    assertEquals('ouch', value);
+  });
+
+  // so tearDown() doesn't throw
+  var app = webdriver.promise.Application.getInstance();
+  app.reset();
+  app.on(webdriver.promise.Application.UNCAUGHT_EXCEPTION, handler);
+  clock.tick();
+  handler.assertCalled();
+}
+
+
+function testWaitsIfCallbackReturnsAPromiseObject() {
+  var callback1, callback2;
+  var callback1Return = new webdriver.promise.Deferred();
+
+  webdriver.promise.resolved('hi').
+      then(callback1 = callbackHelper(function(value) {
+        assertEquals('hi', value);
+        return callback1Return;
+      })).
+      then(callback2 = callbackHelper(function(value) {
+        assertEquals('bye', value);
+      }));
+
+  callback1.assertCalled();
+  callback2.assertNotCalled();
+  callback1Return.resolve('bye');
+  callback2.assertCalled();
+}
+
+
+function testWaitsIfCallbackReturnsAPromiseLikeObject() {
+  var callback1, callback2;
+  var callback1Return = {
+    then: function(callback) {
+      this.callback = callback;
+    },
+    resolve: function(value) {
+      this.callback(value);
+    }
+  };
+
+  webdriver.promise.resolved('hi').
+      then(callback1 = callbackHelper(function(value) {
+        assertEquals('hi', value);
+        return callback1Return;
+      })).
+      then(callback2 = callbackHelper(function(value) {
+        assertEquals('bye', value);
+      }));
+
+  callback1.assertCalled();
+  callback2.assertNotCalled();
+  callback1Return.resolve('bye');
+  callback2.assertCalled();
+}
+
+
+function testInvokesCallbacksInRegisteredScope() {
+  var callback1, callback2;
+  webdriver.promise.resolved('abc').
+      addCallback(callback1 = callbackHelper(function(value) {
+        return value + this.count;
+      }), {count:123}).
+      then(callback2 = callbackHelper(function(value) {
+        assertEquals('abc123', value);
+      }));
+  callback1.assertCalled();
+  callback2.assertCalled();
+}
+
+
+function testResolvingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
+  var d1 = new webdriver.promise.Deferred();
+  var d2 = new webdriver.promise.Deferred();
+  var callback1, callback2;
+
+  d1.then(callback1 = callbackHelper(function(value) {
+    assertEquals(4, value);
+  }));
+
+  var d2promise = d2.then(callback2 = callbackHelper(function(value) {
+    assertEquals(2, value);
+    return value * 2;
+  }));
+
+  callback1.assertNotCalled();
+  callback2.assertNotCalled();
+
+  d2.resolve(2);
+  callback1.assertNotCalled();
+  callback2.assertCalled();
+
+  d1.resolve(d2promise);
+  callback1.assertCalled();
+  callback2.assertCalled();
+}
+
+
+function testResolvingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
+  var d = new webdriver.promise.Deferred(), callback;
+  d.then(callback = callbackHelper(function(value) {
+    assertEquals(4, value);
+  }));
+
+  var otherPromise = {
+    then: function(callback) {
+      this.callback = callback;
+    },
+    resolve: function(value) {
+      this.callback(value);
+    }
+  };
+
+  callback.assertNotCalled();
+  d.resolve(otherPromise);
+  otherPromise.resolve(4);
+  callback.assertCalled();
+}
+
+
+function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
+  var d1 = new webdriver.promise.Deferred();
+  var d2 = new webdriver.promise.Deferred();
+  var callback1, errback1, callback2;
+
+  d1.then(callback1 = callbackHelper(),
+          errback1 = callbackHelper(function(value) {
+            assertEquals(4, value);
+          }));
+
+  var d2promise = d2.then(callback2 = callbackHelper(function(value) {
+    assertEquals(2, value);
+    return value * 2;
+  }));
+
+  callback1.assertNotCalled();
+  errback1.assertNotCalled();
+  callback2.assertNotCalled();
+
+  d2.resolve(2);
+  callback1.assertNotCalled();
+  errback1.assertNotCalled();
+  callback2.assertCalled();
+
+  d1.reject(d2promise);
+  callback1.assertNotCalled();
+  errback1.assertCalled();
+  callback2.assertCalled();
+}
+
+
+function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
+  var d = new webdriver.promise.Deferred(), callback, errback;
+  d.then(callback = callbackHelper(),
+         errback = callbackHelper(function(value) {
+           assertEquals(4, value);
+         }));
+
+  var otherPromise = {
+    then: function(callback) {
+      this.callback = callback;
+    },
+    resolve: function(value) {
+      this.callback(value);
+    }
+  };
+
+  d.reject(otherPromise);
+  callback.assertNotCalled();
+  errback.assertNotCalled();
+
+  otherPromise.resolve(4);
+  callback.assertNotCalled();
+  errback.assertCalled();
+}
+
+
+function testResolvingADeferredWithAnotherCopiesTheResolvedValue() {
+  var d1 = new webdriver.promise.Deferred();
+  var d2 = new webdriver.promise.Deferred();
+  var callback1, callback2;
+
+  d1.then(callback1 = callbackHelper(function(value) {
+    assertEquals(2, value);
+  }));
+
+  d2.then(callback2 = callbackHelper(function(value) {
+    assertEquals(2, value);
+    return 4;
+  }));
+
+  d1.resolve(d2);
+  callback1.assertNotCalled();
+  callback2.assertNotCalled();
+
+  d2.resolve(2);
+  callback1.assertCalled();
+  callback2.assertCalled();
+}
+
+
+function testCanResolveADeferredWithItself() {
+  var callback;
+  var deferred = new webdriver.promise.Deferred();
+  deferred.then(callback = callbackHelper(function(d) {
+    assertEquals(deferred, d);
+  }));
+
+  callback.assertNotCalled();
+  deferred.resolve(deferred);
+  callback.assertCalled();
+}
+
+
+function testResolvingADeferredWithAnotherThatResolvedUponItself() {
+  var d1 = new webdriver.promise.Deferred();
+  var d2 = new webdriver.promise.Deferred();
+  var callback1, callback2;
+
+  d1.then(callback1 = callbackHelper(function(value) {
+    assertEquals(d2, value);
+  }));
+
+  d2.then(callback2 = callbackHelper(function(value) {
+    assertEquals(d2, value);
+  }));
+
+  d1.resolve(d2);
+  callback1.assertNotCalled();
+  callback2.assertNotCalled();
+
+  d2.resolve(d2);
+  callback1.assertCalled();
+  callback2.assertCalled();
+}
+
+
+function testSkipsNullPointsInPromiseChain_callbacks() {
+  var errback1, errback2, callback;
+  webdriver.promise.resolved('hi').
+      addErrback(errback1 = callbackHelper()).
+      addErrback(errback2 = callbackHelper()).
+      addCallback(callback = callbackHelper(function(value) {
+        assertEquals('hi', value);
+      }));
+
+  errback1.assertNotCalled();
+  errback2.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testSkipsNullPointsInPromiseChain_errbacks() {
+  var errback1, errback2, callback;
+  webdriver.promise.resolved('hi').
+      addErrback(errback1 = callbackHelper()).
+      addErrback(errback2 = callbackHelper()).
+      addCallback(callback = callbackHelper(function(value) {
+        assertEquals('hi', value);
+      }));
+
+  errback1.assertNotCalled();
+  errback2.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_primitives() {
+  function runTest(value) {
+    var callback, errback;
+    webdriver.promise.fullyResolved(value).then(
+        callback = callbackHelper(function(resolved) {
+          assertEquals(value, resolved);
+        }),
+        errback = callbackHelper());
+
+    errback.assertNotCalled(
+        'Did not expect errback to be called for: ' + value);
+    callback.assertCalled('Expected callback to be called for: ' + value);
+  }
+
+  runTest(true);
+  runTest(goog.nullFunction);
+  runTest(null);
+  runTest(123);
+  runTest('foo bar');
+  runTest(undefined);
+}
+
+
+function testFullyResolved_arrayOfPrimitives() {
+  var array = [true, goog.nullFunction, null, 123, '', undefined, 1];
+  var callbacks = callbackPair(function(resolved) {
+    assertEquals(array, resolved);
+    assertArrayEquals([true, goog.nullFunction, null, 123, '', undefined, 1],
+        resolved);
+  });
+
+  webdriver.promise.fullyResolved(array).then(
+      callbacks.callback, callbacks.errback);
+
+  callbacks.assertCallback();
+}
+
+function testFullyResolved_nestedArrayOfPrimitives() {
+  var array = [true, [goog.nullFunction, null, 123], '', undefined];
+  var callback, errback;
+  webdriver.promise.fullyResolved(array).then(
+      callback = callbackHelper(function(resolved) {
+        assertEquals(array, resolved);
+        assertArrayEquals([true, [goog.nullFunction, null, 123], '', undefined],
+            resolved);
+        assertArrayEquals([goog.nullFunction, null, 123], resolved[1]);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_arrayWithPromisedPrimitive() {
+  var callback, errback;
+  webdriver.promise.fullyResolved([webdriver.promise.resolved(123)]).then(
+      callback = callbackHelper(function(resolved) {
+        assertArrayEquals([123], resolved);
+      }),
+      errback = callbackHelper());
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_promiseResolvesToPrimitive() {
+  var promise = webdriver.promise.resolved(123);
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(function(resolved) {
+        assertEquals(123, resolved);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_promiseResolvesToArray() {
+  var array = [true, [goog.nullFunction, null, 123], '', undefined];
+  var promise = webdriver.promise.resolved(array);
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(function(resolved) {
+        assertEquals(array, resolved);
+        assertArrayEquals([true, [goog.nullFunction, null, 123], '', undefined],
+            resolved);
+        assertArrayEquals([goog.nullFunction, null, 123], resolved[1]);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_promiseResolvesToArrayWithPromises() {
+  var nestedPromise = webdriver.promise.resolved(123);
+  var promise = webdriver.promise.resolved([true, nestedPromise]);
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(function(resolved) {
+        assertArrayEquals([true, 123], resolved);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_rejectsIfArrayPromiseRejects() {
+  var e = new Error('foo');
+  var nestedPromise = webdriver.promise.rejected(e);
+  var promise = webdriver.promise.resolved([true, nestedPromise]);
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(),
+      errback = callbackHelper(function(error) {
+        assertEquals(e, error);
+      }));
+
+  callback.assertNotCalled();
+  errback.assertCalled();
+}
+
+
+function testFullyResolved_rejectsOnFirstArrayRejection() {
+  var e1 = new Error('foo');
+  var e2 = new Error('bar');
+  var promise = webdriver.promise.resolved([
+    webdriver.promise.rejected(e1),
+    webdriver.promise.rejected(e2)
+  ]);
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(),
+      errback = callbackHelper(function(error) {
+        assertEquals(e1, error);
+      }));
+
+  callback.assertNotCalled();
+  errback.assertCalled();
+}
+
+
+function testFullyResolved_rejectsIfNestedArrayPromiseRejects() {
+  var e = new Error('foo');
+  var promise = webdriver.promise.resolved([
+    webdriver.promise.resolved([
+      webdriver.promise.rejected(e)
+    ])
+  ]);
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(),
+      errback = callbackHelper(function(error) {
+        assertEquals(e, error);
+      }));
+
+  callback.assertNotCalled();
+  errback.assertCalled();
+}
+
+
+function testFullyResolved_simpleHash() {
+  var hash = {'a': 123};
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(hash).then(
+      callback = callbackHelper(function(resolved) {
+        assertEquals(hash, resolved);
+        _assertObjectEquals({'a': 123}, resolved);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_nestedHash() {
+  var nestedHash = {'foo':'bar'};
+  var hash = {'a': 123, 'b': nestedHash};
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(hash).then(
+      callback = callbackHelper(function(resolved) {
+        assertEquals(hash, resolved);
+        _assertObjectEquals({'a': 123, 'b': {'foo': 'bar'}}, resolved);
+        _assertObjectEquals(nestedHash, resolved['b']);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_promiseResolvesToSimpleHash() {
+  var hash = {'a': 123};
+  var promise = webdriver.promise.resolved(hash);
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(function(resolved) {
+        _assertObjectEquals(hash, resolved);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_promiseResolvesToNestedHash() {
+  var nestedHash = {'foo':'bar'};
+  var hash = {'a': 123, 'b': nestedHash};
+  var promise = webdriver.promise.resolved(hash);
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(function(resolved) {
+        _assertObjectEquals(hash, resolved);
+        _assertObjectEquals(nestedHash, resolved['b']);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_promiseResolvesToHashWithPromises() {
+  var promise = webdriver.promise.resolved({
+      'a': webdriver.promise.resolved(123)
+  });
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(function(resolved) {
+        _assertObjectEquals({'a': 123}, resolved);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_rejectsIfHashPromiseRejects() {
+  var e = new Error('foo');
+  var promise = webdriver.promise.resolved({
+      'a': webdriver.promise.rejected(e)
+  });
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(),
+      errback = callbackHelper(function(error) {
+        assertEquals(e, error);
+      }));
+  
+  callback.assertNotCalled();
+  errback.assertCalled();
+}
+
+function testFullyResolved_rejectsIfNestedHashPromiseRejects() {
+  var e = new Error('foo');
+  var promise = webdriver.promise.resolved({
+      'a': {'b': webdriver.promise.rejected(e)}
+  });
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(promise).then(
+      callback = callbackHelper(),
+      errback = callbackHelper(function(error) {
+        assertEquals(e, error);
+      }));
+
+  callback.assertNotCalled();
+  errback.assertCalled();
+}
+
+
+function testFullyResolved_instantiatedObject() {
+  function Foo() {
+    this.bar = 'baz';
+  }
+  var foo = new Foo;
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(foo).then(
+    callback = callbackHelper(function(resolvedFoo) {
+      assertEquals(foo, resolvedFoo);
+      assertTrue(resolvedFoo instanceof Foo);
+      _assertObjectEquals(new Foo, resolvedFoo);
+    }),
+    errback = callbackHelper());
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_withEmptyArray() {
+  var callback, errback;
+  webdriver.promise.fullyResolved([]).then(
+    callback = callbackHelper(function(resolved) {
+      assertArrayEquals([], resolved);
+    }),
+    errback = callbackHelper());
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_withEmptyHash() {
+  var callback, errback;
+  webdriver.promise.fullyResolved({}).then(
+    callback = callbackHelper(function(resolved) {
+      _assertObjectEquals({}, resolved);
+    }),
+    errback = callbackHelper());
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_arrayWithPromisedHash() {
+  var obj = {'foo': 'bar'};
+  var promise = webdriver.promise.resolved(obj);
+  var array = [promise];
+
+  var callback, errback;
+  webdriver.promise.fullyResolved(array).then(
+      callback = callbackHelper(function(resolved) {
+        _assertObjectEquals(resolved, [obj]);
+      }),
+      errback = callbackHelper());
+
+  errback.assertNotCalled();
+  callback.assertCalled();
+}
+
+
+function testFullyResolved_deferredThatResolvesOnItself() {
+  var deferred = new webdriver.promise.Deferred();
+  deferred.resolve(deferred);
+
+  var callbacks = callbackPair(function(resolved) {
+    assertEquals(deferred, resolved);
+  });
+
+  webdriver.promise.fullyResolved(deferred).
+      then(callbacks.callback, callbacks.errback);
+  callbacks.assertCallback();
+}
+
+
+function testCallbackChain_nonSplit() {
+  var stage1 = callbackPair(),
+      stage2 = callbackPair(),
+      stage3 = callbackPair();
+
+  webdriver.promise.rejected('foo').
+      then(stage1.callback, stage1.errback).
+      then(stage2.callback, stage2.errback).
+      then(stage3.callback, stage3.errback);
+
+  stage1.assertErrback('Wrong function for stage 1');
+  stage2.assertCallback('Wrong function for stage 2');
+  stage3.assertCallback('Wrong function for final stage');
+}
+
+
+function testCallbackChain_split() {
+  var stage1 = callbackPair(),
+      stage2 = callbackPair(),
+      stage3 = callbackPair();
+
+  webdriver.promise.rejected('foo').
+      addCallback(stage1.callback).
+      addErrback(stage1.errback).
+      addCallback(stage2.callback).
+      addErrback(stage2.errback).
+      addCallbacks(stage3.callback, stage3.errback);
+
+  stage1.assertErrback('Wrong function for stage 1');
+  stage2.assertCallback('Wrong function for stage 2');
+  stage3.assertCallback('Wrong function for final stage');
+}
+</script>
+</body>
+</html>

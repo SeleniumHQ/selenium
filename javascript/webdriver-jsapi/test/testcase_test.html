@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>testcase_test.html</title>
+  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../deps.js"></script>
+  <script src="testutil.js"></script>
+  <script>
+    goog.require('goog.testing.MockControl');
+    goog.require('goog.testing.PropertyReplacer');
+    goog.require('goog.testing.mockmatchers');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.recordFunction');
+    goog.require('webdriver.TestCase');
+  </script>
+</head>
+<body>
+<script>
+
+  var IGNORE_ARGUMENT = goog.testing.mockmatchers.ignoreArgument;
+  var BOOM = new Error('boom');
+  function goBoom() { throw BOOM; }
+
+  var control = new goog.testing.MockControl();
+  var stubs = new goog.testing.PropertyReplacer();
+  var app, mockTestCase, testStub, mockOnComplete, mockOnError;
+
+  function setUp() {
+    clock = createMockClock();
+    app = new webdriver.promise.Application();
+    stubs.set(webdriver.promise.Application, 'getInstance', function() {
+      return app;
+    });
+
+    // Use one master mock so we can assert execution order.
+    mockTestCase = control.createStrictMock({
+      setUp: goog.nullFunction,
+      testFn: goog.nullFunction,
+      tearDown: goog.nullFunction,
+      onComplete: goog.nullFunction,
+      onError: goog.nullFunction
+    }, true);
+
+    mockOnComplete = goog.bind(mockTestCase.onComplete, mockTestCase);
+    mockOnError = goog.bind(mockTestCase.onError, mockTestCase);
+
+    testStub = {
+      scope: mockTestCase,
+      ref: mockTestCase.testFn
+    };
+
+    messages = [];
+  }
+
+  function tearDown() {
+    consumeTimeouts();
+    control.$tearDown();
+    app.reset();
+    clock.dispose();
+    stubs.reset();
+  }
+
+  /**
+   * @param {string} msg Task message.
+   * @param {string} value Value to push to the messages queue.
+   * @param {!webdriver.promise.Promise=} opt_taskPromise Promise to return
+   *     from the scheduled task.
+   */
+  function schedulePush(msg, value, opt_taskPromise) {
+    return app.schedule(msg, function() {
+      messages.push(value);
+      return opt_taskPromise;
+    });
+  }
+
+  function runTest() {
+    webdriver.TestCase.prototype.runSingleTest_.
+        call(mockTestCase, testStub, mockOnError).
+        then(mockOnComplete);
+    consumeTimeouts();
+    control.$verifyAll();
+  }
+
+  function testExecutesTheBasicTestFlow() {
+    mockTestCase.setUp();
+    mockTestCase.testFn();
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testExecutingAHappyTestWithScheduledActions() {
+    mockTestCase.setUp().$does(function() { schedulePush('a', 'a'); });
+    mockTestCase.testFn().$does(function() { schedulePush('b', 'b'); });
+    mockTestCase.tearDown().$does(function() { schedulePush('c', 'c'); });
+    mockOnComplete(IGNORE_ARGUMENT).$does(assertingMessages('a', 'b', 'c'));
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testShouldSkipTestFnIfSetupThrows() {
+    mockTestCase.setUp().$does(goBoom);
+    mockOnError(BOOM);
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testShouldSkipTestFnIfSetupActionFails_1() {
+    mockTestCase.setUp().$does(function() {
+      app.schedule('an explosion', goBoom);
+    });
+    mockOnError(BOOM);
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testShouldSkipTestFnIfSetupActionFails_2() {
+    mockTestCase.setUp().$does(function() {
+      app.schedule('an explosion', goBoom);
+    });
+    mockOnError(BOOM);
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testShouldSkipTestFnIfNestedSetupActionFails() {
+    mockTestCase.setUp().$does(function() {
+      app.schedule('a', goog.nullFunction).then(function() {
+        app.schedule('b', goBoom);
+      });
+    });
+    mockOnError(BOOM);
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testRunsAllTasksForEachPhaseBeforeTheNextPhase() {
+    messages = [];
+    mockTestCase.setUp().$does(function() {
+      schedulePush('a', 'a');
+    });
+    mockTestCase.testFn().$does(function() {
+      schedulePush('b', 'b');
+    });
+    mockTestCase.tearDown().$does(function() {
+      schedulePush('c', 'c');
+    });
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+    assertMessages('a', 'b', 'c');
+  }
+
+  function testRecordsErrorsFromTestFnBeforeTearDown() {
+    mockTestCase.setUp();
+    mockTestCase.testFn().$does(goBoom);
+    mockOnError(BOOM);
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testRecordsErrorsFromTearDown() {
+    mockTestCase.setUp();
+    mockTestCase.testFn();
+    mockTestCase.tearDown().$does(goBoom);
+    mockOnError(BOOM);
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testErrorFromSetUpAndTearDown() {
+    mockTestCase.setUp().$does(goBoom);
+    mockOnError(BOOM);
+    mockTestCase.tearDown().$does(goBoom);
+    mockOnError(BOOM);
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testErrorFromTestFnAndTearDown() {
+    mockTestCase.setUp();
+    mockTestCase.testFn().$does(goBoom);
+    mockOnError(BOOM);
+    mockTestCase.tearDown().$does(goBoom);
+    mockOnError(BOOM);
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+</script>
+</body>
+</html>

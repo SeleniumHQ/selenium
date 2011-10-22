@@ -1,9 +1,30 @@
 
 java_library(name = "javascript",
-  srcs = [ "*.java" ],
+  srcs = [
+    "ClosureTestCase.java",
+    "ClosureTestSuite.java",
+    "TestFilenameFilter.java"
+  ],
   deps = [
     "//java/client/test/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/environment",
     "//third_party/java/junit",
   ])
 
+java_library(name = "jsapi",
+  srcs = [
+    "ResultSet.java",
+    "ResultsServlet.java",
+    "WebDriverJsTestSuite.java",
+  ],
+  deps = [
+    ":javascript",
+    "//java/client/src/org/openqa/selenium/net",
+    "//java/client/src/org/openqa/selenium/remote",
+    "//java/client/test/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium/environment",
+    "//java/server/src/org/openqa/selenium/server",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/json",
+    "//third_party/java/junit",
+  ])

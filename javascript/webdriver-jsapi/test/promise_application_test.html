@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>promise_application_test.html</title>
+  <script src="../../../third_party/closure/goog/base.js"></script>
+  <script src="../../deps.js"></script>
+  <script src="testutil.js"></script>
+  <script>
+    goog.require('goog.array');
+    goog.require('goog.testing.PropertyReplacer');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.promise.Application');
+  </script>
+</head>
+<body>
+<script>
+  var stubs = new goog.testing.PropertyReplacer();
+
+  var app, callbacks;
+
+
+  function setUp() {
+    callbacks = null;
+    clock = createMockClock();
+    app = new webdriver.promise.Application();
+    stubs.set(webdriver.promise.Application, 'getInstance', function() {
+      return app;
+    });
+    messages = [];
+    setAppExpectations();
+  }
+
+
+  function tearDown() {
+    consumeTimeouts();
+    app.reset();
+    clock.dispose();
+    stubs.reset();
+  }
+
+  /**
+   * @param {string} msg Task message.
+   * @param {string} value Value to push to the messages queue.
+   * @param {!webdriver.promise.Promise=} opt_taskPromise Promise to return
+   *     from the scheduled task.
+   */
+  function schedulePush(msg, value, opt_taskPromise) {
+    return app.schedule(msg, function() {
+      messages.push(value);
+      return opt_taskPromise;
+    });
+  }
+
+  /**
+   * @param {Function=} opt_onSuccess The function to call when the app
+   *     finishes OK.
+   * @param {Function=} opt_onFailure The function to call when the app
+   *     aborts abnormally.
+   */
+  function setAppExpectations(opt_onSuccess, opt_onFailure) {
+    if (callbacks) {
+      app.removeListener('idle', callbacks.callback);
+      app.removeListener('uncaughtException', callbacks.errback);
+    }
+    callbacks = callbackPair(opt_onSuccess, opt_onFailure);
+    app.addListener('idle', callbacks.callback);
+    app.addListener('uncaughtException', callbacks.errback);
+  }
+
+
+  function assertAppFinishesOk() {
+    assertNotNull('Expectations not set', callbacks);
+    consumeTimeouts();
+    callbacks.assertCallback('Expected app to finish OK');
+  }
+
+
+  function assertAppAbortsWithFailure() {
+    assertNotNull('Expectations not set', callbacks);
+    consumeTimeouts();
+    callbacks.assertErrback('Expected app to abort with an error');
+  }
+
+
+  function testSchedulingAndExecutingASimpleFunction() {
+    setAppExpectations(assertingMessages('abcd'));
+    schedulePush('pushing abcd', 'abcd');
+    assertAppFinishesOk();
+  }
+
+
+  function testCanScheduleAndExecuteASequenceOfSimpleFunctions() {
+    setAppExpectations(assertingMessages('a', 'b', 'c'));
+    schedulePush('a', 'a');
+    schedulePush('b', 'b');
+    schedulePush('c', 'c');
+    assertAppFinishesOk();
+  }
+
+
+  function testCanScheduleCallbacksThatAreInvokedWhenTaskIsDone() {
+    setAppExpectations(assertingMessages('a'));
+
+    var callback;
+    var d = new webdriver.promise.Deferred();
+    schedulePush('a', 'a', d.promise).
+        then(callback = callbackHelper(function(value) {
+          assertEquals(123, value);
+        }));
+    callback.assertNotCalled('Callback should not have been called yet');
+
+    d.resolve(123);
+    assertAppFinishesOk();
+    callback.assertCalled('Callback should have been called!');
+  }
+
+
+  function testDoesNotExecuteTaskUntilOnePrecedingHasCompleted() {
+    setAppExpectations(assertingMessages('a', 'b'));
+
+    var d = new webdriver.promise.Deferred();
+    schedulePush('a', 'a', d.promise);
+    schedulePush('b', 'b');
+
+    assertMessages();
+    consumeTimeouts();
+    d.resolve(123);
+    assertMessages('a');
+    assertAppFinishesOk();
+  }
+
+
+  function testSchedulesCallbackTasksInNewFrame() {
+    setAppExpectations(assertingMessages('a', 'c', 'b'));
+
+    schedulePush('a', 'a').then(function() {
+      schedulePush('c', 'c');
+    });
+    schedulePush('b', 'b');
+
+    assertAppFinishesOk();
+  }
+
+
+  function testSchedulesCallbackTasksInNewFrame_moreNesting() {
+    setAppExpectations(assertingMessages('a', 'c', 'e', 'g', 'f', 'd', 'b'));
+
+    schedulePush('a', 'a').then(function() {
+      schedulePush('c', 'c').then(function() {
+        schedulePush('e', 'e').then(function() {
+          schedulePush('g', 'g');
+        });
+        schedulePush('f', 'f');
+      });
+      schedulePush('d', 'd');
+    });
+    schedulePush('b', 'b');
+
+    assertAppFinishesOk();
+  }
+
+  function testSchedulingTasksInCallbacks_nonBlockingCallbacks() {
+    setAppExpectations(assertingMessages('a', 'b', 'c', 'd', 'e'));
+
+    schedulePush('a', 'a').
+        then(function() {
+          schedulePush('b', 'b');
+          schedulePush('c', 'c');
+        }).
+        then(function() {
+          schedulePush('d', 'd');
+        });
+    schedulePush('e', 'e');
+
+    assertAppFinishesOk();
+  }
+
+
+  function testSchedulingTasksInCallbacks_blockingCallbacks() {
+    setAppExpectations(assertingMessages('a', 'b', 'c', 'd', 'e'));
+
+    schedulePush('a', 'a').
+        then(function() {
+          schedulePush('b', 'b');
+          return schedulePush('c', 'c');
+        }).
+        then(function() {
+          schedulePush('d', 'd');
+        });
+    schedulePush('e', 'e');
+
+    assertAppFinishesOk();
+  }
+
+
+  function testBlocksNextTaskOnTaskResultIfItIsAPromise() {
+    setAppExpectations(assertingMessages('a'));
+
+    var d1 = new webdriver.promise.Deferred();
+    var d2 = new webdriver.promise.Deferred();
+
+    var callback;
+    schedulePush('a', 'a', d1.promise).
+        then(callback = callbackHelper(function(value) {
+          assertEquals('fluffy bunny', value);
+        }));
+
+    callback.assertNotCalled();
+
+    d1.resolve(d2);
+    callback.assertNotCalled();
+
+    d2.resolve('fluffy bunny');
+
+    assertAppFinishesOk();
+    callback.assertCalled();
+  }
+
+
+  function testPropagatesCallbackErrorsAsExpected_firstOrderErrback() {
+    var error = new Error('ouch');
+    var callbacks = callbackPair(null, function(e) {
+      assertEquals(error, e);
+    });
+
+    app.schedule('function that throws', function() { throw error; }).
+        then(callbacks.callback, callbacks.errback);
+    consumeTimeouts(1);
+    callbacks.assertErrback();
+    assertAppFinishesOk();
+  }
+
+
+  function testPropagatesCallbackErrorsAsExpected_secondOrderErrback() {
+    var error = new Error('ouch');
+    var callbacks = callbackPair(null, function(e) {
+      assertEquals(error, e);
+    });
+
+    app.schedule('function that throws', function() { throw error; }).
+        then(callbacks.callback).
+        then(null, callbacks.errback);
+
+    consumeTimeouts(1);
+    callbacks.assertErrback();
+    assertAppFinishesOk();
+  }
+
+
+  function testPropagatesErrorsFromCallbackTasks() {
+    var error = new Error('ouch'), errback;
+
+    schedulePush('a', 'a').
+        then(function() {
+          schedulePush('b', 'b');
+          app.schedule('function that throws', function() { throw error; });
+        }).
+        then(null, errback = callbackHelper(function(e) {
+          assertEquals(error, e);
+        }));
+
+    assertAppFinishesOk();
+    errback.assertCalled();
+  }
+
+
+  function testAbortsAppIfFirstAndOnlyTaskFailsWithoutAnErrbackHandler() {
+    setAppExpectations(null, function(error) {
+      assertEquals('boom', error);
+    });
+    app.schedule('function that throws', function() { throw 'boom'; });
+    assertAppAbortsWithFailure();
+  }
+
+
+  function
+      testAbortsAppIfFirstAndOnlyTaskFailsWithoutAnErrbackHandler_viaPromise() {
+    setAppExpectations(null, function(error) {
+      assertEquals('rejection reason', error);
+    });
+
+    var rejected = webdriver.promise.rejected('rejection reason');
+    app.schedule('function that throws', function() { return rejected; });
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testAbortsAppIfFirstAndOnlyTaskFails_nestedPromise() {
+    setAppExpectations(null, function(error) {
+      assertEquals('rejected', error);
+    });
+
+    app.schedule('', function() {
+      return webdriver.promise.when(webdriver.promise.resolved('foo')).
+          then(function() {
+            return webdriver.promise.rejected('rejected');
+          });
+    });
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testAbortsCurrentFrameIfThereIsAnUnhandledError() {
+    var error = new Error('ouch');
+    setAppExpectations(null, function(e) {
+      assertEquals(error, e);
+      assertMessages('a', 'b');
+    });
+
+    schedulePush('a', 'a');
+    schedulePush('b', 'b');
+    app.schedule('c', function() { throw error; });
+    schedulePush('d', 'd');  // Should never execute.
+
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testUnhandledNestedTaskFailuresAreReportedToTheApplication_1() {
+    var error = new Error('ouch');
+    setAppExpectations(null, function(e) {
+      assertEquals(error, e);
+    });
+
+    app.schedule('outer task', goog.nullFunction).
+        then(function() {
+          app.schedule('inner task', function() {
+            throw error;
+          });
+        });
+
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testUnhandledNestedTaskFailuresAreReportedToTheApplication_2() {
+    var error = new Error('ouch');
+    setAppExpectations(null, function(e) {
+      assertMessages('a', 'b');
+      assertEquals(error, e);
+    });
+
+    schedulePush('a', 'a').then(function() {
+      schedulePush('b', 'b').then(function() {
+        app.schedule('c', function() { throw error; });
+        // This should not execute.
+        schedulePush('d', 'd');
+      });
+    });
+
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testAbortsWhenErrorBubblesUpFromFullyResolvingAnObject() {
+    setAppExpectations(null, function(error) {
+      assertEquals('rejected 1', error);
+    });
+
+    var obj = {'foo': webdriver.promise.rejected('rejected 1')};
+    app.schedule('', function() {
+      return webdriver.promise.fullyResolved(obj).
+          then(function() {
+            // Should never get here; rejected 1 should above the app.
+            return webdriver.promise.rejected('rejected 2');
+          });
+    });
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testAbortsWhenErrorBubblesUpFromFullyResolvingAnObject_withCallback() {
+    setAppExpectations(null, function(error) {
+      assertEquals('rejected 1', error);
+    });
+
+    var obj = {'foo': webdriver.promise.rejected('rejected 1')};
+    var callback;
+    app.schedule('', function() {
+      return webdriver.promise.fullyResolved(obj).
+          then(function() {
+            // Should never get here; rejected 1 should above the app.
+            return webdriver.promise.rejected('rejected 2');
+          });
+    }).then(callback = callbackHelper());
+
+    callback.assertNotCalled();
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testCanCatchErrorsFromResultsOfNestedTasks() {
+    var error = new Error('ouch'), errback;
+    app.schedule('a', goog.nullFunction).
+        then(function() {
+          return app.schedule('b', function() { throw error; });
+        }).
+        addErrback(errback = callbackHelper(function(e) {
+          assertEquals(error, e);
+        }));
+    assertAppFinishesOk();
+    errback.assertCalled();
+  }
+
+
+  function testCanCatchErrorsFromNestedTasks() {
+    var error = new Error('ouch'), errback;
+    app.schedule('a', goog.nullFunction).
+        then(function() {
+          return app.schedule('b', function() { throw error; });
+        }).
+        addErrback(errback = callbackHelper(function(e) {
+          assertEquals(error, e);
+        }));
+    assertAppFinishesOk();
+    errback.assertCalled();
+  }
+
+
+  function testNestedCommandFailuresCanBeCaughtAndSuppressed() {
+    setAppExpectations(assertingMessages('a', 'b', 'c'));
+    var error = Error('boom'), errback;
+    schedulePush('a', 'a').
+       addCallback(function() {
+         return schedulePush('b', 'b').
+             addCallback(function() {
+               return schedulePush('c', 'c').
+                   addCallback(function() {
+                     throw error;
+                   });
+             });
+       }).
+       addErrback(errback = callbackHelper(function(e) {
+         assertEquals(error, e);
+       }));
+    assertAppFinishesOk();
+    errback.assertCalled();
+  }
+
+
+  function testConsidersTaskFinishedIfTaskReturnsNonPromise() {
+    var callback;
+    app.schedule('return non-promise object', function() {
+      return 1;
+    }).then(callback = callbackHelper(function(value) {
+      assertEquals(1, value);
+    }));
+
+    assertAppFinishesOk();
+    callback.assertCalled();
+  }
+
+
+  function testTryFinally_happyPath() {
+    /* Model:
+       try {
+         doFoo();
+         doBar();
+       } finally {
+         doBaz();
+       }
+     */
+    setAppExpectations(assertingMessages('foo', 'bar', 'baz'));
+    schedulePush('doFoo', 'foo').
+        then(goog.partial(schedulePush, 'doBar', 'bar')).
+        addBoth(goog.partial(schedulePush, 'doBaz', 'baz'));
+    assertAppFinishesOk();
+  }
+
+
+  function testTryFinally_firstTryFails() {
+    /* Model:
+       try {
+         doFoo();
+         doBar();
+       } finally {
+         doBaz();
+       }
+     */
+
+    setAppExpectations(assertingMessages('foo', 'baz'));
+    app.schedule('doFoo and throw', function() {
+      messages.push('foo');
+      throw new Error('ouch');
+    }).then(goog.partial(schedulePush, 'doBar', 'bar')).
+       addBoth(goog.partial(schedulePush, 'doBaz', 'baz'));
+    assertAppFinishesOk();
+  }
+
+
+  function testTryFinally_secondTryFails() {
+    /* Model:
+       try {
+         doFoo();
+         doBar();
+       } finally {
+         doBaz();
+       }
+     */
+
+    var error = new Error('ouch');
+    setAppExpectations(assertingMessages('foo', 'bar', 'baz'));
+    schedulePush('doFoo', 'foo').
+        then(function() {
+          return app.schedule('doBar and throw', function() {
+            messages.push('bar');
+            throw error;
+          });
+        }).
+        addBoth(function(e) {
+          assertEquals(error, e);
+          return schedulePush('doBaz', 'baz');
+        });
+    assertAppFinishesOk();
+  }
+
+
+  function testDelayedNesting_1() {
+    setAppExpectations(assertingMessages('a', 'b', 'c', 'd', 'e'));
+
+    var a = schedulePush('a', 'a');
+    schedulePush('b', 'b').then(function() {
+      a.then(function() { schedulePush('c', 'c'); });
+      schedulePush('d', 'd');
+    });
+    schedulePush('e', 'e');
+    assertAppFinishesOk();
+  }
+
+
+  function testDelayedNesting_2() {
+    setAppExpectations(assertingMessages('a', 'b', 'c', 'd', 'e', 'f'));
+
+    var a = schedulePush('a', 'a');
+    schedulePush('b', 'b').then(function() {
+      a.then(function() { schedulePush('c', 'c'); });
+      schedulePush('d', 'd');
+      a.then(function() { schedulePush('e', 'e'); });
+    });
+    schedulePush('f', 'f');
+    assertAppFinishesOk();
+  }
+
+
+  function testCancelsTerminationEventIfNewCommandIsScheduled() {
+    setAppExpectations(assertingMessages('a', 'b'));
+
+    schedulePush('a', 'a');
+    clock.tick();
+    assertMessages('a');
+    callbacks.assertNeither('App should not be done yet');
+
+    schedulePush('b', 'b');
+    consumeTimeouts();
+  }
+
+  function testWaiting_onAConditionThatIsAlwaysTrue() {
+    setAppExpectations();
+    app.scheduleWait('waiting on true', function() { return true;}, 0);
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_onInverseOfConditionThatIsAlwaysFalse() {
+    var errorMessage = '', waitNot = true;
+
+    setAppExpectations();
+    app.scheduleWait('waiting on !false', function() { return false;}, 0,
+        errorMessage, waitNot);
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_aSimpleCountingCondition() {
+    setAppExpectations();
+
+    var count = 0;
+    app.scheduleWait('counting to 3', function() {
+      return ++count == 3;
+    }, 200);
+
+    clock.tick();     // Start the application; triggers first condition poll.
+    clock.tick(100);  // Poll 2 more times.
+    clock.tick(100);
+    assertEquals(3, count);
+
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_aConditionThatReturnsAPromise() {
+    var d = new webdriver.promise.Deferred();
+
+    setAppExpectations();
+    app.scheduleWait('waiting for promise', function() {
+      return d.promise;
+    }, 0);
+
+    consumeTimeouts();
+    callbacks.assertNeither();
+
+    d.resolve(123);
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_aConditionThatReturnsAPromise_2() {
+    var count = 0;
+
+    setAppExpectations();
+    app.scheduleWait('waiting for promise', function() {
+      return webdriver.promise.resolved(++count == 3);
+    }, 200);
+
+    clock.tick();     // Start the application; triggers first condition poll.
+    clock.tick(100);  // Poll 2 more times.
+    clock.tick(100);
+    assertEquals(3, count);
+
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_timesOut_zeroTimeout() {
+    setAppExpectations();
+
+    app.scheduleWait('always false', function() { return false; }, 0);
+    assertAppAbortsWithFailure();
+  }
+
+  function testWaiting_timesOut_nonZeroTimeout() {
+    setAppExpectations();
+
+    var count = 0;
+    app.scheduleWait('counting to 3', function() {
+      return ++count == 3;
+    }, 100);
+
+    clock.tick();     // Start the application; triggers first condition poll.
+    clock.tick(100);  // Poll 2 more times.
+    assertEquals(2, count);
+
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testWaiting_shouldFailIfConditionReturnsARejectedPromise() {
+    setAppExpectations();
+
+    var count = 0;
+    app.scheduleWait('counting to 3', function() {
+      return webdriver.promise.rejected();
+    }, 100);
+
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testWaiting_callbacks() {
+    var pair = callbackPair();
+
+    setAppExpectations();
+    app.scheduleWait('waiting on true', function() { return true;}, 0).
+        then(pair.callback, pair.errback);
+    pair.assertNeither('Wait not expected to be done yet');
+    consumeTimeouts();
+    pair.assertCallback('Wait callback not called!');
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_errbacks() {
+    var callbacks = callbackPair();
+
+    setAppExpectations();
+    app.scheduleWait('always false', function() { return false; }, 0).
+        then(callbacks.callback, callbacks.errback);
+    consumeTimeouts();
+    callbacks.assertErrback('Wait should have timed out');
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_scheduleWithIntermittentWaits() {
+    setAppExpectations(assertingMessages('a', 'b', 'c'));
+
+    schedulePush('a', 'a');
+    app.schedule('wait 1', function() { return true; }, 0);
+    schedulePush('b', 'b');
+    app.schedule('wait 1', function() { return true; }, 0);
+    schedulePush('c', 'c');
+    app.schedule('wait 1', function() { return true; }, 0);
+    assertAppFinishesOk();
+  }
+
+
+  function testWaiting_scheduleWithIntermittentAndNestedWaits() {
+    setAppExpectations(assertingMessages('a', 'd', 'e', 'b', 'c'));
+
+    schedulePush('a', 'a');
+    app.schedule('wait 1', function() { return true; }, 0).
+        then(function() {
+          schedulePush('d', 'd');
+          app.schedule('wait 1', function() { return true; }, 0);
+          schedulePush('e', 'e');
+        });
+    schedulePush('b', 'b');
+    app.schedule('wait 1', function() { return true; }, 0);
+    schedulePush('c', 'c');
+    app.schedule('wait 1', function() { return true; }, 0);
+    assertAppFinishesOk();
+  }
+
+
+  function testATaskWithSubtasks() {
+    setAppExpectations(assertingMessages('a', 'c', 'd', 'b'));
+
+    schedulePush('a', 'a');
+    app.schedule('sub-tasks', function() {
+      schedulePush('c', 'c');
+      schedulePush('d', 'd');
+    });
+    schedulePush('b', 'b');
+
+    assertAppFinishesOk();
+  }
+
+
+  function testATaskWithSubtasks_nesting() {
+    setAppExpectations(assertingMessages('a', 'b', 'c', 'd', 'e', 'f'));
+
+    schedulePush('a', 'a');
+    app.schedule('sub-tasks', function() {
+      schedulePush('b', 'b');
+      app.schedule('sub-tasks', function() {
+        schedulePush('c', 'c');
+        schedulePush('d', 'd');
+      });
+      schedulePush('e', 'e');
+    });
+    schedulePush('f', 'f');
+
+    assertAppFinishesOk();
+  }
+
+
+  function testATaskWithSubtasks_taskReturnsSubTaskResult_1() {
+    setAppExpectations(assertingMessages('a', 'c', 'b'));
+
+    schedulePush('a', 'a');
+    app.schedule('sub-tasks', function() {
+      return schedulePush('c', 'c');
+    });
+    schedulePush('b', 'b');
+
+    assertAppFinishesOk();
+  }
+
+
+  function testATaskWithSubtasks_taskReturnsSubTaskResult_2() {
+    var callback;
+
+    setAppExpectations(assertingMessages('a', 'b'));
+
+    schedulePush('a', 'a');
+    app.schedule('sub-tasks', function() {
+      return webdriver.promise.resolved(123);
+    }).then(callback = callbackHelper(function(value) {
+      assertEquals(123, value);
+    }));
+    schedulePush('b', 'b');
+
+    assertAppFinishesOk();
+    callback.assertCalled();
+  }
+
+
+  function testATaskWithSubtasks_subTaskFails_1() {
+    setAppExpectations(assertingMessages('a'));
+
+    schedulePush('a', 'a');
+    app.schedule('sub-tasks', function() {
+      webdriver.promise.rejected('fails!');
+    });
+    schedulePush('b', 'b');  // Should never execute
+
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testATaskWithSubtasks_subTaskFails_2() {
+    setAppExpectations(assertingMessages('a'));
+
+    schedulePush('a', 'a');
+    app.schedule('sub-tasks', function() {
+      return webdriver.promise.rejected('fails!');
+    });
+    schedulePush('b', 'b');  // Should never execute
+
+    assertAppAbortsWithFailure();
+  }
+
+
+  function testATaskWithSubtasks_subTaskFails_3() {
+    var callbacks = callbackPair();
+
+    setAppExpectations(assertingMessages('a', 'b'));
+    schedulePush('a', 'a');
+    app.schedule('sub-tasks', function() {
+      return webdriver.promise.rejected('fails!');
+    }).then(callbacks.callback, callbacks.errback);
+    schedulePush('b', 'b');
+
+    assertAppFinishesOk();
+    callbacks.assertErrback();
+  }
+
+
+  function testScheduleAndwaitForIdle_appGoesIdleImmediately() {
+    var callbacks = callbackPair();
+
+    setAppExpectations();
+    app.scheduleAndWaitForIdle('', goog.nullFunction).
+        then(callbacks.callback, callbacks.errback);
+    assertAppFinishesOk();
+    callbacks.assertCallback();
+  }
+
+
+  function testScheduleAndWaitForIdle_appAborts() {
+    var error = new Error('boom');
+    var callbacks = callbackPair(null, function(e) {
+      assertEquals('Should have been rejected with abortion error', error, e);
+    });
+
+    setAppExpectations(null, function(e) {
+      assertEquals('Expected app to abort with error', error, e);
+    });
+    app.scheduleAndWaitForIdle('', function() { throw error; }).
+        then(callbacks.callback, callbacks.errback);
+    assertAppAbortsWithFailure();
+    callbacks.assertErrback();
+  }
+
+
+  function testScheduleAndWaitForIdle_newTaskScheduledAfterIdleButBeforeResolution() {
+    var fn1 = callbackHelper(), fn2 = callbackHelper();
+    var wait = callbackPair();
+    setAppExpectations();
+    app.scheduleAndWaitForIdle('fn1', fn1).
+        then(wait.callback, wait.errback);
+
+    // Tick 3 times:
+    // - first tick starts the app and executes fn.
+    // - second tick checks for another task and starts shutdown sequence.
+    // - third finishes the shutdown sequence and fires the idle event.
+    // * wait promise should require one more tick to resolve, but we're going
+    //   to schedule another command.
+    consumeTimeouts(3);
+    fn1.assertCalled('Should have called our function');
+    callbacks.assertCallback('App should have gone idle');
+    wait.assertNeither('Wait should not have resolved yet');
+
+    callbacks.reset();  // We're going to expect another idle event.
+
+    // Tick 3 more times for the same sequence above.
+    app.schedule('fn2', fn2);
+    consumeTimeouts(3);
+    fn2.assertCalled('Should have called our function');
+    callbacks.assertCallback('App should have gone idle again');
+    wait.assertNeither('Wait should still not have resolved');
+
+    // Tick one last time, this should resolve our wait.
+    consumeTimeouts(1);
+    wait.assertCallback('Wait should have resolved');
+  }
+
+
+  function testScheduleAndWaitForIdle_appAbortsAfterIdleButBeforeResolution() {
+    var error = new Error('boom');
+    var fn1 = callbackHelper(), fn2 = callbackHelper(function(e) {
+      throw error;
+    }, /*expectError=*/true);
+    var wait = callbackPair();
+    setAppExpectations();
+    app.scheduleAndWaitForIdle('fn1', fn1).
+        then(wait.callback, wait.errback);
+
+    // Tick 3 times:
+    // - first tick starts the app and executes fn.
+    // - second tick checks for another task and starts shutdown sequence.
+    // - third finishes the shutdown sequence and fires the idle event.
+    // * wait promise should require one more tick to resolve, but we're going
+    //   to schedule another command.
+    consumeTimeouts(3);
+    fn1.assertCalled('Should have called our function');
+    callbacks.assertCallback('App should have gone idle');
+    wait.assertNeither('Wait should not have resolved yet');
+
+    // Reset our app expectations because now we expect it to abort.
+    setAppExpectations(null, function(e) {
+      assertEquals('Expected to abort from error', error, e);
+    });
+
+    // Tick 3 more times for the same sequence above.
+    app.schedule('fn2', fn2);
+    consumeTimeouts(2);
+    fn2.assertCalled('Should have called our function');
+    callbacks.assertErrback('App should have aborted');
+    wait.assertNeither('Wait should not be rejected yet');
+
+    consumeTimeouts(1);
+    wait.assertErrback('Wait should have been rejected');
+
+    // Consume timeouts just to make sure everything is exhausted.
+    callbacks.reset();
+    wait.reset();
+    consumeTimeouts();
+    callbacks.assertNeither();
+    wait.assertNeither();
+  }
+
+
+  function testScheduleAndWaitForIdle_abortionsDoNotEffectSubsequentTasks_1() {
+    var error = new Error('boom');
+    var wait1 = callbackPair();
+    setAppExpectations();
+    app.scheduleAndWaitForIdle('a', function() { throw error; }).
+        then(wait1.callback, wait1.errback);
+    consumeTimeouts();
+    callbacks.assertErrback(
+        'App should have shut down with error after wait 1');
+    wait1.assertErrback('Wait1 should have been rejected');
+
+    callbacks.reset();
+
+    var wait2 = callbackPair();
+    app.scheduleAndWaitForIdle('b', goog.nullFunction).
+        then(wait2.callback, wait2.errback);
+    consumeTimeouts();
+    callbacks.assertCallback('App should have shut down with OK after wait 2');
+    wait2.assertCallback('Wait2 should have been resolved');
+  }
+
+
+  function testScheduleAndWaitForIdle_abortionsDoNotEffectSubsequentTasks_2() {
+    var error = new Error('boom');
+    var wait1 = callbackPair(), wait2 = callbackPair();
+    var schedule2 = callbackHelper(function() {
+      return app.scheduleAndWaitForIdle('wait2', goog.nullFunction);
+    });
+
+    setAppExpectations();
+    app.scheduleAndWaitForIdle('wait1', function() { throw error; }).
+        then(wait1.callback, wait1.errback).
+        then(schedule2).
+        then(wait2.callback, wait2.errback);
+    consumeTimeouts();
+
+    wait1.assertErrback('wait 1 should have been rejected');
+    schedule2.assertCalled('never scheduled wait 2');
+    wait2.assertCallback('wait 2 should have been resolved');
+  }
+</script>
+</body>
+</html>

@@ -239,7 +239,8 @@ public class ResultConfig {
     Collection<Result> results = checkNotNull(resultToRender.get(resultType));
     Result tempToUse = null;
     for (Result res : results) {
-      if (tempToUse == null || res.isExactMimeTypeMatch(request.getHeader("Accept"))) {
+      if (tempToUse == null && !res.isOnlyForExactMatch()
+          || res.isExactMimeTypeMatch(request.getHeader("Accept"))) {
         tempToUse = res;
       }
     }

@@ -26,10 +26,16 @@ public class Result {
 
   private final String mimeType;
   private final Renderer renderer;
+  private final boolean onlyForExactMatch;
 
   public Result(String mimeType, Renderer renderer) {
+    this(mimeType, renderer, false);
+  }
+
+  public Result(String mimeType, Renderer renderer, boolean onlyForExactMatch) {
     this.mimeType = mimeType;
     this.renderer = renderer;
+    this.onlyForExactMatch = onlyForExactMatch;
   }
 
   public boolean isExactMimeTypeMatch(String contentType) {
@@ -45,6 +51,10 @@ public class Result {
       }
     }
     return false;
+  }
+
+  public boolean isOnlyForExactMatch() {
+    return onlyForExactMatch;
   }
 
   public Renderer getRenderer() {

@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.rest.Handler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,15 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
   @Override
   public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
       throws Exception {
+    Response res = prepareResponseObject(request);
+
+    request.setAttribute(propertyName, res);
+
+    super.render(request, response, handler);
+  }
+
+  public Response prepareResponseObject(HttpServletRequest request)
+      throws JSONException {
     Throwable thrown = (Throwable) request.getAttribute(exceptionName);
 
     Response res = new Response();
@@ -55,8 +65,6 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
       res.setValue(error);
     }
 
-    request.setAttribute(propertyName, res);
-
-    super.render(request, response, handler);
+    return res;
   }
 }

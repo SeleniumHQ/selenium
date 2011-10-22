@@ -588,6 +588,71 @@ end
 desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "javascript/deps.js"
 
+task :test_webdriverjs => [
+  "//javascript/webdriver-jsapi:test_firefox:run",
+  "//javascript/webdriver-jsapi:test_chrome:run",
+  "//javascript/webdriver-jsapi:test_firefox_e2e:run",
+  "//javascript/webdriver-jsapi:test_chrome_e2e:run"
+]
+
+# TODO(jleyba): Integrate cleanly with build.desc files.
+desc "Generate a single file with WebDriverJS' public API"
+task :webdriverjs do
+  files = FileList[
+    "javascript/webdriver-jsapi/*.js",
+    "javascript/webdriver-jsapi/http/*.js",
+    "javascript/webdriver-jsapi/node/node.js" ]
+  files = files.exclude("asserts.js")
+  files = files.exclude("jsunit.js")
+  files = files.exclude("testcase.js")
+
+  files = files.to_a.collect do |f|
+    "-i #{f}"
+  end
+
+  py = "java -jar third_party/py/jython.jar"
+  if (python?)
+    py = "python"
+  end
+
+  # Wrap the compiled output in a function to prevent polluting the global
+  # scope. Call the function with the correct context based on a quick check for
+  # whether the file has been loaded as a Node module or in a browser.
+  #
+  # Also: we use --generate_exports to export the public API based on @export
+  # jsdoc annotations. The Closure compiler exports such functions using their
+  # fully-qualified path, where we need to drop the root "webdriver" object
+  # since that is controlled by the function's context (e.g. export
+  # "webdriver.WebDriver" as "WebDriver").
+  wrapper = "(function(){%output%" +
+            ";for (var key in this.webdriver)" +
+            " this[key] = this.webdriver[key];" +
+            " delete this.webdriver;}).call(" +
+            "typeof exports !== 'undefined' && exports == this ? " +
+            "exports : this.webdriver = this.webdriver || {})"
+
+  # TODO(jleyba): Write a Java app that compiles webdriver.js with custom
+  # settings for us. We want SIMPLE_OPTIMIZATIONS (what's used here), but we
+  # also want all dead code removed. There's a lot of Closure pulled in that
+  # we don't use.  We could get rid of this with ADVANCED_OPTIMIZATIONS, but
+  # then everything would be obfuscated and users wouldn't be able to step
+  # through the code.
+  cmd = [
+    "#{py} third_party/closure/bin/calcdeps.py",
+    "-c third_party/closure/bin/compiler-20110502.jar",
+    "-o compiled",
+    '-f "--js_output_file=build/javascript/webdriver-jsapi/webdriver.js"',
+    '-f "--generate_exports"',
+    '-f "--formatting=PRETTY_PRINT"',
+    "-f \"--output_wrapper='#{wrapper}'\"",
+    '-p javascript/atoms',
+    '-p third_party/closure/goog'
+  ]
+  cmd = cmd.concat(files)
+
+  sh "#{cmd.join(' ')}"
+end
+
 task :release => [
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',

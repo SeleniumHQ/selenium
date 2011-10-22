@@ -17,13 +17,13 @@ import org.openqa.selenium.JavascriptExecutor;
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 @Ignore(value = {HTMLUNIT, IE, IPHONE, REMOTE, OPERA})
-public class JsApiTestCase extends AbstractDriverTestCase {
+public class ClosureTestCase extends AbstractDriverTestCase {
 
   private static final long TWO_MINUTES = 2 * 60 * 1000;
 
   private final String relativeUrl;
 
-  public JsApiTestCase(String relativeUrl) {
+  public ClosureTestCase(String relativeUrl) {
     this.relativeUrl = relativeUrl;
     this.setName(relativeUrl);
   }

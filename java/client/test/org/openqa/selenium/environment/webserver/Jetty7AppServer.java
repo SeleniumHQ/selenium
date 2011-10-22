@@ -214,6 +214,10 @@ public class Jetty7AppServer implements AppServer {
     }
   }
 
+  public void addServlet(String url, Servlet servlet) {
+    defaultContext.addServlet(new ServletHolder(servlet), url);
+  }
+
   public void addFilter(Class<? extends Filter> filter, String path,
       int dispatches) {
     defaultContext.addFilter(filter, path, dispatches);

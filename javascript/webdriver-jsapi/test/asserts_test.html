@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>asserts_test.html</title>
+  <script src="../../../third_party/closure/goog/base.js"></script>
+  <script src="../../deps.js"></script>
+  <script src="testutil.js"></script>
+  <script>
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.asserts');
+  </script>
+  <script>
+    var result, expectationFailure;
+
+    function setUp() {
+      result = callbackPair();
+      expectationFailure = callbackHelper();
+      webdriver.asserts.on('expectationFailure', expectationFailure);
+    }
+
+
+    function tearDown() {
+      webdriver.asserts.removeAllListeners('expectationFailure');
+    }
+
+
+    function testAssertThat_nonPromiseValue_valueMatches() {
+      assertThat('foo', equals('foo')).then(result.callback, result.errback);
+      result.assertCallback();
+      expectationFailure.assertNotCalled();
+    }
+
+
+    function testAssertThat_nonPromiseValue_notValueMatches() {
+      assertThat('foo', equals('bar')).then(result.callback, result.errback);
+      result.assertErrback();
+      expectationFailure.assertNotCalled();
+    }
+
+
+    function testAssertThat_promiseValue_valueMatches() {
+      var d = new webdriver.promise.Deferred();
+      assertThat(d, equals('foo')).then(result.callback, result.errback);
+      result.assertNeither();
+      expectationFailure.assertNotCalled();
+      d.resolve('foo');
+      result.assertCallback();
+      expectationFailure.assertNotCalled();
+    }
+
+
+    function testAssertThat_promiseValue_notValueMatches() {
+      var d = new webdriver.promise.Deferred();
+      assertThat(d, equals('foo')).then(result.callback, result.errback);
+      result.assertNeither();
+      expectationFailure.assertNotCalled();
+      d.resolve('bar');
+      result.assertErrback();
+      expectationFailure.assertNotCalled();
+    }
+
+
+    function testAssertThat_promiseValue_promiseRejected() {
+      var d = new webdriver.promise.Deferred();
+      assertThat(d, equals('foo')).then(result.callback, result.errback);
+      result.assertNeither();
+      expectationFailure.assertNotCalled();
+      d.reject();
+      result.assertErrback();
+      expectationFailure.assertNotCalled();
+    }
+
+
+    function testExpectThat_nonPromiseValue_valueMatches() {
+      expectThat('foo', equals('foo')).then(result.callback, result.errback);
+      result.assertCallback();
+      expectationFailure.assertNotCalled();
+    }
+
+
+    function testExpectThat_nonPromiseValue_notValueMatches() {
+      expectThat('foo', equals('bar')).then(result.callback, result.errback);
+      result.assertCallback();
+      expectationFailure.assertCalled();
+    }
+
+
+    function testExpectThat_promiseValue_valueMatches() {
+      var d = new webdriver.promise.Deferred();
+      expectThat(d, equals('foo')).then(result.callback, result.errback);
+      result.assertNeither();
+      expectationFailure.assertNotCalled();
+      d.resolve('foo');
+      result.assertCallback();
+      expectationFailure.assertNotCalled();
+    }
+
+
+    function testExpectThat_promiseValue_notValueMatches() {
+      var d = new webdriver.promise.Deferred();
+      expectThat(d, equals('foo')).then(result.callback, result.errback);
+      result.assertNeither();
+      expectationFailure.assertNotCalled();
+      d.resolve('bar');
+      result.assertCallback();
+      expectationFailure.assertCalled();
+    }
+
+
+    function testExpectThat_promiseValue_promiseRejected() {
+      var d = new webdriver.promise.Deferred();
+      expectThat(d, equals('foo')).then(result.callback, result.errback);
+      result.assertNeither();
+      expectationFailure.assertNotCalled();
+      d.reject();
+      result.assertCallback();
+      expectationFailure.assertCalled();
+    }
+  </script>
+</head>
+</html>
