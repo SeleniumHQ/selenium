@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import mx4j.tools.config.DefaultConfigurationBuilder.Unregister;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -19,6 +21,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
+import org.openqa.grid.common.exception.RemoteUnregisterException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
@@ -47,15 +50,24 @@ public class DefaultRemoteProxy extends RemoteProxy
   private static final Logger log = Logger.getLogger(DefaultRemoteProxy.class.getName());
 
 
-  private long pollingInterval = 10000;
+  private volatile long pollingInterval = 10000;
+  private volatile long unregisterDelay = 60000;
 
   public DefaultRemoteProxy(RegistrationRequest request, Registry registry) {
     super(request, registry);
 
     try {
       Integer p = (Integer) request.getConfiguration().get(RegistrationRequest.NODE_POLLING);
+
       if (p != null) {
         pollingInterval = p.intValue();
+      }
+
+      Integer unregister =
+          (Integer) request.getConfiguration().get(
+              RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER);
+      if (unregister != null) {
+        unregisterDelay = unregister.intValue();
       }
     } catch (NumberFormatException e) {
       // TODO freynaud log config error.
@@ -75,14 +87,14 @@ public class DefaultRemoteProxy extends RemoteProxy
     }
   }
 
-  
+
   public void afterCommand(TestSession session, HttpServletRequest request,
       HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo()
         + " executing ...");
   }
 
- 
+
   public void beforeCommand(TestSession session, HttpServletRequest request,
       HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
@@ -126,6 +138,7 @@ public class DefaultRemoteProxy extends RemoteProxy
   public void startPolling() {
     pollingThread = new Thread(new Runnable() { // Thread safety reviewed
           int nbFailedPoll = 0;
+          long downSince = 0;
 
           public void run() {
             while (poll) {
@@ -135,12 +148,20 @@ public class DefaultRemoteProxy extends RemoteProxy
                   if (!down) {
                     nbFailedPoll++;
                     if (nbFailedPoll >= 2) {
+                      downSince = System.currentTimeMillis();
                       addNewEvent(new RemoteNotReachableException("Cannot reach the remote."));
+                    }
+                  } else {
+                    long downFor = System.currentTimeMillis() - downSince;
+                    if (downFor > unregisterDelay) {
+                      addNewEvent(new RemoteUnregisterException(
+                          "Unregistering the node.It's been down for " + downFor));
                     }
                   }
                 } else {
                   down = false;
                   nbFailedPoll = 0;
+                  downSince = 0;
                 }
               } catch (InterruptedException e) {
                 return;
@@ -167,6 +188,10 @@ public class DefaultRemoteProxy extends RemoteProxy
       if (e instanceof RemoteNotReachableException) {
         down = true;
         this.errors.clear();
+      }
+      if (e instanceof RemoteUnregisterException) {
+        Registry registry = this.getRegistry();
+        registry.getAllProxies().removeIfPresent(this);
       }
     }
   }
