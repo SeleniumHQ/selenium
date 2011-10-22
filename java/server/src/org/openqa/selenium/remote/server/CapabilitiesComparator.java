@@ -10,14 +10,18 @@ import java.util.Collection;
 import java.util.Comparator;
 
 /**
- * Compares two sets of {@link Capabilities} by
+ * Compares two sets of {@link Capabilities} against a desired standard. Capabilities are compared
+ * by...
  * <ol>
  *   <li>{@link Capabilities#getBrowserName() browser name},
  *   <li>{@link Capabilities#getVersion() browser version},
  *   <li>{@link Capabilities#isJavascriptEnabled() whether JavaScript is enabled},
  *   <li>and {@link Capabilities#getPlatform() platform}
  * </ol>
- * For all comparisons, preference will be give
+ * For all comparisons, if the capability is missing, that particular criteria shall not factor
+ * into the comparison. When comparing platforms, preference will be given to an exact platform
+ * match over a fuzzy match (e.g. Platform.WINDOWS will match Platform.WINDOWS before it matches
+ * Platform.XP).
  */
 class CapabilitiesComparator implements Comparator<Capabilities> {
 
