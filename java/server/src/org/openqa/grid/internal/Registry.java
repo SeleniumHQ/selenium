@@ -129,7 +129,6 @@ public class Registry {
    * sorted by priority, with priority defined by the prioritizer.
    */
   class Matcher extends Thread { // Thread safety reviewed
-    private volatile boolean cleanState = true;
 
     Matcher() {
       super("Matcher thread");
@@ -143,27 +142,6 @@ public class Registry {
       } finally {
         lock.unlock();
       }
-    }
-
-    public void setCleanState() {
-      this.cleanState = true;
-    }
-
-    /**
-     * let the matcher know that something has been modified in the registry, and that the current
-     * iteration of incoming new session request should be stop to take the change into account. The
-     * change could be either a new Proxy added, or a session requested/released
-     */
-    public void setDirty() {
-      this.cleanState = false;
-    }
-
-    /**
-     * @return true if the registry hasn't been modified since the matcher started the current
-     *         iteration.
-     */
-    public boolean isRegistryClean() {
-      return cleanState;
     }
 
   }
@@ -206,26 +184,15 @@ public class Registry {
    */
 
   private void assignRequestToProxy() {
-
-    boolean force = false;
     while (!stop) {
       try {
-        matcherThread.setCleanState();
-        if (force) {
-          force = false;
-        } else {
-          testSessionAvailable.await(5, TimeUnit.SECONDS);
-        }
+        testSessionAvailable.await(5, TimeUnit.SECONDS);
 
-        if (matcherThread.isRegistryClean()) {
-          newSessionQueue.processQueue(new Predicate<RequestHandler>() {
-            public boolean apply(RequestHandler input) {
-              return takeRequestHandler(input);
-            }
-          }, prioritizer);
-        } else {
-          force = true;
-        }
+        newSessionQueue.processQueue(new Predicate<RequestHandler>() {
+          public boolean apply(RequestHandler input) {
+            return takeRequestHandler(input);
+          }
+        }, prioritizer);
       } catch (InterruptedException e) {
         log.info("Shutting down registry.");
       } catch (Throwable t) {
@@ -238,13 +205,13 @@ public class Registry {
   private boolean takeRequestHandler(RequestHandler request) {
     final TestSession session = proxies.getNewSession(request.getDesiredCapabilities());
     if (session != null) {
-        boolean ok = activeTestSessions.add(session);
-        request.bindSession(session);
-        if (!ok) {
-          log.severe("Error adding session : " + session);
-        }
-        return true;
+      boolean ok = activeTestSessions.add(session);
+      request.bindSession(session);
+      if (!ok) {
+        log.severe("Error adding session : " + session);
       }
+      return true;
+    }
     return false;
   }
 
@@ -257,7 +224,6 @@ public class Registry {
   private void release(TestSession session) {
     try {
       lock.lock();
-      matcherThread.setDirty();
       boolean removed = activeTestSessions.remove(session);
       if (removed) {
         fireMatcherStateChanged();
@@ -305,7 +271,6 @@ public class Registry {
       }
 
       registeringProxies.add(proxy);
-      matcherThread.setDirty();
       fireMatcherStateChanged();
     } finally {
       lock.unlock();
