@@ -4,6 +4,7 @@ java_test(name = "test",
     "misc/**/*.java",
     "node/**/*.java",
     "utils/**/*.java",
+    
   ],
   main = "org.testng.TestNG",
   args = "grid-e2e-tests.xml",
@@ -12,4 +13,5 @@ java_test(name = "test",
     "//java/server/src/org/openqa/grid/selenium",
      "//java/client/test/org/openqa/selenium",
     "//third_party/java/testng",
+    
   ])

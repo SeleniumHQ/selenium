@@ -16,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.util.EntityUtils;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.internal.Registry;
@@ -23,9 +24,12 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
+import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.CapabilityType;
 
 /**
  * default remote proxy for selenium, handling both selenium1 and webdriver requests.
@@ -37,8 +41,9 @@ public class DefaultRemoteProxy extends RemoteProxy
     implements
       TimeoutListener,
       SelfHealingProxy,
-      CommandListener {
-  
+      CommandListener,
+      TestSessionListener {
+
   private static final Logger log = Logger.getLogger(DefaultRemoteProxy.class.getName());
 
 
@@ -70,12 +75,14 @@ public class DefaultRemoteProxy extends RemoteProxy
     }
   }
 
+  
   public void afterCommand(TestSession session, HttpServletRequest request,
       HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo()
         + " executing ...");
   }
 
+ 
   public void beforeCommand(TestSession session, HttpServletRequest request,
       HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
@@ -177,5 +184,42 @@ public class DefaultRemoteProxy extends RemoteProxy
 
   public boolean isDown() {
     return down;
+  }
+
+  /**
+   * The client shouldn't have to care where firefox is installed as long as the correct version is
+   * launched, however with webdriver the binary location is specified in the desiredCapability,
+   * making it the responsibility of the person running the test.
+   * 
+   * With this implementation of beforeSession, that problem disappears . If the webdriver slot is
+   * registered with a firefox using a custom binary location, the hub will handle it.
+   * 
+   * <p>
+   * For instance if a node registers:
+   * {"browserName":"firefox","version":"7.0","firefox_binary":"/home/ff7"}
+   * 
+   * and later on a client requests {"browserName":"firefox","version":"7.0"} , the hub will
+   * automatically append the correct binary path to the desiredCapability before it's forwarded to
+   * the server. That way the version / install location mapping is done only once at the node
+   * level.
+   */
+  public void beforeSession(TestSession session) {
+    if (session.getSlot().getProtocol() == SeleniumProtocol.WebDriver) {
+      Map<String, Object> cap = session.getRequestedCapabilities();
+      if ("firefox".equals(cap.get(CapabilityType.BROWSER_NAME))) {
+        if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null
+            && cap.get(FirefoxDriver.BINARY) == null) {
+          session.getRequestedCapabilities().put(FirefoxDriver.BINARY,
+              session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
+        }
+      }
+    }
+
+
+  }
+
+  public void afterSession(TestSession session) {
+    // TODO Auto-generated method stub
+
   }
 }
