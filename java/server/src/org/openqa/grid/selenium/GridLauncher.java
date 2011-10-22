@@ -14,7 +14,9 @@
 package org.openqa.grid.selenium;
 
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
+import org.openqa.grid.common.CommandLineOptionHelper;
 import org.openqa.grid.common.GridDocHelper;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
@@ -31,6 +33,15 @@ public class GridLauncher {
 
   public static void main(String[] args) throws Exception {
 
+    CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
+    if (helper.isParamPresent("-help")){
+      String separator = "\n----------------------------------\n";
+      RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
+      GridDocHelper.printHelp(separator+"To use in a grid environement :"+separator,false);
+      return;
+    }
+    
+    
     GridRole role = GridRole.find(args);
 
     switch (role) {

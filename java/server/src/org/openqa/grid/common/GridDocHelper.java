@@ -9,9 +9,12 @@ import java.util.Properties;
 public class GridDocHelper {
   private static Properties gridProperties = load("defaults/GridParameters.properties");
 
-
   public static void printHelp(String msg) {
-    printHelpInConsole(gridProperties, msg);
+    printHelpInConsole(gridProperties, msg, true);
+  }
+
+  public static void printHelp(String msg, boolean error) {
+    printHelpInConsole(gridProperties, msg, error);
   }
 
 
@@ -32,15 +35,20 @@ public class GridDocHelper {
     }
   }
 
-  private static void printHelpInConsole(Properties p, String msg) {
+  private static void printHelpInConsole(Properties p, String msg, boolean error) {
     if (msg != null) {
-      System.out.println("Error building the config :" + msg);
+      if (error) {
+        System.out.println("Error building the config :" + msg);
+      } else {
+        System.out.println(msg);
+      }
+
     }
 
     System.out.println("Usage :");
     for (Object key : p.keySet()) {
-      System.out.println("-" + key + ":\n\t" +
-          WordUtils.wrap(getParam(p, key.toString()), 80, "\n\t", false));
+      System.out.println("-" + key + ":\n\t"
+          + WordUtils.wrap(getParam(p, key.toString()), 80, "\n\t", false));
     }
   }
 
