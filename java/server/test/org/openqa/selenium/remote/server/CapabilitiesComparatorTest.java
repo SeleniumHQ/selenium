@@ -1,3 +1,20 @@
+/*
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+
 package org.openqa.selenium.remote.server;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -13,7 +30,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.google.common.collect.Lists;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -60,23 +76,39 @@ public class CapabilitiesComparatorTest {
   }
 
   @Test
-  public void shouldMatchByVersion_assumingAllOtherPropertiesAreTheSame_1() {
+  public void shouldMatchByVersion_assumingAllOtherPropertiesAreTheSame_versionSpecified() {
     comparator = compareBy(capabilities("firefox", "6", Platform.ANY, true));
 
     Capabilities c1 = capabilities("firefox", "6", Platform.ANY, true);
     Capabilities c2 = capabilities("firefox", "7", Platform.ANY, true);
+    Capabilities c3 = capabilities("firefox", null, Platform.ANY, true);
 
     assertGreaterThan(c1, c2);
+    assertGreaterThan(c1, c3);
   }
 
   @Test
-  public void shouldMatchByVersion_assumingAllOtherPropertiesAreTheSame_2() {
+  public void shouldMatchByVersion_assumingAllOtherPropertiesAreTheSame_emptyVersion() {
     comparator = compareBy(capabilities("firefox", "", Platform.ANY, true));
 
     Capabilities c1 = capabilities("firefox", "", Platform.ANY, true);
     Capabilities c2 = capabilities("firefox", "6", Platform.ANY, true);
+    Capabilities c3 = capabilities("firefox", null, Platform.ANY, true);
 
     assertGreaterThan(c1, c2);
+    assertGreaterThan(c1, c3);
+  }
+
+  @Test
+  public void shouldMatchByVersion_assumingAllOtherPropertiesAreTheSame_nullVersion() {
+    comparator = compareBy(capabilities("firefox", null, Platform.ANY, true));
+
+    Capabilities c1 = capabilities("firefox", null, Platform.ANY, true);
+    Capabilities c2 = capabilities("firefox", "", Platform.ANY, true);
+    Capabilities c3 = capabilities("firefox", "6", Platform.ANY, true);
+
+    assertGreaterThan(c1, c2);
+    assertGreaterThan(c1, c3);
   }
 
   @Test
