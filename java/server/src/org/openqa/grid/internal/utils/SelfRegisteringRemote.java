@@ -124,6 +124,14 @@ public class SelfRegisteringRemote {
     nodeConfig.getCapabilities().clear();
   }
 
+  // TODO freynaud keep specified platfrom if specified. At least for unit test purpose.
+  /**
+   * Adding the browser described by the capability, automatically finding out what platform the
+   * node is launched from ( and overriding it if it was specified )
+   * 
+   * @param cap describing the browser
+   * @param instances number of times this browser can be started on the node.
+   */
   public void addBrowser(DesiredCapabilities cap, int instances) {
     String s = cap.getBrowserName();
     if (s == null || "".equals(s)) {
