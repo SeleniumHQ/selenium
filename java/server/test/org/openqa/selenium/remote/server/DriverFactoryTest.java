@@ -80,6 +80,28 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(DriverTwo.class, result);
   }
 
+  public void testShouldReturnDriverWhereTheMostCapabilitiesMatch_lotsOfRegisteredDrivers() {
+    abstract class Chrome implements WebDriver {}
+    abstract class Firefox implements WebDriver {}
+    abstract class HtmlUnit implements WebDriver {}
+    abstract class Ie implements WebDriver {}
+    abstract class Opera implements WebDriver {}
+
+    factory.registerDriver(DesiredCapabilities.chrome(), Chrome.class);
+    factory.registerDriver(DesiredCapabilities.firefox(), Firefox.class);
+    factory.registerDriver(DesiredCapabilities.htmlUnit(), HtmlUnit.class);
+    factory.registerDriver(DesiredCapabilities.internetExplorer(), Ie.class);
+    factory.registerDriver(DesiredCapabilities.opera(), Opera.class);
+
+    DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+    desiredCapabilities.setBrowserName("internet explorer");
+    desiredCapabilities.setVersion("");
+    desiredCapabilities.setJavascriptEnabled(true);
+    desiredCapabilities.setPlatform(Platform.ANY);
+
+    assertEquals(Ie.class, factory.getBestMatchFor(desiredCapabilities));
+  }
+
   public void testShouldReturnMostRecentlyAddedDriverWhenAllCapabilitiesAreEqual() {
     Capabilities capabilities = DesiredCapabilities.firefox();
 
@@ -89,6 +111,38 @@ public class DriverFactoryTest extends TestCase {
     Class<? extends WebDriver> result = factory.getBestMatchFor(capabilities);
 
     assertEquals(DriverTwo.class, result);
+  }
+
+  public void testShouldConsiderPlatform() {
+    DesiredCapabilities windows = new DesiredCapabilities("browser", "v1", Platform.WINDOWS);
+    DesiredCapabilities linux = new DesiredCapabilities("browser", "v1", Platform.LINUX);
+
+    factory.registerDriver(windows, DriverOne.class);
+    factory.registerDriver(linux, DriverTwo.class);
+
+    assertEquals(DriverOne.class, factory.getBestMatchFor(windows));
+    assertEquals(DriverTwo.class, factory.getBestMatchFor(linux));
+  }
+
+  public void testShouldMatchAgainstAnyPlatformWhenRequestingAny() {
+    DesiredCapabilities windowsVista = new DesiredCapabilities("browser", "v1", Platform.VISTA);
+    DesiredCapabilities windowsXp = new DesiredCapabilities("browser", "v1", Platform.XP);
+    DesiredCapabilities anyWindows = new DesiredCapabilities("browser", "v1", Platform.ANY);
+
+    factory.registerDriver(windowsVista, DriverOne.class);
+
+    assertEquals(DriverOne.class, factory.getBestMatchFor(windowsVista));
+    assertEquals(DriverOne.class, factory.getBestMatchFor(anyWindows));
+    assertEquals("Should always get a match if a driver has been registered",
+        DriverOne.class, factory.getBestMatchFor(windowsXp));
+  }
+
+  public void testShouldFailFastWhenMatchingAndNoDriversHaveBeenRegistered() {
+    try {
+      factory.getBestMatchFor(DesiredCapabilities.chrome());
+      fail("Should have thrown.");
+    } catch (IllegalStateException expected) {
+    }
   }
 
   public void testShouldConsiderJavascriptCapabilities() {

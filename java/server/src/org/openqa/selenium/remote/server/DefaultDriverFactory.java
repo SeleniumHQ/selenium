@@ -17,8 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
@@ -36,38 +37,12 @@ public class DefaultDriverFactory implements DriverFactory {
   }
 
   protected Class<? extends WebDriver> getBestMatchFor(Capabilities desired) {
-    int numberOfFieldsMatched = 0;
-    Class<? extends WebDriver> bestMatch = null;
-
-    for (Map.Entry<Capabilities, Class<? extends WebDriver>> entry :
-        capabilitiesToDriver.entrySet()) {
-      int count = 0;
-      Capabilities caps = entry.getKey();
-      if (matches(caps.getBrowserName(), desired.getBrowserName())) {
-        count++;
-      }
-      if (matches(caps.getVersion(), desired.getVersion())) {
-        count++;
-      }
-      if (caps.isJavascriptEnabled() == desired.isJavascriptEnabled()) {
-        count++;
-      }
-      Platform capPlatform = caps.getPlatform();
-      Platform desiredPlatform = desired.getPlatform();
-
-      if (capPlatform != null && desiredPlatform != null) {
-        if (capPlatform.is(desiredPlatform)) {
-          count++;
-        }
-      }
-
-      if (count > numberOfFieldsMatched) {
-        numberOfFieldsMatched = count;
-        bestMatch = entry.getValue();
-      }
-    }
-
-    return bestMatch;
+    // We won't be able to make a match if no drivers have been registered.
+    checkState(!capabilitiesToDriver.isEmpty(),
+        "No drivers have been registered, will be unable to match %s", desired);
+    Capabilities bestMatchingCapabilities =
+        CapabilitiesComparator.getBestMatch(desired, capabilitiesToDriver.keySet());
+    return capabilitiesToDriver.get(bestMatchingCapabilities);
   }
 
   private boolean matches(String value, String value2) {

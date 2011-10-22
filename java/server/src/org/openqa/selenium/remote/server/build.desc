@@ -3,6 +3,7 @@
 
 java_library(name = "server",
   srcs = [
+    "CapabilitiesComparator.java",
     "DefaultDriverFactory.java",
     "DefaultDriverSessions.java",
     "DriverFactory.java",
