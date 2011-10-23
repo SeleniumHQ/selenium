@@ -253,8 +253,8 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-1.9.2/linux',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/3.6.22/sdk/xulrunner-3.6.22.en-US.linux-i686.sdk.tar.bz2',
-           '6c1c3a990495baacc2bb40aef3b54025'
+           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/3.6.23/sdk/xulrunner-3.6.23.en-US.linux-i686.sdk.tar.bz2',
+           'f13055d2b793b6ab32797cc292f18de4'
 
   sdks.add 'third_party/gecko-2/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/nightly/2.0-candidates/build3/sdk/xulrunner-2.0.en-US.linux-i686.sdk.tar.bz2',
