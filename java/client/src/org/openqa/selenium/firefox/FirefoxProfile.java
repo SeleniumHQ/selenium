@@ -70,6 +70,7 @@ public class FirefoxProfile {
           .put("browser.tabs.warnOnOpen", false)
           .put("devtools.errorconsole.enabled", true)
           .put("dom.disable_open_during_load", false)
+          .put("extensions.autoDisableScopes", 10),
           .put("extensions.logging.enabled", true)
           .put("extensions.update.enabled", false)
           .put("extensions.update.notifyUser", false)

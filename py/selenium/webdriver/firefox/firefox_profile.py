@@ -50,6 +50,7 @@ class FirefoxProfile(object):
         "startup.homepage_welcome_url": "\"about:blank\"",
         "devtools.errorconsole.enabled": "true",
         "dom.disable_open_during_load": "false",
+        "extensions.autoDisableScopes" : 10,
         "extensions.logging.enabled": "true",
         "extensions.update.enabled": "false",
         "extensions.update.notifyUser": "false",
