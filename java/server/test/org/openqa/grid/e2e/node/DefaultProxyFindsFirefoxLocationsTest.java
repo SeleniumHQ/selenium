@@ -7,6 +7,7 @@ import java.util.Map;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
@@ -99,9 +100,9 @@ public class DefaultProxyFindsFirefoxLocationsTest {
 
     // keep track of what would be forwarded, but don't forward it.
     @Override
-    public String forwardNewSessionRequest(TestSession session) {
+    public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
       requestedCapability = session.getRequestedCapabilities();
-      return "";
+      return ExternalSessionKey.fromString("");
     }
 
 

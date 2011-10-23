@@ -53,13 +53,13 @@ class ActiveTestSessions {
     return null;
   }
 
-  public TestSession findSessionByExternalKey(String ExternalKey) {
-    if (ExternalKey == null) {
+  public TestSession findSessionByExternalKey(ExternalSessionKey externalkey) {
+    if (externalkey == null) {
       return null;
     }
 
     for (TestSession session : activeTestSessions) {
-      if (ExternalKey.equals(session.getExternalKey())) {
+      if (externalkey.equals(session.getExternalKey())) {
         return session;
       }
     }

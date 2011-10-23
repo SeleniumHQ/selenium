@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
@@ -50,8 +51,9 @@ public class WebDriverRequestHandler extends RequestHandler {
     if ("/session".equals(getRequest().getPathInfo())) {
       return RequestType.START_SESSION;
     } else if (getRequest().getMethod().equalsIgnoreCase("DELETE")) {
-      String externalKey = extractSession(getRequest().getPathInfo());
-      if (getRequest().getPathInfo().endsWith("/session/" + externalKey)) {
+      ExternalSessionKey
+          externalKey =  ExternalSessionKey.fromWebDriverRequest(getRequest().getPathInfo());
+      if (getRequest().getPathInfo().endsWith("/session/" + externalKey.getKey())) {
         return RequestType.STOP_SESSION;
       }
     }
@@ -59,39 +61,12 @@ public class WebDriverRequestHandler extends RequestHandler {
   }
 
   @Override
-  public String extractSession() {
+  public ExternalSessionKey extractSession() {
     if (getRequestType() == RequestType.START_SESSION) {
       throw new IllegalAccessError("Cannot call that method of a new session request.");
     }
     String path = getRequest().getPathInfo();
-    return extractSession(path);
-  }
-
-  /**
-   * extract the session xxx from http://host:port/a/b/c/session/xxx/...
-   * 
-   * @param path The path to the session
-   * @return the session key provided by the remote., or null if the url didn't contain a session id
-   */
-  private String extractSession(String path) {
-    int sessionIndex = path.indexOf("/session/");
-    if (sessionIndex != -1) {
-      sessionIndex += "/session/".length();
-      int nextSlash = path.indexOf("/", sessionIndex);
-      String session;
-      if (nextSlash != -1) {
-        session = path.substring(sessionIndex, nextSlash);
-      } else {
-        session = path.substring(sessionIndex, path.length());
-      }
-      // log.debug("session found : " + session);
-      if ("".equals(session)) {
-        return null;
-      }
-      return session;
-    }
-    // log.debug("session not found in location " + loc);
-    return null;
+    return ExternalSessionKey.fromWebDriverRequest(path);
   }
 
   // TODO freynaud parsing is so so.
@@ -119,7 +94,7 @@ public class WebDriverRequestHandler extends RequestHandler {
   }
 
   @Override
-  public String forwardNewSessionRequest(TestSession session) {
+  public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
     try {
       // here, don't forward the requestBody directly, but read the
       // desiredCapabilities from the session instead.
@@ -140,7 +115,7 @@ public class WebDriverRequestHandler extends RequestHandler {
     if (getResponse().containsHeader("Location")) {
       String location =
           ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
-      return extractSession(location);
+      return ExternalSessionKey.fromWebDriverRequest( location);
     } else {
       log.warning("Error, header should contain Location");
       return null;

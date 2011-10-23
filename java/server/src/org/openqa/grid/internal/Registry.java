@@ -338,7 +338,7 @@ public class Registry {
    * @param externalKey the external session key
    * @return null if the hub doesn't have a node associated to the provided externalKey
    */
-  public TestSession getSession(String externalKey) {
+  public TestSession getSession(ExternalSessionKey externalKey) {
     return activeTestSessions.findSessionByExternalKey(externalKey);
   }
 

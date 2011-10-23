@@ -88,7 +88,7 @@ public class StatusServletTests {
     newSessionRequest.setDesiredCapabilities(cap);
     newSessionRequest.process();
     session = newSessionRequest.getTestSession();
-    session.setExternalKey("ext. key");
+    session.setExternalKey(ExternalSessionKey.fromString("ext. key"));
 
   }
 
@@ -169,7 +169,7 @@ public class StatusServletTests {
 
   @Test
   public void testSessionApi() throws IOException, JSONException {
-    String s = session.getExternalKey();
+    ExternalSessionKey s = session.getExternalKey();
     HttpClient client =  httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
@@ -185,18 +185,18 @@ public class StatusServletTests {
     Assert.assertTrue(res.getBoolean("success"));
 
     Assert.assertNotNull(res.get("internalKey"));
-    Assert.assertEquals(s, res.get("session"));
+    Assert.assertEquals(s, ExternalSessionKey.fromJSON((String) res.get("session")));
     Assert.assertNotNull(res.get("inactivityTime"));
     Assert.assertEquals(p1.getId(), res.get("proxyId"));
   }
 
   @Test
   public void testSessionget() throws IOException, JSONException {
-    String s = session.getExternalKey();
+    ExternalSessionKey s = session.getExternalKey();
 
     HttpClient client =  httpClientFactory.getHttpClient();
 
-    String url = testSessionApi.toExternalForm() + "?session=" + URLEncoder.encode(s, "UTF-8");
+    String url = testSessionApi.toExternalForm() + "?session=" + URLEncoder.encode(s.getKey(), "UTF-8");
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
 
     HttpResponse response = client.execute(host, r);
@@ -206,7 +206,7 @@ public class StatusServletTests {
     Assert.assertTrue(o.getBoolean("success"));
 
     Assert.assertNotNull(o.get("internalKey"));
-    Assert.assertEquals(s, o.get("session"));
+    Assert.assertEquals(s, ExternalSessionKey.fromJSON((String) o.get("session")));
     Assert.assertNotNull(o.get("inactivityTime"));
     Assert.assertEquals(p1.getId(), o.get("proxyId"));
 

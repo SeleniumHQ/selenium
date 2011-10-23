@@ -54,6 +54,7 @@ import com.google.common.io.ByteStreams;
  * <p/>
  * The session is destroyed when the test ends ( ended by the client or timed out)
  */
+@SuppressWarnings("JavaDoc")
 public class TestSession {
 
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
@@ -61,7 +62,7 @@ public class TestSession {
 
   private final String internalKey;
   private final TestSlot slot;
-  private volatile String externalKey = null;
+  private volatile ExternalSessionKey externalKey = null;
   private volatile long sessionCreatedAt;
   private volatile long lastActivity;
   private final Map<String, Object> requestedCapabilities;
@@ -96,14 +97,14 @@ public class TestSession {
    * 
    * @return the key that was provided by the remote when the POST /session command was sent.
    */
-  public String getExternalKey() {
+  public ExternalSessionKey getExternalKey() {
     return externalKey;
   }
 
   /**
    * associate this session to the session provided by the remote.
    */
-  public void setExternalKey(String externalKey) {
+  public void setExternalKey(ExternalSessionKey externalKey) {
     this.externalKey = externalKey;
     sessionCreatedAt = lastActivity;
   }
@@ -346,8 +347,7 @@ public class TestSession {
       // everything.
       if (name.equalsIgnoreCase("Location")) {
         URL returnedLocation = new URL(value);
-        URL driverLocation = remoteURL;
-        String driverPath = driverLocation.getPath();
+        String driverPath = remoteURL.getPath();
         String wrongPath = returnedLocation.getPath();
         String correctPath = wrongPath.replace(driverPath, "");
         Hub hub = slot.getProxy().getRegistry().getHub();
@@ -413,7 +413,7 @@ public class TestSession {
       case Selenium:
         request =
             new BasicHttpRequest("POST", remoteURL.toExternalForm()
-                + "/?cmd=testComplete&sessionId=" + getExternalKey());
+                + "/?cmd=testComplete&sessionId=" + getExternalKey().getKey());
         break;
       case WebDriver:
         String uri = remoteURL.toString() + "/session/" + externalKey;

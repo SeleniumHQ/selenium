@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -52,7 +53,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   private final Registry registry;
   private final HttpServletRequest request;
   private final HttpServletResponse response;
-  private final long created;
 
   private String body = null;
   private boolean bodyHasBeenRead = false;
@@ -84,7 +84,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     this.request = request;
     this.response = response;
     this.registry = registry;
-    this.created = System.currentTimeMillis();
     this.waitingThread = Thread.currentThread();
   }
 
@@ -99,7 +98,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    *
    * @return the external session id sent by the remote. Null is the session cannot be found.
    */
-  public abstract String extractSession();
+  public abstract ExternalSessionKey extractSession();
 
   /**
    * Parse the request to extract the desiredCapabilities. For non web driver protocol ( selenium1 )
@@ -115,7 +114,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    *
    * @return the external key sent by the remote, null is something went wrong.
    */
-  public abstract String forwardNewSessionRequest(TestSession session);
+  public abstract ExternalSessionKey forwardNewSessionRequest(TestSession session);
 
   protected void forwardRequest(TestSession session, RequestHandler handler) throws IOException {
     if (bodyHasBeenRead) {
@@ -151,7 +150,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       case STOP_SESSION:
         session = getSession();
         if (session == null) {
-          String sessionKey = null;
+          ExternalSessionKey sessionKey = null;
           try {
             sessionKey = extractSession();
           } catch (RuntimeException ignore) {
@@ -181,7 +180,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    * allocate a new TestSession for the test, forward the request and update the resource used.
    */
   private void forwardAndGetRemoteKey() {
-    String externalKey = forwardNewSessionRequest(session);
+    ExternalSessionKey externalKey = forwardNewSessionRequest(session);
     if (externalKey == null) {
       session.terminate();
       // TODO (kmenard 04/10/11): We should indicate what the requested
@@ -313,7 +312,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   protected TestSession getSession() {
     if (session == null) {
-      String externalKey = extractSession();
+      ExternalSessionKey externalKey = extractSession();
       session = registry.getSession(externalKey);
       if (session == null) {
         log.warning("Cannot find session " + externalKey + " in the registry.");
@@ -327,7 +326,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    * route session-specific commands fro mthe JSON wire protocol ). will be null until the request
    * has been processed.
    */
-  public String getServerSession() {
+  public ExternalSessionKey getServerSession() {
     if (session == null) {
       return null;
     } else {
@@ -385,10 +384,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
       return false;
     }
     return true;
-  }
-
-  public long getCreated() {
-    return created;
   }
 
   public Registry getRegistry() {

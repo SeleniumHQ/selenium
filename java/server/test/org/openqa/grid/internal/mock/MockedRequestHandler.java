@@ -1,5 +1,6 @@
 package org.openqa.grid.internal.mock;
 
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
@@ -23,9 +24,9 @@ public class MockedRequestHandler extends WebDriverRequestHandler {
   }
 
   @Override
-  public String forwardNewSessionRequest(TestSession session) {
+  public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
     // System.out.println("forwarding to " + session.getInternalKey());
-    return "";
+    return ExternalSessionKey.fromString("");
   }
 
   @Override
@@ -33,9 +34,6 @@ public class MockedRequestHandler extends WebDriverRequestHandler {
       throws java.io.IOException {
     // System.out.println("forwarding request to "+session);
   }
-
-  ;
-
 
   @Override
   public void setSession(TestSession session) {

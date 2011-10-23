@@ -78,7 +78,7 @@ public class NewRequestCrashesDuringNewSessionTest {
     }
 
     @Override
-    public String forwardNewSessionRequest(TestSession session) {
+    public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
       throw new RuntimeException("something horrible happened.");
     }
 

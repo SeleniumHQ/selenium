@@ -16,6 +16,7 @@ limitations under the License.
 package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.utils.BrowserNameUtils;
@@ -60,7 +61,7 @@ public class Selenium1RequestHandler extends RequestHandler {
   }
 
   @Override
-  public String extractSession() {
+  public ExternalSessionKey extractSession() {
     if (getRequestType() == RequestType.START_SESSION) {
       throw new IllegalAccessError("Cannot call that method of a new session request.");
     }
@@ -68,9 +69,11 @@ public class Selenium1RequestHandler extends RequestHandler {
     // the request body.
     String command = getRequestBody();
     String[] pieces = command.split("&");
+    ExternalSessionKey externalSessionKey;
     for (String piece : pieces) {
-      if (piece.startsWith("sessionId=")) {
-        return piece.replace("sessionId=", "");
+      externalSessionKey = ExternalSessionKey.fromSe1Request( piece);
+      if (externalSessionKey != null){
+        return externalSessionKey;
       }
     }
     return null;
@@ -117,7 +120,7 @@ public class Selenium1RequestHandler extends RequestHandler {
   // TODO freynaud do some real parsing here instead. BrowserString to
   // Capabilities service or so.
   @Override
-  public String forwardNewSessionRequest(TestSession session) {
+  public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
     String responseBody;
 
     try {
@@ -158,11 +161,6 @@ public class Selenium1RequestHandler extends RequestHandler {
       return null;
     }
 
-    if (responseBody != null && responseBody.startsWith("OK,")) {
-      String externalKey = responseBody.replace("OK,", "");
-      return externalKey;
-    }
-
-    return null;
+    return ExternalSessionKey.fromResponseBody( responseBody);
   }
 }

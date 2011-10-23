@@ -127,15 +127,16 @@ public class RegistryStateTest {
       MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
       newSessionRequest.process();
       TestSession session = newSessionRequest.getTestSession();
-      session.setExternalKey("1234");
+      final ExternalSessionKey externalKey = ExternalSessionKey.fromString("1234");
+      session.setExternalKey(externalKey);
 
-      TestSession s = registry.getSession("1234");
+      TestSession s = registry.getSession(externalKey);
       Assert.assertNotNull(s);
       Assert.assertEquals(s, session);
       session.terminateSynchronousFOR_TEST_ONLY();
       Assert.assertEquals(0, registry.getActiveSessions().size());
 
-      TestSession s2 = registry.getSession("1234");
+      TestSession s2 = registry.getSession(externalKey);
       Assert.assertNull(s2);
 
       Assert.assertEquals(0, registry.getActiveSessions().size());
@@ -152,10 +153,10 @@ public class RegistryStateTest {
     try {
       registry.add(p1);
 
-      TestSession s = registry.getSession("1234");
+      TestSession s = registry.getSession(ExternalSessionKey.fromString("1234"));
       Assert.assertNull(s);
 
-      s = registry.getSession("");
+      s = registry.getSession(ExternalSessionKey.fromString(""));
       Assert.assertNull(s);
 
       s = registry.getSession(null);

@@ -2,6 +2,7 @@ package org.openqa.grid.web.servlet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -88,7 +89,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
       session = requestJSON.getString("session");
     }
 
-    TestSession testSession = getRegistry().getSession(session);
+    TestSession testSession = getRegistry().getSession(ExternalSessionKey.fromString(session));
 
     if (testSession == null) {
       res.put("msg", "Cannot find test slot running session " + session + " in the registry.");
@@ -96,7 +97,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     } else {
       res.put("msg", "slot found !");
       res.put("success", true);
-      res.put("session", testSession.getExternalKey());
+      res.put("session", testSession.getExternalKey().getKey());
       res.put("internalKey", testSession.getInternalKey());
       res.put("inactivityTime", testSession.getInactivityTime());
       RemoteProxy p = testSession.getSlot().getProxy();
