@@ -17,6 +17,7 @@ package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.NewSessionException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.utils.BrowserNameUtils;
@@ -120,7 +121,7 @@ public class Selenium1RequestHandler extends RequestHandler {
   // TODO freynaud do some real parsing here instead. BrowserString to
   // Capabilities service or so.
   @Override
-  public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
+  public ExternalSessionKey forwardNewSessionRequest(TestSession session) throws NewSessionException {
     String responseBody;
 
     try {
@@ -157,10 +158,8 @@ public class Selenium1RequestHandler extends RequestHandler {
 
       responseBody = session.forward(getRequest(), getResponse(), builder.toString(), true);
     } catch (IOException e) {
-      log.warning("Error forwarding the request " + e.getMessage());
-      return null;
+      throw new NewSessionException("Error forwarding the request " + e.getMessage(),e);
     }
-
-    return ExternalSessionKey.fromResponseBody( responseBody);
+    return ExternalSessionKey.fromResponseBody(responseBody);
   }
 }

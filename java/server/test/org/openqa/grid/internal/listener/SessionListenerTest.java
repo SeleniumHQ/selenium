@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.NewSessionException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
@@ -103,7 +104,12 @@ public class SessionListenerTest {
     registry.add(new MyBuggyBeforeRemoteProxy(req, registry));
 
     MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
-    req.process();
+    try {
+      req.process();  
+    } catch (Exception ignore) {
+      // the listener exception will bubble up.
+    }
+    
     // reserve throws an exception, that calls session.terminate, which is
     // in a separate thread. Gives some time for this thread to finish
     // before doing the validations

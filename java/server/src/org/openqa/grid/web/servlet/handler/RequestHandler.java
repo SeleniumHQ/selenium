@@ -1,28 +1,18 @@
 /*
-Copyright 2007-2011 WebDriver committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+ * Copyright 2007-2011 WebDriver committers
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.openqa.grid.web.servlet.handler;
-
-import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.GridException;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.listeners.TestSessionListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,18 +22,29 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.GridException;
+import org.openqa.grid.internal.NewSessionException;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.listeners.TestSessionListener;
+
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should be only 1 concrete
- * class, but to support both legacy selenium1 and web driver, 2 classes are needed. <p/> {@link
- * Selenium1RequestHandler} for the part specific to selenium1 protocol {@link
- * WebDriverRequestHandler} for the part specific to webdriver protocol
- *
+ * class, but to support both legacy selenium1 and web driver, 2 classes are needed.
+ * <p/>
+ * {@link Selenium1RequestHandler} for the part specific to selenium1 protocol
+ * {@link WebDriverRequestHandler} for the part specific to webdriver protocol
+ * 
  * Threading notes; RequestHandlers are instantiated per-request, run on the servlet container
  * thread. The instance is also accessed by the matcher thread.
  */
@@ -71,7 +72,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    * associated handler.
    */
   public static RequestHandler createHandler(HttpServletRequest request,
-                                             HttpServletResponse response, Registry registry) {
+      HttpServletResponse response, Registry registry) {
     if (isSeleniumProtocol(request)) {
       return new Selenium1RequestHandler(request, response, registry);
     } else {
@@ -80,7 +81,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   }
 
   protected RequestHandler(HttpServletRequest request, HttpServletResponse response,
-                           Registry registry) {
+      Registry registry) {
     this.request = request;
     this.response = response;
     this.registry = registry;
@@ -95,7 +96,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Extract the session from the request. This only works for a request that has a session already
    * assigned. It shouldn't be called for a new session request.
-   *
+   * 
    * @return the external session id sent by the remote. Null is the session cannot be found.
    */
   public abstract ExternalSessionKey extractSession();
@@ -103,7 +104,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Parse the request to extract the desiredCapabilities. For non web driver protocol ( selenium1 )
    * some mapping will be necessary
-   *
+   * 
    * @return the desired capabilities requested by the client.
    */
   public abstract Map<String, Object> extractDesiredCapability();
@@ -111,10 +112,12 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Forward the new session request to the TestSession that has been assigned, and parse the
    * response to extract and return the external key assigned by the remote.
-   *
-   * @return the external key sent by the remote, null is something went wrong.
+   * 
+   * @return the external key sent by the remote.
+   * @throws NewSessionException in case anything wrong happens during the new session process.
    */
-  public abstract ExternalSessionKey forwardNewSessionRequest(TestSession session);
+  public abstract ExternalSessionKey forwardNewSessionRequest(TestSession session)
+      throws NewSessionException;
 
   protected void forwardRequest(TestSession session, RequestHandler handler) throws IOException {
     if (bodyHasBeenRead) {
@@ -135,16 +138,10 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           waitForSessionBound();
           beforeSessionEvent();
           forwardAndGetRemoteKey();
-        } catch (InterruptedException e) {
-          registry.removeNewSessionRequest(this);
         } catch (Exception e) {
-          // Make sure we yank the session from the request queue, since
-          // any returned error will propagate to the
-          // client, so there's no chance of this request ever succeeding.
-          registry.removeNewSessionRequest(this);
-          throw (new RuntimeException(e));
+          cleanup();
+          throw new GridException("Error forwarding the new session " + e.getMessage(), e);
         }
-
         break;
       case REGULAR:
       case STOP_SESSION:
@@ -153,10 +150,9 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           ExternalSessionKey sessionKey = null;
           try {
             sessionKey = extractSession();
-          } catch (RuntimeException ignore) {
-          }
-          throw new GridException(
-              "Session [" + sessionKey + "] not available - " + registry.getActiveSessions());
+          } catch (RuntimeException ignore) {}
+          throw new GridException("Session [" + sessionKey + "] not available - "
+              + registry.getActiveSessions());
         }
         try {
           forwardRequest(session, this);
@@ -176,48 +172,69 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     }
   }
 
-  /**
-   * allocate a new TestSession for the test, forward the request and update the resource used.
-   */
-  private void forwardAndGetRemoteKey() {
-    ExternalSessionKey externalKey = forwardNewSessionRequest(session);
-    if (externalKey == null) {
+
+
+  private void cleanup() {
+    registry.removeNewSessionRequest(this);
+    if (session != null) {
       session.terminate();
-      // TODO (kmenard 04/10/11): We should indicate what the requested
-      // session type is.
-      throw new GridException("Error getting a new session from the remote." +
-                              registry.getAllProxies());
-    } else {
-      session.setExternalKey(externalKey);
     }
   }
 
-  private void beforeSessionEvent() {
+  /**
+   * allocate a new TestSession for the test, forward the request and update the resource used.
+   * 
+   * @throws NewSessionException in case anything bad happens during the new session process.
+   */
+  private void forwardAndGetRemoteKey() throws NewSessionException {
+    ExternalSessionKey externalKey = forwardNewSessionRequest(session);
+    if (externalKey != null) {
+      session.setExternalKey(externalKey);
+    } else {
+      throw new NewSessionException(
+          "Error forwarding the new session request.external key should never be null");
+    }
+  }
+
+  /**
+   * calls the TestSessionListener is the proxy for that node has one specified.
+   * 
+   * @throws NewSessionException in case anything goes wrong with the listener.
+   */
+  private void beforeSessionEvent() throws NewSessionException {
     RemoteProxy p = session.getSlot().getProxy();
     if (p instanceof TestSessionListener) {
       try {
         ((TestSessionListener) p).beforeSession(session);
-      } catch (Throwable t) {
-        log.severe("Error running the beforeSessionListener : " + t.getMessage());
-        t.printStackTrace();
-        session.terminate();
+      } catch (Exception e) {
+        log.severe("Error running the beforeSessionListener : " + e.getMessage());
+        e.printStackTrace();
+        throw new NewSessionException("The listener threw an exception ( listener bug )", e);
       }
     }
   }
 
-  public void waitForSessionBound() throws InterruptedException {
-      // Maintain compatibility with Grid 1.x, which had the ability to
-      // specify how long to wait before canceling
-      // a request.
-      if (registry.getNewSessionWaitTimeout() != -1) {
-        if (!sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
-          throw new RuntimeException("Request timed out waiting for a node to become available.");
-        }
-      } else {
-        // Wait until a proxy becomes available to handle the request.
-        sessionAssigned.await();
+  /**
+   * wait for the registry to match the request with a TestSlot.
+   * 
+   * @throws InterruptedException
+   * @throws TimeoutException if the request reaches the new session wait timeout before being
+   *         assigned.
+   */
+  public void waitForSessionBound() throws InterruptedException, TimeoutException {
+    // Maintain compatibility with Grid 1.x, which had the ability to
+    // specify how long to wait before canceling
+    // a request.
+    if (registry.getNewSessionWaitTimeout() != -1) {
+      if (!sessionAssigned.await(registry.getNewSessionWaitTimeout(), TimeUnit.MILLISECONDS)) {
+        throw new TimeoutException("Request timed out waiting for a node to become available.");
       }
+    } else {
+      // Wait until a proxy becomes available to handle the request.
+      sessionAssigned.await();
+    }
   }
+
   /**
    * return true is the request is using the selenium1 protocol, false if that's a web driver
    * protocol.
@@ -334,7 +351,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     }
   }
 
-  public void stop(){
+  public void stop() {
     waitingThread.interrupt();
   }
 

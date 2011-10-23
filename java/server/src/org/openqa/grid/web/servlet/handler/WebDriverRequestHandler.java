@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridException;
+import org.openqa.grid.internal.NewSessionException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.jetty.jetty.servlet.ServletHttpResponse;
@@ -94,7 +95,7 @@ public class WebDriverRequestHandler extends RequestHandler {
   }
 
   @Override
-  public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
+  public ExternalSessionKey forwardNewSessionRequest(TestSession session) throws NewSessionException{
     try {
       // here, don't forward the requestBody directly, but read the
       // desiredCapabilities from the session instead.
@@ -105,20 +106,25 @@ public class WebDriverRequestHandler extends RequestHandler {
       String content = c.toString();
       session.forward(getRequest(), getResponse(), content, false);
     } catch (IOException e) {
-      log.warning("Error forwarding the request " + e.getMessage());
-      return null;
+      //log.warning("Error forwarding the request " + e.getMessage());
+      throw new NewSessionException("Error forwarding the request " + e.getMessage(),e);
     } catch (JSONException e) {
-      log.warning("Error with the request " + e.getMessage());
-      return null;
+      //log.warning("Error with the request " + e.getMessage());
+      throw new NewSessionException("Error with the request " + e.getMessage(),e);
     }
 
     if (getResponse().containsHeader("Location")) {
       String location =
           ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
-      return ExternalSessionKey.fromWebDriverRequest( location);
+      ExternalSessionKey res =  ExternalSessionKey.fromWebDriverRequest( location);
+      if ( res!=null){
+        return res;
+      }else {
+        throw new NewSessionException("couldn't extract the new session from the response header.");
+      }
     } else {
-      log.warning("Error, header should contain Location");
-      return null;
+      //log.warning("Error, header should contain Location");
+      throw new NewSessionException("Error, header should contain Location ");
     }
 
   }

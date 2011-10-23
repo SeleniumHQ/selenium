@@ -86,11 +86,19 @@ public class ExternalSessionKey {
       return null;
   }
   
-  public static ExternalSessionKey fromResponseBody(String responseBody){
+  /**
+   * extract the external key from the server response for a selenium1 new session request.
+   * @param responseBody the response from the server
+   * @return the ExternalKey if it was present in the server's response.
+   * @throws NewSessionException in case the server didn't send back a success result.
+   */
+  public static ExternalSessionKey fromResponseBody(String responseBody) throws NewSessionException {
     if (responseBody != null && responseBody.startsWith("OK,")) {
       return new ExternalSessionKey(responseBody.replace("OK,", ""));
+    }else {
+      throw new NewSessionException("The server returned an error : "+responseBody);  
     }
-    return null;
+    
   }
 
   public static ExternalSessionKey fromString(String keyString){
