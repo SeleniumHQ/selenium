@@ -494,7 +494,7 @@ public class RegistrationRequest {
    * 
    * @param resource
    */
-  private void loadFromJSON(String resource) {
+  public void loadFromJSON(String resource) {
     try {
       JSONObject base = JSONConfigurationUtils.loadJSON(resource);
 
