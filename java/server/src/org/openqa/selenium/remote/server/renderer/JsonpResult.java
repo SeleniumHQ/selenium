@@ -5,16 +5,10 @@ import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-import com.google.common.primitives.Bytes;
 import org.json.JSONArray;
-import org.openqa.jetty.util.ByteArrayISO8859Writer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.CharBuffer;
-import java.nio.charset.CodingErrorAction;
 
 /**
  * Renders an HTTP response for a JSONP client.

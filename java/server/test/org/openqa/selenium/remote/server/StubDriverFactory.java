@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.server;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.server.DriverFactory;
 
 public class StubDriverFactory implements DriverFactory {
   public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> impl) {

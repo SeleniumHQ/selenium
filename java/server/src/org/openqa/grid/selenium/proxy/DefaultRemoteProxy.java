@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import mx4j.tools.config.DefaultConfigurationBuilder.Unregister;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;

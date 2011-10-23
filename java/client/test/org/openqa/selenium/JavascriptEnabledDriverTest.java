@@ -39,7 +39,6 @@ import org.openqa.selenium.internal.Locatable;
 import org.hamcrest.Matchers;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Test case for browsers that support using Javascript
