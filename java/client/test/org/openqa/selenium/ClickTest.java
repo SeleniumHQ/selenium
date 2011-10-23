@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
+
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -206,4 +208,17 @@ public class ClickTest extends AbstractDriverTestCase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
+  // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
+  public void testShouldBeAbleToClickOnAnElementInTheViewport() {
+    String url = appServer.whereIs("click_out_of_bounds.html");
+
+    driver.get(url);
+    WebElement button = driver.findElement(By.id("button"));
+
+    try {
+      button.click();
+    } catch (MoveTargetOutOfBoundsException e) {
+      fail("Should not be out of bounds: " + e.getMessage());
+    }
+  }
 }

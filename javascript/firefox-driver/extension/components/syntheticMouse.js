@@ -77,17 +77,14 @@ SyntheticMouse.prototype.calculateWindowSize = function(win, doc) {
 
   var viewportSize = goog.dom.getViewportSize(win);
   var docHeight = helper.getDocumentHeight();
-  var scrollHeight = doc.body.scrollHeight;
-  var docWidth = doc.body.scrollWidth;
+  var scrollHeight = doc.documentElement.scrollHeight;
+  var docWidth = doc.documentElement.scrollWidth;
 
   var maxHeight = docHeight < viewportSize.height ? viewportSize.height : docHeight;
   maxHeight = maxHeight < scrollHeight ? scrollHeight : maxHeight;
   var maxWidth = docWidth < viewportSize.width ? viewportSize.width : docWidth;
 
   return new goog.math.Coordinate(maxWidth, maxHeight);
-
-//
-//  return (targetX <= maxWidth && targetY <= maxHeight);
 };
 
 // wdIMouse
