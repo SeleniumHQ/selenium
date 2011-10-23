@@ -196,7 +196,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     if (this instanceof TimeoutListener) {
       if (cleanUpCycle > 0 && timeOut > 0) {
         log.fine("starting cleanup thread");
-        new Thread(new CleanUpThread(this)).start(); // Thread safety reviewed (hopefully ;)
+        new Thread(new CleanUpThread(this), "RemoteProxy CleanUpThread").start(); // Thread safety reviewed (hopefully ;)
       }
     }
   }
