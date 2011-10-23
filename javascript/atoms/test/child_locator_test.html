@@ -3,7 +3,7 @@
 <head>
   <title>child_locator_test.html</title>
   <script src="test_bootstrap.js"></script>
-  <script>
+  <script type="text/javascript">
     goog.require('goog.dom');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.jsunit');
@@ -12,7 +12,7 @@
     goog.require('bot.locators');
   </script>
 
-  <script>
+  <script type="text/javascript">
     function testCanFindChildElementByClassName() {
       var parent = bot.locators.findElement({id: 'parent'});
       var child = bot.locators.findElement({className: 'child'}, parent);

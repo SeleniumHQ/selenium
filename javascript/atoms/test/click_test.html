@@ -427,7 +427,7 @@
     <label for="focusSink">Focus sink:</label><input id="focusSink" type="text"/><br/>
     <label for="clicker">Click me:</label><input id="clicker" type="checkbox"/><br/>
     <div id="log"></div>
-    <script>
+    <script type="text/javascript">
       clicker = goog.dom.$('clicker');
       clickLocation = goog.style.getBounds(clicker);
 
@@ -452,7 +452,7 @@
                 border:1px solid darkred;">Click jacked!</div>
     <div style="width:200px; height:100px;
                 border:1px solid black; padding:10px">Click Me</div>
-    <script>
+    <script type="text/javascript">
       var clickJacker = document.getElementById('clickJacker');
       function setOpacity(opacity) {
         if (goog.userAgent.IE) {

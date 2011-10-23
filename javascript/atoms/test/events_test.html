@@ -19,7 +19,7 @@ limitations under the License.
 <head>
   <title>event_test.html</title>
   <script src="test_bootstrap.js"></script>
-  <script>
+  <script type="text/javascript">
   goog.require('bot.events');
   goog.require('bot.locators');
   goog.require('goog.array');
@@ -29,7 +29,7 @@ limitations under the License.
   goog.require('goog.userAgent');
   </script>
 
-  <script>
+  <script type="text/javascript">
     MESSAGES = [];
 
     function log(message) {
@@ -37,7 +37,7 @@ limitations under the License.
     }
   </script>
 
-  <script>
+  <script type="text/javascript">
   function testCanFireMoveEvent() {
     var e = bot.locators.findElement({id: 'move'});
 

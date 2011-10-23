@@ -8,7 +8,7 @@
 
     <script src="test_bootstrap.js"></script>
 
-    <script>
+    <script type="text/javascript">
       goog.require('bot.dom');
       goog.require('bot.action');
       goog.require('bot.locators');
@@ -35,7 +35,7 @@
 
   <body>
 
-    <script>
+    <script type="text/javascript">
       function testShouldFireJavaScriptFrameworkChangeEventOnSelectOfOption() {
         var select = bot.locators.findElement({ id: 'developer' });
         var options = bot.locators.findElements({ tagName: 'option' }, select);
