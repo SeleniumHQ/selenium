@@ -447,7 +447,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "devtools.errorconsole.enabled", "true");
             AddDefaultPreference(prefs, "dom.disable_open_during_load", "false");
             AddDefaultPreference(prefs, "dom.max_script_run_time", "30");
-            AddDefaultPreference(prefs, "extensions.autoDisableScopes", 10);
+            AddDefaultPreference(prefs, "extensions.autoDisableScopes", "10");
             AddDefaultPreference(prefs, "extensions.logging.enabled", "true");
             AddDefaultPreference(prefs, "extensions.update.enabled", "false");
             AddDefaultPreference(prefs, "extensions.update.notifyUser", "false");
