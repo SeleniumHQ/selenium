@@ -69,7 +69,11 @@ limitations under the License.
       var fakeScript = {src: expectedSrc};
       mockDom.createDom('script',
           new goog.testing.mockmatchers.ArgumentMatcher(function(attributes) {
-            _assertObjectEquals({'src': expectedSrc}, attributes);
+            _assertObjectEquals({
+              'type': 'text/javascript',
+              'charset': 'UTF-8',
+              'src': expectedSrc
+            }, attributes);
             return true;
           }, 'JSONP script')).$returns(fakeScript);
       return fakeScript;
@@ -90,18 +94,18 @@ limitations under the License.
       stubs.set(webdriver.http.JsonpClient, 'nextRequestId_', 0);
 
       clock.tick(123);
-      assertEquals('wdJSONP_callback_0_123', fn());
-      assertEquals('wdJSONP_callback_1_123', fn());
-      assertEquals('wdJSONP_callback_2_123', fn());
+      assertEquals('wdJSONP_0_3f', fn());
+      assertEquals('wdJSONP_1_3f', fn());
+      assertEquals('wdJSONP_2_3f', fn());
 
       clock.tick(4);
-      assertEquals('wdJSONP_callback_3_127', fn());
-      assertEquals('wdJSONP_callback_4_127', fn());
-      assertEquals('wdJSONP_callback_5_127', fn());
+      assertEquals('wdJSONP_3_3j', fn());
+      assertEquals('wdJSONP_4_3j', fn());
+      assertEquals('wdJSONP_5_3j', fn());
     }
 
     function testSend_requestFails() {
-      var fakeScript = expectCreateDom('wdJSONP_callback_0_0');
+      var fakeScript = expectCreateDom('wdJSONP_0_0');
       expectToSend(fakeScript).$does(function() {
         fakeScript.onerror();
       });
@@ -110,28 +114,28 @@ limitations under the License.
 
       webdriver.promise.when(client.send(REQUEST),
           onCallback = callbackHelper(function(response) {
-            assertUndefined(goog.global['wdJSONP_callback_0_0']);
+            assertUndefined(goog.global['wdJSONP_0_0']);
             assertEquals(500, response.status);
             _assertObjectEquals({}, response.headers);
             assertEquals('Unable to send request: ' + REQUEST_URL_PREFIX +
-                '&callback=wdJSONP_callback_0_0&cacheBuster=0', response.body);
+                '&callback=wdJSONP_0_0&cacheBuster=0', response.body);
           }),
           onErrback = callbackHelper());
       assertSuccess();
     }
 
     function testSend_requestSucceeds() {
-      var fakeScript = expectCreateDom('wdJSONP_callback_0_0');
+      var fakeScript = expectCreateDom('wdJSONP_0_0');
       expectToSend(fakeScript).$does(function() {
-        assertEquals('function', typeof goog.global['wdJSONP_callback_0_0']);
-        goog.global['wdJSONP_callback_0_0']('serverResponse');
+        assertEquals('function', typeof goog.global['wdJSONP_0_0']);
+        goog.global['wdJSONP_0_0']('serverResponse');
       });
       expectToClearRequest(fakeScript);
       control.$replayAll();
 
       webdriver.promise.when(client.send(REQUEST),
           onCallback = callbackHelper(function(response) {
-            assertUndefined(goog.global['wdJSONP_callback_0_0']);
+            assertUndefined(goog.global['wdJSONP_0_0']);
             assertEquals(200, response.status);
             _assertObjectEquals({}, response.headers);
             assertEquals('serverResponse', response.body);

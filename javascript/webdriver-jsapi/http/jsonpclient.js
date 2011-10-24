@@ -79,9 +79,9 @@ webdriver.http.JsonpClient.nextRequestId_ = 0;
  * @private
  */
 webdriver.http.JsonpClient.createCallbackName_ = function() {
-  return ['wdJSONP_callback_',
-      webdriver.http.JsonpClient.nextRequestId_++, '_',
-      goog.now()].join('');
+  return ['wdJSONP_',
+      (webdriver.http.JsonpClient.nextRequestId_++).toString(36), '_',
+      goog.now().toString(36)].join('');
 };
 
 
@@ -93,6 +93,10 @@ webdriver.http.JsonpClient.prototype.send = function(request) {
 
   var dom = this.dom_;
   var jsonpRequest = dom.createDom('script', {
+      'type': 'text/javascript',
+      'charset': 'UTF-8',
+      // NOTE: Safari will never load the script if we don't set the src
+      // attribute before appending to the DOM.
       'src': [
           this.url_,
           '?method=', request.method,
@@ -101,7 +105,7 @@ webdriver.http.JsonpClient.prototype.send = function(request) {
           '&callback=', callbackName,
           '&cacheBuster=', goog.now()
       ].join('')
-  })
+  });
 
   function deleteCallback() {
     try {
