@@ -29,6 +29,7 @@ java_library(name = "base",
     "StubTargetLocator.java",
     "StubRenderedWebElement.java",
     "TestNameDecorator.java",
+    "internal/IgnoredTestCallback.java",
     "TestSuiteBuilder.java",
     "TestUtilities.java",
     "TestWaiter.java",
@@ -100,3 +101,8 @@ java_test(name = "single",
     "//java/client/test/org/openqa/selenium/htmlunit:test",
     "//java/server/test/org/openqa/selenium/remote/server:test",
   ])
+
+java_library(name = "dump-ignores",
+  deps = [ ":tests" ],
+  main = "org.openqa.selenium.internal.IgnoredTestPrinter"
+)

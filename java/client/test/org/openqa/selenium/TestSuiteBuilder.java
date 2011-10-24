@@ -17,19 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertTrue;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import org.openqa.selenium.internal.InProject;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.openqa.selenium.internal.IgnoredTestCallback;
+import org.openqa.selenium.internal.InProject;
 
 import java.io.File;
 import java.lang.reflect.AnnotatedElement;
@@ -37,6 +31,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
 
 public class TestSuiteBuilder {
 
@@ -53,6 +52,7 @@ public class TestSuiteBuilder {
   private Set<String> testMethodNames = Sets.newHashSet();
   private Set<String> decorators = Sets.newLinkedHashSet();
   private Set<Package> packages = Sets.newLinkedHashSet();
+  private Set<IgnoredTestCallback> ignoredTestCallbacks = Sets.newHashSet();
   private boolean outputTestNames = false;
   private File baseDir;
 
@@ -119,6 +119,10 @@ public class TestSuiteBuilder {
   public Test create() throws Exception {
     applySystemProperties();
 
+    if (ignoredTestCallbacks.isEmpty()) {
+      ignoredTestCallbacks.add(new LoggingIgnoreCallback());
+    }
+
     if (withDriver) {
       assertThat("No driver class set", driverClass, is(notNullValue()));
     }
@@ -138,7 +142,7 @@ public class TestSuiteBuilder {
     if (suite.countTestCases() == 0) {
       System.err.println("No test cases found");
 
-      if (!onlyRun.isEmpty()) {      
+      if (!onlyRun.isEmpty()) {
         System.err.println("The following class names are enabled but may not exist: ");
         for(String className : onlyRun) {
           System.err.println("*** " + className);
@@ -206,8 +210,7 @@ public class TestSuiteBuilder {
     }
 
     if (isIgnored(clazz)) {
-      System.err.println("Ignoring test class: " + clazz + ": "
-          + clazz.getAnnotation(Ignore.class).reason());
+      invokeIgnoreCallbacks(clazz, "", clazz.getAnnotation(Ignore.class));
       return;
     }
 
@@ -266,10 +269,7 @@ public class TestSuiteBuilder {
     }
 
     if (isIgnored(method)) {
-      System.err.println("Ignoring: "
-          + method.getDeclaringClass() + "."
-          + method.getName() + ": "
-          + method.getAnnotation(Ignore.class).reason());
+      invokeIgnoreCallbacks(method.getDeclaringClass(), method.getName(), method.getAnnotation(Ignore.class));
       return false;
     }
 
@@ -281,6 +281,12 @@ public class TestSuiteBuilder {
     return method.getName().startsWith("test")
         || method.getAnnotation(org.junit.Test.class) != null;
   }
+
+    private void invokeIgnoreCallbacks(Class clazz, String methodName, Ignore ignore) {
+      for (IgnoredTestCallback ignoredTestCallback : ignoredTestCallbacks) {
+            ignoredTestCallback.callback(clazz.getName(), methodName, ignore);
+        }
+    }
 
   private boolean isIgnored(AnnotatedElement annotatedElement) {
     Ignore ignore = annotatedElement.getAnnotation(Ignore.class);
@@ -400,4 +406,21 @@ public class TestSuiteBuilder {
     return this;
   }
 
+    public TestSuiteBuilder withIgnoredTestCallback(IgnoredTestCallback ignoredTestCallback) {
+        ignoredTestCallbacks.add(ignoredTestCallback);
+        return this;
+    }
+
+  public class LoggingIgnoreCallback implements IgnoredTestCallback {
+    public void callback(String className, String testName, Ignore ignore) {
+      String message;
+
+      if(testName.isEmpty()) {
+        message = "Ignoring test class: " + className;
+      } else {
+        message = "Ignoring: " + className + "." + testName;
+      }
+      System.err.println(message + ": " + ignore.reason());
+    }
+  }
 }
