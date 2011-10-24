@@ -45,7 +45,7 @@ webdriver.error.createResponse = function(error) {
  * will be thrown. Otherwise, the response will be returned as is.
  *
  * @param {!{status:number, value:*}} responseObj The response object to check.
- * @return {!{status:number, value*}} The checked response object.
+ * @return {!{status:number, value:*}} The checked response object.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
  */
 webdriver.error.checkResponse = function(responseObj) {

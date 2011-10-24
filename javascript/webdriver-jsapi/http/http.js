@@ -281,6 +281,7 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
  * @param {string} path Path on the server to send the request to.
  * @param {string=} opt_data This request's body; if specified, must be a JSON
  *     string.
+ * @constructor
  */
 webdriver.http.Request = function(method, path, opt_data) {
 
@@ -325,7 +326,7 @@ webdriver.http.Request.prototype.toString = function() {
 /**
  * Represents a HTTP response.
  * @param {number} status The response code.
- * @param {!Object<string,string>} headers The response headers. All header
+ * @param {!Object.<string,string>} headers The response headers. All header
  *     names will be converted to lowercase strings for consistent lookup.s
  * @param {string} body The response body.
  * @constructor

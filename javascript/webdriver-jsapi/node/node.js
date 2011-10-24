@@ -41,7 +41,10 @@ webdriver.node.toSource = (function() {
    */
   var source;
 
-  /** @param {function(*, string=)} */
+  /**
+   * @param {function(*, string=)} callback The function to call with this
+   *     module's source code.
+   */
   function loadSource(callback) {
     webdriver.node.checkIsNative_();
     if (webdriver.node.source_) {

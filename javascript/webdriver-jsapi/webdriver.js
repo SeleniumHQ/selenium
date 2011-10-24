@@ -600,7 +600,7 @@ webdriver.WebDriver.prototype.get = function(url) {
 
 /**
  * Schedules a command to retrieve the URL of the current page.
- * @Return {!webdriver.promise.Promise} A promise that will be resolved with the
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     current URL.
  * @export
  */
