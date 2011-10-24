@@ -48,7 +48,7 @@ goog.require('webdriver.promise.Promise');
 /**
  * Contains information about a WebDriver session.
  * @param {string} id The session ID.
- * @param {!Object.<string,*>} capabilities A map describing the capabilities
+ * @param {!Object.<*>} capabilities A map describing the capabilities
  *     of this session.
  * @constructor
  * @export
@@ -63,7 +63,7 @@ webdriver.Session = function(id, capabilities) {
 
   /**
    * A map describing the capabilities of this session.
-   * @type {!Object.<string,*>}
+   * @type {!Object.<*>}
    */
   this.capabilities = capabilities;
 };
@@ -641,7 +641,7 @@ webdriver.WebDriver.prototype.getTitle = function() {
  * var e2 = driver.findElement({id:'foo'});
  * </pre></code>
  *
- * @param {webdriver.Locator|Object.<string, string>} locator The locator
+ * @param {webdriver.Locator|Object.<string>} locator The locator
  *     strategy to use when searching for the element.
  * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
  *     JavaScript locator.  Otherwise ignored.
@@ -685,7 +685,7 @@ webdriver.WebDriver.prototype.findElement = function(locator, var_args) {
  * the command will return {@code false}. Any other error returned by the server
  * is returned as is.
  *
- * @param {webdriver.Locator|Object.<string, string>} locator The locator
+ * @param {webdriver.Locator|Object.<string>} locator The locator
  *     strategy to use when searching for the element.
  * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
  *     JavaScript locator.  Otherwise ignored.
@@ -708,7 +708,7 @@ webdriver.WebDriver.prototype.isElementPresent = function(locator, var_args) {
 /**
  * Schedule a command to search for multiple elements on the page.
  *
- * @param {webdriver.Locator|Object.<string, string>} locator The locator
+ * @param {webdriver.Locator|Object.<string>} locator The locator
  *     strategy to use when searching for the element.
  * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
  *     JavaScript locator.  Otherwise ignored.
@@ -1148,7 +1148,7 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
  * While a proper enum, this object is defined as a map so it may be exported
  * as part of WebDriver's public API.
  *
- * @type {!Object.<string, string>}
+ * @type {!Object.<string>}
  * @export
  */
 webdriver.Key = {
@@ -1382,7 +1382,7 @@ webdriver.WebElement.prototype.schedule_ = function(command, description) {
  * Note that JS locator searches cannot be restricted to a subtree. All such
  * searches are delegated to this instance's parent WebDriver.
  *
- * @param {webdriver.Locator|Object.<string, string>} locator The locator
+ * @param {webdriver.Locator|Object.<string>} locator The locator
  *     strategy to use when searching for the element.
  * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
  *     using a JavaScript locator.  Otherwise ignored.
@@ -1419,7 +1419,7 @@ webdriver.WebElement.prototype.findElement = function(locator, var_args) {
  * Note that JS locator searches cannot be restricted to a subtree. All such
  * searches are delegated to this instance's parent WebDriver.
  *
- * @param {webdriver.Locator|Object.<string, string>} locator The locator
+ * @param {webdriver.Locator|Object.<string>} locator The locator
  *     strategy to use when searching for the element.
  * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
  *     using a JavaScript locator.  Otherwise ignored.
@@ -1450,7 +1450,7 @@ webdriver.WebElement.prototype.isElementPresent = function(locator, var_args) {
  * Note that JS locator searches cannot be restricted to a subtree. All such
  * searches are delegated to this instance's parent WebDriver.
  *
- * @param {webdriver.Locator|Object.<string, string>} locator The locator
+ * @param {webdriver.Locator|Object.<string>} locator The locator
  *     strategy to use when searching for the elements.
  * @param {...} var_args Arguments to pass to {@code WebDriver#executeScript} if
  *     using a JavaScript locator.  Otherwise ignored.

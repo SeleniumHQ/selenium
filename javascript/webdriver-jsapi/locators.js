@@ -61,7 +61,7 @@ webdriver.Locator.factory_ = function(type) {
 
 /**
  * Factory methods for the supported locator strategies.
- * @type {Object.<string, function(string):!webdriver.Locator>}
+ * @type {Object.<function(string):!webdriver.Locator>}
  */
 webdriver.Locator.Strategy = {
   'className': webdriver.Locator.factory_('class name'),
@@ -84,7 +84,7 @@ goog.exportSymbol('By', webdriver.Locator.Strategy);
 /**
  * Creates a new Locator from an object whose only property is also a key in
  * the {@code webdriver.Locator.Strategy} map.
- * @param {Object.<string, string>} obj The object to convert into a locator.
+ * @param {Object.<string>} obj The object to convert into a locator.
  * @return {webdriver.Locator} The new locator object.
  */
 webdriver.Locator.createFromObj = function(obj) {
@@ -101,7 +101,7 @@ webdriver.Locator.createFromObj = function(obj) {
 /**
  * Verifies that a {@code locator} is a valid locator to use for searching for
  * elements on the page.
- * @param {webdriver.Locator|Object.<string, string>} locator The locator
+ * @param {webdriver.Locator|Object.<string>} locator The locator
  *     to verify, or a short-hand object that can be converted into a locator
  *     to verify.
  * @return {!webdriver.Locator} The validated locator.

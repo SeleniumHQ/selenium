@@ -73,7 +73,7 @@ webdriver.Builder = function() {
 
   /**
    * The desired capabilities to use when creating a new session.
-   * @type {!Object.<string,*>}
+   * @type {!Object.<*>}
    * @private
    */
   this.capabilities_ = {};
@@ -144,7 +144,7 @@ webdriver.Builder.getSession_ = function(id, executor) {
  * Creates a new WebDriver session.
  * @param {!webdriver.http.Executor} executor The executor to use to create a
  *     new session.
- * @param {!Object.<string,*>} capabilities The desired session capabilities.
+ * @param {!Object.<*>} capabilities The desired session capabilities.
  * @return {!webdriver.promise.Promise} A promise for the new
  *     {@code webdriver.Session}.
  * @private
@@ -189,7 +189,7 @@ webdriver.Builder.prototype.usingSession = function(id) {
 
 /**
  * Sets the desired capabilities when requesting a new session.
- * @param {!Object.<string,*>} capabilities The desired capabilities for a new
+ * @param {!Object.<*>} capabilities The desired capabilities for a new
  *     session.
  * @return {!webdriver.Builder} This Builder instance for chain calling.
  * @export

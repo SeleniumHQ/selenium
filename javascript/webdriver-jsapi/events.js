@@ -30,7 +30,7 @@ goog.provide('webdriver.EventEmitter');
 webdriver.EventEmitter = function() {
   /**
    * Map of events to registered listeners.
-   * @type {!Object.<string, !Array.<{fn:!Function,oneshot:boolean}>>}
+   * @type {!Object.<!Array.<{fn:!Function,oneshot:boolean}>>}
    * @private
    */
   this.events_ = {};

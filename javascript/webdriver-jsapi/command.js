@@ -39,7 +39,7 @@ webdriver.Command = function(name) {
 
   /**
    * The parameters to this command.
-   * @type {!Object.<string, *>}
+   * @type {!Object.<*>}
    * @private
    */
   this.parameters_ = {};
@@ -68,7 +68,7 @@ webdriver.Command.prototype.setParameter = function(name, value) {
 
 /**
  * Sets the parameters for this command.
- * @param {!Object.<string, *>} parameters The command parameters.
+ * @param {!Object.<*>} parameters The command parameters.
  * @return {!webdriver.Command} A self reference.
  */
 webdriver.Command.prototype.setParameters = function(parameters) {
@@ -88,7 +88,7 @@ webdriver.Command.prototype.getParameter = function(key) {
 
 
 /**
- * @return {Object.<string, *>} The parameters to send with this command.
+ * @return {Object.<*>} The parameters to send with this command.
  */
 webdriver.Command.prototype.getParameters = function() {
   return this.parameters_;
@@ -99,7 +99,7 @@ webdriver.Command.prototype.getParameters = function() {
  * Enumeration of predefined names command names that all command processors
  * will support. Implemented as a map so the enumeration can be properly
  * exported as part of WebDriver's public API.
- * @type {!Object.<string, string>}
+ * @type {!Object.<string>}
  */
 // TODO(jleyba): Delete obsolete command names.
 webdriver.CommandName = {

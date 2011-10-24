@@ -94,7 +94,7 @@ webdriver.http.Executor.prototype.execute = function(command) {
  * corresponding parameter. All parameters spliced into the path will be
  * removed from the parameter map.
  * @param {string} path The original resource path.
- * @param {!Object.<string,*>} parameters The parameters object to splice into
+ * @param {!Object.<*>} parameters The parameters object to splice into
  *     the path.
  * @return {string} The modified path.
  * @private
@@ -163,7 +163,7 @@ webdriver.http.Executor.parseHttpResponse = function(httpResponse) {
 
 /**
  * Maps command names to resource locator.
- * @type {!Object.<webdriver.CommandName, {method:string, path:string}>}
+ * @type {!Object.<{method:string, path:string}>}
  * @const
  * @private
  */
@@ -171,7 +171,6 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
   return new Builder().
       put(webdriver.CommandName.NEW_SESSION, post('/session')).
       put(webdriver.CommandName.DESCRIBE_SESSION, get('/session/:sessionId')).
-      put(webdriver.CommandName.IDENTIFY_SESSION, post('/session/identify')).
       put(webdriver.CommandName.QUIT, del('/session/:sessionId')).
       put(webdriver.CommandName.CLOSE, del('/session/:sessionId/window')).
       put(webdriver.CommandName.GET_CURRENT_WINDOW_HANDLE,
@@ -305,7 +304,7 @@ webdriver.http.Request = function(method, path, opt_data) {
 
   /**
    * The headers to send with the request.
-   * @type {!Object.<string, string>}
+   * @type {!Object.<string>}
    */
   this.headers = {'Accept': 'application/json; charset=utf-8'};
 };
@@ -326,7 +325,7 @@ webdriver.http.Request.prototype.toString = function() {
 /**
  * Represents a HTTP response.
  * @param {number} status The response code.
- * @param {!Object.<string,string>} headers The response headers. All header
+ * @param {!Object.<string>} headers The response headers. All header
  *     names will be converted to lowercase strings for consistent lookup.s
  * @param {string} body The response body.
  * @constructor
@@ -347,7 +346,7 @@ webdriver.http.Response = function(status, headers, body) {
 
   /**
    * The response body.
-   * @type {!Object.<string, string>}
+   * @type {!Object.<string>}
    */
   this.headers = {};
   for (var header in headers) {
