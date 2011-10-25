@@ -24,6 +24,9 @@ goog.provide('bot.window');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('goog.array');
+goog.require('goog.dom');
+goog.require('goog.math.Size');
 goog.require('goog.userAgent');
 
 
@@ -103,4 +106,39 @@ bot.window.checkNumPages_ = function(maxPages, opt_numPages) {
         'number of pages must be less than the length of the browser history');
   }
   return numPages;
+};
+
+
+/**
+ * Determine the size of the window that a user could interact with. This will
+ * be the greatest of document.body.(width|scrollWidth), the same for
+ * document.documentElement or the size of the viewport.
+ *
+ * @param {!Window=} opt_win Window to determine the size of. Defaults to
+ *   bot.getWindow().
+ * @return {!goog.math.Size} The calculated size.
+ */
+bot.window.getInteractableSize = function(opt_win) {
+  var win = opt_win || bot.getWindow();
+  var doc = win.document;
+  var elem = doc.documentElement;
+  var body = doc.body;
+
+  var widths = [
+      elem.clientWidth, elem.scrollWidth, elem.offsetWidth,
+      body.scrollWidth, body.offsetWidth
+  ];
+  var heights = [
+      elem.clientHeight, elem.scrollHeight, elem.offsetHeight,
+      body.scrollHeight, body.offsetHeight
+  ];
+
+  var sortFunc = function(a, b) {
+    return a - b;
+  };
+
+  var width = goog.array.peek(widths.sort(sortFunc)) || 0;
+  var height = goog.array.peek(heights.sort(sortFunc)) || 0;
+
+  return new goog.math.Size(width, height);
 };

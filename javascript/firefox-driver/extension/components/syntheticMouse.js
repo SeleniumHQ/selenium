@@ -23,6 +23,7 @@ goog.require('bot.Mouse');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.events');
+goog.require('bot.window');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('fxdriver.Logger');
@@ -72,21 +73,6 @@ SyntheticMouse.prototype.getElement_ = function(coords) {
       fxdriver.moz.unwrap(coords.auxiliary) : this.lastElement;
 };
 
-SyntheticMouse.prototype.calculateWindowSize = function(win, doc) {
-  var helper = new goog.dom.DomHelper(doc);
-
-  var viewportSize = goog.dom.getViewportSize(win);
-  var docHeight = helper.getDocumentHeight();
-  var scrollHeight = doc.documentElement.scrollHeight;
-  var docWidth = doc.documentElement.scrollWidth;
-
-  var maxHeight = docHeight < viewportSize.height ? viewportSize.height : docHeight;
-  maxHeight = maxHeight < scrollHeight ? scrollHeight : maxHeight;
-  var maxWidth = docWidth < viewportSize.width ? viewportSize.width : docWidth;
-
-  return new goog.math.Coordinate(maxWidth, maxHeight);
-};
-
 // wdIMouse
 
 SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
@@ -109,13 +95,14 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
   // Check to see if the given positions and offsets are outside of the window
   // Are we about to be dragged out of the window?
-  var windowSize = this.calculateWindowSize(win, doc);
+  var windowSize = bot.window.getInteractableSize(win);
   var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
   var pos = Utils.getElementLocation(element);
   var targetX = pos.x + xOffset;
   var targetY = pos.y + yOffset;
 
-  if (!isOption && (targetX > windowSize.x || targetY > windowSize.y)) {
+  if (!isOption &&
+      (targetX > windowSize.width || targetY > windowSize.height)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
         'Requested location (' + targetX + ', ' + targetY +
         ') is outside the bounds of the document (' + windowSize.x + ', ' +
