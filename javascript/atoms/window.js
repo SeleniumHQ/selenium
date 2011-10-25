@@ -137,8 +137,8 @@ bot.window.getInteractableSize = function(opt_win) {
     return a - b;
   };
 
-  var width = goog.array.peek(widths.sort(sortFunc)) || 0;
-  var height = goog.array.peek(heights.sort(sortFunc)) || 0;
+  var width = /**@type {number}*/goog.array.peek(widths.sort(sortFunc)) || 0;
+  var height = /**@type {number}*/goog.array.peek(heights.sort(sortFunc)) || 0;
 
   return new goog.math.Size(width, height);
 };
