@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -32,7 +33,6 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.openqa.selenium.WaitingConditions.trimmedElementTextToEqual;
 
 import java.io.File;
 import java.io.IOException;
@@ -377,6 +377,15 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 
     assertFalse("0".equals(clientX));
     assertFalse("0".equals(clientY));
+  }
+  
+  @JavascriptEnabled
+  @Ignore(ALL)
+  public void testClickEventsShouldBubble() {
+    driver.get(pages.clicksPage);
+    driver.findElement(By.id("bubblesFrom")).click();
+    boolean eventBubbled = (Boolean)((JavascriptExecutor)driver).executeScript("return !!window.bubbledClick;");
+    assertTrue("Event didn't bubble up", eventBubbled);
   }
 
   private void clickOnElementWhichRecordsEvents() {
