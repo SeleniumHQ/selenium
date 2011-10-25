@@ -67,8 +67,12 @@ class ClearElementCommandHandler : public IECommandHandler {
         script_wrapper.AddArgument(element_wrapper);
         status_code = script_wrapper.Execute();
         if (status_code != SUCCESS) {
-          response->SetErrorResponse(EUNHANDLEDERROR,
-                                     "Element is no longer valid");
+          // Assume that a JavaScript error returned by the atom is that
+          // the element is either invisible, disabled, or read-only.
+          // This may be a bad assumption, but we currently have no way
+          // to get information about exceptions thrown from JS.
+          response->SetErrorResponse(EELEMENTNOTENABLED,
+                                     "Element must not be hidden, disabled or read-only");
           return;
         }
 
