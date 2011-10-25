@@ -168,7 +168,7 @@ public class Registry {
     try {
       lock.lock();
 
-      proxies.verifyNewSessionRequest(request);
+      proxies.verifyAbilityToHandleDesiredCapabilities(request.getDesiredCapabilities());
       newSessionQueue.add(request);
       fireMatcherStateChanged();
     } finally {

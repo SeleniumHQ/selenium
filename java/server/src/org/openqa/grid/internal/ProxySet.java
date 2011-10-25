@@ -19,7 +19,6 @@ limitations under the License.
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
-import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -153,20 +152,20 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return proxies.size();
   }
 
-  public void verifyNewSessionRequest(RequestHandler request) {
+  public void verifyAbilityToHandleDesiredCapabilities(Map<String, Object> desiredCapabilities) {
     if (proxies.isEmpty()) {
       if (throwOnCapabilityNotPresent) {
-        throw new GridException("Empty pool of VM for setup " + request.getDesiredCapabilities());
+        throw new GridException("Empty pool of VM for setup " + desiredCapabilities);
       } else {
         log.warning("Empty pool of nodes.");
       }
 
     }
-    if (!hasCapability(request.getDesiredCapabilities())) {
+    if (!hasCapability(desiredCapabilities)) {
       if (throwOnCapabilityNotPresent) {
-        throw new CapabilityNotPresentOnTheGridException(request.getDesiredCapabilities());
+        throw new CapabilityNotPresentOnTheGridException(desiredCapabilities);
       } else {
-        log.warning("grid doesn't contain " + request.getDesiredCapabilities() +
+        log.warning("grid doesn't contain " + desiredCapabilities +
                     " at the moment.");
       }
 

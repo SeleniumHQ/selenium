@@ -14,10 +14,15 @@
 
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
-import static org.openqa.grid.common.RegistrationRequest.PATH;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
-import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.internal.listeners.TimeoutListener;
+import org.openqa.grid.internal.utils.CapabilityMatcher;
+import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
+import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
@@ -30,17 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.SeleniumProtocol;
-import org.openqa.grid.internal.listeners.TimeoutListener;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
-import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
-
-;
+import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import static org.openqa.grid.common.RegistrationRequest.PATH;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
 
 /**
  * Proxy to a remote server executing the tests.
@@ -68,7 +66,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   private final Map<String, Object> config;
 
   // list of the type of test the remote can run.
-  private final List<TestSlot> testSlots = Collections.synchronizedList(new ArrayList<TestSlot>());
+  private final List<TestSlot> testSlots;
 
   // maximum number of tests that can run at a given time on the remote.
   private final int maxConcurrentSession;
@@ -77,6 +75,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   private volatile CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
 
   private String id;
+
+  private volatile boolean stop = false;
+
 
   public List<TestSlot> getTestSlots() {
     return testSlots;
@@ -137,6 +138,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
+    List<TestSlot> slots = new ArrayList<TestSlot>();
     for (DesiredCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
@@ -154,9 +156,10 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         for (String k : capability.asMap().keySet()) {
           c.put(k, capability.getCapability(k));
         }
-        testSlots.add(new TestSlot(this, protocol, path, c));
+        slots.add(new TestSlot(this, protocol, path, c));
       }
     }
+    this.testSlots = Collections.unmodifiableList( slots);
   }
 
   private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
@@ -231,11 +234,6 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     return id;
   }
 
-  protected void setId(String id) {
-    this.id = id;
-  }
-
-  private boolean stop = false;
 
   public void teardown() {
     stop = true;
