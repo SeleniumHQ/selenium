@@ -241,9 +241,6 @@
     <ClInclude Include="CommandHandlers\SendKeysToAlertCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
-    <ClInclude Include="CommandHandlers\SendModifierKeyCommandHandler.h">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClInclude>
     <ClInclude Include="CommandHandlers\SetAsyncScriptTimeoutCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
