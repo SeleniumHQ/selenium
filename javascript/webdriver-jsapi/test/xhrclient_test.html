@@ -43,7 +43,7 @@ limitations under the License.
 
   var control = new goog.testing.MockControl();
   var stubs = new goog.testing.PropertyReplacer();
-  var mockClient, mockXhr, onCallback, onErrback;
+  var mockClient, mockXhr;
 
   function setUp() {
     mockClient = control.createStrictMock(webdriver.http.Client);
@@ -60,16 +60,6 @@ limitations under the License.
 
   function setXhr(value) {
     stubs.set(goog.global, 'XMLHttpRequest', value);
-  }
-
-  function assertSuccess() {
-    onErrback.assertNotCalled('Did not expect errback');
-    onCallback.assertCalled('Expected callback');
-  }
-
-  function assertFailure() {
-    onCallback.assertNotCalled('Did not expect callback');
-    onErrback.assertCalled('Expected errback');
   }
 
   function expectRequest(mockXhr) {
@@ -97,11 +87,13 @@ limitations under the License.
     });
     control.$replayAll();
 
-    var response = new webdriver.http.XhrClient(URL).send(REQUEST);
-    webdriver.promise.when(response,
-        onCallback = callbackHelper(),
-        onErrback = callbackHelper());
-    assertFailure();
+    var callback;
+    new webdriver.http.XhrClient(URL).send(REQUEST,
+        callback = callbackHelper(function(error) {
+          assertNotNullNorUndefined(error);
+          assertEquals(1, arguments.length);
+        }));
+    callback.assertCalled();
     control.$verifyAll();
   }
 
@@ -119,9 +111,11 @@ limitations under the License.
     ].join('\r\n'));
     control.$replayAll();
 
-    var response = new webdriver.http.XhrClient(URL).send(REQUEST);
-    webdriver.promise.when(response,
-        onCallback = callbackHelper(function(response) {
+    var callback;
+    new webdriver.http.XhrClient(URL).send(REQUEST,
+        callback = callbackHelper(function(e, response) {
+          assertNull(e);
+
           assertEquals(200, response.status);
           assertEquals('', response.body);
 
@@ -131,9 +125,8 @@ limitations under the License.
             'e': 'f',
             'g': 'h'
           }, response.headers);
-        }),
-        onErrback = callbackHelper());
-    assertSuccess();
+        }));
+    callback.assertCalled();
     control.$verifyAll();
   }
 
@@ -151,9 +144,10 @@ limitations under the License.
     ].join('\n'));
     control.$replayAll();
 
-    var response = new webdriver.http.XhrClient(URL).send(REQUEST);
-    webdriver.promise.when(response,
-        onCallback = callbackHelper(function(response) {
+    var callback;
+    new webdriver.http.XhrClient(URL).send(REQUEST,
+        callback = callbackHelper(function(e, response) {
+          assertNull(e);
           assertEquals(200, response.status);
           assertEquals('', response.body);
 
@@ -163,9 +157,8 @@ limitations under the License.
             'e': 'f',
             'g': 'h'
           }, response.headers);
-        }),
-        onErrback = callbackHelper());
-    assertSuccess();
+        }));
+    callback.assertCalled();
     control.$verifyAll();
   }
 
@@ -178,16 +171,16 @@ limitations under the License.
     mockXhr.getAllResponseHeaders().$returns('');
     control.$replayAll();
 
-    var response = new webdriver.http.XhrClient(URL).send(REQUEST);
-    webdriver.promise.when(response,
-        onCallback = callbackHelper(function(response) {
+    var callback;
+    new webdriver.http.XhrClient(URL).send(REQUEST,
+        callback = callbackHelper(function(e, response) {
+          assertNull(e);
           assertEquals(200, response.status);
           assertEquals('', response.body);
 
           _assertObjectEquals({}, response.headers);
-        }),
-        onErrback = callbackHelper());
-    assertSuccess();
+        }));
+    callback.assertCalled();
     control.$verifyAll();
   }
 
@@ -200,15 +193,15 @@ limitations under the License.
     mockXhr.getAllResponseHeaders().$returns('');
     control.$replayAll();
 
-    var response = new webdriver.http.XhrClient(URL).send(REQUEST);
-    webdriver.promise.when(response,
-        onCallback = callbackHelper(function(response) {
+    var callback;
+    new webdriver.http.XhrClient(URL).send(REQUEST,
+        callback = callbackHelper(function(e, response) {
+          assertNull(e);
           assertEquals(200, response.status);
           assertEquals('foobar', response.body);
           _assertObjectEquals({}, response.headers);
-        }),
-        onErrback = callbackHelper());
-    assertSuccess();
+        }));
+    callback.assertCalled();
     control.$verifyAll();
   }
   </script>

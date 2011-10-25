@@ -22,7 +22,6 @@ goog.provide('webdriver.node');
 goog.provide('webdriver.node.HttpClient');
 
 goog.require('webdriver.http.Response');
-goog.require('webdriver.promise.Deferred');
 goog.require('webdriver.process');
 
 
@@ -112,9 +111,7 @@ webdriver.node.HttpClient = function(url) {
 
 
 /** @override */
-webdriver.node.HttpClient.prototype.send = function(httpRequest) {
-  var deferred = new webdriver.promise.Deferred();
-
+webdriver.node.HttpClient.prototype.send = function(httpRequest, callback) {
   var data;
   if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
      data = JSON.stringify(httpRequest.data);
@@ -127,21 +124,19 @@ webdriver.node.HttpClient.prototype.send = function(httpRequest) {
     port: this.options_.port,
     path: this.options_.path + httpRequest.path,
     headers: httpRequest.headers
-  }, deferred, data);
-
-  return deferred.promise;
+  }, callback, data);
 };
 
 
 /**
  * Sends a single HTTP request.
  * @param {!Object} options The request options.
- * @param {!webdriver.promise.Deferred} deferred The deferred to respond to when
- *     the response is received.
+ * @param {function(Error, !webdriver.http.Response=)} callback The function to
+ *     invoke with the server's response.
  * @param {string=} opt_data The data to send with the request.
  * @private
  */
-webdriver.node.HttpClient.sendRequest_ = function(options, deferred, opt_data) {
+webdriver.node.HttpClient.sendRequest_ = function(options, callback, opt_data) {
   var request =  require('http').request(options, function(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
       var location = webdriver.node.parseUrl_(response.headers['location']);
@@ -160,7 +155,7 @@ webdriver.node.HttpClient.sendRequest_ = function(options, deferred, opt_data) {
         headers: {
           'Accept': 'application/json'
         }
-      }, deferred);
+      }, callback);
       return;
     }
 
@@ -169,13 +164,12 @@ webdriver.node.HttpClient.sendRequest_ = function(options, deferred, opt_data) {
     response.on('end', function() {
       var resp = new webdriver.http.Response(response.statusCode,
           response.headers, body.join('').replace(/\0/g, ''));
-      deferred.resolve(resp);
+      callback(null, resp);
     });
   });
 
   request.on('error', function(e) {
-    deferred.reject(
-        new Error('Unable to send request: ' + e.message));
+    callback(new Error('Unable to send request: ' + e.message));
   });
 
   if (opt_data) {

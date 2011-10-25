@@ -18,7 +18,7 @@ limitations under the License.
 <html>
 <head>
   <title>promise_test.html</title>
-  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../../third_party/closure/goog/base.js"></script>
   <script src="../../deps.js"></script>
   <script src="testutil.js"></script>
   <script>
@@ -954,6 +954,76 @@ function testCallbackChain_split() {
   stage2.assertCallback('Wrong function for stage 2');
   stage3.assertCallback('Wrong function for final stage');
 }
+
+
+function testCheckedNodeCall_functionThrows() {
+  var error = new Error('boom');
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+  });
+
+  webdriver.promise.checkedNodeCall(function() {
+    throw error;
+  }).then(pair.callback, pair.errback);
+
+  pair.assertErrback();
+}
+
+
+function testCheckedNodeCall_functionReturnsAnError() {
+  var error = new Error('boom');
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+  });
+  webdriver.promise.checkedNodeCall(function(callback) {
+    callback(error);
+  }).then(pair.callback, pair.errback);
+  pair.assertErrback();
+}
+
+
+function testCheckedNodeCall_functionReturnsSuccess() {
+  var success = 'success!';
+  var pair = callbackPair(function(value) {
+    assertEquals(success, value);
+  });
+  webdriver.promise.checkedNodeCall(function(callback) {
+    callback(null, success);
+  }).then(pair.callback, pair.errback);
+  pair.assertCallback();
+}
+
+
+function testCheckedNodeCall_functionReturnsAndThrows() {
+  var error = new Error('boom');
+  var error2 = new Error('boom again');
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error, e);
+  });
+  webdriver.promise.checkedNodeCall(function(callback) {
+    callback(error);
+    throw error2;
+  }).then(pair.callback, pair.errback);
+  pair.assertErrback();
+}
+
+
+function testCheckedNodeCall_functionThrowsAndReturns() {
+  var error = new Error('boom');
+  var error2 = new Error('boom again');
+  var pair = callbackPair(null, function(e) {
+    assertEquals(error2, e);
+  });
+  webdriver.promise.checkedNodeCall(function(callback) {
+    setTimeout(goog.partial(callback, error), 0);
+    throw error2;
+  }).then(pair.callback, pair.errback);
+  pair.assertErrback();
+  pair.reset();
+  consumeTimeouts();
+  pair.assertNeither();
+}
+
 </script>
 </body>
 </html>

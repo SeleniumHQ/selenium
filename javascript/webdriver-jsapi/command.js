@@ -20,6 +20,7 @@
 goog.provide('webdriver.Command');
 goog.provide('webdriver.CommandExecutor');
 goog.provide('webdriver.CommandName');
+goog.provide('webdriver.CommandResponse');
 
 
 
@@ -127,7 +128,6 @@ webdriver.CommandName = {
   'FIND_ELEMENTS': 'findElements',
   'FIND_CHILD_ELEMENT': 'findChildElement',
   'FIND_CHILD_ELEMENTS': 'findChildElements',
-  'GET_ACTIVE_ELEMENT': 'getActiveElement',
 
   'CLEAR_ELEMENT': 'clearElement',
   'CLICK_ELEMENT': 'clickElement',
@@ -171,6 +171,14 @@ webdriver.CommandName = {
 
 
 /**
+ * Type definition for a WebDriver response object as defined by the wire
+ * protocol.
+ * @typedef {{status:bot.ErrorCode, value:*}}
+ */
+webdriver.CommandResponse;
+
+
+/**
  * Handles the execution of {@code webdriver.Command} objects.
  * @interface
  */
@@ -178,11 +186,12 @@ webdriver.CommandExecutor = function() {};
 
 
 /**
- * Executes the given {@code command}.  Will return a promise that will be
- * resolved when a response is ready.  If there is an error executing the
- * command, the promise will be rejected with the offending error.
+ * Executes the given {@code command}. If there is an error executing the
+ * command, the provided callback will be invoked with the offending error.
+ * Otherwise, the callback will be invoked with a null Error and non-null
+ * {@code webdriver.CommandResponse} object.
  * @param {!webdriver.Command} command The command to execute.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     command has finished execution.
+ * @param {function(Error, !webdriver.CommandResponse=)} callback the function
+ *     to invoke when the command response is ready.
  */
 webdriver.CommandExecutor.prototype.execute = goog.abstractMethod;

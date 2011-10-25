@@ -18,7 +18,7 @@ limitations under the License.
 <html>
 <head>
   <title>http_test.html</title>
-  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../../third_party/closure/goog/base.js"></script>
   <script src="../../deps.js"></script>
   <script src="testutil.js"></script>
   <script>
@@ -80,12 +80,18 @@ limitations under the License.
               '\n    Actual headers were:\n' + headersToString(request.headers),
               goog.testing.asserts.findDifferences(headers, request.headers));
           return true;
-        }, description));
+        }, description),
+        goog.testing.mockmatchers.isFunction);
   }
 
   function response(status, headers, body) {
-    return webdriver.promise.resolved(
-        new webdriver.http.Response(status, headers, body));
+    return new webdriver.http.Response(status, headers, body);
+  }
+
+  function respondsWith(error, opt_response) {
+    return function(request, callback) {
+      callback(error, opt_response);
+    };
   }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -122,21 +128,66 @@ limitations under the License.
 
   function testExecute_rejectsUnrecognisedCommands() {
     assertThrows(goog.bind(executor.execute, executor,
-        new webdriver.Command('fake-command-name')));
+        new webdriver.Command('fake-command-name'), goog.nullFunction));
+  }
+
+  /**
+   * @param {!webdriver.Command} command The command to send.
+   * @param {!Function=} opt_onSuccess The function to check the response with.
+   */
+  function assertSendsSuccessfully(command, opt_onSuccess) {
+    var callback;
+    executor.execute(command, callback = callbackHelper(function(e, response) {
+      assertNull(e);
+      assertNotNullNorUndefined(response);
+      if (opt_onSuccess) {
+        opt_onSuccess(response);
+      }
+    }));
+    callback.assertCalled();
+    control.$verifyAll();
+  }
+
+  /**
+   * @param {!webdriver.Command} command The command to send.
+   * @param {!Function=} opt_onError The function to check the error with.
+   */
+  function assertFailsToSend(command, opt_onError) {
+    var callback;
+    executor.execute(command, callback = callbackHelper(function(e, response) {
+      assertNotNullNorUndefined(e);
+      assertUndefined(response);
+      if (opt_onError) {
+        opt_onError(e);
+      }
+    }));
+    callback.assertCalled();
+    control.$verifyAll();
+  }
+
+  function testExecute_clientFailsToSendRequest() {
+    var error = new Error('boom');
+    expectRequest('POST', '/session', {}, {
+      'Accept': 'application/json; charset=utf-8'
+    }).
+    $does(respondsWith(error));
+    control.$replayAll();
+
+    assertFailsToSend(new webdriver.Command(webdriver.CommandName.NEW_SESSION),
+        function(e) {
+          assertEquals(error, e);
+        });
   }
 
   function testExecute_commandWithNoUrlParameters() {
     expectRequest('POST', '/session', {}, {
       'Accept': 'application/json; charset=utf-8'
     }).
-    $returns(response(200, {}, ''));
+    $does(respondsWith(null, response(200, {}, '')));
     control.$replayAll();
 
-    executor.execute(new webdriver.Command(webdriver.CommandName.NEW_SESSION)).
-        then(onCallback = callbackHelper(), onErrback = callbackHelper());
-
-    control.$verifyAll();
-    assertSuccess();
+    assertSendsSuccessfully(
+        new webdriver.Command(webdriver.CommandName.NEW_SESSION));
   }
 
   function testExecute_rejectsCommandsMissingUrlParameters() {
@@ -159,16 +210,12 @@ limitations under the License.
             setParameter('url', 'http://www.google.com');
 
     expectRequest('POST', '/session/s123/url',
-      {'url': 'http://www.google.com'},
-      {'Accept': 'application/json; charset=utf-8'}).
-      $returns(response(200, {}, ''));
+        {'url': 'http://www.google.com'},
+        {'Accept': 'application/json; charset=utf-8'}).
+        $does(respondsWith(null, response(200, {}, '')));
     control.$replayAll();
 
-    executor.execute(command).
-        then(onCallback = callbackHelper(), onErrback = callbackHelper());
-
-    control.$verifyAll();
-    assertSuccess();
+    assertSendsSuccessfully(command);
   }
 
   function testExecute_returnsParsedJsonResponse() {
@@ -181,18 +228,14 @@ limitations under the License.
 
     expectRequest('GET', '/session/s123/url', {}, {
       'Accept': 'application/json; charset=utf-8'
-    }).$returns(response(200, {'Content-Type': 'application/json'},
-        goog.json.serialize(responseObj)));
+    }).$does(respondsWith(null,
+        response(200, {'Content-Type': 'application/json'},
+            goog.json.serialize(responseObj))));
     control.$replayAll();
 
-    executor.execute(command).then(
-        onCallback = callbackHelper(function(response) {
-          _assertObjectEquals(responseObj, response);
-        }),
-        onErrback = callbackHelper());
-
-    control.$verifyAll();
-    assertSuccess();
+    assertSendsSuccessfully(command, function(response) {
+      _assertObjectEquals(responseObj, response);
+    });
   }
 
   function testExecute_returnsSuccessFor2xxWithBodyAsValueWhenNotJson() {
@@ -201,20 +244,36 @@ limitations under the License.
 
     expectRequest('GET', '/session/s123/url', {}, {
       'Accept': 'application/json; charset=utf-8'
-    }).$returns(response(200, {}, 'hello, world\r\ngoodbye, world!'));
+    }).$does(respondsWith(null,
+        response(200, {}, 'hello, world\r\ngoodbye, world!')));
     control.$replayAll();
 
-    executor.execute(command).then(
-        onCallback = callbackHelper(function(response) {
+    assertSendsSuccessfully(command, function(response) {
+      _assertObjectEquals({
+        'status': bot.ErrorCode.SUCCESS,
+        'value': 'hello, world\ngoodbye, world!'
+      }, response);
+    });
+  }
+
+  function testExecute_returnsSuccessFor2xxInvalidJsonBody() {
+    var invalidJson = '[';
+    expectRequest('POST', '/session', {}, {
+      'Accept': 'application/json; charset=utf-8'
+    }).
+    $does(respondsWith(null, response(200, {
+      'Content-Type': 'application/json'
+    }, invalidJson)));
+    control.$replayAll();
+
+    assertSendsSuccessfully(
+        new webdriver.Command(webdriver.CommandName.NEW_SESSION),
+        function(response) {
           _assertObjectEquals({
             'status': bot.ErrorCode.SUCCESS,
-            'value': 'hello, world\ngoodbye, world!'
+            'value': invalidJson
           }, response);
-        }),
-        onErrback = callbackHelper());
-
-    control.$verifyAll();
-    assertSuccess();
+        });
   }
 
   function testExecute_returnsUnknownCommandFor404WithBodyAsValueWhenNotJson() {
@@ -223,20 +282,16 @@ limitations under the License.
 
     expectRequest('GET', '/session/s123/url', {}, {
       'Accept': 'application/json; charset=utf-8'
-    }).$returns(response(404, {}, 'hello, world\r\ngoodbye, world!'));
+    }).$does(respondsWith(null,
+        response(404, {}, 'hello, world\r\ngoodbye, world!')));
     control.$replayAll();
 
-    executor.execute(command).then(
-        onCallback = callbackHelper(function(response) {
-          _assertObjectEquals({
-            'status': bot.ErrorCode.UNKNOWN_COMMAND,
-            'value': 'hello, world\ngoodbye, world!'
-          }, response);
-        }),
-        onErrback = callbackHelper());
-
-    control.$verifyAll();
-    assertSuccess();
+    assertSendsSuccessfully(command, function(response) {
+      _assertObjectEquals({
+        'status': bot.ErrorCode.UNKNOWN_COMMAND,
+        'value': 'hello, world\ngoodbye, world!'
+      }, response);
+    });
   }
 
   function testExecute_returnsUnknownErrorForGenericErrorCodeWithBodyAsValueWhenNotJson() {
@@ -245,20 +300,16 @@ limitations under the License.
 
     expectRequest('GET', '/session/s123/url', {}, {
       'Accept': 'application/json; charset=utf-8'
-    }).$returns(response(500, {}, 'hello, world\r\ngoodbye, world!'));
+    }).$does(respondsWith(null,
+        response(500, {}, 'hello, world\r\ngoodbye, world!')));
     control.$replayAll();
 
-    executor.execute(command).then(
-        onCallback = callbackHelper(function(response) {
-          _assertObjectEquals({
-            'status': bot.ErrorCode.UNKNOWN_ERROR,
-            'value': 'hello, world\ngoodbye, world!'
-          }, response);
-        }),
-        onErrback = callbackHelper());
-
-    control.$verifyAll();
-    assertSuccess();
+    assertSendsSuccessfully(command, function(response) {
+      _assertObjectEquals({
+        'status': bot.ErrorCode.UNKNOWN_ERROR,
+        'value': 'hello, world\ngoodbye, world!'
+      }, response);
+    });
   }
 
   function testExecute_attemptsToParseBodyWhenNoContentTypeSpecified() {
@@ -271,17 +322,13 @@ limitations under the License.
 
     expectRequest('GET', '/session/s123/url', {}, {
       'Accept': 'application/json; charset=utf-8'
-    }).$returns(response(200, {}, goog.json.serialize(responseObj)));
+    }).$does(respondsWith(null,
+        response(200, {}, goog.json.serialize(responseObj))));
     control.$replayAll();
 
-    executor.execute(command).then(
-        onCallback = callbackHelper(function(response) {
-          _assertObjectEquals(responseObj, response);
-        }),
-        onErrback = callbackHelper());
-
-    control.$verifyAll();
-    assertSuccess();
+    assertSendsSuccessfully(command, function(response) {
+      _assertObjectEquals(responseObj, response);
+    });
   }
 
   function FakeXmlHttpRequest(headers, status, responseText) {

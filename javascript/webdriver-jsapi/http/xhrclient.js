@@ -19,7 +19,6 @@ goog.provide('webdriver.http.XhrClient');
 
 goog.require('goog.json');
 goog.require('webdriver.http.Response');
-goog.require('webdriver.promise.Deferred');
 
 
 /**
@@ -53,16 +52,14 @@ webdriver.http.XhrClient.isCorsAvailable = function() {
 
 
 /** @override */
-webdriver.http.XhrClient.prototype.send = function(request) {
-  var deferred = new webdriver.promise.Deferred();
-
+webdriver.http.XhrClient.prototype.send = function(request, callback) {
   try {
     var xhr = new XMLHttpRequest;
     var url = this.url_ + request.path;
     xhr.open(request.method, url, true);
 
     xhr.onload = function() {
-      deferred.resolve(webdriver.http.Response.fromXmlHttpRequest(xhr));
+      callback(null, webdriver.http.Response.fromXmlHttpRequest(xhr));
     };
 
     xhr.onerror = function() {
@@ -89,7 +86,7 @@ webdriver.http.XhrClient.prototype.send = function(request) {
       }
 
       message.push('\n', request);
-      deferred.reject(new Error(message.join('')));
+      callback(new Error(message.join('')));
     };
 
     for (var header in request.headers) {
@@ -98,7 +95,6 @@ webdriver.http.XhrClient.prototype.send = function(request) {
 
     xhr.send(goog.json.serialize(request.data));
   } catch (ex) {
-    deferred.reject(ex);
+    callback(ex);
   }
-  return deferred.promise;
 };

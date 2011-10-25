@@ -39,17 +39,17 @@ webdriver.http.Client = function() {
 
 
 /**
- * Sends a request to the server. The client shall return a promise that will
- * be resolved with a non-null {@code webdriver.http.Response} object when the
- * server's response has been received. If an error occurs while sending the
- * request, such as a failure to connect to the server, the returned promise
- * will be rejected with a non-null {@code Error} describing the error.
+ * Sends a request to the server. If an error occurs while sending the request,
+ * such as a failure to connect to the server, the provided callback will be
+ * invoked with a non-null {@code Error} describing the error. Otherwise, when
+ * the server's response has been received, the callback will be invoked with a
+ * null Error and non-null {@code webdriver.http.Response} object.
  *
  * @param {!webdriver.http.Request} request The request to send.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     the server's response has been received.
+ * @param {function(Error, !webdriver.http.Response=)} callback the function to
+ *     invoke when the server's response is ready.
  */
-webdriver.http.Client.prototype.send = function(request) {
+webdriver.http.Client.prototype.send = function(request, callback) {
 };
 
 
@@ -73,7 +73,7 @@ webdriver.http.Executor = function(client) {
 
 
 /** @override */
-webdriver.http.Executor.prototype.execute = function(command) {
+webdriver.http.Executor.prototype.execute = function(command, callback) {
   var resource = webdriver.http.Executor.COMMAND_MAP_[command.getName()];
   if (!resource) {
     throw new Error('Unrecognized command: ' + command.getName())
@@ -83,8 +83,19 @@ webdriver.http.Executor.prototype.execute = function(command) {
   var path = webdriver.http.Executor.buildPath_(resource.path, parameters);
   var request = new webdriver.http.Request(resource.method, path, parameters);
 
-  return this.client_.send(request).
-      then(webdriver.http.Executor.parseHttpResponse);
+  this.client_.send(request, function(e, response) {
+    debugger;
+    var responseObj;
+    if (!e) {
+      try {
+        responseObj = webdriver.http.Executor.parseHttpResponse_(
+            /** @type {!webdriver.http.Response} */response);
+      } catch (ex) {
+        e = ex;
+      }
+    }
+    callback(e, responseObj);
+  });
 };
 
 
@@ -123,27 +134,19 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
 
 
 /**
- * Parses a HTTP response.
+ * Callback used to parse {@link webdriver.http.Response} objects from a
+ * {@link webdriver.http.Client}.
  * @param {!webdriver.http.Response} httpResponse The HTTP response to parse.
+ * @private
  */
-webdriver.http.Executor.parseHttpResponse = function(httpResponse) {
-  // If the server sent us a JSON response, just parse and resolve with it.
-  // Yes, we're assuming the response has the correct {status:number,value*}
-  // format.
-  var contentType = httpResponse.headers['content-type'];
-  if (contentType && contentType.search('application/json') != -1) {
-    return goog.json.parse(httpResponse.body);
-  }
-
-  // Whoops, looks like the server sent us a potentially bad response. Rebuild
-  // it directly. First, try parsing the body - the server may have just failed
-  // to specify the content type.
+webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
   try {
     return goog.json.parse(httpResponse.body);
   } catch (ex) {
+    // Whoops, looks like the server sent us a malformed response. We'll need
+    // to manually build a response object based on the response code.
   }
 
-  // Ok, not a valid JSON response. Build one based on the status code.
   var response = {
     'status': bot.ErrorCode.SUCCESS,
     'value': httpResponse.body.replace(/\r\n/g, '\n')

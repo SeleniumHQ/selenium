@@ -18,7 +18,7 @@ limitations under the License.
 <html>
 <head>
   <title>jsonpclient_test.html</title>
-  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../../third_party/closure/goog/base.js"></script>
   <script src="../../deps.js"></script>
   <script src="testutil.js"></script>
   <script>
@@ -41,7 +41,7 @@ limitations under the License.
 
     var control = new goog.testing.MockControl();
     var stubs = new goog.testing.PropertyReplacer();
-    var clock, mockDom, client, onCallback, onErrback;
+    var clock, mockDom, client;
 
     function setUp() {
       stubs.set(webdriver.http.JsonpClient, 'nextRequestId_', 0);
@@ -56,11 +56,6 @@ limitations under the License.
       control.$tearDown();
       clock.reset();
       clock.uninstall();
-    }
-
-    function assertSuccess() {
-      onErrback.assertNotCalled('Did not expect errback');
-      onCallback.assertCalled('Expected callback');
     }
 
     function expectCreateDom(callbackName) {
@@ -112,16 +107,14 @@ limitations under the License.
       expectToClearRequest(fakeScript);
       control.$replayAll();
 
-      webdriver.promise.when(client.send(REQUEST),
-          onCallback = callbackHelper(function(response) {
-            assertUndefined(goog.global['wdJSONP_0_0']);
-            assertEquals(500, response.status);
-            _assertObjectEquals({}, response.headers);
-            assertEquals('Unable to send request: ' + REQUEST_URL_PREFIX +
-                '&callback=wdJSONP_0_0&cacheBuster=0', response.body);
-          }),
-          onErrback = callbackHelper());
-      assertSuccess();
+      var callback;
+      client.send(REQUEST, callback = callbackHelper(function(error, response) {
+        assertEquals('Unable to send request: ' + REQUEST_URL_PREFIX +
+            '&callback=wdJSONP_0_0&cacheBuster=0', error.message);
+        assertUndefined(response);
+        assertUndefined(goog.global['wdJSONP_0_0']);
+      }));
+      callback.assertCalled();
     }
 
     function testSend_requestSucceeds() {
@@ -133,15 +126,15 @@ limitations under the License.
       expectToClearRequest(fakeScript);
       control.$replayAll();
 
-      webdriver.promise.when(client.send(REQUEST),
-          onCallback = callbackHelper(function(response) {
-            assertUndefined(goog.global['wdJSONP_0_0']);
-            assertEquals(200, response.status);
-            _assertObjectEquals({}, response.headers);
-            assertEquals('serverResponse', response.body);
-          }),
-          onErrback = callbackHelper());
-      assertSuccess();
+      var callback;
+      client.send(REQUEST, callback = callbackHelper(function(error, response) {
+        assertNull(error);
+        assertUndefined(goog.global['wdJSONP_0_0']);
+        assertEquals(200, response.status);
+        _assertObjectEquals({}, response.headers);
+        assertEquals('serverResponse', response.body);
+      }));
+      callback.assertCalled();
     }
   </script>
 </head>

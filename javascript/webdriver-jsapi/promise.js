@@ -432,6 +432,36 @@ webdriver.promise.rejected = function(reason) {
 
 
 /**
+ * Wraps a function that is assumed to a node-style callback as its final
+ * argument. This callback takes two arguments: an error value (which will be
+ * null if the call succeeded), and the success value as the second argument.
+ * If the call fails, the returned promise will be rejected, otherwise it will
+ * be resolved with the result.
+ * @param {!Function} fn The function to wrap.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ *     result of the provided function's callback.
+ */
+webdriver.promise.checkedNodeCall = function(fn) {
+  var deferred = new webdriver.promise.Deferred();
+  var resolved = false;
+  try {
+    fn(function(error, value) {
+      if (!resolved) {
+        resolved = true;
+        error ? deferred.reject(error) : deferred.resolve(value);
+      }
+    });
+  } catch (ex) {
+    if (!resolved) {
+      resolved = true;
+      deferred.reject(ex);
+    }
+  }
+  return deferred.promise;
+};
+
+
+/**
  * Registers an observer on a promised {@code value}, returning a new promise
  * that will be resolved when the value is. If {@code value} is not a promise,
  * then the return promise will be immediately resolved.

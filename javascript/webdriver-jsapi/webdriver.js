@@ -243,7 +243,8 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
         then(webdriver.WebDriver.toWireValue_).
         then(function(parameters) {
           command.setParameters(parameters);
-          return self.executor_.execute(command);
+          return webdriver.promise.checkedNodeCall(
+              goog.bind(self.executor_.execute, self.executor_, command));
         });
       }).
       then(function(response) {

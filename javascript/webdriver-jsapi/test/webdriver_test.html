@@ -195,14 +195,15 @@ limitations under the License.
         }, commandName + '(' + goog.json.serialize(parameters) + ')');
 
     assertNotNull(this.toDo_);
-    this.helper_.executor_.execute(commandMatcher).
+    this.helper_.executor_.
+        execute(commandMatcher, goog.testing.mockmatchers.isFunction).
         $does(this.toDo_);
   };
 
 
   TestHelper.Command.prototype.andReturn = function(code, opt_value) {
-    this.toDo_ = function(command) {
-      return webdriver.promise.resolved({
+    this.toDo_ = function(command, callback) {
+      callback(null, {
         'status': code,
         'sessionId': {
           'value': SESSION_ID

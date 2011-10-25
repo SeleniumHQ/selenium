@@ -120,6 +120,27 @@ webdriver.Builder.USE_JSONP_ENV = 'wdjsonp';
 
 
 /**
+ * Sends a command to the server that is expected to return a response whose
+ * value describes the capabilities of that session. By virtue of the WebDriver
+ * wire protocol, the session ID can be extract from the response as well.
+ * @param {!webdriver.http.Executor} executor Command executor to use when
+ *     querying for session details.
+ * @param {!webdriver.Command} command The command to send to fetch the session
+ *     details.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with a
+ *     {@link webdriver.Session}.
+ * @private
+ */
+webdriver.Builder.getSessionHelper_ = function(executor, command) {
+  var fn = goog.bind(executor.execute, executor, command);
+  return webdriver.promise.checkedNodeCall(fn).then(function(response) {
+    webdriver.error.checkResponse(response);
+    return new webdriver.Session(response['sessionId'], response['value']);
+  });
+};
+
+
+/**
  * Queries a server for the capabilities of a particular session. The returned
  * promise will resolve with a fully formed {@code webdriver.Session} object.
  * @param {string} id ID of the session to query.
@@ -130,13 +151,9 @@ webdriver.Builder.USE_JSONP_ENV = 'wdjsonp';
  * @private
  */
 webdriver.Builder.getSession_ = function(id, executor) {
-  var command = new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
-      setParameter('sessionId', id);
-  var response = executor.execute(command);
-  return webdriver.promise.when(response, function(response) {
-    webdriver.error.checkResponse(response);
-    return new webdriver.Session(id, response['value']);
-  });
+  return webdriver.Builder.getSessionHelper_(executor,
+      new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
+          setParameter('sessionId', id));
 };
 
 
@@ -150,13 +167,9 @@ webdriver.Builder.getSession_ = function(id, executor) {
  * @private
  */
 webdriver.Builder.createSession_ = function(executor, capabilities) {
-  var command = new webdriver.Command(webdriver.CommandName.NEW_SESSION).
-      setParameter('desiredCapabilities', capabilities);
-  var response = executor.execute(command);
-  return webdriver.promise.when(response, function(response) {
-    webdriver.error.checkResponse(response);
-    return new webdriver.Session(response['sessionId'], response['value']);
-  });
+  return webdriver.Builder.getSessionHelper_(executor,
+      new webdriver.Command(webdriver.CommandName.NEW_SESSION).
+          setParameter('desiredCapabilities', capabilities));
 };
 
 

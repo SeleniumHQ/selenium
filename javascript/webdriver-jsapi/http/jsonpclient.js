@@ -24,7 +24,6 @@ goog.provide('webdriver.http.JsonpClient');
 goog.require('goog.dom');
 goog.require('goog.json');
 goog.require('webdriver.http.Response');
-goog.require('webdriver.promise.Deferred');
 
 
 /**
@@ -86,9 +85,7 @@ webdriver.http.JsonpClient.createCallbackName_ = function() {
 
 
 /** @override */
-webdriver.http.JsonpClient.prototype.send = function(request) {
-  var deferred = new webdriver.promise.Deferred();
-
+webdriver.http.JsonpClient.prototype.send = function(request, callback) {
   var callbackName = webdriver.http.JsonpClient.createCallbackName_();
 
   var dom = this.dom_;
@@ -123,18 +120,15 @@ webdriver.http.JsonpClient.prototype.send = function(request) {
     dom.removeNode(jsonpRequest);
 
     var response = new webdriver.http.Response(200, {}, serverResponse);
-    deferred.resolve(response);
+    callback(null, response);
   };
 
   jsonpRequest.onerror = function() {
     deleteCallback();
     dom.removeNode(jsonpRequest);
 
-    var response = new webdriver.http.Response(500, {},
-        'Unable to send request: ' + jsonpRequest.src);
-    deferred.resolve(response);
+    callback(new Error('Unable to send request: ' + jsonpRequest.src));
   };
 
   dom.appendChild(dom.getDocument().documentElement, jsonpRequest);
-  return deferred.promise;
 };
