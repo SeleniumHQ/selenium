@@ -531,7 +531,7 @@ webdriver.WebDriver.prototype.close = function() {
 
 /**
  * Schedules a command to navigate to the given URL.
- * @param {!(goog.Uri|string)} url The fully qualified URL to open.
+ * @param {string} url The fully qualified URL to open.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     document has finished loading.
  * @export
@@ -735,7 +735,7 @@ webdriver.WebDriver.Navigation = function(driver) {
 
 /**
  * Schedules a command to navigate to a new URL.
- * @param {!(goog.Uri|string)} url The URL to navigate to.
+ * @param {string} url The URL to navigate to.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     URL has been loaded.
  * @export
@@ -743,7 +743,7 @@ webdriver.WebDriver.Navigation = function(driver) {
 webdriver.WebDriver.Navigation.prototype.to = function(url) {
   return this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.GET).
-          setParameter('url', url.toString()),
+          setParameter('url', url),
       'WebDriver.navigate().to(' + url + ')');
 };
 

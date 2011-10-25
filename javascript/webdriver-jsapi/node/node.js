@@ -84,7 +84,7 @@ webdriver.node.checkIsNative_ = function() {
 
 /**
  * HTTP client for use with NodeJS.
- * @param {!(goog.Uri|string)} url URL for the WebDriver server to send commands
+ * @param {!string} url URL for the WebDriver server to send commands
  *     to.
  * @constructor
  * @implements {webdriver.http.Client}
@@ -92,7 +92,7 @@ webdriver.node.checkIsNative_ = function() {
 webdriver.node.HttpClient = function(url) {
   webdriver.node.checkIsNative_();
 
-  url = webdriver.node.parseUrl_(url + '');
+  url = webdriver.node.parseUrl_(url);
   if (!url.hostname) {
     throw new Error('Invalid server URL: ' + url);
   }

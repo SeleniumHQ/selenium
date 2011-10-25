@@ -23,7 +23,7 @@ goog.require('webdriver.http.Response');
 
 /**
  * A HTTP client that sends requests using XMLHttpRequests.
- * @param {!(goog.Uri|string)} url URL for the WebDriver server to send commands
+ * @param {string} url URL for the WebDriver server to send commands
  *     to.
  * @constructor
  * @implements {webdriver.http.Client}
@@ -35,7 +35,7 @@ webdriver.http.XhrClient = function(url) {
    * @type {string}
    * @private
    */
-  this.url_ = url + '';
+  this.url_ = url;
 };
 
 

@@ -177,12 +177,12 @@ webdriver.Builder.createSession_ = function(executor, capabilities) {
  * Configures which WebDriver server should be used for new sessions. Overrides
  * the value loaded from the {@code webdriver.Builder.SERVER_URL_ENV} upon
  * instantion of this instance.
- * @param {!(goog.Uri|string)} url URL of the server to use.
+ * @param {string} url URL of the server to use.
  * @return {!webdriver.Builder} This Builder instance for chain calling.
  * @export
  */
 webdriver.Builder.prototype.usingServer = function(url) {
-  this.serverUrl_ = url + '';
+  this.serverUrl_ = url;
   return this;
 };
 

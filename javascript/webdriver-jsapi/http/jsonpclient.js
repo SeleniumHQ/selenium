@@ -38,7 +38,7 @@ goog.require('webdriver.http.Response');
  *       should respond to
  * </ol>
  *
- * @param {!(goog.Uri|string)} url Base URL of the server that requests will be
+ * @param {string} url Base URL of the server that requests will be
  *     sent to.
  * @param {!goog.dom.DomHelper=} opt_dom The DOM helper for this instance.
  *     Defaults to the current document's DOM helper.
