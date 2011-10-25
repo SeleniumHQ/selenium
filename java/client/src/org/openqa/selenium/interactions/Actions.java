@@ -77,7 +77,8 @@ public class Actions {
    * Note that the modifier key is <b>never</b> released implicitly - either
    * <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
    * must be called to release the modifier.
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
   public Actions keyDown(Keys theKey) {
@@ -89,7 +90,8 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    * @see #keyDown(org.openqa.selenium.Keys)
    *
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
   public Actions keyDown(WebElement element, Keys theKey) {
@@ -143,7 +145,7 @@ public class Actions {
    * Equivalent to calling:
    * <i>Actions.click(element).sendKeys(keysToSend).</i>
    * This method is different from {@link WebElement#sendKeys(CharSequence...)} - see
-   * {@link #sendKeys(CharSequence...)} for details how.
+   * {@link Actions#sendKeys(CharSequence...)} for details how.
    *
    * @see {@link #sendKeys(CharSequence...)}
    *
@@ -258,8 +260,10 @@ public class Actions {
    * Moves the mouse to an offset from the top-left corner of the element.
    * The element is scrolled into view and its location is calculated using getBoundingClientRect.
    * @param toElement element to move to.
-   * @param xOffset Offset from the top-left corner.
-   * @param yOffset Offset from the top-left corner.
+   * @param xOffset Offset from the top-left corner. A negative value means coordinates right from
+   * the element.
+   * @param yOffset Offset from the top-left corner. A negative value means coordinates above
+   * the element.
    * @return A self reference.
    */
   public Actions moveToElement(WebElement toElement, int xOffset, int yOffset) {
@@ -271,8 +275,8 @@ public class Actions {
    * Moves the mouse from its current position (or 0,0) by the given offset. If the coordinates
    * provided are outside the viewport (the mouse will end up outside the browser window) then
    * the viewport is scrolled to match.
-   * @param xOffset horizontal offset.
-   * @param yOffset vertical offset.
+   * @param xOffset horizontal offset. A negative value means moving the mouse left.
+   * @param yOffset vertical offset. A negative value means moving the mouse up.
    * @return A self reference.
    * @throws MoveTargetOutOfBoundsException if the provided offset is outside the document's
    * boundaries.
