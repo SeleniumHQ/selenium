@@ -18,7 +18,6 @@
  */
 
 goog.provide('webdriver.Key');
-goog.provide('webdriver.Session');
 goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebDriver.Navigation');
 goog.provide('webdriver.WebDriver.Options');
@@ -32,69 +31,12 @@ goog.require('goog.object');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Locator');
+goog.require('webdriver.Session');
 goog.require('webdriver.error');
 goog.require('webdriver.promise');
 goog.require('webdriver.promise.Application');
 goog.require('webdriver.promise.Deferred');
 goog.require('webdriver.promise.Promise');
-
-
-//////////////////////////////////////////////////////////////////////////////
-//
-//  webdriver.Session
-//
-//////////////////////////////////////////////////////////////////////////////
-
-/**
- * Contains information about a WebDriver session.
- * @param {string} id The session ID.
- * @param {!Object.<*>} capabilities A map describing the capabilities
- *     of this session.
- * @constructor
- * @export
- */
-webdriver.Session = function(id, capabilities) {
-
-  /**
-   * The session ID.
-   * @type {string}
-   */
-  this.id = id;
-
-  /**
-   * A map describing the capabilities of this session.
-   * @type {!Object.<*>}
-   */
-  this.capabilities = capabilities;
-};
-
-
-/**
- * @return {string} This session's ID.
- * @export
- */
-webdriver.Session.prototype.getId = function() {
-  return this.id;
-};
-
-
-/**
- * @return {!Object.<string,*>} This session's capabilities.
- * @export
- */
-webdriver.Session.prototype.getCapabilities = function() {
-  return this.capabilities;
-};
-
-
-/**
- * Returns the JSON representation of this object, which is just the string
- * session ID.
- * @return {string} The JSON representation of this Session.
- */
-webdriver.Session.prototype.toJSON = function() {
-  return this.id;
-};
 
 
 //////////////////////////////////////////////////////////////////////////////
