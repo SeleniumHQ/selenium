@@ -42,4 +42,6 @@ public @interface Ignore {
   Driver[] value() default {Driver.ALL};
 
   String reason() default ("Not implemented in driver yet");
+
+  int[] issues() default {};
 }

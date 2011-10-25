@@ -279,7 +279,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {IE, IPHONE, ANDROID}, reason = "IE7 Does not support SVG; " +
-      "SVG elements crash the iWebDriver app (issue 1134)")
+      "SVG elements crash the iWebDriver app (issue 1134)", issues = {1134})
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
