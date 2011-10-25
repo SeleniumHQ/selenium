@@ -282,11 +282,11 @@ public class TestSuiteBuilder {
         || method.getAnnotation(org.junit.Test.class) != null;
   }
 
-    private void invokeIgnoreCallbacks(Class clazz, String methodName, Ignore ignore) {
-      for (IgnoredTestCallback ignoredTestCallback : ignoredTestCallbacks) {
-            ignoredTestCallback.callback(clazz.getName(), methodName, ignore);
-        }
+  private void invokeIgnoreCallbacks(Class clazz, String methodName, Ignore ignore) {
+    for (IgnoredTestCallback ignoredTestCallback : ignoredTestCallbacks) {
+      ignoredTestCallback.callback(clazz, methodName, ignore);
     }
+  }
 
   private boolean isIgnored(AnnotatedElement annotatedElement) {
     Ignore ignore = annotatedElement.getAnnotation(Ignore.class);
@@ -412,13 +412,13 @@ public class TestSuiteBuilder {
     }
 
   public class LoggingIgnoreCallback implements IgnoredTestCallback {
-    public void callback(String className, String testName, Ignore ignore) {
+    public void callback(Class clazz, String testName, Ignore ignore) {
       String message;
 
       if(testName.isEmpty()) {
-        message = "Ignoring test class: " + className;
+        message = "Ignoring test class: " + clazz.getName();
       } else {
-        message = "Ignoring: " + className + "." + testName;
+        message = "Ignoring: " + clazz.getName() + "." + testName;
       }
       System.err.println(message + ": " + ignore.reason());
     }
