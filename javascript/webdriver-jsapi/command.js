@@ -127,6 +127,7 @@ webdriver.CommandName = {
   'FIND_ELEMENTS': 'findElements',
   'FIND_CHILD_ELEMENT': 'findChildElement',
   'FIND_CHILD_ELEMENTS': 'findChildElements',
+  'GET_ACTIVE_ELEMENT': 'getActiveElement',
 
   'CLEAR_ELEMENT': 'clearElement',
   'CLICK_ELEMENT': 'clickElement',
