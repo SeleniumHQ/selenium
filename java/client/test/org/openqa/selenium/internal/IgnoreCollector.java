@@ -48,6 +48,7 @@ public class IgnoreCollector implements IgnoredTestCallback {
       map.put("className", className);
       map.put("testName", testName);
       map.put("reason", ignore.reason());
+      map.put("issues", ignore.issues());
 
       final Set<String> drivers = new HashSet<String>();
       for (Ignore.Driver driver : ignore.value()) {
