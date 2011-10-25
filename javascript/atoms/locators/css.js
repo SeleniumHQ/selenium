@@ -46,7 +46,7 @@ bot.locators.css.single = function(target, root) {
     throw Error('No selector specified');
   }
 
-  if (target.split(/,/).length > 1) {
+  if (bot.locators.css.containsUnquotedComma_(target)) {
     throw Error('Compound selectors not permitted');
   }
 
@@ -79,7 +79,7 @@ bot.locators.css.many = function(target, root) {
     throw Error('No selector specified');
   }
 
-  if (target.split(/,/).length > 1) {
+  if (bot.locators.css.containsUnquotedComma_(target)) {
     throw Error('Compound selectors not permitted');
   }
 
@@ -87,3 +87,13 @@ bot.locators.css.many = function(target, root) {
 
   return root.querySelectorAll(target);
 };
+
+/**
+ * Check if the string contains a comma outside a quoted string
+ *
+ * @param {string} string to check for commas outside a quoted blcok
+ * @return {boolean}
+ */
+bot.locators.css.containsUnquotedComma_ = function(str) {
+  return str.split(/(,)(?=(?:[^']|'[^']*')*$)/).length > 1 && str.split(/(,)(?=(?:[^"]|"[^"]*")*$)/).length > 1
+}

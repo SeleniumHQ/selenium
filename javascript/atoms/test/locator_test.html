@@ -19,7 +19,7 @@ limitations under the License.
 <head>
   <title>locator_test.html</title>
   <script src="test_bootstrap.js"></script>
-  <script type="text/javascript">
+  <script>
     goog.require('goog.testing.jsunit');
     goog.require('goog.events.EventType');
     goog.require('bot');
@@ -27,7 +27,7 @@ limitations under the License.
     goog.require('bot.locators');
   </script>
 
-  <script type="text/javascript">
+  <script>
     var CAN_SELECT_SINGLE_NODE =
         document.documentElement['selectSingleNode'] || document['evaluate'];
     var CAN_SELECT_MANY_NODES =
@@ -135,6 +135,11 @@ limitations under the License.
     function testWillRejectShouldRejectMultipleSelectors() {
       assertThrows(goog.bind(bot.locators.findElement, null,
           {css: '.one, #two'}));
+    }
+
+    function testShouldFindElementWithCommaInAttribute() {
+      assertNotNull(goog.bind(bot.locators.findElement, null,
+          {css: 'comma-in-alt[alt="has, a comma"]'}));
     }
 
     function testCanLocateElementsUsingXPath() {
@@ -300,7 +305,7 @@ limitations under the License.
 
     function testShouldFindEveryLinkWhenLinkTextIsTheEmptyString() {
       var links = bot.locators.findElements({partialLinkText: ''});
-      assertEquals(7, links.length);
+      assertEquals(8, links.length);
     }
 
     function testShouldBeAbleToFindElementByTagName() {
@@ -311,7 +316,7 @@ limitations under the License.
 
     function testShouldBeAbleToFindElementsByTagName() {
       var links = bot.locators.findElements({tagName: 'A'});
-      assertEquals(7, links.length);
+      assertEquals(8, links.length);
     }
 
     function testCanAddANewElementLocatingStrategy() {
@@ -376,5 +381,6 @@ limitations under the License.
 
   <a href="#">unrelated</a>
   <a href="#" id="empty-link"></a>
+  <a href="#" id="comma-in-alt" alt="has, a comma">has, a comma</a>
   </body>
 </html>
