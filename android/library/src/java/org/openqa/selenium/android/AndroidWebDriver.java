@@ -113,7 +113,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private SessionCookieManager sessionCookieManager;
   private WebView webview;
   private final WebViewManager viewManager;
-  private Object syncObject = new Object();
+  private final Object syncObject = new Object();
   private volatile boolean pageDoneLoading;
   private NetworkStateHandler networkHandler;
   private Activity activity;
@@ -248,16 +248,14 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
    void waitUntilEditAreaHasFocus() {
-    synchronized (syncObject) {
-      long timeout = System.currentTimeMillis() + FOCUS_TIMEOUT;
-      while (!editAreaHasFocus && (System.currentTimeMillis() < timeout)) {
-        try {
-          Thread.sleep(POLLING_INTERVAL);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    }
+     long timeout = System.currentTimeMillis() + FOCUS_TIMEOUT;
+     while (!editAreaHasFocus && (System.currentTimeMillis() < timeout)) {
+       try {
+         Thread.sleep(POLLING_INTERVAL);
+       } catch (InterruptedException e) {
+         throw new RuntimeException(e);
+       }
+     }
   }
   
   public WebView getWebView() {
@@ -316,15 +314,15 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
 
     long end = System.currentTimeMillis() + UI_TIMEOUT;
     final String[] url = new String[1];
-    synchronized (syncObject) {
-      activity.runOnUiThread(new Runnable() {
-        public void run() {
+    activity.runOnUiThread(new Runnable() {
+      public void run() {
+        synchronized (syncObject) {
           url[0] = webview.getUrl();
           done = true;
           syncObject.notify();
         }
-      });
-    }
+      }
+    });
     waitForDone(end, UI_TIMEOUT, "Failed to get current url.");
     return url[0];
   }
@@ -336,15 +334,15 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     long end = System.currentTimeMillis() + UI_TIMEOUT;
     final String[] title = new String[1];
     done = false;
-    synchronized (syncObject) {
-      activity.runOnUiThread(new Runnable() {
-        public void run() {
+    activity.runOnUiThread(new Runnable() {
+      public void run() {
+        synchronized (syncObject) {
           title[0] = webview.getTitle();
           done = true;
           syncObject.notify();
         }
-      });
-    }
+      }
+    });
     waitForDone(end, UI_TIMEOUT, "Failed to get title");
     return title[0];
   }
@@ -362,12 +360,20 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     if (webview == null) {
       throw new WebDriverException("No open windows.");
     }
+
+    done = false;
+    long end = System.currentTimeMillis() + RESPONSE_TIMEOUT;
     activity.runOnUiThread(new Runnable() {
       public void run() {
-        webview.destroy();
-        viewManager.removeView(webview);
+        synchronized (syncObject) {
+          webview.destroy();
+          viewManager.removeView(webview);
+          done = true;
+          syncObject.notify();
+        }
       }
     });
+    waitForDone(end, RESPONSE_TIMEOUT, "Failed to close window.");
     webview = null;
   }
 
@@ -572,19 +578,33 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
 
     public WebDriver window(final String nameOrHandle) {
+      final boolean[] shouldhTrow = new boolean[1];
+      shouldhTrow[0] = false;
+
+      done = false;
+      long end = System.currentTimeMillis() + RESPONSE_TIMEOUT;
       activity.runOnUiThread(new Runnable() {
         public void run() {
-          WebView v = viewManager.getView(nameOrHandle);
-          if (v != null) {
-            webview = v;
-          } else {
-            throw new NoSuchWindowException(
-                "Window '" + nameOrHandle + "' does not exist.");
+          synchronized (syncObject) {
+            WebView v = viewManager.getView(nameOrHandle);
+            if (v != null) {
+              webview = v;
+            } else {
+              // Can't throw an exception in the UI thread
+              // Or the App crashes
+              shouldhTrow[0] = true;
+            }
+            activity.setContentView(webview);
+            done = true;
+            syncObject.notify();
           }
-          activity.setContentView(webview);
         }
       });
-
+      waitForDone(end, RESPONSE_TIMEOUT, "Failed to switch to window: " + nameOrHandle);
+      if (shouldhTrow[0]) {
+        throw new NoSuchWindowException(
+                "Window '" + nameOrHandle + "' does not exist.");
+      }
       return AndroidWebDriver.this;
     }
 
@@ -853,16 +873,16 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     if (webview == null) {
       throw new WebDriverException("No open windows.");
     }
+    result = null;
+    resultReady = false;
+    activity.runOnUiThread(new Runnable() {
+      public void run() {
+        org.openqa.selenium.android.JavascriptExecutor.executeJs(
+            webview, notifier, script);
+      }
+    });
+    long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
     synchronized (syncObject) {
-      result = null;
-      resultReady = false;
-      activity.runOnUiThread(new Runnable() {
-        public void run() {
-          org.openqa.selenium.android.JavascriptExecutor.executeJs(
-              webview, notifier, script);
-        }
-      });
-      long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
       while (!resultReady && (System.currentTimeMillis() < timeout)) {
         try {
           syncObject.wait(RESPONSE_TIMEOUT);
@@ -987,9 +1007,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     done = false;
     long end = System.currentTimeMillis() + RESPONSE_TIMEOUT;
     final byte[][] rawPng = new byte[1][1];
-    synchronized (syncObject) {
-      activity.runOnUiThread(new Runnable() {
-        public void run() {
+    activity.runOnUiThread(new Runnable() {
+      public void run() {
+        synchronized (syncObject) {
           Picture pic = webview.capturePicture();
           // Bitmap of the entire document
           Bitmap raw = Bitmap.createBitmap(
@@ -1024,8 +1044,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
           done = true;
           syncObject.notify();
         }
-      });
-    }
+      }
+    });
+
     waitForDone(end, RESPONSE_TIMEOUT, "Failed to take screenshot.");
     return rawPng[0];
   }
@@ -1073,45 +1094,40 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      synchronized (syncObject) {
-        pageDoneLoading = false;
-        activity.runOnUiThread(new Runnable() {
-          public void run() {
-            webview.goBack();
-          }
-        });
-        waitForPageLoadToComplete();
-      }
+      pageDoneLoading = false;
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          webview.goBack();
+        }
+      });
+      waitForPageLoadToComplete();
     }
 
     public void forward() {
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      synchronized (syncObject) {
-        pageDoneLoading = false;
-        activity.runOnUiThread(new Runnable() {
-          public void run() {
-            webview.goForward();
-          }
-        });
-        waitForPageLoadToComplete();
-      }
+      pageDoneLoading = false;
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          webview.goForward();
+        }
+      });
+      waitForPageLoadToComplete();
     }
 
     public void to(final String url) {
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      synchronized (syncObject) {
-        pageDoneLoading = false;
-        activity.runOnUiThread(new Runnable() {
-          public void run() {
-            webview.loadUrl(url);
-          }
-        });
-        waitForPageLoadToComplete();
-      }
+      pageDoneLoading = false;
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          webview.loadUrl(url);
+        }
+      });
+      waitForPageLoadToComplete();
+
     }
 
     public void to(URL url) {
@@ -1122,25 +1138,25 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
-      synchronized (syncObject) {
-        pageDoneLoading = false;
-        activity.runOnUiThread(new Runnable() {
-          public void run() {
-            webview.reload();
-          }
-        });
-        waitForPageLoadToComplete();
-      }
+      pageDoneLoading = false;
+      activity.runOnUiThread(new Runnable() {
+        public void run() {
+          webview.reload();
+        }
+      });
+      waitForPageLoadToComplete();
     }
 
     private void waitForPageLoadToComplete() {
       long timeout = System.currentTimeMillis() + LOADING_TIMEOUT;
+      synchronized (syncObject) {
       while (!pageDoneLoading && (System.currentTimeMillis() < timeout)) {
         try {
           syncObject.wait(LOADING_TIMEOUT);
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
+      }
       }
     }
   }
