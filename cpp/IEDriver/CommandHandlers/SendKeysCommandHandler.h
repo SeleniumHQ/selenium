@@ -137,6 +137,7 @@ class SendKeysCommandHandler : public IECommandHandler {
         this->WaitUntilElementFocused(element);
 
         sendKeys(window_handle, keys.c_str(), executor.speed());
+        releaseModifierKeys(window_handle, executor.speed());
         response->SetSuccessResponse(Json::Value::null);
         return;
       } else {

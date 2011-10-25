@@ -63,15 +63,8 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, IE})
   public void testSendingKeyDownOnly() {
-    if (Platform.getCurrent().is(Platform.WINDOWS) &&
-        (isInternetExplorer(driver) || isFirefox(driver))) {
-      System.out.println("Skipping testSendingKeyDownOnly on Windows: native events library" +
-          " does not support storing modifiers state yet.");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -91,15 +84,8 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, IE})
   public void testSendingKeyUp() {
-    if (Platform.getCurrent().is(Platform.WINDOWS) &&
-        (isInternetExplorer(driver) || isFirefox(driver))) {
-      System.out.println("Skipping testSendingKeyUp on Windows: native events library" +
-          " does not support storing modifiers state yet.");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
 
@@ -122,15 +108,8 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE, IE})
   public void testSendingKeysWithShiftPressed() {
-    if (Platform.getCurrent().is(Platform.WINDOWS) &&
-        (isInternetExplorer(driver) || isFirefox(driver))) {
-      System.out.println("Skipping testSendingKeysWithShiftPressed on Windows: native events " +
-          "library does not support storing modifiers state yet.");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     WebElement keysEventInput = driver.findElement(By.id("theworks"));

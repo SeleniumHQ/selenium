@@ -32,14 +32,21 @@ using namespace std;
 
 #pragma data_seg(".LISTENER")
 static bool pressed = false;
-// This boolean indicates whether the Shift key is "held down". The shift key
-// can only be held down by calls to sendKeyPress or sendKeyRelease.
-// originally, sendKeys would generate the following keys sequence when
+// The following booleans indicate whether any of the modifier keys are
+// depressed. These booleans represent the state from the user's point of
+// view - not if a modifier is depressed for the current key press (there
+// is an explanation on why modifier keys have to be pressed and depressed
+// for some keys below).
+// Each modifier key can only be held down when sendKeys was called without
+// calling releaseModifierKeys. The modifier key will only be released when
+// sendKeys(Keys.NULL) is called or sendKeys() is called again (with the same
+// modifier).
+// Ordinarily, sendKeys would generate the following keys sequence when
 // called with sendKeys("AB"):
 // Shift_Down A_Down A_Up Shift_Up Shift_Down B_Down B_Up Shift_Up
-// But the new Interactions API allows sending Shift press and Shift release
-// separately, yet we still want the letters to be capitalized if Shift is pressed.
-// So, the following calls:
+// However, when sendKeys is called using the new Interactions API,
+// the modifier keys are not released. So, we want the letters to be
+// capitalized if Shift is pressed. The following calls:
 // * sendKeyPress(SHIFT)
 // * sendKeys("ab")
 // * sendKeyRelease(SHIFT)
@@ -48,6 +55,8 @@ static bool pressed = false;
 // With *capital* a and b. Using this boolean, we can tell if the shift key
 // was held down by these calls and should generate upper-case chars.
 static bool shiftPressed = false;
+static bool controlPressed = false;
+static bool altPressed = false;
 static HHOOK hook = 0;
 static HINSTANCE moduleHandle = NULL;
 
@@ -159,19 +168,22 @@ LPARAM generateKeyMessageParam(UINT scanCode, bool extended)
 void backgroundKeyDown(HWND hwnd, HKL layout, BYTE keyboardState[256],
 		WORD keyCode, UINT scanCode, bool extended, int pause)
 {
-    sendModifierKeyDownIfNeeded(isShiftPressNeeded(keyCode), hwnd, layout,
+    // For capital letters and symbols requiring the shift key to be pressed,
+    // A Shift key press must preceed. Unless the shift key is pressed - if
+    // shiftPressed is true, then a shift key-down was sent in the past.
+    sendModifierKeyDownIfNeeded(isShiftPressNeeded(keyCode) && (!shiftPressed), hwnd, layout,
         VK_SHIFT, keyboardState, pause);
 
-    sendModifierKeyDownIfNeeded(isControlPressNeeded(keyCode), hwnd, layout,
+    sendModifierKeyDownIfNeeded(isControlPressNeeded(keyCode) && (!controlPressed), hwnd, layout,
         VK_CONTROL, keyboardState, pause);
 
-    sendModifierKeyDownIfNeeded(isAltPressNeeded(keyCode), hwnd, layout,
+    sendModifierKeyDownIfNeeded(isAltPressNeeded(keyCode) && (!altPressed), hwnd, layout,
         VK_MENU, keyboardState, pause);
 
     // In order to produce an upper case character, the keyboard state should
     // be modified. See the documentation of shiftPressed to understand why
     // it's done only in this case.
-    if (shiftPressed) {
+    if ((shiftPressed) || (isShiftPressNeeded(keyCode))) {
       keyboardState[VK_SHIFT] |= 0x80;
     }
 
@@ -218,17 +230,17 @@ void backgroundKeyUp(HWND hwnd, HKL layout, BYTE keyboardState[256],
 
 	wait(pause);
 
-    sendModifierKeyUpIfNeeded(isShiftPressNeeded(origKeyCode), hwnd, layout,
-        VK_SHIFT, keyboardState, pause);
-    sendModifierKeyUpIfNeeded(isControlPressNeeded(origKeyCode), hwnd, layout,
-        VK_CONTROL, keyboardState, pause);
-    sendModifierKeyUpIfNeeded(isAltPressNeeded(origKeyCode), hwnd, layout,
-        VK_MENU, keyboardState, pause);
+  sendModifierKeyUpIfNeeded(isShiftPressNeeded(origKeyCode) && (!shiftPressed), hwnd, layout,
+      VK_SHIFT, keyboardState, pause);
+  sendModifierKeyUpIfNeeded(isControlPressNeeded(origKeyCode) && (!controlPressed), hwnd, layout,
+      VK_CONTROL, keyboardState, pause);
+  sendModifierKeyUpIfNeeded(isAltPressNeeded(origKeyCode) && (!altPressed), hwnd, layout,
+      VK_MENU, keyboardState, pause);
 
     // If Shift was held down, we should reset the keyboard state for it
     // as well. See the comment in backgroundKeyDown on why it is set
     // in the first place.
-    if (shiftPressed) {
+    if ((shiftPressed) || (isShiftPressNeeded(origKeyCode))) {
       keyboardState[VK_SHIFT] &= ~0x80;
     }
 
@@ -283,17 +295,51 @@ bool isModifierCharacter(wchar_t c)
     isAltCode(c);
 }
 
-void adjustModifierKeysByCode(wchar_t c, bool& shiftKey, bool& controlKey,
-    bool& altKey)
+// All the required information to post a keyboard event message.
+struct KeySendingData {
+  HWND to_window;
+  HKL layout;
+  BYTE* keyboardState;
+  int pause_time;
+};
+
+void sendSingleModifierEventAndAdjustState(bool matchingModifier,
+    bool& modifierState, int modifierKeyCode, KeySendingData sendData)
+{
+  if (!matchingModifier) {
+    return;
+  }
+
+  if (modifierState) {
+    sendModifierKeyUp(sendData.to_window, sendData.layout,
+        modifierKeyCode, sendData.keyboardState, sendData.pause_time);
+  } else {
+    sendModifierKeyDown(sendData.to_window, sendData.layout,
+        modifierKeyCode, sendData.keyboardState, sendData.pause_time);
+  }
+  modifierState = !modifierState;
+}
+
+void postModifierReleaseMessages(bool releaseShift, bool releaseControl, bool releaseAlt,
+    KeySendingData sendData)
+{
+    sendModifierKeyUpIfNeeded(releaseShift, sendData.to_window, sendData.layout, VK_SHIFT, sendData.keyboardState, sendData.pause_time);
+    sendModifierKeyUpIfNeeded(releaseControl, sendData.to_window, sendData.layout, VK_CONTROL, sendData.keyboardState, sendData.pause_time);
+    sendModifierKeyUpIfNeeded(releaseAlt, sendData.to_window, sendData.layout, VK_MENU, sendData.keyboardState, sendData.pause_time);
+}
+
+void sendModifierKeyEvent(wchar_t c, bool& shiftKey, bool& controlKey,
+    bool& altKey, KeySendingData sendData)
+
 {
   if (isClearAllModifiersCode(c)) {
+    postModifierReleaseMessages(shiftKey, controlKey, altKey, sendData);
+
     shiftKey = controlKey = altKey = false;
-  } else if (isShiftCode(c)) {
-    shiftKey = !shiftKey;
-  } else if (isControlCode(c)) {
-    controlKey = !controlKey;
-  } else if (isAltCode(c)) {
-    altKey = !altKey;
+  } else {
+    sendSingleModifierEventAndAdjustState(isShiftCode(c), shiftKey, VK_SHIFT, sendData);
+    sendSingleModifierEventAndAdjustState(isControlCode(c), controlKey, VK_CONTROL, sendData);
+    sendSingleModifierEventAndAdjustState(isAltCode(c), altKey, VK_MENU, sendData);
   }
 }
 
@@ -346,9 +392,14 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 	BYTE keyboardState[256];
 	::ZeroMemory(keyboardState, sizeof(keyboardState));
 
-	bool controlKey = false;
-	bool shiftKey = false;
-	bool altKey = false;
+	bool controlKey = controlPressed;
+	bool shiftKey = shiftPressed;
+	bool altKey = altPressed;
+  KeySendingData sendData;
+  sendData.to_window = directInputTo;
+  sendData.layout = layout;
+  sendData.keyboardState = keyboardState;
+  sendData.pause_time = timePerKey;
 
 	for (const wchar_t *p = value; *p; ++p) {
 		const wchar_t c = *p;
@@ -359,7 +410,10 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 		WORD keyCode = 0;
 
     if (isModifierCharacter(c)) {
-      adjustModifierKeysByCode(c, shiftKey, controlKey, altKey);
+      sendModifierKeyEvent(c, shiftKey, controlKey, altKey, sendData);
+      shiftPressed = shiftKey;
+      controlPressed = controlKey;
+      altPressed = altKey;
       continue;
 		} else if (c == 0xE001U) {  // ^break
 			keyCode = VK_CANCEL;
@@ -584,85 +638,30 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
     detachInputFromIEThread(directInputTo);
 }
 
-void sendKeyPress(WINDOW_HANDLE windowHandle, const wchar_t* value) {
-	if (!windowHandle) { return; }
-
-	HWND directInputTo = static_cast<HWND>(windowHandle);
-
-	HKL layout = attachInputToIEThread(directInputTo);
-	BYTE keyboardState[256];
-	::ZeroMemory(keyboardState, sizeof(keyboardState));
-
-  // Only handle the first character. Only one is supposed
-  // to be sent to this function anyway.
-  const wchar_t c = *value;
-
-  bool extended = false;
-  int pause = 135;
-
-  WORD keyCode = 0;
-
-  if (isShiftCode(c)) {
-    keyCode = VK_SHIFT;
-  } else if (isControlCode(c)) {
-    keyCode = VK_CONTROL;
-  } else if (isAltCode(c)) {
-    keyCode = VK_MENU;
-  }
-
-  UINT scanCode = keyCode;
-
-  backgroundKeyDown(directInputTo, layout, keyboardState, keyCode, scanCode,
-      extended, pause);
-
-  if (isShiftCode(c)) {
-    shiftPressed = true;
-  }
-
-  detachInputFromIEThread(directInputTo);
-}
-
-void sendKeyRelease(WINDOW_HANDLE windowHandle, const wchar_t* value) {
-	if (!windowHandle) { return; }
-
-	HWND directInputTo = static_cast<HWND>(windowHandle);
-
-	HKL layout = attachInputToIEThread(directInputTo);
-	BYTE keyboardState[256];
-	::ZeroMemory(keyboardState, sizeof(keyboardState));
-
-  // Only handle the first character. Only one is supposed
-  // to be sent to this function anyway.
-  const wchar_t c = *value;
-
-  bool extended = false;
-  int pause = 135;
-
-  WORD keyCode = 0;
-
-  if (isShiftCode(c)) {
-    keyCode = VK_SHIFT;
-  } else if (isControlCode(c)) {
-    keyCode = VK_CONTROL;
-  } else if (isAltCode(c)) {
-    keyCode = VK_MENU;
-  }
-
-  UINT scanCode = keyCode;
-
-  if (isShiftCode(c)) {
-    shiftPressed = false;
-  }
-
-  backgroundKeyUp(directInputTo, layout, keyboardState, keyCode, scanCode,
-      extended, pause);
-
-  detachInputFromIEThread(directInputTo);
-}
-
 void releaseModifierKeys(WINDOW_HANDLE windowHandle, int timePerKey)
 {
-  // Does nothing on Windows, for now.
+	if (!windowHandle) { return; }
+	HWND directInputTo = static_cast<HWND>(windowHandle);
+
+	HKL layout = attachInputToIEThread(directInputTo);
+	BYTE keyboardState[256];
+	::ZeroMemory(keyboardState, sizeof(keyboardState));
+
+  KeySendingData sendData;
+
+  sendData.to_window = directInputTo;
+  sendData.layout = layout;
+  sendData.keyboardState = keyboardState;
+  sendData.pause_time = 35;
+
+  if ((shiftPressed) || (controlPressed) || (altPressed)) {
+    postModifierReleaseMessages(shiftPressed, controlPressed, altPressed, sendData);
+    shiftPressed = false;
+    controlPressed = false;
+    altPressed = false;
+  }
+
+  detachInputFromIEThread(directInputTo);
 }
 
 bool isSameThreadAs(HWND other) 
@@ -750,6 +749,9 @@ static void fillEventData(long button, bool buttonDown, UINT *message, WPARAM *w
     }
     *wparam = MK_LBUTTON;
   }
+  if (shiftPressed) {
+    *wparam |= MK_SHIFT;
+  }
 }
 
 LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
@@ -781,7 +783,7 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
  
  	fillEventData(button, false, &message, &wparam);
 
-	SendMessage((HWND) directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(x, y));
+	SendMessage((HWND) directInputTo, WM_MOUSEMOVE, (shiftPressed ? MK_SHIFT : 0), MAKELPARAM(x, y));
 	if (!isSameThreadAs((HWND) directInputTo)) {
  		BOOL toReturn = PostMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 
@@ -809,6 +811,9 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
   GetWindowRect(directInputTo, r);
 
   WPARAM buttonValue = (leftMouseButtonPressed ? MK_LBUTTON : 0);
+  if (shiftPressed) {
+    buttonValue |= MK_SHIFT;
+  }
 
 	for (int i = 0; i < steps + 1; i++) {
 	  //To avoid integer division rounding and cumulative floating point errors,
