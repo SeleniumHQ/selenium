@@ -1014,6 +1014,17 @@ FirefoxDriver.prototype.getBrowserSpecificOffset_ = function(inBrowser) {
   return getBrowserSpecificOffset_(inBrowser);
 };
 
+FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnValue, respond) {
+  if (mouseReturnValue.code != bot.ErrorCode.OK) {
+    respond.sendError(new WebDriverError(mouseReturnValue.code, mouseReturnValue.message));
+  }
+  else {
+    respond['status'] = mouseReturnValue['status'];
+    respond['value'] = { message: mouseReturnValue['message'] };
+    respond.send();
+  }
+}
+
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
   
@@ -1023,10 +1034,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var target = raw ? new XPCNativeWrapper(raw) : null;
     fxdriver.Logger.dumpn("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
     var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
-
-    respond['status'] = result['status'];
-    respond['value'] = result['message'];
-    respond.send();
+    this.sendResponseFromSyntheticMouse_(result, respond);
 
     return;
   }
@@ -1103,10 +1111,8 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
   if (!this.enableNativeEvents) {
     var coords = fxdriver.utils.newCoordinates(null, 0, 0);
     var result = this.mouse.down(coords);
-    
-    respond['status'] = result['status'];
-    respond['value'] = result['message'];
-    respond.send();
+
+    this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
   
@@ -1140,10 +1146,8 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
   if (!this.enableNativeEvents) {
     var coords = fxdriver.utils.newCoordinates(null, 0, 0);
     var result = this.mouse.up(coords);
-    
-    respond['status'] = result['status'];
-    respond['value'] = result['message'];
-    respond.send();
+
+    this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
   
@@ -1189,8 +1193,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
       result = this.mouse.click(null);
     }
 
-    respond['status'] = result['status'];
-    respond['value'] = result['message'];
+    this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
 
@@ -1227,10 +1230,8 @@ FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
   Utils.installClickListener(respond, WebLoadingListener);
 
   if (!this.enableNativeEvents) {
-    var response = this.mouse.doubleClick(null);
-    respond.status = response.status;
-    respond.value = response.message;
-    respond.send();
+    var result = this.mouse.doubleClick(null);
+    this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
 

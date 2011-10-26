@@ -94,6 +94,8 @@ public class DragAndDropTest extends AbstractDriverTestCase {
       actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
       fail("These coordinates are outside the page - expected to fail.");
     } catch (MoveTargetOutOfBoundsException expected) {
+      // Release mouse button - move was interrupted in the middle.
+      new Actions(driver).release().perform();
     }
   }
 
