@@ -32,7 +32,7 @@ module CrazyFunRake
   class CheckFilePreconditions
     def handle(fun, dir, args)
       raise StandardError, "name must be set" if args[:name].nil?
-      raise StandardError, "name must be set" if args[:src].nil?
+      raise StandardError, "src must be set" if args[:src].nil?
       
       # The "one output rule" means that the srcs must either be a directory
       # or a single file.
