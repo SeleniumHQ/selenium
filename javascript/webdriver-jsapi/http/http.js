@@ -84,7 +84,6 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
   var request = new webdriver.http.Request(resource.method, path, parameters);
 
   this.client_.send(request, function(e, response) {
-    debugger;
     var responseObj;
     if (!e) {
       try {
