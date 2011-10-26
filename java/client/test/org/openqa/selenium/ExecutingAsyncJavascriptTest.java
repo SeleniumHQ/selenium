@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -15,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = {IE, OPERA, ANDROID},
+@Ignore(value = {IE, IPHONE, OPERA, ANDROID},
     reason = "IE: Every test appears to be failing. Opera: not implemented yet")
 public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 

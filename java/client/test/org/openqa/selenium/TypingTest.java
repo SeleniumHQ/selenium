@@ -606,7 +606,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, ANDROID, CHROME}, reason = "firefox-specific")
+  @Ignore(value = {ANDROID, CHROME, IE, IPHONE}, reason = "firefox-specific")
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     driver.get(pages.javascriptPage);
 
