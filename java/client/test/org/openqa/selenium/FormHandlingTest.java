@@ -190,13 +190,13 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
-    element.sendKeys("Some");
+    element.sendKeys("some");
     String value = element.getAttribute("value");
-    assertThat(value, is("Some"));
+    assertThat(value, is("some"));
 
     element.sendKeys(" text");
     value = element.getAttribute("value");
-    assertThat(value, is("Some text"));
+    assertThat(value, is("some text"));
   }
 
   @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE},
