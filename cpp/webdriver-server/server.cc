@@ -497,9 +497,6 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;
   this->commands_["/session/:sessionid/alert_text"]["POST"] = SendKeysToAlert;
 
-  // TODO(JimEvans): Remove the SendModifierKey URI when all platforms support
-  // the SendKeysToActiveElement command.
-  this->commands_["/session/:sessionid/modifier"]["POST"] = SendModifierKey;
   this->commands_["/session/:sessionid/keys"]["POST"] = SendKeysToActiveElement;
   this->commands_["/session/:sessionid/moveto"]["POST"] = MouseMoveTo;
   this->commands_["/session/:sessionid/click"]["POST"] = MouseClick;
