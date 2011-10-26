@@ -25,6 +25,8 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.remote.CapabilityType;
@@ -65,7 +67,7 @@ public class I18nTest extends AbstractDriverTestCase {
 
     input.sendKeys(shalom);
 
-    assertEquals(shalom, input.getAttribute("value"));
+    waitFor(elementValueToEqual(input, shalom));
   }
 
   @Ignore(ANDROID)
@@ -75,7 +77,7 @@ public class I18nTest extends AbstractDriverTestCase {
 
     input.sendKeys(tmunot);
 
-    assertEquals(tmunot, input.getAttribute("value"));
+    waitFor(elementValueToEqual(input, tmunot));
   }
 
   @Ignore(value = {IE, SELENESE})
