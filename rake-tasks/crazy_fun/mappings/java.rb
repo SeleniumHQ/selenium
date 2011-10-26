@@ -664,7 +664,7 @@ module CrazyFunJava
         cp = ClassPath.new(jar_name(dir, args[:name])).all
         cp.push(jar_name(dir, args[:name])) if args[:srcs]
 
-        CrazyFunJava.ant.jarjar(:jarfile => jar) do |ant|
+        CrazyFunJava.ant.jarjar(:jarfile => jar, :duplicate => 'preserve') do |ant|
           cp.each do |j|
             unless (j.to_s =~ /^third_party/)
               ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
