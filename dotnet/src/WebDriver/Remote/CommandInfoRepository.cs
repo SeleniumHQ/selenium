@@ -154,8 +154,6 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.MouseUp, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/buttonup"));
             this.commandDictionary.Add(DriverCommand.MouseMoveTo, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/moveto"));
             this.commandDictionary.Add(DriverCommand.SendKeysToActiveElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/keys"));
-
-            this.commandDictionary.Add(DriverCommand.SendModifierKey, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/modifier"));
         }
         #endregion
     }

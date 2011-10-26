@@ -40,13 +40,17 @@ namespace OpenQA.Selenium.Interactions
             IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 
             Actions actionProvider = new Actions(driver);
-            IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
 
+            IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
             pressShift.Perform();
 
             IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
+            string logText = keyLoggingElement.Text;
 
-            Assert.IsTrue(keyLoggingElement.Text.EndsWith("keydown"), "Key down event not isolated, got: " + keyLoggingElement.Text);
+            IAction releaseShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
+            releaseShift.Perform();
+
+            Assert.IsTrue(logText.EndsWith("keydown"), "Key down event not isolated, got: " + logText);
         }
 
         [Test]

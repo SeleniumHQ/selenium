@@ -45,7 +45,9 @@ namespace OpenQA.Selenium.Remote
         /// <param name="keySequence">A string representing the keystrokes to send.</param>
         public void SendKeys(string keySequence)
         {
-            this.driver.SwitchTo().ActiveElement().SendKeys(keySequence);
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("value", keySequence.ToCharArray());
+            this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
         }
 
         /// <summary>
@@ -56,9 +58,8 @@ namespace OpenQA.Selenium.Remote
         public void PressKey(string keyToPress)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("value", keyToPress);
-            parameters.Add("isdown", true);
-            this.driver.InternalExecute(DriverCommand.SendModifierKey, parameters);
+            parameters.Add("value", keyToPress.ToCharArray());
+            this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
         }
 
         /// <summary>
@@ -69,9 +70,8 @@ namespace OpenQA.Selenium.Remote
         public void ReleaseKey(string keyToRelease)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("value", keyToRelease);
-            parameters.Add("isdown", false);
-            this.driver.InternalExecute(DriverCommand.SendModifierKey, parameters);
+            parameters.Add("value", keyToRelease.ToCharArray());
+            this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
         }
         #endregion
     }
