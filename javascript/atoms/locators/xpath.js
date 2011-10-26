@@ -81,7 +81,11 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   return doc.evaluate(path, node, resolver, resultType, null);
 };
 
-
+/**
+ * @param {!Error} ex The error that needs to be checked.
+ * @return {boolean} Whether the error was caused by an invalid xpath.
+ * @private
+ */
 bot.locators.xpath.isCausedByInvalidXPath_ = function(ex) {
   // One common cause is that we're attempting to query the document at the
   // point where it reloads. In a Firefox extension, this will detect that
@@ -89,6 +93,7 @@ bot.locators.xpath.isCausedByInvalidXPath_ = function(ex) {
   // caused the exception.
   return 'NS_ERROR_ILLEGAL_VALUE' != ex.name;
 };
+
 
 /**
  * Find an element by using an xpath expression
@@ -177,7 +182,7 @@ bot.locators.xpath.many = function(target, root) {
             'Unable to locate elements with the xpath expression ' + path +
             ' because of the following error:\n' + ex);
       }
-      return [];
+      // Fall through.
     }
     var results = [];
     if (nodes) {
