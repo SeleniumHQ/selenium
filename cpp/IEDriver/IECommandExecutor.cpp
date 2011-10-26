@@ -59,6 +59,7 @@
 #include "CommandHandlers/RefreshCommandHandler.h"
 #include "CommandHandlers/ScreenshotCommandHandler.h"
 #include "CommandHandlers/SendKeysCommandHandler.h"
+#include "CommandHandlers/SendKeysToActiveElementCommandHandler.h"
 #include "CommandHandlers/SendKeysToAlertCommandHandler.h"
 #include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
 #include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
@@ -556,11 +557,9 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[MouseDoubleClick] = CommandHandlerHandle(new MouseDoubleClickCommandHandler);
   this->command_handlers_[MouseButtonDown] = CommandHandlerHandle(new MouseButtonDownCommandHandler);
   this->command_handlers_[MouseButtonUp] = CommandHandlerHandle(new MouseButtonUpCommandHandler);
+  this->command_handlers_[SendKeysToActiveElement] = CommandHandlerHandle(new SendKeysToActiveElementCommandHandler);
 
   // As-yet unimplemented commands
-  // TODO(JimEvans): Update this and remove SendModifierKey handler
-  // when all platforms support SendKeysToActiveElement.
-  this->command_handlers_[SendKeysToActiveElement] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[Status] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[GetOrientation] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[SetOrientation] = CommandHandlerHandle(new IECommandHandler);
