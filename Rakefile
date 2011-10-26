@@ -359,7 +359,7 @@ end
 # Installs the webdriver python bindings using virtualenv for testing.
 task :webdriver_py do
   if python? then
-    pip_pkg = "pip install simplejson pytest==2.0.3 rdflib"
+    pip_pkg = "pip install third_party/py/simplejson-2.2.1.tar.gz third_party/py/py-1.4.5.zip third_party/py/pytest-2.0.3.zip third_party/py/rdflib-3.1.0.tar.gz"
     virtualenv = "virtualenv --no-site-packages build/python"
     pip_install = 'build/python/bin/' + pip_pkg
     if (windows?) then
