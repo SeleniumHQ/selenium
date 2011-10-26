@@ -65,6 +65,9 @@ class StaleElementReferenceException(WebDriverException):
 class InvalidElementStateException(WebDriverException):
     pass
 
+class NoAlertPresentException(WebDriverException):
+    pass
+
 class ElementNotVisibleException(InvalidElementStateException):
     """Thrown to indicate that although an element is present on the
     DOM, it is not visible, and so is not able to be interacted

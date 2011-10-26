@@ -22,6 +22,7 @@ from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import UnableToSetCookieException
+from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import ErrorInResponseException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
@@ -96,6 +97,8 @@ class ErrorHandler(object):
             exception_class = TimeoutException
         elif status == ErrorCode.UNKNOWN_ERROR:
             exception_class = WebDriverException
+        elif status == ErrorCode.NO_ALERT_OPEN:
+            exception_class = NoAlertPresentException
         else:
             exception_class = WebDriverException
         value = response['value']

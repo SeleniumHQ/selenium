@@ -13,6 +13,8 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import NoAlertPresentException
 
 import unittest
 
@@ -33,6 +35,15 @@ class AlertsTest(unittest.TestCase):
         #  If we can perform any action, we're good to go
         self.assertEqual("Testing Alerts", self.driver.title)
 
+    def testShouldAllowUsersToAcceptAnAlertWithNoTextManually(self):
+        self._loadPage("alerts")
+        self.driver.find_element(By.ID,"empty-alert").click();
+        alert = self.driver.switch_to_alert()
+        alert.accept()
+
+        #  If we can perform any action, we're good to go
+        self.assertEqual("Testing Alerts", self.driver.title)
+    
     def testShouldAllowUsersToDismissAnAlertManually(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
@@ -68,6 +79,58 @@ class AlertsTest(unittest.TestCase):
 
         result = self.driver.find_element(by=By.ID, value="text").text
         self.assertEqual("cheese", result)
+
+    def testSettingTheValueOfAnAlertThrows(self):
+        self._loadPage("alerts")
+        self.driver.find_element(By.ID,"alert").click();
+
+        alert = self.driver.switch_to_alert()
+        try:
+            alert.send_keys("cheese");
+            self.fail("Expected exception");
+        except ElementNotVisibleException:
+            pass
+        finally:
+            alert.accept()
+
+    def testAlertShouldNotAllowAdditionalCommandsIfDimissed(self):
+        self._loadPage("alerts");
+        self.driver.find_element(By.ID, "alert").click()
+
+        alert = self.driver.switch_to_alert()
+        alert.dismiss()
+
+        try:
+            alert.text
+            self.fail("Expected NoAlertPresentException")
+        except NoAlertPresentException:
+            pass
+            
+    def testPromptShouldUseDefaultValueIfNoKeysSent(self):
+        self._loadPage("alerts")
+        self.driver.find_element(By.ID, "prompt-with-default").click()
+
+        alert = self.driver.switch_to_alert()
+        alert.accept()
+
+        txt = self.driver.find_element(By.ID, "text").text
+        self.assertEqual("This is a default value", txt)
+
+    def testHandlesTwoAlertsFromOneInteraction(self):
+        self._loadPage("alerts")
+
+        self.driver.find_element(By.ID, "double-prompt").click()
+
+        alert1 = self.driver.switch_to_alert()
+        alert1.send_keys("brie")
+        alert1.accept()
+
+        alert2 = self.driver.switch_to_alert()
+        alert2.send_keys("cheddar")
+        alert2.accept();
+
+        self.assertEqual(self.driver.find_element(By.ID, "text1").text, "brie")
+        self.assertEqual(self.driver.find_element(By.ID, "text2").text, "cheddar")
 
     def testShouldAllowTheUserToGetTheTextOfAnAlert(self):
         self._loadPage("alerts")
