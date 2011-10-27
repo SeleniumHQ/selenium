@@ -1,3 +1,30 @@
+v2.10.0
+======
+
+Android:
+  * Added Ice Cream Sandwich support.  Removed support for pre-ICS Android.
+    Last pre-ICS release available at https://code.google.com/p/selenium/downloads/detail?name=android-server-2.9.apk
+    Last pre-ICE source available at http://selenium.googlecode.com/svn/tags/android-froyo
+
+Grid:
+  * Stability and reliability fixes.
+  * A single node can now process both selenium 1.0 and selenium webdriver requests.  Old proxies deprecated.
+  * FIXED: 2617: Removing unnecessary logging.
+  * FIXED: 2650, 2400: Unregister dead nodes.
+
+WebDriver:
+  * FIXED: 2700: Don't throw MoveTargetOutOfBoundsError where we shouldn't.
+  * FIXED: 2301: Allow commas in CSS selectors.
+  * FIXED: 2099: Occasional XPath lookup errors.
+  * FIXED: 1771: Don't scroll unnecessarily.
+  * FIXED: 2674: Don't incorrectly decorate List<WebElement>s which don't have @FindBy annotations.
+
+Javascript:
+  * Added jsapi, including node integration.  More details to come.
+
+General:
+  * Updated version of guava used to 10.0.1.
+
 v2.9.0
 ======
 
