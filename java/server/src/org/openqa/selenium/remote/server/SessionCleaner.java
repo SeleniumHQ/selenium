@@ -18,6 +18,8 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
+import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.util.logging.Logger;
 
@@ -64,6 +66,9 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
         DeleteSession deleteSession = new DeleteSession(session);
         try {
           deleteSession.call();
+          final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+          logHandler.transferThreadTempLogsToSessionLogs(sessionId.toString());
+          logHandler.removeSessionLogs(sessionId.toString());
           driverSessions.deleteSession(sessionId);
           log.info("Session " + session + " deleted due to timeout");
         } catch (Exception e) {
