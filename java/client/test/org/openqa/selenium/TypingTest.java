@@ -140,7 +140,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("tet", Keys.ARROW_LEFT, "s");
 
-    assertThat(keyReporter.getAttribute("value"), is("test"));
+    waitFor(elementValueToEqual(keyReporter, "test"));
   }
 
   @JavascriptEnabled
