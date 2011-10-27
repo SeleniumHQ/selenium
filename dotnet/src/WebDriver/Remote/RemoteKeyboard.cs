@@ -45,6 +45,11 @@ namespace OpenQA.Selenium.Remote
         /// <param name="keySequence">A string representing the keystrokes to send.</param>
         public void SendKeys(string keySequence)
         {
+            if (keySequence == null)
+            {
+                throw new ArgumentException("key sequence to send must not be null", "keySequence");
+            }
+
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("value", keySequence.ToCharArray());
             this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
@@ -57,6 +62,11 @@ namespace OpenQA.Selenium.Remote
         /// <remarks>The key value must be one of the values from the <see cref="Keys"/> class.</remarks>
         public void PressKey(string keyToPress)
         {
+            if (keyToPress == null)
+            {
+                throw new ArgumentException("key to press must not be null", "keyToPress");
+            }
+
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("value", keyToPress.ToCharArray());
             this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
@@ -69,6 +79,11 @@ namespace OpenQA.Selenium.Remote
         /// <remarks>The key value must be one of the values from the <see cref="Keys"/> class.</remarks>
         public void ReleaseKey(string keyToRelease)
         {
+            if (keyToRelease == null)
+            {
+                throw new ArgumentException("key to release must not be null", "keyToRelease");
+            }
+
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("value", keyToRelease.ToCharArray());
             this.driver.InternalExecute(DriverCommand.SendKeysToActiveElement, parameters);
