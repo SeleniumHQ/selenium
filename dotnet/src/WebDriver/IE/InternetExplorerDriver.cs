@@ -66,6 +66,11 @@ namespace OpenQA.Selenium.IE
     /// </example>
     public class InternetExplorerDriver : RemoteWebDriver, ITakesScreenshot
     {
+        /// <summary>
+        /// The name of the ICapabilities setting to use to ignore Protected Mode settings.
+        /// </summary>
+        public static readonly string IntroduceInstabilityByIgnoringProtectedModeSettings = "ignoreProtectedModeSettings";
+
         private static int serverPort;
         private InternetExplorerDriverServer server = new InternetExplorerDriverServer();
 
