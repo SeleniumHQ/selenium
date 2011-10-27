@@ -270,10 +270,6 @@ module Selenium
           execute :mouseMoveTo, {}, params
         end
 
-        def sendModifierKeyToActiveElement(key, down)
-          execute :sendModifierKeyToActiveElement, {}, :value => key, :isdown => down
-        end
-
         def sendKeysToActiveElement(key)
           execute :sendKeysToActiveElement, {}, :value => key
         end

@@ -4,7 +4,7 @@ module Selenium
   module WebDriver
     describe Keyboard do
 
-      compliant_on :browser => nil do
+      not_compliant_on :browser => [:chrome] do
         it "sends keys to the active element" do
           driver.navigate.to url_for("bodyTypingTest.html")
 
