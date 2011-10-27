@@ -497,7 +497,8 @@ public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title
  must be called to release the modifier.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>.
+<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>. If the
+ provided key is none of those, <CODE>IllegalArgumentException</CODE> is thrown.
 <DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
@@ -513,7 +514,8 @@ public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title
  <i>Actions.click(element).sendKeys(theKey);</i>
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>.
+<DT><B>Parameters:</B><DD><CODE>theKey</CODE> - Either <A HREF="../../../../org/openqa/selenium/Keys.html#SHIFT"><CODE>Keys.SHIFT</CODE></A>, <A HREF="../../../../org/openqa/selenium/Keys.html#ALT"><CODE>Keys.ALT</CODE></A> or <A HREF="../../../../org/openqa/selenium/Keys.html#CONTROL"><CODE>Keys.CONTROL</CODE></A>. If the
+ provided key is none of those, <CODE>IllegalArgumentException</CODE> is thrown.
 <DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><A HREF="../../../../org/openqa/selenium/interactions/Actions.html#keyDown(org.openqa.selenium.Keys)"><CODE>keyDown(org.openqa.selenium.Keys)</CODE></A></DL>
 </DD>
 </DL>
@@ -736,7 +738,9 @@ public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title
  The element is scrolled into view and its location is calculated using getBoundingClientRect.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>toElement</CODE> - element to move to.<DD><CODE>xOffset</CODE> - Offset from the top-left corner.<DD><CODE>yOffset</CODE> - Offset from the top-left corner.
+<DT><B>Parameters:</B><DD><CODE>toElement</CODE> - element to move to.<DD><CODE>xOffset</CODE> - Offset from the top-left corner. A negative value means coordinates right from
+ the element.<DD><CODE>yOffset</CODE> - Offset from the top-left corner. A negative value means coordinates above
+ the element.
 <DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
@@ -753,7 +757,7 @@ public <A HREF="../../../../org/openqa/selenium/interactions/Actions.html" title
  the viewport is scrolled to match.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>xOffset</CODE> - horizontal offset.<DD><CODE>yOffset</CODE> - vertical offset.
+<DT><B>Parameters:</B><DD><CODE>xOffset</CODE> - horizontal offset. A negative value means moving the mouse left.<DD><CODE>yOffset</CODE> - vertical offset. A negative value means moving the mouse up.
 <DT><B>Returns:</B><DD>A self reference.
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="../../../../org/openqa/selenium/interactions/MoveTargetOutOfBoundsException.html" title="class in org.openqa.selenium.interactions">MoveTargetOutOfBoundsException</A></CODE> - if the provided offset is outside the document's
