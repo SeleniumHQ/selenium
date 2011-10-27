@@ -1046,7 +1046,9 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     if (coordinates.auxiliary) {
       var element = fxdriver.moz.unwrap(coordinates.auxiliary);
 
-      var loc = Utils.getLocationOnceScrolledIntoView(element);
+      // No need to scroll the element into view - calling getInViewLocation
+      // later on with the right coordinates will scroll properly.
+      var loc = Utils.getLocation(element);
 
       toX = loc.x + coordinates.x;
       toY = loc.y + coordinates.y;

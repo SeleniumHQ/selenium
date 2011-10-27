@@ -293,21 +293,20 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
     Map<String, Object> keyUpSize = getElementSize(keyUpArea);
 
-    // Since the keyUpArea was scrolled into view, it is assumed that its distance from the
-    // top is (almost) 0 and the mouse was moved to the middle of the element, so the mouse
-    // ends up at 0 + height / 2. In practice the 'top' value of getBoundingClientRect is
-    // 0.43 pixels or so.
-    int assumedMouseY = getHeight(keyUpSize) / 2;
+    // When moving to an element using the interactions API, the element is not scrolled
+    // using scrollElementIntoView so the top of the element may not end at 0.
+    // Estimate the mouse position based on the distance of the element from the top plus
+    // half its size (the mouse is moved to the middle of the element by default).
+    int assumedMouseY = getHeight(keyUpSize) / 2 + getFieldValue(keyUpSize, "top");
 
-    // Calculate the scroll offset by adding to the mouse position the distance of the parent
-    // from the top + half it's height.
+    // Calculate the scroll offset by figuring out the distance of the 'parent' element from
+    // the top (adding half it's height), then substracting the current mouse position.
     // Regarding width, the event attached to this element will only be triggered if the mouse
     // hovers over the text in this element. Use a simple negative offset for this.
     Map<String, Object> parentSize = getElementSize(driver.findElement(By.id("parent")));
 
-
-    int verticalMove = assumedMouseY + getFieldValue(parentSize, "top") +
-        getHeight(parentSize) / 2;
+    int verticalMove = getFieldValue(parentSize, "top") + getHeight(parentSize) / 2 -
+      assumedMouseY;
 
     // Move by verticalMove pixels down and -50 pixels left:
     // we should be hitting the element with id 'parent'
