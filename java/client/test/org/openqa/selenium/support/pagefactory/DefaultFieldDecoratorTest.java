@@ -81,14 +81,14 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   }
 
   @Test
-  public void decoratesWebElementList() throws Exception {
+  public void doesNotDecorateNonAnnotatedWebElementList() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list1")),
-        is(notNullValue()));
+        is(nullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list2")),
-        is(notNullValue()));
+        is(nullValue()));
   }
 
   @Test

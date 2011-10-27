@@ -178,6 +178,8 @@ public class PageFactoryTest extends MockTestBase {
   public static class PrivatePage {
 
     private WebElement allMine = null;
+
+    @FindBy(name = "q")
     private List<WebElement> list = null;
 
     public WebElement getField() {
