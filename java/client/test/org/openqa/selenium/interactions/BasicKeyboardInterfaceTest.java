@@ -116,7 +116,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
 
     keysEventInput.click();
 
-    String existingResult = driver.findElement(By.id("result")).getText();
+    String existingResult = getFormEvents();
 
     Action pressShift = getBuilder(driver).keyDown(keysEventInput, Keys.SHIFT).build();
     pressShift.perform();
@@ -162,7 +162,11 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   private void assertThatFormEventsFiredAreExactly(String message, String expected) {
-    assertThat(message, driver.findElement(By.id("result")).getText().trim(), is(expected));
+    assertThat(message, getFormEvents(), is(expected.trim()));
+  }
+
+  private String getFormEvents() {
+    return driver.findElement(By.id("result")).getText().trim();
   }
 
   private void assertThatFormEventsFiredAreExactly(String expected) {
@@ -170,6 +174,6 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   private void assertThatBodyEventsFiredAreExactly(String expected) {
-    assertThat(driver.findElement(By.id("body_result")).getText().trim(), is(expected));
+    assertThat(driver.findElement(By.id("body_result")).getText().trim(), is(expected.trim()));
   }
 }
