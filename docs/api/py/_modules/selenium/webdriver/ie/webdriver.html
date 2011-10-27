@@ -45,88 +45,88 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for selenium.webdriver.ie.webdriver</h1><div class="highlight"><pre>
-<span class="c">#!/usr/bin/python</span>
-<span class="c">#</span>
-<span class="c"># Copyright 2008-2010 WebDriver committers</span>
-<span class="c"># Copyright 2008-2010 Google Inc.</span>
-<span class="c">#</span>
-<span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c"># you may not use this file except in compliance with the License.</span>
-<span class="c"># You may obtain a copy of the License at</span>
-<span class="c">#</span>
-<span class="c">#     http://www.apache.org/licenses/LICENSE-2.0</span>
-<span class="c">#</span>
-<span class="c"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c"># See the License for the specific language governing permissions and</span>
-<span class="c"># limitations under the License.</span>
+  <h1>Source code for selenium.webdriver.ie.webdriver</h1><pre>
+#!/usr/bin/python
+#
+# Copyright 2008-2010 WebDriver committers
+# Copyright 2008-2010 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.command</span> <span class="kn">import</span> <span class="n">Command</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
-<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">base64</span>
+from selenium.webdriver.common import utils
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.command import Command
+from selenium.common.exceptions import WebDriverException
+from ctypes import *
+import time
+import os
+import base64
 
-<span class="n">DEFAULT_TIMEOUT</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">0</span>
+DEFAULT_TIMEOUT = 30
+DEFAULT_PORT = 0
 
-<div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver">[docs]</a>class WebDriver(RemoteWebDriver):
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">free_port</span><span class="p">()</span>
+    def __init__(self, port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT):
+        self.port = port
+        if self.port == 0:
+            self.port = utils.free_port()
 
-        <span class="c"># Create IE Driver instance of the unmanaged code</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span> <span class="o">=</span> <span class="n">CDLL</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span><span class="s">&quot;win32&quot;</span><span class="p">,</span> <span class="s">&quot;IEDriver.dll&quot;</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">WindowsError</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span> <span class="o">=</span> <span class="n">CDLL</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span><span class="s">&quot;x64&quot;</span><span class="p">,</span> <span class="s">&quot;IEDriver.dll&quot;</span><span class="p">))</span>
-            <span class="k">except</span> <span class="ne">WindowsError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Unable to load the IEDriver.dll component&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">StartServer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        # Create IE Driver instance of the unmanaged code
+        try:
+            self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"win32", "IEDriver.dll"))
+        except WindowsError:
+            try:
+                self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"x64", "IEDriver.dll"))
+            except WindowsError:
+                raise WebDriverException("Unable to load the IEDriver.dll component")
+        self.ptr = self.iedriver.StartServer(self.port)
 
-        <span class="n">seconds</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">):</span>
-            <span class="n">seconds</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="n">DEFAULT_TIMEOUT</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Unable to connect to IE&quot;</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        seconds = 0
+        while not utils.is_connectable(self.port):
+            seconds += 1
+            if seconds &gt; DEFAULT_TIMEOUT:
+                raise RuntimeError("Unable to connect to IE")
+            time.sleep(1)
 
-        <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">command_executor</span><span class="o">=</span><span class="s">&#39;http://localhost:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
-            <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">INTERNETEXPLORER</span><span class="p">)</span>
+        RemoteWebDriver.__init__(
+            self,
+            command_executor='http://localhost:%d' % self.port,
+            desired_capabilities=DesiredCapabilities.INTERNETEXPLORER)
 
-<div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">StopServer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span>
+<div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.quit">[docs]</a>    def quit(self):
+        RemoteWebDriver.quit(self)
+        self.iedriver.StopServer(self.ptr)
+        del self.iedriver
+        del self.ptr
 </div>
-<div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
-<span class="sd">        any IOError, else returns True. Use full paths in your filename.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">(</span><span class="n">png</span><span class="p">))</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">png</span>
-        <span class="k">return</span> <span class="bp">True</span></div></div>
-</pre></div>
+<div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.save_screenshot">[docs]</a>    def save_screenshot(self, filename):
+        """
+        Gets the screenshot of the current window. Returns False if there is
+        any IOError, else returns True. Use full paths in your filename.
+        """
+        png = self._execute(Command.SCREENSHOT)['value']
+        try:
+            f = open(filename, 'wb')
+            f.write(base64.decodestring(png))
+            f.close()
+        except IOError:
+            return False
+        finally:
+            del png
+        return True</div></div>
+</pre>
 
           </div>
         </div>
@@ -165,7 +165,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>

@@ -70,6 +70,7 @@
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchWindowException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">StaleElementReferenceException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">UnableToSetCookieException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoAlertPresentException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ErrorInResponseException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
@@ -144,6 +145,8 @@
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">TimeoutException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNKNOWN_ERROR</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_ALERT_OPEN</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoAlertPresentException</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
@@ -211,7 +214,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>
