@@ -1,3 +1,19 @@
+2.10.0 (2011-10-27)
+===================
+
+* Improve native keyboard emulation on Windows.
+* Allow commas in CSS selectors (#2301)
+* Firefox:
+  * Fix intermittent error when finding elements by XPath (#2099)
+  * Fix detection of maximum page size (#2700)
+  * Avoid extension selection dialog (extensions.autoDisableScopes)
+  * Fix invalid wire responses from the synthetic mouse (#2695)
+  * Don't scroll unnecessarily (#1771).
+* IE:
+  * Improve handling of #clear on disabled or readonly elements.
+
+
+
 2.9.1 (2011-10-24)
 ==================
 
