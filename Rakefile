@@ -103,7 +103,7 @@ task :support => [
   "//java/client/src/org/openqa/selenium/support",
 ]
 task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
-task :iphone => [:iphone_server, :iphone_client]
+task :iphone => [:iphone_test_setup, :iphone_server, :iphone_client]
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
@@ -146,7 +146,7 @@ task :test_support => [
   "//java/client/test/org/openqa/selenium/support:LargeTests:run"
 ]
 task :test_iphone_client => [:'webdriver-iphone-client-test']
-task :test_iphone => [:test_iphone_server, :test_iphone_client]
+task :test_iphone => [:iphone_test_setup, :test_iphone_server, :test_iphone_client]
 task :android => [:android_client, :android_server]
 task :android_client => ['//java/client/src/org/openqa/selenium/android']
 task :android_server => ['//android/app:android-server']
@@ -522,14 +522,16 @@ task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
 end
 
 
-iphone_test(:name => "webdriver-iphone-client-test",
-            :srcs => [ "java/client/test/org/openqa/selenium/iphone/**/*.java" ],
-            :deps => [
+task :iphone_test_setup do
+  iphone_test(:name => "webdriver-iphone-client-test",
+              :srcs => [ "java/client/test/org/openqa/selenium/iphone/**/*.java" ],
+              :deps => [
                        "//java/client/test/org/openqa/selenium:tests",
                        "//third_party/java/junit",
                        :iphone_server,
                        :iphone_client
-                     ])
+                       ])
+end
 
 
 #### iPhone ####
