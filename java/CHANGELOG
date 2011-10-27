@@ -1,11 +1,6 @@
 v2.10.0
 ======
 
-Android:
-  * Added Ice Cream Sandwich support.  Removed support for pre-ICS Android.
-    Last pre-ICS release available at https://code.google.com/p/selenium/downloads/detail?name=android-server-2.9.apk
-    Last pre-ICE source available at http://selenium.googlecode.com/svn/tags/android-froyo
-
 Grid:
   * Stability and reliability fixes.
   * A single node can now process both selenium 1.0 and selenium webdriver requests.  Old proxies deprecated.
