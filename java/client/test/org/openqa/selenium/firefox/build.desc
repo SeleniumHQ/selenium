@@ -12,8 +12,8 @@ java_library(name = "tests_common",
     "//third_party/java/junit",
   ])
 
-java_test(name = "test",
-  srcs = [ "FirefoxDriverTestSuite.java" ],
+java_test(name = "test_synthesized",
+  srcs = [ "SynthesizedFirefoxDriverTestSuite.java" ],
   deps = [
     ":tests_common"
   ])

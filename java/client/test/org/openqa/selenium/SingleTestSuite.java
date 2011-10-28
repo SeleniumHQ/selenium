@@ -32,7 +32,7 @@ public class SingleTestSuite extends TestCase {
 
   private static final String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
   private static final String FIREFOX_TEST =
-      "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
+      "org.openqa.selenium.firefox.SynthesizedFirefoxDriverTestSuite$TestFirefoxDriver";
 
   private static final String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private static final String HTML_UNIT_JS =

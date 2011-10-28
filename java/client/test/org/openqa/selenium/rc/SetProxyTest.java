@@ -60,7 +60,7 @@ public class SetProxyTest extends TestCase {
     caps.setCapability(PROXY, proxy);
     caps.setCapability(ENSURING_CLEAN_SESSION, true);
 
-    // WebDriver driver = new FirefoxDriverTestSuite.TestFirefoxDriver(caps);
+    // WebDriver driver = new SynthesizedFirefoxDriverTestSuite.TestFirefoxDriver(caps);
     // WebDriver driver = new RemoteWebDriver(seleniumServer.getWebDriverUrl(), caps);
     WebDriver driver = new InternetExplorerDriver(caps);
 

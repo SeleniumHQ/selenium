@@ -32,6 +32,8 @@ public @interface Ignore {
     CHROME,
     HTMLUNIT,
     FIREFOX,
+    FIREFOX_NATIVE,
+    FIREFOX_SYNTHESIZED,
     IE,
     IPHONE,
     OPERA,

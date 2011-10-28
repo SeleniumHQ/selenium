@@ -17,24 +17,30 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-
 import java.io.File;
 import java.io.IOException;
 
-public class FirefoxDriverTestSuite extends TestCase {
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX_SYNTHESIZED;
+
+public class SynthesizedFirefoxDriverTestSuite extends TestCase {
   private static boolean runBuild = true;
 
   public static Test suite() throws Exception {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      return new TestSuite();
+    }
 
     // System.setProperty("webdriver.development", "true");
     // System.setProperty("webdriver.firefox.useExisting", "true");
@@ -53,6 +59,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 //        .addSourceDir("java/client/test/org/openqa/selenium/firefox") Haven't been running for a while, apparently, and some of them don't pass now...
         .usingDriver(FirefoxDriver.class)
         .exclude(FIREFOX)
+        .exclude(FIREFOX_SYNTHESIZED)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();
