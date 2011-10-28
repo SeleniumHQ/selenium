@@ -33,7 +33,7 @@ public interface BrowserType {
   String OPERA = "opera"; 
   String IEXPLORE= "iexplore";
   String IEXPLORE_PROXY= "iexploreproxy";
-  String SAFARI_PROXY = "safari";
+  String SAFARI_PROXY = "safariproxy";
   String CHROME = "chrome";
   String KONQUEROR = "konqueror";
   String MOCK = "mock";
