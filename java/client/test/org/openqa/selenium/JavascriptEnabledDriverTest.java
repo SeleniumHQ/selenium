@@ -39,6 +39,7 @@ import org.openqa.selenium.internal.Locatable;
 import org.hamcrest.Matchers;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Test case for browsers that support using Javascript
@@ -274,7 +275,8 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     String handle = driver.getWindowHandle();
     driver.findElement(By.id("new_window")).click();
 
-    waitFor(openAndSwitchToWindow("close_me", driver));
+    // Depending on the Android emulator platform this can take a while.
+    waitFor(openAndSwitchToWindow("close_me", driver), 30, TimeUnit.SECONDS);
 
     driver.findElement(By.id("close")).click();
 
