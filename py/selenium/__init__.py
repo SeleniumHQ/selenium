@@ -16,4 +16,4 @@
 from selenium import selenium
 
 
-__version__ = "2.9.0"
+__version__ = "2.11.0"
