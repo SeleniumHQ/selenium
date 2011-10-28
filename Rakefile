@@ -136,9 +136,10 @@ task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:test:run" ]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_synthesized:run", "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
+task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:test:run' ]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
-  '//java/server/test/org/openqa/selenium/remote/server:test:run'
+  :test_remote_server
 ]
 task :test_support => [
   "//java/client/test/org/openqa/selenium/lift:test:run",
@@ -169,10 +170,10 @@ if (windows?)
 end
 
 task :test_java_webdriver => [
-  "//java/client/test/org/openqa/selenium/htmlunit:test:run",
-  "//java/client/test/org/openqa/selenium/firefox:test:run",
-  "//java/client/test/org/openqa/selenium/ie:test:run",
-  "//java/server/test/org/openqa/selenium/remote/server:test:run",
+  :test_htmlunit,
+  :test_firefox,
+  :test_ie,
+  :test_remote_server,
 ]
 if (present?("chromedriver"))
   task :test_java_webdriver => [:test_chrome]
