@@ -10,7 +10,7 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
   private static final long LOAD_TIME_IN_SECONDS = 3;
 
   @Ignore(value = {IPHONE}, reason = "Untested browsers")
-  public void testShouldBlockUnitlPageLoads() throws Exception {
+  public void testShouldBlockUntilPageLoads() throws Exception {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
     long now = System.currentTimeMillis();
@@ -37,6 +37,6 @@ public class SlowLoadingPageTest extends AbstractDriverTestCase {
   }
 
   private static void assertElapsed(long expected, long actual) {
-    assertTrue(expected + "ms should have ellapsed, but was: " + actual, expected <= actual);
+    assertTrue(expected + "ms should have elapsed, but was: " + actual, expected <= actual);
   }
 }
