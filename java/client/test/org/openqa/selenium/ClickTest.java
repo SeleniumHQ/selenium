@@ -22,6 +22,8 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX_NATIVE;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX_SYNTHESIZED;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
@@ -140,22 +142,28 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE}, reason = "Not implemented")
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE, FIREFOX_NATIVE}, reason = "Not implemented")
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
     driver.findElement(By.id("movable")).click();
-
     String log = driver.findElement(By.id("result")).getText();
 
-    // Note: It is not guaranteed that the relatedTarget property of the mouseover
-    // event will be the parent, when using native events. Only check that the mouse
-    // has moved to this element, not that the parent element was the related target.
-    if (TestUtilities.isNativeEventsEnabled(driver)) {
-      assertTrue("Should have moved to this element.", log.startsWith("parent matches?"));
-    } else {
-      assertEquals("parent matches? true", log);
-    }
+    assertEquals("parent matches? true", log);
+  }
+
+  // Note: It is not guaranteed that the relatedTarget property of the mouseover
+  // event will be the parent, when using native events. Only check that the mouse
+  // has moved to this element, not that the parent element was the related target.
+  @JavascriptEnabled
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE, FIREFOX_SYNTHESIZED}, reason = "Not implemented")
+  public void testShouldAlmostSetRelatedTargetForMouseOver() {
+    driver.get(pages.javascriptPage);
+
+    driver.findElement(By.id("movable")).click();
+    String log = driver.findElement(By.id("result")).getText();
+
+    assertTrue("Should have moved to this element.", log.startsWith("parent matches?"));
   }
   
   @JavascriptEnabled

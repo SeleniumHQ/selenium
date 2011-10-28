@@ -16,23 +16,23 @@ limitations under the License.
  */
 package org.openqa.selenium;
 
+import org.openqa.selenium.interactions.Actions;
+
+import java.util.concurrent.Callable;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX_SYNTHESIZED;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
-
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.concurrent.Callable;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
@@ -96,7 +96,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, SELENESE, OPERA},
+      value = {HTMLUNIT, IPHONE, SELENESE, OPERA, FIREFOX_SYNTHESIZED},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   public void testShouldAllowUsersToHoverOverElements() {
     if (!hasInputDevices()) {
@@ -106,11 +106,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("menu1"));
-    if (!supportsNativeEvents()) {
-      System.out.println("Skipping hover test: needs native events");
-      return;
-    }
-
     final WebElement item = driver.findElement(By.id("item1"));
     assertEquals("", item.getText());
 
@@ -148,7 +143,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     assertTrue("The element and the enclosing map should be considered shown.", isShown);
   }
 
-  @Ignore
+  @Ignore(value = ALL)
   @JavascriptEnabled
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     if (!hasInputDevices()) {
@@ -158,11 +153,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("menu1"));
-    if (!supportsNativeEvents()) {
-      System.out.println("Skipping hover test: needs native events");
-      return;
-    }
-
     new Actions(driver).moveToElement(element).build().perform();
 
     WebElement target = driver.findElement(By.id("item1"));
@@ -174,12 +164,12 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, FIREFOX_SYNTHESIZED},
+          reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMovingMouseByRelativeOffset() {
-    if (!hasInputDevices() || !supportsNativeEvents()) {
+    if (!hasInputDevices()) {
       System.out.println(
-          String.format("Skipping move by offset test: native events %s has input devices: %s",
-              supportsNativeEvents(), hasInputDevices()));
+          String.format("Skipping move by offset test: has input devices: %s", hasInputDevices()));
       return;
     }
 
@@ -198,12 +188,11 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, FIREFOX_SYNTHESIZED}, reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMovingMouseToRelativeElementOffset() {
-    if (!hasInputDevices() || !supportsNativeEvents()) {
+    if (!hasInputDevices()) {
       System.out.println(
-          String.format("Skipping move to offset test: native events %s has input devices: %s",
-              supportsNativeEvents(), hasInputDevices()));
+          String.format("Skipping move to offset test: has input devices: %s", hasInputDevices()));
       return;
     }
 
@@ -220,12 +209,11 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {CHROME, HTMLUNIT}, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {CHROME, HTMLUNIT, FIREFOX_SYNTHESIZED}, reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMoveRelativeToBody() {
-    if (!hasInputDevices() || !supportsNativeEvents()) {
+    if (!hasInputDevices()) {
       System.out.println(
-          String.format("Skipping move to offset test: native events %s has input devices: %s",
-              supportsNativeEvents(), hasInputDevices()));
+          String.format("Skipping move to offset test: has input devices: %s", hasInputDevices()));
       return;
     }
 
@@ -245,20 +233,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       return false;
     }
     return true;
-  }
-
-  private boolean supportsNativeEvents() {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      return true;
-    }
-
-    if (driver instanceof HasCapabilities) {
-      Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-      Object nativeEvents = capabilities.getCapability(CapabilityType.HAS_NATIVE_EVENTS);
-      return nativeEvents != null && (Boolean) nativeEvents;
-    }
-
-    return false;
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {

@@ -33,16 +33,15 @@ import java.util.concurrent.TimeUnit;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX_SYNTHESIZED;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestUtilities.isFirefox;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
 import static org.openqa.selenium.TestUtilities.isFirefox35;
-import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -278,14 +277,9 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME, FIREFOX_SYNTHESIZED},
       reason = "Not implemented yet.")
   public void testMovingMousePastViewPort() {
-    if (!isNativeEventsEnabled(driver)) {
-      System.out.println("Skipping testMovingMousePastViewPort: Native events are disabled.");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     WebElement keyUpArea = driver.findElement(By.id("keyPressArea"));
@@ -316,16 +310,9 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     waitFor(elementTextToContain(resultArea, "parent matches"));
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME, FIREFOX_SYNTHESIZED},
       reason = "Not implemented yet.")
   public void testMovingMouseBackAndForthPastViewPort() {
-
-    if (isFirefox(driver) && !isNativeEventsEnabled(driver)) {
-      System.out.println("Skipping testMovingMouseBackAndForthPastViewPort: " +
-          "Native events are disabled.");
-      return;
-    }
-
     driver.get(pages.veryLargeCanvas);
 
     WebElement firstTarget = driver.findElement(By.id("r1"));

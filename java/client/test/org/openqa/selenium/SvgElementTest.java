@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.List;
+
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -24,11 +26,8 @@ import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestUtilities.isFirefox30;
-import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-
-import java.util.List;
 
 @Ignore(
     value = {HTMLUNIT, IE, CHROME, REMOTE, SELENESE, OPERA},
@@ -39,7 +38,7 @@ public class SvgElementTest extends AbstractDriverTestCase {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
 
-    if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
+    if (isFirefox30(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
       System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
           " this functionality is not working.");
       return;
@@ -76,7 +75,7 @@ public class SvgElementTest extends AbstractDriverTestCase {
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
     List<WebElement> textElements = svg.findElements(By.tagName("svg:text"));
 
-    if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
+    if (isFirefox30(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
       System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
           " this functionality is not working.");
       return;
