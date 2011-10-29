@@ -29,6 +29,7 @@ import org.junit.runners.Suite;
     CompositeActionTest.class,
     IndividualMouseActionsTest.class,
     IndividualKeyboardActionsTest.class,
-    ActionsTest.class
+    ActionsTest.class,
+    IgnoreComparitorUnitTest.class
 })
 public class SmallTests {}

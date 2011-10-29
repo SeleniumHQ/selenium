@@ -23,6 +23,7 @@ import junit.framework.TestSuite;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Ignore;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.internal.InProject;
@@ -60,6 +61,7 @@ public class SynthesizedFirefoxDriverTestSuite extends TestCase {
         .usingDriver(FirefoxDriver.class)
         .exclude(FIREFOX)
         .exclude(FIREFOX_SYNTHESIZED)
+        .exclude(Ignore.NativeEventsEnabledState.DISABLED)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();

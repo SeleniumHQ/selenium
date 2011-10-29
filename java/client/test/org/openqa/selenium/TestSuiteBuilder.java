@@ -22,6 +22,8 @@ import com.google.common.collect.Sets;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.openqa.selenium.Ignore.NativeEventsEnabledState;
 import org.openqa.selenium.internal.IgnoredTestCallback;
 import org.openqa.selenium.internal.InProject;
 
@@ -40,7 +42,6 @@ import static org.junit.Assert.assertTrue;
 public class TestSuiteBuilder {
 
   private Set<File> sourceDirs = Sets.newHashSet();
-  private Set<Ignore.Driver> ignored = Sets.newHashSet();
   private Class<? extends WebDriver> driverClass;
   private boolean keepDriver;
   private boolean includeJavascript;
@@ -55,6 +56,7 @@ public class TestSuiteBuilder {
   private Set<IgnoredTestCallback> ignoredTestCallbacks = Sets.newHashSet();
   private boolean outputTestNames = false;
   private File baseDir;
+  private IgnoreComparator ignoreComparator = new IgnoreComparator();
 
   public TestSuiteBuilder() {
     baseDir = InProject.locate("Rakefile").getParentFile();
@@ -84,7 +86,7 @@ public class TestSuiteBuilder {
   }
 
   public TestSuiteBuilder exclude(Ignore.Driver tagToIgnore) {
-    ignored.add(tagToIgnore);
+    ignoreComparator.addDriver(tagToIgnore);
     return this;
   }
 
@@ -289,24 +291,7 @@ public class TestSuiteBuilder {
   }
 
   private boolean isIgnored(AnnotatedElement annotatedElement) {
-    Ignore ignore = annotatedElement.getAnnotation(Ignore.class);
-    if (ignore == null) {
-      return false;
-    }
-
-    if (ignore.value().length == 0) {
-      return true;
-    }
-
-    for (Ignore.Driver value : ignore.value()) {
-      for (Ignore.Driver name : ignored) {
-        if (value == name || value == Ignore.Driver.ALL) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return ignoreComparator.shouldIgnore(annotatedElement.getAnnotation(Ignore.class));
   }
 
   private Class<?> getClassFrom(File file) {
@@ -406,10 +391,10 @@ public class TestSuiteBuilder {
     return this;
   }
 
-    public TestSuiteBuilder withIgnoredTestCallback(IgnoredTestCallback ignoredTestCallback) {
-        ignoredTestCallbacks.add(ignoredTestCallback);
-        return this;
-    }
+  public TestSuiteBuilder withIgnoredTestCallback(IgnoredTestCallback ignoredTestCallback) {
+    ignoredTestCallbacks.add(ignoredTestCallback);
+    return this;
+  }
 
   public class LoggingIgnoreCallback implements IgnoredTestCallback {
     public void callback(Class clazz, String testName, Ignore ignore) {
@@ -422,5 +407,10 @@ public class TestSuiteBuilder {
       }
       System.err.println(message + ": " + ignore.reason());
     }
+  }
+
+  public TestSuiteBuilder exclude(NativeEventsEnabledState value) {
+    ignoreComparator.setNativeEventsIgnoreState(value);
+    return this;
   }
 }

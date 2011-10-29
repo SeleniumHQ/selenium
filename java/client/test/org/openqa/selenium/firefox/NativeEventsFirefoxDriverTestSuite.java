@@ -21,6 +21,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.openqa.selenium.Ignore;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 
@@ -39,6 +40,7 @@ public class NativeEventsFirefoxDriverTestSuite extends TestCase {
         .usingDriver(TestFirefoxDriverWithNativeEvents.class)
         .exclude(FIREFOX)
         .exclude(FIREFOX_NATIVE)
+        .exclude(Ignore.NativeEventsEnabledState.ENABLED)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();
