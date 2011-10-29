@@ -13,6 +13,21 @@
  */
 package org.openqa.grid.internal;
 
+import com.google.common.io.ByteStreams;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
+import org.openqa.grid.internal.listeners.CommandListener;
+import org.openqa.grid.web.Hub;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -33,21 +48,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.openqa.grid.internal.listeners.CommandListener;
-import org.openqa.grid.web.Hub;
-
-import com.google.common.io.ByteStreams;
-
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
  * available for a test.
@@ -58,7 +58,7 @@ import com.google.common.io.ByteStreams;
 public class TestSession {
 
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
-  private static final int MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED = 5000;
+  static int MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED = 5000;
 
   private final String internalKey;
   private final TestSlot slot;
@@ -126,11 +126,13 @@ public class TestSession {
   }
 
   public boolean isOrphaned() {
-    long now = System.currentTimeMillis();
+    final long elapsedSinceCreation = System.currentTimeMillis() - sessionCreatedAt;
     // The session needs to have been open for at least the time interval and we need to have not
     // seen any new
     // commands during that time frame.
-    return (((now - sessionCreatedAt) > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED) && (sessionCreatedAt == lastActivity));
+    return slot.getProtocol().isSelenium()
+           && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
+           && sessionCreatedAt == lastActivity;
   }
 
   /**
