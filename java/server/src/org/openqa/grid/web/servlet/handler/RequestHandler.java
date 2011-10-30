@@ -158,12 +158,12 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           forwardRequest(session, this);
         } catch (Throwable t) {
           log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);
-          session.terminate();
+          registry.terminate(session);
           throw new GridException("cannot forward the request " + t.getMessage(), t);
         }
 
         if (getRequestType() == RequestType.STOP_SESSION) {
-          session.terminate();
+          registry.terminate(session);
         }
         break;
       default:
@@ -177,7 +177,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   private void cleanup() {
     registry.removeNewSessionRequest(this);
     if (session != null) {
-      session.terminate();
+      registry.terminate(session);
     }
   }
 

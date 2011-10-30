@@ -265,13 +265,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
               if (hasTimedOut) {
                 log.warning("session " + session + " has TIMED OUT and will be released");
                 ((TimeoutListener) proxy).beforeRelease(session);
-                session.terminate();
+                registry.terminate( session);
               }
 
               if (session.isOrphaned()) {
                 log.warning("session " + session + " has been ORPHANED and will be released");
                 ((TimeoutListener) proxy).beforeRelease(session);
-                session.terminate();
+                registry.terminate( session);
               }
             }
           } catch (Throwable t) {

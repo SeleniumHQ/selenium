@@ -41,7 +41,7 @@ public class NewRequestCrashesDuringNewSessionTest {
     newSessionRequest.process();
     TestSession s = newSessionRequest.getTestSession();
     Assert.assertNotNull(s);
-    s.terminate();
+    registry.terminate( s);
     Assert.assertEquals(0, registry.getNewSessionRequestCount());
   }
 

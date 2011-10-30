@@ -125,6 +125,53 @@ public class Registry {
   }
 
   /**
+   * Ends this test session for the hub, releasing the resources in the hub / registry. It does not
+   * release anything on the remote. The resources are released in a separate thread, so the call
+   * returns immediatly. It allows release with long duration not to block the test while the hub is
+   * releasing the resource.
+   * @param session The session to terminate
+   */
+ public void terminate(final TestSession session) {
+   new Thread(new Runnable() { // Thread safety reviewed
+         public void run() {
+           _release(session.getSlot());
+         }
+       }).start();
+  }
+  /**
+   * Release the test slot. Free the resource on the slot itself and the registry. If also invokes
+   * the {@link org.openqa.grid.internal.listeners.TestSessionListener#afterSession(TestSession)} if applicable.
+   * @param testSlot The slot to release
+   */
+  void _release(TestSlot testSlot) {
+    boolean okToContinue = testSlot.startReleaseProcess();
+    if (!okToContinue) {
+      return;
+    }
+
+    if (testSlot.performAfterSessionEvent()) {
+      return;
+    }
+
+    String internalKey = testSlot.getInternalKey();
+
+    try {
+      getLock().lock();
+      // release resources on the test slot.
+      testSlot.finishReleaseProcess();
+      // update the registry.
+      release(internalKey);
+    } finally {
+      getLock().unlock();
+    }
+  }
+  
+  void terminateSynchronousFOR_TEST_ONLY(TestSession testSession) {
+    _release(testSession.getSlot());
+  }
+
+
+  /**
    * iterates the queue of incoming new session request and assign them to proxy after they've been
    * sorted by priority, with priority defined by the prioritizer.
    */

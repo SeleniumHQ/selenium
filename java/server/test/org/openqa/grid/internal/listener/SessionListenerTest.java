@@ -62,7 +62,7 @@ public class SessionListenerTest {
     req.process();
     TestSession session = req.getTestSession();
     Assert.assertEquals(true, session.get("FLAG"));
-    session.terminate();
+    registry.terminate(session);
     try {
       Thread.sleep(250);
     } catch (InterruptedException e) {
@@ -163,7 +163,7 @@ public class SessionListenerTest {
       TestSession session = req.getTestSession();
       Assert.assertEquals(registry.getActiveSessions().size(), 1);
       Assert.assertNotNull(session);
-      session.terminate();
+      registry.terminate(session);
       try {
         Thread.sleep(250);
       } catch (InterruptedException e) {
@@ -224,7 +224,7 @@ public class SessionListenerTest {
     }
 
     public void beforeRelease(TestSession session) {
-      session.terminate();
+      getRegistry().terminate(session);
     }
   }
 
@@ -261,7 +261,7 @@ public class SessionListenerTest {
       Assert.assertEquals(session.get("after"), true);
 
       // manually closing the session, starting a 2nd release process.
-      session.terminate();
+      registry.terminate(session);
 
       // the 2nd release process shouldn't be executed as one is already
       // processed.

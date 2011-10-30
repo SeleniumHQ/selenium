@@ -84,7 +84,7 @@ public class PriorityTestLoad {
     }
 
     // release the initial request.
-    session.terminateSynchronousFOR_TEST_ONLY();
+    registry.terminateSynchronousFOR_TEST_ONLY(session);
   }
 
   private static volatile boolean reqDone = false;

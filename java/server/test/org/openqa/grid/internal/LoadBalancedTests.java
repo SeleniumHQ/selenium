@@ -63,7 +63,7 @@ public class LoadBalancedTests {
       Assert.assertNotNull(session);
       Assert.assertEquals(2, session.getSlot().getProxy().getTotalUsed());
       // and release
-      session.terminateSynchronousFOR_TEST_ONLY();
+      registry.terminateSynchronousFOR_TEST_ONLY(session);
     }
 
     // at that point, 1 FF per proxy

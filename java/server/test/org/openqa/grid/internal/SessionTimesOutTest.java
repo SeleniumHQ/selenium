@@ -111,7 +111,7 @@ public class SessionTimesOutTest {
       // timeout cleanup will start
       Thread.sleep(500);
       // but the session finishes before the timeout cleanup finishes
-      session.terminate();
+      registry.terminate(session);
 
       // wait to have the slow time out process finished
       int i = 0;

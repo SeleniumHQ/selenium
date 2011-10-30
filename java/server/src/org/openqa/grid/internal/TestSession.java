@@ -379,28 +379,6 @@ public class TestSession {
     objects.put(key, value);
   }
 
-  /**
-   * Ends this test session for the hub, releasing the resources in the hub / registry. It does not
-   * release anything on the remote. The resources are released in a separate thread, so the call
-   * returns immediatly. It allows release with long duration not to block the test while the hub is
-   * releasing the resource.
-   */
-  public void terminate() {
-    slot.release();
-  }
-
-  /**
-   * shouldn't be use other than in unit tests for the grid. Tests are not supposed to care about
-   * the grid state.
-   * <p/>
-   * use instead
-   * 
-   * @see TestSession#terminate()
-   */
-  void terminateSynchronousFOR_TEST_ONLY() {
-    slot._release();
-  }
-
 
   /**
    * Sends a DELETE/testComplete (webdriver/selenium) session command to the remote, following web driver protocol.

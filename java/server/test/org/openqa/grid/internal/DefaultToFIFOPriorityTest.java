@@ -80,7 +80,7 @@ public class DefaultToFIFOPriorityTest {
     while (requests.size() != MAX) {
       Thread.sleep(250);
     }
-    session.terminateSynchronousFOR_TEST_ONLY();
+    registry.terminateSynchronousFOR_TEST_ONLY(session);
   }
 
 

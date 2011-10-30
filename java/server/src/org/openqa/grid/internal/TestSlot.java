@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * 
  * This class sees multiple threads but is currently sort-of protected by the lock in Registry.
  * Unfortunately the CleanUpThread also messes around in here, so it should be thread safe on its
- * own. Which probably means the lock in the registry is just nonsense.
+ * own.
  * 
  */
 public class TestSlot {
@@ -51,12 +51,12 @@ public class TestSlot {
   private final SeleniumProtocol protocol;
   private final String path;
   private final CapabilityMatcher matcher;
+  private final Lock lock = new ReentrantLock();
 
   private volatile TestSession currentSession;
-
-
-  private final Lock lock = new ReentrantLock();
   volatile boolean beingReleased = false;
+  private boolean showWarning = false;
+
 
   public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, String path,
       Map<String, Object> capabilities) {
@@ -71,10 +71,7 @@ public class TestSlot {
     }
     matcher = proxy.getCapabilityHelper();
     this.capabilities = capabilities;
-
   }
-
-
 
   public Map<String, Object> getCapabilities() {
     return Collections.unmodifiableMap(capabilities);
@@ -95,7 +92,7 @@ public class TestSlot {
    * Use {@link RemoteProxy#setCapabilityHelper(CapabilityMatcher)} on the proxy histing the test
    * slot to modify the definition of match
    * 
-   * @param desiredCapabilities
+   * @param desiredCapabilities capabilities for the new session
    * @return a new session linked to that testSlot if possible, null otherwise.
    */
   public TestSession getNewSession(Map<String, Object> desiredCapabilities) {
@@ -115,7 +112,6 @@ public class TestSlot {
     } finally {
       lock.unlock();
     }
-
   }
 
 
@@ -141,7 +137,7 @@ public class TestSlot {
   }
 
   /**
-   * @param desiredCapabilities
+   * @param desiredCapabilities capabilities for the new session
    * @return true if the desired capabilties matches for the
    *         {@link RemoteProxy#getCapabilityHelper()}
    */
@@ -169,7 +165,11 @@ public class TestSlot {
    * @return true if that's the first thread trying to release this test slot, false otherwise.
    * @see TestSlot#finishReleaseProcess()
    */
-  private boolean startReleaseProcess() {
+  boolean startReleaseProcess() {
+    if (currentSession == null) {
+      return false;
+    }
+
     try {
       lock.lock();
       if (beingReleased) {
@@ -186,7 +186,7 @@ public class TestSlot {
   /**
    * releasing all the resources. The slot can now be reused.
    */
-  private void finishReleaseProcess() {
+  void finishReleaseProcess() {
     try {
       lock.lock();
       currentSession = null;
@@ -196,21 +196,11 @@ public class TestSlot {
     }
   }
 
-  private boolean showWarning = false;
+  String getInternalKey() {
+    return currentSession == null ? null : currentSession.getInternalKey();
+  }
 
-  /**
-   * Release the test slot. Free the resource on the slot itself and the registry. If also invokes
-   * the {@link TestSessionListener#afterSession(TestSession)} if applicable.
-   */
-  void _release() {
-    if (currentSession == null) {
-      return;
-    }
-
-    boolean okToContinue = startReleaseProcess();
-    if (!okToContinue) {
-      return;
-    }
+  boolean performAfterSessionEvent() {
     // run the pre-release listener
     try {
       if (proxy instanceof TestSessionListener) {
@@ -223,23 +213,9 @@ public class TestSlot {
     } catch (Throwable t) {
       log.severe("Error running afterSession for " + currentSession + " the test slot is now dead.");
       t.printStackTrace();
-      return;
+      return true;
     }
-
-    // forceRelease doesn't check anything and wll set currentSession to
-    // null.
-    String internalKey = currentSession == null ? null : currentSession.getInternalKey();
-
-    try {
-      proxy.getRegistry().getLock().lock();
-      // release resources on the test slot.
-      finishReleaseProcess();
-      // update the registry.
-      proxy.getRegistry().release(internalKey);
-    } finally {
-      proxy.getRegistry().getLock().unlock();
-    }
-
+    return false;
   }
 
   /**
@@ -254,18 +230,6 @@ public class TestSlot {
     currentSession = null;
     proxy.getRegistry().release(internalKey);
     beingReleased = false;
-
-  }
-
-  /**
-   * releasing the test slot, running the afterSession listener if specified.
-   */
-  public void release() {
-    new Thread(new Runnable() { // Thread safety reviewed
-          public void run() {
-            _release();
-          }
-        }).start();
   }
 
   @Override
@@ -277,18 +241,15 @@ public class TestSlot {
     return getProxy().getHttpClientFactory();
   }
 
-
-
   /**
    * get the full URL the underlying server is listening on for selenium / webdriver commands.
    * 
-   * @return 
+   * @return the url
    */
   public URL getRemoteURL() {
     String u = getProxy().getRemoteHost() + getPath();
     try {
-      URL res = new URL(u);
-      return res;
+      return new URL(u);
     } catch (MalformedURLException e) {
       throw new GridException("Configuration error for the node." + u + " isn't a valid URL");
     }
