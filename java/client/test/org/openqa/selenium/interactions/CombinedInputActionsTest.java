@@ -29,7 +29,6 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX_SYNTHESIZED;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -38,6 +37,7 @@ import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestUtilities.isFirefox;
 import static org.openqa.selenium.TestUtilities.isInternetExplorer;
+import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 
@@ -49,9 +49,8 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
   // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
-  @Ignore(FIREFOX_SYNTHESIZED)
   public void testClickingOnFormElements() {
-    if (!Platform.getCurrent().is(Platform.LINUX)) {
+    if (!isNativeEventsEnabled(driver) || (!Platform.getCurrent().is(Platform.LINUX))) {
       System.out.println("Skipping testClickingOnFormElements: Only works with native events" +
           " on Linux.");
       return;
@@ -79,9 +78,9 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA, FIREFOX_SYNTHESIZED})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA})
   public void testSelectingMultipleItems() {
-    if (!Platform.getCurrent().is(Platform.LINUX)) {
+    if (!isNativeEventsEnabled(driver) || (!Platform.getCurrent().is(Platform.LINUX))) {
       System.out.println("Skipping testClickingOnFormElements: Only works with native events" +
           " on Linux.");
       return;
