@@ -50,15 +50,14 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
- * available for a test.
- * <p/>
- * The session is destroyed when the test ends ( ended by the client or timed out)
+ * available for a test. <p/> The session is destroyed when the test ends ( ended by the client or
+ * timed out)
  */
 @SuppressWarnings("JavaDoc")
 public class TestSession {
 
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
-  static int MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED = 5000;
+  static final int MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED = 5000;
 
   private final String internalKey;
   private final TestSlot slot;
@@ -68,6 +67,7 @@ public class TestSession {
   private final Map<String, Object> requestedCapabilities;
   private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<String, Object>());
   private volatile boolean ignoreTimeout = false;
+  private final TimeSource timeSource;
 
   public String getInternalKey() {
     return internalKey;
@@ -76,11 +76,13 @@ public class TestSession {
   /**
    * Creates a test session on the specified testSlot.
    */
-  TestSession(TestSlot slot, Map<String, Object> requestedCapabilities) {
+  TestSession(TestSlot slot, Map<String, Object> requestedCapabilities,
+              TimeSource timeSource) {
     internalKey = UUID.randomUUID().toString();
     this.slot = slot;
     this.requestedCapabilities = requestedCapabilities;
-    lastActivity = System.currentTimeMillis();
+    this.timeSource = timeSource;
+    lastActivity = this.timeSource.currentTimeInMillis();
   }
 
   /**
@@ -94,7 +96,7 @@ public class TestSession {
   /**
    * Get the session key from the remote. It's up to the remote to guarantee the key is unique. If 2
    * remotes return the same session key, the tests will overwrite each other.
-   * 
+   *
    * @return the key that was provided by the remote when the POST /session command was sent.
    */
   public ExternalSessionKey getExternalKey() {
@@ -112,7 +114,7 @@ public class TestSession {
   /**
    * give the time in milliseconds since the last access to this test session, or 0 is ignore time
    * out has been set to true.
-   * 
+   *
    * @return time in millis
    * @see TestSession#setIgnoreTimeout(boolean)
    */
@@ -120,13 +122,13 @@ public class TestSession {
     if (ignoreTimeout) {
       return 0;
     } else {
-      return System.currentTimeMillis() - lastActivity;
+      return timeSource.currentTimeInMillis() - lastActivity;
     }
 
   }
 
   public boolean isOrphaned() {
-    final long elapsedSinceCreation = System.currentTimeMillis() - sessionCreatedAt;
+    final long elapsedSinceCreation = timeSource.currentTimeInMillis() - sessionCreatedAt;
     // The session needs to have been open for at least the time interval and we need to have not
     // seen any new
     // commands during that time frame.
@@ -168,7 +170,7 @@ public class TestSession {
   @Override
   public String toString() {
     return externalKey != null ? "ext. key " + externalKey : internalKey
-        + " (int. key, remote not contacted yet.)";
+                                                             + " (int. key, remote not contacted yet.)";
   }
 
   /**
@@ -184,29 +186,29 @@ public class TestSession {
 
   /**
    * Forward the request to the remote.
-   * 
-   * @param content Overwrite the body. Useful when the body of the request was already read.
+   *
+   * @param content               Overwrite the body. Useful when the body of the request was
+   *                              already read.
    * @param interceptResponseBody for selenium1 protocol, you need to read the content of the
-   *        response to find the session.
+   *                              response to find the session.
    * @return the content of the response if interceptResponseBody=true. null otherwise
    */
   public String forward(HttpServletRequest request, HttpServletResponse response, String content,
-      boolean interceptResponseBody) throws IOException {
+                        boolean interceptResponseBody) throws IOException {
     String res = null;
 
     if (slot.getProxy() instanceof CommandListener) {
       ((CommandListener) slot.getProxy()).beforeCommand(this, request, response);
     }
 
-    lastActivity = System.currentTimeMillis();
+    lastActivity = timeSource.currentTimeInMillis();
     URL remoteURL = slot.getRemoteURL();
-
 
     String pathSpec = request.getServletPath() + request.getContextPath();
     String path = request.getRequestURI();
     if (!path.startsWith(pathSpec)) {
       throw new IllegalStateException("Expected path " + path + " to start with pathSpec "
-          + pathSpec);
+                                      + pathSpec);
     }
     String end = path.substring(pathSpec.length());
     String ok = remoteURL + end;
@@ -232,7 +234,7 @@ public class TestSession {
       proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
     }
 
-    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements(); ) {
       String headerName = (String) e.nextElement();
 
       if ("Content-Length".equalsIgnoreCase(headerName)) {
@@ -247,7 +249,7 @@ public class TestSession {
     HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
 
     HttpResponse proxyResponse = client.execute(host, proxyRequest);
-    lastActivity = System.currentTimeMillis();
+    lastActivity = timeSource.currentTimeInMillis();
 
     response.setStatus(proxyResponse.getStatusLine().getStatusCode());
     HttpEntity responseBody = proxyResponse.getEntity();
@@ -328,7 +330,7 @@ public class TestSession {
   }
 
   private void processResponseHeaders(HttpServletResponse response, URL remoteURL, String pathSpec,
-      HttpResponse proxyResponse) throws MalformedURLException {
+                                      HttpResponse proxyResponse) throws MalformedURLException {
     for (Header header : proxyResponse.getAllHeaders()) {
       String name = header.getName();
       String value = header.getValue();
@@ -363,7 +365,7 @@ public class TestSession {
 
   /**
    * Allow you to retrieve an object previously stored on the test session.
-   * 
+   *
    * @return the object you stored
    */
   public Object get(String key) {
@@ -372,7 +374,7 @@ public class TestSession {
 
   /**
    * Allows you to store an object on the test session.
-   * 
+   *
    * @param key a non-null string
    */
   public void put(String key, Object value) {
@@ -381,8 +383,9 @@ public class TestSession {
 
 
   /**
-   * Sends a DELETE/testComplete (webdriver/selenium) session command to the remote, following web driver protocol.
-   * 
+   * Sends a DELETE/testComplete (webdriver/selenium) session command to the remote, following web
+   * driver protocol.
+   *
    * @return true is the remote replied successfully to the request.
    */
   public boolean sendDeleteSessionRequest() {
@@ -393,7 +396,8 @@ public class TestSession {
       case Selenium:
         request =
             new BasicHttpRequest("POST", remoteURL.toExternalForm()
-                + "/?cmd=testComplete&sessionId=" + getExternalKey().getKey());
+                                         + "/?cmd=testComplete&sessionId=" + getExternalKey()
+                .getKey());
         break;
       case WebDriver:
         String uri = remoteURL.toString() + "/session/" + externalKey;
@@ -402,7 +406,7 @@ public class TestSession {
       default:
         throw new GridException("Error, protocol not implemented.");
     }
-    
+
     HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
 
     boolean ok;
@@ -419,8 +423,6 @@ public class TestSession {
     return ok;
   }
 
- 
- 
 
   /**
    * allow to bypass time out for this session. ignore = true => the session will not time out.
@@ -428,7 +430,7 @@ public class TestSession {
    */
   public void setIgnoreTimeout(boolean ignore) {
     if (!ignore) {
-      lastActivity = System.currentTimeMillis();
+      lastActivity = timeSource.currentTimeInMillis();
     }
     this.ignoreTimeout = ignore;
 

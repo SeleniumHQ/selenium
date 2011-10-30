@@ -59,7 +59,7 @@ public class TestSlot {
 
 
   public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, String path,
-      Map<String, Object> capabilities) {
+                  Map<String, Object> capabilities) {
     this.proxy = proxy;
     this.protocol = protocol;
     this.path = path;
@@ -102,7 +102,7 @@ public class TestSlot {
         return null;
       } else {
         if (matches(desiredCapabilities)) {
-          TestSession session = new TestSession(this, desiredCapabilities);
+          TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
           currentSession = session;
           return session;
         } else {
