@@ -18,8 +18,22 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.base.Throwables;
+import static java.lang.Thread.sleep;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
+import com.google.common.base.Throwables;
 import org.junit.Assert;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
@@ -41,22 +55,6 @@ import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-import static java.lang.Thread.sleep;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX_SYNTHESIZED;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
@@ -181,8 +179,10 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = FIREFOX_SYNTHESIZED)
   public void testFocusRemainsInOriginalWindowWhenOpeningNewWindow() {
+    if (platformHasNativeEvents() == false) {
+      return;
+    }
     // Scenario: Open a new window, make sure the current window still gets
     // native events (keyboard events in this case).
 
@@ -202,8 +202,10 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = FIREFOX_SYNTHESIZED)
   public void testSwitchingWindowSwitchesFocus() {
+    if (platformHasNativeEvents() == false) {
+      return;
+    }
     // Scenario: Open a new window, switch to it, make sure it gets native events.
     // Then switch back to the original window, make sure it gets native events.
 
@@ -244,8 +246,10 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = FIREFOX_SYNTHESIZED)
   public void testClosingWindowAndSwitchingToOriginalSwitchesFocus() {
+    if (platformHasNativeEvents() == false) {
+      return;
+    }
     // Scenario: Open a new window, switch to it, close it, switch back to the
     // original window - make sure it gets native events.
 
