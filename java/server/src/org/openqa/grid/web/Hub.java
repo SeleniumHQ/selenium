@@ -57,11 +57,12 @@ public class Hub {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-  private int port;
-  private String host;
+  private final int port;
+  private final String host;
+  private final Registry registry;
+  private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
+
   private Server server;
-  private Registry registry;
-  private Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 
   private void addServlet(String key, Class<? extends Servlet> s) {
     extraServlet.put(key, s);
@@ -70,7 +71,7 @@ public class Hub {
   /**
    * get the registry backing up the hub state.
    * 
-   * @return
+   * @return The registry
    */
   public Registry getRegistry() {
     return registry;

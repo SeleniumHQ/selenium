@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,28 +46,26 @@ import java.util.logging.Logger;
 public class Registry {
 
   public static final String KEY = Registry.class.getName();
-
-  private Prioritizer prioritizer;
-
   private static final Logger log = Logger.getLogger(Registry.class.getName());
-
-  private final NewSessionRequestQueue newSessionQueue;
-
-  private Hub hub;
 
   // lock for anything modifying the tests session currently running on this
   // registry.
   private final ReentrantLock lock = new ReentrantLock();
   private final Condition testSessionAvailable = lock.newCondition();
-
   private final ProxySet proxies;
   private final ActiveTestSessions activeTestSessions = new ActiveTestSessions();
-  private Matcher matcherThread = new Matcher();
-  private volatile boolean stop = false;
-  private int newSessionWaitTimeout;
-
   private final GridHubConfiguration configuration;
   private final HttpClientFactory httpClientFactory;
+  private final NewSessionRequestQueue newSessionQueue;
+  private final Matcher matcherThread = new Matcher();
+
+  private volatile boolean stop = false;
+  // The following three variables need to be volatile because we expose a public setters
+  private volatile int newSessionWaitTimeout;
+  private volatile Prioritizer prioritizer;
+  private volatile Hub hub;
+
+
 
 
   private Registry(Hub hub, GridHubConfiguration config) {
@@ -156,13 +153,13 @@ public class Registry {
     String internalKey = testSlot.getInternalKey();
 
     try {
-      getLock().lock();
+      lock.lock();
       // release resources on the test slot.
       testSlot.finishReleaseProcess();
       // update the registry.
       release(internalKey);
     } finally {
-      getLock().unlock();
+      lock.unlock();
     }
   }
   
@@ -362,11 +359,7 @@ public class Registry {
     proxies.setThrowOnCapabilityNotPresent(throwOnCapabilityNotPresent);
   }
 
-  public Lock getLock() {
-    return lock;
-  }
-
-  void fireMatcherStateChanged() {
+  private void fireMatcherStateChanged() {
     testSessionAvailable.signalAll();
   }
 
