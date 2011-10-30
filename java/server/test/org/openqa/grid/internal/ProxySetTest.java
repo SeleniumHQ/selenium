@@ -40,7 +40,7 @@ public class ProxySetTest {
       Assert.assertEquals(1, set.size());
       Assert.assertNotNull(p1.getTestSlots().get(0).getSession());
 
-      set.removeIfPresent(p1);
+      registry.removeIfPresent(p1);
 
       // Make sure both the proxy and the test session assigned to it are removed from the registry.
       Assert.assertEquals(0, set.size());

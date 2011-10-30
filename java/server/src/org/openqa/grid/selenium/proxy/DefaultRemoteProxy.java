@@ -189,7 +189,7 @@ public class DefaultRemoteProxy extends RemoteProxy
       }
       if (e instanceof RemoteUnregisterException) {
         Registry registry = this.getRegistry();
-        registry.getAllProxies().removeIfPresent(this);
+        registry.removeIfPresent(this);
       }
     }
   }

@@ -181,7 +181,7 @@ public class TestSession {
   }
 
   private HttpClient getClient() {
-    return slot.getHttpClientFactory().getGridHttpClient();
+    return slot.getProxy().getHttpClientFactory().getGridHttpClient();
   }
 
   /**

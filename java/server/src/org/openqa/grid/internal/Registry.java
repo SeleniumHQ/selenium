@@ -167,6 +167,34 @@ public class Registry {
     _release(testSession.getSlot());
   }
 
+  public void removeIfPresent(RemoteProxy proxy) {
+    // Find the original proxy. While the supplied one is logically equivalent, it may be a fresh object with
+    // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
+    // those test sessions, we need to operate on that original object.
+      if (proxies.contains(proxy)) {
+        log.warning(String.format(
+            "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
+
+        final RemoteProxy p = proxies.remove(proxy);
+        for (TestSlot slot : p.getTestSlots()) {
+          forceRelease(slot);
+        }
+      }
+  }
+
+  /**
+   * releasing the testslot, WITHOUT running any listener.
+   */
+  public void forceRelease(TestSlot testSlot) {
+    if (testSlot.getSession() == null) {
+      return;
+    }
+
+    String internalKey = testSlot.getInternalKey();
+    release(internalKey);
+    testSlot.doFinishRelease();
+  }
+  
 
   /**
    * iterates the queue of incoming new session request and assign them to proxy after they've been
@@ -306,7 +334,7 @@ public class Registry {
     try {
       lock.lock();
 
-      proxies.removeIfPresent(proxy);
+      removeIfPresent(proxy);
 
       if (registeringProxies.contains(proxy)) {
         log.warning(String.format("Proxy '%s' is already queued for registration.", proxy));

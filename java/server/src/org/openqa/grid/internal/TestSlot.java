@@ -17,7 +17,6 @@ package org.openqa.grid.internal;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -189,11 +188,15 @@ public class TestSlot {
   void finishReleaseProcess() {
     try {
       lock.lock();
-      currentSession = null;
-      beingReleased = false;
+      doFinishRelease();
     } finally {
       lock.unlock();
     }
+  }
+
+  public void doFinishRelease() {
+    currentSession = null;
+    beingReleased = false;
   }
 
   String getInternalKey() {
@@ -218,27 +221,9 @@ public class TestSlot {
     return false;
   }
 
-  /**
-   * releasing the testslot, WITHOUT running any listener.
-   */
-  public void forceRelease() {
-    if (currentSession == null) {
-      return;
-    }
-
-    String internalKey = currentSession.getInternalKey();
-    currentSession = null;
-    proxy.getRegistry().release(internalKey);
-    beingReleased = false;
-  }
-
   @Override
   public String toString() {
     return currentSession == null ? "no session" : currentSession.toString();
-  }
-
-  public HttpClientFactory getHttpClientFactory() {
-    return getProxy().getHttpClientFactory();
   }
 
   /**

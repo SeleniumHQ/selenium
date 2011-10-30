@@ -64,28 +64,22 @@ public class ProxySet implements Iterable<RemoteProxy> {
     return false;
   }
 
-  private void forceRelease(RemoteProxy proxy) {
+  /**
+   * Removes the specified instance from the proxySet
+   * @param proxy The proxy to remove, must be present in this set
+   * @return The instance that was removed. Not null.
+   */
+  public RemoteProxy remove(RemoteProxy proxy) {
     // Find the original proxy. While the supplied one is logically equivalent, it may be a fresh object with
     // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
     // those test sessions, we need to operate on that original object.
     for (RemoteProxy p : proxies) {
       if (p.equals(proxy)) {
         proxies.remove(p);
-
-        for (TestSlot slot : p.getTestSlots()) {
-          slot.forceRelease();
-        }
+        return p;
       }
     }
-  }
-
-  public void removeIfPresent(RemoteProxy proxy) {
-    if (proxies.contains(proxy)) {
-      log.warning(String.format(
-          "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
-
-      forceRelease(proxy);
-    }
+    throw new IllegalStateException("Did not contain proxy" + proxy);
   }
 
   public void add(RemoteProxy proxy) {
