@@ -74,6 +74,27 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().window(current);
   }
 
+  @Ignore
+  public void testShouldThrowNoSuchWindowExceptionIfAWindowIsClosed() {
+    driver.get(pages.xhtmlTestPage);
+    String current = driver.getWindowHandle();
+
+    driver.findElement(By.linkText("Open new window")).click();
+
+    sleepBecauseWindowsTakeTimeToOpen();
+
+    driver.switchTo().window("result");
+    driver.close();
+
+    try {
+      assertEquals(null, driver.getWindowHandle());
+      fail("NoSuchWindowException expected");
+    } catch (NoSuchWindowException e) {
+      // Expected.
+    }
+
+    driver.switchTo().window(current);
+  }
 
   @NeedsFreshDriver
   @NoDriverAfterTest
