@@ -17,6 +17,7 @@
 
 
 import os
+import pytest
 import re
 import tempfile
 import time
@@ -153,6 +154,8 @@ class ApiExampleTest (unittest.TestCase):
         self.assertFalse(elem.is_enabled())
 
     def testIsSelectedAndToggle(self):
+        if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
+            pytest.skip("deselecting preselected values only works on chrome >= 16")
         self._loadPage("formPage")
         elem = self.driver.find_element_by_id("multi")
         option_elems = elem.find_elements_by_xpath("option")

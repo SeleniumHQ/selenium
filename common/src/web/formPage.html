@@ -29,17 +29,17 @@ There should be a form here:
     <input type="checkbox" id="randomly_disabled_checky" disabled="somerandomstring" checked="checked" name="randomlydisabledchecky" />
     <br/>
     <select name="selectomatic">
-        <option selected="selected" id="non_multi_option">One</option>
-        <option>Two</option>
-        <option>Four</option>
-        <option>Still learning how to count, apparently</option>
+        <option selected="selected" id="non_multi_option" value="one">One</option>
+        <option value="two">Two</option>
+        <option value="four">Four</option>
+        <option value="still learning how to count, apparently">Still learning how to count, apparently</option>
     </select>
 
     <select name="multi" id="multi" multiple="multiple">
-        <option selected="selected">Eggs</option>
-        <option>Ham</option>
-        <option selected="selected">Sausages</option>
-        <option>Onion gravy</option>
+        <option selected="selected" value="eggs">Eggs</option>
+        <option value="ham">Ham</option>
+        <option selected="selected" value="sausages">Sausages</option>
+        <option value="onion gravy">Onion gravy</option>
     </select>
 
     <select name="no-select" disabled="disabled">
@@ -47,15 +47,15 @@ There should be a form here:
     </select>
 
 		<select name="select_empty_multiple" multiple>
-			<option id="multi_1">select_1</option>
-			<option id="multi_2">select_2</option>
-			<option id="multi_3">select_3</option>
-			<option id="multi_4">select_4</option>
+			<option id="multi_1" value="select_1">select_1</option>
+			<option id="multi_2" value="select_2">select_2</option>
+			<option id="multi_3" value="select_3">select_3</option>
+			<option id="multi_4" value="select_4">select_4</option>
 		</select>
 
     <select id="invisi_select" style="opacity:0;">
-      <option selected>Apples</option>
-      <option>Oranges</option>
+      <option selected value="apples">Apples</option>
+      <option value="oranges">Oranges</option>
     </select>
 
     <select name="select-default">
@@ -77,8 +77,7 @@ There should be a form here:
 
     <p id="cheeseLiker">I like cheese</p>
     <input type="submit" value="Click!"/>
-
-    <br/><br/><br/><br/>
+    
     <input type="radio" id="lone_disabled_selected_radio" name="not_a_snack" value="cumberland" checked="checked" disabled="disabled" />Cumberland sausage
 </form>
 
@@ -94,9 +93,9 @@ There should be a form here:
 </form>
 
 <form method="post" action="resultPage.html">
-    <select id="redirect" onchange="javascript:changePage();">
-        <option selected="selected">One</option>
-        <option id="changeme">Two</option>
+    <select id="redirect" name="redirect" onchange="javascript:changePage();">
+        <option selected="selected" value="one">One</option>
+        <option id="changeme" value="two">Two</option>
     </select>
 
     <input id="no-type" />

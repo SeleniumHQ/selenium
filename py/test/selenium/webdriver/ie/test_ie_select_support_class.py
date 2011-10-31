@@ -14,6 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from select import Select
-from wait import WebDriverWait
+
+from selenium import webdriver
+from selenium.test.selenium.webdriver.support import select_class_tests 
+from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
+
+def setup_module(module):
+    webserver = SimpleWebServer()
+    webserver.start()
+    IeSelectElementHandlingTests.webserver = webserver
+    IeSelectElementHandlingTests.driver = webdriver.Ie()
+
+
+class IeSelectElementHandlingTests(select_class_tests.WebDriverSelectSupportTests):
+    pass
+
+
+def teardown_module(module):
+    IeSelectElementHandlingTests.driver.quit()
+    IeSelectElementHandlingTests.webserver.stop()
 

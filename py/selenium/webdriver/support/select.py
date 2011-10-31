@@ -1,0 +1,158 @@
+#!/usr/bin/python
+#
+# Copyright 2011 Software Freedom Conservatory.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+
+class Select:
+
+    def __init__(self, webelement):
+        self._el = webelement
+        multi = self._el.get_attribute("multiple")
+        self.is_multiple = multi and multi != "false"
+
+    @property
+    def options(self):
+        return self._el.find_elements(By.TAG_NAME, 'option')
+        
+    @property
+    def all_selected_options(self):
+        ret = []
+        for opt in self.options:
+            if opt.is_selected():
+                ret.append(opt)
+        return ret
+
+    @property
+    def first_selected_option(self):
+        for opt in self.options:
+            if opt.is_selected():
+                return opt
+        raise NoSuchElementException("No options are selected")
+
+    def select_by_value(self, value):
+        css = "option[value =%s]" % self._escapeString(value)
+        print css
+        opts = self._el.find_elements(By.CSS_SELECTOR, css)
+        matched = False
+        for opt in opts:
+            self._setSelected(opt)
+            if not self.is_multiple:
+                return
+            matched = True
+        if not matched:
+            raise NoSuchElementException("Cannot locate option with value: %s" % value)
+
+    def select_by_index(self, index):
+        match = str(index)
+        for opt in self.options:
+            if opt.get_attribute("index") == match:
+                self._setSelected(opt)
+                if not self.is_multiple:
+                    return
+                match = True
+        if match != True:
+            raise NoSuchElementException("Could not locate element with index %d" % index)
+
+    def select_by_visible_text(self, text):
+        xpath = ".//option[. = %s]" % self._escapeString(text)
+        opts = self._el.find_elements(By.XPATH, xpath)
+        matched = False
+        for opt in opts:
+            self._setSelected(opt)
+            if not self.is_multiple:
+                return
+            matched = True
+
+        if len(opts) == 0 and " " in text:
+            subStringWithoutSpace = self._get_longest_token(text)
+            if subStringWithoutSpace == "":
+                # seems weird to me that the java impl just selects the first or all if multiple
+                # oh well... doing it here too.
+                candidates = self.options
+            else:
+                xpath = ".//option[contains(.,%s)]" % self._escapeString(subStringWithoutSpace)
+                candidates = self._el.find_elements(By.XPATH, xpath)
+            for candidate in candidates:
+                self._setSelected(candidate)
+                if not self.is_multiple:
+                    return
+                matched = True
+
+        if matched != True:
+            raise NoSuchElementException("Could not locate element with visible text: %s" % text)
+
+    def deselect_all(self):
+        if not self.is_multiple:
+            raise NotImplementedError("You may only deselect all options of a multi-select")
+        for opt in self.options:
+            self._unsetSelected(opt)
+
+    def deselect_by_value(self, value):
+        if not self.is_multiple:
+            raise NotImplementedError("You may only deselect options of a multi-select")
+        css = "option[value = %s]" % self._escapeString(value)
+        opts = self._el.find_elements(By.CSS_SELECTOR, css)
+        for opt in opts:
+            self._unsetSelected(opt)
+
+    def deselect_by_index(self, index):
+        if not self.is_multiple:
+            raise NotImplementedError("You may only deselect options of a multi-select")
+        for opt in self.options:
+            if opt.get_attribute("index") == str(index):
+                self._unsetSelected(opt)
+
+    def deselect_by_visible_text(self, text):
+        if not self.is_multiple:
+            raise NotImplementedError("You may only deselect options of a multi-select")
+        xpath = ".//option[. = %s]" % self._escapeString(text)
+        opts = self._el.find_elements(By.XPATH, xpath)
+        for opt in opts:
+            self._unsetSelected(opt)
+
+    def _setSelected(self, option):
+        if not option.is_selected():
+            option.click()
+
+    def _unsetSelected(self, option):
+        if option.is_selected():
+            option.click()
+    
+    def _escapeString(self, value):
+        if '"' in value and "'" in value:
+            substrings = value.split("\"")
+            result = ["concat("]
+            for substring in substrings:
+                result.append("\"%s\"" % substring)
+                result.append(", '\"', ")
+            result = result[0:-1]
+            if value.endswith('"'):
+                result.append(", '\"'")
+            return "".join(result) + ")"
+
+        if '"' in value:
+            return "'%s'" % value
+
+        return "\"%s\"" % value
+
+    def _get_longest_token(self, value):
+        items = value.split(" ")
+        longest = ""
+        for item in items:
+            if len(item) > len(longest):
+                longest = item
+        return longest

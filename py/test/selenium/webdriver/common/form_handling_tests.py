@@ -17,6 +17,7 @@
 
 
 import os
+import pytest
 import re
 import tempfile
 import time
@@ -163,6 +164,8 @@ class FormHandlingTests(unittest.TestCase):
     #    option.click()
         
     def testTogglingAnOptionShouldToggleOptionsInAMultiSelect(self):    
+        if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
+            pytest.skip("deselecting preselected values only works on chrome >= 16")
         self._loadPage("formPage")
 
         select = self.driver.find_element_by_name("multi")

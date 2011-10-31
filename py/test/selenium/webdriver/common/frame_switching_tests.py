@@ -17,6 +17,7 @@
 
 
 import os
+import pytest
 import re
 import tempfile
 import time
@@ -37,6 +38,7 @@ def not_available_on_remote(func):
 
 class FrameSwitchingTest(unittest.TestCase):
 
+    @pytest.mark.xskipif("self.driver.capabilities['version'].startswith('3')")
     def testShouldBeAbleToSwitchToAFrameByItsIndex(self):
       self._loadPage("frameset")
       self.driver.switch_to_frame(2)
@@ -73,6 +75,7 @@ class FrameSwitchingTest(unittest.TestCase):
       element = self.driver.find_element_by_name("id-name1")
       self.assertEquals("name", element.get_attribute("value"))
 
+    @pytest.mark.skipif("self.driver.capabilities['version'].startswith('3')")
     def testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement(self):
       self._loadPage("frameset")
       frame = self.driver.find_element_by_name("third")

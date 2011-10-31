@@ -14,6 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from select import Select
-from wait import WebDriverWait
 
+from selenium import webdriver
+from selenium.test.selenium.webdriver.support import webdriverwait_tests
+from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
+
+def setup_module(module):
+    webserver = SimpleWebServer()
+    webserver.start()
+    ChromeWebDriverWaitTest.webserver = webserver
+    ChromeWebDriverWaitTest.driver = webdriver.Chrome()
+
+
+class ChromeWebDriverWaitTest(webdriverwait_tests.WebDriverWaitTest):
+    pass
+
+
+def teardown_module(module):
+    ChromeWebDriverWaitTest.driver.quit()
+    ChromeWebDriverWaitTest.webserver.stop()
