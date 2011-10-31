@@ -130,7 +130,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     int currentWindowHandles = driver.getWindowHandles().size();
 
     try {
-      driver.findElement(By.id("close")).click();
+      waitFor(elementToExist(driver, "close")).click();
       Set<String> allHandles = waitFor(windowHandleCountToBe(driver, currentWindowHandles - 1));
 
       assertEquals(1, allHandles.size());
