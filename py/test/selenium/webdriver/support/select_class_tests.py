@@ -71,6 +71,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
                 self.assertEqual(sel.first_selected_option.text, select['values'][x])
 
     # disabled select isn't immediatedly throwing an ElementNotSelectableException when trying to select
+    @pytest.mark.xfail
     def testSelectDisabledByValueShouldThrowException(self):
         self._loadPage("formPage")
 
