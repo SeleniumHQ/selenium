@@ -190,6 +190,8 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
         "--no-default-browser-check",
         // Disable the "translate page" in-page toolbar from appearing
         "--disable-translate",
+        // Don't enforce the same-origin policy
+        "--disable-web-security",
         // Set the user data (i.e. profile) directory.
         "--user-data-dir=" + userDir,
         getUntrustedCertificatesFlag(),
