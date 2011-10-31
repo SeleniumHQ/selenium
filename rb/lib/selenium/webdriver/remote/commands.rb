@@ -72,4 +72,44 @@ class Selenium::WebDriver::Remote::Bridge
   command :sendModifierKeyToActiveElement,         :post,    "session/:session_id/modifier"
   command :sendKeysToActiveElement,                :post,    "session/:session_id/keys"
 
+  # html 5
+  command :executeSql,                             :post,   "/session/:session_id/execute_sql"
+  command :getLocation,                            :get,    "/session/:session_id/location"
+  command :setLocation,                            :post,   "/session/:session_id/location"
+  command :getAppCache,                            :get,    "/session/:session_id/application_cache"
+  command :getAppCacheStatus,                      :get,    "/session/:session_id/application_cache/status"
+  command :clearAppCache,                          :delete, "/session/:session_id/application_cache/clear"
+  command :isBrowserOnline,                        :get,    "/session/:session_id/browser_connection"
+  command :setBrowserOnline,                       :post,   "/session/:session_id/browser_connection"
+
+  command :getLocalStorageItem,                    :get,    "/session/:session_id/local_storage/key/:key"
+  command :removeLocalStorageItem,                 :delete, "/session/:session_id/local_storage/key/:key"
+  command :getLocalStorageKeys,                    :get,    "/session/:session_id/local_storage"
+  command :setLocalStorageItem,                    :post,   "/session/:session_id/local_storage"
+  command :clearLocalStorage,                      :delete, "/session/:session_id/local_storage"
+  command :getLocalStorageSize,                    :get,    "/session/:session_id/local_storage/size"
+
+  command :getSessionStorageItem,                  :get,    "/session/:session_id/session_storage/key/:key"
+  command :removeSessionStorageItem,               :delete, "/session/:session_id/session_storage/key/:key"
+  command :getSessionStorageKeys,                  :get,    "/session/:session_id/session_storage"
+  command :setSessionStorageItem,                  :post,   "/session/:session_id/session_storage"
+  command :clearSessionStorage,                    :delete, "/session/:session_id/session_storage"
+  command :getSessionStorageSize,                  :get,    "/session/:session_id/session_storage/size"
+
+  # ime
+  command :imeGetAvailableEngines,                 :get,    "/session/:session_id/ime/available_engines"
+  command :imeGetActiveEngine,                     :get,    "/session/:session_id/ime/active_engine"
+  command :imeIsActivated,                         :get,    "/session/:session_id/ime/activated"
+  command :imeDeactivate,                          :post,   "/session/:session_id/ime/deactivate"
+  command :imeActivateEngine,                      :post,   "/session/:session_id/ime/activate"
+
+  # touch
+  command :touchSingleTap,                         :post,   "/session/:sessionId/touch/click"
+  command :touchDown,                              :post,   "/session/:sessionId/touch/down"
+  command :touchUp,                                :post,   "/session/:sessionId/touch/up"
+  command :touchMove,                              :post,   "/session/:sessionId/touch/move"
+  command :touchScroll,                            :post,   "/session/:sessionId/touch/scroll"
+  command :touchDoubleTap,                         :post,   "/session/:sessionId/touch/doubleclick"
+  command :touchLongPress,                         :post,   "/session/:sessionId/touch/longclick"
+  command :touchFlick,                             :post,   "/session/:sessionId/touch/flick"
 end
