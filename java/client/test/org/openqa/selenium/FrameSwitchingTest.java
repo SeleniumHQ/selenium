@@ -397,7 +397,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().frame("iframe1");
 
     try {
-      driver.findElement(By.id("checkbox"));
+      waitFor(elementToExist(driver, "checkbox"));
     } catch (WebDriverException web) {
       fail("Could not find element after switching frame");
     }
