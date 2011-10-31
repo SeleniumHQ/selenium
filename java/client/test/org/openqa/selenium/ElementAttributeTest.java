@@ -25,8 +25,6 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
@@ -301,7 +299,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("email"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello world");
-    waitFor(elementValueToEqual(element, "hello world"));
+    assertEquals("hello world", element.getAttribute("value"));
   }
 
   @Ignore(ANDROID)
