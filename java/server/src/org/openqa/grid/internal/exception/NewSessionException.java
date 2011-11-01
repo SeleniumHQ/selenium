@@ -1,7 +1,8 @@
 package org.openqa.grid.internal.exception;
 
-public class NewSessionException extends Exception {
+import org.openqa.grid.common.exception.GridException;
 
+public class NewSessionException extends GridException {
  
   private static final long serialVersionUID = 6369049863503786020L;
 
