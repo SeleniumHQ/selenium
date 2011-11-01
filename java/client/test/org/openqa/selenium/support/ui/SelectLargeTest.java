@@ -32,4 +32,28 @@ public class SelectLargeTest extends JUnit4TestBase {
     selection.deselectAll();
     assertEquals(0, selection.getAllSelectedOptions().size());
   }
+
+  @Test
+  public void selectByVisibleTextShouldNormalizeSpaces() {
+    driver.get(pages.formPage);
+
+    WebElement selectElement = driver.findElement(By.name("select_with_spaces"));
+    Select selection = new Select(selectElement);
+
+    String one = selection.getOptions().get(0).getText();
+    selection.selectByVisibleText(one);
+    assertEquals(one, selection.getFirstSelectedOption().getText());
+
+    String two = selection.getOptions().get(1).getText();
+    selection.selectByVisibleText(two);
+    assertEquals(two, selection.getFirstSelectedOption().getText());
+
+    String four = selection.getOptions().get(2).getText();
+    selection.selectByVisibleText(four);
+    assertEquals(four, selection.getFirstSelectedOption().getText());
+
+    String longOptionText = selection.getOptions().get(3).getText();
+    selection.selectByVisibleText(longOptionText);
+    assertEquals(longOptionText, selection.getFirstSelectedOption().getText());
+  }
 }

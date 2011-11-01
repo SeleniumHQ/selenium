@@ -110,7 +110,7 @@ public class Select {
   public void selectByVisibleText(String text) {
     // try to find the option via XPATH ...
     List<WebElement> options =
-        element.findElements(By.xpath(".//option[. = " + escapeQuotes(text) + "]"));
+        element.findElements(By.xpath(".//option[normalize-space(.) = " + escapeQuotes(text) + "]"));
 
     boolean matched = false;
     for (WebElement option : options) {
@@ -276,7 +276,7 @@ public class Select {
    * @param text The visible text to match against
    */
   public void deselectByVisibleText(String text) {
-    StringBuilder builder = new StringBuilder(".//option[. = ");
+    StringBuilder builder = new StringBuilder(".//option[normalize-space(.) = ");
     builder.append(escapeQuotes(text));
     builder.append("]");
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));

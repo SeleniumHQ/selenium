@@ -196,7 +196,7 @@ public class SelectTest extends MockTestBase {
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
       will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.xpath(".//option[. = \"fish\"]"));
+      exactly(1).of(element).findElements(By.xpath(".//option[normalize-space(.) = \"fish\"]"));
       will(returnValue(options));
       exactly(1).of(firstOption).isSelected();
       will(returnValue(false));
@@ -310,7 +310,7 @@ public class SelectTest extends MockTestBase {
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
       will(returnValue("multiple"));
-      exactly(1).of(element).findElements(By.xpath(".//option[. = \"b\"]"));
+      exactly(1).of(element).findElements(By.xpath(".//option[normalize-space(.) = \"b\"]"));
       will(returnValue(options));
       exactly(1).of(firstOption).isSelected();
       will(returnValue(true));
@@ -471,7 +471,7 @@ public class SelectTest extends MockTestBase {
   public void shouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
     final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
-    final By xpath1 = By.xpath(".//option[. = \"foo bar\"]");
+    final By xpath1 = By.xpath(".//option[normalize-space(.) = \"foo bar\"]");
     final By xpath2 = By.xpath(".//option[contains(., \"foo\")]");
 
     checking(new Expectations() {{
