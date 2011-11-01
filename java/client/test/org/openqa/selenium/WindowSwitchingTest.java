@@ -87,7 +87,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.close();
 
     try {
-      assertEquals(null, driver.getWindowHandle());
+      driver.getWindowHandle();
       fail("NoSuchWindowException expected");
     } catch (NoSuchWindowException e) {
       // Expected.
