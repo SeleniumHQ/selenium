@@ -33,6 +33,7 @@ def not_available_on_remote(func):
 disabledSelect = { 'name': 'no-select', 'values': ['Foo']}
 singleSelectValues1 = { 'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
 singleSelectValues2 = { 'name': 'redirect', 'values': ['One', 'Two']}
+singleSelectValuesWithSpaces = { 'name': 'select_with_spaces', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
 multiSelectValues1  = { 'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'Onion gravy']}
 multiSelectValues2  = { 'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
 
@@ -86,6 +87,16 @@ class WebDriverSelectSupportTests(unittest.TestCase):
         self._loadPage("formPage")
 
         for select in [singleSelectValues1]:
+            sel = Select(self.driver.find_element(By.NAME, select['name']))
+            for x in range(len(select['values'])):
+                print select['values'][x]
+                sel.select_by_visible_text(select['values'][x])
+                self.assertEqual(sel.first_selected_option.text, select['values'][x])
+
+    def testSelectByVisibleTextSholdNormalizeSpaces(self):
+        self._loadPage("formPage")
+
+        for select in [singleSelectValuesWithSpaces]:
             sel = Select(self.driver.find_element(By.NAME, select['name']))
             for x in range(len(select['values'])):
                 print select['values'][x]

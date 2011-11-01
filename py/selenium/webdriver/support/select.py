@@ -68,7 +68,7 @@ class Select:
             raise NoSuchElementException("Could not locate element with index %d" % index)
 
     def select_by_visible_text(self, text):
-        xpath = ".//option[. = %s]" % self._escapeString(text)
+        xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
         opts = self._el.find_elements(By.XPATH, xpath)
         matched = False
         for opt in opts:
@@ -119,7 +119,7 @@ class Select:
     def deselect_by_visible_text(self, text):
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
-        xpath = ".//option[. = %s]" % self._escapeString(text)
+        xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
         opts = self._el.find_elements(By.XPATH, xpath)
         for opt in opts:
             self._unsetSelected(opt)
