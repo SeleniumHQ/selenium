@@ -1,4 +1,4 @@
-package org.openqa.grid.internal;
+package org.openqa.grid.internal.exception;
 
 public class NewSessionException extends Exception {
 

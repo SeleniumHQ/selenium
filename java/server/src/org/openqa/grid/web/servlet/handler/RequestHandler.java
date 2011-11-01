@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.NewSessionException;
+import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;

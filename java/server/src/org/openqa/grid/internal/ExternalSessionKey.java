@@ -17,6 +17,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import org.openqa.grid.internal.exception.NewSessionException;
+
 public class ExternalSessionKey {
 
   private final String key;
@@ -96,7 +98,7 @@ public class ExternalSessionKey {
     if (responseBody != null && responseBody.startsWith("OK,")) {
       return new ExternalSessionKey(responseBody.replace("OK,", ""));
     }else {
-      throw new NewSessionException("The server returned an error : "+responseBody);  
+      throw new NewSessionException("The server returned an error : "+responseBody);
     }
     
   }

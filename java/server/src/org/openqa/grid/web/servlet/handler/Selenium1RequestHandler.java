@@ -17,7 +17,7 @@ package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.NewSessionException;
+import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.utils.BrowserNameUtils;
