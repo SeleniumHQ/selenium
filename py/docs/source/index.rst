@@ -26,10 +26,10 @@ Python Client
 Java Server
 -----------
 
-Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.0b3.jar
+Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.12.0.jar
 ::
 
-    java -jar selenium-server-standalone-2.0b3.jar
+    java -jar selenium-server-standalone-2.12.0.jar
 
 Example
 =======
