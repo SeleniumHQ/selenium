@@ -72,7 +72,6 @@ class Select:
             - value - The value to match against
            """
         css = "option[value =%s]" % self._escapeString(value)
-        print css
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
         matched = False
         for opt in opts:
