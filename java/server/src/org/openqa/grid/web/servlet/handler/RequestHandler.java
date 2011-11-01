@@ -30,13 +30,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.GridException;
 import org.openqa.grid.internal.NewSessionException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.grid.common.exception.GridException;
 
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should be only 1 concrete

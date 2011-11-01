@@ -15,6 +15,7 @@
 package org.openqa.grid.internal;
 
 import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 

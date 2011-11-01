@@ -2,7 +2,7 @@ package org.openqa.grid.web.servlet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.grid.internal.GridException;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 

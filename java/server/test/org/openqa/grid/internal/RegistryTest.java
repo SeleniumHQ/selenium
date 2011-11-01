@@ -9,6 +9,7 @@ import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.grid.common.exception.GridException;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.GridException;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.NewSessionException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;

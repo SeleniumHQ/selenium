@@ -3,10 +3,10 @@ package org.openqa.grid.web.servlet;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.common.exception.GridException;
 
 import java.io.BufferedReader;
 import java.io.IOException;

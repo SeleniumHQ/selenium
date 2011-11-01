@@ -19,6 +19,7 @@ limitations under the License.
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
+import org.openqa.grid.common.exception.GridException;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -13,6 +13,8 @@
  */
 package org.openqa.grid.internal;
 
+import org.openqa.grid.common.exception.GridException;
+
 import com.google.common.io.ByteStreams;
 
 import org.apache.http.Header;
