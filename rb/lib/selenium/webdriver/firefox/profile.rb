@@ -77,6 +77,8 @@ module Selenium
 
         #
         # Set a preference for this particular profile.
+        #
+        # @see http://kb.mozillazine.org/About:config_entries
         # @see http://preferential.mozdev.org/preferences.html
         #
 
