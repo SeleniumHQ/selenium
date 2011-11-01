@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Support.UI
             }
 
             var resultType = typeof(TResult);
-            if ((resultType.IsValueType && resultType != typeof(bool)) || !resultType.IsSubclassOf(typeof(object)))
+            if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
             {
                 throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), "condition");
             }

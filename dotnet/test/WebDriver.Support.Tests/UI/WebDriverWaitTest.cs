@@ -35,6 +35,17 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
+        public void WaitsForBaseObjectType()
+        {
+            var condition = GetCondition(() => null, () => new object());
+
+            var wait = new WebDriverWait(new TickingClock(), null, FIVE_SECONDS, ZERO_SECONDS);
+            Assert.IsNotNull(wait.Until(condition));
+
+            mocks.VerifyAllExpectationsHaveBeenMet();
+        }
+
+        [Test]
         public void WaitsUntilABooleanResultIsTrue()
         {
             var condition = GetCondition(() => false, () => true);
