@@ -34,6 +34,16 @@ Webdriver.common
    selenium.webdriver.common.keys
    selenium.webdriver.common.utils
 
+Webdriver.support
+-----------------
+
+.. currentmodule:: selenium.webdriver.support
+.. autosummary::
+   :toctree: webdriver_support
+
+   selenium.webdriver.support.select
+   selenium.webdriver.support.wait
+
 Webdriver.chrome
 ----------------
 

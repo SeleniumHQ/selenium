@@ -92,3 +92,7 @@ class RemoteDriverServerException(WebDriverException):
 class TimeoutException(WebDriverException):
     """Thrown when a command does not complete in enough time."""
     pass
+
+class UnexpectedTagNameException(WebDriverException):
+    """Thrown when a support class did not get an expected web element"""
+    pass

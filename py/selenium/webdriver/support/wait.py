@@ -23,7 +23,16 @@ POLL_FREQUENCY = 0.5  # How long to sleep inbetween calls to the method
 class WebDriverWait(object):
 
     def __init__(self, driver, timeout, poll_frequency=POLL_FREQUENCY):
-        """Constructor, takes a WebDriver instance and timeout in seconds."""
+        """Constructor, takes a WebDriver instance and timeout in seconds.
+           
+           :Args:
+            - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)
+            - timeout - Number of seconds before timing out
+
+           Example:
+            from selenium.webdriver.support.ui import WebDriverWait \n
+            element = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("someId"))
+        """
         self._driver = driver
         self._timeout = timeout
         self._poll = poll_frequency

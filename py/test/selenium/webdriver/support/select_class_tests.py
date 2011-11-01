@@ -16,7 +16,7 @@
 
 import pytest
 import unittest
-from selenium.common.exceptions import NoSuchElementException, ElementNotSelectableException
+from selenium.common.exceptions import NoSuchElementException, ElementNotSelectableException, UnexpectedTagNameException
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 
@@ -318,6 +318,14 @@ class WebDriverSelectSupportTests(unittest.TestCase):
         self.assertEqual(opt.text, multiSelectValues1['values'][0])
         opt = Select(self.driver.find_element(By.NAME, multiSelectValues2['name'])).all_selected_options
         self.assertEqual(len(opt), 0)
+
+    def testRaisesExceptionForInvalidTagName(self):
+        self._loadPage("formPage")
+        try:
+          Select(self.driver.find_element(By.TAG_NAME, "div"))
+          raise Exception("Should have gotten an UnexpectedTagNameException to be raised")
+        except UnexpectedTagNameException:
+          pass
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
