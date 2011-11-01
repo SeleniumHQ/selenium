@@ -1,5 +1,3 @@
-package org.openqa.grid.internal;
-
 /*
 Copyright 2011 WebDriver committers
 Copyright 2011 Software Freedom Conservancy
@@ -17,8 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+package org.openqa.grid.internal;
+
 /**
- * Provides access to Systetime
+ * Provides access to System time.
  */
 public class DefaultTimeSource implements TimeSource {
   public long currentTimeInMillis(){
