@@ -45,6 +45,12 @@
   // The root of our REST service.
   HTTPVirtualDirectory *restRoot = [[[HTTPVirtualDirectory alloc] init] autorelease];
   [serverRoot_ setResource:restRoot withName:@"hub"];
+
+  // Make the root also accessible from /wd/hub. This will allow clients hard
+  // coded for the java Selenium server to also work with us.
+  HTTPVirtualDirectory *wd = [[[HTTPVirtualDirectory alloc] init] autorelease];
+  [wd setResource:restRoot withName:@"hub"];
+  [serverRoot_ setResource:wd withName:@"wd"];
   
   HTTPDataResponse *response =
     [[HTTPDataResponse alloc]
