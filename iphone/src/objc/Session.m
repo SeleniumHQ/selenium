@@ -182,7 +182,8 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
           forKey:@"locationContextEnabled"];
   [caps setValue:[NSNumber numberWithBool:YES]
           forKey:@"takesScreenshot"];
-  [caps setObject:@"1.0" forKey:@"version"];
+  [caps setObject:[[UIDevice currentDevice] systemVersion]
+           forKey:@"version"];
   return caps;
 }
 
