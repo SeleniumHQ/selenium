@@ -606,7 +606,7 @@ class WebDriver(object):
            or a command to complete. This method only needs to be called one time per session.
         
         :Args:
-         - time_to_wait: Amount of time to wait
+         - time_to_wait: Amount of time to wait (in seconds)
 
         :Usage:
             driver.implicitly_wait(30)
