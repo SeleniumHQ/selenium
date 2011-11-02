@@ -21,6 +21,7 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -74,7 +75,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().window(current);
   }
 
-  @Ignore
+  @Ignore({FIREFOX, OPERA, CHROME, REMOTE, SELENESE})
   public void testShouldThrowNoSuchWindowExceptionIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();

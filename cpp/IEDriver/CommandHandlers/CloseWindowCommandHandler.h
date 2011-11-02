@@ -48,9 +48,10 @@ class CloseWindowCommandHandler : public IECommandHandler {
       return;
     }
     browser_wrapper->Close();
+    IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+    mutable_executor.set_current_browser_id("");
 
     if (current_window_count == 1) {
-      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       mutable_executor.set_is_valid(false);
     }
     response->SetSuccessResponse(Json::Value::null);
