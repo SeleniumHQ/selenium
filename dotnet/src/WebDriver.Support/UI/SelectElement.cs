@@ -131,7 +131,7 @@ namespace OpenQA.Selenium.Support.UI
             }
 
             // try to find the option via XPATH ...
-            IList<IWebElement> options = this.element.FindElements(By.XPath(".//option[. = " + EscapeQuotes(text) + "]"));
+            IList<IWebElement> options = this.element.FindElements(By.XPath(".//option[normalize-space(.) = " + EscapeQuotes(text) + "]"));
 
             bool matched = false;
             foreach (IWebElement option in options)
@@ -278,7 +278,7 @@ namespace OpenQA.Selenium.Support.UI
         /// </remarks>
         public void DeselectByText(string text)
         {
-            StringBuilder builder = new StringBuilder(".//option[. = ");
+            StringBuilder builder = new StringBuilder(".//option[normalize-space(.) = ");
             builder.Append(EscapeQuotes(text));
             builder.Append("]");
             IList<IWebElement> options = this.element.FindElements(By.XPath(builder.ToString()));

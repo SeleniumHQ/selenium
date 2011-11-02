@@ -108,7 +108,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
             Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
             Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            Expect.Once.On(webElement).Method("FindElements").With(By.XPath(".//option[normalize-space(.) = \"Select Me\"]")).Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
 
 
             new SelectElement(webElement).SelectByText("Select Me");
