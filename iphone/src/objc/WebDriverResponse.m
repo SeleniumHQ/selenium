@@ -19,6 +19,7 @@
 #import "WebDriverResponse.h"
 #import "HTTPJSONResponse.h"
 #import "HTTPPNGResponse.h"
+#import "NSData+Base64.h"
 #import "NSException+WebDriver.h"
 #import "errorcodes.h"
 
@@ -97,11 +98,10 @@
   [response_ release];
   
   if ([value_ isKindOfClass:[UIImage class]]) {
-    response_ = [[HTTPPNGResponse alloc] initWithImage:value_];
-  } else {
-    NSDictionary *dict = [self convertToDictionary];
-    response_ = [[HTTPJSONResponse alloc] initWithObject:(id)dict];
+    value_ = [UIImagePNGRepresentation(value_) base64EncodedString];
   }
+  NSDictionary *dict = [self convertToDictionary];
+  response_ = [[HTTPJSONResponse alloc] initWithObject:(id)dict];
 }
 
 // Return the response_ object (create it if necessary).
