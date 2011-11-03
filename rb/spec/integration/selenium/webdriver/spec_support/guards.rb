@@ -11,13 +11,20 @@ module Selenium
           def record(guard_name, options, data)
             options.each do |opts|
               opts = current_env.merge(opts)
-              key = "#{opts[:browser]}/#{opts[:driver]}/#{opts[:platform]}"
+              key = opts.values_at(:browser, :driver, :platform, :native).join('.')
               guards[key] << [guard_name, data]
             end
           end
 
           def report
-            gs = guards["#{GlobalTestEnv.browser}/#{GlobalTestEnv.driver}/#{Platform.os}"]
+            key = [
+              GlobalTestEnv.browser,
+              GlobalTestEnv.driver,
+              Platform.os,
+              GlobalTestEnv.native_events?
+            ].join(".")
+
+            gs = guards[key]
 
             print "\n\nSpec guards for this implementation: "
 
