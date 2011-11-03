@@ -16,13 +16,10 @@
 
 import os
 import platform
-import logging
 from subprocess import Popen, PIPE
-from extension_connection import ExtensionConnection
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 import time
-import socket
 import signal
 
 
