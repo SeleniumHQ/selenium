@@ -1,7 +1,7 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
-// Portions copyright 2011 Software Freedom Conservatory
+// Portions copyright 2011 Software Freedom Conservancy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Selenium Committers")]
 [assembly: AssemblyProduct("Selenium")]
-[assembly: AssemblyCopyright("Copyright © Software Freedom Conservatory 2011")]
+[assembly: AssemblyCopyright("Copyright © Software Freedom Conservancy 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

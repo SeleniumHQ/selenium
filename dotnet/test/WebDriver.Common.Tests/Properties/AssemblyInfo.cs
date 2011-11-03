@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Selenium Committers")]
 [assembly: AssemblyProduct("Selenium WebDriver Tests")]
-[assembly: AssemblyCopyright("Copyright © Software Freedom Conservatory 2011")]
+[assembly: AssemblyCopyright("Copyright © Software Freedom Conservancy 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
