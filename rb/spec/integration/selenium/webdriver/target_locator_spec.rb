@@ -81,13 +81,15 @@ describe "WebDriver::TargetLocator" do
     end
   end
 
-  it "should switch to default content" do
-    driver.navigate.to url_for("iframes.html")
+  not_compliant_on :browser => :android do
+    it "should switch to default content" do
+      driver.navigate.to url_for("iframes.html")
 
-    driver.switch_to.frame 0
-    driver.switch_to.default_content
+      driver.switch_to.frame 0
+      driver.switch_to.default_content
 
-    driver.find_element(:id => "iframe_page_heading")
+      driver.find_element(:id => "iframe_page_heading")
+    end
   end
 
   it "should find active element" do

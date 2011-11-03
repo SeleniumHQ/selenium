@@ -28,7 +28,7 @@ describe "Options" do
       driver.manage.all_cookies.should be_empty
     end
 
-    not_compliant_on :browser => :ie do
+    not_compliant_on :browser => [:ie, :android] do
       it "should use DateTime for expires" do
         driver.navigate.to url_for("xhtmlTest.html")
 

@@ -17,15 +17,17 @@ describe "Element" do
     driver.find_element(:id, "working").send_keys("foo", "bar")
   end
 
-  it "should send key presses" do
-    driver.navigate.to url_for("javascriptPage.html")
-    key_reporter = driver.find_element(:id, 'keyReporter')
+  not_compliant_on :browser => :android do
+    it "should send key presses" do
+      driver.navigate.to url_for("javascriptPage.html")
+      key_reporter = driver.find_element(:id, 'keyReporter')
 
-    key_reporter.send_keys("Tet", :arrow_left, "s")
-    key_reporter.attribute('value').should == "Test"
+      key_reporter.send_keys("Tet", :arrow_left, "s")
+      key_reporter.attribute('value').should == "Test"
+    end
   end
 
-  not_compliant_on :browser => :opera do
+  not_compliant_on :browser => [:opera, :android] do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
@@ -57,21 +59,23 @@ describe "Element" do
     driver.find_element(:id, "withText").clear
   end
 
-  it "should get and set selected" do
-    driver.navigate.to url_for("formPage.html")
+  not_compliant_on :browser => :android do
+    it "should get and set selected" do
+      driver.navigate.to url_for("formPage.html")
 
-    cheese = driver.find_element(:id, "cheese")
-    peas   = driver.find_element(:id, "peas")
+      cheese = driver.find_element(:id, "cheese")
+      peas   = driver.find_element(:id, "peas")
 
-    cheese.click
+      cheese.click
 
-    cheese.should be_selected
-    peas.should_not be_selected
+      cheese.should be_selected
+      peas.should_not be_selected
 
-    peas.click
+      peas.click
 
-    peas.should be_selected
-    cheese.should_not be_selected
+      peas.should be_selected
+      cheese.should_not be_selected
+    end
   end
 
   it "should get enabled" do
@@ -128,10 +132,14 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => [:chrome, :opera] do
+  not_compliant_on :browser => [:chrome, :opera, :android] do
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
-      driver.find_element(:id, "green-parent").style("background-color").should == "#008000"
+      style = driver.find_element(:id, "green-parent").style("background-color")
+      
+      # android returns 'green'
+      # chrome/opera returns rgba
+      style.should == "#008000"
     end
   end
 
