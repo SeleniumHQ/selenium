@@ -28,6 +28,8 @@ import android.os.IBinder;
 import org.openqa.selenium.android.AndroidWebDriver;
 import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.server.JettyService;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  * Main application activity.
@@ -39,6 +41,7 @@ public class MainActivity extends Activity {
   private Intent jettyIntent;
   public static final String DEBUG_MODE_ARG = "debug";
   private static Activity thisActivity;
+  private static DesiredCapabilities caps;
 
   private static AndroidWebDriver driver;
 
@@ -84,8 +87,13 @@ public class MainActivity extends Activity {
     super.onDestroy();
   }
 
+  public static void setCapabilities(DesiredCapabilities caps) {
+    this.caps = caps;
+  }
+
   public static AndroidWebDriver createDriver() {
     driver = new AndroidWebDriver(thisActivity);
+    driver.setAcceptSslCerts(caps.getCapability(CapabilityType.ACCEPT_SSL_CERTS));
     return driver;
   }
 }
