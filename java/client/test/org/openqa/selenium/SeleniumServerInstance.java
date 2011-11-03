@@ -31,7 +31,7 @@ public class SeleniumServerInstance {
     if (isInDevMode()) {
       Map<String, Object> payload = Maps.newHashMap();
       payload.put("capabilities", DesiredCapabilities.firefox());
-      payload.put("class", "org.openqa.selenium.firefox.SynthesizedFirefoxDriverTestSuite$TestFirefoxDriver");
+      payload.put("class", "org.openqa.selenium.firefox.SynthesizedFirefoxDriver");
 
       HttpRequest request = new HttpRequest(
           HttpRequest.Method.POST,

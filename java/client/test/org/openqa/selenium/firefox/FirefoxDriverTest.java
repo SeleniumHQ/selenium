@@ -539,7 +539,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   private WebDriver newFirefoxDriver(FirefoxProfile profile) {
     if (DevMode.isInDevMode()) {
       try {
-        return new SynthesizedFirefoxDriverTestSuite.TestFirefoxDriver(profile);
+        return new SynthesizedFirefoxDriver(profile);
       } catch (Exception e) {
         throw Throwables.propagate(e);
       }

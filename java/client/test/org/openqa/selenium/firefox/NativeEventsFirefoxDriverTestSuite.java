@@ -37,7 +37,7 @@ public class NativeEventsFirefoxDriverTestSuite extends TestCase {
 
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(TestFirefoxDriverWithNativeEvents.class)
+        .usingDriver(NativeEventsFirefoxDriver.class)
         .exclude(FIREFOX)
         .exclude(FIREFOX_NATIVE)
         .exclude(Ignore.NativeEventsEnabledState.ENABLED)
@@ -46,16 +46,4 @@ public class NativeEventsFirefoxDriverTestSuite extends TestCase {
         .create();
   }
 
-  public static class TestFirefoxDriverWithNativeEvents extends FirefoxDriver {
-
-    public TestFirefoxDriverWithNativeEvents() {
-      super(createNativeEventsEnabledProfile());
-    }
-
-    private static FirefoxProfile createNativeEventsEnabledProfile() {
-      FirefoxProfile profile = new FirefoxProfile();
-      profile.setEnableNativeEvents(true);
-      return profile;
-    }
-  }
 }

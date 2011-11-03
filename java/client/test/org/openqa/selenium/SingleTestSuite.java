@@ -32,7 +32,7 @@ public class SingleTestSuite extends TestCase {
 
   private static final String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
   private static final String FIREFOX_TEST =
-      "org.openqa.selenium.firefox.SynthesizedFirefoxDriverTestSuite$TestFirefoxDriver";
+      "org.openqa.selenium.firefox.SynthesizedFirefoxDriver";
 
   private static final String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private static final String HTML_UNIT_JS =
@@ -66,7 +66,7 @@ public class SingleTestSuite extends TestCase {
       };
 
   public static Test suite() throws Exception {
-    String driver = REMOTE;
+    String driver = FIREFOX_TEST;
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -79,9 +79,11 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("UploadTest")
-//        .method("testGenerateKeyPressEventEvenWhenElementPreventsDefault")
-//        .method("testTypingIntoAnIFrameWithContentEditableOrDesignModeSet")
+        .onlyRun("ClickScrollingTest")
+        .onlyRun("ClickTest")
+        .onlyRun("FrameSwitchingTest")
+//        .method("testShouldSetRelatedTargetForMouseOver")
+        .method("testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs")
         .exclude(ALL)
         .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()

@@ -40,7 +40,7 @@ public abstract class JUnit4TestBase {
 
     String driverClass;
     if (isInDevMode()) {
-      driverClass = "org.openqa.selenium.firefox.SynthesizedFirefoxDriverTestSuite$TestFirefoxDriver";
+      driverClass = "org.openqa.selenium.firefox.SynthesizedFirefoxDriver";
     } else {
       driverClass = "org.openqa.selenium.firefox.FirefoxDriver";
     }
