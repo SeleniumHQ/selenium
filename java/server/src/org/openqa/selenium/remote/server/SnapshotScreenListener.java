@@ -41,6 +41,10 @@ public class SnapshotScreenListener extends AbstractWebDriverEventListener {
 
   @Override
   public void onException(Throwable throwable, WebDriver driver) {
+    if (Platform.getCurrent().is(Platform.ANDROID)) {
+      // Android Java APIs do not support java.awt
+      return;
+    }
     String encoded;
     try {
       workAroundD3dBugInVista();
