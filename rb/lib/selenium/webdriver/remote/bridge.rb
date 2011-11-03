@@ -90,7 +90,7 @@ module Selenium
 
         def create_session(desired_capabilities)
           resp = raw_execute :newSession, {}, :desiredCapabilities => desired_capabilities
-          @session_id = resp['sessionId'] || raise(Error::WebDriverError, 'no sessionId in returned payload')
+          @session_id = resp['sessionId'] or raise Error::WebDriverError, 'no sessionId in returned payload'
 
           Capabilities.json_create resp['value']
         end
@@ -264,7 +264,7 @@ module Selenium
           params = { :element => element }
 
           if x && y
-            params.merge!(:xoffset => x, :yoffset => y)
+            params.merge! :xoffset => x, :yoffset => y
           end
 
           execute :mouseMoveTo, {}, params
@@ -411,13 +411,13 @@ module Selenium
         #
 
         def raw_execute(command, opts = {}, command_hash = nil)
-          verb, path = COMMANDS[command] || raise("unknown command #{command.inspect}")
+          verb, path = COMMANDS[command] || raise(ArgumentError, "unknown command: #{command.inspect}")
           path       = path.dup
 
           path[':session_id'] = @session_id if path.include?(":session_id")
 
           begin
-            opts.each { |key, value| path[key.inspect] = escaper.escape(value.to_s)}
+            opts.each { |key, value| path[key.inspect] = escaper.escape(value.to_s) }
           rescue IndexError
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
