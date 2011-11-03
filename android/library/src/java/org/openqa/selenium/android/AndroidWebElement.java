@@ -163,18 +163,13 @@ public class AndroidWebElement implements WebElement,
     driver.executeAtom(AndroidAtoms.CLEAR.getValue(), this);
   }
 
-  public void sendKeys(CharSequence... value) {
+  public void sendKeys(final CharSequence... value) {
     if (value == null || value.length == 0) {
       return;
     }
     if (!isEnabled()) {
       throw new InvalidElementStateException("Cannot send keys to disabled element.");
     }
-    final CharSequence[] keys = new CharSequence[value.length];
-    for (int i = 0; i < value.length; i++) {
-      keys[i] = value[i].toString();
-    }
-
     // focus on the element
     this.click();
     driver.waitUntilEditAreaHasFocus();
@@ -189,7 +184,7 @@ public class AndroidWebElement implements WebElement,
     driver.getActivity().runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          EventSender.sendKeys(view, driver.getActivity(), keys);
+          EventSender.sendKeys(view, driver.getActivity(), value);
           done = true;
           syncObject.notify();
         }
