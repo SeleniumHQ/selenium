@@ -41,22 +41,10 @@ public class SynthesizedFirefoxDriverTestSuite extends TestCase {
       return new TestSuite();
     }
 
-    // System.setProperty("webdriver.development", "true");
-    // System.setProperty("webdriver.firefox.useExisting", "true");
-
-    // System.setProperty("webdriver.firefox.bin",
-    // "/Applications/Firefox3.app/Contents/MacOS/firefox-bin");
-    // System.setProperty("webdriver.firefox.bin",
-    // "/Applications/Firefox3_6.app/Contents/MacOS/firefox-bin");
-    // System.setProperty("webdriver.firefox.bin",
-    // "/Applications/Firefox4.app/Contents/MacOS/firefox-bin");
-    // System.setProperty("webdriver.firefox.bin",
-    // "/Applications/Firefox5.app/Contents/MacOS/firefox-bin");
-
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
 //        .addSourceDir("java/client/test/org/openqa/selenium/firefox") Haven't been running for a while, apparently, and some of them don't pass now...
-        .usingDriver(FirefoxDriver.class)
+        .usingDriver(SynthesizedFirefoxDriver.class)
         .exclude(FIREFOX)
         .exclude(FIREFOX_SYNTHESIZED)
         .exclude(Ignore.NativeEventsEnabledState.DISABLED)
