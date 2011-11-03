@@ -20,6 +20,7 @@ import logging
 from subprocess import Popen, PIPE
 from extension_connection import ExtensionConnection
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common import utils
 import time
 import socket
 import signal
@@ -64,24 +65,13 @@ class FirefoxBinary(object):
         Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=PIPE).wait()
         self.process = Popen([self._start_cmd], stdout=PIPE, stderr=PIPE)
 
-    def is_connectable(self):
-        """Trys to connect to the extension but do not retrieve context."""
-        try:
-            socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket_.settimeout(1)
-            socket_.connect(("127.0.0.1", self.profile.port))
-            socket_.close()
-            return True
-        except socket.error:
-            return False
-
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
         count = 0
-        while not self.is_connectable():
-            if self.process.returncode:
+        while not utils.is_connectable(self.profile.port):
+            if self.process.poll() is not None:
                 # Browser has exited
-                return WebDriverException("The browser appears to have exited before we could connect")
+                raise WebDriverException("The browser appears to have exited before we could connect")
             if count == 30:
                 self.kill()
                 raise WebDriverException("Can't load the profile. Profile Dir : %s" % self.profile.path)
