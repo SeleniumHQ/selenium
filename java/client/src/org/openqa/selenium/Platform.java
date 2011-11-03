@@ -66,14 +66,14 @@ public enum Platform {
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
-  UNIX("solaris", "bsd") {
+  UNIX("solaris", "bsd") {},
+
+  LINUX("linux") {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == UNIX || compareWith == LINUX;
     }
   },
-
-  LINUX("linux") {},
 
   ANDROID("android", "dalvik") {
     public String getLineEnding() {

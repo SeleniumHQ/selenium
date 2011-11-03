@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
+Copyright 2007-2011 WebDriver committers
+Copyright 2011 Software Freedom Conservancy Inc.
 Copyright 2007-2009 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +38,7 @@ public class PlatformTest extends TestCase {
     assertAllAre(Platform.LINUX, "Linux");
   }
 
-  public void testShouldDistinctLinuxFromUnix() {
+  public void testShouldDistinctUnixFromLinux() {
     Platform linPlatform = Platform.extractFromSysProperty("Linux");
     assertTrue("Linux should be identified as Unix", linPlatform.is(Platform.UNIX));
 
@@ -52,4 +53,5 @@ public class PlatformTest extends TestCase {
           seen.is(platform));
     }
   }
+
 }
