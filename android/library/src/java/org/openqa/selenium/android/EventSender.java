@@ -16,6 +16,7 @@
 package org.openqa.selenium.android;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -106,36 +107,17 @@ class EventSender {
                 KeyEvent[] arr = characterMap.getEvents(new char[]{c});
                 if (arr != null) {
                   for (int j = 0; j < arr.length; j++) {
-                    if (Character.isLowerCase(c)) {
-                      int n = arr[j].normalizeMetaState(0);
-                    }
                     webview.dispatchKeyEvent(arr[j]);
                   }
                 }
               }
             }
           }
+          done = true;
+          syncObject.notify();
         }
       });
-      done = true;
-      syncObject.notify();
     }
     waitForNotification(timeout, "Failed to send keys.");
   }
-
-  /**
-   * Add KeyEvents to the queue to move the cursor to the rightmost position in the text area.
-   *
-   * @param textAreaValue the already present in the editable area
-   * @param webview the current webview
-   */
- /* private static void moveCursorToRightMostPosition(String textAreaValue, WebView webview) {
-    List<KeyEvent> events = Lists.newArrayListWithExpectedSize(2);
-    long downTime = SystemClock.uptimeMillis();
-    events.add(new KeyEvent(downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN,
-        KeyEvent.KEYCODE_DPAD_RIGHT, 0));
-    events.add(new KeyEvent(downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP,
-        KeyEvent.KEYCODE_DPAD_RIGHT, textAreaValue.length()));
-    dispatchEvents(webview, events);
-  }*/
 }
