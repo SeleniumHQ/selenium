@@ -18,6 +18,7 @@ limitations under the License.
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+import com.thoughtworks.selenium.SeleniumException;
 
 import org.junit.Test;
 
@@ -34,5 +35,22 @@ public class TestAddSelection extends InternalSelenseTestBase {
     assertEquals(2, found.length);
     assertEquals("select_2", found[0]);
     assertEquals("select_3", found[1]);
+  }
+
+  @Test
+  public void addingToSelectionShouldThrowExceptionForSingleSelectionList() {
+    selenium.open("../tests/html/test_select.html");
+
+    String[] before = selenium.getSelectedIds("theSelect");
+
+    try {
+      selenium.addSelection("theSelect", "Second Option");
+      fail("Expected SeleniumException");
+    } catch (SeleniumException ex) {
+      // Expected exception. Message is different in DefaultSelenium
+      // and WebDriverBackedSelenium
+    }
+    
+    assertEquals(before, selenium.getSelectedIds("theSelect"));
   }
 }
