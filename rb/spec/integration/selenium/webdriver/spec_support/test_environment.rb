@@ -84,6 +84,10 @@ module Selenium
           @unguarded ||= false
         end
 
+        def native_events?
+          @native_events ||= !!ENV['native']
+        end
+
         def url_for(filename)
           url = app_server.where_is filename
           url.sub!("127.0.0.1", "10.0.2.2") if browser == :android
@@ -168,7 +172,7 @@ module Selenium
         end
 
         def create_firefox_driver
-          if ENV['native']
+          if native_events?
             profile = WebDriver::Firefox::Profile.new
             profile.native_events = true
 
@@ -179,7 +183,7 @@ module Selenium
         end
 
         def create_chrome_driver
-          WebDriver::Driver.for :chrome, :native_events => !!ENV['native']
+          WebDriver::Driver.for :chrome, :native_events => native_events?
         end
 
       end # TestEnvironment

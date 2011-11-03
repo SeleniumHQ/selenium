@@ -32,7 +32,12 @@ module Selenium
           end
 
           def current_env
-            {:browser => GlobalTestEnv.browser, :driver => GlobalTestEnv.driver, :platform => Platform.os}
+            {
+              :browser  => GlobalTestEnv.browser,
+              :driver   => GlobalTestEnv.driver,
+              :platform => Platform.os,
+              :native   => GlobalTestEnv.native_events?
+            }
           end
 
           #
@@ -64,6 +69,9 @@ module Selenium
           Guards.record(:compliant_on, opts, :file => caller.first)
           yield if Guards.env_matches?(opts)
         end
+
+        alias_method :not_compliant_when, :not_compliant_on
+        alias_method :compliant_when,     :compliant_on
 
       end # Guards
     end # SpecSupport
