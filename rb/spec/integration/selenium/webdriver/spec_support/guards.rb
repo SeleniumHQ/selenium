@@ -60,11 +60,6 @@ module Selenium
           yield unless Guards.env_matches?(opts)
         end
 
-        def deviates_on(*opts, &blk)
-          Guards.record(:deviates, opts, :file => caller.first)
-          yield unless Guards.env_matches?(opts)
-        end
-
         def compliant_on(*opts, &blk)
           Guards.record(:compliant_on, opts, :file => caller.first)
           yield if Guards.env_matches?(opts)
