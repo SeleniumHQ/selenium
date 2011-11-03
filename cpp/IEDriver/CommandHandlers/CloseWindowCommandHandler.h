@@ -48,6 +48,7 @@ class CloseWindowCommandHandler : public IECommandHandler {
       return;
     }
     browser_wrapper->Close();
+
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     mutable_executor.set_current_browser_id("");
 

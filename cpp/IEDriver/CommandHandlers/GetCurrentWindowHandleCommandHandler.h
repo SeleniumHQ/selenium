@@ -35,9 +35,9 @@ class GetCurrentWindowHandleCommandHandler : public IECommandHandler {
                        Response* response) {
     std::string current_handle = executor.current_browser_id();
     if (current_handle == "") {
-        response->SetErrorResponse(ENOSUCHWINDOW, "Window is closed");
+      response->SetErrorResponse(ENOSUCHWINDOW, "Window is closed");
     } else {
-        response->SetSuccessResponse(current_handle);
+      response->SetSuccessResponse(current_handle);
     }
   }
 };
