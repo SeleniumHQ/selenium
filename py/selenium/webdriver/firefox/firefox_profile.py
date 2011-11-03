@@ -16,7 +16,6 @@
 import copy
 import tempfile
 import os
-import logging
 import zipfile
 import shutil
 import re
