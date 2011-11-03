@@ -17,7 +17,7 @@ describe "Element" do
     driver.find_element(:id, "working").send_keys("foo", "bar")
   end
 
-  not_compliant_on :browser => :android do
+  not_compliant_on :browser => [:android, :iphone] do
     it "should send key presses" do
       driver.navigate.to url_for("javascriptPage.html")
       key_reporter = driver.find_element(:id, 'keyReporter')
@@ -27,7 +27,7 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => [:opera, :android] do
+  not_compliant_on :browser => [:opera, :android, :iphone] do
     it "should handle file uploads" do
       driver.navigate.to url_for("formPage.html")
 
@@ -101,12 +101,14 @@ describe "Element" do
     loc.y.should >= 1
   end
 
-  it "should get location once scrolled into view" do
-    driver.navigate.to url_for("javascriptPage.html")
-    loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
+  not_compliant_on :browser => :iphone do
+    it "should get location once scrolled into view" do
+      driver.navigate.to url_for("javascriptPage.html")
+      loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
 
-    loc.x.should >= 1
-    loc.y.should >= 0 # can be 0 if scrolled to the top
+      loc.x.should >= 1
+      loc.y.should >= 0 # can be 0 if scrolled to the top
+    end
   end
 
   it "should get size" do
@@ -132,13 +134,13 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => [:chrome, :opera, :android] do
+  not_compliant_on :browser => [:chrome, :opera, :android, :iphone] do
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
       style = driver.find_element(:id, "green-parent").style("background-color")
       
       # android returns 'green'
-      # chrome/opera returns rgba
+      # chrome/opera/iphone returns rgb()
       style.should == "#008000"
     end
   end

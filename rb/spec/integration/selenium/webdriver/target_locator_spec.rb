@@ -2,24 +2,31 @@ require File.expand_path("../spec_helper", __FILE__)
 
 describe "WebDriver::TargetLocator" do
   let(:wait) { Selenium::WebDriver::Wait.new }
-
-  it "should switch to a frame" do
-    driver.navigate.to url_for("iframes.html")
-    driver.switch_to.frame("iframe1")
-
-    # TODO: expectations?
+  
+  it "should find the active element" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
   end
 
-  it "should switch to a frame by Element" do
-    driver.navigate.to url_for("iframes.html")
+  not_compliant_on :browser => :iphone do
+    it "should switch to a frame" do
+      driver.navigate.to url_for("iframes.html")
+      driver.switch_to.frame("iframe1")
 
-    iframe = driver.find_element(:tag_name => "iframe")
-    driver.switch_to.frame(iframe)
+      # TODO: expectations?
+    end
 
-    # TODO: expectations?
+    it "should switch to a frame by Element" do
+      driver.navigate.to url_for("iframes.html")
+
+      iframe = driver.find_element(:tag_name => "iframe")
+      driver.switch_to.frame(iframe)
+
+      # TODO: expectations?
+    end
   end
 
-  not_compliant_on :browser => :ie do
+  not_compliant_on :browser => [:ie, :iphone] do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -49,9 +56,7 @@ describe "WebDriver::TargetLocator" do
 
       reset_driver!
     end
-  end
-
-  not_compliant_on :browser => :ie do
+    
     it "should switch to a window" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -81,7 +86,7 @@ describe "WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => :android do
+  not_compliant_on :browser => [:android, :iphone] do
     it "should switch to default content" do
       driver.navigate.to url_for("iframes.html")
 
@@ -92,13 +97,8 @@ describe "WebDriver::TargetLocator" do
     end
   end
 
-  it "should find active element" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
-  end
-
   describe "alerts" do
-    not_compliant_on :browser => :opera do
+    not_compliant_on :browser => [:opera, :iphone] do
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -110,7 +110,8 @@ describe "WebDriver::TargetLocator" do
     end
 
     not_compliant_on({:browser => :chrome, :platform => :macosx}, # http://code.google.com/p/chromium/issues/detail?id=90519
-                     {:browser => :opera}) do 
+                     {:browser => :opera},
+                     {:browser => :iphone}) do 
       it "allows the user to dismiss an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -121,7 +122,7 @@ describe "WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => :opera do
+    not_compliant_on :browser => [:opera, :iphone] do
       it "allows the user to set the value of a prompt" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "prompt").click
@@ -133,9 +134,7 @@ describe "WebDriver::TargetLocator" do
         text = driver.find_element(:id => "text").text
         text.should == "cheese"
       end
-    end
 
-    not_compliant_on :browser => :opera do
       it "allows the user to get the text of an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -148,21 +147,24 @@ describe "WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => [:chrome, :ie, :opera] do
+    not_compliant_on :browser => [:chrome, :ie, :opera, :iphone] do
       it "raises NoAlertOpenError if no alert is present" do
         lambda { driver.switch_to.alert }.should raise_error(
           Selenium::WebDriver::Error::NoAlertOpenError, /alert/i)
       end
     end
-
-    # it "raises an UnhandledAlertError if an alert has not been dealt with" do
-    #   driver.navigate.to url_for("alerts.html")
-    #   driver.find_element(:id => "alert").click
-    #
-    #   lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
-    #
-    #   driver.title.should == "Testing Alerts"
-    # end
+    
+    compliant_on :browser => nil do
+      it "raises an UnhandledAlertError if an alert has not been dealt with" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "alert").click
+    
+        lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+    
+        driver.title.should == "Testing Alerts"
+      end
+    end
+    
   end
 end
 

@@ -4,7 +4,7 @@ module Selenium
   module WebDriver
     describe Mouse do
 
-      not_compliant_on :browser => :android do
+      not_compliant_on :browser => [:android, :iphone] do
         it "clicks an element" do
           driver.navigate.to url_for("formPage.html")
           driver.mouse.click driver.find_element(:id, "imageButton")
