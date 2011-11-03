@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
+Copyright 2007-2011 WebDriver committers
+Copyright 2011 Software Freedom Conservancy Inc.
 Copyright 2007-2009 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium;
 
@@ -24,11 +25,11 @@ import java.util.regex.Pattern;
  * Represents the known and supported Platforms that WebDriver runs on. This is pretty close to the
  * Operating System, but differs slightly, because this class is used to extract information such as
  * program locations and line endings.
- *
  */
 // Useful URLs:
 // http://hg.openjdk.java.net/jdk7/modules/jdk/file/a37326fa7f95/src/windows/native/java/lang/java_props_md.c
 public enum Platform {
+
   /**
    * Never returned, but can be used to request a browser running on any version of Windows.
    */
@@ -38,6 +39,7 @@ public enum Platform {
       return compareWith == WINDOWS || compareWith == XP || compareWith == VISTA;
     }
   },
+
   /**
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
    * "\Program Files\" and documents under "\\documents and settings\\username"
@@ -48,6 +50,7 @@ public enum Platform {
       return compareWith == WINDOWS || compareWith == XP;
     }
   },
+
   /**
    * For versions of Windows that "feel like" Windows Vista.
    */
@@ -57,14 +60,21 @@ public enum Platform {
       return compareWith == WINDOWS || compareWith == VISTA;
     }
   },
+
   MAC("mac", "darwin") {},
+
+  /**
+   * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
+   */
   UNIX("solaris", "bsd") {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == UNIX || compareWith == LINUX;
     }
   },
+
   LINUX("linux") {},
+
   ANDROID("android", "dalvik") {
     public String getLineEnding() {
       return "\n";
@@ -75,8 +85,9 @@ public enum Platform {
       return compareWith == LINUX || compareWith == ANDROID;
     }
   },
+
   /**
-   * Never returned, but can be used to request a browser running on any operating system
+   * Never returned, but can be used to request a browser running on any operating system.
    */
   ANY("") {
     @Override
@@ -115,10 +126,23 @@ public enum Platform {
     return partOfOsName;
   }
 
+  /**
+   * Get current platform (not necessarily the same as operating system).
+   *
+   * @return current platform
+   */
   public static Platform getCurrent() {
     return extractFromSysProperty(System.getProperty("os.name"));
   }
 
+  /**
+   * Extracts platforms based on system properties in Java and a heuristic to determine the most
+   * likely operating system.  If not able to determine the operating system, it will default to
+   * UNIX.
+   *
+   * @param osName the operating system name to determine the platform of
+   * @return the most likely platform based on given operating system name
+   */
   public static Platform extractFromSysProperty(String osName) {
     osName = osName.toLowerCase();
     // os.name for android is linux
@@ -129,8 +153,9 @@ public enum Platform {
     String previousMatch = null;
     for (Platform os : Platform.values()) {
       for (String matcher : os.partOfOsName) {
-        if ("".equals(matcher))
+        if ("".equals(matcher)) {
           continue;
+        }
 
         if (os.isExactMatch(osName, matcher)) {
           return os;
@@ -142,34 +167,58 @@ public enum Platform {
       }
     }
 
-    // Default to assuming we're on a unix variant (including linux)
+    // Default to assuming we're on a UNIX variant (including LINUX)
     return mostLikely;
   }
 
+  /**
+   * Decides whether the previous match is better or not than the current match.  If previous match
+   * is null, the newer match is always better.
+   *
+   * @param previous the previous match
+   * @param matcher the newer match
+   * @return true if newer match is better, false otherwise
+   */
   private static boolean isBetterMatch(String previous, String matcher) {
-    if (previous == null)
-      return true;
-
-    return matcher.length() >= previous.length();
+    return previous == null || matcher.length() >= previous.length();
   }
 
+  /**
+   * Heuristic for comparing two platforms.  If platforms (which is not the same thing as operating
+   * systems) are found to be approximately similar in nature, this will return true.  For instance
+   * the LINUX platform is similar to UNIX, and will give a positive result if compared.
+   *
+   * @param compareWith the platform to compare with
+   * @return true if platforms are approximately similar, false otherwise
+   */
   public boolean is(Platform compareWith) {
     return this.equals(compareWith);
   }
 
   private boolean isCurrentPlatform(String osName, String matchAgainst) {
-    return osName.indexOf(matchAgainst) != -1;
+    return osName.contains(matchAgainst);
   }
 
   private boolean isExactMatch(String osName, String matchAgainst) {
     return matchAgainst.equals(osName);
   }
 
+  /**
+   * Returns the major version of this platform.
+   *
+   * @return the major version of specified platform
+   */
   public int getMajorVersion() {
     return majorVersion;
   }
 
+  /**
+   * Returns the minor version of this platform.
+   *
+   * @return the minor version of specified platform
+   */
   public int getMinorVersion() {
     return minorVersion;
   }
+
 }
