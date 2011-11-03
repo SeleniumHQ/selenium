@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * Represents the known and supported Platforms that WebDriver runs on. This is pretty close to the
  * Operating System, but differs slightly, because this class is used to extract information such as
  * program locations and line endings.
- * 
+ *
  */
 // Useful URLs:
 // http://hg.openjdk.java.net/jdk7/modules/jdk/file/a37326fa7f95/src/windows/native/java/lang/java_props_md.c
@@ -58,13 +58,13 @@ public enum Platform {
     }
   },
   MAC("mac", "darwin") {},
-  UNIX("solaris", "bsd") {},
-  LINUX("linux") {
+  UNIX("solaris", "bsd") {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == UNIX || compareWith == LINUX;
     }
   },
+  LINUX("linux") {},
   ANDROID("android", "dalvik") {
     public String getLineEnding() {
       return "\n";
