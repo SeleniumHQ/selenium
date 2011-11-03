@@ -19,6 +19,8 @@ package org.openqa.selenium.android.server.handler;
 
 import java.util.Map;
 
+import org.openqa.selenium.android.app.MainActivity;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.DriverSessions;
 
 public class NewSession extends org.openqa.selenium.remote.server.handler.NewSession {

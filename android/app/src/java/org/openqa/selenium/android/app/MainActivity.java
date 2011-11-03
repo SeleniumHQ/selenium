@@ -88,12 +88,12 @@ public class MainActivity extends Activity {
   }
 
   public static void setCapabilities(DesiredCapabilities caps) {
-    this.caps = caps;
+    MainActivity.caps = caps;
   }
 
   public static AndroidWebDriver createDriver() {
     driver = new AndroidWebDriver(thisActivity);
-    driver.setAcceptSslCerts(caps.getCapability(CapabilityType.ACCEPT_SSL_CERTS));
+    driver.setAcceptSslCerts(caps.is(CapabilityType.ACCEPT_SSL_CERTS));
     return driver;
   }
 }
