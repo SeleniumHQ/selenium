@@ -245,32 +245,7 @@ FirefoxDriver.prototype.sendKeysToElement.preconditions =
 FirefoxDriver.prototype.clearElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-
-  var isTextField = element["value"] !== undefined;
-
-  var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
-  if (currentlyActive != element) {
-    currentlyActive.blur();
-    element.focus();
-  }
-
-  var currentValue = undefined;
-  if (element["value"] !== undefined) {
-    currentValue = element.value;
-  } else if (element.hasAttribute("value")) {
-    currentValue = element.getAttribute("value");
-  }
-
-  if (isTextField) {
-    element.value = "";
-  } else {
-    element.setAttribute("value", "");
-  }
-
-  if (currentValue !== undefined && currentValue != "") {
-    Utils.fireHtmlEvent(element, "change");
-  }
-
+  bot.action.clear(element);
   respond.send();
 };
 FirefoxDriver.prototype.clearElement.preconditions =
