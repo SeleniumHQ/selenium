@@ -8,7 +8,7 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 
-@Ignore({CHROME, OPERA, FIREFOX, IE, SELENESE, ANDROID})
+@Ignore({CHROME, OPERA, FIREFOX, SELENESE, ANDROID})
 public class ClearTest extends AbstractDriverTestCase {
 
   public void testWritableTextInputShouldClear() {
