@@ -22,6 +22,7 @@ import net.jcip.annotations.ThreadSafe;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Logger;
 
 /**
  * The set of active test sessions.
@@ -29,11 +30,18 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ThreadSafe
 class ActiveTestSessions {
 
+  private static final Logger log = Logger.getLogger(ActiveTestSessions.class.getName());
+
   private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
 
 
+
   public boolean add(TestSession testSession) {
-    return activeTestSessions.add(testSession);
+    final boolean added = activeTestSessions.add(testSession);
+    if (!added) {
+      log.severe("Error adding session : " + testSession);
+    }
+    return added;
   }
 
   public boolean remove(TestSession o) {

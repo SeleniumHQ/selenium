@@ -219,9 +219,9 @@ public class TestSlot {
     } catch (Throwable t) {
       log.severe("Error running afterSession for " + currentSession + " the test slot is now dead.");
       t.printStackTrace();
-      return true;
+      return false;
     }
-    return false;
+    return true;
   }
 
   @Override

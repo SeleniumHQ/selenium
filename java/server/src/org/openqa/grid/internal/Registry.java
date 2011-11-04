@@ -59,15 +59,14 @@ public class Registry {
   private final HttpClientFactory httpClientFactory;
   private final NewSessionRequestQueue newSessionQueue;
   private final Matcher matcherThread = new Matcher();
+  private final List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
+
 
   private volatile boolean stop = false;
   // The following three variables need to be volatile because we expose a public setters
   private volatile int newSessionWaitTimeout;
   private volatile Prioritizer prioritizer;
   private volatile Hub hub;
-
-
-
 
   private Registry(Hub hub, GridHubConfiguration config) {
     this.hub = hub;
@@ -77,6 +76,7 @@ public class Registry {
     this.configuration = config;
     this.httpClientFactory = new HttpClientFactory();
     proxies = new ProxySet(config.isThrowOnCapabilityNotPresent());
+    this.matcherThread.setUncaughtExceptionHandler( new UncaughtExceptionHandler());
   }
 
   @SuppressWarnings({"NullableProblems"})
@@ -86,12 +86,6 @@ public class Registry {
 
   public static Registry newInstance(Hub hub, GridHubConfiguration config) {
     Registry registry = new Registry(hub, config);
-    registry.matcherThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      public void uncaughtException(Thread t, Throwable e) {
-        log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
-      }
-    });
-
     registry.matcherThread.start();
 
     // freynaud : TODO
@@ -141,23 +135,20 @@ public class Registry {
    * the {@link org.openqa.grid.internal.listeners.TestSessionListener#afterSession(TestSession)} if applicable.
    * @param testSlot The slot to release
    */
-  void _release(TestSlot testSlot) {
-    boolean okToContinue = testSlot.startReleaseProcess();
-    if (!okToContinue) {
+  private void _release(TestSlot testSlot) {
+    if (!testSlot.startReleaseProcess()) {
       return;
     }
 
-    if (testSlot.performAfterSessionEvent()) {
+    if (!testSlot.performAfterSessionEvent()) {
       return;
     }
 
-    String internalKey = testSlot.getInternalKey();
+    final String internalKey = testSlot.getInternalKey();
 
     try {
       lock.lock();
-      // release resources on the test slot.
       testSlot.finishReleaseProcess();
-      // update the registry.
       release(internalKey);
     } finally {
       lock.unlock();
@@ -277,15 +268,12 @@ public class Registry {
 
   private boolean takeRequestHandler(RequestHandler request) {
     final TestSession session = proxies.getNewSession(request.getDesiredCapabilities());
-    if (session != null) {
-      boolean ok = activeTestSessions.add(session);
+    final boolean sessionCreated = session != null;
+    if (sessionCreated) {
+      activeTestSessions.add(session);
       request.bindSession(session);
-      if (!ok) {
-        log.severe("Error adding session : " + session);
-      }
-      return true;
     }
-    return false;
+    return sessionCreated;
   }
 
   /**
@@ -306,7 +294,7 @@ public class Registry {
     }
   }
 
-  public void release(String internalKey) {
+  private void release(String internalKey) {
     if (internalKey == null) {
       return;
     }
@@ -318,8 +306,6 @@ public class Registry {
     log.warning("Tried to release session with internal key " + internalKey +
                 " but couldn't find it.");
   }
-
-  private List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
 
   /**
    * Add a proxy to the list of proxy available for the grid to managed and link the proxy to the
@@ -449,4 +435,12 @@ public class Registry {
   HttpClientFactory getHttpClientFactory() {
     return httpClientFactory;
   }
+
+  private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+    public void uncaughtException(Thread t, Throwable e) {
+      log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
+    }
+  }
+
+
 }

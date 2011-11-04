@@ -40,7 +40,7 @@ import java.util.Map;
  * queue.
  */
 
-public class ConcurrencyLock {
+public class ConcurrencyLockTest {
 
   private static Registry registry;
 
