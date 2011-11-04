@@ -8,6 +8,10 @@ module Selenium
         # @api private
         class Persistent < Default
 
+          def close
+            @http.shutdown if @http
+          end
+
           private
 
           def new_http_client

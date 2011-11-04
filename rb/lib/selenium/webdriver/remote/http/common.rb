@@ -14,6 +14,10 @@ module Selenium
             @timeout = nil
           end
 
+          def close
+            # hook for subclasses - will be called on Driver#quit
+          end
+
           def call(verb, url, command_hash)
             url      = server_url.merge(url) unless url.kind_of?(URI)
             headers  = DEFAULT_HEADERS.dup

@@ -183,6 +183,7 @@ module Selenium
 
         def quit
           execute :quit
+          http.close
         rescue *QUIT_ERRORS
         end
 
