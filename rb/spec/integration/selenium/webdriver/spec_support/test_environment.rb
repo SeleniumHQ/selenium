@@ -151,18 +151,10 @@ module Selenium
         end
 
         def create_remote_driver
-          begin
-            require 'selenium/webdriver/remote/http/persistent'
-            STDERR.puts "INFO: using net-http-persistent"
-            http_client = Selenium::WebDriver::Remote::Http::Persistent.new
-          rescue LoadError # net-http-persistent not available
-            http_client = Selenium::WebDriver::Remote::Http::Default.new
-          end
-
           WebDriver::Driver.for(:remote,
             :desired_capabilities => remote_capabilities,
             :url                  => remote_server.webdriver_url,
-            :http_client          => http_client
+            :http_client          => keep_alive_client || http_client
           )
         end
 
@@ -183,7 +175,22 @@ module Selenium
         end
 
         def create_chrome_driver
-          WebDriver::Driver.for :chrome, :native_events => native_events?
+          WebDriver::Driver.for :chrome,
+                                :native_events => native_events?,
+                                :http_client   => keep_alive_client || http_client
+        end
+
+        def keep_alive_client
+          require 'selenium/webdriver/remote/http/persistent'
+          STDERR.puts "INFO: using net-http-persistent"
+
+          Selenium::WebDriver::Remote::Http::Persistent.new
+        rescue LoadError
+           # net-http-persistent not available
+        end
+
+        def http_client
+          Selenium::WebDriver::Remote::Http::Default.new
         end
 
       end # TestEnvironment
