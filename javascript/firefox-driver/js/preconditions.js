@@ -83,6 +83,22 @@ fxdriver.preconditions.enabled = function(doc, parameters) {
 
 
 /**
+ * Guard that checks that the element is writable.
+ *
+ * @param {!Document} doc The document to locate the element on.
+ * @param {!Object} parameters The arguments to use.
+ */
+fxdriver.preconditions.writable = function(doc, parameters) {
+  var element = Utils.getElementAt(parameters.id, doc);
+
+  if (!!element.readOnly) {
+    return new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
+        'Element is read-only and so may not be used for actions');
+  }
+};
+
+
+/**
  * Guard to ensure that no modal dialog is open.
  *
  * @param {!Object} driver A WebDriver instance.

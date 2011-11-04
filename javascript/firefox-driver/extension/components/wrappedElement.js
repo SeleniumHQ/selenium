@@ -274,7 +274,7 @@ FirefoxDriver.prototype.clearElement = function(respond, parameters) {
   respond.send();
 };
 FirefoxDriver.prototype.clearElement.preconditions =
-    [ fxdriver.preconditions.visible ];
+    [ fxdriver.preconditions.visible, fxdriver.preconditions.enabled, fxdriver.preconditions.writable ];
 
 
 FirefoxDriver.prototype.getElementTagName = function(respond, parameters) {
