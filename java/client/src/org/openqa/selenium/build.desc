@@ -19,6 +19,7 @@ java_library(name = "base",
 java_library(name = "webdriver-api",
   srcs = [
     "Alert.java",
+    "Beta.java",
     "By.java",
     "Cookie.java",
     "Dimension.java",
