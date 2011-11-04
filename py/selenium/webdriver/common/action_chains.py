@@ -132,7 +132,7 @@ class ActionChains(object):
         """
         if element: self.click(element)
         self._actions.append(lambda:
-            self._driver.execute(Command.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, {
+            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
                 "value": key,
                 "isdown": True}))
         return self
@@ -148,7 +148,7 @@ class ActionChains(object):
         """
         if element: self.click(element)
         self._actions.append(lambda:
-            self._driver.execute(Command.SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT, {
+            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
                 "value": key,
                 "isdown": False}))
         return self
