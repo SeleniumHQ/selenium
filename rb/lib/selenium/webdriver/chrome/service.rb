@@ -55,7 +55,13 @@ module Selenium
         def stop
           return if @process.nil? || @process.exited?
 
-          Net::HTTP.get uri.host, '/shutdown', uri.port
+          Net::HTTP.start(uri.host, uri.port) do |http|
+            http.open_timeout = STOP_TIMEOUT / 2
+            http.read_timeout = STOP_TIMEOUT / 2
+
+            http.head("/shutdown")
+          end
+
           @process.poll_for_exit STOP_TIMEOUT
         rescue ChildProcess::TimeoutError
           # ok, force quit
