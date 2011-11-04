@@ -20,7 +20,6 @@ from subprocess import Popen, PIPE
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 import time
-import signal
 
 
 class FirefoxBinary(object):
@@ -48,8 +47,8 @@ class FirefoxBinary(object):
         """
         try:
             if self.process:
-                os.kill(self.process.pid, signal.SIGTERM)
-                os.wait()
+                self.process.kill()
+                self.process.wait()
         except AttributeError:
             # kill may not be available under windows environment
             pass
