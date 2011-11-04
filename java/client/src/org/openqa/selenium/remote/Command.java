@@ -52,6 +52,6 @@ public class Command {
 
   @Override
   public String toString() {
-    return "[" + sessionId + ", " + "]: " + name + " " + new JSONObject(parameters).toString();
+    return "[" + sessionId + ", " + name + " " + new JSONObject(parameters).toString() + "]";
   }
 }
