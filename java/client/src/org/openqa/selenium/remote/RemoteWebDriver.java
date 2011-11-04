@@ -41,11 +41,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
     HasInputDevices, HasCapabilities {
+
+  private final Logger logger = Logger.getLogger(getClass().getName());
 
   private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -386,18 +389,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
     Command command = new Command(sessionId, driverCommand, parameters);
-
     Response response;
 
     long start = System.currentTimeMillis();
-
-
     try {
-      log(sessionId, command.getName(), command);
+      logger.info("Executing: " + command);
       response = executor.execute(command);
 
       if (response == null) {
-        log(sessionId, command.getName(), response);
+        logger.info("Response: NULL. Took "
+            + (System.currentTimeMillis() - start) + " milliseconds to execute.");
         return null;
       }
 
@@ -405,12 +406,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
-      log(sessionId, command.getName(), response);
-    } catch (RuntimeException e) {
-      log(sessionId, command.getName(), e);
-      throw e;
+      logger.info("Response: " + response.toString()
+          + ". Took " + (System.currentTimeMillis() - start) + " milliseconds to execute.");
     } catch (Exception e) {
-      log(sessionId, command.getName(), e);
       throw new WebDriverException(e);
     }
 
@@ -431,17 +429,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public Mouse getMouse() {
     return mouse;
-  }
-
-  /**
-   * Override this to be notified at key points in the execution of a command.
-   * 
-   * @param sessionId the session id.
-   * @param commandName the command that is being executed.
-   * @param toLog any data that might be interesting.
-   */
-  protected void log(SessionId sessionId, String commandName, Object toLog) {
-    // By default do nothing
   }
 
   public FileDetector getFileDetector() {
