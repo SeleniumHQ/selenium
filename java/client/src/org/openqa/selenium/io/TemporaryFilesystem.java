@@ -40,20 +40,10 @@ public class TemporaryFilesystem {
     }
   };
 
-  private static TemporaryFilesystem instance;
+  private static File sysTemp = new File(System.getProperty("java.io.tmpdir"));
+  private static TemporaryFilesystem instance = new TemporaryFilesystem(sysTemp);
 
   public static TemporaryFilesystem getDefaultTmpFS() {
-    File sysTemp = new File(System.getProperty("java.io.tmpdir"));
-
-    if (instance == null) {
-      synchronized (TemporaryFilesystem.class) {
-        if (instance == null) {
-
-          instance = new TemporaryFilesystem(sysTemp);
-        }
-      }
-    }
-
     return instance;
   }
 
