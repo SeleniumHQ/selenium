@@ -6,6 +6,26 @@
 		<testFolder url="file://$MODULE_DIR$/java/server/test"/>
 		<excludeFolder url="file://$MODULE_DIR$/build"/>
 		<excludeFolder url="file://$MODULE_DIR$/common/build"/>
+		<excludeFolder url="file://$MODULE_DIR$/cpp"/>
+		<excludeFolder url="file://$MODULE_DIR$/docs"/>
+		<excludeFolder url="file://$MODULE_DIR$/dotnet"/>
+		<excludeFolder url="file://$MODULE_DIR$/iphone"/>
+		<excludeFolder url="file://$MODULE_DIR$/out"/>
+		<excludeFolder url="file://$MODULE_DIR$/py/docs"/>
+		<excludeFolder url="file://$MODULE_DIR$/selenium.egg-info"/>
+		<excludeFolder url="file://$MODULE_DIR$/selenium/bin"/>
+		<excludeFolder url="file://$MODULE_DIR$/selenium/build"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/cpp"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/csharp"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-1.9.2"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-2"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-5"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-6"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-7"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/json-cpp"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/mongoose"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/nmock"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/webkit"/>
 	</contentEntry>
 	<lib name="junit-dep-4.10.jar" scope="COMPILE">
 		<srcroot url="jar://$MODULE_DIR$/third_party/java/junit/junit-dep-4.10-src.jar!/"/>
