@@ -681,3 +681,47 @@ class WebDriver(object):
             driver.get_screenshot_as_base64()
         """
         return self.execute(Command.SCREENSHOT)['value']
+
+    def set_window_size(self, width, height, windowHandle='current'):
+        """
+        Sets the width and height of the current window. (window.resizeTo)
+        
+        :Args:
+         - width: the width in pixels to set the window to
+         - height: the height in pixels to set the window to
+        
+        :Usage:
+            driver.set_window_size(800,600)
+        """
+        self.execute(Command.SET_WINDOW_SIZE, {'width':width, 'height':height, 'windowHandle':windowHandle})
+
+    def get_window_size(self, windowHandle='current'):
+        """
+        Gets the width and height of the current window.
+        
+        :Usage:
+            driver.get_window_size()
+        """
+        return self.execute(Command.GET_WINDOW_SIZE, {'windowHandle':windowHandle})['value']
+
+    def set_window_position(self, x, y, windowHandle='current'):
+        """
+        Sets the x,y position of the current window. (window.moveTo)
+        
+        :Args:
+         - x: the x-coordinate in pixels to set the window position
+         - y: the y-coordinate in pixels to set the window position
+        
+        :Usage:
+            driver.set_window_position(0,0)
+        """
+        self.execute(Command.SET_WINDOW_POSITION, {'x':x, 'y':y, 'windowHandle':windowHandle})
+
+    def get_window_position(self, windowHandle='current'):
+        """
+        Gets the x,y position of the current window.
+        
+        :Usage:
+            driver.get_window_position()
+        """
+        return self.execute(Command.GET_WINDOW_POSITION, {'windowHandle':windowHandle})['value']

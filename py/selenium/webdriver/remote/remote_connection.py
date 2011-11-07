@@ -245,7 +245,16 @@ class RemoteConnection(object):
             Command.MOUSE_UP:
                 ('POST', '/session/$sessionId/buttonup'),
             Command.MOVE_TO:
-                ('POST', '/session/$sessionId/moveto')}
+                ('POST', '/session/$sessionId/moveto'),
+            Command.GET_WINDOW_SIZE:
+                ('GET', '/session/$sessionId/window/$windowHandle/size'),
+            Command.SET_WINDOW_SIZE:
+                ('POST', '/session/$sessionId/window/$windowHandle/size'),
+            Command.GET_WINDOW_POSITION:
+                ('GET', '/session/$sessionId/window/$windowHandle/position'),
+            Command.SET_WINDOW_POSITION:
+                ('POST', '/session/$sessionId/window/$windowHandle/position')
+            }
 
     def execute(self, command, params):
         """
