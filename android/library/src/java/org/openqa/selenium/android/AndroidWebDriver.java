@@ -1124,13 +1124,21 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
 
     public void to(final String url) {
+      if (url == null) {
+        return;
+      }
       if (webview == null) {
         throw new WebDriverException("No open windows.");
       }
       pageDoneLoading = false;
       activity.runOnUiThread(new Runnable() {
         public void run() {
-          webview.loadUrl(url);
+          try {
+            webview.loadUrl(url);
+          } catch (Exception e) {
+            // For some dark reason WebView sometimes throws an
+            // NPE here.
+          }
         }
       });
       waitForPageLoadToComplete();
