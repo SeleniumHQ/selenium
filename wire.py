@@ -20,7 +20,7 @@ consistent formatting.
 
 Usage:
 
-  python trunk/wire.py > wiki/JsonWireProtocol.wiki
+  python trunk/wire.py --help
 """
 
 import logging
