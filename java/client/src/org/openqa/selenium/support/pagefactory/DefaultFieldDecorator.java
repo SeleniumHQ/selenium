@@ -21,6 +21,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandler;
 
@@ -48,8 +49,9 @@ public class DefaultFieldDecorator implements FieldDecorator {
       return null;
     }
     if (List.class.isAssignableFrom(field.getType())
-        && field.getAnnotation(FindBy.class) == null) {
-      // Don't decorate List<WebElement> fields without @FindBy annotation!
+        && field.getAnnotation(FindBy.class) == null
+        && field.getAnnotation(FindBys.class) == null) {
+      // Don't decorate List<WebElement> fields without @FindBy or @FindBys annotation
       return null;
     }
 
