@@ -30,10 +30,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class JavascriptLibrary {
+
   private static final String PREFIX = "/" + JavascriptLibrary.class.getPackage()
       .getName().replace(".", "/") + "/";
+  private final ConcurrentHashMap<String, String> scripts = new ConcurrentHashMap<String, String>();
 
   private static final String injectableSelenium =
       "/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js";
@@ -42,7 +45,7 @@ public class JavascriptLibrary {
 
   /**
    * Loads the named Selenium script and returns it wrapped in an anonymous function.
-   * 
+   *
    * @param name The script to load.
    * @return The loaded script wrapped in an anonymous function.
    */
@@ -50,11 +53,11 @@ public class JavascriptLibrary {
     String rawFunction = readScript(PREFIX + name);
 
     return String.format("function() { return (%s).apply(null, arguments);}",
-        rawFunction);
+                         rawFunction);
   }
 
   public void callEmbeddedSelenium(WebDriver driver, String functionName,
-      WebElement element, Object... values) {
+                                   WebElement element, Object... values) {
     StringBuilder builder = new StringBuilder(readScript(injectableSelenium));
     builder.append("return browserbot.").append(functionName)
         .append(".apply(browserbot, arguments);");
@@ -67,7 +70,7 @@ public class JavascriptLibrary {
   }
 
   public Object callEmbeddedHtmlUtils(WebDriver driver, String functionName, WebElement element,
-      Object... values) {
+                                      Object... values) {
     StringBuilder builder = new StringBuilder(readScript(htmlUtils));
 
     builder.append("return htmlutils.").append(functionName)
@@ -90,6 +93,15 @@ public class JavascriptLibrary {
   }
 
   private String readScript(String script) {
+    String result = scripts.get(script);
+    if (result == null) {
+      result = readScriptImpl(script);
+      scripts.put(script, result);
+    }
+    return result;
+  }
+
+  private String readScriptImpl(String script) {
     URL url = getClass().getResource(script);
 
     if (url == null) {
@@ -102,4 +114,5 @@ public class JavascriptLibrary {
       throw Throwables.propagate(e);
     }
   }
+
 }
