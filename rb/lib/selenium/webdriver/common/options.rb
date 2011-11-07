@@ -90,6 +90,10 @@ module Selenium
         @timeouts ||= Timeouts.new(@bridge)
       end
 
+      def window
+        @window ||= Window.new(@bridge)
+      end
+
       private
 
       SECONDS_PER_DAY = 86_400.0

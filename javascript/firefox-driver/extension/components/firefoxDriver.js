@@ -1292,3 +1292,49 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
 
   respond.send();
 };
+
+FirefoxDriver.prototype.getWindowSize = function(respond, parameters) {
+  this.assertTargetsCurrentWindow_(parameters);
+
+  var size = bot.window.getSize(respond.session.getWindow());
+  respond.value = { width: size.width, height: size.height };
+  respond.send();
+};
+
+FirefoxDriver.prototype.setWindowSize = function(respond, parameters) {
+  this.assertTargetsCurrentWindow_(parameters);
+
+  var size = new goog.math.Size(parameters.width, parameters.height);
+  var win = respond.session.getWindow();
+
+  bot.window.setSize(size, win);
+  respond.send();
+};
+
+FirefoxDriver.prototype.getWindowPosition = function(respond, parameters) {
+  this.assertTargetsCurrentWindow_(parameters);
+
+  var position = bot.window.getPosition(respond.session.getWindow());
+
+  respond.value = { x: position.x, y: position.y };
+  respond.send();
+};
+
+FirefoxDriver.prototype.setWindowPosition = function(respond, parameters) {
+  this.assertTargetsCurrentWindow_(parameters);
+
+  var position = new goog.math.Coordinate(parameters.x, parameters.y);
+  var win = respond.session.getWindow();
+
+  bot.window.setPosition(position, win);
+
+  respond.send();
+};
+
+// TODO(jari): could this be made into a precondition?
+FirefoxDriver.prototype.assertTargetsCurrentWindow_ = function(parameters) {
+  if (parameters.windowHandle != "current") {
+    throw new WebDriverError(bot.ErrorCode.UNSUPPORTED_OPERATION,
+      'Window operations are only supported for the currently focused window.');
+  }
+};

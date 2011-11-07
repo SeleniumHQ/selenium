@@ -505,7 +505,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       return new RemoteInputMethodManager();
     }
 
+    @Beta
+    public Window window() {
+      return new RemoteWindow();
+    }
+
     protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
+
       public List<String> getAvailableEngines() {
         Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
         return (List<String>) response.getValue();
@@ -544,6 +550,44 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         return this;
       }
     } // timeouts class.
+
+    @Beta
+    protected class RemoteWindow implements Window {
+
+      public void setSize(Dimension targetSize) {
+        execute(DriverCommand.SET_WINDOW_SIZE,
+            ImmutableMap.of("windowHandle", "current", "width", targetSize.width, "height", targetSize.height));
+      }
+
+      public void setPosition(Point targetPosition) {
+        execute(DriverCommand.SET_WINDOW_POSITION,
+            ImmutableMap.of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
+      }
+
+      @SuppressWarnings({"unchecked"})
+      public Dimension getSize() {
+        Response response = execute(DriverCommand.GET_WINDOW_SIZE,
+            ImmutableMap.of("windowHandle", "current"));
+        Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
+
+        int width = ((Number) rawSize.get("width")).intValue();
+        int height = ((Number) rawSize.get("height")).intValue();
+
+        return new Dimension(width, height);
+      }
+
+      @SuppressWarnings({"unchecked"})
+      public Point getPosition() {
+        Response response = execute(DriverCommand.GET_WINDOW_POSITION,
+            ImmutableMap.of("windowHandle", "current"));
+        Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
+
+        int x = ((Number) rawPoint.get("x")).intValue();
+        int y = ((Number) rawPoint.get("y")).intValue();
+
+        return new Point(x, y);
+      }
+    }
   }
 
   private class RemoteNavigation implements Navigation {

@@ -231,6 +231,12 @@ public interface WebDriver extends SearchContext {
      * Returns the interface for controlling IME engines to generate complex-script input.
      */
     ImeHandler ime();
+
+    /**
+     * Returns the interface for managing the current window.
+     */
+    @Beta
+    Window window();
   }
 
   /**
@@ -432,5 +438,39 @@ public interface WebDriver extends SearchContext {
      *         for other reasons.
      */
     void activateEngine(String engine);
+  }
+
+  @Beta
+  interface Window {
+    /**
+     * Set the size of the current window. This will change the outer window dimension,
+     * not just the view port, synonymous to window.resizeTo() in JS.
+     *
+     * @param targetSize The target size.
+     */
+    void setSize(Dimension targetSize);
+
+    /**
+     * Set the position of the current window. This is relative to the upper left corner of the
+     * screen, synonymous to window.moveTo() in JS.
+     *
+     * @param targetPosition The target position of the window.
+     */
+    void setPosition(Point targetPosition);
+
+    /**
+     * Get the size of the current window. This will return the outer window dimension, not just
+     * the view port.
+     *
+     * @return The current window size.
+     */
+    Dimension getSize();
+
+    /**
+     * Get the position of the current window, relative to the upper left corner of the screen.
+     *
+     * @return The current window position.
+     */
+    Point getPosition();
   }
 }

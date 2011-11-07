@@ -1,6 +1,6 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-describe "WebDriver::TargetLocator" do
+describe "Selenium::WebDriver::TargetLocator" do
   let(:wait) { Selenium::WebDriver::Wait.new }
   
   it "should find the active element" do

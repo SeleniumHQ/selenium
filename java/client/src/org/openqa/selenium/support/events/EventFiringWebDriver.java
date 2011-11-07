@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.support.events;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
@@ -518,6 +519,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public ImeHandler ime() {
       throw new UnsupportedOperationException("Driver does not support IME interactions");
     }
+
+    @Beta
+    public Window window() {
+      return new EventFiringWindow(options.window());
+    }
   }
 
   private class EventFiringTimeouts implements Timeouts {
@@ -573,6 +579,31 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public Alert alert() {
       return targetLocator.alert();
+    }
+  }
+
+  @Beta
+  private class EventFiringWindow implements Window {
+    private final Window window;
+
+    EventFiringWindow(Window window) {
+      this.window = window;
+    }
+
+    public void setSize(Dimension targetSize) {
+      window.setSize(targetSize);
+    }
+
+    public void setPosition(Point targetLocation) {
+      window.setPosition(targetLocation);
+    }
+
+    public Dimension getSize() {
+      return window.getSize();
+    }
+
+    public Point getPosition() {
+      return window.getPosition();
     }
   }
 }

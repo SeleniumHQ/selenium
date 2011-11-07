@@ -105,6 +105,8 @@ import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
 import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
 import static org.openqa.selenium.remote.DriverCommand.HOVER_OVER_ELEMENT;
@@ -138,6 +140,8 @@ import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SET_WINDOW_POSITION;
+import static org.openqa.selenium.remote.DriverCommand.SET_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
@@ -275,6 +279,10 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(DELETE_COOKIE, delete("/session/:sessionId/cookie/:name"))
         .put(SWITCH_TO_FRAME, post("/session/:sessionId/frame"))
         .put(SWITCH_TO_WINDOW, post("/session/:sessionId/window"))
+        .put(GET_WINDOW_SIZE, get("/session/:sessionId/window/:windowHandle/size"))
+        .put(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"))
+        .put(SET_WINDOW_SIZE, post("/session/:sessionId/window/:windowHandle/size"))
+        .put(SET_WINDOW_POSITION, post("/session/:sessionId/window/:windowHandle/position"))
         .put(CLOSE, delete("/session/:sessionId/window"))
         .put(DRAG_ELEMENT, post("/session/:sessionId/element/:id/drag"))
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,

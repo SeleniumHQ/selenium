@@ -203,6 +203,29 @@ module Selenium
           execute :getCurrentWindowHandle
         end
 
+        def setWindowSize(width, height, handle = :current)
+          execute :setWindowSize, {:window_handle => handle},
+                                   :width  => width,
+                                   :height => height
+        end
+
+        def getWindowSize(handle = :current)
+          data = execute :getWindowSize, :window_handle => handle
+
+          Dimension.new data['width'], data['height']
+        end
+
+        def setWindowPosition(x, y, handle = :current)
+          execute :setWindowPosition, {:window_handle => handle},
+                                       :x => x, :y => y
+        end
+
+        def getWindowPosition(handle = :current)
+          data = execute :getWindowPosition, :window_handle => handle
+
+          Point.new data['x'], data['y']
+        end
+
         def getScreenshot
           execute :screenshot
         end

@@ -148,4 +148,9 @@ public interface DriverCommand {
   String TOUCH_DOUBLE_TAP = "touchDoubleTap";
   String TOUCH_LONG_PRESS = "touchLongPress";
   String TOUCH_FLICK = "touchFlick";
+
+  String SET_WINDOW_SIZE = "setWindowSize";
+  String SET_WINDOW_POSITION = "setWindowPosition";
+  String GET_WINDOW_SIZE = "getWindowSize";
+  String GET_WINDOW_POSITION = "getWindowPosition";
 }

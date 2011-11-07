@@ -644,6 +644,31 @@ server assigned window handle, or by the value of its `name` attribute.''').
       AddError('NoSuchWindow', 'If the window specified by `name` cannot be found.'))
 
   resources.append(
+      SessionResource('/session/:sessionId/window/:windowHandle/size').
+      Post('''Change the size of the specified window. If the :windowHandle URL \
+parameter is "current", the currently active window will be resized.''').
+      AddJsonParameter('width', '{number}', 'The new window width.').
+      AddJsonParameter('height', '{number}', 'The new window height.').
+      Get('''Get the size of the specified window. If the :windowHandle URL \
+parameter is "current", the size of the currently active window will be returned.''').
+      SetReturnType('{width: number, height: number}', 'The size of the window.').
+      AddError('NoSuchWindow', 'If the specified window cannot be found.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/window/:windowHandle/position').
+      Post('''Change the position of the specified window. If the :windowHandle URL \
+parameter is "current", the currently active window will be moved.''').
+      AddJsonParameter('x', '{number}', 'The X coordinate to position the window at, \
+relative to the upper left corner of the screen.').
+      AddJsonParameter('y', '{number}', 'The Y coordinate to position the window at, \
+relative to the upper left corner of the screen.').
+      Get('''Get the position of the specified window. If the :windowHandle URL \
+      parameter is "current", the position of the currently active window will be returned.''').
+      SetReturnType('{x: number, y: number}', 'The X and Y coordinates for the window, \
+relative to the upper left corner of the screen.').
+      AddError('NoSuchWindow', 'If the specified window cannot be found.'))
+
+  resources.append(
       SessionResource('/session/:sessionId/cookie').
       Get('Retrieve all cookies visible to the current page.').
       SetReturnType('{Array.<object>}', 'A list of [#Cookie_JSON_Object cookies].').

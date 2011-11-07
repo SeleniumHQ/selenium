@@ -27,6 +27,7 @@ goog.require('bot.ErrorCode');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.math.Size');
+goog.require('goog.math.Coordinate');
 goog.require('goog.userAgent');
 
 
@@ -141,4 +142,68 @@ bot.window.getInteractableSize = function(opt_win) {
   var height = /**@type {number}*/goog.array.peek(heights.sort(sortFunc)) || 0;
 
   return new goog.math.Size(width, height);
+};
+
+
+/**
+ * Determine the outer size of the window.
+ *
+ * @param {!Window=} opt_win Window to determine the size of. Defaults to
+ *   bot.getWindow().
+ * @return {!goog.math.Size} The calculated size.
+ */
+bot.window.getSize = function(opt_win) {
+  var win = opt_win || bot.getWindow();
+
+  var width = win.outerWidth;
+  var height = win.outerHeight;
+
+  return new goog.math.Size(width, height);
+};
+
+
+/** Set the outer size of the window.
+ *
+ * @param {!goog.math.Size} size The new window size.
+ * @param {!Window=} opt_win Window to determine the size of. Defaults to
+ *   bot.getWindow().
+ */
+bot.window.setSize = function(size, opt_win) {
+  var win = opt_win || bot.getWindow();
+
+  win.resizeTo(size.width, size.height);
+};
+
+
+/** Get the position of the window.
+ *
+ * @param {!Window=} opt_win Window to determine the position of. Defaults to
+ *   bot.getWindow().
+ * @return {!goog.math.Coordinate} The position of the window.
+ */
+bot.window.getPosition = function(opt_win) {
+  var win = opt_win || bot.getWindow();
+  var x, y;
+
+  if (goog.userAgent.IE) {
+    x = win.screenLeft;
+    y = win.screenTop;
+  } else {
+    x = win.screenX;
+    y = win.screenY;
+  }
+
+  return new goog.math.Coordinate(x, y);
+};
+
+
+/** Set the position of the window.
+ *
+ * @param {!goog.math.Coordinate} targetPosition The target position.
+ * @param {!Window=} opt_win Window to set the position of. Defaults to
+ *   bot.getWindow().
+ */
+bot.window.setPosition = function(targetPosition, opt_win) {
+  var win = opt_win || bot.getWindow();
+  win.moveTo(targetPosition.x, targetPosition.y);
 };

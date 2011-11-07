@@ -1177,6 +1177,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     public ImeHandler ime() {
       throw new UnsupportedOperationException("Cannot input IME using HtmlUnit.");
     }
+
+    public Window window() {
+      throw new UnsupportedOperationException("Window handling not yet implemented in HtmlUnit");
+    }
+
   }
 
   class HtmlUnitTimeouts implements Timeouts {
