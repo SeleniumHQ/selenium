@@ -397,8 +397,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       response = executor.execute(command);
 
       if (response == null) {
-        logger.info("Response: NULL. Took "
-            + (System.currentTimeMillis() - start) + " milliseconds to execute.");
         return null;
       }
 
@@ -406,8 +404,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
-      logger.info("Response: " + response.toString()
-          + ". Took " + (System.currentTimeMillis() - start) + " milliseconds to execute.");
     } catch (Exception e) {
       throw new WebDriverException(e);
     }
