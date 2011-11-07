@@ -96,8 +96,10 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // Check to see if the given positions and offsets are outside of the window
   // Are we about to be dragged out of the window?
   var windowSize = bot.window.getInteractableSize(win);
+
   var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
   var pos = Utils.getElementLocation(element);
+
   var targetX = pos.x + xOffset;
   var targetY = pos.y + yOffset;
 
@@ -105,8 +107,8 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
       (targetX > windowSize.width || targetY > windowSize.height)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
         'Requested location (' + targetX + ', ' + targetY +
-        ') is outside the bounds of the document (' + windowSize.x + ', ' +
-        windowSize.y + ')');
+        ') is outside the bounds of the document (' + windowSize.width + ', ' +
+        windowSize.height + ')');
   }
 
   var coords = new goog.math.Coordinate(xOffset, yOffset);
