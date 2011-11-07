@@ -36,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.HasTouchScreen;
@@ -974,6 +975,12 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     public ImeHandler ime() {
       throw new UnsupportedOperationException("Not implementing IME input just yet.");
     }
+
+    @Beta
+    public Window window() {
+      throw new UnsupportedOperationException("Window handling not supported on Android");
+    }
+
   }
 
   private class AndroidTimeouts implements Timeouts {
