@@ -23,8 +23,15 @@ Usage:
   python trunk/wire.py > wiki/JsonWireProtocol.wiki
 """
 
+import logging
+import optparse
+import os
 import re
 import sys
+
+
+DEFAULT_WIKI_PATH = os.path.join('..', 'wiki', 'JsonWireProtocol.wiki')
+
 
 class Resource(object):
   def __init__(self, path):
@@ -207,8 +214,6 @@ class ErrorCode(object):
   def ToWikiTableString(self):
     return '|| %d || `%s` || %s ||' % (self.code, self.summary, self.detail)
 
-def log(string):
-  sys.stderr.write(str(string) + '\n')
 
 class AbstractErrorCodeGatherer(object):
   def __init__(self, name, path_to_error_codes, regex):
@@ -235,6 +240,7 @@ class AbstractErrorCodeGatherer(object):
   def extract_from_match(self, match):
     raise NotImplementedError
 
+
 class JavaErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
     super(JavaErrorCodeGatherer, self).__init__( \
@@ -244,6 +250,7 @@ class JavaErrorCodeGatherer(AbstractErrorCodeGatherer):
 
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
+
 
 class JavascriptErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes, name):
@@ -255,6 +262,7 @@ class JavascriptErrorCodeGatherer(AbstractErrorCodeGatherer):
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
 
+
 class RubyErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
     super(RubyErrorCodeGatherer, self).__init__( \
@@ -264,6 +272,7 @@ class RubyErrorCodeGatherer(AbstractErrorCodeGatherer):
 
   def extract_from_match(self, match):
     return match.group(1), int(match.group(len(match.groups())))
+
 
 class PythonErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
@@ -275,6 +284,7 @@ class PythonErrorCodeGatherer(AbstractErrorCodeGatherer):
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
 
+
 class CErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
     super(CErrorCodeGatherer, self).__init__( \
@@ -284,6 +294,7 @@ class CErrorCodeGatherer(AbstractErrorCodeGatherer):
 
   def extract_from_match(self, match):
     return match.group(1), int(match.group(2))
+
 
 class CSharpErrorCodeGatherer(AbstractErrorCodeGatherer):
   def __init__(self, path_to_error_codes):
@@ -295,6 +306,7 @@ class CSharpErrorCodeGatherer(AbstractErrorCodeGatherer):
   def extract_from_match(self, match):
     return match.group(1), int(match.group(len(match.groups())))
 
+
 class ErrorCodeChecker(object):
   def __init__(self):
     self.gatherers = []
@@ -305,14 +317,26 @@ class ErrorCodeChecker(object):
     return self
 
   def check_error_codes_are_consistent(self, json_error_codes):
-    log('Checking error codes are consistent across languages and \
+    logging.info('Checking error codes are consistent across languages and \
 browsers')
+
+    num_missing = 0
     for gatherer in self.gatherers:
-      self.compare(gatherer, json_error_codes)
-    if not self.inconsistencies:
-      log('Error codes are consistent')
+      if not os.path.exists(gatherer.path_to_error_codes):
+        logging.warn('    Unable to locate error codes for %s (//%s)',
+                     gatherer, gatherer.path_to_error_codes)
+        num_missing += 1
+      else:
+        self.compare(gatherer, json_error_codes)
+
+    if not num_missing and not self.inconsistencies:
+      logging.info('All error codes are consistent')
+      return False
+
     for code,(present,missing) in self.inconsistencies.items():
-      log('Error code %d was present in %s but not %s' % (code, present, missing))
+      logging.error('Error code %d was present in %s but not %s',
+                    code, present, missing)
+    return True
 
   def add_inconsistency(self, code, present_in, missing_from):
     if self.inconsistencies.has_key(code):
@@ -323,7 +347,7 @@ browsers')
       self.inconsistencies[code] = (set([present_in]), set([missing_from]))
 
   def compare(self, gatherer, raw_json_error_codes):
-    log('Checking %s (%s)' % (gatherer, gatherer.path_to_error_codes))
+    logging.info('Checking %s (%s)' % (gatherer, gatherer.path_to_error_codes))
     gathered_error_codes = gatherer.get_error_codes()
     json_error_codes = map(lambda code: code.code, raw_json_error_codes)
     for json_error_code in json_error_codes:
@@ -332,9 +356,49 @@ browsers')
     for gathered_code,_ in gathered_error_codes.items():
       if not gathered_code in json_error_codes:
         self.add_inconsistency(gathered_code, str(gatherer), 'JSON')
-      
+
+
+def GetDefaultWikiPath():
+  dirname = os.path.dirname(__file__)
+  if not dirname:
+    return DEFAULT_WIKI_PATH
+  return os.path.join('.', dirname, DEFAULT_WIKI_PATH)
+
+
+def ChangeToTrunk():
+  dirname = os.path.dirname(__file__)
+  if dirname:
+    logging.info('Changing to %s', os.path.abspath(dirname))
+    os.chdir(dirname)
+
 
 def main():
+  logging.basicConfig(format='[ %(filename)s ] %(message)s',
+                      level=logging.INFO)
+
+  default_path = GetDefaultWikiPath()
+
+  parser = optparse.OptionParser('Usage: %prog [options]')
+  parser.add_option('-c', '--check_error_codes', dest='check_errors',
+                    default=False,
+                    help='Whether to abort if error codes are inconsistent.')
+  parser.add_option('-w', '--wiki', dest='wiki', metavar='FILE',
+                    default=default_path,
+                    help='Which file to write to. Defaults to %default')
+  (options, args) = parser.parse_args()
+  
+  wiki_path = options.wiki
+  if wiki_path is not default_path:
+    wiki_path = os.path.abspath(wiki_path)
+  
+  if not os.path.exists(wiki_path):
+    logging.error('Unable to locate wiki file: %s', wiki_path)
+    parser.print_help()
+    sys.exit(2)
+
+  wiki_path = os.path.abspath(wiki_path)
+  ChangeToTrunk()
+
   error_codes = [
       ErrorCode(0, 'Success', 'The command executed successfully.'),
 #      ErrorCode(1, 'IndexOutOfBounds', 'This is probably an unused \
@@ -404,15 +468,18 @@ started.'),
 (e.g. XPath/CSS).')
   ]
   
-  ErrorCodeChecker() \
+  error_checker = ErrorCodeChecker() \
   .using(JavaErrorCodeGatherer('java/client/src/org/openqa/selenium/remote/ErrorCodes.java')) \
   .using(JavascriptErrorCodeGatherer('javascript/atoms/error.js', 'Javascript atoms')) \
   .using(JavascriptErrorCodeGatherer('javascript/firefox-driver/js/errorcode.js', 'Javascript firefox driver')) \
   .using(RubyErrorCodeGatherer('rb/lib/selenium/webdriver/common/error.rb')) \
   .using(PythonErrorCodeGatherer('py/selenium/webdriver/remote/errorhandler.py')) \
   .using(CErrorCodeGatherer('cpp/webdriver-interactions/errorcodes.h')) \
-  .using(CSharpErrorCodeGatherer('dotnet/src/WebDriver/WebDriverResult.cs')) \
-  .check_error_codes_are_consistent(error_codes)
+  .using(CSharpErrorCodeGatherer('dotnet/src/WebDriver/WebDriverResult.cs'))
+  
+  if (not error_checker.check_error_codes_are_consistent(error_codes)
+      and options.check_errors):
+    sys.exit(1)
 
   resources = []
  
@@ -1199,7 +1266,10 @@ location for correctly generating native events.''').
       AddJsonParameter('ySpeed', '{number}', 'The y speed in pixels per '
                       'second.'))
 
-  print '''#summary A description of the protocol used by WebDriver to \
+  logging.info('Generating %s', wiki_path)
+  f = open(wiki_path, 'w')
+  try:
+    f.write('''#summary A description of the protocol used by WebDriver to \
 communicate with remote instances
 #labels WebDriver
 <wiki:comment>
@@ -1215,7 +1285,7 @@ $ cd wire_protocol
 $ svn update --depth=infinity ./wiki
 $ svn update --depth=files ./trunk
 # modify ./trunk/wire.py
-$ python ./trunk/wire.py > ./wiki/JsonWireProtocol.wiki
+$ python ./trunk/wire.py
 $ svn commit ./trunk/wire.py ./wiki/JsonWireProtocol.wiki
 
 ========================================================
@@ -1547,8 +1617,10 @@ segment is active to the first resource. All other requests should be routed to\
 
 %s''' % ('\n'.join(e.ToWikiTableString() for e in error_codes),
          ''.join(r.ToWikiTableString() for r in resources),
-         '\n----\n\n'.join(r.ToWikiString() for r in resources))
-
+         '\n----\n\n'.join(r.ToWikiString() for r in resources)))
+  finally:
+    f.close()
+  logging.info('ALL DONE!')
 
 
 if __name__ == '__main__':
