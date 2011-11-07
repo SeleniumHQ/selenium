@@ -13,7 +13,7 @@
 There should be a form here:
 
 <form method="get" action="resultPage.html" name="login">
-    <input type="email" id="email"/>
+    <input type="email" id="email" required/>
     <input type="submit" id="submitButton" value="Hello there"/>
 </form>
 
@@ -99,9 +99,9 @@ There should be a form here:
 
     <textarea id="notWorkingArea" disabled="disabled" cols="5" rows="5"></textarea>
 
-    <input type="text" id="inputWithText" value="Example text"/>
-    <textarea id="withText" rows="5" cols="5">Example text</textarea>
-    <textarea id="emptyTextArea" rows="5" cols="5"></textarea>
+    <input type="text" id="inputWithText" value="Example text" required=""/>
+    <textarea id="withText" rows="5" cols="5" required="false">Example text</textarea>
+    <textarea id="emptyTextArea" rows="5" cols="5" required="required"></textarea>
 </form>
 
 <form method="post" action="resultPage.html">
@@ -145,6 +145,8 @@ There should be a form here:
 </form>
 <!-- Empty div to test GetAttribute -->
 <div id="wallace" class="gromit"></div>
+<!-- Div to test boolean attributes -->
+<div id="unwrappable" nowrap>Unwrappable text</div>
 
 <input type='button' id='killIframe' onclick='top.remove();' value="Kill containing iframe" />
 
