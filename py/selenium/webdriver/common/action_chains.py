@@ -17,6 +17,7 @@
 The ActionChains implementation
 """
 from selenium.webdriver.remote.command import Command
+from selenium.webdriver.common.keys import Keys
 
 class ActionChains(object):
     """
@@ -121,7 +122,7 @@ class ActionChains(object):
         self.release(source)
         return self
 
-    def key_down(self, key, element=None):
+    def key_down(self, value, element=None):
         """Sends a key press only, without releasing it.
         Should only be used with modifier keys (Control, Alt and Shift).
 
@@ -130,14 +131,25 @@ class ActionChains(object):
          - target: The element to send keys.
            If None, sends a key to current focused element.
         """
+        typing = []
+        for val in value:
+            if isinstance(val, Keys):
+                typing.append(val)
+            elif isinstance(val, int):
+                val = str(val)
+                for i in range(len(val)):
+                    typing.append(val[i])
+            else:
+                for i in range(len(val)):
+                    typing.append(val[i])
+
         if element: self.click(element)
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": key,
-                "isdown": True}))
+                "value": typing }))
         return self
 
-    def key_up(self, key, element=None):
+    def key_up(self, value, element=None):
         """
         Releases a modifier key.
 
@@ -146,11 +158,22 @@ class ActionChains(object):
          - target: The element to send keys.
            If None, sends a key to current focused element.
         """
+        typing = []
+        for val in value:
+            if isinstance(val, Keys):
+                typing.append(val)
+            elif isinstance(val, int):
+                val = str(val)
+                for i in range(len(val)):
+                    typing.append(val[i])
+            else:
+                for i in range(len(val)):
+                    typing.append(val[i])
+
         if element: self.click(element)
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": key,
-                "isdown": False}))
+                "value": typing }))
         return self
 
     def move_by_offset(self, xoffset, yoffset):
