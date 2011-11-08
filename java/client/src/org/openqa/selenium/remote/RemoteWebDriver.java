@@ -393,7 +393,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     long start = System.currentTimeMillis();
     try {
-      logger.info("Executing: " + command);
+      //logger.info("Executing: " + command);
       response = executor.execute(command);
 
       if (response == null) {
