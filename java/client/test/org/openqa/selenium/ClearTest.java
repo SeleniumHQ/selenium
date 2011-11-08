@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -69,5 +70,12 @@ public class ClearTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(HTMLUNIT)
+  public void testContentEditableAreaShouldClear() {
+    driver.get(pages.readOnlyPage);
+    WebElement element = driver.findElement(By.id("content-editable"));
+    element.clear();
+    assertEquals("", element.getText());
+  }
 
 }

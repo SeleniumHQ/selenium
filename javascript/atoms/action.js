@@ -261,6 +261,12 @@ bot.action.clear = function(element) {
     element.value = '';
     bot.events.fire(element, goog.events.EventType.CHANGE);
   }
+  
+  if (bot.dom.getProperty(element, 'contentEditable') == 'true' ||
+      bot.dom.getAttribute(element, 'contentEditable') != null) {
+    element.innerHTML = ' ';
+    // contentEditable does not generate onchange event
+  }
 };
 
 

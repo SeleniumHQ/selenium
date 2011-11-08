@@ -444,6 +444,12 @@
         assertThrows(goog.partial(bot.action.clear, e));
       });
     }
+    
+    function testClearingAContextEditableArea() {
+      var e = goog.dom.$('content-editable');
+      bot.action.clear(e);
+      assertEquals('', goog.dom.getTextContent(e).replace(/^\s*/, ''));
+    }
 
     function testSubmittingANonFormElementShouldResultInAnError() {
       assertThrows(goog.partial(bot.action.submit, document.body));
@@ -665,6 +671,8 @@
   <div id="log">
 
   </div>
+  
+  <div id="content-editable" contentEditable>This is a contentEditable area</div>
 
   <script type="text/javascript">
     asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();

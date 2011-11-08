@@ -402,6 +402,11 @@ bot.dom.isTextual = function(element) {
     return goog.array.contains(bot.dom.TEXTUAL_INPUT_TYPES_, type);
   }
 
+  if (bot.dom.getProperty(element, 'contentEditable') == 'true' ||
+      bot.dom.getAttribute(element, 'contentEditable') != null) {
+    return true;
+  }
+
   return false;
 };
 
