@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 
 import static java.lang.Thread.sleep;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -69,6 +70,36 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     // Is this works, then we're golden
     driver.get(pages.xhtmlTestPage);
   }
+
+  private static class ConnectionCapturingDriver extends FirefoxDriver {
+    public ExtensionConnection keptConnection;
+
+    public ConnectionCapturingDriver() {
+      super();
+    }
+
+    @Override
+    protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {
+      this.keptConnection = super.connectTo(binary, profile, host);
+
+      return keptConnection;
+    }
+  }
+
+  public void testShouldGetMeaningfulExceptionOnBrowserDeath() {
+    ConnectionCapturingDriver driver2 = new ConnectionCapturingDriver();
+    driver2.get(pages.formPage);
+
+    try {
+      driver2.keptConnection.quit();
+      driver2.get(pages.formPage);
+      fail("Should have thrown.");
+    } catch (WebDriverException e) {
+      assertThat("Must contain descriptive error", e.getMessage(),
+          containsString("Error communicating with the remote browser"));
+    }
+  }
+
 
   @NeedsFreshDriver
   @Ignore(value = FIREFOX, reason = "Need to figure out how to open a new browser instance mid-test")
