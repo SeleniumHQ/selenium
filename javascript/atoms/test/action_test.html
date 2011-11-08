@@ -445,7 +445,7 @@
       });
     }
     
-    function testClearingAContextEditableArea() {
+    function testClearingAContentEditableArea() {
       var e = goog.dom.$('content-editable');
       bot.action.clear(e);
       assertEquals('', goog.dom.getTextContent(e).replace(/^\s*/, '')); // trim

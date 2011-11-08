@@ -411,10 +411,10 @@ bot.dom.isTextual = function(element) {
 
 
 /**
- * Whether the element is ñontentEditable.
+ * Whether the element is contentEditable.
  *
  * @param {!Element} element The element to check.
- * @return {boolean} Whether the element is ñontentEditable.
+ * @return {boolean} Whether the element is contentEditable.
  */
 bot.dom.isContentEditable = function(element) {
   return bot.dom.getProperty(element, 'contentEditable') == 'true' ||
