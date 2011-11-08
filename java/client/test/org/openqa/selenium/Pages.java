@@ -66,6 +66,7 @@ public class Pages {
   public String touchLongContentPage;
   public String veryLargeCanvas;
   public String readOnlyPage;
+  public String booleanAttributes;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -114,5 +115,6 @@ public class Pages {
     touchLongContentPage = appServer.whereIs("longContentPage.html");
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
+    booleanAttributes = appServer.whereIs("booleanAttributes.html");
   }
 }
