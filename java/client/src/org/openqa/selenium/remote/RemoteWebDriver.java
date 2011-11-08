@@ -404,6 +404,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
+    } catch (WebDriverException e) {
+      // An exception from within WebDriver - throw as-is.
+      throw e;
     } catch (Exception e) {
       throw new WebDriverException("Error communicating with the remote browser. " +
           "It may have died.", e);
