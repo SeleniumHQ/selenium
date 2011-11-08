@@ -313,9 +313,9 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
-  @Ignore({CHROME, OPERA, IPHONE, ANDROID, REMOTE, SELENESE})
+  @Ignore({FIREFOX, CHROME, OPERA, IPHONE, ANDROID, REMOTE, SELENESE})
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
-    driver.get(pages.formPage);
+    driver.get(pages.booleanAttributes);
     WebElement element1 = driver.findElement(By.id("working"));
     assertNull(element1.getAttribute("required"));
     WebElement element2 = driver.findElement(By.id("wallace"));
@@ -324,14 +324,14 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
   @Ignore({IE, IPHONE, ANDROID, REMOTE, SELENESE})
   public void testShouldReturnTrueForPresentBooleanAttributes() {
-    driver.get(pages.formPage);
-    WebElement element1 = driver.findElement(By.id("email"));
+    driver.get(pages.booleanAttributes);
+    WebElement element1 = driver.findElement(By.id("emailRequired"));
     assertEquals("true", element1.getAttribute("required"));
-    WebElement element2 = driver.findElement(By.id("emptyTextArea"));
+    WebElement element2 = driver.findElement(By.id("emptyTextAreaRequired"));
     assertEquals("true", element2.getAttribute("required"));
-    WebElement element3 = driver.findElement(By.id("inputWithText"));
+    WebElement element3 = driver.findElement(By.id("inputRequired"));
     assertEquals("true", element3.getAttribute("required"));
-    WebElement element4 = driver.findElement(By.id("withText"));
+    WebElement element4 = driver.findElement(By.id("textAreaRequired"));
     assertEquals("true", element4.getAttribute("required"));
     WebElement element5 = driver.findElement(By.id("unwrappable"));
     assertEquals("true", element5.getAttribute("nowrap"));
