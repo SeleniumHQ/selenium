@@ -62,7 +62,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> divs = driver.findElements(By.xpath("//div"));
 
-    assertThat(divs.size(), equalTo(10));
+    assertThat(divs.size(), equalTo(12));
   }
 
   @Ignore(SELENESE)
