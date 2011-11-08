@@ -418,8 +418,8 @@ bot.dom.isTextual = function(element) {
  */
 bot.dom.isContentEditable = function(element) {
   return bot.dom.getProperty(element, 'contentEditable') == 'true' ||
-    bot.dom.getAttribute(element, 'contentEditable') != null;
-}
+      bot.dom.getAttribute(element, 'contentEditable') != null;
+};
 
 
 /**
