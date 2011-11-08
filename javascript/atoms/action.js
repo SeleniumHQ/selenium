@@ -260,12 +260,15 @@ bot.action.clear = function(element) {
   if (element.value) {
     element.value = '';
     bot.events.fire(element, goog.events.EventType.CHANGE);
+    return;
   }
   
-  if (bot.dom.getProperty(element, 'contentEditable') == 'true' ||
-      bot.dom.getAttribute(element, 'contentEditable') != null) {
+  if (bot.dom.isContentEditable(element)) {
+    // A single space is required, if you put empty string here you'll not be able
+    // to interact with this element anymore in Firefox
     element.innerHTML = ' ';
     // contentEditable does not generate onchange event
+    return;
   }
 };
 

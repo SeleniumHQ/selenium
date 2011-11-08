@@ -402,13 +402,24 @@ bot.dom.isTextual = function(element) {
     return goog.array.contains(bot.dom.TEXTUAL_INPUT_TYPES_, type);
   }
 
-  if (bot.dom.getProperty(element, 'contentEditable') == 'true' ||
-      bot.dom.getAttribute(element, 'contentEditable') != null) {
+  if (bot.dom.isContentEditable(element)) {
     return true;
   }
 
   return false;
 };
+
+
+/**
+ * Whether the element is ñontentEditable.
+ *
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element is ñontentEditable.
+ */
+bot.dom.isContentEditable = function(element) {
+  return bot.dom.getProperty(element, 'contentEditable') == 'true' ||
+    bot.dom.getAttribute(element, 'contentEditable') != null;
+}
 
 
 /**

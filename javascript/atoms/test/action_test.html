@@ -448,7 +448,7 @@
     function testClearingAContextEditableArea() {
       var e = goog.dom.$('content-editable');
       bot.action.clear(e);
-      assertEquals('', goog.dom.getTextContent(e).replace(/^\s*/, ''));
+      assertEquals('', goog.dom.getTextContent(e).replace(/^\s*/, '')); // trim
     }
 
     function testSubmittingANonFormElementShouldResultInAnError() {
@@ -672,7 +672,7 @@
 
   </div>
   
-  <div id="content-editable" contentEditable>This is a contentEditable area</div>
+  <div id="content-editable" contentEditable="true">This is a contentEditable area</div>
 
   <script type="text/javascript">
     asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
