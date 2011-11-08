@@ -672,7 +672,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
     List<WebElement> toReturn = new LinkedList<WebElement>();
 
     for (WebElement current : allElements) {
-      if (element.isAncestorOf(((HtmlUnitWebElement) current).element)) {
+      HtmlElement candidate = ((HtmlUnitWebElement) current).element;
+      if (element.isAncestorOf(candidate) && element != candidate) {
         toReturn.add(current);
       }
     }
