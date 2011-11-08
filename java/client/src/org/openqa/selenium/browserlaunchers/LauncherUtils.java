@@ -310,6 +310,9 @@ public class LauncherUtils {
     out.println("user_pref('browser.cache.disk.enable', false);");
     out.println("user_pref('browser.cache.memory.enable', true);");
 
+    //Allow extensions to be installed into the profile and still work
+    out.println("user_pref('extensions.autoDisableScopes', 10);");
+
     // Disable "do you want to remember this password?"
     out.println("user_pref('signon.rememberSignons', false);");
 
