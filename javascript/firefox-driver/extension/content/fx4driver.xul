@@ -26,3 +26,9 @@ limitations under the License.
         </toolbaritem>
     </toolbar>
 </overlay>
+
+<script>
+<![CDATA[
+netscape.security.PrivilegeManager.enablePrivilege('UnivseralXPConnect');
+]]>
+</script>
