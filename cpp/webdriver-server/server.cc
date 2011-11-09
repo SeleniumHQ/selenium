@@ -492,6 +492,11 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/orientation"]["GET"] = GetOrientation;
   this->commands_["/session/:sessionid/orientation"]["POST"] = SetOrientation;
 
+  this->commands_["/session/:sessionid/:windowHandle/size"]["GET"] = GetWindowSize;
+  this->commands_["/session/:sessionid/:windowHandle/size"]["POST"] = SetWindowSize;
+  this->commands_["/session/:sessionid/:windowHandle/position"]["GET"] = GetWindowPosition;
+  this->commands_["/session/:sessionid/:windowHandle/position"]["POST"] = SetWindowPosition;
+
   this->commands_["/session/:sessionid/accept_alert"]["POST"] = AcceptAlert;
   this->commands_["/session/:sessionid/dismiss_alert"]["POST"] = DismissAlert;
   this->commands_["/session/:sessionid/alert_text"]["GET"] = GetAlertText;

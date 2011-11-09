@@ -70,6 +70,11 @@ enum CommandType {
   GetOrientation,
   SetOrientation,
 
+  GetWindowSize,
+  SetWindowSize,
+  GetWindowPosition,
+  SetWindowPosition,
+
   AcceptAlert,
   DismissAlert,
   GetAlertText,
