@@ -734,7 +734,14 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     keyboardEvent.preventDefault();
   }
 
-  return element.dispatchEvent(keyboardEvent);
+  if (bot.userAgent.isFirefox4()) {
+    var win = doc.defaultView;
+    var domUtil = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+        .getInterface(Components.interfaces.nsIDOMWindowUtils);
+    return domUtil.dispatchDOMEventViaPresShell(element, keyboardEvent, true);
+  } else {
+    return element.dispatchEvent(keyboardEvent);
+  }
 };
 
 
