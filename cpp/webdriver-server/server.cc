@@ -54,7 +54,7 @@ bool Server::Start() {
   _itoa_s(this->port(), buffer, 10, 10);
   const char* options[] = { "listening_ports", buffer,
                             "access_control_list", "-0.0.0.0/0,+127.0.0.1",
-                            // "enable_keep_alive", "yes",
+                            "enable_keep_alive", "yes",
                             NULL };
   context_ = mg_start(&OnHttpEvent, this, options);
   if (context_ == NULL) {
