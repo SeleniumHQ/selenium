@@ -25,6 +25,7 @@ import com.google.common.collect.Ordering;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Compares two sets of {@link Capabilities} against a desired standard. Capabilities are compared
@@ -72,8 +73,13 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
       }
     };
 
+    Platform desiredPlatform = desiredCapabilities.getPlatform();
+    if (desiredPlatform == null) {
+      desiredPlatform = Platform.ANY;
+    }
+
     final CapabilityScorer<Platform> strictPlatformScorer = CapabilityScorer.scoreAgainst(
-        desiredCapabilities.getPlatform());
+        desiredPlatform);
     Comparator<Capabilities> byStrictPlatform = new Comparator<Capabilities>() {
       public int compare(Capabilities c1, Capabilities c2) {
         return strictPlatformScorer.score(c1.getPlatform())
@@ -82,7 +88,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     };
 
     final CapabilityScorer<Platform> fuzzyPlatformScorer = new FuzzyPlatformScorer(
-        desiredCapabilities.getPlatform());
+        desiredPlatform);
     Comparator<Capabilities> byFuzzyPlatform = new Comparator<Capabilities>() {
       public int compare(Capabilities c1, Capabilities c2) {
         return fuzzyPlatformScorer.score(c1.getPlatform())

@@ -251,6 +251,22 @@ public class CapabilitiesComparatorTest {
     assertThat(getBestMatch(linux, newArrayList(unix)), equalTo(unix));
   }
 
+  @Test
+  public void matchesByCapabilitiesProvided() {
+    DesiredCapabilities sparse = new DesiredCapabilities();
+    sparse.setBrowserName("firefox");
+
+    Capabilities windows = capabilities("internet explorer", "", Platform.WINDOWS, true);
+    Capabilities firefox = capabilities("firefox", "", Platform.WINDOWS, true);
+
+    assertThat(getBestMatch(sparse, Lists.newArrayList(windows, firefox)),
+        equalTo(firefox));
+
+    sparse.setBrowserName("internet explorer");
+    assertThat(getBestMatch(sparse, Lists.newArrayList(windows, firefox)),
+        equalTo(windows));
+  }
+
   private void assertGreaterThan(Capabilities a, Capabilities b) {
     assertThat(comparator.compare(a, b), greaterThan(0));
     assertThat(comparator.compare(b, a), lessThan(0));
