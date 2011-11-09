@@ -71,14 +71,22 @@ fxdriver.modals.getText = function(driver) {
 fxdriver.modals.setValue = function(driver, value) {
   var modal = fxdriver.modals.find_();
   var textbox = modal.document.getElementById('loginTextbox');
+
   try {
-    var trueIfTextboxExists = textbox.selectionStart > -1;
-    if (trueIfTextboxExists) {
-      textbox.value = value;
+    var isVisible = false;
+    if (bot.userAgent.isVersion(8)) {
+      isVisible = textbox.clientHeight != 0;
+    } else {
+      isVisible = textbox.selectionStart > -1;
     }
-  } catch (e) {
-    throw new WebDriverError(bot.ErrorCode.ELEMENT_NOT_VISIBLE, 'Alert did not have a text box');
-  }
+
+    if (isVisible) {
+      textbox.value = value;
+      return;
+    }
+  } catch (ignored) {}
+
+  throw new WebDriverError(bot.ErrorCode.ELEMENT_NOT_VISIBLE, 'Alert did not have a text box');
 };
 
 
