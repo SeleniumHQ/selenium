@@ -977,6 +977,42 @@ limitations under the License.
     schedule2.assertCalled('never scheduled wait 2');
     wait2.assertCallback('wait 2 should have been resolved');
   }
+
+
+  function testExecutesTasksInAFutureTurnAfterTheyAreScheduled() {
+    var count = 0;
+    function incr() { count++; }
+
+    app.schedule('', incr);
+
+    assertEquals(0, count);
+
+    setTimeout(function() {
+      assertEquals(1, count);
+    }, 0);
+
+    consumeTimeouts();
+  }
+
+
+  function testExecutesOneTaskPerTurnOfTheEventLoop() {
+    var count = 0;
+    function incr() { count++; }
+
+    app.schedule('', incr);
+    app.schedule('', incr);
+
+    assertEquals(0, count);
+
+    setTimeout(function() {
+      assertEquals(1, count);
+      setTimeout(function() {
+        assertEquals(2, count);
+      }, 0);
+    }, 0);
+
+    consumeTimeouts();
+  }
 </script>
 </body>
 </html>
