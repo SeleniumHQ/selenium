@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.base.Throwables;
 
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
@@ -60,6 +60,8 @@ import org.openqa.selenium.remote.server.handler.GetScreenOrientation;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
 import org.openqa.selenium.remote.server.handler.GetTagName;
 import org.openqa.selenium.remote.server.handler.GetTitle;
+import org.openqa.selenium.remote.server.handler.GetWindowPosition;
+import org.openqa.selenium.remote.server.handler.GetWindowSize;
 import org.openqa.selenium.remote.server.handler.GoBack;
 import org.openqa.selenium.remote.server.handler.GoForward;
 import org.openqa.selenium.remote.server.handler.ImeActivateEngine;
@@ -74,6 +76,8 @@ import org.openqa.selenium.remote.server.handler.Rotate;
 import org.openqa.selenium.remote.server.handler.SendKeys;
 import org.openqa.selenium.remote.server.handler.SetAlertText;
 import org.openqa.selenium.remote.server.handler.SetScriptTimeout;
+import org.openqa.selenium.remote.server.handler.SetWindowPosition;
+import org.openqa.selenium.remote.server.handler.SetWindowSize;
 import org.openqa.selenium.remote.server.handler.Status;
 import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -125,12 +129,6 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
-import com.google.common.base.Throwables;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -140,6 +138,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.EnumSet;
 import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
@@ -337,6 +342,15 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/window", SwitchToWindow.class)
         .on(ResultType.SUCCESS, emptyResponse);
     deleteMapper.bind("/session/:sessionId/window", CloseWindow.class)
+        .on(ResultType.SUCCESS, emptyResponse);
+
+    getMapper.bind("/session/:sessionId/window/:windowHandle/size", GetWindowSize.class)
+        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/window/:windowHandle/size", SetWindowSize.class)
+        .on(ResultType.SUCCESS, emptyResponse);
+    getMapper.bind("/session/:sessionId/window/:windowHandle/position", GetWindowPosition.class)
+        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/session/:sessionId/window/:windowHandle/position", SetWindowPosition.class)
         .on(ResultType.SUCCESS, emptyResponse);
 
     postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class)
