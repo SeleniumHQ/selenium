@@ -74,7 +74,7 @@ public class FirefoxBinary {
                                                   // console
 
     if (isOnLinux()
-        && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {
+        && (profile.areNativeEventsEnabled() || profile.shouldLoadNoFocusLib())) {
       modifyLinkLibraryPath(profileDir);
     }
 

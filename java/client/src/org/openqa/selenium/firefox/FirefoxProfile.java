@@ -407,7 +407,7 @@ public class FirefoxProfile {
     }
   }
 
-  public boolean enableNativeEvents() {
+  public boolean areNativeEventsEnabled() {
     return enableNativeEvents;
   }
 
@@ -421,7 +421,7 @@ public class FirefoxProfile {
    * 
    * @return Whether the no focus library should always be loaded for Firefox on Linux.
    */
-  public boolean alwaysLoadNoFocusLib() {
+  public boolean shouldLoadNoFocusLib() {
     return loadNoFocusLib;
   }
 
