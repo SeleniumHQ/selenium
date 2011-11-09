@@ -352,7 +352,7 @@ Utils.useNativeEvents = function() {
   }
 
   return false;
-}
+};
 
 Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
     opt_keysState) {
