@@ -115,8 +115,6 @@ module Selenium
                        create_firefox_driver
                      when :chrome
                        create_chrome_driver
-                     when :ie
-                       create_ie_driver
                      else
                        WebDriver::Driver.for driver
                      end
@@ -180,11 +178,6 @@ module Selenium
           WebDriver::Driver.for :chrome,
                                 :native_events => native_events?,
                                 :http_client   => keep_alive_client || http_client
-        end
-
-        def create_ie_driver
-          WebDriver::Driver.for :ie,
-                                :http_client => keep_alive_client || http_client
         end
 
         def keep_alive_client
