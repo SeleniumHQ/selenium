@@ -227,7 +227,7 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
   if (element.tagName == "INPUT") {
     var inputtype = element.getAttribute("type");
     if (inputtype && inputtype.toLowerCase() == "file") {
-      element.value = parameters.value.join('');
+      XPCNativeWrapper(element).value = parameters.value.join('');
       Utils.fireHtmlEvent(element, "change");
       respond.send();
       return;
