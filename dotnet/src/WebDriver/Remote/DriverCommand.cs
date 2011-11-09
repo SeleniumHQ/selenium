@@ -289,6 +289,26 @@ namespace OpenQA.Selenium.Remote
         Screenshot,
 
         /// <summary>
+        /// Represents GetWindowSize command
+        /// </summary>
+        GetWindowSize,
+
+        /// <summary>
+        /// Represents SetWindowSize command
+        /// </summary>
+        SetWindowSize,
+
+        /// <summary>
+        /// Represents GetWindowPosition command
+        /// </summary>
+        GetWindowPosition,
+
+        /// <summary>
+        /// Represents SetWindowPosition command
+        /// </summary>
+        SetWindowPosition,
+
+        /// <summary>
         /// Represents the DismissAlert command
         /// </summary>
         DismissAlert,

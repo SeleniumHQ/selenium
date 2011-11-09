@@ -162,6 +162,7 @@
     <Compile Include="ITimeouts.cs" />
     <Compile Include="IWebDriver.cs" />
     <Compile Include="IWebElement.cs" />
+    <Compile Include="IWindow.cs" />
     <Compile Include="Keys.cs" />
     <Compile Include="NoAlertPresentException.cs" />
     <Compile Include="NoSuchElementException.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Remote\RemoteTimeouts.cs" />
     <Compile Include="Remote\RemoteWebDriver.cs" />
     <Compile Include="Remote\RemoteWebElement.cs" />
+    <Compile Include="Remote\RemoteWindow.cs" />
     <Compile Include="Remote\Response.cs" />
     <Compile Include="Remote\SessionId.cs" />
     <Compile Include="Remote\StackTraceElement.cs" />

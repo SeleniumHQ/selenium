@@ -50,6 +50,16 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets an object allowing the user to manipulate the currently-focused browser window.
+        /// </summary>
+        /// <remarks>"Currently-focused" is defined as the browser window having the window handle
+        /// returned when IWebDriver.CurrentWindowHandle is called.</remarks>
+        public IWindow Window
+        {
+            get { return new RemoteWindow(this.driver); }
+        }
+
+        /// <summary>
         /// Provides access to the timeouts defined for this driver.
         /// </summary>
         /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>

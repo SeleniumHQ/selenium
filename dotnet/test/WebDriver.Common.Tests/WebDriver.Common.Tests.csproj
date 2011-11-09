@@ -143,6 +143,7 @@
     <Compile Include="VisibilityTest.cs" />
     <Compile Include="WebElementTest.cs" />
     <Compile Include="WindowSwitchingTest.cs" />
+    <Compile Include="WindowTest.cs" />
     <Compile Include="XPathElementFindingTest.cs" />
   </ItemGroup>
   <ItemGroup>
