@@ -70,6 +70,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-6", "cpp\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-7", "cpp\webdriver-firefox\webdriver-firefox-7.vcxproj", "{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-latest", "cpp\webdriver-firefox\webdriver-firefox-latest.vcxproj", "{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -424,6 +426,22 @@ Global
 		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|Win32.ActiveCfg = Release|Win32
 		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|Win32.Build.0 = Release|Win32
 		{49D8D0ED-7FD9-4421-A6D1-B411152ECB5E}.Release|x64.ActiveCfg = Release|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|.NET.ActiveCfg = Debug|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|Win32.Build.0 = Debug|Win32
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|x64.ActiveCfg = Debug|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Debug|x64.Build.0 = Debug|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|.NET.ActiveCfg = Release|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|Any CPU.ActiveCfg = Release|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|Mixed Platforms.Build.0 = Release|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|Win32.ActiveCfg = Release|Win32
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|Win32.Build.0 = Release|Win32
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|x64.ActiveCfg = Release|x64
+		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
