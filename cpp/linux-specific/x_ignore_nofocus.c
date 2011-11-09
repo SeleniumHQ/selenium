@@ -521,9 +521,11 @@ void* get_xlib_handle()
     // distributions, it will reside in /usr/lib64.
     const char default_x11_location[] = "/usr/lib/libX11.so.6";
     const char debian_x11_location[] = "/usr/lib/x86_64-linux-gnu/libX11.so.6";
+    const char ubuntu_32bit_x11_location[] = "/usr/lib/i386-linux-gnu/libX11.so.6";
     const char opensuse_x11_location[] = "/usr/lib64/libX11.so.6";
     const char *possible_locations[] = {
-      default_x11_location, debian_x11_location, opensuse_x11_location};
+      default_x11_location, debian_x11_location, ubuntu_32bit_x11_location,
+      opensuse_x11_location};
     int locations_len = sizeof(possible_locations) / sizeof(char*);
     int i = 0;
     while (i < (locations_len - 1) && access(possible_locations[i], F_OK) != 0) {
