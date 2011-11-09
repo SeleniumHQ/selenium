@@ -68,8 +68,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
       FirefoxProfile profile = new FirefoxProfile();
 
       if (Boolean.getBoolean("webdriver.debug")) {
-        File firebug = InProject.locate( "third_party/firebug/firebug-1.5.0-fx.xpi");
-        profile.addExtension(firebug);
+        Firebug.addTo(profile);
       }
 
       return copyExtensionTo(profile);

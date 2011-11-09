@@ -19,14 +19,21 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import java.io.IOException;
+
 public class NativeEventsFirefoxDriver extends FirefoxDriver {
-  public NativeEventsFirefoxDriver() {
+  public NativeEventsFirefoxDriver() throws IOException {
     super(createNativeEventsEnabledProfile());
   }
 
-  private static FirefoxProfile createNativeEventsEnabledProfile() {
+  private static FirefoxProfile createNativeEventsEnabledProfile() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setEnableNativeEvents(true);
+
+    if (Boolean.getBoolean("webdriver.debug")) {
+      Firebug.addTo(profile);
+    }
+
     return profile;
   }
 }

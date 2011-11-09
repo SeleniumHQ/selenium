@@ -523,7 +523,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     instance.quit();
   }
 
-  public void testAnExceptionThrownIfUsingAQuittedInstance() {
+  public void testAnExceptionThrownIfUsingAQuitInstance() {
     WebDriver instance = newFirefoxDriver();
 
     instance.quit();
