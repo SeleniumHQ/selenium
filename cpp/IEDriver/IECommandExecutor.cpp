@@ -561,6 +561,10 @@ void IECommandExecutor::PopulateCommandHandlers() {
 
   // As-yet unimplemented commands
   this->command_handlers_[Status] = CommandHandlerHandle(new IECommandHandler);
+  this->command_handlers_[GetWindowSize] = CommandHandlerHandle(new IECommandHandler);
+  this->command_handlers_[SetWindowSize] = CommandHandlerHandle(new IECommandHandler);
+  this->command_handlers_[GetWindowPosition] = CommandHandlerHandle(new IECommandHandler);
+  this->command_handlers_[SetWindowPosition] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[GetOrientation] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[SetOrientation] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[ListAvailableImeEngines] = CommandHandlerHandle(new IECommandHandler);
