@@ -222,6 +222,18 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
+  // Handle the special case of the file input element here
+
+  if (element.tagName == "INPUT") {
+    var inputtype = element.getAttribute("type");
+    if (inputtype && inputtype.toLowerCase() == "file") {
+      element.value = parameters.value.join('');
+      Utils.fireHtmlEvent(element, "change");
+      respond.send();
+      return;
+    }
+  }
+
   var originalDriver = this;
 
   // We may need a beat for firefox to hand over focus.

@@ -357,28 +357,18 @@ Utils.useNativeEvents = function() {
 Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
     opt_keysState) {
 
+  var obj = Utils.getNativeEvents();
+  var node = Utils.getNodeForNativeEvents(element);
+  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
+  var isUsingNativeEvents = opt_useNativeEvents && obj && node && thmgr_cls;
+
   // For consistency between native and synthesized events, convert common
   // escape sequences to their Key enum aliases.
   text = text.replace(new RegExp('\b', 'g'), '\uE003').   // DOM_VK_BACK_SPACE
       replace(/\t/g, '\uE004').                           // DOM_VK_TAB
       replace(/(\r\n|\n|\r)/g, '\uE006');                 // DOM_VK_RETURN
 
-  // Special-case file input elements. This is ugly, but should be okay
-  if (element.tagName == "INPUT") {
-    var inputtype = element.getAttribute("type");
-    if (inputtype && inputtype.toLowerCase() == "file") {
-      element.value = text;
-      Utils.fireHtmlEvent(element, "change");
-      return;
-    }
-  }
-
-  var obj = Utils.getNativeEvents();
-  var node = Utils.getNodeForNativeEvents(element);
-  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
-
-  if (opt_useNativeEvents && obj && node && thmgr_cls) {
-
+  if (isUsingNativeEvents) {
     var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
 
     // Now do the native thing.
