@@ -393,10 +393,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     long start = System.currentTimeMillis();
     try {
+      log(sessionId, command.getName(), command);
       //logger.info("Executing: " + command);
       response = executor.execute(command);
 
       if (response == null) {
+        log(sessionId, command.getName(), command);
         return null;
       }
 
@@ -404,10 +406,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
-    } catch (WebDriverException e) {
-      // An exception from within WebDriver - throw as-is.
-      throw e;
+      log(sessionId, command.getName(), command);
     } catch (Exception e) {
+      log(sessionId, command.getName(), command);
       throw new WebDriverException("Error communicating with the remote browser. " +
           "It may have died.", e);
     }
@@ -429,6 +430,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public Mouse getMouse() {
     return mouse;
+  }
+
+  /**
+   * Override this to be notified at key points in the execution of a command.
+   *
+   * @param sessionId   the session id.
+   * @param commandName the command that is being executed.
+   * @param toLog       any data that might be interesting.
+   */
+  protected void log(SessionId sessionId, String commandName, Object toLog) {
+    // By default do nothing
   }
 
   public FileDetector getFileDetector() {
