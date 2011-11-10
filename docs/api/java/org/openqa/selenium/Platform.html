@@ -129,7 +129,7 @@ Represents the known and supported Platforms that WebDriver runs on. This is pre
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#ANY">ANY</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Never returned, but can be used to request a browser running on any operating system</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Never returned, but can be used to request a browser running on any operating system.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#LINUX">LINUX</A></B></CODE>
@@ -147,7 +147,7 @@ Represents the known and supported Platforms that WebDriver runs on. This is pre
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#UNIX">UNIX</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#VISTA">VISTA</A></B></CODE>
@@ -183,7 +183,8 @@ Represents the known and supported Platforms that WebDriver runs on. This is pre
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#extractFromSysProperty(java.lang.String)">extractFromSysProperty</A></B>(java.lang.String&nbsp;osName)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Extracts platforms based on system properties in Java and a heuristic to determine the most
+ likely operating system.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -191,7 +192,7 @@ Represents the known and supported Platforms that WebDriver runs on. This is pre
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#getCurrent()">getCurrent</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get current platform (not necessarily the same as operating system).</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -199,7 +200,7 @@ Represents the known and supported Platforms that WebDriver runs on. This is pre
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#getMajorVersion()">getMajorVersion</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the major version of this platform.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -207,7 +208,7 @@ Represents the known and supported Platforms that WebDriver runs on. This is pre
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#getMinorVersion()">getMinorVersion</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the minor version of this platform.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -223,7 +224,7 @@ Represents the known and supported Platforms that WebDriver runs on. This is pre
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/Platform.html#is(org.openqa.selenium.Platform)">is</A></B>(<A HREF="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</A>&nbsp;compareWith)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Heuristic for comparing two platforms.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -326,6 +327,8 @@ UNIX</H3>
 <PRE>
 public static final <A HREF="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</A> <B>UNIX</B></PRE>
 <DL>
+<DD>Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
+<P>
 <DL>
 </DL>
 </DL>
@@ -356,7 +359,7 @@ ANY</H3>
 <PRE>
 public static final <A HREF="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</A> <B>ANY</B></PRE>
 <DL>
-<DD>Never returned, but can be used to request a browser running on any operating system
+<DD>Never returned, but can be used to request a browser running on any operating system.
 <P>
 <DL>
 </DL>
@@ -430,8 +433,11 @@ getCurrent</H3>
 <PRE>
 public static <A HREF="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</A> <B>getCurrent</B>()</PRE>
 <DL>
+<DD>Get current platform (not necessarily the same as operating system).
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>current platform</DL>
 </DD>
 </DL>
 <HR>
@@ -441,8 +447,13 @@ extractFromSysProperty</H3>
 <PRE>
 public static <A HREF="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</A> <B>extractFromSysProperty</B>(java.lang.String&nbsp;osName)</PRE>
 <DL>
+<DD>Extracts platforms based on system properties in Java and a heuristic to determine the most
+ likely operating system.  If not able to determine the operating system, it will default to
+ UNIX.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>osName</CODE> - the operating system name to determine the platform of
+<DT><B>Returns:</B><DD>the most likely platform based on given operating system name</DL>
 </DD>
 </DL>
 <HR>
@@ -452,8 +463,13 @@ is</H3>
 <PRE>
 public boolean <B>is</B>(<A HREF="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</A>&nbsp;compareWith)</PRE>
 <DL>
+<DD>Heuristic for comparing two platforms.  If platforms (which is not the same thing as operating
+ systems) are found to be approximately similar in nature, this will return true.  For instance
+ the LINUX platform is similar to UNIX, and will give a positive result if compared.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>compareWith</CODE> - the platform to compare with
+<DT><B>Returns:</B><DD>true if platforms are approximately similar, false otherwise</DL>
 </DD>
 </DL>
 <HR>
@@ -463,8 +479,11 @@ getMajorVersion</H3>
 <PRE>
 public int <B>getMajorVersion</B>()</PRE>
 <DL>
+<DD>Returns the major version of this platform.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>the major version of specified platform</DL>
 </DD>
 </DL>
 <HR>
@@ -474,8 +493,11 @@ getMinorVersion</H3>
 <PRE>
 public int <B>getMinorVersion</B>()</PRE>
 <DL>
+<DD>Returns the minor version of this platform.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>the minor version of specified platform</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

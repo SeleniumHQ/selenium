@@ -189,8 +189,15 @@ java.lang.Object
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#alwaysLoadNoFocusLib()">alwaysLoadNoFocusLib</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
- even if native events are disabled.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#areNativeEventsEnabled()">areNativeEventsEnabled</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -231,7 +238,7 @@ java.lang.Object
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#enableNativeEvents()">enableNativeEvents</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -341,6 +348,15 @@ java.lang.Object
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set proxy preferences for this profile.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#shouldLoadNoFocusLib()">shouldLoadNoFocusLib</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
+ even if native events are disabled.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -592,7 +608,21 @@ public void <B>deleteExtensionsCacheIfItExists</B>(java.io.File&nbsp;profileDir)
 <A NAME="enableNativeEvents()"><!-- --></A><H3>
 enableNativeEvents</H3>
 <PRE>
-public boolean <B>enableNativeEvents</B>()</PRE>
+<FONT SIZE="-1">@Deprecated
+</FONT>public boolean <B>enableNativeEvents</B>()</PRE>
+<DL>
+<DD><B>Deprecated.</B>&nbsp;
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="areNativeEventsEnabled()"><!-- --></A><H3>
+areNativeEventsEnabled</H3>
+<PRE>
+public boolean <B>areNativeEventsEnabled</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -614,7 +644,21 @@ public void <B>setEnableNativeEvents</B>(boolean&nbsp;enableNativeEvents)</PRE>
 <A NAME="alwaysLoadNoFocusLib()"><!-- --></A><H3>
 alwaysLoadNoFocusLib</H3>
 <PRE>
-public boolean <B>alwaysLoadNoFocusLib</B>()</PRE>
+<FONT SIZE="-1">@Deprecated
+</FONT>public boolean <B>alwaysLoadNoFocusLib</B>()</PRE>
+<DL>
+<DD><B>Deprecated.</B>&nbsp;
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="shouldLoadNoFocusLib()"><!-- --></A><H3>
+shouldLoadNoFocusLib</H3>
+<PRE>
+public boolean <B>shouldLoadNoFocusLib</B>()</PRE>
 <DL>
 <DD>Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
  even if native events are disabled.

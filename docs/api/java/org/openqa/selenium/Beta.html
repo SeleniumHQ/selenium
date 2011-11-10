@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-Alert
+Beta
 </TITLE>
 
 
@@ -13,7 +13,7 @@ Alert
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Alert";
+        parent.document.title="Beta";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../org/openqa/selenium/Alert.html" title="interface in org.openqa.selenium"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../index.html?org/openqa/selenium/Alert.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Alert.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../index.html?org/openqa/selenium/Beta.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Beta.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;REQUIRED&nbsp;|&nbsp;OPTIONAL</FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;ELEMENT</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -87,113 +87,30 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 <FONT SIZE="-1">
 org.openqa.selenium</FONT>
 <BR>
-Interface Alert</H2>
+Annotation Type Beta</H2>
 <HR>
 <DL>
-<DT><PRE>public interface <B>Alert</B></DL>
+<DT><PRE><FONT SIZE="-1">@Retention(value=CLASS)
+@Target(value={ANNOTATION_TYPE,CONSTRUCTOR,FIELD,METHOD,TYPE})
+@Documented
+</FONT>public @interface <B>Beta</B></DL>
 </PRE>
 
 <P>
-<HR>
+Indicates that a feature or API is in active development, and so should not
+ be relied upon. The update policy for anything marked beta is that it may be
+ deleted in the next Selenium release without warning.
+
+ In the ideal world, this would cause the method to blink gently in the user's
+ IDE. We don't live in the ideal world. We'll find out the hard way whether
+ reading docs is the same thing.
+<P>
 
 <P>
 
-<!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../org/openqa/selenium/Alert.html#accept()">accept</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../org/openqa/selenium/Alert.html#dismiss()">dismiss</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../org/openqa/selenium/Alert.html#getText()">getText</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../org/openqa/selenium/Alert.html#sendKeys(java.lang.String)">sendKeys</A></B>(java.lang.String&nbsp;keysToSend)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
 <P>
 
-<!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="dismiss()"><!-- --></A><H3>
-dismiss</H3>
-<PRE>
-void <B>dismiss</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="accept()"><!-- --></A><H3>
-accept</H3>
-<PRE>
-void <B>accept</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getText()"><!-- --></A><H3>
-getText</H3>
-<PRE>
-java.lang.String <B>getText</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sendKeys(java.lang.String)"><!-- --></A><H3>
-sendKeys</H3>
-<PRE>
-void <B>sendKeys</B>(java.lang.String&nbsp;keysToSend)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
+<P>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
 
@@ -224,11 +141,11 @@ void <B>sendKeys</B>(java.lang.String&nbsp;keysToSend)</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../org/openqa/selenium/Alert.html" title="interface in org.openqa.selenium"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../index.html?org/openqa/selenium/Alert.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Alert.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../index.html?org/openqa/selenium/Beta.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Beta.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -245,9 +162,9 @@ void <B>sendKeys</B>(java.lang.String&nbsp;keysToSend)</PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;REQUIRED&nbsp;|&nbsp;OPTIONAL</FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;ELEMENT</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>
