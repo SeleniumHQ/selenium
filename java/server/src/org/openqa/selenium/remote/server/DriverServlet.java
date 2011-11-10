@@ -42,6 +42,7 @@ import org.openqa.selenium.remote.server.handler.FindElement;
 import org.openqa.selenium.remote.server.handler.FindElements;
 import org.openqa.selenium.remote.server.handler.GetAlertText;
 import org.openqa.selenium.remote.server.handler.GetAllCookies;
+import org.openqa.selenium.remote.server.handler.GetAllSessions;
 import org.openqa.selenium.remote.server.handler.GetAllWindowHandles;
 import org.openqa.selenium.remote.server.handler.GetCssProperty;
 import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
@@ -222,6 +223,9 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, emptyResponse);
 
     getMapper.bind("/status", Status.class)
+        .on(ResultType.SUCCESS, jsonResponse);
+
+    getMapper.bind("/sessions", GetAllSessions.class)
         .on(ResultType.SUCCESS, jsonResponse);
 
     postMapper.bind("/session", NewSession.class)
