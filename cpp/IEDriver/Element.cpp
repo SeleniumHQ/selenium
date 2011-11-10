@@ -248,7 +248,7 @@ bool Element::IsHiddenByOverflow() {
   script_source += L"var s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
   //Note: In the case that the parent has overflow=hidden, and the element is out of sight,
   //this will force the IEDriver to scroll the element in to view.  This is a bug.
-  script_source += L"while (p != null && s.overflow != 'auto' && s.overflow != 'scroll' && s.overflow != 'hidden') {\n";
+  script_source += L"while (p != null && s != null && s.overflow && s.overflow != 'auto' && s.overflow != 'scroll' && s.overflow != 'hidden') {\n";
   script_source += L"  p = p.parentNode;\n";
   script_source += L"  s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
   script_source += L"}";
