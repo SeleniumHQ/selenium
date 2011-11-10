@@ -58,7 +58,7 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     Page page = new Page();
     PageFactory.initElements(driver, page);
 
-    assertThat(page.divs.size(), equalTo(10));
+    assertThat(page.divs.size(), equalTo(12));
     for (WebElement link : page.divs) {
       assertThat(link.getTagName(), equalTo("div"));
     }
