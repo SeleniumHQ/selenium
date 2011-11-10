@@ -23,4 +23,4 @@ from remote.webdriver import WebDriver as Remote
 from common.desired_capabilities import DesiredCapabilities
 from common.action_chains import ActionChains
 
-__version__ = '2.12.0'
+__version__ = '2.12.1'
