@@ -71,7 +71,6 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
         Firebug.addTo(profile);
       }
 
-      profile.setPreference("webdriver.log.file", "/tmp/ff_syn_log");
       return copyExtensionTo(profile);
     } catch (Exception e) {
       e.printStackTrace();
