@@ -226,8 +226,8 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_TEXT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/text&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ELEMENT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/value&#39;</span><span class="p">),</span>
-            <span class="n">Command</span><span class="o">.</span><span class="n">SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT</span><span class="p">:</span>
-                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/modifier&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ACTIVE_ELEMENT</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/keys&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_VALUE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/value&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_TAG_NAME</span><span class="p">:</span>
@@ -293,7 +293,16 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">MOUSE_UP</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/buttonup&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">:</span>
-                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/moveto&#39;</span><span class="p">)}</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/moveto&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_SIZE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/size&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_SIZE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/size&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">)</span>
+            <span class="p">}</span>
 
 <div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -414,7 +423,6 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>

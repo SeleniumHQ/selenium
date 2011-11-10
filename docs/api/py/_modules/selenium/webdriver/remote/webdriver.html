@@ -654,7 +654,7 @@
 <span class="sd">           or a command to complete. This method only needs to be called one time per session.</span>
 <span class="sd">        </span>
 <span class="sd">        :Args:</span>
-<span class="sd">         - time_to_wait: Amount of time to wait</span>
+<span class="sd">         - time_to_wait: Amount of time to wait (in seconds)</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.implicitly_wait(30)</span>
@@ -728,7 +728,51 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.get_screenshot_as_base64()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="WebDriver.set_window_size"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.set_window_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_window_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">windowHandle</span><span class="o">=</span><span class="s">&#39;current&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the width and height of the current window. (window.resizeTo)</span>
+<span class="sd">        </span>
+<span class="sd">        :Args:</span>
+<span class="sd">         - width: the width in pixels to set the window to</span>
+<span class="sd">         - height: the height in pixels to set the window to</span>
+<span class="sd">        </span>
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.set_window_size(800,600)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_SIZE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;width&#39;</span><span class="p">:</span><span class="n">width</span><span class="p">,</span> <span class="s">&#39;height&#39;</span><span class="p">:</span><span class="n">height</span><span class="p">,</span> <span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="WebDriver.get_window_size"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windowHandle</span><span class="o">=</span><span class="s">&#39;current&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the width and height of the current window.</span>
+<span class="sd">        </span>
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.get_window_size()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_SIZE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="WebDriver.set_window_position"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.set_window_position">[docs]</a>    <span class="k">def</span> <span class="nf">set_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">windowHandle</span><span class="o">=</span><span class="s">&#39;current&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the x,y position of the current window. (window.moveTo)</span>
+<span class="sd">        </span>
+<span class="sd">        :Args:</span>
+<span class="sd">         - x: the x-coordinate in pixels to set the window position</span>
+<span class="sd">         - y: the y-coordinate in pixels to set the window position</span>
+<span class="sd">        </span>
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.set_window_position(0,0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;x&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span> <span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="WebDriver.get_window_position"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windowHandle</span><span class="o">=</span><span class="s">&#39;current&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the x,y position of the current window.</span>
+<span class="sd">        </span>
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.get_window_position()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span></div></div>
 </pre></div>
 
           </div>
@@ -768,7 +812,6 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>

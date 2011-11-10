@@ -413,7 +413,7 @@ dl.glossary dt {
 }
 
 .footnote:target  {
-    background-color: #ffa
+    background-color: #ffa;
 }
 
 .line-block {

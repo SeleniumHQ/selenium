@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.by &mdash; Selenium v2.8.1 documentation</title>
+    <title>selenium.webdriver.support.wait &mdash; Selenium v2.8.1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Selenium v2.8.1 documentation" href="../index.html" />
     <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.common.desired_capabilities" href="selenium.webdriver.common.desired_capabilities.html" />
-    <link rel="prev" title="selenium.webdriver.common.alert" href="selenium.webdriver.common.alert.html" /> 
+    <link rel="next" title="selenium.webdriver.chrome.service" href="../webdriver_chrome/selenium.webdriver.chrome.service.html" />
+    <link rel="prev" title="selenium.webdriver.support.select" href="selenium.webdriver.support.select.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="selenium.webdriver.common.desired_capabilities.html" title="selenium.webdriver.common.desired_capabilities"
+          <a href="../webdriver_chrome/selenium.webdriver.chrome.service.html" title="selenium.webdriver.chrome.service"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="selenium.webdriver.common.alert.html" title="selenium.webdriver.common.alert"
+          <a href="selenium.webdriver.support.select.html" title="selenium.webdriver.support.select"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
@@ -53,12 +53,37 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-selenium.webdriver.common.by">
-<span id="selenium-webdriver-common-by"></span><h1>selenium.webdriver.common.by<a class="headerlink" href="#module-selenium.webdriver.common.by" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-selenium.webdriver.support.wait">
+<span id="selenium-webdriver-support-wait"></span><h1>selenium.webdriver.support.wait<a class="headerlink" href="#module-selenium.webdriver.support.wait" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="selenium.webdriver.common.by.By">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.common.by.</tt><tt class="descname">By</tt><a class="reference internal" href="../_modules/selenium/webdriver/common/by.html#By"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.by.By" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="selenium.webdriver.support.wait.WebDriverWait">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.support.wait.</tt><tt class="descname">WebDriverWait</tt><big>(</big><em>driver</em>, <em>timeout</em>, <em>poll_frequency=0.5</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor, takes a WebDriver instance and timeout in seconds.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)</li>
+<li>timeout - Number of seconds before timing out</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Example:</dt>
+<dd><p class="first">from selenium.webdriver.support.ui import WebDriverWait</p>
+<p class="last">element = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id(&#8220;someId&#8221;))</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="selenium.webdriver.support.wait.WebDriverWait.until">
+<tt class="descname">until</tt><big>(</big><em>method</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait.until" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the method provided with the driver as an argument until the         return value is not Falsy.</p>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 
@@ -69,14 +94,14 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.alert.html"
-                        title="previous chapter">selenium.webdriver.common.alert</a></p>
+  <p class="topless"><a href="selenium.webdriver.support.select.html"
+                        title="previous chapter">selenium.webdriver.support.select</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.desired_capabilities.html"
-                        title="next chapter">selenium.webdriver.common.desired_capabilities</a></p>
+  <p class="topless"><a href="../webdriver_chrome/selenium.webdriver.chrome.service.html"
+                        title="next chapter">selenium.webdriver.chrome.service</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../_sources/webdriver/selenium.webdriver.common.by.txt"
+    <li><a href="../_sources/webdriver_support/selenium.webdriver.support.wait.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -106,10 +131,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="selenium.webdriver.common.desired_capabilities.html" title="selenium.webdriver.common.desired_capabilities"
+          <a href="../webdriver_chrome/selenium.webdriver.chrome.service.html" title="selenium.webdriver.chrome.service"
              >next</a> |</li>
         <li class="right" >
-          <a href="selenium.webdriver.common.alert.html" title="selenium.webdriver.common.alert"
+          <a href="selenium.webdriver.support.select.html" title="selenium.webdriver.support.select"
              >previous</a> |</li>
         <li><a href="../index.html">Selenium v2.8.1 documentation</a> &raquo;</li>
           <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 

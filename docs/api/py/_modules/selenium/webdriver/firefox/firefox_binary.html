@@ -64,13 +64,10 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
-<span class="kn">from</span> <span class="nn">extension_connection</span> <span class="kn">import</span> <span class="n">ExtensionConnection</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">socket</span>
-<span class="kn">import</span> <span class="nn">signal</span>
 
 
 <div class="viewcode-block" id="FirefoxBinary"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary">[docs]</a><span class="k">class</span> <span class="nc">FirefoxBinary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -96,13 +93,9 @@
 
 <span class="sd">        This is useful when the browser is stuck.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="c"># kill may not be available under windows environment</span>
-            <span class="k">pass</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 </div>
     <span class="k">def</span> <span class="nf">_start_from_profile_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;XRE_PROFILE_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
@@ -112,24 +105,13 @@
         <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-silent&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FirefoxBinary.is_connectable"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.is_connectable">[docs]</a>    <span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Trys to connect to the extension but do not retrieve context.&quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">socket_</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-            <span class="n">socket_</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">socket_</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
-            <span class="n">socket_</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-</div>
     <span class="k">def</span> <span class="nf">_wait_until_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Blocks until the extension is connectable in the firefox.&quot;&quot;&quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">port</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="c"># Browser has exited</span>
-                <span class="k">return</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;The browser appears to have exited before we could connect&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;The browser appears to have exited before we could connect&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can&#39;t load the profile. Profile Dir : </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
@@ -222,7 +204,6 @@
     </div>
     <div class="footer">
         &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>

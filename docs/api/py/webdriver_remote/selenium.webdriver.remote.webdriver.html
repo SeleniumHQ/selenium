@@ -711,6 +711,34 @@ here: <a class="reference external" href="http://code.google.com/p/selenium/wiki
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.get_window_position">
+<tt class="descname">get_window_position</tt><big>(</big><em>windowHandle='current'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_window_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_window_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the x,y position of the current window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Usage :</th><td class="field-body">driver.get_window_position()</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.get_window_size">
+<tt class="descname">get_window_size</tt><big>(</big><em>windowHandle='current'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_window_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_window_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the width and height of the current window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Usage :</th><td class="field-body">driver.get_window_size()</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.implicitly_wait">
 <tt class="descname">implicitly_wait</tt><big>(</big><em>time_to_wait</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.implicitly_wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.implicitly_wait" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -722,7 +750,7 @@ here: <a class="reference external" href="http://code.google.com/p/selenium/wiki
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>time_to_wait: Amount of time to wait</li>
+<li>time_to_wait: Amount of time to wait (in seconds)</li>
 </ul>
 </td>
 </tr>
@@ -809,6 +837,48 @@ here: <a class="reference external" href="http://code.google.com/p/selenium/wiki
 </td>
 </tr>
 <tr class="field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.set_script_timeout(30)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.set_window_position">
+<tt class="descname">set_window_position</tt><big>(</big><em>x</em>, <em>y</em>, <em>windowHandle='current'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_window_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_window_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the x,y position of the current window. (window.moveTo)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>x: the x-coordinate in pixels to set the window position</li>
+<li>y: the y-coordinate in pixels to set the window position</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.set_window_position(0,0)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.set_window_size">
+<tt class="descname">set_window_size</tt><big>(</big><em>width</em>, <em>height</em>, <em>windowHandle='current'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_window_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_window_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width and height of the current window. (window.resizeTo)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>width: the width in pixels to set the window to</li>
+<li>height: the height in pixels to set the window to</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.set_window_size(800,600)</p>
 </td>
 </tr>
 </tbody>
@@ -1020,7 +1090,6 @@ driver.switch_to_frame(1)</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.6.
     </div>
   </body>
 </html>
