@@ -1,3 +1,19 @@
+2.12.0 (2011-11-10)
+===================
+
+* Loosened the ffi dependency now that Windows support is back (#2755).
+* Fix shutdown issues when using net-http-persistent against remote servers.
+* Added beta window control API (see Selenium::WebDriver::Options#window).
+* Firefox
+  * Support for Firefox 8.
+  * Better reporting of page size when attempting to move out of bounds.
+  * Beta implementation of window control.
+
+2.11.0
+======
+
+(release skipped since it included only server-side changes)
+
 2.10.0 (2011-10-27)
 ===================
 
@@ -11,8 +27,6 @@
   * Don't scroll unnecessarily (#1771).
 * IE:
   * Improve handling of #clear on disabled or readonly elements.
-
-
 
 2.9.1 (2011-10-24)
 ==================
