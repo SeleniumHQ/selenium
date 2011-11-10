@@ -106,7 +106,7 @@ module Selenium
               header = {"Content-Type" => "text/html"}
               body   = req['upload'][:tempfile].read
 
-              [status, header, body]
+              [status, header, [body]]
             else
               @static.call env
             end
