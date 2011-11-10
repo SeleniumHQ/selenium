@@ -127,6 +127,33 @@ public class PageFactoryTest extends MockTestBase {
   }
 
   @Test
+  public void shouldDecorateListsOfWebElementsThatAreNotAnnotated() {
+    UnmarkedListPage page = new UnmarkedListPage();
+
+    PageFactory.initElements(driver, page);
+
+    assertThat(page.elements, is(notNullValue()));
+  }
+
+  @Test
+  public void shouldNotDecorateListsThatAreTypedButNotWebElementLists() {
+    UnmarkedListPage page = new UnmarkedListPage();
+
+    PageFactory.initElements(driver, page);
+
+    assertThat(page.objects, is(nullValue()));
+  }
+  
+  @Test
+  public void shouldNotDecorateUnTypedLists() {
+    UnmarkedListPage page = new UnmarkedListPage();
+
+    PageFactory.initElements(driver, page);
+
+    assertThat(page.untyped, is(nullValue()));
+  }
+
+  @Test
   public void shouldComplainWhenMoreThanOneFindByAttributeIsSet() {
     GrottyPage page = new GrottyPage();
 
@@ -201,6 +228,12 @@ public class PageFactoryTest extends MockTestBase {
 
     @FindBy(xpath = "//body", id = "cheese")
     private WebElement two;
+  }
+
+  public static class UnmarkedListPage {
+    private List<WebElement> elements;
+    private List<Object> objects;
+    private List untyped;  // This list deliberately left untyped
   }
 
   public static class NonWebElementsPage {

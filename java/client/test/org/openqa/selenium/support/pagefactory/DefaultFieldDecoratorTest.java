@@ -54,7 +54,7 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   @SuppressWarnings("unused") private WebElement element1;
   @SuppressWarnings("unused") private WebElement element2;
   @SuppressWarnings("unused") private List<WebElement> list1;
-  @SuppressWarnings("unused") private List<WebElement> list2;
+  @SuppressWarnings("unused") private List<Object> list2;
   @SuppressWarnings("unused") private Integer num;
 
   @SuppressWarnings("unused")
@@ -101,11 +101,11 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   }
 
   @Test
-  public void doesNotDecorateNonAnnotatedWebElementList() throws Exception {
+  public void doesDecorateNonAnnotatedWebElementList() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list1")),
-        is(nullValue()));
+        is(notNullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list2")),
         is(nullValue()));

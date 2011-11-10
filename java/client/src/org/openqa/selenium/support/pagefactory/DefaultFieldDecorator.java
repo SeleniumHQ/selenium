@@ -27,7 +27,9 @@ import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandl
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -45,13 +47,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
   public Object decorate(ClassLoader loader, Field field) {
     if (!(WebElement.class.isAssignableFrom(field.getType())
-          || List.class.isAssignableFrom(field.getType()))) {
-      return null;
-    }
-    if (List.class.isAssignableFrom(field.getType())
-        && field.getAnnotation(FindBy.class) == null
-        && field.getAnnotation(FindBys.class) == null) {
-      // Don't decorate List<WebElement> fields without @FindBy or @FindBys annotation
+          || isDecoratableList(field))) {
       return null;
     }
 
@@ -67,6 +63,28 @@ public class DefaultFieldDecorator implements FieldDecorator {
     } else {
       return null;
     }
+  }
+
+  private boolean isDecoratableList(Field field) {
+    if (!List.class.isAssignableFrom(field.getType())) {
+      return false;
+    }
+
+    if (field.getAnnotation(FindBy.class) != null ||
+        field.getAnnotation(FindBys.class) != null) {
+      return true;
+    }
+
+    // Type erasure in Java isn't complete. Attempt to discover the generic
+    // type of the list.
+    Type genericType = field.getGenericType();
+    if (!(genericType instanceof ParameterizedType)) {
+      return false;
+    }
+
+    Type listType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+
+    return WebElement.class.equals(listType);
   }
 
   protected WebElement proxyForLocator(ClassLoader loader, ElementLocator locator) {
