@@ -89,6 +89,10 @@ module Selenium
       def timeouts
         @timeouts ||= Timeouts.new(@bridge)
       end
+      
+      #
+      # @api beta This API may be changed or removed in a future release.
+      # 
 
       def window
         @window ||= Window.new(@bridge)

@@ -1,5 +1,10 @@
 module Selenium
   module WebDriver
+    
+    #
+    # @api beta This API may be changed or removed in a future release.
+    # 
+    
     class Window
 
       def initialize(bridge)
