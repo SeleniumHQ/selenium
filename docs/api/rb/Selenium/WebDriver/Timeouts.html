@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Timeouts
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.3
   
 </title>
 
@@ -121,8 +121,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Set the amount of time the driver should wait when searching for elements.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Set the amount of time the driver should wait when searching for elements.
+</p>
 </div></span>
   
 </li>
@@ -146,8 +147,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of Timeouts.</p>
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of Timeouts.
+</p>
 </div></span>
   
 </li>
@@ -169,9 +171,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Sets the amount of time to wait for an asynchronous script to finish
-execution before throwing an error.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Sets the amount of time to wait for an asynchronous script to finish
+execution before throwing an error.
+</p>
 </div></span>
   
 </li>
@@ -192,14 +195,16 @@ execution before throwing an error.</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>A new instance of Timeouts</p>
+    <p>
+A new instance of Timeouts
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -213,10 +218,9 @@ execution before throwing an error.</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 5</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -238,14 +242,16 @@ execution before throwing an error.</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Set the amount of time the driver should wait when searching for elements.</p>
+    <p>
+Set the amount of time the driver should wait when searching for elements.
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -259,10 +265,9 @@ execution before throwing an error.</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='implicit_wait= identifier id'>implicit_wait=</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setImplicitWaitTimeout identifier id'>setImplicitWaitTimeout</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span> <span class='mult op'>*</span> <span class='integer val'>1000</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id implicit_wait='>implicit_wait=</span><span class='lparen'>(</span><span class='id seconds'>seconds</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setImplicitWaitTimeout'>setImplicitWaitTimeout</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -277,16 +282,18 @@ execution before throwing an error.</p>
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Sets the amount of time to wait for an asynchronous script to finish
+    <p>
+Sets the amount of time to wait for an asynchronous script to finish
 execution before throwing an error. If the timeout is negative, then the
-script will be allowed to run indefinitely.</p>
+script will be allowed to run indefinitely.
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -300,10 +307,9 @@ script will be allowed to run indefinitely.</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 23</span>
 
-<span class='def def kw'>def</span> <span class='script_timeout= identifier id'>script_timeout=</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setScriptTimeout identifier id'>setScriptTimeout</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='seconds identifier id'>seconds</span> <span class='mult op'>*</span> <span class='integer val'>1000</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id script_timeout='>script_timeout=</span><span class='lparen'>(</span><span class='id seconds'>seconds</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setScriptTimeout'>setScriptTimeout</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -314,9 +320,9 @@ script will be allowed to run indefinitely.</p>
 </div>
     
     <div id="footer">
-  Generated on Fri Oct 21 14:00:11 2011 by 
+  Generated on Thu Nov 10 15:57:39 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.3 (ruby-1.9.2).
 </div>
 
   </body>

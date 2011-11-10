@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Options
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.3
   
 </title>
 
@@ -100,8 +100,7 @@
         <dt id="SECONDS_PER_DAY-constant" class="">SECONDS_PER_DAY =
           
         </dt>
-        <dd><pre class="code"><span class='float val'>86_400.0</span>
-</pre></dd>
+        <dd><pre class="code"><span class='float'>86_400.0</span></pre></dd>
       
     </dl>
   
@@ -134,8 +133,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Add a cookie to the browser.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Add a cookie to the browser.
+</p>
 </div></span>
   
 </li>
@@ -157,8 +157,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Get all cookies.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Get all cookies.
+</p>
 </div></span>
   
 </li>
@@ -180,8 +181,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Get the cookie with the given name.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Get the cookie with the given name.
+</p>
 </div></span>
   
 </li>
@@ -203,8 +205,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Delete all cookies.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Delete all cookies.
+</p>
 </div></span>
   
 </li>
@@ -226,8 +229,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Delete the cookie with the given name.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Delete the cookie with the given name.
+</p>
 </div></span>
   
 </li>
@@ -251,8 +255,9 @@
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of Options.</p>
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of Options.
+</p>
 </div></span>
   
 </li>
@@ -262,6 +267,27 @@
   <span class="summary_signature">
     
       <a href="#timeouts-instance_method" title="#timeouts (instance method)">- (Object) <strong>timeouts</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#window-instance_method" title="#window (instance method)">- (Object) <strong>window</strong> </a>
     
 
     
@@ -298,14 +324,16 @@
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>A new instance of Options</p>
+<p>
+A new instance of Options
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -319,10 +347,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 9</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -344,8 +371,9 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Add a cookie to the browser</p>
+    <p>
+Add a cookie to the browser
+</p>
 
 
   </div>
@@ -366,8 +394,9 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the options to create a cookie with.</p>
+        <div class='inline'><p>
+the options to create a cookie with.
+</p>
 </div>
       
     </li>
@@ -386,10 +415,11 @@
           <span class="default">
             
           </span>
-          &mdash; <div class='inline'>
-<p>A name</p>
+          &mdash; <div class='inline'><p>
+A name
+</p>
 </div>
-        </tr>
+        </li>
       
         <li>
           <span class="name">:value</span>
@@ -397,10 +427,11 @@
           <span class="default">
             
           </span>
-          &mdash; <div class='inline'>
-<p>A value</p>
+          &mdash; <div class='inline'><p>
+A value
+</p>
 </div>
-        </tr>
+        </li>
       
         <li>
           <span class="name">:path</span>
@@ -411,10 +442,11 @@
               <tt>'/'</tt>
             
           </span>
-          &mdash; <div class='inline'>
-<p>A path</p>
+          &mdash; <div class='inline'><p>
+A path
+</p>
 </div>
-        </tr>
+        </li>
       
         <li>
           <span class="name">:secure</span>
@@ -425,10 +457,11 @@
               <tt>false</tt>
             
           </span>
-          &mdash; <div class='inline'>
-<p>A boolean</p>
+          &mdash; <div class='inline'><p>
+A boolean
+</p>
 </div>
-        </tr>
+        </li>
       
         <li>
           <span class="name">:expires</span>
@@ -439,13 +472,15 @@
               <tt>nil</tt>
             
           </span>
-          &mdash; <div class='inline'>
-<p>Expiry date, either as a Time, DateTime, or seconds since epoch.</p>
+          &mdash; <div class='inline'><p>
+Expiry date, either as a Time, DateTime, or seconds since epoch.
+</p>
 </div>
-        </tr>
+        </li>
       
     </ul>
   
+
 <h3>Raises:</h3>
 <ul class="raise">
   
@@ -457,8 +492,9 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>if :name or :value is not specified</p>
+        <div class='inline'><p>
+if :name or :value is not specified
+</p>
 </div>
       
     </li>
@@ -489,21 +525,20 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 26</span>
 
-<span class='def def kw'>def</span> <span class='add_cookie identifier id'>add_cookie</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='string val'>&quot;name is required&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='rbrack token'>]</span>
-  <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='string val'>&quot;value is required&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:value</span><span class='rbrack token'>]</span>
+<span class='kw'>def</span> <span class='id add_cookie'>add_cookie</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>name is required</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span>
+  <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>value is required</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span>
 
-  <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:path</span><span class='rbrack token'>]</span> <span class='opasgn op'>||=</span> <span class='string val'>&quot;/&quot;</span>
-  <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:secure</span><span class='rbrack token'>]</span> <span class='opasgn op'>||=</span> <span class='false false kw'>false</span>
+  <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:path</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:secure</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='kw'>false</span>
 
-  <span class='if if kw'>if</span> <span class='obj identifier id'>obj</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:expires</span><span class='rbrack token'>]</span>
-    <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:expiry</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='seconds_from identifier id'>seconds_from</span><span class='lparen token'>(</span><span class='obj identifier id'>obj</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>if</span> <span class='id obj'>obj</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expires</span><span class='rbracket'>]</span>
+    <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expiry</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id seconds_from'>seconds_from</span><span class='lparen'>(</span><span class='id obj'>obj</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
 
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='addCookie identifier id'>addCookie</span> <span class='opts identifier id'>opts</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id addCookie'>addCookie</span> <span class='id opts'>opts</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -518,14 +553,16 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Get all cookies</p>
+    <p>
+Get all cookies
+</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -536,8 +573,9 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>list of cookies</p>
+        <div class='inline'><p>
+list of cookies
+</p>
 </div>
       
     </li>
@@ -566,19 +604,18 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 76</span>
 
-<span class='def def kw'>def</span> <span class='all_cookies identifier id'>all_cookies</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getAllCookies identifier id'>getAllCookies</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='cookie identifier id'>cookie</span><span class='bitor op'>|</span>
-    <span class='lbrace token'>{</span>
-      <span class='symbol val'>:name</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;name&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-      <span class='symbol val'>:value</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;value&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-      <span class='symbol val'>:path</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;path&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
-      <span class='symbol val'>:domain</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;domain&quot;</span><span class='rbrack token'>]</span> <span class='andop op'>&amp;&amp;</span> <span class='strip_port identifier id'>strip_port</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;domain&quot;</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-      <span class='symbol val'>:expires</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;expiry&quot;</span><span class='rbrack token'>]</span> <span class='andop op'>&amp;&amp;</span> <span class='datetime_at identifier id'>datetime_at</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>'expiry'</span><span class='rbrack token'>]</span><span class='rparen token'>)</span><span class='comma token'>,</span>
-      <span class='symbol val'>:secure</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span><span class='lbrack token'>[</span><span class='string val'>&quot;secure&quot;</span><span class='rbrack token'>]</span>
-    <span class='rbrace token'>}</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id all_cookies'>all_cookies</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id getAllCookies'>getAllCookies</span><span class='period'>.</span><span class='id map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id cookie'>cookie</span><span class='op'>|</span>
+    <span class='lbrace'>{</span>
+      <span class='symbol'>:name</span>    <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>name</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+      <span class='symbol'>:value</span>   <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>value</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+      <span class='symbol'>:path</span>    <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>path</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+      <span class='symbol'>:domain</span>  <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>domain</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id strip_port'>strip_port</span><span class='lparen'>(</span><span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>domain</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span>
+      <span class='symbol'>:expires</span> <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expiry</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id datetime_at'>datetime_at</span><span class='lparen'>(</span><span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>expiry</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span>
+      <span class='symbol'>:secure</span>  <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secure</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+    <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -593,8 +630,9 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Get the cookie with the given name</p>
+    <p>
+Get the cookie with the given name
+</p>
 
 
   </div>
@@ -613,13 +651,15 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the name of the cookie</p>
+        <div class='inline'><p>
+the name of the cookie
+</p>
 </div>
       
     </li>
   
 </ul>
+
 <h3>Returns:</h3>
 <ul class="return">
   
@@ -631,8 +671,9 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the cookie, or nil if it wasn’t found.</p>
+        <div class='inline'><p>
+the cookie, or nil if it wasn&#8217;t found.
+</p>
 </div>
       
     </li>
@@ -652,10 +693,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 48</span>
 
-<span class='def def kw'>def</span> <span class='cookie_named identifier id'>cookie_named</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='all_cookies identifier id'>all_cookies</span><span class='dot token'>.</span><span class='find identifier id'>find</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='c identifier id'>c</span><span class='bitor op'>|</span> <span class='c identifier id'>c</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='rbrack token'>]</span> <span class='eq op'>==</span> <span class='name identifier id'>name</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id cookie_named'>cookie_named</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
+  <span class='id all_cookies'>all_cookies</span><span class='period'>.</span><span class='id find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id c'>c</span><span class='op'>|</span> <span class='id c'>c</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='id name'>name</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -670,14 +710,16 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Delete all cookies</p>
+    <p>
+Delete all cookies
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -691,10 +733,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 66</span>
 
-<span class='def def kw'>def</span> <span class='delete_all_cookies identifier id'>delete_all_cookies</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='deleteAllCookies identifier id'>deleteAllCookies</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id delete_all_cookies'>delete_all_cookies</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id deleteAllCookies'>deleteAllCookies</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -709,8 +750,9 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Delete the cookie with the given name</p>
+    <p>
+Delete the cookie with the given name
+</p>
 
 
   </div>
@@ -729,13 +771,15 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the name of the cookie to delete</p>
+        <div class='inline'><p>
+the name of the cookie to delete
+</p>
 </div>
       
     </li>
   
 </ul>
+
 
 </div><table class="source_code">
   <tr>
@@ -750,10 +794,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 58</span>
 
-<span class='def def kw'>def</span> <span class='delete_cookie identifier id'>delete_cookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='deleteCookie identifier id'>deleteCookie</span> <span class='name identifier id'>name</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id deleteCookie'>deleteCookie</span> <span class='id name'>name</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -779,10 +822,46 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 89</span>
 
-<span class='def def kw'>def</span> <span class='timeouts identifier id'>timeouts</span>
-  <span class='@timeouts ivar id'>@timeouts</span> <span class='opasgn op'>||=</span> <span class='Timeouts constant id'>Timeouts</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@bridge ivar id'>@bridge</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id timeouts'>timeouts</span>
+  <span class='ivar'>@timeouts</span> <span class='op'>||=</span> <span class='const'>Timeouts</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="window-instance_method">
+  
+    - (<tt>Object</tt>) <strong>window</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='id window'>window</span>
+  <span class='ivar'>@window</span> <span class='op'>||=</span> <span class='const'>Window</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -793,9 +872,9 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Oct 21 14:00:11 2011 by 
+  Generated on Thu Nov 10 15:57:39 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.3 (ruby-1.9.2).
 </div>
 
   </body>

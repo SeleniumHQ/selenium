@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::Server
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.3
   
 </title>
 
@@ -94,32 +94,36 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Wraps the remote server jar</p>
-
-<p>Usage:</p>
-
-<pre class="code"><span class='server identifier id'>server</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Server constant id'>Server</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='string val'>'/path/to/selenium-server-standalone.jar'</span><span class='rparen token'>)</span>
-<span class='server identifier id'>server</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
+    <p>
+Wraps the remote server jar
+</p>
+<p>
+Usage:
+</p>
+<pre class="code">
+  <span class='id server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='id server'>server</span><span class='period'>.</span><span class='id start'>start</span>
 </pre>
-
-<p>Automatically download the given version:</p>
-
-<pre class="code"><span class='server identifier id'>server</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Server constant id'>Server</span><span class='dot token'>.</span><span class='get identifier id'>get</span> <span class='string val'>'2.6.0'</span>
-<span class='server identifier id'>server</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
+<p>
+Automatically download the given version:
+</p>
+<pre class="code">
+  <span class='id server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id get'>get</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>'</span></span>
+  <span class='id server'>server</span><span class='period'>.</span><span class='id start'>start</span>
 </pre>
-
-<p>or the latest version:</p>
-
-<pre class="code"><span class='server identifier id'>server</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Server constant id'>Server</span><span class='dot token'>.</span><span class='get identifier id'>get</span> <span class='symbol val'>:latest</span>
-<span class='server identifier id'>server</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
-</pre>
+<p>
+or the latest version:
+</p>
+<pre class="code">
+  <span class='id server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id get'>get</span> <span class='symbol'>:latest</span>
+  <span class='id server'>server</span><span class='period'>.</span><span class='id start'>start</span></pre>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><h2>Defined Under Namespace</h2>
 <p class="children">
    
@@ -138,8 +142,7 @@
         <dt id="CL_RESET-constant" class="">CL_RESET =
           
         </dt>
-        <dd><pre class="code"><span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='windows? fid id'>windows?</span> <span class='integer val'>? </span><span class='string val'>''</span> <span class='colon op'>:</span> <span class='string val'>&quot;\r\e[0K&quot;</span>
-</pre></dd>
+        <dd><pre class="code"><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Platform</span><span class='period'>.</span><span class='id windows?'>windows?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\r\e[0K</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
     </dl>
   
@@ -172,8 +175,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Download the given version of the selenium-server-standalone jar.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Download the given version of the selenium-server-standalone jar.
+</p>
 </div></span>
   
 </li>
@@ -216,8 +220,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Ask Google Code what the latest selenium-server-standalone version is.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Ask Google Code what the latest selenium-server-standalone version is.
+</p>
 </div></span>
   
 </li>
@@ -271,8 +276,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of Server.</p>
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of Server.
+</p>
 </div></span>
   
 </li>
@@ -356,14 +362,16 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>A new instance of Server</p>
+    <p>
+A new instance of Server
+</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Raises:</h3>
+  
+<h3>Raises:</h3>
 <ul class="raise">
   
     <li>
@@ -399,19 +407,18 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 93</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='jar identifier id'>jar</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='raise identifier id'>raise</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ENOENT constant id'>ENOENT</span><span class='comma token'>,</span> <span class='jar identifier id'>jar</span> <span class='unless unless_mod kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exist? fid id'>exist?</span><span class='lparen token'>(</span><span class='jar identifier id'>jar</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id jar'>jar</span><span class='comma'>,</span> <span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id raise'>raise</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span><span class='comma'>,</span> <span class='id jar'>jar</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id exist?'>exist?</span><span class='lparen'>(</span><span class='id jar'>jar</span><span class='rparen'>)</span>
 
-  <span class='@jar ivar id'>@jar</span>        <span class='assign token'>=</span> <span class='jar identifier id'>jar</span>
-  <span class='@host ivar id'>@host</span>       <span class='assign token'>=</span> <span class='string val'>&quot;127.0.0.1&quot;</span>
-  <span class='@port ivar id'>@port</span>       <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:port</span><span class='comma token'>,</span> <span class='integer val'>4444</span><span class='rparen token'>)</span>
-  <span class='@timeout ivar id'>@timeout</span>    <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:timeout</span><span class='comma token'>,</span> <span class='integer val'>30</span><span class='rparen token'>)</span>
-  <span class='@background ivar id'>@background</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='symbol val'>:background</span><span class='comma token'>,</span> <span class='false false kw'>false</span><span class='rparen token'>)</span>
-  <span class='@log ivar id'>@log</span>        <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:log</span><span class='rbrack token'>]</span>
+  <span class='ivar'>@jar</span>        <span class='op'>=</span> <span class='id jar'>jar</span>
+  <span class='ivar'>@host</span>       <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>127.0.0.1</span><span class='tstring_end'>&quot;</span></span>
+  <span class='ivar'>@port</span>       <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='comma'>,</span> <span class='int'>4444</span><span class='rparen'>)</span>
+  <span class='ivar'>@timeout</span>    <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='comma'>,</span> <span class='int'>30</span><span class='rparen'>)</span>
+  <span class='ivar'>@background</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:background</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
+  <span class='ivar'>@log</span>        <span class='op'>=</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span>
 
-  <span class='@additional_args ivar id'>@additional_args</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@additional_args</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -433,14 +440,16 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Download the given version of the selenium-server-standalone jar.</p>
+    <p>
+Download the given version of the selenium-server-standalone jar.
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -493,49 +502,48 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 39</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='download identifier id'>download</span><span class='lparen token'>(</span><span class='required_version identifier id'>required_version</span><span class='rparen token'>)</span>
-  <span class='required_version identifier id'>required_version</span> <span class='assign token'>=</span> <span class='latest identifier id'>latest</span> <span class='if if_mod kw'>if</span> <span class='required_version identifier id'>required_version</span> <span class='eq op'>==</span> <span class='symbol val'>:latest</span>
-  <span class='download_file_name identifier id'>download_file_name</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;selenium-server-standalone-#{required_version}.jar&quot;</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id download'>download</span><span class='lparen'>(</span><span class='id required_version'>required_version</span><span class='rparen'>)</span>
+  <span class='id required_version'>required_version</span> <span class='op'>=</span> <span class='id latest'>latest</span> <span class='kw'>if</span> <span class='id required_version'>required_version</span> <span class='op'>==</span> <span class='symbol'>:latest</span>
+  <span class='id download_file_name'>download_file_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium-server-standalone-</span><span class='embexpr_beg'>#{</span><span class='id required_version'>required_version</span><span class='rbrace'>}</span><span class='tstring_content'>.jar</span><span class='tstring_end'>&quot;</span></span>
 
-  <span class='if if kw'>if</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exists? fid id'>exists?</span> <span class='download_file_name identifier id'>download_file_name</span>
-    <span class='return return kw'>return</span> <span class='download_file_name identifier id'>download_file_name</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id exists?'>exists?</span> <span class='id download_file_name'>download_file_name</span>
+    <span class='kw'>return</span> <span class='id download_file_name'>download_file_name</span>
+  <span class='kw'>end</span>
 
-  <span class='begin begin kw'>begin</span>
-    <span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='download_file_name identifier id'>download_file_name</span><span class='comma token'>,</span> <span class='string val'>&quot;wb&quot;</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='destination identifier id'>destination</span><span class='bitor op'>|</span>
-      <span class='net_http identifier id'>net_http</span><span class='dot token'>.</span><span class='start identifier id'>start</span><span class='lparen token'>(</span><span class='string val'>&quot;selenium.googlecode.com&quot;</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='http identifier id'>http</span><span class='bitor op'>|</span>
-        <span class='resp identifier id'>resp</span> <span class='assign token'>=</span> <span class='http identifier id'>http</span><span class='dot token'>.</span><span class='request_get identifier id'>request_get</span><span class='lparen token'>(</span><span class='dstring node'>&quot;/files/#{download_file_name}&quot;</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='response identifier id'>response</span><span class='bitor op'>|</span>
-          <span class='total identifier id'>total</span> <span class='assign token'>=</span> <span class='response identifier id'>response</span><span class='dot token'>.</span><span class='content_length identifier id'>content_length</span>
-          <span class='progress identifier id'>progress</span> <span class='assign token'>=</span> <span class='integer val'>0</span>
-          <span class='segment_count identifier id'>segment_count</span> <span class='assign token'>=</span> <span class='integer val'>0</span>
+  <span class='kw'>begin</span>
+    <span class='id open'>open</span><span class='lparen'>(</span><span class='id download_file_name'>download_file_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wb</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id destination'>destination</span><span class='op'>|</span>
+      <span class='id net_http'>net_http</span><span class='period'>.</span><span class='id start'>start</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium.googlecode.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id http'>http</span><span class='op'>|</span>
+        <span class='id resp'>resp</span> <span class='op'>=</span> <span class='id http'>http</span><span class='period'>.</span><span class='id request_get'>request_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/files/</span><span class='embexpr_beg'>#{</span><span class='id download_file_name'>download_file_name</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id response'>response</span><span class='op'>|</span>
+          <span class='id total'>total</span> <span class='op'>=</span> <span class='id response'>response</span><span class='period'>.</span><span class='id content_length'>content_length</span>
+          <span class='id progress'>progress</span> <span class='op'>=</span> <span class='int'>0</span>
+          <span class='id segment_count'>segment_count</span> <span class='op'>=</span> <span class='int'>0</span>
 
-          <span class='response identifier id'>response</span><span class='dot token'>.</span><span class='read_body identifier id'>read_body</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='segment identifier id'>segment</span><span class='bitor op'>|</span>
-            <span class='progress identifier id'>progress</span> <span class='opasgn op'>+=</span> <span class='segment identifier id'>segment</span><span class='dot token'>.</span><span class='length identifier id'>length</span>
-            <span class='segment_count identifier id'>segment_count</span> <span class='opasgn op'>+=</span> <span class='integer val'>1</span>
+          <span class='id response'>response</span><span class='period'>.</span><span class='id read_body'>read_body</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id segment'>segment</span><span class='op'>|</span>
+            <span class='id progress'>progress</span> <span class='op'>+=</span> <span class='id segment'>segment</span><span class='period'>.</span><span class='id length'>length</span>
+            <span class='id segment_count'>segment_count</span> <span class='op'>+=</span> <span class='int'>1</span>
 
-            <span class='if if kw'>if</span> <span class='segment_count identifier id'>segment_count</span> <span class='mod op'>%</span> <span class='integer val'>15</span> <span class='eq op'>==</span> <span class='integer val'>0</span>
-              <span class='percent identifier id'>percent</span> <span class='assign token'>=</span> <span class='lparen token'>(</span><span class='progress identifier id'>progress</span><span class='dot token'>.</span><span class='to_f identifier id'>to_f</span> <span class='div op'>/</span> <span class='total identifier id'>total</span><span class='dot token'>.</span><span class='to_f identifier id'>to_f</span><span class='rparen token'>)</span> <span class='mult op'>*</span> <span class='integer val'>100</span>
-              <span class='print identifier id'>print</span> <span class='dstring node'>&quot;#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})&quot;</span>
-              <span class='segment_count identifier id'>segment_count</span> <span class='assign token'>=</span> <span class='integer val'>0</span>
-            <span class='end end kw'>end</span>
+            <span class='kw'>if</span> <span class='id segment_count'>segment_count</span> <span class='op'>%</span> <span class='int'>15</span> <span class='op'>==</span> <span class='int'>0</span>
+              <span class='id percent'>percent</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id progress'>progress</span><span class='period'>.</span><span class='id to_f'>to_f</span> <span class='op'>/</span> <span class='id total'>total</span><span class='period'>.</span><span class='id to_f'>to_f</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='int'>100</span>
+              <span class='id print'>print</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>CL_RESET</span><span class='rbrace'>}</span><span class='tstring_content'>Downloading </span><span class='embexpr_beg'>#{</span><span class='id download_file_name'>download_file_name</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id percent'>percent</span><span class='period'>.</span><span class='id to_i'>to_i</span><span class='rbrace'>}</span><span class='tstring_content'>% (</span><span class='embexpr_beg'>#{</span><span class='id progress'>progress</span><span class='rbrace'>}</span><span class='tstring_content'> / </span><span class='embexpr_beg'>#{</span><span class='id total'>total</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+              <span class='id segment_count'>segment_count</span> <span class='op'>=</span> <span class='int'>0</span>
+            <span class='kw'>end</span>
 
-            <span class='destination identifier id'>destination</span><span class='dot token'>.</span><span class='write identifier id'>write</span><span class='lparen token'>(</span><span class='segment identifier id'>segment</span><span class='rparen token'>)</span>
-          <span class='end end kw'>end</span>
-        <span class='end end kw'>end</span>
+            <span class='id destination'>destination</span><span class='period'>.</span><span class='id write'>write</span><span class='lparen'>(</span><span class='id segment'>segment</span><span class='rparen'>)</span>
+          <span class='kw'>end</span>
+        <span class='kw'>end</span>
 
-        <span class='unless unless kw'>unless</span> <span class='resp identifier id'>resp</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Net constant id'>Net</span><span class='colon2 op'>::</span><span class='HTTPSuccess constant id'>HTTPSuccess</span>
-          <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='comma token'>,</span> <span class='dstring node'>&quot;#{resp.code} for #{download_file_name}&quot;</span>
-        <span class='end end kw'>end</span>
-      <span class='end end kw'>end</span>
-    <span class='end end kw'>end</span>
-  <span class='rescue rescue kw'>rescue</span>
-    <span class='FileUtils constant id'>FileUtils</span><span class='dot token'>.</span><span class='rm identifier id'>rm</span> <span class='download_file_name identifier id'>download_file_name</span> <span class='if if_mod kw'>if</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='exists? fid id'>exists?</span> <span class='download_file_name identifier id'>download_file_name</span>
-    <span class='raise identifier id'>raise</span>
-  <span class='end end kw'>end</span>
+        <span class='kw'>unless</span> <span class='id resp'>resp</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>HTTPSuccess</span>
+          <span class='id raise'>raise</span> <span class='const'>Error</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id resp'>resp</span><span class='period'>.</span><span class='id code'>code</span><span class='rbrace'>}</span><span class='tstring_content'> for </span><span class='embexpr_beg'>#{</span><span class='id download_file_name'>download_file_name</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+        <span class='kw'>end</span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>rescue</span>
+    <span class='const'>FileUtils</span><span class='period'>.</span><span class='id rm'>rm</span> <span class='id download_file_name'>download_file_name</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id exists?'>exists?</span> <span class='id download_file_name'>download_file_name</span>
+    <span class='id raise'>raise</span>
+  <span class='kw'>end</span>
 
-  <span class='download_file_name identifier id'>download_file_name</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id download_file_name'>download_file_name</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -561,10 +569,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 31</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='required_version identifier id'>required_version</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='download identifier id'>download</span><span class='lparen token'>(</span><span class='required_version identifier id'>required_version</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='id required_version'>required_version</span><span class='comma'>,</span> <span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='id download'>download</span><span class='lparen'>(</span><span class='id required_version'>required_version</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -579,14 +586,16 @@
   
 </p><div class="docstring">
   <div class="discussion">
-    
-<p>Ask Google Code what the latest selenium-server-standalone version is.</p>
+    <p>
+Ask Google Code what the latest selenium-server-standalone version is.
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -603,13 +612,12 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 86</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='latest identifier id'>latest</span>
-  <span class='net_http identifier id'>net_http</span><span class='dot token'>.</span><span class='start identifier id'>start</span><span class='lparen token'>(</span><span class='string val'>&quot;code.google.com&quot;</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='http identifier id'>http</span><span class='bitor op'>|</span>
-    <span class='resp identifier id'>resp</span> <span class='assign token'>=</span> <span class='http identifier id'>http</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='string val'>&quot;/p/selenium/downloads/list&quot;</span><span class='rparen token'>)</span>
-    <span class='resp identifier id'>resp</span><span class='dot token'>.</span><span class='body identifier id'>body</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='lbrack token'>[</span><span class='regexp val'>/selenium-server-standalone-(\d+.\d+.\d+).jar/</span><span class='comma token'>,</span> <span class='integer val'>1</span><span class='rbrack token'>]</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id latest'>latest</span>
+  <span class='id net_http'>net_http</span><span class='period'>.</span><span class='id start'>start</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>code.google.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id http'>http</span><span class='op'>|</span>
+    <span class='id resp'>resp</span> <span class='op'>=</span> <span class='id http'>http</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/p/selenium/downloads/list</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id resp'>resp</span><span class='period'>.</span><span class='id body'>body</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>selenium-server-standalone-(\d+.\d+.\d+).jar</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='int'>1</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -645,14 +653,13 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 135</span>
 
-<span class='def def kw'>def</span> <span class='lshft op'>&lt;&lt;</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Array constant id'>Array</span><span class='rparen token'>)</span>
-    <span class='@additional_args ivar id'>@additional_args</span> <span class='opasgn op'>+=</span> <span class='arg identifier id'>arg</span>
-  <span class='else else kw'>else</span>
-    <span class='@additional_args ivar id'>@additional_args</span> <span class='lshft op'>&lt;&lt;</span> <span class='arg identifier id'>arg</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id arg'>arg</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id arg'>arg</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
+    <span class='ivar'>@additional_args</span> <span class='op'>+=</span> <span class='id arg'>arg</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@additional_args</span> <span class='op'>&lt;&lt;</span> <span class='id arg'>arg</span><span class='period'>.</span><span class='id to_s'>to_s</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -687,19 +694,18 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 106</span>
 
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='process identifier id'>process</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
-  <span class='poll_for_service identifier id'>poll_for_service</span>
+<span class='kw'>def</span> <span class='id start'>start</span>
+  <span class='id process'>process</span><span class='period'>.</span><span class='id start'>start</span>
+  <span class='id poll_for_service'>poll_for_service</span>
 
-  <span class='unless unless kw'>unless</span> <span class='@background ivar id'>@background</span>
-    <span class='begin begin kw'>begin</span>
-      <span class='sleep identifier id'>sleep</span> <span class='integer val'>1</span> <span class='while while_mod kw'>while</span> <span class='process identifier id'>process</span><span class='dot token'>.</span><span class='alive? fid id'>alive?</span>
-    <span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECHILD constant id'>ECHILD</span>
-      <span class='comment val'># no longer alive</span>
-    <span class='end end kw'>end</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='kw'>unless</span> <span class='ivar'>@background</span>
+    <span class='kw'>begin</span>
+      <span class='id sleep'>sleep</span> <span class='int'>1</span> <span class='kw'>while</span> <span class='id process'>process</span><span class='period'>.</span><span class='id alive?'>alive?</span>
+    <span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ECHILD</span>
+      <span class='comment'># no longer alive
+</span>    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -733,18 +739,17 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 119</span>
 
-<span class='def def kw'>def</span> <span class='stop identifier id'>stop</span>
-  <span class='begin begin kw'>begin</span>
-    <span class='Net constant id'>Net</span><span class='colon2 op'>::</span><span class='HTTP constant id'>HTTP</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='@host ivar id'>@host</span><span class='comma token'>,</span> <span class='string val'>&quot;/selenium-server/driver/?cmd=shutDownSeleniumServer&quot;</span><span class='comma token'>,</span> <span class='@port ivar id'>@port</span><span class='rparen token'>)</span>
-  <span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECONNREFUSED constant id'>ECONNREFUSED</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id stop'>stop</span>
+  <span class='kw'>begin</span>
+    <span class='const'>Net</span><span class='op'>::</span><span class='const'>HTTP</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/selenium-server/driver/?cmd=shutDownSeleniumServer</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='rparen'>)</span>
+  <span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ECONNREFUSED</span>
+  <span class='kw'>end</span>
 
-  <span class='stop_process identifier id'>stop_process</span> <span class='if if_mod kw'>if</span> <span class='@process ivar id'>@process</span>
-  <span class='poll_for_shutdown identifier id'>poll_for_shutdown</span>
+  <span class='id stop_process'>stop_process</span> <span class='kw'>if</span> <span class='ivar'>@process</span>
+  <span class='id poll_for_shutdown'>poll_for_shutdown</span>
 
-  <span class='@log_file ivar id'>@log_file</span><span class='dot token'>.</span><span class='close identifier id'>close</span> <span class='if if_mod kw'>if</span> <span class='@log_file ivar id'>@log_file</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@log_file</span><span class='period'>.</span><span class='id close'>close</span> <span class='kw'>if</span> <span class='ivar'>@log_file</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -770,10 +775,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 131</span>
 
-<span class='def def kw'>def</span> <span class='webdriver_url identifier id'>webdriver_url</span>
-  <span class='dstring node'>&quot;http://#{@host}:#{@port}/wd/hub&quot;</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id webdriver_url'>webdriver_url</span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -784,9 +788,9 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Oct 21 14:00:01 2011 by 
+  Generated on Thu Nov 10 15:57:35 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.3 (ruby-1.9.2).
 </div>
 
   </body>

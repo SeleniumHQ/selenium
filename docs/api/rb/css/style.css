@@ -24,6 +24,8 @@ h2 small { font-weight: normal; font-size: 0.7em; display: block; float: right; 
 .docstring h2 { font-size: 1.1em; }
 .docstring h3, .docstring h4 { font-size: 1em; border-bottom: 0; padding-top: 10px; }
 .summary_desc .object_link, .docstring .object_link { font-family: monospace; }
+.rdoc-term { padding-right: 25px; font-weight: bold; }
+.rdoc-list p { margin: 0; padding: 0; margin-bottom: 4px; }
 
 /* style for <ul> */
 #filecontents li > p, .docstring li > p { margin: 0px; }

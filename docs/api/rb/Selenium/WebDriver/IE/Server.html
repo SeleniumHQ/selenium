@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::IE::Server
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.3
   
 </title>
 
@@ -108,6 +108,7 @@
 </div>
 <div class="tags">
   
+
 </div>
 
   
@@ -141,8 +142,9 @@
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of Server.</p>
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of Server.
+</p>
 </div></span>
   
 </li>
@@ -206,9 +208,10 @@
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Starts the server, communicating on the specified port, if it is not
-already running.</p>
+    <span class="summary_desc"><div class='inline'><p>
+Starts the server, communicating on the specified port, if it is not
+already running.
+</p>
 </div></span>
   
 </li>
@@ -255,14 +258,16 @@ already running.</p>
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>A new instance of Server</p>
+<p>
+A new instance of Server
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -276,10 +281,9 @@ already running.</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/server.rb', line 26</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
-  <span class='@handle ivar id'>@handle</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span>
+  <span class='ivar'>@handle</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -311,6 +315,7 @@ already running.</p>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -324,10 +329,9 @@ already running.</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/server.rb', line 51</span>
 
-<span class='def def kw'>def</span> <span class='port identifier id'>port</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='current_port identifier id'>current_port</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id port'>port</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id class'>class</span><span class='period'>.</span><span class='id current_port'>current_port</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -351,7 +355,8 @@ already running.</p>
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -378,10 +383,9 @@ already running.</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/server.rb', line 47</span>
 
-<span class='def def kw'>def</span> <span class='running? fid id'>running?</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='is_running identifier id'>is_running</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id running?'>running?</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id class'>class</span><span class='period'>.</span><span class='id is_running'>is_running</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -400,15 +404,17 @@ already running.</p>
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>Starts the server, communicating on the specified port, if it is not
-already running</p>
+<p>
+Starts the server, communicating on the specified port, if it is not
+already running
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -425,13 +431,12 @@ already running</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/server.rb', line 34</span>
 
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span><span class='lparen token'>(</span><span class='start_port identifier id'>start_port</span><span class='rparen token'>)</span>
-  <span class='return return kw'>return</span> <span class='port identifier id'>port</span> <span class='if if_mod kw'>if</span> <span class='running? fid id'>running?</span>
-  <span class='@handle ivar id'>@handle</span> <span class='assign token'>=</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='start_server identifier id'>start_server</span><span class='lparen token'>(</span><span class='start_port identifier id'>start_port</span><span class='rparen token'>)</span>
+<span class='kw'>def</span> <span class='id start'>start</span><span class='lparen'>(</span><span class='id start_port'>start_port</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='id port'>port</span> <span class='kw'>if</span> <span class='id running?'>running?</span>
+  <span class='ivar'>@handle</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id class'>class</span><span class='period'>.</span><span class='id start_server'>start_server</span><span class='lparen'>(</span><span class='id start_port'>start_port</span><span class='rparen'>)</span>
 
-  <span class='start_port identifier id'>start_port</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id start_port'>start_port</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -456,6 +461,7 @@ already running</p>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -471,12 +477,11 @@ already running</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/server.rb', line 41</span>
 
-<span class='def def kw'>def</span> <span class='stop identifier id'>stop</span>
-  <span class='return return kw'>return</span> <span class='if if_mod kw'>if</span> <span class='session_count identifier id'>session_count</span> <span class='neq op'>!=</span> <span class='integer val'>0</span> <span class='orop op'>||</span> <span class='@handle ivar id'>@handle</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='stop_server identifier id'>stop_server</span> <span class='@handle ivar id'>@handle</span>
-  <span class='@handle ivar id'>@handle</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id stop'>stop</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id session_count'>session_count</span> <span class='op'>!=</span> <span class='int'>0</span> <span class='op'>||</span> <span class='ivar'>@handle</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id class'>class</span><span class='period'>.</span><span class='id stop_server'>stop_server</span> <span class='ivar'>@handle</span>
+  <span class='ivar'>@handle</span> <span class='op'>=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -487,9 +492,9 @@ already running</p>
 </div>
     
     <div id="footer">
-  Generated on Fri Oct 21 14:00:03 2011 by 
+  Generated on Thu Nov 10 15:57:36 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.3 (ruby-1.9.2).
 </div>
 
   </body>

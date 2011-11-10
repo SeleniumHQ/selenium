@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Opera::Service
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.3
   
 </title>
 
@@ -104,6 +104,7 @@
 </div>
 <div class="tags">
   
+
 </div>
   <h2>Constant Summary</h2>
   
@@ -122,10 +123,10 @@
 </div>
 <div class="tags">
   
+
 </div>
         </dt>
-        <dd><pre class="code"><span class='string val'>'Unable to find the Selenium server jar.  Please download the standalone server from http://code.google.com/p/selenium/downloads/list and set the SELENIUM_SERVER_JAR environmental variable to its location.  More info at http://code.google.com/p/selenium/wiki/OperaDriver.'</span>
-</pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Unable to find the Selenium server jar.  Please download the standalone server from http://code.google.com/p/selenium/downloads/list and set the SELENIUM_SERVER_JAR environmental variable to its location.  More info at http://code.google.com/p/selenium/wiki/OperaDriver.</span><span class='tstring_end'>'</span></span></pre></dd>
       
     </dl>
   
@@ -232,8 +233,9 @@
   <span class="private note title">Private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>A new instance of Service.</p>
+    <span class="summary_desc"><div class='inline'><p>
+A new instance of Service.
+</p>
 </div></span>
   
 </li>
@@ -321,14 +323,16 @@
   <strong>This method is part of a private API.</strong> 
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>A new instance of Service</p>
+<p>
+A new instance of Service
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -344,12 +348,11 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/service.rb', line 27</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='jar identifier id'>jar</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='symbol val'>:background</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span> <span class='symbol val'>:port</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='PortProber constant id'>PortProber</span><span class='dot token'>.</span><span class='random identifier id'>random</span>
-  <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='symbol val'>:log</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='notop op'>!</span><span class='notop op'>!</span><span class='$DEBUG gvar id'>$DEBUG</span> <span class='if if_mod kw'>if</span> <span class='$DEBUG gvar id'>$DEBUG</span>
-  <span class='@server ivar id'>@server</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Server constant id'>Server</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='expand_path identifier id'>expand_path</span><span class='lparen token'>(</span><span class='jar identifier id'>jar</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id jar'>jar</span><span class='comma'>,</span> <span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id opts'>opts</span><span class='period'>.</span><span class='id merge!'>merge!</span> <span class='symbol'>:background</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='symbol'>:port</span> <span class='op'>=&gt;</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id random'>random</span>
+  <span class='id opts'>opts</span><span class='period'>.</span><span class='id merge!'>merge!</span> <span class='symbol'>:log</span> <span class='op'>=&gt;</span> <span class='op'>!</span><span class='op'>!</span><span class='gvar'>$DEBUG</span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
+  <span class='ivar'>@server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id new'>new</span> <span class='const'>File</span><span class='period'>.</span><span class='id expand_path'>expand_path</span><span class='lparen'>(</span><span class='id jar'>jar</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id opts'>opts</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -381,6 +384,7 @@
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -394,10 +398,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/service.rb', line 23</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='default_service identifier id'>default_service</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
-  <span class='new identifier id'>new</span> <span class='selenium_server_jar identifier id'>selenium_server_jar</span><span class='comma token'>,</span> <span class='opts identifier id'>opts</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id default_service'>default_service</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span> <span class='id selenium_server_jar'>selenium_server_jar</span><span class='comma'>,</span> <span class='id opts'>opts</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -422,6 +425,7 @@
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -437,12 +441,11 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/service.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='selenium_server_jar identifier id'>selenium_server_jar</span>
-  <span class='@selenium_server_jar ivar id'>@selenium_server_jar</span> <span class='opasgn op'>||=</span> <span class='lparen token'>(</span>
-    <span class='ENV constant id'>ENV</span><span class='lbrack token'>[</span><span class='string val'>'SELENIUM_SERVER_JAR'</span><span class='rbrack token'>]</span> <span class='or or kw'>or</span> <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='MISSING_TEXT constant id'>MISSING_TEXT</span>
-  <span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id selenium_server_jar'>selenium_server_jar</span>
+  <span class='ivar'>@selenium_server_jar</span> <span class='op'>||=</span> <span class='lparen'>(</span>
+    <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>SELENIUM_SERVER_JAR</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>or</span> <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='const'>MISSING_TEXT</span>
+  <span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -467,6 +470,7 @@
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -481,11 +485,10 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/service.rb', line 18</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='selenium_server_jar identifier id'>selenium_server_jar</span><span class='assign token'>=</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
-  <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='assert_file identifier id'>assert_file</span> <span class='path identifier id'>path</span>
-  <span class='@selenium_server_jar ivar id'>@selenium_server_jar</span> <span class='assign token'>=</span> <span class='path identifier id'>path</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id selenium_server_jar='>selenium_server_jar=</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id assert_file'>assert_file</span> <span class='id path'>path</span>
+  <span class='ivar'>@selenium_server_jar</span> <span class='op'>=</span> <span class='id path'>path</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -516,6 +519,7 @@
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -530,11 +534,10 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/service.rb', line 37</span>
 
-<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
-  <span class='@server ivar id'>@server</span><span class='dot token'>.</span><span class='start identifier id'>start</span>
-  <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='exit_hook identifier id'>exit_hook</span> <span class='lbrace token'>{</span> <span class='stop identifier id'>stop</span> <span class='rbrace token'>}</span>  <span class='comment val'># make sure we don't leave the server running</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id start'>start</span>
+  <span class='ivar'>@server</span><span class='period'>.</span><span class='id start'>start</span>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id exit_hook'>exit_hook</span> <span class='lbrace'>{</span> <span class='id stop'>stop</span> <span class='rbrace'>}</span>  <span class='comment'># make sure we don't leave the server running
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -559,6 +562,7 @@
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -572,10 +576,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/service.rb', line 42</span>
 
-<span class='def def kw'>def</span> <span class='stop identifier id'>stop</span>
-  <span class='@server ivar id'>@server</span><span class='dot token'>.</span><span class='stop identifier id'>stop</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id stop'>stop</span>
+  <span class='ivar'>@server</span><span class='period'>.</span><span class='id stop'>stop</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -600,6 +603,7 @@
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -613,10 +617,9 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/opera/service.rb', line 33</span>
 
-<span class='def def kw'>def</span> <span class='uri identifier id'>uri</span>
-  <span class='@server ivar id'>@server</span><span class='dot token'>.</span><span class='webdriver_url identifier id'>webdriver_url</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id uri'>uri</span>
+  <span class='ivar'>@server</span><span class='period'>.</span><span class='id webdriver_url'>webdriver_url</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -627,9 +630,9 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Oct 21 14:00:09 2011 by 
+  Generated on Thu Nov 10 15:57:38 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.3 (ruby-1.9.2).
 </div>
 
   </body>
