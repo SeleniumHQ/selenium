@@ -645,6 +645,8 @@ task :webdriverjs do
             "typeof exports !== 'undefined' && exports == this ? " +
             "exports : this.webdriver = this.webdriver || {})"
 
+  output_file = "build/javascript/webdriver-jsapi/webdriver.js"
+
   # TODO(jleyba): Write a Java app that compiles webdriver.js with custom
   # settings for us. We want SIMPLE_OPTIMIZATIONS (what's used here), but we
   # also want all dead code removed. There's a lot of Closure pulled in that
@@ -655,7 +657,7 @@ task :webdriverjs do
     "#{py} third_party/closure/bin/calcdeps.py",
     "-c third_party/closure/bin/compiler-20110502.jar",
     "-o compiled",
-    '-f "--js_output_file=build/javascript/webdriver-jsapi/webdriver.js"',
+    "-f \"--js_output_file=#{output_file}\"",
     '-f "--generate_exports"',
     '-f "--formatting=PRETTY_PRINT"',
     "-f \"--output_wrapper='#{wrapper}'\"",
@@ -663,6 +665,8 @@ task :webdriverjs do
     '-p third_party/closure/goog'
   ]
   cmd = cmd.concat(files)
+
+  mkdir_p File.dirname(output_file)
 
   sh "#{cmd.join(' ')}"
 end
