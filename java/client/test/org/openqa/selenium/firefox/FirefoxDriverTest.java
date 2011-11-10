@@ -532,7 +532,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       fail("Expected an exception to be thrown because the instance is dead.");
     } catch (WebDriverException e) {
       assertTrue("Unexpected exception message:" + e.getMessage(),
-          e.getMessage().contains("cannot be used after quit"));
+          e.getMessage().contains("It may have died"));
     }
 
   }
