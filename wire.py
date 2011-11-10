@@ -523,6 +523,21 @@ closely matches the desired capabilities.''').
                     ' `:sessionId` is the ID of the newly created session.'))
 
   resources.append(
+      Resource('/sessions').
+      Get('''
+Returns a list of the currently active sessions. Each session will be \
+returned as a list of JSON objects with the following keys:
+
+|| *Key* || *Type* || *Description ||
+|| id || string || The session ID. ||
+|| capabilities || object || An object describing the session's \
+[#Actual_Capabilities capabilities]. ||
+
+''').
+      SetReturnType('{Array.<Object>}',
+                    'A list of the currently active sessions.'))
+
+  resources.append(
       SessionResource('/session/:sessionId').
       Get('Retrieve the capabilities of the specified session.').
       SetReturnType('{object}',
