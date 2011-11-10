@@ -20,10 +20,12 @@ package org.openqa.selenium;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.Ignore.NativeEventsEnabledState.DISABLED;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 
@@ -63,6 +65,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = FIREFOX, reason = "Consistently broken in xvfb") 
   public void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
@@ -92,6 +95,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
+  @Ignore(value = FIREFOX, reason = "Consistently broken in xvfb")
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
