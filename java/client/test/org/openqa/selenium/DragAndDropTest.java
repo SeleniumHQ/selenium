@@ -40,11 +40,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testDragAndDrop() throws Exception {
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
-      return;
-    }
-
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
@@ -69,10 +64,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testElementInDiv() {
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      System.out.println("Skipping testElementInDiv on Mac: See issue 2281.");
-      return;
-    }
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
