@@ -81,71 +81,37 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
       fxdriver.moz.unwrap(target) : this.lastElement;
   this.lastElement = element;
 
-  //-----------------------------------------------------------------
-  // No need to scroll the element into view - calling getInViewLocation
-  // later on with the right coordinates will scroll properly.
-  var loc = Utils.getLocation(this.lastElement);
-
-  var xDestination = xOffset || null;
-  var yDestination = yOffset || null;
-
-  var elementXMoveOffset;
-  var elementYMoveOffset;
-
-  // An element was provided - either use the middle of the element for the
-  // move or xOffset, yOffset, if provided.
-  if (target) {
-    if (goog.isNull(xDestination)) {
-      var size = goog.style.getSize(element);
-      elementXMoveOffset = size.width / 2;
-      elementYMoveOffset = size.height / 2;
-    } else {
-      elementXMoveOffset = xDestination;
-      elementYMoveOffset = yDestination;
-    }
-  } else {
-    // No target - will move lastElement by the provided offset.
-    elementXMoveOffset = xDestination;
-    elementYMoveOffset = yDestination;
-  }
-
-  // toX, toY are the *DOM* coordinates. These coordinates must be provided to
-  // getInViewLocation so the right location will be scrolled into view.
-  var toX = loc.x + elementXMoveOffset;
-  var toY = loc.y + elementYMoveOffset;
-
-  fxdriver.Logger.dumpn("Coordinates into viewport: " + toX + "," + toY +
-      " (movement offset: " + elementXMoveOffset + ", " + elementYMoveOffset + ")");
+  xOffset = xOffset || 0;
+  yOffset = yOffset || 0;
 
   var doc = goog.dom.getOwnerDocument(element);
   var win = goog.dom.getWindow(doc);
   bot.setWindow(goog.dom.getWindow(doc));
-  // the Mouse must be created after calling bot.setWindow. Otherwise, an
-  // exception will be thrown claiming bot.getDocument() is not defined.
   var mouse = new bot.Mouse();
-  var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
 
-  var to;
-  try {
-    to = bot.dom.getInViewLocation(
-        new goog.math.Coordinate(Math.floor(toX), Math.floor(toY)), win);
-  } catch (ex) {
-    if (!isOption && (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS)) {
-      var windowSize = bot.window.getInteractableSize(win);
-      return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-          'After getting in-view location, target (' + toX + ', ' + toY +
-          ') is outside the bounds of the document (' + windowSize.width + ', ' +
-          windowSize.height + '). Original message: ' + ex.message);
-    }
-    else {
-      if (!isOption) {
-        return SyntheticMouse.newResponse(bot.ErrorCode.UNKNOWN_ERROR,
-            ex);
-      }
-    }
+  if (goog.isFunction(element.scrollIntoView)) {
+     goog.style.scrollIntoContainerView(element, doc.documentElement);
   }
 
-  var coords = new goog.math.Coordinate(elementXMoveOffset, elementYMoveOffset);
+  // Check to see if the given positions and offsets are outside of the window
+  // Are we about to be dragged out of the window?
+  var windowSize = bot.window.getInteractableSize(win);
+
+  var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
+  var pos = Utils.getElementLocation(element);
+
+  var targetX = pos.x + xOffset;
+  var targetY = pos.y + yOffset;
+
+  if (!isOption &&
+      (targetX > windowSize.width || targetY > windowSize.height)) {
+    return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+        'Requested location (' + targetX + ', ' + targetY +
+        ') is outside the bounds of the document (' + windowSize.width + ', ' +
+        windowSize.height + ')');
+  }
+
+  var coords = new goog.math.Coordinate(xOffset, yOffset);
   mouse.move(element, coords);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
