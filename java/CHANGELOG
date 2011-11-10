@@ -1,8 +1,45 @@
+v2.12.0
+=======
+
+RC
+  * Disabled web security checks for Chrome by default. 
+  * Actually reenabling *safariproxy.
+
+WebDriver
+  * Firefox 8 support enabled
+  * Added @Beta annotation. Any method marked with this may be deleted
+    or changed without notification.
+  * Added @Beta Window control for Firefox in Ruby and Java. This
+    allows resizing and moving.
+  * Renamed FirefoxProfile.enableNativeEvents() to
+    FirefoxProfile.areNativeEventsEnabled(). Deprecated original
+    method. Will be removed in 2.13.
+  * Renamed FirefoxProfile.alwaysLoadNoFocusLib() to
+    FirefoxProfile.shouldLoadNoFocusLib(). Deprecated original
+    method. Will be removed in 2.13.
+  * Better reporting of page size when attempting to move out of bounds.
+  * More informative error message when a remote webdriver client
+    fails to connect to the browser.
+  * PageFactory now only decorates WebElement lists.
+  * Calling WebElement.clear on a disabled or readOnly element will
+    throw an InvalidElementStateException.
+  * WebDriver.getWindowHandle will throw a NoSuchWindowException if
+    the window is closed.
+  * FIXED: 1498: HtmlUnit no longer finds containing element when
+    searching by CSS.
+
+Grid
+  * Made Grid orphan check only apply to Se1 clients.
+
+Atoms
+  * Implemented clear action for contentEditable elements.
+
+
 v2.11.0
-======
+=======
 
 RC:
-  *  Safari proxy added back to the supported browser.
+  * Safari proxy added back to the supported browser.
 
 
 v2.10.0
@@ -204,7 +241,6 @@ WebDriver:
 Grid:
   * Adding support for a "host" variable in the config files.
   * Additional logging
-
 
 
 v2.1.0
