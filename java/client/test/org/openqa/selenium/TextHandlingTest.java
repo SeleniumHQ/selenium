@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -223,7 +224,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore
+  @Ignore(ALL)
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
     driver.get(pages.xhtmlTestPage);
 

@@ -20,6 +20,7 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
+import static org.openqa.selenium.Ignore.Driver.ALL;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
@@ -133,7 +134,7 @@ public class ClickTest extends AbstractDriverTestCase {
     assertEquals("click", log);
   }
 
-  @Ignore //TODO(danielwh): Unignore
+  @Ignore(ALL) //TODO(danielwh): Unignore
   public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
     driver.findElement(By.id("twoClientRects")).click();
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));

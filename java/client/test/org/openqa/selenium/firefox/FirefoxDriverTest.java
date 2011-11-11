@@ -176,7 +176,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore
+  @Ignore(FIREFOX)
   public void testShouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 
