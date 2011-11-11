@@ -241,7 +241,8 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     // Unless the element already had focus, set the cursor location to the end of the line
     // TODO(simon): This seems a little arbitrary.
     if(!alreadyFocused && bot.dom.isEditable(element)) {
-        goog.dom.selection.setCursorPosition(element, element.value.length);
+        var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
+        goog.dom.selection.setCursorPosition(element, length);
     }
 
     Utils.type(respond.session.getDocument(), use, parameters.value.join(''),
