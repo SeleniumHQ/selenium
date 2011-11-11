@@ -168,7 +168,8 @@ Response.prototype.sendRedirect = function(location) {
  * @param {string} opt_contentType An optional content type to send with the
  *     error response.
  */
-Response.prototype.sendError = function(code, opt_message, opt_contentType) {  this.setStatus(code);
+Response.prototype.sendError = function(code, opt_message, opt_contentType) {
+  this.setStatus(code);
   this.setBody(opt_message || '');
   if (opt_contentType) {
     this.setContentType(opt_contentType);
