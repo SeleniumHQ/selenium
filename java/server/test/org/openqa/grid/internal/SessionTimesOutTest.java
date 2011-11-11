@@ -209,7 +209,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  @Test(timeout = 4000)
+  @Test(timeout = 10000)
   public void stupidConfig() throws InterruptedException {
     Object[][] configs = new Object[][]{
         // correct config, just to check something happens
