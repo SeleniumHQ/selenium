@@ -171,6 +171,7 @@ public class Registry {
         for (TestSlot slot : p.getTestSlots()) {
           forceRelease(slot);
         }
+        p.teardown();
       }
   }
 

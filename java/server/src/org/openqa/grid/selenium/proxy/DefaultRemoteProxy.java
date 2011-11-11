@@ -259,4 +259,11 @@ public class DefaultRemoteProxy extends RemoteProxy
     // TODO Auto-generated method stub
 
   }
+
+  @Override
+  public void teardown() {
+    super.teardown();
+    stopPolling();
+  };
+
 }
