@@ -345,6 +345,9 @@ public class RegistrationRequest {
       res.nodeJSON = value;
       res.loadFromJSON(value);
     }
+    
+    // from command line
+    res.loadFromCommandLine(args);
 
     String host = (String) res.configuration.get(HOST);
     if ("ip".equalsIgnoreCase(host)) {
@@ -357,8 +360,7 @@ public class RegistrationRequest {
       res.configuration.put(HOST, guessedHost);
     }
 
-    // from command line
-    res.loadFromCommandLine(args);
+   
 
     // some values can be calculated.
     if (res.configuration.get(REMOTE_HOST) == null) {
