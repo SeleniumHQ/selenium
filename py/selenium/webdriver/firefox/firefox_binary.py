@@ -55,7 +55,7 @@ class FirefoxBinary(object):
         os.environ["MOZ_NO_REMOTE"] = "1"
         os.environ["NO_EM_RESTART"] = "1"
         Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=PIPE).wait()
-        self.process = Popen([self._start_cmd], stdout=PIPE, stderr=PIPE)
+        self.process = Popen([self._start_cmd, "-foreground"], stdout=PIPE, stderr=PIPE)
 
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""

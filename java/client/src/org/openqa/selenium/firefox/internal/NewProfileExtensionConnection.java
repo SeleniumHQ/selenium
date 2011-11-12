@@ -80,7 +80,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection {
       File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
       process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
 
-      process.startProfile(profile, profileDir);
+      process.startProfile(profile, profileDir, "-foreground");
 
       // Just for the record; the critical section is all along while firefox is starting with the
       // profile.

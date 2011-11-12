@@ -59,7 +59,7 @@ module Selenium
 
         def start
           assert_profile
-          @binary.start_with @profile, @profile_dir
+          @binary.start_with @profile, @profile_dir, "-foreground"
         end
 
         def start_silent_and_wait

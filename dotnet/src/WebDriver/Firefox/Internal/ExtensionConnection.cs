@@ -89,7 +89,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     this.profile.Port = portToUse;
                     this.profile.WriteToDisk();
                     this.process.Clean(this.profile);
-                    this.process.StartProfile(this.profile, null);
+                    this.process.StartProfile(this.profile, new string[] { "-foreground" });
 
                     this.SetAddress(portToUse);
 
