@@ -590,8 +590,11 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
     newWindow = currentWindow.frames[parameters.id];
   } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
     fxdriver.Logger.dumpn("Switching to frame by element: " + parameters.id['ELEMENT']);
+
     var element = Utils.getElementAt(parameters.id['ELEMENT'],
         currentWindow.document);
+
+    element = fxdriver.moz.unwrapFor4(element)
 
     if (/^i?frame$/i.test(element.tagName)) {
       // Each session maintains a weak reference to the window it is currently
@@ -1030,8 +1033,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   
   // Fast path first
   if (!this.enableNativeEvents) {
-    var raw = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
-    var target = raw ? new XPCNativeWrapper(raw) : null;
+    var target = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
     fxdriver.Logger.dumpn("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
     var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
     this.sendResponseFromSyntheticMouse_(result, respond);

@@ -273,7 +273,7 @@ Utils.getElementAt = function(index, rawDoc) {
         'Element not found in the cache');
   }
 
-  return fxdriver.moz.unwrapFor4(e);
+  return e;
 };
 
 

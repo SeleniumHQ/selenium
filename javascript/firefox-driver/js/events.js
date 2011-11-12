@@ -43,11 +43,6 @@ fxdriver.events.buildCoordinates = function(parameters, doc) {
   var x = parameters['xoffset'] || null;
   var y = parameters['yoffset'] || null;
 
-  var auxiliaryToReturn = null;
-  if (element) {
-    auxiliaryToReturn = new XPCNativeWrapper(element);
-  }
-
   // An element was specified, but not an offset within the element.
   // In this case, the default behaivour is to use the middle of the
   // element as the coordinates.
@@ -61,7 +56,7 @@ fxdriver.events.buildCoordinates = function(parameters, doc) {
   return {
     x: x,
     y: y,
-    auxiliary: auxiliaryToReturn,
+    auxiliary: element,
 
     QueryInterface: fxdriver.moz.queryInterface(this,
       [CI.nsISupports, CI.wdICoordinate])
