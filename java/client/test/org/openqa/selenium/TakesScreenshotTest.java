@@ -17,10 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.OutputType.BASE64;
 
 import java.io.File;
 
+@Ignore(IPHONE)
 public class TakesScreenshotTest extends AbstractDriverTestCase {
   public void testSaveScreenshotAsFile() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {

@@ -57,6 +57,7 @@
 	<classpathentry kind="lib" path="third_party/java/jcip-annotations/jcip-annotations-1.0.jar"/>
 	<classpathentry kind="lib" path="third_party/java/commons-jxpath/commons-jxpath-1.3.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jmock/jmock-legacy-2.5.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/commons-exec/commons-exec-1.1.jar" sourcepath="third_party/java/commons-exec/commons-exec-1.1-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/objenesis-1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/webbit"/>
 	<classpathentry kind="output" path="out/production/selenium"/>

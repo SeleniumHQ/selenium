@@ -19,8 +19,10 @@ limitations under the License.
 
 package org.openqa.selenium.io;
 
+import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.BufferedReader;
@@ -34,13 +36,15 @@ import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
+import java.util.List;
 
 /**
  * Utility methods for common filesystem activities
  */
 public class FileHandler {
   private static final Method JDK6_SETWRITABLE = findJdk6SetWritableMethod();
-  private static final File CHMOD_SETWRITABLE = findChmodCommand();
+  private static final Method JDK6_SETEXECUTABLE = findJdk6SetExecutableMethod();
+  private static final File CHMOD = findChmodCommand();
 
   // TODO(simon): Move to using Zip class
   public static File unzip(InputStream resource) throws IOException {
@@ -60,7 +64,11 @@ public class FileHandler {
       try {
         zip.unzipFile(outputDir, is, name);
       } finally {
-        Closeables.closeQuietly(is);
+        try {
+          Closeables.closeQuietly(is);
+        } catch (Exception e) {
+          
+        }
       }
     }
   }
@@ -68,7 +76,12 @@ public class FileHandler {
   private static InputStream locateResource(Class<?> forClassLoader, String name)
       throws IOException {
     String arch = System.getProperty("os.arch").toLowerCase() + "/";
-    String[] alternatives = {name, "/" + name, arch + name, "/" + arch + name};
+    List<String> alternatives =
+        Lists.newArrayList(name, "/" + name, arch + name, "/" + arch + name);
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      alternatives.add("mac/" + name);
+      alternatives.add("/mac/" + name);
+    }
 
     // First look using our own classloader
     for (String possibility : alternatives) {
@@ -113,12 +126,38 @@ public class FileHandler {
       } catch (InvocationTargetException e) {
         // Do nothing. We return false in the end
       }
-    } else if (CHMOD_SETWRITABLE != null) {
+    } else if (CHMOD != null) {
       try {
         Process process = Runtime.getRuntime().exec(
-            new String[] {CHMOD_SETWRITABLE.getAbsolutePath(), "+x", file.getAbsolutePath()});
+            new String[] {CHMOD.getAbsolutePath(), "+w", file.getAbsolutePath()});
         process.waitFor();
         return file.canWrite();
+      } catch (InterruptedException e1) {
+        throw new WebDriverException(e1);
+      }
+    }
+    return false;
+  }
+
+  public static boolean makeExecutable(File file) throws IOException {
+    if (file.canExecute()) {
+      return true;
+    }
+
+    if (JDK6_SETEXECUTABLE != null) {
+      try {
+        return (Boolean) JDK6_SETEXECUTABLE.invoke(file, true);
+      } catch (IllegalAccessException e) {
+        // Do nothing. We return false in the end
+      } catch (InvocationTargetException e) {
+        // Do nothing. We return false in the end
+      }
+    } else if (CHMOD != null) {
+      try {
+        Process process = Runtime.getRuntime().exec(
+            new String[] {CHMOD.getAbsolutePath(), "+x", file.getAbsolutePath()});
+        process.waitFor();
+        return file.canExecute();
       } catch (InterruptedException e1) {
         throw new WebDriverException(e1);
       }
@@ -207,6 +246,17 @@ public class FileHandler {
   private static Method findJdk6SetWritableMethod() {
     try {
       return File.class.getMethod("setWritable", Boolean.class);
+    } catch (NoSuchMethodException e) {
+      return null;
+    }
+  }
+
+  /**
+   * File.setWritable appears in Java 6. If we find the method, we can use it
+   */
+  private static Method findJdk6SetExecutableMethod() {
+    try {
+      return File.class.getMethod("setExecutable", Boolean.class);
     } catch (NoSuchMethodException e) {
       return null;
     }

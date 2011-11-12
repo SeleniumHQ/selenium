@@ -1,0 +1,5 @@
+
+rake_file(name = "iphonesim-binary",
+  src = [
+    "iphonesim",
+  ])

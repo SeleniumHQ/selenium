@@ -1,25 +1,36 @@
-//
-//  IPhoneSimulatorBinary.java
-//  IPhoneSimulatorBinary
-//
-//  Created by Jason Leyba on 12/10/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
-//
+/*
+ * Copyright 2011 Software Freedom Conservancy.
+ * Copyright 2011 Google Inc.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 
 package org.openqa.selenium.iphone;
 
-import com.google.common.annotations.VisibleForTesting;
-
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
-import org.openqa.selenium.remote.internal.SubProcess;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Logger;
 
 /**
  * Handles launching the iWebDriver app on the iPhone Simulator in a subprocess.
@@ -29,46 +40,17 @@ import java.util.logging.Logger;
  * killed before a new one is started.
  * 
  * <p>
- * The iPhone Simulator will be run in a headless mode against the SDK specified by the
- * {@code webdriver.iphone.sdk} system property. A temporary directory will be used as the user home
- * so the application need not be pre-installed.
+ * The iPhone Simulator will be run against the SDK specified by the {@code webdriver.iphone.sdk}
+ * system property. A temporary directory will be used as the user home so the application need not
+ * be pre-installed.
  * 
- * @author jmleyba@gmail.com (Jason Leyba)
+ * @author dawagner@gmail.com (Daniel Wagner-Hall)
  */
-public class IPhoneSimulatorBinary extends SubProcess {
-  /*
-   * TODO: Figure out how to launch iWebDriver on the simulator in a non-headless mode. (Without
-   * using the private iPhoneSimulatorRemoteClient.framework)
-   */
-
-  private static final Logger LOG = Logger.getLogger(IPhoneSimulatorBinary.class.getName());
-
+public class IPhoneSimulatorBinary {
   private static final String IPHONE_LOG_FILE_PROPERTY = "webdriver.iphone.logFile";
 
-  /**
-   * System property used to specificy which iPhone SDK to run the iPhone Simulator against. If not
-   * specified, will default to {@link #DEFAULT_SDK}.
-   */
-  private static final String IPHONE_SDK_PROPERTY = "webdriver.iphone.sdk";
-
-  /** The default iPhone SDK to use. */
-  private static final String DEFAULT_SDK = "3.2";
-
-  private static final String SDK_LOCATION_FORMAT =
-      "/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk";
-
-  /**
-   * Temporary directory used to store all generated iPhone Simulator scripts.
-   */
-  private static final File SCRIPT_DIRECTORY =
-      TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "iWebDriver");
-
-  /**
-   * Utility script used to kill the iWebDriver process when {@link #shutdown()} is called. This is
-   * necessary since {@link Process#destroy()} sends a {@code SIGKILL} to this binary's sub process
-   * so we cannot trap it and explicitly kill iWebDriver.
-   */
-  private final ProcessBuilder killScript;
+  private final CommandLine commandLine;
+  private Integer exitCode = null;
 
   /**
    * Creates a new IPhoneSimulatorBinary that will run the given application on the iPhone
@@ -76,102 +58,67 @@ public class IPhoneSimulatorBinary extends SubProcess {
    * {@code webdriver.iphone.sdk} system property.
    * 
    * @param iWebDriverApp Path to the executable to run on the simulator. This file should specify
-   *        the executable that is an immedidate child of the {@code iwebDriver.app} directory.
+   *        the executable that is an immediate child of the {@code iwebDriver.app} directory.
    * @throws IOException If an I/O error occurs.
    */
-  public IPhoneSimulatorBinary(File iWebDriverApp) throws IOException {
-    super(new ProcessBuilder("/bin/bash", createRunScript(iWebDriverApp).getAbsolutePath()),
-        createOutputStream());
-
-    File killScriptFile = createKillScript(iWebDriverApp.getName());
-    this.killScript = new ProcessBuilder("/bin/bash", killScriptFile.getAbsolutePath());
+  public IPhoneSimulatorBinary(File iWebDriverApp) {
+    this.commandLine = CommandLine.parse(String.format(
+      "%s launch %s", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
   }
 
+  protected String getIphoneSimPath() {
+    String filename = "iphonesim";
+    File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "libs");
+    try {
+      FileHandler.copyResource(parentDir, this.getClass(), filename);
+      File file = new File(parentDir, filename);
+      FileHandler.makeExecutable(file);
+      return file.getAbsolutePath();
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
+  }
+  
   private static OutputStream createOutputStream() {
     String logFileString = System.getProperty(IPHONE_LOG_FILE_PROPERTY);
     File logFile = logFileString == null ? null : new File(logFileString);
     return new CircularOutputStream(logFile);
   }
 
-  private static File createRunScript(File executable) throws IOException {
-    String sdkRoot = String.format(SDK_LOCATION_FORMAT,
-        System.getProperty(IPHONE_SDK_PROPERTY, DEFAULT_SDK));
-
-    String exe = executable.getCanonicalFile().getAbsolutePath();
-
-    String scriptText = new StringBuilder()
-        .append("#!/bin/bash\n")
-        // TODO: this will fail spectacularly if the iPhone Simulator is running from Xcode. Need to
-        // TODO: write an AppleScript to test if Xcode is running the simulator and to make it stop.
-        .append("function shutdown() {\n")
-        .append("  echo \"killing iWebDriver...\"\n")
-        .append("  /usr/bin/killall \"iWebDriver\" || :\n")
-        .append("  echo \"killing iPhone Simulator...\"\n")
-        .append("  /usr/bin/killall \"iPhone Simulator\" || :\n")
-        .append("}\n")
-        // We need to make sure iWebDriver and the iPhone Simulator are not running before
-        // attempting to restart the app.
-        .append("shutdown\n")
-        .append(String.format("export DYLD_ROOT_PATH=%s\n", sdkRoot))
-        .append(String.format("export IPHONE_SIMULATOR_ROOT=%s\n", sdkRoot))
-        .append(String.format("export CFFIXED_USER_HOME=%s\n", SCRIPT_DIRECTORY.getAbsolutePath()))
-        // Be a good citizen; make sure we quit when #shutdown() is called.
-        .append("trap \"shutdown\" SIGINT SIGTERM\n")
-        .append(String.format("\"%s\" -RegisterForSystemEvents &\n", exe))
-        .append("iwebdriver_pid=$!\n")
-        .append("echo \"Waiting on iWebDriver (pid=$iwebdriver_pid)\"...\n")
-        .append("wait $iwebdriver_pid\n")
-        .append("echo \"Finished running iWebDriver (pid=$iwebdriver_pid)\"!\n")
-        .toString();
-
-    return writeScript(scriptText);
-  }
-
-  private static File createKillScript(String appName) throws IOException {
-    // TODO: this will fail spectacularly if the iPhone Simulator is running from Xcode. Need to
-    // TODO: write an AppleScript to test if Xcode is running the simulator and to make it stop.
-    String scriptText = new StringBuilder()
-        .append("#!/bin/bash\n")
-        .append("echo \"killing ").append(appName).append("...\"\n")
-        .append("/usr/bin/killall \"").append(appName).append("\" || :\n")
-        .append("echo \"killing iPhone Simulator...\"\n")
-        .append("/usr/bin/killall \"iPhone Simulator\" || :\n")
-        .toString();
-    return writeScript(scriptText);
-  }
-
-  private static File writeScript(String scriptText) throws IOException {
-    File scriptFile = File.createTempFile("iWebDriver.", ".script", SCRIPT_DIRECTORY);
-    LOG.fine(String.format("%s:\n----------------------------------------------\n%s\n\n",
-        scriptFile.getAbsolutePath(), scriptText));
-    FileWriter writer = new FileWriter(scriptFile);
-    writer.write(scriptText);
-    writer.flush();
-    writer.close();
-    return scriptFile.getCanonicalFile();
-  }
-
-  @VisibleForTesting
-  ProcessBuilder getKillScript() {
-    return killScript;
-  }
-
-  /**
-   * Kills iWebDriver and the iPhone Simulator.
-   * 
-   * @see SubProcess#shutdown()
-   */
-  @Override
-  public void shutdown() {
-    // This will kill iWebDriver, which will in turn terminate our run script.
+  public void launch() {
+    Executor executor = new DefaultExecutor();
+    executor.setStreamHandler(new PumpStreamHandler(createOutputStream()));
     try {
-      killScript.start().waitFor();
-    } catch (InterruptedException e) {
-      throw new WebDriverException(e);
+      exitCode = executor.execute(commandLine);
     } catch (IOException e) {
-      throw new WebDriverException(e);
+      throw new RuntimeException(e);
     }
+  }
+  
+  public boolean isRunning() {
+    return exitCode != null && exitCode == 0;
+   }
 
-    super.shutdown();
+  public void shutdown() {
+    try {
+      File scriptFile = File.createTempFile("iWebDriver.kill.", ".script");
+      FileWriter writer = new FileWriter(scriptFile);
+      writer.write("ps ax | grep 'iPhone Simulator' | grep -v grep | awk '{print $1}' | xargs kill");
+      writer.flush();
+      writer.close();
+      FileHandler.makeExecutable(scriptFile);
+      CommandLine killCommandLine = CommandLine.parse(scriptFile.getAbsolutePath());
+      Executor executor = new DefaultExecutor();
+      executor.setStreamHandler(new PumpStreamHandler(null, null));
+      getOutputIgnoringExecutor().execute(killCommandLine);
+    } catch (Exception ignored) {
+    }
+    exitCode = null;
+  }
+
+  private static Executor getOutputIgnoringExecutor() {
+    Executor executor = new DefaultExecutor();
+    executor.setStreamHandler(new PumpStreamHandler(null, null));
+    return executor;
   }
 }

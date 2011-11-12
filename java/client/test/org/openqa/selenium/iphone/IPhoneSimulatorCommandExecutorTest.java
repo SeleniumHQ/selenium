@@ -17,14 +17,23 @@ limitations under the License.
 
 package org.openqa.selenium.iphone;
 
+import java.io.File;
+import java.io.FileWriter;
+
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NoDriverAfterTest;
+import org.openqa.selenium.io.FileHandler;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
+ * @author dawagner@gmail.com (Daniel Wagner-Hall)
  */
-public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
 
+public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
   @NoDriverAfterTest
   public void testShouldDetectThatTheIPhoneSimulatorHasUnexpectedlyShutdown() throws Exception {
     if (!(driver instanceof IPhoneSimulatorDriver)) {
@@ -34,16 +43,31 @@ public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
       return;
     }
 
-    IPhoneSimulatorCommandExecutor executor =
-        ((IPhoneSimulatorCommandExecutor) ((IPhoneSimulatorDriver) driver).getCommandExecutor());
-    assertEquals(0, executor.getBinary().getKillScript().start().waitFor());
+    killIphoneSimulatorProcesses();
 
     try {
       driver.get(pages.simpleTestPage);
       fail("Should have thrown a " +
           IPhoneSimulatorCommandExecutor.IPhoneSimulatorNotRunningException.class.getName());
-    } catch (IPhoneSimulatorCommandExecutor.IPhoneSimulatorNotRunningException expected) {
+    } catch (Exception expected) {
       // Do nothing
+    }
+  }
+  
+  private void killIphoneSimulatorProcesses() {
+    try {
+      File scriptFile = File.createTempFile("iWebDriver.kill.", ".script");
+      FileWriter writer = new FileWriter(scriptFile);
+      writer.write("ps ax | grep 'iPhone Simulator' | grep -v grep | awk '{print $1}' | xargs kill");
+      writer.flush();
+      writer.close();
+      FileHandler.makeExecutable(scriptFile);
+      CommandLine killCommandLine = CommandLine.parse(scriptFile.getAbsolutePath());
+      Executor executor = new DefaultExecutor();
+      executor.setStreamHandler(new PumpStreamHandler(null, null));
+      executor.execute(killCommandLine);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 }
