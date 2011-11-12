@@ -676,7 +676,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = ALL, reason = "Untested except in Firefox", issues = {2825})
+  @Ignore(value = {ALL}, reason = "Untested except in Firefox", issues = {2825})
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable"));
