@@ -69,16 +69,14 @@ SyntheticMouse.prototype.isElementShown = function(element) {
 
 
 SyntheticMouse.prototype.getElement_ = function(coords) {
-  return coords.auxiliary ?
-      fxdriver.moz.unwrap(coords.auxiliary) : this.lastElement;
+  return coords.auxiliary || this.lastElement;
 };
 
 // wdIMouse
 
 SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // TODO(simon): find the current "body" element iff element == null
-  var element = target ? 
-      fxdriver.moz.unwrap(target) : this.lastElement;
+  var element = target || this.lastElement;
   this.lastElement = element;
 
   xOffset = xOffset || 0;
