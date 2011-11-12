@@ -16,41 +16,52 @@ limitations under the License.
  */
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.ALL;
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.OPERA;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import org.openqa.selenium.environment.DomainHelper;
 
 import java.net.URI;
 import java.util.Date;
 import java.util.Random;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
+import static org.openqa.selenium.Ignore.Driver.ALL;
+import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.OPERA;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
 @Ignore(SELENESE)
 public class CookieImplementationTest extends AbstractDriverTestCase {
+
+  private DomainHelper domainHelper;
+  private static final Random random = new Random();
+
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
 
+    domainHelper = new DomainHelper(appServer, driver);
+
     // This page is the deepest page we go to in the cookie tests
     // We go to it to ensure that cookies with /common/... paths are deleted
     // Do not write test in this class which use pages other than under /common
     // without ensuring that cookies are deleted on those pages as required
-    gotoValidDomainAndClearCookies("/common/animals");
+    domainHelper.gotoValidDomain("/common/animals");
+
+    driver.manage().deleteAllCookies();
     assertNoCookiesArePresent();
   }
 
   @JavascriptEnabled
   public void testShouldGetCookieByName() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String key = generateUniqueKey();
@@ -67,7 +78,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(SELENESE)
   public void testShouldBeAbleToAddCookie() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String key = generateUniqueKey();
@@ -81,7 +92,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   public void testGetAllCookies() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String key1 = generateUniqueKey();
@@ -99,7 +110,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.manage().addCookie(one);
     driver.manage().addCookie(two);
 
-    goToPage("simpleTest.html");
+    domainHelper.goToPage("simpleTest.html");
     cookies = driver.manage().getCookies();
     assertEquals(countBefore + 2, cookies.size());
 
@@ -109,7 +120,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testDeleteAllCookies() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     ((JavascriptExecutor) driver).executeScript("document.cookie = 'foo=set';");
@@ -122,7 +133,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testDeleteCookieWithName() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String key1 = generateUniqueKey();
@@ -141,7 +152,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   public void testShouldNotDeleteCookiesWithASimilarName() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String cookieOneName = "fish";
@@ -164,76 +175,78 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(OPERA)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    goToPage("/common/animals");
+    domainHelper.goToPage("/common/animals");
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
     Cookie cookie2 = new Cookie.Builder("planet", "earth").path("/common/").build();
     WebDriver.Options options = driver.manage();
     options.addCookie(cookie1);
     options.addCookie(cookie2);
 
-    goToPage("/common/animals");
+    domainHelper.goToPage("/common/animals");
 
     assertCookieIsPresentWithName(cookie1.getName());
     assertCookieIsPresentWithName(cookie2.getName());
 
-    goToPage("/common/simplePage.html");
+    domainHelper.goToPage("/common/simplePage.html");
     assertCookieIsNotPresentWithName(cookie1.getName());
   }
 
   @Ignore({CHROME, OPERA})
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String cookieName = "fish";
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
     driver.manage().addCookie(cookie);
 
-    goToPage("animals");
+    domainHelper.goToPage("animals");
     assertNull(driver.manage().getCookieNamed(cookieName));
   }
 
   public void testShouldNotGetCookieOnDifferentDomain() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String cookieName = "fish";
     driver.manage().addCookie(new Cookie.Builder(cookieName, "cod").build());
     assertCookieIsPresentWithName(cookieName);
 
-    goToOtherPage("simpleTest.html");
+    domainHelper.goToOtherPage("simpleTest.html");
 
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore(ALL)
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+        reason = "Untested browsers.")
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidSubDomain()) {
       return;
     }
 
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
-    String shorter = hostname.replaceFirst(".*?\\.", "");
+    String shorter = domainHelper.getHostName().replaceFirst(".*?\\.", ".");
     Cookie cookie = new Cookie.Builder(cookieName, "value").domain(shorter).build();
     driver.manage().addCookie(cookie);
-    fail("No way to test that the cookie exists without setting up subdomains on test environment");
+
+    assertCookieIsPresentWithName(cookieName);
   }
 
-  @Ignore(ALL)
+  @Ignore(value = {ALL})
   public void testsShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidSubDomain()) {
       return;
     }
 
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
-    String shorter = hostname.replaceFirst(".*?\\.", "");
+    String shorter = domainHelper.getHostName().replaceFirst(".*?\\.", "");
     Cookie cookie = new Cookie.Builder(cookieName, "value").domain(shorter).build();
     driver.manage().addCookie(cookie);
     assertCookieIsNotPresentWithName(cookieName);
@@ -241,14 +254,14 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore({REMOTE, IE})
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
 
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
-    String shorter = hostname.replaceFirst(".*?\\.", ".");
+    String shorter = domainHelper.getHostName().replaceFirst(".*?\\.", ".");
     Cookie cookie = new Cookie.Builder("name", "value").domain(shorter).build();
 
     driver.manage().addCookie(cookie);
@@ -258,7 +271,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(IE)
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
 
@@ -268,27 +281,27 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     Cookie cookie = new Cookie.Builder("fish", "cod").domain(host).build();
     driver.manage().addCookie(cookie);
 
-    goToPage("javascriptPage.html");
+    domainHelper.goToPage("javascriptPage.html");
     Set<Cookie> cookies = driver.manage().getCookies();
     assertTrue(cookies.contains(cookie));
   }
 
   public void testShouldWalkThePathToDeleteACookie() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     Cookie cookie1 = new Cookie.Builder("fish", "cod").build();
     driver.manage().addCookie(cookie1);
 
-    goToPage("child/childPage.html");
+    domainHelper.goToPage("child/childPage.html");
     Cookie cookie2 = new Cookie("rodent", "hamster", "/common/child");
     driver.manage().addCookie(cookie2);
 
-    goToPage("child/grandchild/grandchildPage.html");
+    domainHelper.goToPage("child/grandchild/grandchildPage.html");
     Cookie cookie3 = new Cookie("dog", "dalmation", "/common/child/grandchild/");
     driver.manage().addCookie(cookie3);
 
-    goToPage("child/grandchild/grandchildPage.html");
+    domainHelper.goToPage("child/grandchild/grandchildPage.html");
     driver.manage().deleteCookieNamed("rodent");
 
     assertNull(driver.manage().getCookies().toString(), driver.manage().getCookieNamed("rodent"));
@@ -299,13 +312,13 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie3));
 
     driver.manage().deleteAllCookies();
-    goToPage("child/grandchild/grandchildPage.html");
+    domainHelper.goToPage("child/grandchild/grandchildPage.html");
     assertNoCookiesArePresent();
   }
 
   @Ignore(IE)
   public void testShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie() throws Exception {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
 
@@ -323,10 +336,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(OPERA)
   public void testCookieEqualityAfterSetAndGet() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    goToOtherPage("animals");
+    domainHelper.goToOtherPage("animals");
     driver.manage().deleteAllCookies();
 
     Cookie addedCookie =
@@ -354,10 +367,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
       "Selenium, which use JavaScript to retrieve cookies, cannot return expiry info; " +
           "Other suppressed browsers have not been tested.")
   public void testRetainsCookieExpiry() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    goToOtherPage("animals");
+    domainHelper.goToOtherPage("animals");
     driver.manage().deleteAllCookies();
 
     Cookie addedCookie =
@@ -374,10 +387,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(ANDROID)
   public void testSettingACookieThatExpiredInThePast() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    goToOtherPage("animals");
+    domainHelper.goToOtherPage("animals");
     driver.manage().deleteAllCookies();
 
     long expires = System.currentTimeMillis() - 1000;
@@ -390,7 +403,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   public void testCanSetCookieWithoutOptionalFieldsSet() {
-    if (!checkIsOnValidHostnameForCookieTests()) {
+    if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
     String key = generateUniqueKey();
@@ -402,54 +415,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
     assertCookieHasValue(key, value);
   }
-
-  private void gotoValidDomainAndClearCookies(String page) {
-    this.hostname = null;
-    String hostname = appServer.getHostName();
-    if (isValidHostnameForCookieTests(hostname)) {
-      isOnAlternativeHostName = false;
-      this.hostname = hostname;
-    }
-    hostname = appServer.getAlternateHostName();
-    if (this.hostname == null && isValidHostnameForCookieTests(hostname)) {
-      isOnAlternativeHostName = true;
-      this.hostname = hostname;
-    }
-    goToPage(page);
-
-    driver.manage().deleteAllCookies();
-  }
-
-  private boolean isOnAlternativeHostName = false;
-  private String hostname;
-
-  private boolean checkIsOnValidHostnameForCookieTests() {
-    boolean correct = hostname != null && isValidHostnameForCookieTests(hostname);
-    if (!correct) {
-      System.out.println("Skipping test: unable to find domain name to use");
-    }
-    return correct;
-  }
-
-  private boolean isValidHostnameForCookieTests(String hostname) {
-    return !isIpv4Address(hostname) && !"localhost".equals(hostname);
-  }
-
-  private static boolean isIpv4Address(String string) {
-    return string.matches("\\d{1,3}(?:\\.\\d{1,3}){3}");
-  }
-
-  private void goToPage(String pageName) {
-    driver.get(
-        isOnAlternativeHostName ? appServer.whereElseIs(pageName) : appServer.whereIs(pageName));
-  }
-
-  private void goToOtherPage(String pageName) {
-    driver.get(
-        isOnAlternativeHostName ? appServer.whereIs(pageName) : appServer.whereElseIs(pageName));
-  }
-
-  private static final Random random = new Random();
 
   private String generateUniqueKey() {
     return String.format("key_%d", random.nextInt());
@@ -488,7 +453,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull("Cookie was not present with name " + key, driver.manage().getCookieNamed(key));
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat("Cookie was not present with name " + key,
+      assertThat("Cookie was not present with name " + key + ", got: " + documentCookie,
           documentCookie,
           containsString(key + "="));
     }
