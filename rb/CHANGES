@@ -1,3 +1,10 @@
+2.12.2 (???)
+===================
+
+* Firefox
+  * Fix issue where Firefox 8 would throw permission errors after document.domain was modified. 
+  * Force window to the foreground on launch (see https://bugzilla.mozilla.org/show_bug.cgi?id=566671)
+
 2.12.1 (2011-11-11)
 ===================
 
