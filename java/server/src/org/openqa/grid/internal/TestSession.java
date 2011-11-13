@@ -31,6 +31,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.util.EntityUtils;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.web.Hub;
 
@@ -271,6 +272,8 @@ public class TestSession {
       }
 
       writeRawBody(response, in);
+
+      EntityUtils.consume(responseBody);
     }
 
     if (slot.getProxy() instanceof CommandListener) {

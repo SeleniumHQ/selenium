@@ -42,13 +42,17 @@ public class HttpRequest {
 
       HttpClientFactory httpClientFactory = new HttpClientFactory();
       final HttpClient defaultHttpClient = httpClientFactory.getHttpClient();
+      HttpEntity httpEntity = null;
       try {
         HttpResponse res = defaultHttpClient.execute(post);
-        HttpEntity httpEntity = res.getEntity();
+        httpEntity = res.getEntity();
         if (httpEntity != null) {
           this.response = EntityUtils.toString(httpEntity);
         }
       } finally {
+        if (httpEntity != null) {
+          EntityUtils.consume(httpEntity);
+        }
         post.abort();
         httpClientFactory.close();
       }

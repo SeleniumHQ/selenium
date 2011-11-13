@@ -24,6 +24,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -390,16 +391,23 @@ public class HttpCommandExecutor implements CommandExecutor {
     try {
       return client.execute(targetHost, httpMethod, context);
     } catch (BindException e) {
-      // If we get this, there's a chance we've used all the emphemeral sockets
+      // If we get this, there's a chance we've used all the local ephemeral sockets
       // Sleep for a bit to let the OS reclaim them, then try the request again.
       try {
         Thread.sleep(2000);
       } catch (InterruptedException ie) {
         throw Throwables.propagate(ie);
       }
-
-      return client.execute(targetHost, httpMethod, context);
+    } catch (NoHttpResponseException e) {
+      // If we get this, there's a chance we've used all the remote ephemeral sockets
+      // Sleep for a bit to let the OS reclaim them, then try the request again.
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException ie) {
+        throw Throwables.propagate(ie);
+      }
     }
+    return client.execute(targetHost, httpMethod, context);
   }
 
   private void setAcceptHeader(HttpUriRequest httpMethod) {
@@ -412,6 +420,16 @@ public class HttpCommandExecutor implements CommandExecutor {
       return response;
     }
 
+    try {
+      // Make sure that the previous connection is freed.
+      HttpEntity httpEntity = response.getEntity();
+      if (httpEntity != null) {
+        EntityUtils.consume(httpEntity);
+      }
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
+
     if (redirectCount > MAX_REDIRECTS) {
       throw new WebDriverException("Maximum number of redirects exceeded. Aborting");
     }
@@ -420,12 +438,6 @@ public class HttpCommandExecutor implements CommandExecutor {
     URI uri;
     try {
       uri = buildUri(context, location);
-
-      // Make sure that the previous connection is freed.
-      HttpEntity httpEntity = response.getEntity();
-      if (httpEntity != null) {
-        EntityUtils.consume(httpEntity);
-      }
 
       HttpGet get = new HttpGet(uri);
       setAcceptHeader(get);
@@ -462,17 +474,18 @@ public class HttpCommandExecutor implements CommandExecutor {
     private final String charSet;
     private final byte[] content;
 
-    EntityWithEncoding(HttpEntity entity)
-        throws IOException {
-      if (entity != null) {
-        content = EntityUtils.toByteArray(entity);
-        charSet = EntityUtils.getContentCharSet(entity);
+    EntityWithEncoding(HttpEntity entity) throws IOException {
+      try {
+        if (entity != null) {
+          content = EntityUtils.toByteArray(entity);
+          charSet = EntityUtils.getContentCharSet(entity);
+        } else {
+          content = new byte[0];
+          charSet = null;
+        }
+      } finally {
         EntityUtils.consume(entity);
-      } else {
-        content = new byte[0];
-        charSet = null;
       }
-
     }
 
     public String getContentString()
