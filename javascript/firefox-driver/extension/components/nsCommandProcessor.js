@@ -439,8 +439,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   var driver = sessionWindow.fxdriver;  // TODO(jmleyba): We only need to store an ID on the window!
   if (!driver) {
     response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
-        'Session has no driver: ' + response.session.getId() +
-        '. The browser window may have been closed'));
+        'Session [' + response.session.getId() + '] has no driver.' +
+        ' The browser window may have been closed.'));
     return;
   }
 
