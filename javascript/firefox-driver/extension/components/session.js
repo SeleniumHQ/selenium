@@ -166,12 +166,7 @@ wdSession.prototype.getChromeWindow = function() {
 wdSession.prototype.getWindow = function() {
   var win = this.window_.get();
 
-  if (!win) {
-    fxdriver.Logger.dumpn("Unable to find window. This generally means that it has been closed.");
-    return null;
-  }
-
-  if (!win.document) {
+  if (!win || !win.document) {
     // Uh-oh, we lost our DOM! Try to recover by changing focus to the
     // main content window.
     win = this.chromeWindow_.getBrowser().contentWindow;
