@@ -31,6 +31,7 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 @Ignore({CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
 public class AlertsTest extends AbstractDriverTestCase {
@@ -207,6 +208,28 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {ALL}, issues = {2764, 2834})
+  public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
+    String mainWindow = driver.getWindowHandle();
+    try {
+      driver.findElement(By.id("open-new-window")).click();
+      waitFor(windowHandleCountToBe(driver, 2));
+      driver.switchTo().window("newwindow").close();
+
+      try {
+        alertToBePresent(driver).call();
+        fail("Expected exception");
+      } catch (NoSuchWindowException expected) {
+        // Expected
+      }
+  
+    } finally {
+      driver.switchTo().window(mainWindow);
+      waitFor(elementTextToEqual(driver, By.id("open-new-window"), "open new window"));
+    }
+  }
+
+  @JavascriptEnabled
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.findElement(By.id("prompt-with-default")).click();
 
@@ -245,7 +268,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldHandleAlertOnPageLoad() {
-    driver.findElement(By.id("open-page-with-onunload-alert")).click();
+    driver.findElement(By.id("open-page-with-onload-alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
     String value = alert.getText();
@@ -256,9 +279,32 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE})
+  @Ignore(value = {FIREFOX}, reason = "FF waits too long, may be hangs out")
+  public void testShouldNotHandleAlertInAnotherWindow() {
+    String mainWindow = driver.getWindowHandle();
+    try {
+      driver.findElement(By.id("open-window-with-onload-alert")).click();
+  
+      try {
+        waitFor(alertToBePresent(driver), 5, TimeUnit.SECONDS);
+        fail("Expected exception");
+      } catch (NoAlertPresentException expected) {
+        // Expected
+      }
+
+    } finally {
+      driver.switchTo().window("onload");
+      waitFor(alertToBePresent(driver)).dismiss();
+      driver.close();
+      driver.switchTo().window(mainWindow);
+      waitFor(elementTextToEqual(driver, By.id("open-window-with-onload-alert"), "open new window"));
+    }
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {IE}, reason = "IE crashes")
   public void testShouldHandleAlertOnPageUnload() {
-    driver.findElement(By.id("open-window-with-onunload-alert")).click();
+    driver.findElement(By.id("open-page-with-onunload-alert")).click();
     driver.navigate().back();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -266,11 +312,11 @@ public class AlertsTest extends AbstractDriverTestCase {
     alert.accept();
 
     assertEquals("onunload", value);
-    waitFor(elementTextToEqual(driver, By.id("open-window-with-onunload-alert"), "open new page"));
+    waitFor(elementTextToEqual(driver, By.id("open-page-with-onunload-alert"), "open new page"));
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE})
+  @Ignore(value = {IE}, reason = "IE crashes")
   public void testShouldHandleAlertOnWindowClose() {
     String mainWindow = driver.getWindowHandle();
     try {
