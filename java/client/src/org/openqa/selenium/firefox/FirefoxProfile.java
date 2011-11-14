@@ -43,7 +43,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Logger;
+
 
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
@@ -408,14 +408,6 @@ public class FirefoxProfile {
     }
   }
 
-  @Deprecated
-  public boolean enableNativeEvents() {
-    Logger log = Logger.getLogger(FirefoxProfile.class.getName());
-    log.warning("The method enableNativeEvents is deprecated - " +
-        "use areNativeEventsEnabled instead.");
-    return areNativeEventsEnabled();
-  }
-
   public boolean areNativeEventsEnabled() {
     return enableNativeEvents;
   }
@@ -424,14 +416,6 @@ public class FirefoxProfile {
     this.enableNativeEvents = enableNativeEvents;
   }
 
-  @Deprecated
-  public boolean alwaysLoadNoFocusLib() {
-    Logger log = Logger.getLogger(FirefoxProfile.class.getName());
-    log.warning("The method alwaysLoadNoFocusLib is deprecated - " +
-        "use shouldLoadNoFocusLib instead.");
-
-    return shouldLoadNoFocusLib();
-  }
   /**
    * Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
    * even if native events are disabled.
