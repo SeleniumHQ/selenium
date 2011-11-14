@@ -28,6 +28,7 @@ import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
 import java.util.concurrent.Callable;
 
@@ -274,7 +275,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();
-      sleepBecauseWindowsTakeTimeToOpen();
+      waitFor(windowHandleCountToBe(driver, 2));
       driver.switchTo().window("onclose").close();
 
       Alert alert = waitFor(alertToBePresent(driver));
@@ -295,14 +296,6 @@ public class AlertsTest extends AbstractDriverTestCase {
         return driver.switchTo().alert();
       }
     };
-  }
-
-  private void sleepBecauseWindowsTakeTimeToOpen() {
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      fail("Interrupted");
-    }
   }
 
 }
