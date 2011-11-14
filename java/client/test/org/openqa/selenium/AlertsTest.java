@@ -242,6 +242,53 @@ public class AlertsTest extends AbstractDriverTestCase {
     waitFor(elementTextToEqual(driver, By.id("text2"), "cheddar"));
   }
 
+  @JavascriptEnabled
+  public void testShouldHandleAlertOnPageLoad() {
+    driver.findElement(By.id("open-page-with-onunload-alert")).click();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    String value = alert.getText();
+    alert.accept();
+
+    assertEquals("onload", value);
+    waitFor(elementTextToEqual(driver, By.tagName("p"), "Page with onload event handler"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {IE})
+  public void testShouldHandleAlertOnPageUnload() {
+    driver.findElement(By.id("open-window-with-onunload-alert")).click();
+    driver.navigate().back();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    String value = alert.getText();
+    alert.accept();
+
+    assertEquals("onunload", value);
+    waitFor(elementTextToEqual(driver, By.id("open-window-with-onunload-alert"), "open new page"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {IE})
+  public void testShouldHandleAlertOnWindowClose() {
+    String mainWindow = driver.getWindowHandle();
+    try {
+      driver.findElement(By.id("open-window-with-onclose-alert")).click();
+      sleepBecauseWindowsTakeTimeToOpen();
+      driver.switchTo().window("onclose").close();
+
+      Alert alert = waitFor(alertToBePresent(driver));
+      String value = alert.getText();
+      alert.accept();
+  
+      assertEquals("onunload", value);
+
+    } finally {
+      driver.switchTo().window(mainWindow);
+      waitFor(elementTextToEqual(driver, By.id("open-window-with-onclose-alert"), "open new window"));
+    }
+  }
+
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
     return new Callable<Alert>() {
       public Alert call() throws Exception {
@@ -249,4 +296,13 @@ public class AlertsTest extends AbstractDriverTestCase {
       }
     };
   }
+
+  private void sleepBecauseWindowsTakeTimeToOpen() {
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      fail("Interrupted");
+    }
+  }
+
 }
