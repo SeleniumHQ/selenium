@@ -202,31 +202,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     return target.convertFromBase64Png(base64);
   }
 
-  /**
-   * Saves a screenshot of the current page into the given file.
-   * 
-   * @deprecated Use getScreenshotAs(file), which returns a temporary file.
-   */
-  @Deprecated
-  public void saveScreenshot(File pngFile) {
-    if (pngFile == null) {
-      throw new IllegalArgumentException("Method parameter pngFile must not be null");
-    }
-
-    File tmpfile = getScreenshotAs(FILE);
-
-    File dir = pngFile.getParentFile();
-    if (dir != null && !dir.exists() && !dir.mkdirs()) {
-      throw new WebDriverException("Could not create directory " + dir.getAbsolutePath());
-    }
-
-    try {
-      FileHandler.copy(tmpfile, pngFile);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
   private static class LazyCommandExecutor implements CommandExecutor {
     private ExtensionConnection connection;
     private final FirefoxBinary binary;
