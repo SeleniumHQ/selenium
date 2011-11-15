@@ -19,24 +19,20 @@ package org.openqa.selenium.firefox;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ProcessUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,12 +42,11 @@ public class FirefoxBinary {
   private static final String PATH_PREFIX = "/" +
       FirefoxBinary.class.getPackage().getName().replace(".", "/") + "/";
 
-  private final Map<String, String> extraEnv = new HashMap<String, String>();
+  private final Map<String, String> extraEnv = Maps.newHashMap();
   private final Executable executable;
-  private Process process;
-  private long timeout = SECONDS.toMillis(45);
+  private CommandLine process;
   private OutputStream stream;
-  private Thread outputWatcher;
+  private long timeout = SECONDS.toMillis(45);
 
   public FirefoxBinary() {
     this(null);
@@ -79,33 +74,22 @@ public class FirefoxBinary {
       modifyLinkLibraryPath(profileDir);
     }
 
-    List<String> commands = new ArrayList<String>();
-    commands.add(getExecutable().getPath());
-    commands.addAll(Arrays.asList(commandLineFlags));
-    ProcessBuilder builder = new ProcessBuilder(commands);
-    builder.redirectErrorStream(true);
-    builder.environment().putAll(getExtraEnv());
-    getExecutable().setLibraryPath(builder, getExtraEnv());
+    CommandLine command = new CommandLine(
+        getExecutable().getPath(), commandLineFlags);
+    command.setEnvironmentVariables(getExtraEnv());
+    executable.setLibraryPath(command, getExtraEnv());
 
     if (stream == null) {
       stream = getExecutable().getDefaultOutputStream();
     }
+    command.copyOutputTo(stream);
 
-    startFirefoxProcess(builder);
-
-    copeWithTheStrangenessOfTheMac(builder);
-
-    startOutputWatcher();
+    startFirefoxProcess(command);
   }
 
-  protected void startFirefoxProcess(ProcessBuilder builder) throws IOException {
-    process = builder.start();
-  }
-
-  protected void startOutputWatcher() {
-    outputWatcher = new Thread(new OutputWatcher(process, stream), "Firefox output watcher");
-    outputWatcher.setDaemon(true);
-    outputWatcher.start();
+  protected void startFirefoxProcess(CommandLine command) throws IOException {
+    process = command;
+    command.executeAsync();
   }
 
   protected Executable getExecutable() {
@@ -179,47 +163,6 @@ public class FirefoxBinary {
     }
 
     return builtPath.toString();
-  }
-
-  protected void copeWithTheStrangenessOfTheMac(ProcessBuilder builder) throws IOException {
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      // On the Mac, this process sometimes dies. Check for this, put in a decent sleep
-      // and then attempt to restart it. If this doesn't work, then give up
-
-      // TODO(simon): Why is this happening? Firefox 2 never seemed to suffer this
-      try {
-        sleep(300);
-        if (process.exitValue() == 0) {
-          return;
-        }
-
-        // Looks like it's gone wrong.
-        // TODO(simon): This is utterly bogus. We should do something far smarter
-        sleep(10000);
-
-        startFirefoxProcess(builder);
-      } catch (IllegalThreadStateException e) {
-        // Excellent, we've not creashed.
-      }
-
-      // Ensure we're okay
-      try {
-        sleep(300);
-
-        process.exitValue();
-        if (process.exitValue() == 0) {
-          return;
-        }
-
-        StringBuilder message = new StringBuilder("Unable to start firefox cleanly.\n");
-        message.append(getConsoleOutput()).append("\n");
-        message.append("Exit value: ").append(process.exitValue()).append("\n");
-        message.append("Ran from: ").append(builder.command()).append("\n");
-        throw new WebDriverException(message.toString());
-      } catch (IllegalThreadStateException e) {
-        // Woot!
-      }
-    }
   }
 
   public void setEnvironmentProperty(String propertyName, String value) {
@@ -315,54 +258,8 @@ public class FirefoxBinary {
   }
 
   public void quit() {
-    ProcessUtils.killProcess(process);
-  }
-
-  private static class OutputWatcher implements Runnable {
-    private final Process process;
-    private OutputStream stream;
-    private final int BUFSIZE = 4096;
-
-    public OutputWatcher(Process process, OutputStream stream) {
-      this.process = process;
-      this.stream = stream;
-    }
-
-    public void run() {
-      InputStream stdoutOfWatchedProcess = null;
-      try {
-        stdoutOfWatchedProcess = process.getInputStream();
-        byte[] buffer = new byte[BUFSIZE];
-        int n;
-        do {
-          int avail = Math.min(BUFSIZE, stdoutOfWatchedProcess.available());
-          avail = Math.max(avail, 1); // Always ask for at least one byte
-          n = stdoutOfWatchedProcess.read(buffer, 0, avail);
-          if (n > 0 && stream != null) {
-            try {
-              stream.write(buffer, 0, n);
-            } catch (IOException e) {
-              System.err.print("ERROR: Could not write to " + stream + ": ");
-              e.printStackTrace(System.err);
-              // We must continue to read from stdoutOfWatchedProcess
-              // (otherwise the process might block), therefore we can
-              // not break out of the loop here, instead we set stream
-              // to null, so that no further write attempts are made ...
-              stream = null;
-            }
-          }
-        } while (n != -1);
-      } catch (IOException e) {
-        if ("Stream closed".equals(e.getMessage())) {
-          // We can and should ignore this IOException, see
-          // http://code.google.com/p/selenium/issues/detail?id=1159
-        } else {
-          System.err.print("ERROR: Could not read from stdout of " + process + ": ");
-          e.printStackTrace(System.err);
-        }
-      } finally {
-          ProcessUtils.closeAllStreamsAndDestroyProcess(process);
-      }
+    if (process != null) {
+      process.destroy();
     }
   }
 }

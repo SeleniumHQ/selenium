@@ -184,7 +184,7 @@ public class CommandLine {
       public void run() {
         if (proc != null) {
           try {
-            proc.exitValue();
+            exitCode = proc.exitValue();
           } catch (IllegalThreadStateException e) {
             proc.destroy();
           }
@@ -196,14 +196,17 @@ public class CommandLine {
     return proc;
   }
 
-  private void waitFor() {
+  public void waitFor() {
     try {
       proc.waitFor();
       if (drainerThread != null) {
         drainerThread.join();
       }
 
-      exitCode = proc.exitValue();
+      // TODO(simon): This is an extremely short term fix and needs to be removed ASAP. INS.
+      if (proc != null) {
+        exitCode = proc.exitValue();
+      }
       postRunCleanup();
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
