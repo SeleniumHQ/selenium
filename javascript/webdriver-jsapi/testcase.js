@@ -27,6 +27,7 @@
 
 goog.provide('webdriver.TestCase');
 
+goog.require('goog.array');
 goog.require('goog.testing.TestCase');
 goog.require('webdriver.asserts');
 goog.require('webdriver.promise.Application');
@@ -65,7 +66,7 @@ webdriver.TestCase.prototype.cycleTests = function() {
   var self = this;
   var hadError = false;
 
-  this.runSingleTest_(test, onError).then(function() {
+  this.runSingleTest_(test, onError, onExpectationFailures).then(function() {
     hadError || self.doSuccess(test);
     self.timeout(function() {
       self.cycleTests();
@@ -77,6 +78,22 @@ webdriver.TestCase.prototype.cycleTests = function() {
     // TODO(jleyba): Should we annotate the error with information about all
     // tasks that have been executed by the application?
     self.doError(test, e);
+  }
+
+  function onExpectationFailures(description, errors) {
+    errors = goog.array.map(errors, function(error) {
+      // Patch the error to ensure it is not double logged by
+      // goog.testing.TestCase.prototype.logError.
+      error['isJsUnitException'] = error['loggedJsUnitException'] = true;
+      return self.logError(description, e);
+    });
+
+    errors.unshift(description + ': FAILED EXPECTATIONS');
+    errors = errors.join('\n').spit('\n').join('\n  ');
+    self.saveMessage(errors);
+
+    hadError = true;
+    self.result_.errors.push(errors);
   }
 };
 
@@ -102,22 +119,51 @@ webdriver.TestCase.prototype.cycleTests = function() {
  * @param {!goog.testing.TestCase.Test} test The test to run.
  * @param {function(*)} onError The function to call each time an error is
  *     detected.
+ * @param {function(!Array.<Error>)} onExpectationFailures The function to call
+ *     after each test phase if there were any expectation failures.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     test has finished running.
  * @private
  */
-webdriver.TestCase.prototype.runSingleTest_ = function(test, onError) {
+webdriver.TestCase.prototype.runSingleTest_ = function(test, onError,
+                                                       onExpectationFailures) {
   var app = webdriver.promise.Application.getInstance();
-  return scheduleAndWait('setUp()', this.setUp)().
-      addCallback(scheduleAndWait(test.name + '()', test.ref)).
+
+  var expectationFailures = [];
+
+  webdriver.asserts.on(webdriver.asserts.EXPECTATION_FAILURE,
+      recordExpectationFailure);
+
+  return scheduleAndWait(test.name + '.setUp', this.setUp)().
+      addCallback(scheduleAndWait(test.name, test.ref)).
       addErrback(onError).
-      addCallback(scheduleAndWait('tearDown()', this.tearDown)).
-      addErrback(onError);
+      addCallback(scheduleAndWait(test.name + '.tearDown', this.tearDown)).
+      addErrback(onError).
+      addBoth(removeRecordExpectationFailure);
 
   function scheduleAndWait(description, fn) {
     return function() {
-      return app.scheduleAndWaitForIdle(description, goog.bind(fn, test.scope));
+      return app.scheduleAndWaitForIdle(description, goog.bind(fn, test.scope)).
+          then(handleExpectationFailures, function(e) {
+            handleExpectationFailures();
+            throw e;
+          });
+    }
+  }
+
+  function recordExpectationFailure(e) {
+    expectationFailures.push(e);
+  }
+
+  function removeRecordExpectationFailure() {
+    webdriver.asserts.removeListener(webdriver.asserts.EXPECTATION_FAILURE,
+        recordExpectationFailure);
+  }
+
+  function handleExpectationFailures() {
+    if (expectationFailures.length) {
+      onExpectationFailures(expectationFailures);
+      expectationFailures = [];
     }
   }
 };
-
