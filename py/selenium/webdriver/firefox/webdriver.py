@@ -72,7 +72,7 @@ class WebDriver(RemoteWebDriver):
         Gets the screenshot of the current window. Returns False if there is
         any IOError, else returns True. Use full paths in your filename.
         """
-        png = self._execute(Command.SCREENSHOT)['value']
+        png = RemoteWebDriver.execute(self, Command.SCREENSHOT)['value']
         try:
             f = open(filename, 'wb')
             f.write(base64.decodestring(png))
@@ -82,17 +82,3 @@ class WebDriver(RemoteWebDriver):
         finally:
             del png
         return True
-
-    def _execute(self, command, params=None):
-        try:
-            return RemoteWebDriver.execute(self, command, params)
-        except ErrorInResponseException, e:
-            # Legacy behavior: calling close() multiple times should not raise
-            # an error
-            if command != Command.CLOSE and command != Command.QUIT:
-                raise e
-        except urllib2.URLError, e:
-            # Legacy behavior: calling quit() multiple times should not raise
-            # an error
-            if command != Command.QUIT:
-                raise e

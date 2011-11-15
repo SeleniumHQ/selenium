@@ -66,7 +66,7 @@ class WebDriver(RemoteWebDriver):
         Gets the screenshot of the current window. Returns False if there is
         any IOError, else returns True. Use full paths in your filename.
         """
-        png = self._execute(Command.SCREENSHOT)['value']
+        png = RemoteWebDriver.execute(self, Command.SCREENSHOT)['value']
         try:
             f = open(filename, 'wb')
             f.write(base64.decodestring(png))
