@@ -24,7 +24,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ProcessUtils;
 
 import java.io.File;
@@ -232,15 +231,16 @@ public class FirefoxBinary {
   }
 
   public void createProfile(String profileName) throws IOException {
-    CommandLine command = new CommandLine(
-        executable.getPath(), "--verbose", "-CreateProfile", profileName);
+    ProcessBuilder builder =
+        new ProcessBuilder(executable.getPath(), "--verbose", "-CreateProfile", profileName)
+            .redirectErrorStream(true);
+    builder.environment().put("MOZ_NO_REMOTE", "1");
     if (stream == null) {
-      command.copyOutputTo(executable.getDefaultOutputStream());
-    } else {
-      command.copyOutputTo(stream);
+      stream = executable.getDefaultOutputStream();
     }
 
-    command.execute();
+    startFirefoxProcess(builder);
+    startOutputWatcher();
   }
 
   /**
