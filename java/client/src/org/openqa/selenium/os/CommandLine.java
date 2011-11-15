@@ -266,9 +266,8 @@ public class CommandLine {
           commandAndArgs[0]);
     }
 
-    if (proc != null) {
-      proc.destroy();
-    }
+    ProcessUtils.killProcess(proc);
+
     postRunCleanup();
   }
 
