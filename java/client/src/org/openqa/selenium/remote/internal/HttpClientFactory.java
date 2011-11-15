@@ -20,6 +20,8 @@ import org.apache.http.protocol.HttpContext;
 
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.HOURS;
+
 /*
 Copyright 2007-2011 WebDriver committers
 
@@ -39,6 +41,7 @@ public class HttpClientFactory {
 
   private final DefaultHttpClient httpClient;
   private final DefaultHttpClient gridClient;
+  private final int TIMEOUT_THREE_HOURS = (int) HOURS.toMillis(3);
 
   public HttpClientFactory() {
     httpClient = new DefaultHttpClient(getClientConnectionManager());
@@ -71,12 +74,14 @@ public class HttpClientFactory {
     HttpParams params = new BasicHttpParams();
     HttpConnectionParams.setSoReuseaddr(params, true);
     HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
+    HttpConnectionParams.setSoTimeout(params, TIMEOUT_THREE_HOURS);
     HttpConnectionParams.setStaleCheckingEnabled(params, true);
     return params;
   }
 
   public HttpParams getGridHttpParams(){
     final HttpParams params = getHttpParams();
+    HttpConnectionParams.setSoTimeout(params, TIMEOUT_THREE_HOURS);
     HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
     return params;
   }
