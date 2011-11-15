@@ -40,23 +40,26 @@ limitations under the License.
     }
 
 
-    function testAssertThat_nonPromiseValue_valueMatches() {
-      assertThat('foo', equals('foo')).then(result.callback, result.errback);
+    function testApplyMatcher_nonPromiseValue_valueMatches() {
+      webdriver.asserts.applyMatcher('foo', equals('foo')).
+          then(result.callback, result.errback);
       result.assertCallback();
       expectationFailure.assertNotCalled();
     }
 
 
-    function testAssertThat_nonPromiseValue_notValueMatches() {
-      assertThat('foo', equals('bar')).then(result.callback, result.errback);
+    function testApplyMatcher_nonPromiseValue_notValueMatches() {
+      webdriver.asserts.applyMatcher('foo', equals('bar')).
+          then(result.callback, result.errback);
       result.assertErrback();
       expectationFailure.assertNotCalled();
     }
 
 
-    function testAssertThat_promiseValue_valueMatches() {
+    function testApplyMatcher_promiseValue_valueMatches() {
       var d = new webdriver.promise.Deferred();
-      assertThat(d, equals('foo')).then(result.callback, result.errback);
+      webdriver.asserts.applyMatcher(d, equals('foo')).
+          then(result.callback, result.errback);
       result.assertNeither();
       expectationFailure.assertNotCalled();
       d.resolve('foo');
@@ -65,9 +68,10 @@ limitations under the License.
     }
 
 
-    function testAssertThat_promiseValue_notValueMatches() {
+    function testApplyMatcher_promiseValue_notValueMatches() {
       var d = new webdriver.promise.Deferred();
-      assertThat(d, equals('foo')).then(result.callback, result.errback);
+      webdriver.asserts.applyMatcher(d, equals('foo')).
+          then(result.callback, result.errback);
       result.assertNeither();
       expectationFailure.assertNotCalled();
       d.resolve('bar');
@@ -76,9 +80,10 @@ limitations under the License.
     }
 
 
-    function testAssertThat_promiseValue_promiseRejected() {
+    function testApplyMatcher_promiseValue_promiseRejected() {
       var d = new webdriver.promise.Deferred();
-      assertThat(d, equals('foo')).then(result.callback, result.errback);
+      webdriver.asserts.applyMatcher(d, equals('foo')).
+          then(result.callback, result.errback);
       result.assertNeither();
       expectationFailure.assertNotCalled();
       d.reject();
@@ -88,48 +93,37 @@ limitations under the License.
 
 
     function testExpectThat_nonPromiseValue_valueMatches() {
-      expectThat('foo', equals('foo')).then(result.callback, result.errback);
-      result.assertCallback();
+      expectThat('foo', equals('foo'));
       expectationFailure.assertNotCalled();
     }
 
 
     function testExpectThat_nonPromiseValue_notValueMatches() {
-      expectThat('foo', equals('bar')).then(result.callback, result.errback);
-      result.assertCallback();
+      expectThat('foo', equals('bar'));
       expectationFailure.assertCalled();
     }
 
 
     function testExpectThat_promiseValue_valueMatches() {
-      var d = new webdriver.promise.Deferred();
-      expectThat(d, equals('foo')).then(result.callback, result.errback);
-      result.assertNeither();
-      expectationFailure.assertNotCalled();
-      d.resolve('foo');
-      result.assertCallback();
+      expectThat(webdriver.promise.resolved('foo'), equals('foo'));
       expectationFailure.assertNotCalled();
     }
 
 
     function testExpectThat_promiseValue_notValueMatches() {
       var d = new webdriver.promise.Deferred();
-      expectThat(d, equals('foo')).then(result.callback, result.errback);
-      result.assertNeither();
+      expectThat(d, equals('foo'));
       expectationFailure.assertNotCalled();
       d.resolve('bar');
-      result.assertCallback();
       expectationFailure.assertCalled();
     }
 
 
     function testExpectThat_promiseValue_promiseRejected() {
       var d = new webdriver.promise.Deferred();
-      expectThat(d, equals('foo')).then(result.callback, result.errback);
-      result.assertNeither();
+      expectThat(d, equals('foo'));
       expectationFailure.assertNotCalled();
       d.reject();
-      result.assertCallback();
       expectationFailure.assertCalled();
     }
   </script>

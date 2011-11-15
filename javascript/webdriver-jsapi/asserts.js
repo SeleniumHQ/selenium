@@ -117,20 +117,57 @@ webdriver.asserts.applyMatcher = function(failureMessageOrActualValue,
         error.push(message, '\n');
       }
       error.push('Expected ', matcher.description,
-          '\n but was ', value, ' (', goog.typeOf(value), ')');
+          '\n but was ', value, webdriver.asserts.typeOf_(value));
       throw new Error(error.join(''));
     }
   });
 };
 
 
-webdriver.asserts.assertThat = function(a, b, opt_c) {
-  return webdriver.asserts.applyMatcher.apply(null, arguments);
+/**
+ * @param {*} value The value to query.
+ * @return {string} The type of the value.
+ */
+webdriver.asserts.typeOf_ = function(value) {
+  return ' (' + goog.typeOf(value) + ')';
 };
 
 
-webdriver.asserts.expectThat = function(a, b, opt_c) {
-  return webdriver.asserts.applyMatcher.apply(null, arguments).
+/**
+ * Asserts that a matcher accepts a given value. If the value is rejected by
+ * the matcher, an unhandled promise will be reported to the global
+ * {@link webdriver.promise.Application}.
+ *
+ * @param {*} failureMessageOrActualValue Either a failure message or the value
+ *     to apply to the given matcher.
+ * @param {*} actualValueOrMatcher Either the value to apply to the given
+ *     matcher, or the matcher itself.
+ * @param {webdriver.asserts.Matcher=} opt_matcher The matcher to use; ignored
+ *     unless this function is invoked with three arguments.
+ */
+webdriver.asserts.assertThat = function(failureMessageOrActualValue,
+                                        actualValueOrMatcher,
+                                        opt_matcher) {
+  webdriver.asserts.applyMatcher.apply(null, arguments);
+};
+
+
+/**
+ * Checks that a matcher accepts a given value. If the value is rejected by
+ * the matcher, a {@link webdriver.asserts.EXPECTATION_FAILURE} event will be
+ * emitted by this module.
+ *
+ * @param {*} failureMessageOrActualValue Either a failure message or the value
+ *     to apply to the given matcher.
+ * @param {*} actualValueOrMatcher Either the value to apply to the given
+ *     matcher, or the matcher itself.
+ * @param {webdriver.asserts.Matcher=} opt_matcher The matcher to use; ignored
+ *     unless this function is invoked with three arguments.
+ */
+webdriver.asserts.expectThat = function(failureMessageOrActualValue,
+                                        actualValueOrMatcher,
+                                        opt_matcher) {
+  webdriver.asserts.applyMatcher.apply(null, arguments).
       addErrback(function(e) {
         webdriver.asserts.emit(webdriver.asserts.EXPECTATION_FAILURE, e);
       });
@@ -138,9 +175,11 @@ webdriver.asserts.expectThat = function(a, b, opt_c) {
 
 
 webdriver.asserts.equalTo = function(a) {
-  return new webdriver.asserts.Matcher('to equal ' + a, function(b) {
-    return a === b;
-  });
+  return new webdriver.asserts.Matcher('' +
+      'to equal ' + a + webdriver.asserts.typeOf_(a),
+      function(b) {
+        return a === b;
+      });
 };
 
 
