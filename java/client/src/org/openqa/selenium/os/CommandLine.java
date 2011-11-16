@@ -17,16 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.os;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.ProcessDestroyer;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,30 +36,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 public class CommandLine {
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
-  private final String[] commandAndArgs;
-  private volatile StreamDrainer drainer;
-  private volatile OutputStream drainTo;
-  private volatile Thread drainerThread;
-  private volatile int exitCode;
-  private volatile boolean executed;
-  private volatile Process proc;
+  private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
   private volatile String allInput;
   private Map<String, String> env = new ConcurrentHashMap<String, String>();
-  private Thread cleanup;
+  private final DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler();
+  private final Executor executor = new DefaultExecutor();
+  private final org.apache.commons.exec.CommandLine cl;
+
+  private volatile OutputStream drainTo;
+  private final Snitch snitch = new Snitch();
 
   public CommandLine(String executable, String... args) {
-    commandAndArgs = new String[args.length + 1];
-    commandAndArgs[0] = findExecutable(executable);
-    int index = 1;
-    for (String arg : args) {
-      commandAndArgs[index++] = arg;
-    }
+    cl = new org.apache.commons.exec.CommandLine( findExecutable(executable));
+    cl.addArguments( args);
   }
 
   public CommandLine(String[] cmdarray) {
-    this.commandAndArgs = cmdarray;
+    cl = new org.apache.commons.exec.CommandLine(cmdarray[0]);
+    for (int i = 1; i < cmdarray.length; i++) {
+      cl.addArgument( cmdarray[i]);
+    }
   }
 
   Map<String, String> getEnvironment() {
@@ -163,79 +165,55 @@ public class CommandLine {
   }
 
   public void execute() {
-    createProcess();
-    setupDrainer();
-    waitFor();
-  }
-
-  public void executeAsync() {
-    createProcess();
-
-    new Thread() {   // Thread safety reviewed
-      @Override
-      public void run() {
-        setupDrainer();
-        waitFor();
-      }
-    }.start();
-
-    cleanup = new Thread() {   // Thread safety reviewed
-      @Override
-      public void run() {
-        if (proc != null) {
-          try {
-            exitCode = proc.exitValue();
-          } catch (IllegalThreadStateException e) {
-            proc.destroy();
-          }
-        }
-      }
-    };
-    Runtime.getRuntime().addShutdownHook(cleanup);
-  }
-
-  public void waitFor() {
     try {
-      proc.waitFor();
-      if (drainerThread != null) {
-        drainerThread.join();
-      }
-
-      // TODO(simon): This is an extremely short term fix and needs to be removed ASAP. INS.
-      if (proc != null) {
-        exitCode = proc.exitValue();
-      }
-      postRunCleanup();
+      final OutputStream outputStream = getOutputStream();
+      executor.setStreamHandler( new PumpStreamHandler(outputStream, outputStream, getInputStream()));
+      executor.execute( cl, getMergedEnv(), handler);
+      handler.waitFor();
+    } catch (IOException e) {
+      throw new WebDriverException(e);
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
     }
   }
 
-  private void setupDrainer() {
-    try {
-      drainer = new StreamDrainer(proc, drainTo);
-      drainerThread = new Thread(drainer, "Command line drainer: " + commandAndArgs[0]);  // Thread safety reviewed
-      drainerThread.start();
+  private OutputStream getOutputStream() {
+    return drainTo == null ? inputOut : new MultioutputStream(inputOut, drainTo);
+  }
 
-      if (allInput != null) {
-        byte[] bytes = allInput.getBytes();
-        proc.getOutputStream().write(bytes);
-        proc.getOutputStream().close();
-      }
+  private Map<String, String> getMergedEnv() {
+        HashMap<String, String>  newEnv = new HashMap<String, String>(env);
+        newEnv.putAll( System.getenv());
+        return newEnv;
+    }
+
+
+  public Process executeAsync() {
+    try {
+      final OutputStream outputStream = getOutputStream();
+      executor.setStreamHandler( new PumpStreamHandler(outputStream, outputStream, getInputStream()));
+      // Commons-exec /really/ does not want to tell us about the Process ;)
+      executor.setProcessDestroyer(snitch);
+      executor.execute(cl, getMergedEnv(), handler);
+
+      // Todo: It would be a "nice thing" to not returning the "process" but instead
+      // some "ProcessHandle" that would let us monitor for status and kill it.
+      return snitch.getProcess();
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
   }
 
-  private void createProcess() {
-    try {
-      ProcessBuilder builder = new ProcessBuilder(commandAndArgs);
-      builder.redirectErrorStream(true);
-      builder.environment().putAll(env);
+  private ByteArrayInputStream getInputStream() {
+    return allInput != null ? new ByteArrayInputStream(allInput.getBytes()) : null;
+  }
 
-      proc = builder.start();
-      executed = true;
-    } catch (IOException e) {
+  public void waitFor() {
+
+    try {
+      handler.waitFor();
+      postRunCleanup();
+    } catch (InterruptedException e) {
       throw new WebDriverException(e);
     }
   }
@@ -245,48 +223,33 @@ public class CommandLine {
   }
 
   public int getExitCode() {
-    if (!executed) {
+    if (!handler.hasResult()) {
       throw new IllegalStateException(
-          "Cannot get exit code before executing command line: " + commandAndArgs[0]);
+          "Cannot get exit code before executing command line: " + cl);
     }
-    return exitCode;
+    return handler.getExitValue();
   }
 
   public String getStdOut() {
-    if (!executed) {
+    if (!handler.hasResult()) {
       throw new IllegalStateException(
-          "Cannot get output before executing command line: " + commandAndArgs[0]);
+          "Cannot get output before executing command line: " + cl);
     }
-
-    return drainer.getStdOut();
+    return new String(inputOut.toByteArray());
   }
 
-  /**
-   * Destroy the current command.
-   * @return The exit code of the command.
-   */
+ /**
+  * Destroy the current command.
+  * @return The exit code of the command.
+  */
   public int destroy() {
-    if (!executed) {
-      throw new IllegalStateException("Cannot quit a process that's not running: " +
-          commandAndArgs[0]);
-    }
-
-    ProcessUtils.killProcess(proc);
+    ProcessUtils.killProcess(snitch.getProcess());
 
     postRunCleanup();
     return getExitCode();
   }
 
   private void postRunCleanup() {
-    proc = null;
-    if (cleanup != null) {
-      try {
-        Runtime.getRuntime().removeShutdownHook(cleanup);
-      } catch (IllegalStateException e) {
-        // VM is shutting down
-      }
-      cleanup = null;
-    }
   }
 
   private static boolean canExecute(File file) {
@@ -320,57 +283,70 @@ public class CommandLine {
 
   @Override
   public String toString() {
-    StringBuilder buf = new StringBuilder();
-    for (String s : commandAndArgs) {
-      buf.append(s).append(' ');
-    }
-    return buf.toString();
+    return executor.toString();
   }
 
   public void copyOutputTo(OutputStream out) {
     drainTo = out;
   }
 
-  private static class StreamDrainer implements Runnable {
-    private final Process toWatch;
-    private final ByteArrayOutputStream inputOut;
-    private final OutputStream drainTo;
+  class Snitch implements ProcessDestroyer {  // Because commons-exec is secretive about process.
+  private volatile Process process;
 
-    StreamDrainer(Process toWatch, OutputStream drainTo) {
-      this.toWatch = toWatch;
-      this.drainTo = drainTo;
-      this.inputOut = new ByteArrayOutputStream();
-    }
+  public boolean add(Process process) {
+    if( this.process != null) throw new IllegalStateException("Unexpected re-use of snitch");
+    this.process = process;
+    return true;
+  }
 
-    public void run() {
-      InputStream inputStream = new BufferedInputStream(toWatch.getInputStream());
-      byte[] buffer = new byte[2048];
+  public boolean remove(Process process) {
+    this.process = null;
+    return true;
+  }
 
-      try {
-        int read;
-        while ((read = inputStream.read(buffer)) > 0) {
-          inputOut.write(buffer, 0, read);
-          inputOut.flush();
+  public int size() {
+    return this.process == null ? 0 : 1;
+  }
 
-          if (drainTo != null) {
-            drainTo.write(buffer, 0, read);
-            drainTo.flush();
-          }
+  public Process getProcess() {
+    return process;
+  }
+  }
+
+
+    class MultioutputStream extends OutputStream{
+      private final OutputStream mandatory;
+      private final OutputStream optional;
+
+      MultioutputStream(OutputStream mandatory, OutputStream optional) {
+        this.mandatory = mandatory;
+        this.optional = optional;
+      }
+
+      @Override
+      public void write(int b) throws IOException {
+        mandatory.write(b);
+        if (optional!= null){
+          optional.write(b);
         }
-      } catch (IOException e) {
-        // it's possible that the stream has been closed. That's okay.
-        // Swallow the exception
-      } finally {
-        try {
-          inputOut.close();
-        } catch (IOException e) {
-          // Nothing sane to do
+      }
+
+      @Override
+      public void flush() throws IOException {
+        mandatory.flush();
+        if (optional != null) {
+          optional.flush();
+        }
+      }
+
+      @Override
+      public void close() throws IOException {
+        mandatory.close();
+        if (optional != null) {
+          optional.close();
         }
       }
     }
 
-    public String getStdOut() {
-      return new String(inputOut.toByteArray());
-    }
-  }
+
 }

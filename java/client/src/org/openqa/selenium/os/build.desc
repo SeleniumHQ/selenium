@@ -5,5 +5,6 @@ java_library(name = "os",
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium/io",
     "//third_party/java/guava-libraries",
+    "//third_party/java/commons-exec",
   ])
 

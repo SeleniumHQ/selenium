@@ -60,5 +60,6 @@
 	<classpathentry kind="lib" path="third_party/java/commons-exec/commons-exec-1.1.jar" sourcepath="third_party/java/commons-exec/commons-exec-1.1-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/objenesis-1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/webbit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-exec"/>
 	<classpathentry kind="output" path="out/production/selenium"/>
 </classpath>

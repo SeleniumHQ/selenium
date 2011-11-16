@@ -76,6 +76,13 @@
                 <role>Committer</role>
             </roles>
         </developer>
+        <developer>
+            <id>krosenvold</id>
+            <name>Kristian Rosenvold</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
         <!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
     </developers>
 
@@ -131,6 +138,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-exec</artifactId>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>net.jcip</groupId>

@@ -29,7 +29,7 @@ public class CommandLineTest extends TestCase {
   public void testSetEnvironmentVariableWithNullKeyThrows() {
     String key = null;
     String value = "Bar";
-    CommandLine commandLine = new CommandLine(new String[] {});
+    CommandLine commandLine = new CommandLine(new String[] {"testExec"});
     try {
       commandLine.setEnvironmentVariable(key, value);
     } catch (IllegalArgumentException iae) {
@@ -42,7 +42,7 @@ public class CommandLineTest extends TestCase {
   public void testSetEnvironmentVariableWithNullValueThrows() {
     String key = "Foo";
     String value = null;
-    CommandLine commandLine = new CommandLine(new String[] {});
+    CommandLine commandLine = new CommandLine(new String[] {"testExec"});
     try {
       commandLine.setEnvironmentVariable(key, value);
     } catch (IllegalArgumentException iae) {
@@ -55,7 +55,7 @@ public class CommandLineTest extends TestCase {
   public void testSetEnvironmentVariableWithNonNullValueSets() {
     String key = "Foo";
     String value = "Bar";
-    CommandLine commandLine = new CommandLine(new String[] {});
+    CommandLine commandLine = new CommandLine(new String[] {"testExec"});
     commandLine.setEnvironmentVariable(key, value);
     assertEquals(value,
         commandLine.getEnvironment().get(key));
@@ -66,7 +66,7 @@ public class CommandLineTest extends TestCase {
     Map<String, String> input = new HashMap();
     input.put("key1", "value1");
     input.put("key2", null);
-    CommandLine commandLine = new CommandLine(new String[] {});
+    CommandLine commandLine = new CommandLine(new String[] {"testExec"});
     try {
       commandLine.setEnvironmentVariables(input);
     } catch (IllegalArgumentException iae) {
@@ -80,7 +80,7 @@ public class CommandLineTest extends TestCase {
     Map<String, String> input = new HashMap();
     input.put("key1", "value1");
     input.put("key2", "value2");
-    CommandLine commandLine = new CommandLine(new String[] {});
+    CommandLine commandLine = new CommandLine(new String[] {"testExec"});
     commandLine.setEnvironmentVariables(input);
     assertEquals("value1",
         commandLine.getEnvironment().get("key1"));
@@ -91,7 +91,7 @@ public class CommandLineTest extends TestCase {
   @Test
   public void testSetDynamicLibraryPathWithNullValueIgnores() {
     String value = null;
-    CommandLine commandLine = new CommandLine(new String[] {});
+    CommandLine commandLine = new CommandLine(new String[] {"testExec"});
     try {
       commandLine.setDynamicLibraryPath(value);
     } catch (IllegalArgumentException iae) {
@@ -103,7 +103,7 @@ public class CommandLineTest extends TestCase {
   @Test
   public void testSetDynamicLibraryPathWithNonNullValueSets() {
     String value = "Bar";
-    CommandLine commandLine = new CommandLine(new String[] {});
+    CommandLine commandLine = new CommandLine(new String[] {"testExec"});
     try {
       commandLine.setDynamicLibraryPath(value);
     } catch (IllegalArgumentException iae) {
