@@ -263,7 +263,11 @@ public class CommandLine {
     return drainer.getStdOut();
   }
 
-  public void destroy() {
+  /**
+   * Destroy the current command.
+   * @return The exit code of the command.
+   */
+  public int destroy() {
     if (!executed) {
       throw new IllegalStateException("Cannot quit a process that's not running: " +
           commandAndArgs[0]);
@@ -272,6 +276,7 @@ public class CommandLine {
     ProcessUtils.killProcess(proc);
 
     postRunCleanup();
+    return getExitCode();
   }
 
   private void postRunCleanup() {
