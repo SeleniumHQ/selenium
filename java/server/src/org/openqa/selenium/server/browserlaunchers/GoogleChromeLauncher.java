@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.GoogleChromeLocator;
@@ -55,7 +54,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
   private File customProfileDir;
 
-  private Process process;
+  private CommandLine process;
 
   public GoogleChromeLauncher(Capabilities browserOptions,
       RemoteControlConfiguration configuration,
@@ -78,8 +77,8 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
     createProfile(sessionId, url);
     final String[] cmdArray = createCommandArray(url);
-    CommandLine exe = new CommandLine(cmdArray);
-    process = exe.executeAsync();
+    process = new CommandLine(cmdArray);
+    process.executeAsync();
   }
 
   public void close() {
@@ -89,7 +88,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
       return;
     }
 
-    int exitValue = AsyncExecute.killProcess(process);
+    int exitValue = process.destroy();
     if (exitValue == 0) {
       log.warning("Google Chrome seems to have ended on its own.");
     }

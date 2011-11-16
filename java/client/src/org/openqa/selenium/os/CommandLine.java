@@ -168,7 +168,7 @@ public class CommandLine {
     waitFor();
   }
 
-  public Process executeAsync() {
+  public void executeAsync() {
     createProcess();
 
     new Thread() {   // Thread safety reviewed
@@ -192,8 +192,6 @@ public class CommandLine {
       }
     };
     Runtime.getRuntime().addShutdownHook(cleanup);
-
-    return proc;
   }
 
   public void waitFor() {

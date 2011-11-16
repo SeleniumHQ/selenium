@@ -20,7 +20,6 @@ import static org.openqa.selenium.Platform.MAC;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.MacProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
@@ -51,7 +50,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
   protected String[] cmdarray;
   private boolean closed = false;
   protected BrowserInstallation browserInstallation;
-  protected Process process;
+  protected CommandLine process;
   protected WindowsProxyManager wpm;
   protected MacProxyManager mpm;
   private File backedUpCookieFile;
@@ -115,9 +114,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
       };
     }
 
-    CommandLine command = new CommandLine(cmdarray);
-    command.setDynamicLibraryPath(browserInstallation.libraryPath());
-    process = command.executeAsync();
+    process = new CommandLine(cmdarray);
+    process.setDynamicLibraryPath(browserInstallation.libraryPath());
+    process.executeAsync();
   }
 
   public void close() {
@@ -134,7 +133,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
       return;
     }
     log.info("Killing Safari...");
-    exitValue = AsyncExecute.killProcess(process);
+    exitValue = process.destroy();
     if (exitValue == 0) {
       log.warning("Safari seems to have ended on its own (did we kill the real browser???)");
     }

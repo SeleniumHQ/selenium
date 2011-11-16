@@ -45,7 +45,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
   private String[] cmdarray;
   private boolean closed = false;
   private String commandPath;
-  private Process process;
+  private CommandLine process;
 
   // Opera has been a real pain for me (Lightbody), and so I'm adding a simple hook in the browser
   // launcher that lets
@@ -138,11 +138,11 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
       }
 
 
-      CommandLine command = new CommandLine(cmdarray);
-      command.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
-      getOperaBinary(command);
+      process = new CommandLine(cmdarray);
+      process.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
+      getOperaBinary(process);
 
-      process = command.executeAsync();
+      process.executeAsync();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -259,7 +259,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         taskKillException = e;
       }
     }
-    int exitValue = AsyncExecute.killProcess(process);
+    int exitValue = process.destroy();
     if (exitValue == 0) {
       log.warning("Opera seems to have ended on its own (did we kill the real browser???)");
     }

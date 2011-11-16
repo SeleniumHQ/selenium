@@ -42,7 +42,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   private File customProxyPACDir;
   private String[] cmdarray;
   private BrowserInstallation browserInstallation;
-  private Process process;
+  private CommandLine process;
   protected boolean customPACappropriate = true;
   protected WindowsProxyManager wpm;
 
@@ -73,8 +73,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     try {
       setupSystem(url);
       log.info("Launching Internet Explorer...");
-      CommandLine exe = new CommandLine(cmdarray);
-      process = exe.executeAsync();
+      process = new CommandLine(cmdarray);
+      process.destroy();
     } catch (IOException e) {
       throw Throwables.propagate(e);
     }
@@ -118,13 +118,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     if (browserConfigurationOptions.is("killProcessesByName")) {
       WindowsUtils.tryToKillByName("iexplore.exe");
     }
-    try { // DGF killableprocess.exe should commit suicide if we send it a newline
-      process.getOutputStream().write('\n');
-      process.getOutputStream().flush();
-      Thread.sleep(200);
-    } catch (Exception ignored) {
-    }
-    AsyncExecute.killProcess(process);
+    process.destroy();
     if (customPACappropriate) {
       LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
     }

@@ -17,8 +17,6 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class FirefoxChromeLauncherUnitTest {
 
@@ -31,7 +29,7 @@ public class FirefoxChromeLauncherUnitTest {
   public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
 
     try {
-      new FirefoxChromeLauncher(BrowserOptions.newBrowserOptions(), null, null, "invalid");
+      new FirefoxChromeLauncher(BrowserOptions.newBrowserOptions(), configuration, null, "invalid");
       fail("No exception thrown");
     } catch (InvalidBrowserExecutableException ibee) {
       assertEquals("The specified path to the browser executable is invalid.", ibee.getMessage());
@@ -43,7 +41,7 @@ public class FirefoxChromeLauncherUnitTest {
     BrowserInstallation browserInstallation = null;
 
     try {
-      new FirefoxChromeLauncher(BrowserOptions.newBrowserOptions(), null, null, browserInstallation);
+      new FirefoxChromeLauncher(BrowserOptions.newBrowserOptions(), configuration, null, browserInstallation);
       fail("No exception thrown");
     } catch (InvalidBrowserExecutableException ibee) {
       assertEquals("The specified path to the browser executable is invalid.", ibee.getMessage());
@@ -75,7 +73,7 @@ public class FirefoxChromeLauncherUnitTest {
         new FirefoxChromeLauncherStubbedForShutdown();
     launcher.haveProcessKillThrowException(false);
     launcher.setCustomProfileDir(new File("testdir"));
-    launcher.setProcess(new TestProcess());
+    launcher.setCommandLine(new TestProcess());
     launcher.close();
     assertTrue(launcher.wasKillFirefoxProcessCalled());
     assertTrue(launcher.wasRemoveCustomProfileCalled());
@@ -86,7 +84,7 @@ public class FirefoxChromeLauncherUnitTest {
     FirefoxChromeLauncherStubbedForShutdown launcher =
         new FirefoxChromeLauncherStubbedForShutdown();
     launcher.setCustomProfileDir(new File("testdir"));
-    launcher.setProcess(new TestProcess());
+    launcher.setCommandLine(new TestProcess());
     launcher.close();
     assertTrue(launcher.wasKillFirefoxProcessCalled());
     assertTrue(launcher.wasRemoveCustomProfileCalled());
@@ -147,6 +145,9 @@ public class FirefoxChromeLauncherUnitTest {
 
     final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
 
+    ((DesiredCapabilities) browserOptions).setCapability("firefoxProfileTemplate",
+        "profileTemplate");
+
     FirefoxChromeLauncher launcher =
         new FirefoxChromeLauncher(browserOptions, configuration, "session", browserInstallation) {
           @Override
@@ -154,13 +155,9 @@ public class FirefoxChromeLauncherUnitTest {
           }
         };
 
-    ((DesiredCapabilities) browserOptions).setCapability("firefoxProfileTemplate",
-        "profileTemplate");
-
     File result = launcher.initProfileTemplate();
 
     assertEquals("profileTemplate", result.getName());
-
   }
 
   @Test
@@ -170,8 +167,15 @@ public class FirefoxChromeLauncherUnitTest {
     final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
     final File profileTemplate = createMock(File.class);
 
+    expect(profileTemplate.exists()).andReturn(true);
+    replay(profileTemplate);
+
+    configuration.setProfilesLocation(profileTemplate);
+    ((DesiredCapabilities) browserOptions).setCapability("profile", "profile");
+
     FirefoxChromeLauncher launcher =
-        new FirefoxChromeLauncher(browserOptions, configuration, "session", browserInstallation) {
+        new FirefoxChromeLauncher(browserOptions, configuration, "session",
+            browserInstallation) {
           @Override
           protected void copyDirectory(File sourceDir, File destDir) {
           }
@@ -181,12 +185,6 @@ public class FirefoxChromeLauncherUnitTest {
             return profileTemplate;
           }
         };
-
-    expect(profileTemplate.exists()).andReturn(true);
-    replay(profileTemplate);
-
-    configuration.setProfilesLocation(profileTemplate);
-    ((DesiredCapabilities) browserOptions).setCapability("profile", "profile");
 
     File result = launcher.initProfileTemplate();
     verify(profileTemplate);
@@ -235,38 +233,5 @@ public class FirefoxChromeLauncherUnitTest {
     protected void removeCustomProfileDir() throws RuntimeException {
       removeCustomProfileDirCalled = true;
     }
-  }
-
-  public static class TestProcess extends Process {
-
-    @Override
-    public void destroy() {
-    }
-
-    @Override
-    public int exitValue() {
-      return 0;
-    }
-
-    @Override
-    public InputStream getErrorStream() {
-      return null;
-    }
-
-    @Override
-    public InputStream getInputStream() {
-      return null;
-    }
-
-    @Override
-    public OutputStream getOutputStream() {
-      return null;
-    }
-
-    @Override
-    public int waitFor() throws InterruptedException {
-      return 0;
-    }
-
   }
 }

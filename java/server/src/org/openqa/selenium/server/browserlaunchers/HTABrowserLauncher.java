@@ -5,7 +5,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
@@ -28,8 +27,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
   private String sessionId;
   private File dir;
   private String htaCommandPath;
-  private Process htaProcess;
-  private Process iexploreProcess;
+  private CommandLine htaProcess;
+  private CommandLine iexploreProcess;
   private RemoteControlConfiguration configuration;
   private Capabilities browserOptions;
 
@@ -67,14 +66,14 @@ public class HTABrowserLauncher implements BrowserLauncher {
     createHTAFiles();
     String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
     log.info("Launching Embedded Internet Explorer...");
-    CommandLine command = new CommandLine(
+    iexploreProcess = new CommandLine(
         new InternetExplorerLocator().findBrowserLocationOrFail().launcherFilePath(),
         "-Embedding");
-    iexploreProcess = command.executeAsync();
+    iexploreProcess.executeAsync();
     log.info("Launching Internet Explorer HTA...");
 
-    command = new CommandLine(htaCommandPath, hta, query);
-    htaProcess = command.executeAsync();
+    htaProcess = new CommandLine(htaCommandPath, hta, query);
+    htaProcess.executeAsync();
   }
 
   private void createHTAFiles() {
@@ -133,13 +132,13 @@ public class HTABrowserLauncher implements BrowserLauncher {
       WindowsUtils.tryToKillByName("mshta.exe");
     }
     if (iexploreProcess != null) {
-      int exitValue = AsyncExecute.killProcess(iexploreProcess);
+      int exitValue = iexploreProcess.destroy();
       if (exitValue == 0) {
         log.warning("Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
       }
     }
     if (htaProcess == null) return;
-    AsyncExecute.killProcess(htaProcess);
+    htaProcess.destroy();
     LauncherUtils.recursivelyDeleteDir(dir);
   }
 

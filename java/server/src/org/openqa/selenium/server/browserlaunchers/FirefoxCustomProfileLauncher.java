@@ -38,7 +38,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
   private boolean closed = false;
   private BrowserInstallation browserInstallation;
-  private Process process;
+  private CommandLine process;
 
   private static boolean alwaysChangeMaxConnections = false;
   protected boolean changeMaxConnections = alwaysChangeMaxConnections;
@@ -94,9 +94,9 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
       waitForFullProfileToBeCreated(20 * 1000);
 
       log.info("Launching Firefox...");
-      command = prepareCommand(browserInstallation.launcherFilePath(),
+      process = prepareCommand(browserInstallation.launcherFilePath(),
           "-profile", customProfileDir().getAbsolutePath(), url);
-      process = command.executeAsync();
+      process.executeAsync();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -169,7 +169,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
   /** Wrapper to allow for stubbed-out testing **/
   protected void killFirefoxProcess() throws FileLockRemainedException {
     log.info("Killing Firefox...");
-    int exitValue = AsyncExecute.killProcess(process);
+    int exitValue = process.destroy();
     if (exitValue == 0) {
       log.warning("Firefox seems to have ended on its own (did we kill the real browser???)");
     }
@@ -182,7 +182,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   // visible for testing
-  protected void setProcess(Process p) {
+  protected void setCommandLine(CommandLine p) {
     process = p;
   }
 
