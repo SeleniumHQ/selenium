@@ -346,6 +346,10 @@ WDAPI.Element.prototype.submit = function() {
   return this.ref + ".submit()";
 };
 
+WDAPI.Element.prototype.select = function(label) {
+  return "new Select(" + this.ref + ").selectByVisibleText(" + xlateArgument(label) + ")";
+};
+
 WDAPI.ElementList = function(ref) {
   this.ref = ref;
 };

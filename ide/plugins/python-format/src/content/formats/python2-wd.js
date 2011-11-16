@@ -201,6 +201,7 @@ this.options = {
   header:
       'from selenium import webdriver\n' +
           'from selenium.webdriver.common.by import By\n' +
+          'from selenium.webdriver.support.ui import Select\n' +
           'from selenium.common.exceptions import NoSuchElementException\n' +
           'import unittest, time, re\n' +
           '\n' +
@@ -374,6 +375,10 @@ WDAPI.Element.prototype.sendKeys = function(text) {
 
 WDAPI.Element.prototype.submit = function() {
   return this.ref + ".submit()";
+};
+
+WDAPI.Element.prototype.select = function(label) {
+  return "Select(" + this.ref + ").select_by_visible_text(" + xlateArgument(label) + ")";
 };
 
 WDAPI.ElementList = function(ref) {

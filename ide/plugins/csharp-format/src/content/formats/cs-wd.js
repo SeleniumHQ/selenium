@@ -169,6 +169,7 @@ this.options = {
           'using NUnit.Framework;\n' +
           'using OpenQA.Selenium;\n' +
           'using OpenQA.Selenium.Firefox;\n' +
+          'using OpenQA.Selenium.Support.UI;\n' +
           '\n' +
           'namespace ${namespace}\n' +
           '{\n' +
@@ -325,6 +326,10 @@ WDAPI.Element.prototype.sendKeys = function(text) {
 
 WDAPI.Element.prototype.submit = function() {
   return this.ref + ".Submit()";
+};
+
+WDAPI.Element.prototype.select = function(label) {
+  return "new SelectElement(" + this.ref + ").SelectByVisibleText(" + xlateArgument(label) + ")";
 };
 
 WDAPI.ElementList = function(ref) {
