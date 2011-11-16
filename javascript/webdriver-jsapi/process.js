@@ -14,22 +14,16 @@
 // limitations under the License.
 
 /**
- * @fileoverview Provides a browser friendly definition for the NodeJS global
- * <code>process</code> object. When running in a browser, the following
- * strategies are used to emulate Node's process API:
- *
- * - process.nextTick is implemented with setTimeout(fn, 0)
- * - window.onError is configured as the global error handler. Each time an
- *   unhandled error is detected, it will be reported via the
- *   webdriver.process.UNCAUGHT_EXCEPTION event.
- * - Environment variables are loaded by parsing the current URL's query string.
- *   Variables that have more than one variable will be initialized to the JSON
- *   representation of the array of all values, otherwise the variable will be
- *   initialized to a sole string value. If a variable does not have any values,
- *   but is nonetheless present in the query string, it will be initialized to
- *   an empty string.
- *   After the initial parsing, environment variables must be queried and set
- *   through the API defined in this file.
+ * @fileoverview Provides access to the current process' environment variables.
+ * When running in node, this is simply a wrapper for {@code process.env}.
+ * When running in a browser, environment variables are loaded by parsing the
+ * current URL's query string. Variables that have more than one variable will
+ * be initialized to the JSON representation of the array of all values,
+ * otherwise the variable will be initialized to a sole string value. If a
+ * variable does not have any values, but is nonetheless present in the query
+ * string, it will be initialized to an empty string.
+ * After the initial parsing, environment variables must be queried and set
+ * through the API defined in this file.
  */
 
 goog.provide('webdriver.process');
@@ -46,17 +40,6 @@ goog.require('goog.json');
  */
 webdriver.process.isNative = function() {
   return webdriver.process.IS_NATIVE_PROCESS_;
-};
-
-
-/**
- * Schedules a function to be executed in the next turn of the event loop. The
- * scheduled function may not be canceled.
- * @param {!Function} fn The function to execute.
- * @export
- */
-webdriver.process.nextTick = function(fn) {
-  webdriver.process.PROCESS_.nextTick(fn);
 };
 
 
@@ -112,19 +95,6 @@ webdriver.process.initBrowserProcess_ = function(opt_window) {
 
   // Initialize the global error handler.
   if (win) {
-    var onerror = win.onerror;
-    win.onerror = function(message, fileName, lineNumber) {
-      // Call any existing onerror handlers.
-      if (onerror) {
-        onerror(message, fileName, lineNumber);
-      }
-
-      var error = new Error(message);
-      error.stack = error.name + ': ' + error.message + '\n\t' + fileName +
-          ':' + lineNumber;
-      process.emit(webdriver.process.UNCAUGHT_EXCEPTION, error);
-    };
-
     // Initialize the environment variable map by parsing the current URL query
     // string.
     if (win.location) {
@@ -137,11 +107,6 @@ webdriver.process.initBrowserProcess_ = function(opt_window) {
       });
     }
   }
-
-  // Initialize the nextTick function.
-  process.nextTick = function(fn) {
-    setTimeout(fn, 0);
-  };
 
   return process;
 };
