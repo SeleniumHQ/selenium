@@ -403,20 +403,11 @@ webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
  */
 webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
   var args = goog.array.slice(arguments, 2);
-  // We want the function to execute in its own frame so that any commands
-  // issued within the function execute before the next task scheduled in this
-  // frame.  To accomplish this, we schedule a dummy task and execute our
-  // function in that task's callback. Why would we want to do this? Example:
-  //
-  //   driver.call(function() {
-  //     driver.getTitle();  // This command should execute...
-  //   });
-  //   driver.quit();        // ... before this command
   var app = webdriver.promise.Application.getInstance();
-  var dummyTask = app.schedule(
+  var resolveArgs = app.schedule(
       'WebDriver.call(' + (fn.name || 'function') + ')',
-      webdriver.promise.resolved);
-  return webdriver.promise.when(dummyTask, function() {
+      goog.partial(webdriver.promise.fullyResolved, args));
+  return resolveArgs.then(function(args) {
     return fn.apply(opt_scope, args);
   });
 };

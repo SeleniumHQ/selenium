@@ -42,6 +42,10 @@ limitations under the License.
   <script>
   var SESSION_ID = 'test_session_id';
 
+  // Alias some long names that interfere with test readability.
+  var CName = webdriver.CommandName;
+  var ECode = bot.ErrorCode;
+
   var stubs = new goog.testing.PropertyReplacer();
 
   var driver;
@@ -52,10 +56,6 @@ limitations under the License.
     clock = createMockClock();
     mockControl = new goog.testing.MockControl();
     verifyAll = callbackHelper(goog.bind(mockControl.$verifyAll, mockControl));
-
-    // Alias some long names that interfere with test readability.
-    goog.global.CName = webdriver.CommandName;
-    goog.global.ECode = bot.ErrorCode;
   }
 
 
@@ -123,9 +123,10 @@ limitations under the License.
         webdriver.promise.Application.UNCAUGHT_EXCEPTION,
         callbacks.errback);
 
-    helper.execute = function() {
+    helper.execute = function(opt_notFinished) {
       consumeTimeouts();
-      callbacks.assertCallback('App did not finish OK');
+      if (!opt_notFinished)
+        callbacks.assertCallback('App did not finish OK');
     };
 
     return helper;
@@ -591,7 +592,7 @@ limitations under the License.
           assertUndefined('Session ID should have been deleted', driver.session_);
         }).
         expect(CName.QUIT).
-        replayAll()
+        replayAll();
 
     driver = testHelper.createDriver();
     driver.quit();
@@ -605,7 +606,7 @@ limitations under the License.
             'This driver instance does not have a valid session ID ' +
             '(did you call WebDriver.quit()?) and may no longer be used.')).
         expect(CName.QUIT).
-        replayAll()
+        replayAll();
 
     var driver = testHelper.createDriver();
     driver.quit();
@@ -830,30 +831,49 @@ limitations under the License.
   }
 
 
-  function testExecutingPassingArgumentsToACustomFunction() {
-    var called = false;
-    var testHelper = TestHelper.expectingSuccess(function() {
-          assertTrue('Callback not called', called);
-        }).
-        replayAll();
+  function testPassingArgumentsToACustomFunction() {
+    var testHelper = TestHelper.expectingSuccess().replayAll();
 
+    var add = callbackHelper(function(a, b) {
+      return a + b;
+    });
     var driver = testHelper.createDriver();
-    driver.call(function(a, b) { return a + b; }, null, 1, 2).
+    driver.call(add, null, 1, 2).
         addCallback(function(value) {
           assertEquals(3, value);
-          called = true;
         });
+    testHelper.execute();
+    add.assertCalled();
+  }
+
+  function testPassingPromisedArgumentsToACustomFunction() {
+    var testHelper = TestHelper.expectingSuccess().replayAll();
+
+    var promisedArg = new webdriver.promise.Deferred;
+    var add = callbackHelper(function(a, b) {
+      return a + b;
+    });
+    var driver = testHelper.createDriver();
+    driver.call(add, null, 1, promisedArg).
+        addCallback(function(value) {
+          assertEquals(3, value);
+        });
+
+    testHelper.execute(true);
+    add.assertNotCalled();
+
+    promisedArg.resolve(2);
+    add.assertCalled();
     testHelper.execute();
   }
 
-
-  function testExecutingPassingArgumentsAndScopeToACustomFunction() {
+  function testPassingArgumentsAndScopeToACustomFunction() {
     function Foo(name) {
       this.name = name;
     }
     Foo.prototype.getName = function() {
       return this.name;
-    }
+    };
     var foo = new Foo('foo');
 
     var called = false;
