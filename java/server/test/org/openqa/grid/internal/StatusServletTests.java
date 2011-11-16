@@ -73,13 +73,13 @@ public class StatusServletTests {
 
     hub.start();
 
-    p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
+    p1 = RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444", registry);
     RemoteProxy p2 =
-        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444/", registry);
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine2:4444", registry);
     RemoteProxy p3 =
-        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444/", registry);
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine3:4444", registry);
     RemoteProxy p4 =
-        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444/", registry);
+        RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444", registry);
 
     RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> capability = new HashMap<String, Object>();
@@ -87,7 +87,7 @@ public class StatusServletTests {
     req.addDesiredCapabilitiy(capability);
 
     Map<String, Object> config = new HashMap<String, Object>();
-    config.put(RegistrationRequest.REMOTE_HOST, "http://machine5:4444/");
+    config.put(RegistrationRequest.REMOTE_HOST, "http://machine5:4444");
     req.setConfiguration(config);
     RemoteProxy customProxy = new MyCustomProxy(req, registry);
 
@@ -111,7 +111,7 @@ public class StatusServletTests {
 
   @Test
   public void testget() throws IOException, JSONException {
-    String id = "http://machine1:4444/";
+    String id = "http://machine1:4444";
     HttpClient client = httpClientFactory.getHttpClient();
 
     BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
@@ -125,7 +125,7 @@ public class StatusServletTests {
 
   @Test
   public void testGetNegative() throws IOException, JSONException {
-    String id = "http://wrongOne:4444/";
+    String id = "http://wrongOne:4444";
     HttpClient client = httpClientFactory.getHttpClient();
 
     BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
@@ -141,7 +141,7 @@ public class StatusServletTests {
 
   @Test
   public void testpost() throws IOException, JSONException {
-    String id = "http://machine1:4444/";
+    String id = "http://machine1:4444";
     HttpClient client =  httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
@@ -160,7 +160,7 @@ public class StatusServletTests {
 
   @Test
   public void testpostReflection() throws IOException, JSONException {
-    String id = "http://machine5:4444/";
+    String id = "http://machine5:4444";
     HttpClient client =  httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();

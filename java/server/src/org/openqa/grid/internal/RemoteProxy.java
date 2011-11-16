@@ -163,7 +163,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         slots.add(new TestSlot(this, protocol, path, c));
       }
     }
-    this.testSlots = Collections.unmodifiableList( slots);
+    this.testSlots = Collections.unmodifiableList(slots);
   }
 
   private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
@@ -269,13 +269,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
               if (hasTimedOut) {
                 log.warning("session " + session + " has TIMED OUT and will be released");
                 ((TimeoutListener) proxy).beforeRelease(session);
-                registry.terminate( session);
+                registry.terminate(session);
               }
 
               if (session.isOrphaned()) {
                 log.warning("session " + session + " has been ORPHANED and will be released");
                 ((TimeoutListener) proxy).beforeRelease(session);
-                registry.terminate( session);
+                registry.terminate(session);
               }
             }
           } catch (Throwable t) {
