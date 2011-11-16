@@ -205,6 +205,7 @@ this.options = {
           '\n' +
           '  def setup\n' +
           '    ${receiver} = Selenium::WebDriver.for :firefox\n' +
+          '    @base_url = "${baseURL}"\n' +
           '    ${receiver}.manage.timeouts.implicit_wait = 30\n' +
           '    @verification_errors = []\n' +
           '  end\n' +
@@ -305,7 +306,11 @@ WDAPI.Driver.prototype.getCurrentUrl = function() {
 };
 
 WDAPI.Driver.prototype.get = function(url) {
-  return this.ref + ".get " + url;
+  if (url.length > 1 && (url.substring(1,8) == "http://" || url.substring(1,9) == "https://")) { // url is quoted
+    return this.ref + ".get " + url;
+  } else {
+    return this.ref + ".get(@base_url + " + url + ")";
+  }
 };
 
 WDAPI.Driver.prototype.getTitle = function() {

@@ -276,7 +276,11 @@ WDAPI.Driver.prototype.getCurrentUrl = function() {
 };
 
 WDAPI.Driver.prototype.get = function(url) {
-  return this.ref + ".Navigate().GoToUrl(" + url + ")";
+  if (url.length > 1 && (url.substring(1,8) == "http://" || url.substring(1,9) == "https://")) { // url is quoted
+    return this.ref + ".Navigate().GoToUrl(" + url + ")";
+  } else {
+    return this.ref + ".Navigate().GoToUrl(baseURL + " + url + ")";
+  }
 };
 
 WDAPI.Driver.prototype.getTitle = function() {
