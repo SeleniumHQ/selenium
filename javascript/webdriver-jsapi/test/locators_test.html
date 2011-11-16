@@ -18,7 +18,7 @@ limitations under the License.
 <html>
 <head>
   <title>locators_test.html</title>
-  <script src="../../../../third_party/closure/goog/base.js"></script>
+  <script src="../../../third_party/closure/goog/base.js"></script>
   <script src="../../deps.js"></script>
   <script src="testutil.js"></script>
   <script>
@@ -27,6 +27,11 @@ limitations under the License.
     goog.require('webdriver.Locator.Strategy');
   </script>
   <script>
+
+    // By is exported by webdriver.Locator, but IDEs don't
+    // recognize goog.exportSymbol. Explicitly define it here to make
+    // the IDE stop complaining.
+    var By = webdriver.Locator.Strategy;
 
     var TARGET = 'some-value';
 

@@ -286,7 +286,7 @@ function testWhen_WaitsForValueToBeResolvedBeforeInvokingCallback() {
 
 
 function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
-  var d = webdriver.promise.rejected('ouch');
+  webdriver.promise.rejected('ouch');
   var handler = callbackHelper(function(value) {
     assertEquals('ouch', value);
   });

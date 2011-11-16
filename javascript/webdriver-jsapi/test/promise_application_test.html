@@ -894,7 +894,7 @@ limitations under the License.
 
   function testScheduleAndWaitForIdle_appAbortsAfterIdleButBeforeResolution() {
     var error = new Error('boom');
-    var fn1 = callbackHelper(), fn2 = callbackHelper(function(e) {
+    var fn1 = callbackHelper(), fn2 = callbackHelper(function() {
       throw error;
     }, /*expectError=*/true);
     var wait = callbackPair();

@@ -61,6 +61,12 @@ function createMockClock() {
 }
 
 
+/**
+ * Advances the clock by one tick.
+ * @param {number=} opt_n The number of ticks to advance the clock. If not
+ *     specified, will advance the clock once for every timeout made.
+ *     Assumes all timeouts are 0-based.
+ */
 function consumeTimeouts(opt_n) {
   // webdriver.promise and webdriver.application only schedule 0 timeouts to
   // yield until the next available event loop.
@@ -98,7 +104,22 @@ function assertNotPromise(obj) {
   assertFalse(webdriver.promise.isPromise(obj));
 }
 
-
+/**
+ * Wraps a function. The wrapped function will have several utility functions:
+ * <ul>
+ * <li>getError: Returns any errors thrown by the wrapped function
+ * <li>getArgs: Returns the arguments the wrapped function was called with.
+ * <li>wasCalled: Returns whether the function was called.
+ * <li>reset: Resets the recording.
+ * <li>assertCalled: Asserts that the function was called.
+ * <li>assertNotCalled: Asserts that the function was not called.
+ * </ul> 
+ * @param {Function=} opt_fn The function to wrap; defaults to
+ *     goog.nullFunction.
+ * @param {boolean=} opt_expectError Whether the wrapped function is
+ *     expected to throw; defaults to false.
+ * @return {!Function} The wrapped function.
+ */
 function callbackHelper(opt_fn, opt_expectError) {
   var fn = opt_fn || goog.nullFunction;
   var args = null, error = null;

@@ -46,6 +46,11 @@ limitations under the License.
   var CName = webdriver.CommandName;
   var ECode = bot.ErrorCode;
 
+  // By is exported by webdriver.Locator, but IDEs don't
+  // recognize goog.exportSymbol. Explicitly define it here to make
+  // the IDE stop complaining.
+  var By = webdriver.Locator.Strategy;
+
   var stubs = new goog.testing.PropertyReplacer();
 
   var driver;
@@ -336,7 +341,6 @@ limitations under the License.
   function testToWireValue_arrayWithWebElement() {
     var elementJson = {};
     elementJson[webdriver.WebElement.ELEMENT_KEY] = 'fefifofum';
-    var expected = [elementJson];
 
     var element = new webdriver.WebElement({}, 'fefifofum');
     var callback;
@@ -512,7 +516,6 @@ limitations under the License.
         addErrback(callback = callbackHelper(function(e) {
           assertEquals(ECode.NO_SUCH_WINDOW, e.code);
           assertEquals('window not found', e.message);
-          called = true;
           return true;  // suppress expected failure
         }));
     driver.getTitle();
