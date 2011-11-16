@@ -1,8 +1,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
@@ -18,7 +18,7 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 
   private static final String DEFAULT_KONQUEROR_LOCATION = "/usr/bin/konqueror";
 
-  private Process process;
+  private CommandLine process;
 
   private String browserLaunchLocation;
 
@@ -60,7 +60,7 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 
   public void close() {
     if (process == null) return;
-    AsyncExecute.killProcess(process);
+    process.destroy();
   }
 
   public Process getProcess() {
@@ -69,8 +69,9 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 
   protected void exec(String command) {
     try {
-      process = Runtime.getRuntime().exec(command);
-    } catch (IOException e) {
+      process = new CommandLine(command);
+      process.executeAsync();
+    } catch (RuntimeException e) {
       throw new RuntimeException("Error starting browser by executing command " + command + ": " +
           e + "\n See http://openqa.org/selenium-rc/help/launching-konqueror.html");
     }

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -37,7 +37,7 @@ public class GoogleChromeLauncherFunctionalTest {
         new GoogleChromeLauncher(BrowserOptions.newBrowserOptions(),
             new RemoteControlConfiguration(), "aSessionId", (String) null);
     launcher.launch("http://www.google.com/");
-    AsyncExecute.sleepTightInSeconds(5);
+    Sleeper.sleepTightInSeconds(5);
     launcher.close();
   }
 
@@ -53,11 +53,11 @@ public class GoogleChromeLauncherFunctionalTest {
             new RemoteControlConfiguration(), "secondSessionId", (String) null);
 
     firstLauncher.launch("http://www.google.com/");
-    AsyncExecute.sleepTightInSeconds(5);
+    Sleeper.sleepTightInSeconds(5);
     firstLauncher.close();
 
     secondLauncher.launch("http://www.google.com/");
-    AsyncExecute.sleepTightInSeconds(5);
+    Sleeper.sleepTightInSeconds(5);
     secondLauncher.close();
   }
 
@@ -74,7 +74,7 @@ public class GoogleChromeLauncherFunctionalTest {
 
     firstLauncher.launch("http://www.google.com/");
     secondLauncher.launch("http://www.google.com/");
-    AsyncExecute.sleepTightInSeconds(5);
+    Sleeper.sleepTightInSeconds(5);
     firstLauncher.close();
     secondLauncher.close();
   }

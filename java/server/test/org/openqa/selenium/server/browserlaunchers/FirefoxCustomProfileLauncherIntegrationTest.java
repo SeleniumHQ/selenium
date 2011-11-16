@@ -1,6 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class FirefoxCustomProfileLauncherIntegrationTest extends LauncherFunctio
     for(int i = 0; i < 20; i++){
       threads.get(i).start();
     }
-    AsyncExecute.sleepTight(60 * 1000);
+    Sleeper.sleepTight(60 * 1000);
   }
 
   static Runnable run = new Runnable() {

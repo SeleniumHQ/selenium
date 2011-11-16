@@ -17,7 +17,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.os.CommandLine;
@@ -305,7 +305,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
       throws FileLockRemainedException {
     File lock = new File(customProfileDir, "parent.lock");
     for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeout;) {
-      AsyncExecute.sleepTight(500);
+      Sleeper.sleepTight(500);
       if (!lock.exists() && makeSureFileLockRemainsGone(lock, timeToWait)) return;
     }
     if (lock.exists())
@@ -324,7 +324,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
    */
   private boolean makeSureFileLockRemainsGone(File lock, long timeToWait) {
     for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait;) {
-      AsyncExecute.sleepTight(500);
+      Sleeper.sleepTight(500);
       if (lock.exists()) return false;
     }
     return !lock.exists();
@@ -337,7 +337,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     l.launch("http://www.google.com");
     int seconds = 15;
     System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
-    AsyncExecute.sleepTight(seconds * 1000);
+    Sleeper.sleepTight(seconds * 1000);
     l.close();
     System.out.println("He's dead now, right?");
   }

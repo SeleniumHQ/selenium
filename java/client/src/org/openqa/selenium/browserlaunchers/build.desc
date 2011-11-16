@@ -24,10 +24,10 @@ java_library(name = "browserlaunchers",
 
 java_library(name = "launcher-utils",
   srcs = [
-    "AsyncExecute.java",
     "DoNotUseProxyPac.java",
     "LauncherUtils.java",
     "Proxies.java",
+    "Sleeper.java",
   ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium:api",

@@ -1,6 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import junit.framework.TestCase;
@@ -26,7 +26,7 @@ public class SafariLauncherIntegrationTest extends TestCase {
     launcher.launch("http://www.google.com");
     int seconds = 15;
     LOGGER.info("Killing browser in " + Integer.toString(seconds) + " seconds");
-    AsyncExecute.sleepTight(WAIT_TIME);
+    Sleeper.sleepTight(WAIT_TIME);
     launcher.close();
     LOGGER.info("He's dead now, right?");
   }
@@ -44,7 +44,7 @@ public class SafariLauncherIntegrationTest extends TestCase {
     launcher.launch("http://www.google.com");
     int seconds = 15;
     LOGGER.info("Killing browser in " + Integer.toString(seconds) + " seconds");
-    AsyncExecute.sleepTight(WAIT_TIME);
+    Sleeper.sleepTight(WAIT_TIME);
     launcher.close();
     LOGGER.info("He's dead now, right?");
   }

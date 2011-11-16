@@ -78,7 +78,7 @@ public class LauncherUtils {
       recursivelyDeleteDir(dir);
     } catch (RuntimeException e) {
       if (tries > 0) {
-        AsyncExecute.sleepTight(2000);
+        Sleeper.sleepTight(2000);
         deleteTryTryAgain(dir, tries - 1);
       } else {
         throw e;

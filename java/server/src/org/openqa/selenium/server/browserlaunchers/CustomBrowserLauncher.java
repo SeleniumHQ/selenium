@@ -18,11 +18,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import java.io.IOException;
-
 
 
 /**
@@ -33,7 +30,7 @@ import java.io.IOException;
  */
 public class CustomBrowserLauncher extends AbstractBrowserLauncher {
 
-  protected Process process;
+  protected CommandLine process;
   protected String commandPath;
 
   /** Specifies a command path to run */
@@ -47,7 +44,7 @@ public class CustomBrowserLauncher extends AbstractBrowserLauncher {
   /** Kills the process */
   public void close() {
     if (process == null) return;
-    AsyncExecute.killProcess(process);
+    process.destroy();
   }
 
   public Process getProcess() {
@@ -61,8 +58,9 @@ public class CustomBrowserLauncher extends AbstractBrowserLauncher {
 
   protected void exec(String command) {
     try {
-      process = Runtime.getRuntime().exec(command);
-    } catch (IOException e) {
+      process = new CommandLine(command);
+      process.executeAsync();
+    } catch (RuntimeException e) {
       throw new RuntimeException("Error starting browser by executing command " + command + ": " +
           e);
     }

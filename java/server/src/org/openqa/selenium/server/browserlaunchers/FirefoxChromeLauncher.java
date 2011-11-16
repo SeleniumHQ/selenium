@@ -19,7 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
@@ -313,7 +313,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
       throws FileLockRemainedException {
     File lock = new File(customProfileDir, "parent.lock");
     for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeout;) {
-      AsyncExecute.sleepTight(500);
+      Sleeper.sleepTight(500);
       if (!lock.exists() && makeSureFileLockRemainsGone(lock, timeToWait)) {
         return;
       }
@@ -335,7 +335,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
    */
   private boolean makeSureFileLockRemainsGone(File lock, long timeToWait) {
     for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait;) {
-      AsyncExecute.sleepTight(500);
+      Sleeper.sleepTight(500);
       if (lock.exists()) {
         return false;
       }
@@ -355,7 +355,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     long start = System.currentTimeMillis();
     for (; System.currentTimeMillis() < start + timeout;) {
 
-      AsyncExecute.sleepTight(500);
+      Sleeper.sleepTight(500);
       if (testFile.exists()) {
         break;
       }

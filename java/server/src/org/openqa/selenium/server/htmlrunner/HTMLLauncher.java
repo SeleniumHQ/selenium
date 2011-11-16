@@ -5,7 +5,7 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.BrowserType;
@@ -69,7 +69,7 @@ public class HTMLLauncher implements HTMLResultsListener {
     long now = System.currentTimeMillis();
     long end = now + timeoutInMs;
     while (results == null && System.currentTimeMillis() < end) {
-      AsyncExecute.sleepTight(500);
+      Sleeper.sleepTight(500);
     }
   }
 

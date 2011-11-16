@@ -25,13 +25,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Spawn a process and return the process handle so you can close it yourself later.
+ * Primitives for sleeping
  * 
  * @author dfabulich
  */
-public class AsyncExecute {
-
-  static Logger log = Logger.getLogger(AsyncExecute.class.getName());
+public class Sleeper {
 
   /**
    * Sleeps without explicitly throwing an InterruptedException
@@ -55,37 +53,5 @@ public class AsyncExecute {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
-  }
-
-
-  /**
-   * Forcibly kills a process, using OS tools like "kill" as a last resort
-   * 
-   * @param process The process to kill.
-   * @return The exit value of the process.
-   */
-  public static int killProcess(Process process) {
-    process.destroy();
-    int exitValue;
-    try {
-      exitValue = ProcessUtils.waitForProcessDeath(process, 10000);
-      ProcessUtils.closeAllStreamsAndDestroyProcess( process);
-    } catch (ProcessUtils.ProcessStillAliveException ex) {
-      if (WindowsUtils.thisIsWindows()) {
-        throw ex;
-      }
-      try {
-        log.info("Process didn't die after 10 seconds");
-        UnixUtils.kill9(process);
-        exitValue = ProcessUtils.waitForProcessDeath(process, 10000);
-        ProcessUtils.closeAllStreamsAndDestroyProcess( process);
-      } catch (Exception e) {
-        log.log(Level.SEVERE, "Process refused to die after 10 seconds, and couldn't kill9 it", e);
-        throw new RuntimeException(
-            "Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(),
-            ex);
-      }
-    }
-    return exitValue;
   }
 }

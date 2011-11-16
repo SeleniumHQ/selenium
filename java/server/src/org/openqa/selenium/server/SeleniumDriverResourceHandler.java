@@ -21,7 +21,7 @@ package org.openqa.selenium.server;
 import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
@@ -778,7 +778,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     Runnable initiateShutDown = new Runnable() {
       public void run() {
         log.info("initiating shutdown");
-        AsyncExecute.sleepTight(500);
+        Sleeper.sleepTight(500);
         System.exit(0);
       }
     };

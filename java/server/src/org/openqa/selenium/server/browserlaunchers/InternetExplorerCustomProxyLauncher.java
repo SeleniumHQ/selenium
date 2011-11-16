@@ -19,7 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
@@ -140,7 +140,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     l.launch("http://www.google.com/");
     int seconds = 5;
     System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
-    AsyncExecute.sleepTight(seconds * 1000);
+    Sleeper.sleepTight(seconds * 1000);
     l.close();
     System.out.println("He's dead now, right?");
   }

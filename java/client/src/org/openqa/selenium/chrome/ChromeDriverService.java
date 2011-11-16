@@ -7,6 +7,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.os.CommandLine.findExecutable;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,11 +19,6 @@ import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
 
 /**
  * Manages the life and death of a chromedriver server.
@@ -50,7 +50,7 @@ public class ChromeDriverService {
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
    */
-  private Process process = null;
+  private CommandLine process = null;
 
   /**
    * @param executable The chromedriver executable.
@@ -114,7 +114,7 @@ public class ChromeDriverService {
       if (process == null) {
         return false;
       }
-      process.exitValue();
+      process.destroy();
       return false;
     } catch (IllegalThreadStateException e) {
       return true;
@@ -136,9 +136,8 @@ public class ChromeDriverService {
       if (process != null) {
         return;
       }
-      process = processBuilder.start();
-      pipe(process.getErrorStream(), System.err);
-      pipe(process.getInputStream(), System.out);
+      process.copyOutputTo(System.err);
+      process.executeAsync();
 
       URL status = new URL(url.toString() + "/status");
       URL healthz = new URL(url.toString() + "/healthz");
@@ -180,7 +179,7 @@ public class ChromeDriverService {
       }
       URL killUrl = new URL(url.toString() + "/shutdown");
       new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
-      AsyncExecute.killProcess(process);
+      process.destroy();
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
     } catch (UrlChecker.TimeoutException e) {

@@ -40,7 +40,7 @@ import org.openqa.jetty.http.handler.SecurityHandler;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
@@ -628,7 +628,7 @@ public class SeleniumServer implements SslCertificateGenerator {
   }
 
   protected void readUserCommands() throws IOException {
-    AsyncExecute.sleepTight(500);
+    Sleeper.sleepTight(500);
     System.out
         .println("Entering interactive mode... type Selenium commands here (e.g: cmd=open&1=http://www.yahoo.com)");
     BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
