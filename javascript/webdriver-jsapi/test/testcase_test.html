@@ -247,12 +247,41 @@ limitations under the License.
     runTest();
   }
 
+  function testExpectationAndAssertionFailures_inSetup() {
+    mockTestCase.setUp().$does(function() {
+      expectThat(false, equals(true));
+      goBoom();
+    });
+    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
+    mockOnError(BOOM);
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
   function testExpectationFailures_inTestFn() {
     mockTestCase.setUp();
     mockTestCase.testFn().$does(function() {
       expectThat(false, equals(true));
     });
     mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
+    mockTestCase.tearDown();
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testExpectationAndAssertionFailures_inTestFn() {
+    mockTestCase.setUp();
+    mockTestCase.testFn().$does(function() {
+      expectThat(false, equals(true));
+      goBoom();
+    });
+    mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
+    mockOnError(BOOM);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
@@ -267,6 +296,40 @@ limitations under the License.
       expectThat(false, equals(true));
     });
     mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testExpectationAndAssertionFailures_inTearDown() {
+    mockTestCase.setUp();
+    mockTestCase.testFn();
+    mockTestCase.tearDown().$does(function() {
+      expectThat(false, equals(true));
+      goBoom();
+    });
+    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
+    mockOnError(BOOM);
+    mockOnComplete(IGNORE_ARGUMENT);
+    control.$replayAll();
+
+    runTest();
+  }
+
+  function testExpectationAndAssertionFailures_inSetupAndTearDown() {
+    mockTestCase.setUp().$does(function() {
+      expectThat(false, equals(true));
+      goBoom();
+    });
+    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
+    mockOnError(BOOM);
+    mockTestCase.tearDown().$does(function() {
+      expectThat(false, equals(true));
+      goBoom();
+    });
+    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
+    mockOnError(BOOM);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
