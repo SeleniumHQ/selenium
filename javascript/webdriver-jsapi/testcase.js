@@ -142,10 +142,11 @@ webdriver.TestCase.prototype.runSingleTest_ = function(test, onError,
       addBoth(removeRecordExpectationFailure);
 
   function scheduleAndWait(description, fn) {
+    var tmp = goog.partial(handleExpectationFailures, description);
     return function() {
       return app.scheduleAndWaitForIdle(description, goog.bind(fn, test.scope)).
-          then(handleExpectationFailures, function(e) {
-            handleExpectationFailures();
+          then(tmp, function(e) {
+            tmp();
             throw e;
           });
     }
@@ -160,9 +161,9 @@ webdriver.TestCase.prototype.runSingleTest_ = function(test, onError,
         recordExpectationFailure);
   }
 
-  function handleExpectationFailures() {
+  function handleExpectationFailures(description) {
     if (expectationFailures.length) {
-      onExpectationFailures(expectationFailures);
+      onExpectationFailures(description, expectationFailures);
       expectationFailures = [];
     }
   }

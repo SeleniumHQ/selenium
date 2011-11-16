@@ -66,6 +66,7 @@ limitations under the License.
         mockTestCase);
 
     testStub = {
+      name: 'testStub',
       scope: mockTestCase,
       ref: mockTestCase.testFn
     };
@@ -237,7 +238,7 @@ limitations under the License.
     mockTestCase.setUp().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures(IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
     mockTestCase.testFn();
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
@@ -251,7 +252,7 @@ limitations under the License.
     mockTestCase.testFn().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures(IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
@@ -265,7 +266,7 @@ limitations under the License.
     mockTestCase.tearDown().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures(IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
@@ -276,15 +277,15 @@ limitations under the License.
     mockTestCase.setUp().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures(IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
     mockTestCase.testFn().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures(IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
     mockTestCase.tearDown().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures(IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
