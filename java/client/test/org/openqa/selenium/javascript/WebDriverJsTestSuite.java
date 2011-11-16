@@ -20,6 +20,7 @@ package org.openqa.selenium.javascript;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.openqa.selenium.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.EnvironmentStarter;
 import org.openqa.selenium.NeedsDriver;
@@ -79,7 +80,7 @@ public class WebDriverJsTestSuite {
           .replace(File.separator, "/");
       TestCase test = new WebDriverJsTestCase(urlPath + path, appServer,
           resultsServlet);
-      suite.addTest(new DriverTestDecorator(test, new ReflectionBackedDriverSupplier(RemoteWebDriverForTest.class),
+      suite.addTest(new DriverTestDecorator(test, new DefaultDriverSupplierSupplier(RemoteWebDriverForTest.class).get(),
           /* keepDriver= */true, /* freshDriver= */false,
           /* refreshDriver= */false));
     }

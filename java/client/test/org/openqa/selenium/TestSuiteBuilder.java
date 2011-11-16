@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import junit.framework.Test;
@@ -251,11 +252,10 @@ public class TestSuiteBuilder {
             restartDriver = true;
           }
 
-          if (withDriver) {
-            if (driverClass != null) {
-              test = new DriverTestDecorator(test, new ReflectionBackedDriverSupplier(driverClass),
-                  keepDriver, freshDriver, restartDriver);
-            }
+          if (withDriver && driverClass != null) {
+            Supplier<WebDriver> supplier = new DefaultDriverSupplierSupplier(driverClass).get();
+            test = new DriverTestDecorator(test, supplier,
+                keepDriver, freshDriver, restartDriver);
           }
         }
         if (outputTestNames) {
