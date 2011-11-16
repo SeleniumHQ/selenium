@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
 
 public class TestSuiteBuilder {
-
   private Set<File> sourceDirs = Sets.newHashSet();
   private Class<? extends WebDriver> driverClass;
   private boolean keepDriver;
@@ -253,8 +252,10 @@ public class TestSuiteBuilder {
           }
 
           if (withDriver) {
-            test = new DriverTestDecorator(test, driverClass,
-                keepDriver, freshDriver, restartDriver);
+            if (driverClass != null) {
+              test = new DriverTestDecorator(test, new ReflectionBackedDriverSupplier(driverClass),
+                  keepDriver, freshDriver, restartDriver);
+            }
           }
         }
         if (outputTestNames) {

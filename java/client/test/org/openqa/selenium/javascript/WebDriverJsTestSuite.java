@@ -24,6 +24,7 @@ import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.EnvironmentStarter;
 import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.ReflectionBackedDriverSupplier;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -78,7 +79,7 @@ public class WebDriverJsTestSuite {
           .replace(File.separator, "/");
       TestCase test = new WebDriverJsTestCase(urlPath + path, appServer,
           resultsServlet);
-      suite.addTest(new DriverTestDecorator(test, RemoteWebDriverForTest.class,
+      suite.addTest(new DriverTestDecorator(test, new ReflectionBackedDriverSupplier(RemoteWebDriverForTest.class),
           /* keepDriver= */true, /* freshDriver= */false,
           /* refreshDriver= */false));
     }

@@ -17,22 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.google.common.base.Supplier;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 
 public class DriverTestDecorator extends TestSetup {
 
-  private final Class<? extends WebDriver> driverClass;
   private final boolean keepDriver;
   private final boolean freshDriver;
 
   private static WebDriver driver;
   private final boolean restartDriver;
+  private final Supplier<WebDriver> driverSupplier;
 
-  public DriverTestDecorator(Test test, Class<? extends WebDriver> driverClass, boolean keepDriver,
+  public DriverTestDecorator(Test test, Supplier<WebDriver> driverSupplier, boolean keepDriver,
       boolean freshDriver, boolean restartDriver) {
     super(test);
-    this.driverClass = driverClass;
+    this.driverSupplier = driverSupplier;
     this.keepDriver = keepDriver;
     this.freshDriver = freshDriver;
     this.restartDriver = restartDriver;
@@ -82,7 +84,7 @@ public class DriverTestDecorator extends TestSetup {
     }
 
     try {
-      return driverClass.newInstance();
+      return driverSupplier.get();
     } catch (Exception e) {
       e.printStackTrace();
       fail("Cannot instantiate driver: " + e.getMessage());

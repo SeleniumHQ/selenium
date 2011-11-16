@@ -24,6 +24,7 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.EnvironmentStarter;
+import org.openqa.selenium.ReflectionBackedDriverSupplier;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.InProject;
 
@@ -59,7 +60,7 @@ public class ClosureTestSuite {
           .replace(testDir.getAbsolutePath() + File.separator, "")
           .replace(File.separator, "/");
       TestCase test = new ClosureTestCase(urlPath + path);
-      suite.addTest(new DriverTestDecorator(test, driverClazz,
+      suite.addTest(new DriverTestDecorator(test, new ReflectionBackedDriverSupplier(driverClazz),
           /* keepDriver= */true, /* freshDriver= */false, /* refreshDriver= */false));
     }
 
