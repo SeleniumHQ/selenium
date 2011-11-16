@@ -51,7 +51,7 @@ public class CustomBrowserLauncher extends AbstractBrowserLauncher {
   }
 
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   @Override

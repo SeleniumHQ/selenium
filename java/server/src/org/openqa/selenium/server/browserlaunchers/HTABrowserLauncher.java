@@ -144,7 +144,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
   }
 
   public Process getProcess() {
-    return htaProcess;
+    return null;
   }
 
   public void launchHTMLSuite(String suiteUrl, String browserURL) {

@@ -78,7 +78,7 @@ public class InternetExplorerLauncher implements BrowserLauncher {
   }
 
   public Process getProcess() {
-    return realLauncher.getProcess();
+    return null;
   }
 
   public void launchHTMLSuite(String suiteUrl, String baseUrl) {

@@ -51,7 +51,9 @@ public interface BrowserLauncher {
    * 
    * @return a handle to a process if one is available, or null if one is not available or if no
    *         browser is running
+   * @deprecated This will be removed in 2.12 as all instances now return null
    */
+  @Deprecated
   Process getProcess();
 
 }

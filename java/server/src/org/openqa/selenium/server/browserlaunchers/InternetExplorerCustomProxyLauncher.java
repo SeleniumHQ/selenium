@@ -136,7 +136,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   }
 
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   public static void main(String[] args) {

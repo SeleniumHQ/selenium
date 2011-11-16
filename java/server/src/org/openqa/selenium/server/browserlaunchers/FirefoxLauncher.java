@@ -107,7 +107,7 @@ public class FirefoxLauncher implements BrowserLauncher {
   }
 
   public Process getProcess() {
-    return realLauncher.getProcess();
+    return null;
   }
 
   public void launchHTMLSuite(String suiteUrl, String baseUrl) {

@@ -187,7 +187,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   private File customProfileDir = null;

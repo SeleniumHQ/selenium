@@ -104,7 +104,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
   }
 
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   private String getUntrustedCertificatesFlag() {

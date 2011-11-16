@@ -290,7 +290,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   /**

@@ -218,9 +218,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     return f.getAbsolutePath();
   }
 
-
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   private void setupSystemProxy() {

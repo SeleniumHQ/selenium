@@ -298,7 +298,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   /**

@@ -64,7 +64,7 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
   }
 
   public Process getProcess() {
-    return process;
+    return null;
   }
 
   protected void exec(String command) {
