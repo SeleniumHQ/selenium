@@ -72,6 +72,7 @@ goog.require('webdriver.EventEmitter');
  *
  * @constructor
  * @see http://wiki.commonjs.org/wiki/Promises/A
+ * @export
  */
 webdriver.promise.Promise = function() {
 };
@@ -90,6 +91,7 @@ webdriver.promise.Promise = function() {
  *     permissible.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @export
  */
 webdriver.promise.Promise.prototype.then = goog.abstractMethod;
 
@@ -106,6 +108,7 @@ webdriver.promise.Promise.prototype.then = goog.abstractMethod;
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @export
  */
 webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
   return this.then(goog.bind(callback, opt_self));
@@ -125,6 +128,7 @@ webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @export
  */
 webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
   return this.then(null, goog.bind(errback, opt_self));
@@ -143,6 +147,7 @@ webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @export
  */
 webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
   callback = goog.bind(callback, opt_self);
@@ -166,6 +171,7 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @export
  */
 webdriver.promise.Promise.prototype.addCallbacks = function(callback, errback,
                                                             opt_self) {
@@ -187,6 +193,7 @@ webdriver.promise.Promise.prototype.addCallbacks = function(callback, errback,
  *
  * @constructor
  * @extends {webdriver.promise.Promise}
+ * @export
  */
 webdriver.promise.Deferred = function() {
   /* NOTE: This class's implementation diverges from the prototypical style
@@ -384,6 +391,7 @@ webdriver.promise.Deferred.State = {
  *
  * @param {*} value The value to test.
  * @return {boolean} Whether the value is a promise.
+ * @export
  */
 webdriver.promise.isPromise = function(value) {
   return !!value && goog.isObject(value) &&
@@ -398,6 +406,7 @@ webdriver.promise.isPromise = function(value) {
  * @param {number} ms The amount of time, in milliseconds, to wait before
  *     resolvin the promise.
  * @return {!webdriver.promise.Promise} The promise.
+ * @export
  */
 webdriver.promise.delayed = function(ms) {
   var deferred = new webdriver.promise.Deferred();
@@ -410,6 +419,7 @@ webdriver.promise.delayed = function(ms) {
  * Creates a promise that has been resolved with the given value.
  * @param {*} value The resolved value.
  * @return {!webdriver.promise.Promise} The resolved promise.
+ * @export
  */
 webdriver.promise.resolved = function(value) {
   var deferred = new webdriver.promise.Deferred();
@@ -423,6 +433,7 @@ webdriver.promise.resolved = function(value) {
  * @param {*} reason The rejection reason; may be any value, but is usually an
  *     Error or a string.
  * @return {!webdriver.promise.Promise} The rejected promise.
+ * @export
  */
 webdriver.promise.rejected = function(reason) {
   var deferred = new webdriver.promise.Deferred();
@@ -440,6 +451,7 @@ webdriver.promise.rejected = function(reason) {
  * @param {!Function} fn The function to wrap.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     result of the provided function's callback.
+ * @export
  */
 webdriver.promise.checkedNodeCall = function(fn) {
   var deferred = new webdriver.promise.Deferred();
@@ -471,6 +483,7 @@ webdriver.promise.checkedNodeCall = function(fn) {
  * @param {?function(*)=} opt_errback The function to call when the value is
  *     rejected.
  * @return {!webdriver.promise.Promise} A new promise.
+ * @export
  */
 webdriver.promise.when = function(value, callback, opt_errback) {
   if (value instanceof webdriver.promise.Promise) {
@@ -492,6 +505,7 @@ webdriver.promise.when = function(value, callback, opt_errback) {
  *     resolved successfully.
  * @param {?function(*)=} opt_errback The function to call when the value is
  *     rejected.
+ * @export
  */
 webdriver.promise.asap = function(value, callback, opt_errback) {
   if (webdriver.promise.isPromise(value)) {
@@ -525,6 +539,7 @@ webdriver.promise.asap = function(value, callback, opt_errback) {
  * @param {*} value The value to fully resolve.
  * @return {!webdriver.promise.Promise} A promise for a fully resolved version
  *     of the input value.
+ * @export
  */
 webdriver.promise.fullyResolved = function(value) {
   if (webdriver.promise.isPromise(value)) {
@@ -625,6 +640,7 @@ webdriver.promise.fullyResolved = function(value) {
  *
  * @constructor
  * @extends {webdriver.EventEmitter}
+ * @export
  */
 webdriver.promise.Application = function() {
   webdriver.EventEmitter.call(this);
@@ -646,6 +662,7 @@ goog.addSingletonGetter(webdriver.promise.Application);
  * tasks.
  * @type {string}
  * @const
+ * @export
  */
 webdriver.promise.Application.IDLE = 'idle';
 
@@ -654,6 +671,7 @@ webdriver.promise.Application.IDLE = 'idle';
  * Event fired whenever a new task is scheduled with an application.
  * @type {string}
  * @const
+ * @export
  */
 webdriver.promise.Application.SCHEDULE_TASK = 'scheduleTask';
 
@@ -664,6 +682,7 @@ webdriver.promise.Application.SCHEDULE_TASK = 'scheduleTask';
  * to its initial state.
  * @type {string}
  * @const
+ * @export
  */
 webdriver.promise.Application.UNCAUGHT_EXCEPTION = 'uncaughtException';
 
@@ -719,6 +738,7 @@ webdriver.promise.Application.prototype.reset = function() {
  *     will wait for it to be resolved before starting the next task.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     the result of the action.
+ * @export
  */
 webdriver.promise.Application.prototype.schedule = function(description, fn) {
   this.cancelShutdown_();
@@ -757,6 +777,7 @@ webdriver.promise.Application.prototype.schedule = function(description, fn) {
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     application is idle for one turn of the event loop, or rejected if the
  *     application aborts with an uncaught exception.
+ * @export
  */
 webdriver.promise.Application.prototype.scheduleAndWaitForIdle =
     function(description, fn) {
@@ -826,6 +847,7 @@ webdriver.promise.Application.prototype.scheduleAndWaitForIdle =
  * @param {number} ms The timeout delay, in milliseconds.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     the result of the action.
+ * @export
  */
 webdriver.promise.Application.prototype.scheduleTimeout = function(description,
                                                                    ms) {
@@ -854,6 +876,7 @@ webdriver.promise.Application.prototype.scheduleTimeout = function(description,
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     condition has been satisified. The promise shall be rejected if the wait
  *     times out waiting for the condition.
+ * @export
  */
 webdriver.promise.Application.prototype.scheduleWait = function(description,
                                                                 condition,
