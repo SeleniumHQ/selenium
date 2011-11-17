@@ -253,7 +253,7 @@ public class CommandLine {
   */
   public int destroy() {
     SeleniumWatchDog watchdog = executeWatchdog;
-    watchdog.waitFor();
+    watchdog.waitForProcessStarted();
     watchdog.destroyProcess();
     if (handler.hasResult()) {
        return getExitCode();
@@ -396,8 +396,8 @@ public class CommandLine {
       return process;
     }
 
-    public void waitFor(){
-      while (starting || isWatching()){
+    public void waitForProcessStarted(){
+      while (starting){
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
