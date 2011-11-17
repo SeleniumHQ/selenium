@@ -92,7 +92,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore({IPHONE, SELENESE})
   @NeedsFreshDriver
-  public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
+  public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     String originalTitle = driver.getTitle();
     driver.get(pages.formPage);
 
