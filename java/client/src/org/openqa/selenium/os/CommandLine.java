@@ -56,7 +56,7 @@ public class CommandLine {
 
   private volatile OutputStream drainTo;
   private final Snitch snitch = new Snitch();
-  private ExecuteWatchdog executeWatchdog = new ExecuteWatchdog(ExecuteWatchdog.INFINITE_TIMEOUT);
+  private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
 
   public CommandLine(String executable, String... args) {
     cl = new org.apache.commons.exec.CommandLine(findExecutable(executable));
@@ -176,6 +176,7 @@ public class CommandLine {
   public void execute() {
     try {
       final OutputStream outputStream = getOutputStream();
+      executeWatchdog.reset();
       executor.setWatchdog(executeWatchdog);
       executor.setStreamHandler( new PumpStreamHandler(outputStream, outputStream, getInputStream()));
       executor.execute( cl, getMergedEnv(), handler);
@@ -201,6 +202,7 @@ public class CommandLine {
   public void executeAsync() {
     try {
       final OutputStream outputStream = getOutputStream();
+      executeWatchdog.reset();
       executor.setWatchdog(executeWatchdog);
       executor.setStreamHandler(new PumpStreamHandler(
           outputStream, outputStream, getInputStream()));
@@ -250,14 +252,8 @@ public class CommandLine {
   * @return The exit code of the command.
   */
   public int destroy() {
-    ExecuteWatchdog watchdog = executor.getWatchdog();
-    while (!watchdog.isWatching()){
-      try {
-        Thread.sleep(50);
-      } catch (InterruptedException e) {
-        throw new WebDriverException(e);
-      }
-    }
+    SeleniumWatchDog watchdog = executeWatchdog;
+    watchdog.waitFor();
     watchdog.destroyProcess();
     if (handler.hasResult()) {
        return getExitCode();
@@ -367,6 +363,50 @@ public class CommandLine {
     }
   }
 
+  class SeleniumWatchDog extends ExecuteWatchdog {
+    private volatile Process process;
+    private volatile boolean starting = true;
+    SeleniumWatchDog(long timeout) {
+      super(timeout);
+    }
+
+    @Override
+    public synchronized void start(Process process) {
+      this.process = process;
+      starting = false;
+      super.start(process);
+    }
+
+    @Override
+    public void stop() {
+      this.process = null;
+      super.stop();
+    }
+
+    public void reset(){
+      starting = true;
+    }
+    @Override
+    protected void cleanUp() {
+      this.process = null;
+      super.cleanUp();
+    }
+
+    public Process getProcess() {
+      return process;
+    }
+
+    public void waitFor(){
+      while (starting || isWatching()){
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e) {
+          throw new WebDriverException(e);
+        }
+      }
+
+    }
+  }
 
   class MultioutputStream extends OutputStream {
 
