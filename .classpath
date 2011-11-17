@@ -50,7 +50,7 @@
 	<classpathentry kind="lib" path="third_party/java/cssparser/cssparser-0.9.5.jar"/>
 	<classpathentry kind="lib" path="third_party/java/nekohtml/nekohtml-1.9.15.jar"/>
 	<classpathentry kind="lib" path="third_party/java/xml/xalan-2.7.1.jar"/>
-	<classpathentry kind="lib" path="/home/kristian/lsrc/selenium/third_party/java/opera-driver/operadriver-v0.7.3.jar" sourcepath="/home/kristian/lsrc/selenium/third_party/java/opera-driver/operadriver-v0.7.3-source.jar"/>
+	<classpathentry kind="lib" path="third_party/java/opera-driver/operadriver-v0.8.jar" sourcepath="third_party/java/opera-driver/operadriver-v0.8-source.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jmock/jmock-junit4-2.5.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jmock/jmock-2.5.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/google-protobuffers/protobuf-java-2.4.1.jar"/>
