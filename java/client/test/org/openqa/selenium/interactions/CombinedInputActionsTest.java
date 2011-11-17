@@ -165,7 +165,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "We Arrive Here"));
   }
 
-  @Ignore({SELENESE, HTMLUNIT})
+  @Ignore({SELENESE, HTMLUNIT, OPERA})
   public void testChordControlCutAndPaste() {
     // FIXME: macs don't have CONRTROL key
     if (Platform.getCurrent().is(Platform.MAC)) {

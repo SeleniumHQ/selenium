@@ -236,7 +236,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, FIREFOX},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, FIREFOX, OPERA},
       reason = "Behaviour not finalized yet regarding linked images.")
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);
@@ -316,7 +316,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     waitFor(elementTextToContain(resultArea, "parent matches"));
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME, OPERA},
       reason = "Not implemented yet.")
   public void testMovingMouseBackAndForthPastViewPort() {
 

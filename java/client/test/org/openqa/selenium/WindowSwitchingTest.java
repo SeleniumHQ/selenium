@@ -118,7 +118,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     assertEquals(3, allWindowHandles.size());
   }
 
-  @Ignore(value = {IE, SELENESE},
+  @Ignore(value = {IE, SELENESE, OPERA},
       reason = "IE: can show a dialog 'The web page you are viewing is trying to close the window'")
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
@@ -139,7 +139,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, SELENESE, OPERA})
   @JavascriptEnabled
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     driver.get(pages.xhtmlTestPage);
@@ -240,7 +240,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({SELENESE})
+  @Ignore({SELENESE, OPERA})
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();
