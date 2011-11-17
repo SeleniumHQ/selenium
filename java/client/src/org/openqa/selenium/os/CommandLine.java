@@ -175,8 +175,8 @@ public class CommandLine {
 
   public void execute() {
     try {
-
       final OutputStream outputStream = getOutputStream();
+      executor.setWatchdog(executeWatchdog);
       executor.setStreamHandler( new PumpStreamHandler(outputStream, outputStream, getInputStream()));
       executor.execute( cl, getMergedEnv(), handler);
       handler.waitFor();
@@ -251,10 +251,20 @@ public class CommandLine {
   */
   public int destroy() {
     ExecuteWatchdog watchdog = executor.getWatchdog();
-    if (watchdog != null) {
-      watchdog.destroyProcess();
+    while (!watchdog.isWatching()){
+      try {
+        Thread.sleep(50);
+      } catch (InterruptedException e) {
+        throw new WebDriverException(e);
+      }
+    }
+    watchdog.destroyProcess();
+    if (handler.hasResult()) {
+       return getExitCode();
     }
 
+
+    log.info("Process destruction entered a last-ditch phase that shouldn't happen. File an issue if you see this message");
     // Give the process a chance to die naturally.
     quiesceFor(3, SECONDS);
 
