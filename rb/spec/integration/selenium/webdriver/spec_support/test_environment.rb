@@ -176,8 +176,8 @@ module Selenium
 
         def create_chrome_driver
           WebDriver::Driver.for :chrome,
-                                :native_events => native_events?,
-                                :http_client   => keep_alive_client || http_client
+                                :native_events => native_events?
+                                # :http_client   => keep_alive_client || http_client
         end
 
         def keep_alive_client
