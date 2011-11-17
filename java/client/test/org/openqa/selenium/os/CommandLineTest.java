@@ -48,7 +48,7 @@ public class CommandLineTest extends TestCase {
       commandLine.setEnvironmentVariable(key, value);
     } catch (IllegalArgumentException iae) {
       assertFalse(commandLine.getEnvironment()
-          .containsValue(value));
+                      .containsValue(value));
     }
   }
 
@@ -61,7 +61,7 @@ public class CommandLineTest extends TestCase {
       commandLine.setEnvironmentVariable(key, value);
     } catch (IllegalArgumentException iae) {
       assertFalse(commandLine.getEnvironment()
-          .containsKey(key));
+                      .containsKey(key));
     }
   }
 
@@ -72,7 +72,7 @@ public class CommandLineTest extends TestCase {
     CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.setEnvironmentVariable(key, value);
     assertEquals(value,
-        commandLine.getEnvironment().get(key));
+                 commandLine.getEnvironment().get(key));
   }
 
   @Test
@@ -85,7 +85,7 @@ public class CommandLineTest extends TestCase {
       commandLine.setEnvironmentVariables(input);
     } catch (IllegalArgumentException iae) {
       assertFalse(commandLine.getEnvironment()
-          .containsKey("key2"));
+                      .containsKey("key2"));
     }
   }
 
@@ -97,9 +97,9 @@ public class CommandLineTest extends TestCase {
     CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.setEnvironmentVariables(input);
     assertEquals("value1",
-        commandLine.getEnvironment().get("key1"));
+                 commandLine.getEnvironment().get("key1"));
     assertEquals("value2",
-        commandLine.getEnvironment().get("key2"));
+                 commandLine.getEnvironment().get("key2"));
   }
 
   @Test
@@ -110,7 +110,7 @@ public class CommandLineTest extends TestCase {
       commandLine.setDynamicLibraryPath(value);
     } catch (IllegalArgumentException iae) {
       assertFalse(commandLine.getEnvironment()
-          .containsKey(CommandLine.getLibraryPathPropertyName()));
+                      .containsKey(CommandLine.getLibraryPathPropertyName()));
     }
   }
 
@@ -122,9 +122,17 @@ public class CommandLineTest extends TestCase {
       commandLine.setDynamicLibraryPath(value);
     } catch (IllegalArgumentException iae) {
       assertEquals(value,
-          commandLine.getEnvironment()
-              .get(CommandLine.getLibraryPathPropertyName()));
+                   commandLine.getEnvironment()
+                       .get(CommandLine.getLibraryPathPropertyName()));
     }
   }
+
+  @Test
+  public void testDestroy() {
+    CommandLine commandLine = new CommandLine(testExecutable);
+    commandLine.executeAsync();
+    commandLine.destroy();
+  }
+
 
 }
