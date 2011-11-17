@@ -19,6 +19,7 @@ package org.openqa.selenium.os;
 
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -35,12 +36,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 import com.google.common.collect.Maps;
 
 public class CommandLine {
+  private static final Logger log = Logger.getLogger(CommandLine.class.getName());
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
   private volatile String allInput;
@@ -242,10 +247,44 @@ public class CommandLine {
   * @return The exit code of the command.
   */
   public int destroy() {
-    ProcessUtils.killProcess(snitch.getProcess());
+    ExecuteWatchdog watchdog = executor.getWatchdog();
+    if (watchdog != null) {
+      watchdog.destroyProcess();
+    }
+
+    // Give the process a chance to die naturally.
+    quiesceFor(3, SECONDS);
+
+    if (!handler.hasResult()) {
+      log.info(
+          "Command failed to close cleanly. Destroying forcefully. " + this);
+      ProcessUtils.killProcess(snitch.getProcess());
+      quiesceFor(1, SECONDS);
+    }
+
+    int exitCode;
+    if (!handler.hasResult()) {
+      log.severe(String.format(
+          "Unable to kill process with PID %s: %s", snitch.getProcess(), this));
+      exitCode = -1;
+      executor.setExitValue(exitCode);
+    } else {
+      exitCode = getExitCode();
+    }
 
     postRunCleanup();
-    return getExitCode();
+    return exitCode;
+  }
+
+  private void quiesceFor(int duration, TimeUnit unit) {
+    long end = System.currentTimeMillis() + unit.toMillis(duration);
+    while (!handler.hasResult() && System.currentTimeMillis() < end) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        throw new WebDriverException(e);
+      }
+    }
   }
 
   private void postRunCleanup() {
