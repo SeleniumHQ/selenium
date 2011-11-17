@@ -19,6 +19,9 @@ package org.openqa.grid.e2e.node;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Time;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
@@ -28,6 +31,7 @@ import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -63,12 +67,20 @@ public class NodeTimeOutTest {
   @Test
   public void selenium1TimesOut() throws InterruptedException {
     String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
-    System.out.println("A");
     Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", url);
     selenium.start();
-    System.out.println("A2");
     selenium.open(url);
-    Thread.sleep(8000);
+    
+    TestWaiter.waitFor(new Callable<Integer>() {
+      public Integer call() throws Exception {
+        Integer i = hub.getRegistry().getActiveSessions().size();
+        if (i != 0) {
+          return null;
+        } else {
+          return i;
+        }
+      }
+    },8,TimeUnit.SECONDS);
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
   }
@@ -76,21 +88,28 @@ public class NodeTimeOutTest {
   @Test
   public void webDriverTimesOut() throws InterruptedException, MalformedURLException {
     String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
-    System.out.println("B");
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
     driver.get(url);
-    System.out.println("B2");
     Assert.assertEquals(driver.getTitle(), "Grid overview");
-    Thread.sleep(8000);
+    TestWaiter.waitFor(new Callable<Integer>() {
+      public Integer call() throws Exception {
+        Integer i = hub.getRegistry().getActiveSessions().size();
+        if (i != 0) {
+          return null;
+        } else {
+          return i;
+        }
+      }
+    },8,TimeUnit.SECONDS);
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
   }
 
   @AfterClass
   public void teardown() throws Exception {
-    //node.stopRemoteServer();
-    //hub.stop();
+    node.stopRemoteServer();
+    hub.stop();
 
   }
 }
