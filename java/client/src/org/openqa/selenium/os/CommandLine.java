@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.os;
 
+import com.google.common.collect.Maps;
+
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
@@ -42,8 +44,6 @@ import java.util.logging.Logger;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import com.google.common.collect.Maps;
-
 public class CommandLine {
   private static final Logger log = Logger.getLogger(CommandLine.class.getName());
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
@@ -56,6 +56,7 @@ public class CommandLine {
 
   private volatile OutputStream drainTo;
   private final Snitch snitch = new Snitch();
+  private ExecuteWatchdog executeWatchdog = new ExecuteWatchdog(ExecuteWatchdog.INFINITE_TIMEOUT);
 
   public CommandLine(String executable, String... args) {
     cl = new org.apache.commons.exec.CommandLine(findExecutable(executable));
@@ -174,6 +175,7 @@ public class CommandLine {
 
   public void execute() {
     try {
+
       final OutputStream outputStream = getOutputStream();
       executor.setStreamHandler( new PumpStreamHandler(outputStream, outputStream, getInputStream()));
       executor.execute( cl, getMergedEnv(), handler);
@@ -199,6 +201,7 @@ public class CommandLine {
   public void executeAsync() {
     try {
       final OutputStream outputStream = getOutputStream();
+      executor.setWatchdog(executeWatchdog);
       executor.setStreamHandler(new PumpStreamHandler(
           outputStream, outputStream, getInputStream()));
       // Commons-exec /really/ does not want to tell us about the Process ;)
