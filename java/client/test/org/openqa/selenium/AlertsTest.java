@@ -279,7 +279,8 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX}, reason = "FF waits too long, may be hangs out")
+  @Ignore(value = {FIREFOX, ANDROID, IE}, reason = "FF waits too long, may be hangs out." +
+      "Android currently does not store the source of the alert. IE8: Not confirmed working.")
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
     try {
