@@ -4,6 +4,8 @@ recursive-include py/selenium/webdriver/common *.py
 recursive-include py/selenium/common *.py
 recursive-include py/selenium/webdriver/chrome *.py
 recursive-include py/selenium/webdriver/firefox *.py *.xpi
+recursive-include py/selenium/webdriver/firefox/x86 *.so
+recursive-include py/selenium/webdriver/firefox/amd64 *.so
 recursive-include py/selenium/webdriver/ie *.py 
 recursive-include py/selenium/webdriver/ie/win32 *.dll 
 recursive-include py/selenium/webdriver/ie/x64 *.dll

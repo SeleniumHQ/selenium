@@ -54,6 +54,10 @@ class FirefoxBinary(object):
         os.environ["MOZ_CRASHREPORTER_DISABLE"] = "1"
         os.environ["MOZ_NO_REMOTE"] = "1"
         os.environ["NO_EM_RESTART"] = "1"
+        
+        if platform.system().lower() == 'linux':
+            self._modify_link_library_path()
+        
         Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=PIPE).wait()
         self.process = Popen([self._start_cmd, "-foreground"], stdout=PIPE, stderr=PIPE)
 
@@ -109,6 +113,36 @@ class FirefoxBinary(object):
     def _default_windows_location(self):
         program_files = os.getenv("PROGRAMFILES", r"\Program Files")
         return os.path.join(program_files, "Mozilla Firefox\\firefox.exe")
+
+    def _modify_link_library_path(self):
+        existing_ld_lib_path = None
+        try:
+            existing_ld_lib_path = os.environ['LD_LIBRARY_PATH']
+        except:
+            pass
+
+        new_ld_lib_path = self._extract_and_check(self.profile, self.NO_FOCUS_LIBRARY_NAME,
+                                                    "x86", "amd64")
+
+        if existing_ld_lib_path:
+            new_ld_lib_path += existing_ld_lib_path
+
+        os.environ["LD_LIBRARY_PATH"] = new_ld_lib_path
+        os.environ['LD_PRELOAD'] = self.NO_FOCUS_LIBRARY_NAME
+
+    def _extract_and_check(self, profile, no_focus_so_name, x86, amd64):
+        
+        paths = [x86, amd64]
+        built_path = ""
+        for path in paths:
+            library_path = os.path.join(profile.path, path)
+            os.makedirs(library_path)
+            import shutil
+            shutil.copy(os.path.join(os.path.dirname(__file__), path, self.NO_FOCUS_LIBRARY_NAME), 
+                                    library_path)
+            built_path += library_path + ":"
+
+        return built_path
 
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given name"""

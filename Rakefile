@@ -443,6 +443,8 @@ task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:
   if python? then
     xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
     firefox_py_home = "py/selenium/webdriver/firefox/"
+    x86 = firefox_py_home + "x86/"
+    amd64 = firefox_py_home + "amd64/"
     py_test_path = 'build/python/bin/py.test'
     py_setup = "build/python/bin/python " + 'setup.py build'
     if (windows?) then
@@ -450,7 +452,15 @@ task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:
       firefox_py_home = firefox_py_home .gsub(/\//, "\\")
       py_test_path = 'build\\python\\Scripts\\py.test.exe'
       py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
+      x86 = x86.gsub(/\//,"\\")
+      amd64 = amd64.gsub(/\//,"\\")
     end
+
+    mkdir_p x86 unless File.exists?(x86)
+    mkdir_p amd64 unless File.exists?(amd64)
+    
+    cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
+    cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
 
     cp xpi_zip_build , firefox_py_home, :verbose => true
 
@@ -462,10 +472,14 @@ task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:
     else
         py_test = 'py.test'
     end
+    
+
     test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/firefox').first
     sh py_test, test_dir, :verbose => true
     webdriver_zip = firefox_py_home + 'webdriver.xpi'
     rm webdriver_zip , :verbose => true
+    rm_rf x86 , :verbose => true
+    rm_rf amd64 , :verbose => true
   end
 end
 
@@ -497,6 +511,8 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
 
         firefox_py_home = "py/selenium/webdriver/firefox/"
         xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
+        x86 = firefox_py_home + "x86/"
+        amd64 = firefox_py_home + "amd64/"
 
         ie_driver_32 = 'cpp/prebuilt/Win32/Release/IEDriver.dll'
         ie_driver_64 = 'cpp/prebuilt/x64/Release/IEDriver.dll'
@@ -504,6 +520,8 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
         if (windows?) then
             xpi_zip_build = xpi_zip_build.gsub(/\//, "\\")
             firefox_py_home = firefox_py_home .gsub(/\//, "\\")
+            x86 = x86.gsub(/\//,"\\")
+            amd64 = amd64.gsub(/\//,"\\")
             ie_driver_32 = ie_driver_32.gsub(/\//, "\\")
             ie_driver_64 = ie_driver_64.gsub(/\//, "\\")
             ie_py_home = ie_py_home.gsub(/\//, "\\")
@@ -511,6 +529,12 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
 
         mkdir_p ie_py_home + "win32" unless File.exists?(ie_py_home + "win32")
         mkdir_p ie_py_home + "x64" unless File.exists?(ie_py_home + "x64")
+        mkdir_p x86 unless File.exists?(x86)
+        mkdir_p amd64 unless File.exists?(amd64)
+    
+        cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
+        cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
+
         cp xpi_zip_build , firefox_py_home, :verbose => true
         cp ie_driver_32, ie_py_home + "win32", :verbose => true
         cp ie_driver_64, ie_py_home + "x64", :verbose => true
