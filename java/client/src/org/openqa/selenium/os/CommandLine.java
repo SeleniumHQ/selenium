@@ -38,6 +38,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
+import com.google.common.collect.Maps;
+
 public class CommandLine {
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
@@ -51,14 +53,15 @@ public class CommandLine {
   private final Snitch snitch = new Snitch();
 
   public CommandLine(String executable, String... args) {
-    cl = new org.apache.commons.exec.CommandLine( findExecutable(executable));
+    cl = new org.apache.commons.exec.CommandLine(findExecutable(executable));
     cl.addArguments( args);
   }
 
   public CommandLine(String[] cmdarray) {
-    cl = new org.apache.commons.exec.CommandLine(cmdarray[0]);
+    String executable = findExecutable(cmdarray[0]);
+    cl = new org.apache.commons.exec.CommandLine(executable);
     for (int i = 1; i < cmdarray.length; i++) {
-      cl.addArgument( cmdarray[i]);
+      cl.addArgument(cmdarray[i]);
     }
   }
 
@@ -182,23 +185,20 @@ public class CommandLine {
   }
 
   private Map<String, String> getMergedEnv() {
-        HashMap<String, String>  newEnv = new HashMap<String, String>(env);
-        newEnv.putAll( System.getenv());
-        return newEnv;
-    }
+    HashMap<String, String> newEnv = Maps.newHashMap(System.getenv());
+    newEnv.putAll(env);
+    return newEnv;
+  }
 
 
-  public Process executeAsync() {
+  public void executeAsync() {
     try {
       final OutputStream outputStream = getOutputStream();
-      executor.setStreamHandler( new PumpStreamHandler(outputStream, outputStream, getInputStream()));
+      executor.setStreamHandler(new PumpStreamHandler(
+          outputStream, outputStream, getInputStream()));
       // Commons-exec /really/ does not want to tell us about the Process ;)
       executor.setProcessDestroyer(snitch);
       executor.execute(cl, getMergedEnv(), handler);
-
-      // Todo: It would be a "nice thing" to not returning the "process" but instead
-      // some "ProcessHandle" that would let us monitor for status and kill it.
-      return snitch.getProcess();
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -209,7 +209,6 @@ public class CommandLine {
   }
 
   public void waitFor() {
-
     try {
       handler.waitFor();
       postRunCleanup();
@@ -290,63 +289,65 @@ public class CommandLine {
     drainTo = out;
   }
 
-  class Snitch implements ProcessDestroyer {  // Because commons-exec is secretive about process.
-  private volatile Process process;
+  // Because commons-exec is secretive about process.
+  class Snitch implements ProcessDestroyer {
+    private volatile Process process;
 
-  public boolean add(Process process) {
-    if( this.process != null) throw new IllegalStateException("Unexpected re-use of snitch");
-    this.process = process;
-    return true;
-  }
-
-  public boolean remove(Process process) {
-    this.process = null;
-    return true;
-  }
-
-  public int size() {
-    return this.process == null ? 0 : 1;
-  }
-
-  public Process getProcess() {
-    return process;
-  }
-  }
-
-
-    class MultioutputStream extends OutputStream{
-      private final OutputStream mandatory;
-      private final OutputStream optional;
-
-      MultioutputStream(OutputStream mandatory, OutputStream optional) {
-        this.mandatory = mandatory;
-        this.optional = optional;
+    public boolean add(Process process) {
+      if (this.process != null) {
+        throw new IllegalStateException("Unexpected re-use of snitch");
       }
+      this.process = process;
+      return true;
+    }
 
-      @Override
-      public void write(int b) throws IOException {
-        mandatory.write(b);
-        if (optional!= null){
-          optional.write(b);
-        }
-      }
+    public boolean remove(Process process) {
+      this.process = null;
+      return true;
+    }
 
-      @Override
-      public void flush() throws IOException {
-        mandatory.flush();
-        if (optional != null) {
-          optional.flush();
-        }
-      }
+    public int size() {
+      return this.process == null ? 0 : 1;
+    }
 
-      @Override
-      public void close() throws IOException {
-        mandatory.close();
-        if (optional != null) {
-          optional.close();
-        }
+    public Process getProcess() {
+      return process;
+    }
+  }
+
+
+  class MultioutputStream extends OutputStream {
+
+    private final OutputStream mandatory;
+    private final OutputStream optional;
+
+    MultioutputStream(OutputStream mandatory, OutputStream optional) {
+      this.mandatory = mandatory;
+      this.optional = optional;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      mandatory.write(b);
+      if (optional != null) {
+        optional.write(b);
       }
     }
 
+    @Override
+    public void flush() throws IOException {
+      mandatory.flush();
+      if (optional != null) {
+        optional.flush();
+      }
+    }
 
+    @Override
+    public void close() throws IOException {
+      mandatory.close();
+      if (optional != null) {
+        optional.close();
+      }
+    }
+  }
 }
