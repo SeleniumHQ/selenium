@@ -25,7 +25,6 @@ import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.EnvironmentStarter;
 import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.ReflectionBackedDriverSupplier;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;

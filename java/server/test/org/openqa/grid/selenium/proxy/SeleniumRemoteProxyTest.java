@@ -17,18 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 public class SeleniumRemoteProxyTest {
  /* private SeleniumRemoteProxy proxy;

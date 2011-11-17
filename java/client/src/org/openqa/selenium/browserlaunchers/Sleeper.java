@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.browserlaunchers;
 
-import org.openqa.selenium.os.ProcessUtils;
-import org.openqa.selenium.os.UnixUtils;
-import org.openqa.selenium.os.WindowsUtils;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Primitives for sleeping
  * 

@@ -5,8 +5,6 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import junit.framework.TestCase;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
 

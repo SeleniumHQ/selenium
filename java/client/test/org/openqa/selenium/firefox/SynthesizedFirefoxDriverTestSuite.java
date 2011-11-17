@@ -21,16 +21,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.Build;
-import org.openqa.selenium.Capabilities;
+
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.internal.InProject;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX_SYNTHESIZED;

@@ -25,7 +25,6 @@ import com.google.common.base.Throwables;
 import org.openqa.selenium.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.EnvironmentStarter;
-import org.openqa.selenium.ReflectionBackedDriverSupplier;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.InProject;
 

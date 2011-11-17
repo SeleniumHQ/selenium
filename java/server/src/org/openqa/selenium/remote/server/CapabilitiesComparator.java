@@ -25,7 +25,6 @@ import com.google.common.collect.Ordering;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Compares two sets of {@link Capabilities} against a desired standard. Capabilities are compared
