@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-AsyncExecute
+Sleeper
 </TITLE>
 
 
@@ -13,7 +13,7 @@ AsyncExecute
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="AsyncExecute";
+        parent.document.title="Sleeper";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/BrowserLauncher.html" title="interface in org.openqa.selenium.browserlaunchers"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/Proxies.html" title="class in org.openqa.selenium.browserlaunchers"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" title="class in org.openqa.selenium.browserlaunchers"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/AsyncExecute.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AsyncExecute.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/Sleeper.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Sleeper.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -87,18 +87,18 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <FONT SIZE="-1">
 org.openqa.selenium.browserlaunchers</FONT>
 <BR>
-Class AsyncExecute</H2>
+Class Sleeper</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.browserlaunchers.AsyncExecute</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.browserlaunchers.Sleeper</B>
 </PRE>
 <HR>
 <DL>
-<DT><PRE>public class <B>AsyncExecute</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>Sleeper</B><DT>extends java.lang.Object</DL>
 </PRE>
 
 <P>
-Spawn a process and return the process handle so you can close it yourself later.
+Primitives for sleeping
 <P>
 
 <P>
@@ -115,7 +115,7 @@ Spawn a process and return the process handle so you can close it yourself later
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/AsyncExecute.html#AsyncExecute()">AsyncExecute</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/Sleeper.html#Sleeper()">Sleeper</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -132,16 +132,8 @@ Spawn a process and return the process handle so you can close it yourself later
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/AsyncExecute.html#killProcess(java.lang.Process)">killProcess</A></B>(java.lang.Process&nbsp;process)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Forcibly kills a process, using OS tools like "kill" as a last resort</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/AsyncExecute.html#sleepTight(long)">sleepTight</A></B>(long&nbsp;timeout)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/Sleeper.html#sleepTight(long)">sleepTight</A></B>(long&nbsp;timeout)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sleeps without explicitly throwing an InterruptedException</TD>
@@ -149,7 +141,7 @@ Spawn a process and return the process handle so you can close it yourself later
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/AsyncExecute.html#sleepTightInSeconds(long)">sleepTightInSeconds</A></B>(long&nbsp;timeoutInSeconds)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/Sleeper.html#sleepTightInSeconds(long)">sleepTightInSeconds</A></B>(long&nbsp;timeoutInSeconds)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sleeps without explicitly throwing an InterruptedException</TD>
@@ -177,10 +169,10 @@ Spawn a process and return the process handle so you can close it yourself later
 </TR>
 </TABLE>
 
-<A NAME="AsyncExecute()"><!-- --></A><H3>
-AsyncExecute</H3>
+<A NAME="Sleeper()"><!-- --></A><H3>
+Sleeper</H3>
 <PRE>
-public <B>AsyncExecute</B>()</PRE>
+public <B>Sleeper</B>()</PRE>
 <DL>
 </DL>
 
@@ -222,20 +214,6 @@ public static void <B>sleepTight</B>(long&nbsp;timeout)</PRE>
 <DD><CODE>java.lang.RuntimeException</CODE> - wrapping an InterruptedException if one gets thrown</DL>
 </DD>
 </DL>
-<HR>
-
-<A NAME="killProcess(java.lang.Process)"><!-- --></A><H3>
-killProcess</H3>
-<PRE>
-public static int <B>killProcess</B>(java.lang.Process&nbsp;process)</PRE>
-<DL>
-<DD>Forcibly kills a process, using OS tools like "kill" as a last resort
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>process</CODE> - The process to kill.
-<DT><B>Returns:</B><DD>The exit value of the process.</DL>
-</DD>
-</DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
 
@@ -266,11 +244,11 @@ public static int <B>killProcess</B>(java.lang.Process&nbsp;process)</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/BrowserLauncher.html" title="interface in org.openqa.selenium.browserlaunchers"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/Proxies.html" title="class in org.openqa.selenium.browserlaunchers"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" title="class in org.openqa.selenium.browserlaunchers"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/AsyncExecute.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AsyncExecute.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/Sleeper.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Sleeper.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

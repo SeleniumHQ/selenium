@@ -52,7 +52,7 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/AsyncExecute.html" title="class in org.openqa.selenium.browserlaunchers"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;PREV CLASS&nbsp;
 &nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.html" title="class in org.openqa.selenium.browserlaunchers"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/BrowserLauncher.html" target="_top"><B>FRAMES</B></A>  &nbsp;
@@ -124,8 +124,7 @@ The launcher interface for classes that will start/stop the browser process.
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/BrowserLauncher.html#getProcess()">getProcess</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a process if there is an associated one running with this browser launcher (this is
- <b>not</b> required to be implementd).</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>This will be removed in 2.12 as all instances now return null</I></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -203,8 +202,11 @@ void <B>close</B>()</PRE>
 <A NAME="getProcess()"><!-- --></A><H3>
 getProcess</H3>
 <PRE>
-java.lang.Process <B>getProcess</B>()</PRE>
+<FONT SIZE="-1">@Deprecated
+</FONT>java.lang.Process <B>getProcess</B>()</PRE>
 <DL>
+<DD><B>Deprecated.</B>&nbsp;<I>This will be removed in 2.12 as all instances now return null</I>
+<P>
 <DD>Returns a process if there is an associated one running with this browser launcher (this is
  <b>not</b> required to be implementd).
 <P>
@@ -244,7 +246,7 @@ java.lang.Process <B>getProcess</B>()</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/AsyncExecute.html" title="class in org.openqa.selenium.browserlaunchers"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;PREV CLASS&nbsp;
 &nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.html" title="class in org.openqa.selenium.browserlaunchers"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/BrowserLauncher.html" target="_top"><B>FRAMES</B></A>  &nbsp;

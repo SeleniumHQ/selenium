@@ -143,11 +143,11 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
+<CODE>&nbsp;int</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#destroy()">destroy</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Destroy the current command.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -159,7 +159,7 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.Process</CODE></FONT></TD>
+<CODE>&nbsp;void</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#executeAsync()">executeAsync</A></B>()</CODE>
 
 <BR>
@@ -242,6 +242,14 @@ java.lang.Object
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;java.lang.String</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#toString()">toString</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#waitFor()">waitFor</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -378,7 +386,18 @@ public void <B>execute</B>()</PRE>
 <A NAME="executeAsync()"><!-- --></A><H3>
 executeAsync</H3>
 <PRE>
-public java.lang.Process <B>executeAsync</B>()</PRE>
+public void <B>executeAsync</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="waitFor()"><!-- --></A><H3>
+waitFor</H3>
+<PRE>
+public void <B>waitFor</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -422,10 +441,13 @@ public java.lang.String <B>getStdOut</B>()</PRE>
 <A NAME="destroy()"><!-- --></A><H3>
 destroy</H3>
 <PRE>
-public void <B>destroy</B>()</PRE>
+public int <B>destroy</B>()</PRE>
 <DL>
+<DD>Destroy the current command.
+<P>
 <DD><DL>
-</DL>
+
+<DT><B>Returns:</B><DD>The exit code of the command.</DL>
 </DD>
 </DL>
 <HR>
