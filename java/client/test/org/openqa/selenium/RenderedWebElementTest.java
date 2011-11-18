@@ -174,7 +174,8 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, SELENESE},
+      reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMovingMouseByRelativeOffset() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
@@ -198,7 +199,8 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, SELENESE},
+      reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMovingMouseToRelativeElementOffset() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
@@ -220,7 +222,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {CHROME, HTMLUNIT}, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {CHROME, HTMLUNIT, SELENESE}, reason = "Advanced mouse actions only implemented in rendered browsers")
   public void testMoveRelativeToBody() {
     if (!hasInputDevices() || !supportsNativeEvents()) {
       System.out.println(
