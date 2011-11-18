@@ -70,6 +70,7 @@ public class SauceDriver extends RemoteWebDriver {
   private static Capabilities munge(DesiredCapabilities desiredCapabilities, String seleniumVersion, String browserVersion, String os) {
     DesiredCapabilities mungedCapabilities = new DesiredCapabilities(desiredCapabilities);
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
+    mungedCapabilities.setCapability("idle-timeout", 180);
     mungedCapabilities.setVersion(browserVersion);
     mungedCapabilities.setPlatform(Platform.extractFromSysProperty(os));
     
