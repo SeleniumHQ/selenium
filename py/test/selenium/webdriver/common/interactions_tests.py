@@ -149,12 +149,6 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         except AttributeError:
             pass # Expected.
 
-        try:
-            ActionChains(self.driver).click().perform()
-            self.fail("Shouldn't be allowed to click without a context.")
-        except WebDriverException:
-            pass # Expected.
-
     def _testClickingOnFormElements(self):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest.
         Disabled since this test doesn't work with HTMLUNIT.
