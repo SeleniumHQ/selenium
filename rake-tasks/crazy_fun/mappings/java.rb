@@ -495,7 +495,7 @@ module CrazyFunJava
     end
 
     def debug?
-      [nil, 'true'].include? ENV['debug']
+      ENV['debug'] == 'true'
     end
 
     def halt_on_error?
