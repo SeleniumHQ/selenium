@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
 public class SauceDriver extends RemoteWebDriver {
+  private static final String SAUCE_JOB_NAME_ENV_NAME = "SAUCE_JOB_NAME";
   private static final String SELENIUM_VERSION_ENV_NAME = "SAUCE_SELENIUM_VERSION";
   private static final String SAUCE_APIKEY_ENV_NAME = "SAUCE_APIKEY";
   private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
@@ -64,6 +65,13 @@ public class SauceDriver extends RemoteWebDriver {
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     mungedCapabilities.setVersion(browserVersion);
     mungedCapabilities.setPlatform(Platform.extractFromSysProperty(os));
+    
+    String jobName = System.getenv(SAUCE_JOB_NAME_ENV_NAME);
+    if (jobName != null) {
+      mungedCapabilities.setCapability("name", jobName);
+    }
+    
+    mungedCapabilities.setCapability("public", true);
     return mungedCapabilities;
   }
 
