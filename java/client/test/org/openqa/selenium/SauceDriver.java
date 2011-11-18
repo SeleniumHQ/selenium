@@ -15,6 +15,8 @@ public class SauceDriver extends RemoteWebDriver {
   private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
   private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
   
+  private static final String USE_SAUCE_ENV_NAME = "USE_SAUCE";
+  
   // Should be one of the values listed for Platform, e.g. xp, win7, android, ...
   private static final String DESIRED_OS_ENV_NAME = "SAUCE_OS";
 
@@ -63,5 +65,9 @@ public class SauceDriver extends RemoteWebDriver {
     mungedCapabilities.setVersion(browserVersion);
     mungedCapabilities.setPlatform(Platform.extractFromSysProperty(os));
     return mungedCapabilities;
+  }
+
+  public static boolean shouldUseSauce() {
+    return System.getenv(USE_SAUCE_ENV_NAME) != null;
   }
 }

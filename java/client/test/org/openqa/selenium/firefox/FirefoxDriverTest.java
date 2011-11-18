@@ -42,6 +42,7 @@ import org.openqa.selenium.DevMode;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NeedsFreshDriver;
+import org.openqa.selenium.NeedsLocalEnvironment;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
@@ -57,7 +58,7 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-
+@NeedsLocalEnvironment
 public class FirefoxDriverTest extends AbstractDriverTestCase {
   public void testShouldContinueToWorkIfUnableToFindElementById() {
     driver.get(pages.formPage);

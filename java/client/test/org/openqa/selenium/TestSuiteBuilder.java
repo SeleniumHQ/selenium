@@ -216,6 +216,10 @@ public class TestSuiteBuilder {
       return;
     }
 
+    if (clazz.isAnnotationPresent(NeedsLocalEnvironment.class) && !isUsingLocalTestEnvironment()) {
+      return;
+    }
+
     if (!withDriver && NeedsDriver.class.isAssignableFrom(clazz)) {
       return;
     }
@@ -275,6 +279,10 @@ public class TestSuiteBuilder {
       invokeIgnoreCallbacks(method.getDeclaringClass(), method.getName(), method.getAnnotation(Ignore.class));
       return false;
     }
+    
+    if (method.isAnnotationPresent(NeedsLocalEnvironment.class) && !isUsingLocalTestEnvironment()) {
+      return false;
+    }
 
     if (!includeJavascript
         && method.isAnnotationPresent(JavascriptEnabled.class)) {
@@ -283,6 +291,10 @@ public class TestSuiteBuilder {
 
     return method.getName().startsWith("test")
         || method.getAnnotation(org.junit.Test.class) != null;
+  }
+
+  private boolean isUsingLocalTestEnvironment() {
+    return !SauceDriver.shouldUseSauce();
   }
 
   private void invokeIgnoreCallbacks(Class clazz, String methodName, Ignore ignore) {

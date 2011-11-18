@@ -2,6 +2,7 @@
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.NeedsLocalEnvironment;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -10,6 +11,7 @@ import org.openqa.selenium.remote.CapabilityType;
  * 
  * @author eran.mes@gmail.com (Eran Mes)
  */
+@NeedsLocalEnvironment
 public class NativeEventsTest extends AbstractDriverTestCase {
   private boolean testNativeEvents = false;
   private FirefoxDriver driver2;
@@ -41,12 +43,5 @@ public class NativeEventsTest extends AbstractDriverTestCase {
 
     assertTrue("Native events were explicitly enabled and should be on.",
         (Boolean) driver2.getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS));
-  }
-
-  public void testNativeEventsAreNotOnByDefaultOnLinux() {
-    if (Platform.getCurrent().is(Platform.LINUX)) {
-      assertFalse("Native events should be off by default on Linux",
-          FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS);
-    }
   }
 }
