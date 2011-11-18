@@ -36,10 +36,17 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   private static final long DEFAULT_TIMEOUT = 5000;
 
-  private WebDriver driver = createDriver();
-  private TestContext context = new WebDriverTestContext(driver);
+  private WebDriver driver;
+  private TestContext context;
 
   protected abstract WebDriver createDriver();
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    driver = createDriver();
+    context = new WebDriverTestContext(driver);
+  }
 
   @Override
   protected void tearDown() throws Exception {
