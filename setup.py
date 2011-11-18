@@ -21,6 +21,10 @@ from os.path import dirname, join, isfile, abspath
 from shutil import copy
 import sys
 
+from distutils.command.install import INSTALL_SCHEMES
+for scheme in INSTALL_SCHEMES.values():
+    scheme['data'] = scheme['purelib']
+
 def setup_python3():
     # Taken from "distribute" setup.py
     from distutils.filelist import FileList
