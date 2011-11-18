@@ -1,3 +1,30 @@
+v2.13.0
+=======
+WebDriver:
+  * Recovering from null window references in the Firefox driver (#1438)
+  * Make native events work correctly on Linux with the Python bindings (#2633)
+  * Improved finding Firefox on Windows in the C# bindings (2818)
+  * Screenshots in Python are now working (2829)
+  * Exporting webdriver.promise from the Javascript API (2839)
+  * Permission denied accessing some elements using the Firefox driver (2863)
+  * Fixed typing into content editable elements with Firefox (2.12 regression)
+  * Firefox is started in the forgeground on OS X. Focus / blur events now have
+    higher chance of firing correctly on OS X.
+  * Deprecated methods were removed from the FirefoxDriver and FirefoxProfile
+    classes (saveScreenshot, enableNativeEvents, alwaysLoadNoFocusLib).
+  * The amount of time a test can remain hanging is now capped (to 3 hours).
+
+Grid:
+  * Gracefully handle registration of old nodes in a new grid hub (#2738).
+  * Releasing all the resources when a proxy is removed from the hub (#2768).
+
+Known issues:
+  * Synthesized mouse events are inaccurate (Affects Firefox driver users
+    on OS X) (2281)
+  * Invalid move target out of bounds exception thrown.2700
+  * Dragged elements end up in the wrong location, with the Firefox driver,
+    when scrolling is required (typically with small viewport) (2877)
+
 v2.12.0
 =======
 
