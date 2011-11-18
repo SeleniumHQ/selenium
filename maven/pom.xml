@@ -94,6 +94,7 @@
                     <!-- See http://maven.apache.org/plugins/maven-gpg-plugin/ -->
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
+			<version>1.4</version>
                         <executions>
                             <execution>
                                 <phase>install</phase>
@@ -187,7 +188,7 @@
             <dependency>
                 <groupId>com.opera</groupId>
                 <artifactId>operadriver</artifactId>
-                <version>0.7.3</version>
+                <version>0.8</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -235,6 +236,11 @@
                             <dependencyConvergence />
                         </rules>
                     </configuration>
+                </plugin>
+                <plugin>
+	             <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>maven-versions-plugin</artifactId>
+                    <version>1.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>

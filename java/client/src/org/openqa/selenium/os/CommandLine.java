@@ -260,7 +260,6 @@ public class CommandLine {
     }
 
 
-    log.info("Process destruction entered a last-ditch phase that shouldn't happen. File an issue if you see this message");
     // Give the process a chance to die naturally.
     quiesceFor(3, SECONDS);
 
