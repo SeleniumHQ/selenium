@@ -20,6 +20,9 @@ public class SauceDriver extends RemoteWebDriver {
   
   // Should be one of the values listed for Platform, e.g. xp, win7, android, ...
   private static final String DESIRED_OS_ENV_NAME = "SAUCE_OS";
+  // Optional to override default
+  private static final String SAUCE_URL_ENV_NAME = "SAUCE_URL";
+  private static final String DEFAULT_SAUCE_URL = "ondemand.saucelabs.com:80";
 
   public SauceDriver(DesiredCapabilities desiredCapabilities) {
     super(getSauceEndpoint(),
@@ -51,9 +54,13 @@ public class SauceDriver extends RemoteWebDriver {
   private static URL getSauceEndpoint() {
     String sauceUsername = getNonNullEnv(SAUCE_USERNAME_ENV_NAME);
     String sauceKey = getNonNullEnv(SAUCE_APIKEY_ENV_NAME);
+    String sauceUrl = System.getenv(SAUCE_URL_ENV_NAME);
+    if (sauceUrl == null) {
+      sauceUrl = DEFAULT_SAUCE_URL;
+    }
 
     try {
-      return new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", sauceUsername, sauceKey));
+      return new URL(String.format("http://%s:%s@%s/wd/hub", sauceUsername, sauceKey, sauceUrl));
     } catch (MalformedURLException e) {
       Throwables.propagate(e);
     }
