@@ -30,7 +30,7 @@ goog.require('bot.ErrorCode');
  */
 webdriver.error.createResponse = function(error) {
   return {
-    status: error && error.code || 13,  // 13 === UNKNOWN_ERROR
+    status: error && error.code || bot.ErrorCode.UNKNOWN_ERROR,
     value: {
       message: error && error.message || error + ''
       // TODO(jleyba): Parse stack trace info.

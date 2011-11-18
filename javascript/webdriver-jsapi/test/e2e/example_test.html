@@ -80,10 +80,25 @@ limitations under the License.
     assertThat(driver.executeScript('return document.title'),
                equals('We Leave From Here'));
   }
+
+  function testShouldBeAbleToLocateDomElements() {
+    var div = document.createElement('div');
+    div.innerHTML = 'hello world';
+    document.body.appendChild(div);
+
+    var driver = new webdriver.Builder().build();
+
+    // Make sure this window is selected.
+    if (!IOS)
+      TestUtil.switchToMainWindow(driver);
+    assertThat(driver.findElement(div).getInnerHtml(), equals('hello world'));
+  }
 </script>
+<body>
 <iframe id="testFrame"></iframe>
 <script>
   document.getElementById("testFrame").src = TestUtil.PAGES.formPage;
 </script>
-<input type="text"/>
+<label>Text input: <input type="text"/></label>
+</body>
 </html>

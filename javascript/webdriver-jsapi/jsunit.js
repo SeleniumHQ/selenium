@@ -77,6 +77,22 @@ webdriver.jsunit.TestRunner.prototype.reportResults_ = function() {
 (function() {
   var tr = new webdriver.jsunit.TestRunner();
 
+  // Export our test runner so it can be accessed by Selenium/WebDriver. This
+  // will only work if webdriver.WebDriver is using a pure-JavaScript
+  // webdriver.CommandExecutor. Otherwise, the JS-client could change the
+  // driver's focus to another window or frame and the Java/Python-client
+  // wouldn't be able to access this object.
+  goog.exportSymbol('G_testRunner', tr);
+  goog.exportSymbol('G_testRunner.initialize', tr.initialize);
+  goog.exportSymbol('G_testRunner.isInitialized', tr.isInitialized);
+  goog.exportSymbol('G_testRunner.isFinished', tr.isFinished);
+  goog.exportSymbol('G_testRunner.isSuccess', tr.isSuccess);
+  goog.exportSymbol('G_testRunner.getReport', tr.getReport);
+  goog.exportSymbol('G_testRunner.getRunTime', tr.getRunTime);
+  goog.exportSymbol('G_testRunner.getNumFilesLoaded', tr.getNumFilesLoaded);
+  goog.exportSymbol('G_testRunner.setStrict', tr.setStrict);
+  goog.exportSymbol('G_testRunner.logTestFailure', tr.logTestFailure);
+
   // Export debug as a global function for JSUnit compatibility.  This just
   // calls log on the current test case.
   if (!goog.global['debug']) {

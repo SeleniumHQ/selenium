@@ -25,6 +25,7 @@ goog.provide('webdriver.WebDriver.TargetLocator');
 goog.provide('webdriver.WebDriver.Timeouts');
 goog.provide('webdriver.WebElement');
 
+goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('goog.array');
 goog.require('goog.object');
@@ -564,8 +565,8 @@ webdriver.WebDriver.prototype.getTitle = function() {
  * other words, scheduling a command to find an element doubles as an assert
  * that the element is present on the page. To test whether an element is
  * present on the page, use {@code #isElementPresent} instead.
- * <p/>
- * The search criteria for find an element may either be a
+ *
+ * <p>The search criteria for find an element may either be a
  * {@code webdriver.Locator} object, or a simple JSON object whose sole key
  * is one of the accepted locator strategies, as defined by
  * {@code webdriver.Locator.Strategy}. For example, the following two statements
@@ -575,8 +576,18 @@ webdriver.WebDriver.prototype.getTitle = function() {
  * var e2 = driver.findElement({id:'foo'});
  * </pre></code>
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the element.
+ * <p>When running in the browser, a WebDriver cannot manipulate DOM elements
+ * directly; it may do so only through a {@link webdriver.WebElement} reference.
+ * This function may be used to generate a WebElement from a DOM element. A
+ * reference to the DOM element will be stored in a known location and this
+ * driver will attempt to retrieve it through {@link #executeScript}. If the
+ * element cannot be found (eg, it belongs to a different document than the
+ * one this instance is currently focused on), a
+ * {@link bot.ErrorCode.NO_SUCH_ELEMENT} error will be returned.
+ *
+ * @param {!(webdriver.Locator|Object.<string>|Element)} locatorOrElement The
+ *     locator strategy to use when searching for the element, or the actual
+ *     DOM element to be located by the server.
  * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
  *     JavaScript locator.  Otherwise ignored.
  * @return {!webdriver.WebElement} A WebElement that can be used to issue
@@ -584,8 +595,13 @@ webdriver.WebDriver.prototype.getTitle = function() {
  *     element will be invalidated and all scheduled commands aborted.
  * @export
  */
-webdriver.WebDriver.prototype.findElement = function(locator, var_args) {
-  locator = webdriver.Locator.checkLocator(locator);
+webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
+                                                     var_args) {
+  if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
+    return this.findDomElement_(/** @typedef {!Element} */locatorOrElement);
+  }
+
+  var locator = webdriver.Locator.checkLocator(locatorOrElement);
 
   var id;
   if (locator.using == 'js') {
@@ -605,6 +621,62 @@ webdriver.WebDriver.prototype.findElement = function(locator, var_args) {
         setParameter('value', locator.value);
     id = this.schedule(command, 'WebDriver.findElement(' + locator + ')');
   }
+  return new webdriver.WebElement(this, id);
+};
+
+
+/**
+ * Locates a DOM element so that commands may be issued against it using the
+ * {@link webdriver.WebElement} class. This is accomplished by storing a
+ * reference to the element in an object on the element's ownerDocument.
+ * {@link #executeScript} will then be used to create a WebElement from this
+ * reference. This requires this driver to currently be focused on the
+ * ownerDocument's window+frame.
+
+ * @param {!Element} element The element to locate.
+ * @return {!webdriver.WebElement} A WebElement that can be used to issue
+ *     commands against the provided DOM element.
+ * @private
+ */
+webdriver.WebDriver.prototype.findDomElement_ = function(element) {
+  var doc = element.ownerDocument;
+  var store = doc['$webdriver$'] = doc['$webdriver$'] || {};
+  var id = Math.floor(Math.random() * goog.now()).toString(36);
+  store[id] = element;
+  element[id] = id;
+
+  function cleanUp() {
+    delete doc[id];
+    delete element[id];
+  }
+
+  function lookupElement(id) {
+    var store = document['$webdriver$'];
+    if (!store) {
+      return null;
+    }
+
+    var element = store[id];
+    if (!element || element[id] !== id) {
+      return null;
+    }
+    return element;
+  }
+
+  id = this.executeScript(lookupElement, id).
+      then(function(value) {
+        cleanUp();
+        if (!value) {
+          throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
+              'Unable to locate element. Is WebDriver focused on its ' +
+                  'ownerDocument\'s frame?');
+        }
+        if (!(value instanceof webdriver.WebElement)) {
+          throw new Error('JS locator script result was not a WebElement');
+        }
+        return value;
+      }, cleanUp);
+
   return new webdriver.WebElement(this, id);
 };
 
