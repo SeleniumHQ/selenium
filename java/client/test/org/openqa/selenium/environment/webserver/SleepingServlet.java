@@ -35,15 +35,22 @@ public class SleepingServlet extends HttpServlet {
     String duration = request.getParameter("time");
     long timeout = Long.valueOf(duration) * 1000;
 
-    try {
-      Thread.sleep(timeout);
-    } catch (InterruptedException e) {
-      // Do nothing
-    }
+    reallySleep(timeout);
 
     response.setContentType("text/html");
 
     response.getOutputStream().println(
         String.format(RESPONSE_STRING_FORMAT, duration));
+  }
+
+  private void reallySleep(long timeout){
+      long start = System.currentTimeMillis();
+      try {
+          Thread.sleep( timeout);
+          while ( (System.currentTimeMillis() - start) < timeout){
+              Thread.sleep( 20);
+          }
+      } catch (InterruptedException ignore) {
+      }
   }
 }
