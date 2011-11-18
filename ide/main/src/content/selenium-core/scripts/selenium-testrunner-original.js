@@ -1265,8 +1265,8 @@ Selenium.prototype.doBreak = function() {
      * This command is useful for debugging, but be careful when using it, because it will
      * force automated tests to hang until a user intervenes manually.
      */
-    // todo: should not refer to controlPanel directly
-    htmlTestRunner.controlPanel.setToPauseAtNextCommand();
+    // todo: should not refer to currentTest directly
+    currentTest.pauseInterval = -1;
 };
 
 Selenium.prototype.doStore = function(expression, variableName) {
