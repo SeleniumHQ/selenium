@@ -1,8 +1,14 @@
+2.13.0 (2011-11-18)
+===================
+
+* Firefox:
+  * Recovering from null window references in the Firefox driver (#1438)
+
 2.12.2 (2011-11-13)
 ===================
 
 * Firefox
-  * Fix issue where Firefox 8 would throw permission errors after document.domain was modified. 
+  * Fix issue where Firefox 8 would throw permission errors after document.domain was modified (#2863).
   * Force window to the foreground on launch (see https://bugzilla.mozilla.org/show_bug.cgi?id=566671)
 
 2.12.1 (2011-11-11)
