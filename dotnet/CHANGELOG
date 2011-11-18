@@ -1,3 +1,8 @@
+v2.13.0
+=======
+ * Do not use "which" to find Firefox on Windows in the .NET bindings.
+ * Pass '-foreground' to the firefox binary. Ensures focus by default on OS X.
+
 v2.12.0
 =======
  * Added experimental IWindow interface for controling size and position of
@@ -13,7 +18,7 @@ v2.10.0
  * Added "extensions.autoDisableScopes" to default Firefox profile
  * Removes the deprecated SendModifierKey command, replacing it with
    SendKeysToActiveElement
- * Added IntroduceInstability ByIgnoringProtectedModeSettings to
+ * Added IntroduceInstabilityByIgnoringProtectedModeSettings to
    InternetExplorerDriver to make setting capabilities easier when
    bypassing the Protected Mode settings check of the IE driver
 
