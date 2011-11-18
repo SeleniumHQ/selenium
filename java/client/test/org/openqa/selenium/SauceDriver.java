@@ -40,7 +40,7 @@ public class SauceDriver extends RemoteWebDriver {
 
   private static Capabilities munge(DesiredCapabilities desiredCapabilities, String seleniumVersion) {
     DesiredCapabilities mungedCapabilities = new DesiredCapabilities(desiredCapabilities);
-    mungedCapabilities.setCapability("selenium.version", seleniumVersion);
+    mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     return mungedCapabilities;
   }
 }
