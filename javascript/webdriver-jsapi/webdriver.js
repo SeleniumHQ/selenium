@@ -395,9 +395,9 @@ webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
 
 /**
  * Schedules a command to execute a custom function.
- * @param {function()} fn The function to execute.
- * @param {Object} opt_scope The object in whose scope to execute the function.
- * @param {...} var_args Any arguments to pass to the function.
+ * @param {!Function} fn The function to execute.
+ * @param {Object=} opt_scope The object in whose scope to execute the function.
+ * @param {...*} var_args Any arguments to pass to the function.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     function's result.
  * @export
@@ -405,12 +405,12 @@ webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
 webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
   var args = goog.array.slice(arguments, 2);
   var app = webdriver.promise.Application.getInstance();
-  var resolveArgs = app.schedule(
-      'WebDriver.call(' + (fn.name || 'function') + ')',
-      goog.partial(webdriver.promise.fullyResolved, args));
-  return resolveArgs.then(function(args) {
-    return fn.apply(opt_scope, args);
-  });
+  return app.schedule('WebDriver.call(' + (fn.name || 'function') + ')',
+      function() {
+        return webdriver.promise.fullyResolved(args).then(function(args) {
+          return fn.apply(opt_scope, args);
+        });
+      });
 };
 
 

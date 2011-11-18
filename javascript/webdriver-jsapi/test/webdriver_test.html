@@ -979,6 +979,26 @@ limitations under the License.
   }
 
 
+  function testCustomFunctionDoesNotCompleteUntilReturnedPromiseIsResolved() {
+    var testHelper = TestHelper.expectingSuccess().replayAll();
+
+    var d = new webdriver.promise.Deferred(),
+        stepOne = function() { return d.promise; },
+        stepTwo = callbackHelper();
+
+    var driver = testHelper.createDriver();
+    driver.call(stepOne);
+    driver.call(stepTwo);
+
+    testHelper.execute(true);
+    stepTwo.assertNotCalled();
+
+    d.resolve();
+    testHelper.execute();
+    stepTwo.assertCalled();
+  }
+
+
   function testNestedFunctionCommandExecutionOrder() {
     var msg = [];
     var testHelper = TestHelper.expectingSuccess(function() {
