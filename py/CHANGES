@@ -1,3 +1,8 @@
+Selenium 2.13
+* Fixed switch_to_window so that it didnt crash Firefox Bug 2633
+* Fixed Screenshot handling to work in all browsers. Bug 2829
+* Force Firefox to the Foreground
+
 Selenium 2.12
 * Added Select as a support pacakge
 * Added Beta window size / position api's
