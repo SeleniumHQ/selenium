@@ -83,12 +83,16 @@ public class ChromeDriverTestSuite extends TestCase {
     @Override
     protected void setUp() throws Exception {
       super.setUp();
-      chromeDriverService.start();
+      if (chromeDriverService != null) {
+        chromeDriverService.start();
+      }
     }
 
     @Override
     protected void tearDown() throws Exception {
-      chromeDriverService.stop();
+      if (chromeDriverService != null) {
+        chromeDriverService.stop();
+      }
       super.tearDown();
     }
   }
