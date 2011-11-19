@@ -26,6 +26,8 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
     } else if (driverClass.getName() ==
         "org.openqa.selenium.chrome.ChromeDriverTestSuite$DriverForTest") {
       capabilities = DesiredCapabilities.chrome();
+    } else if (driverClass.getName() == "com.opera.core.systems.OperaDriver") {
+      capabilities = DesiredCapabilities.opera();
     } else {
       throw new UnsupportedOperationException(
         "Didn't know how to create sauce-backed driver for class " +
