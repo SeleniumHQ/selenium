@@ -146,7 +146,10 @@ public interface WebElement extends SearchContext {
    * This method is affected by the 'implicit wait' times in force at the time of execution.
    * The findElement(..) invocation will return a matching row, or try again repeatedly until 
    * the configured timeout is reached.
-   * 
+   *
+   * findElement should not be used to look for non-present elements, use {@link #findElements(By)}
+   * and assert zero length response instead.
+   *
    * @param by The locating mechanism
    * @return The first matching element on the current context.
    * @throws NoSuchElementException If no matching elements are found
