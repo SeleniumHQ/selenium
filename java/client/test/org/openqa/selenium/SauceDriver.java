@@ -7,6 +7,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 public class SauceDriver extends RemoteWebDriver {
@@ -34,7 +35,7 @@ public class SauceDriver extends RemoteWebDriver {
   }
 
   private static String getDesiredBrowserVersion() {
-    return getNonNullEnv(DESIRED_BROWSER_VERSION_ENV_NAME);
+    return System.getenv(DESIRED_BROWSER_VERSION_ENV_NAME);
   }
 
   private static String getDesiredOS() {
@@ -71,7 +72,9 @@ public class SauceDriver extends RemoteWebDriver {
     DesiredCapabilities mungedCapabilities = new DesiredCapabilities(desiredCapabilities);
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     mungedCapabilities.setCapability("idle-timeout", 180);
-    mungedCapabilities.setVersion(browserVersion);
+    if (!Strings.isNullOrEmpty(browserVersion)) {
+      mungedCapabilities.setVersion(browserVersion);
+    }
     mungedCapabilities.setPlatform(platform);
     
     String jobName = System.getenv(SAUCE_JOB_NAME_ENV_NAME);
