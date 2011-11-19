@@ -5,12 +5,16 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementToBeHidden;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
@@ -39,10 +43,14 @@ public class UploadTest extends AbstractDriverTestCase {
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).submit();
 
+    // Uploading files across a network may take a while, even if they're really small
+    WebElement label = driver.findElement(By.id("upload_label"));
+    waitFor(elementToBeHidden(label), 30, TimeUnit.SECONDS);
+
     driver.switchTo().frame("upload_target");
 
     WebElement body = driver.findElement(By.xpath("//body"));
-    assertEquals("Page source is: " + driver.getPageSource(), LOREM_IPSUM_TEXT, body.getText());
+    waitFor(elementTextToEqual(body, LOREM_IPSUM_TEXT));
   }
 
   private File createTmpFile(String content) throws IOException {

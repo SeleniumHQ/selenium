@@ -144,6 +144,18 @@ public class WaitingConditions {
     };
   }
 
+  public static Callable<Boolean> elementToBeHidden(final WebElement element) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        try {
+          return !element.isDisplayed();
+        } catch (StaleElementReferenceException e) {
+          return true;
+        }
+      }
+    };
+  }
+
   public static Callable<String> pageSourceToContain(
       final WebDriver driver, final String expectedText) {
     return new Callable<String>() {
