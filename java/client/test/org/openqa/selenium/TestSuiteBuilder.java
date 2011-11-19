@@ -293,7 +293,7 @@ public class TestSuiteBuilder {
         || method.getAnnotation(org.junit.Test.class) != null;
   }
 
-  private boolean isUsingLocalTestEnvironment() {
+  private static boolean isUsingLocalTestEnvironment() {
     return !SauceDriver.shouldUseSauce();
   }
 
