@@ -67,8 +67,6 @@ java_library(name = "remote",
     "internal/CircularOutputStream.java",
     "internal/JsonToWebElementConverter.java",
     "internal/HttpClientFactory.java",
-    "internal/OutputWatcher.java",
-    "internal/SubProcess.java",
     "internal/WebElementToJsonConverter.java",
   ],
   deps = [

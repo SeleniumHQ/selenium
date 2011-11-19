@@ -23,7 +23,6 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
-import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -45,6 +44,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 public class CommandLine {
+
   private static final Logger log = Logger.getLogger(CommandLine.class.getName());
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
@@ -55,12 +55,11 @@ public class CommandLine {
   private final org.apache.commons.exec.CommandLine cl;
 
   private volatile OutputStream drainTo;
-  private final Snitch snitch = new Snitch();
   private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
 
   public CommandLine(String executable, String... args) {
     cl = new org.apache.commons.exec.CommandLine(findExecutable(executable));
-    cl.addArguments( args);
+    cl.addArguments(args);
   }
 
   public CommandLine(String[] cmdarray) {
@@ -77,9 +76,8 @@ public class CommandLine {
 
   /**
    * Adds the specified environment variables.
-   * 
+   *
    * @param environment the variables to add
-   * 
    * @throws IllegalArgumentException if any value given is null (unsupported)
    */
   public void setEnvironmentVariables(Map<String, String> environment) {
@@ -90,8 +88,8 @@ public class CommandLine {
 
   /**
    * Adds the specified environment variable.
-   * 
-   * @param name the name of the environment variable
+   *
+   * @param name  the name of the environment variable
    * @param value the value of the environment variable
    * @throws IllegalArgumentException if the value given is null (unsupported)
    */
@@ -101,7 +99,7 @@ public class CommandLine {
     }
     if (value == null) {
       throw new IllegalArgumentException("Cannot have a null value for environment variable " +
-          name);
+                                         name);
     }
     env.put(name, value);
   }
@@ -134,7 +132,7 @@ public class CommandLine {
   /**
    * Find the executable by scanning the file system and the PATH. In the case of Windows this
    * method allows common executable endings (".com", ".bat" and ".exe") to be omitted.
-   * 
+   *
    * @param named The name of the executable to find
    * @return The absolute path to the executable, or null if no match is made.
    */
@@ -156,9 +154,9 @@ public class CommandLine {
     }
 
     String path = env.get(pathName);
-    String[] endings = new String[] {""};
+    String[] endings = new String[]{""};
     if (Platform.getCurrent().is(WINDOWS)) {
-      endings = new String[] {"", ".exe", ".com", ".bat"};
+      endings = new String[]{"", ".exe", ".com", ".bat"};
     }
 
     for (String segment : path.split(File.pathSeparator)) {
@@ -178,8 +176,9 @@ public class CommandLine {
       final OutputStream outputStream = getOutputStream();
       executeWatchdog.reset();
       executor.setWatchdog(executeWatchdog);
-      executor.setStreamHandler( new PumpStreamHandler(outputStream, outputStream, getInputStream()));
-      executor.execute( cl, getMergedEnv(), handler);
+      executor
+          .setStreamHandler(new PumpStreamHandler(outputStream, outputStream, getInputStream()));
+      executor.execute(cl, getMergedEnv(), handler);
       handler.waitFor();
     } catch (IOException e) {
       throw new WebDriverException(e);
@@ -206,8 +205,6 @@ public class CommandLine {
       executor.setWatchdog(executeWatchdog);
       executor.setStreamHandler(new PumpStreamHandler(
           outputStream, outputStream, getInputStream()));
-      // Commons-exec /really/ does not want to tell us about the Process ;)
-      executor.setProcessDestroyer(snitch);
       executor.execute(cl, getMergedEnv(), handler);
     } catch (IOException e) {
       throw new WebDriverException(e);
@@ -221,7 +218,6 @@ public class CommandLine {
   public void waitFor() {
     try {
       handler.waitFor();
-      postRunCleanup();
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
     }
@@ -247,55 +243,30 @@ public class CommandLine {
     return new String(inputOut.toByteArray());
   }
 
- /**
-  * Destroy the current command.
-  * @return The exit code of the command.
-  */
+  /**
+   * Destroy the current command.
+   *
+   * @return The exit code of the command.
+   */
   public int destroy() {
     SeleniumWatchDog watchdog = executeWatchdog;
     watchdog.waitForProcessStarted();
     watchdog.destroyProcess();
+    watchdog.waitForTerminationAfterDestroy(2, SECONDS);
     if (handler.hasResult()) {
-       return getExitCode();
+      return getExitCode();
     }
 
-
-    // Give the process a chance to die naturally.
-    quiesceFor(3, SECONDS);
-
-    if (!handler.hasResult()) {
-      log.info(
-          "Command failed to close cleanly. Destroying forcefully. " + this);
-      ProcessUtils.killProcess(snitch.getProcess());
-      quiesceFor(1, SECONDS);
+    watchdog.destroyHarder();
+    watchdog.waitForTerminationAfterDestroy(1, SECONDS);
+    if (handler.hasResult()) {
+      return getExitCode();
     }
 
-    int exitCode;
-    if (!handler.hasResult()) {
-      log.severe(String.format(
-          "Unable to kill process with PID %s: %s", snitch.getProcess(), this));
-      exitCode = -1;
-      executor.setExitValue(exitCode);
-    } else {
-      exitCode = getExitCode();
-    }
-
-    postRunCleanup();
+    log.severe(String.format("Unable to kill process with PID %s", watchdog.getPID()));
+    int exitCode = -1;
+    executor.setExitValue(exitCode);
     return exitCode;
-  }
-
-  private void quiesceFor(int duration, TimeUnit unit) {
-    long end = System.currentTimeMillis() + unit.toMillis(duration);
-    while (!handler.hasResult() && System.currentTimeMillis() < end) {
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException e) {
-        throw new WebDriverException(e);
-      }
-    }
-  }
-
-  private void postRunCleanup() {
   }
 
   private static boolean canExecute(File file) {
@@ -336,35 +307,11 @@ public class CommandLine {
     drainTo = out;
   }
 
-  // Because commons-exec is secretive about process.
-  class Snitch implements ProcessDestroyer {
-    private volatile Process process;
-
-    public boolean add(Process process) {
-      if (this.process != null) {
-        throw new IllegalStateException("Unexpected re-use of snitch");
-      }
-      this.process = process;
-      return true;
-    }
-
-    public boolean remove(Process process) {
-      this.process = null;
-      return true;
-    }
-
-    public int size() {
-      return this.process == null ? 0 : 1;
-    }
-
-    public Process getProcess() {
-      return process;
-    }
-  }
-
   class SeleniumWatchDog extends ExecuteWatchdog {
+
     private volatile Process process;
     private volatile boolean starting = true;
+
     SeleniumWatchDog(long timeout) {
       super(timeout);
     }
@@ -382,29 +329,47 @@ public class CommandLine {
       super.stop();
     }
 
-    public void reset(){
+    public void reset() {
       starting = true;
     }
+
     @Override
     protected void cleanUp() {
       this.process = null;
       super.cleanUp();
     }
 
-    public Process getProcess() {
-      return process;
+    public String getPID() {
+      return this.process.toString();
     }
 
-    public void waitForProcessStarted(){
-      while (starting){
+    public void waitForProcessStarted() {
+      while (starting) {
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
           throw new WebDriverException(e);
         }
       }
-
     }
+
+    private void waitForTerminationAfterDestroy(int duration, TimeUnit unit) {
+      long end = System.currentTimeMillis() + unit.toMillis(duration);
+      while (!handler.hasResult() && System.currentTimeMillis() < end) {
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e) {
+          throw new WebDriverException(e);
+        }
+      }
+    }
+
+    private void destroyHarder() {
+      log.info("Command failed to close cleanly. Destroying forcefully (v2). " + this);
+      Process ourProc = process;
+      if (ourProc != null) ProcessUtils.killProcess(ourProc);
+    }
+
   }
 
   class MultioutputStream extends OutputStream {
