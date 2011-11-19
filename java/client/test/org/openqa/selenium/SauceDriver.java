@@ -30,7 +30,7 @@ public class SauceDriver extends RemoteWebDriver {
         desiredCapabilities,
         getSeleniumVersion(),
         getDesiredBrowserVersion(),
-        getDesiredOS()));
+        getEffectivePlatform()));
   }
 
   private static String getDesiredBrowserVersion() {
@@ -67,12 +67,12 @@ public class SauceDriver extends RemoteWebDriver {
     throw new IllegalStateException("Should have returned or thrown");
   }
 
-  private static Capabilities munge(DesiredCapabilities desiredCapabilities, String seleniumVersion, String browserVersion, String os) {
+  private static Capabilities munge(DesiredCapabilities desiredCapabilities, String seleniumVersion, String browserVersion, Platform platform) {
     DesiredCapabilities mungedCapabilities = new DesiredCapabilities(desiredCapabilities);
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     mungedCapabilities.setCapability("idle-timeout", 180);
     mungedCapabilities.setVersion(browserVersion);
-    mungedCapabilities.setPlatform(Platform.extractFromSysProperty(os));
+    mungedCapabilities.setPlatform(platform);
     
     String jobName = System.getenv(SAUCE_JOB_NAME_ENV_NAME);
     if (jobName != null) {
@@ -85,5 +85,9 @@ public class SauceDriver extends RemoteWebDriver {
 
   public static boolean shouldUseSauce() {
     return System.getenv(USE_SAUCE_ENV_NAME) != null;
+  }
+
+  public static Platform getEffectivePlatform() {
+    return Platform.extractFromSysProperty(getDesiredOS());
   }
 }

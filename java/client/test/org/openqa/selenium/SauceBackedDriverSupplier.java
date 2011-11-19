@@ -20,6 +20,9 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
     } else if (driverClass.getName() == "org.openqa.selenium.firefox.SynthesizedFirefoxDriver") {
       capabilities = DesiredCapabilities.firefox();
       capabilities.setCapability(CapabilityType.HAS_NATIVE_EVENTS, false);
+    } else if (driverClass.getName() ==
+        "org.openqa.selenium.ie.InternetExplorerDriverTestSuite$TestInternetExplorerDriver") {
+      capabilities = DesiredCapabilities.internetExplorer();
     } else {
       throw new UnsupportedOperationException(
         "Didn't know how to create sauce-backed driver for class " +

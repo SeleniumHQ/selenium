@@ -404,6 +404,11 @@ public class TestSuiteBuilder {
     return this;
   }
 
+  public static Platform getEffectivePlatform() {
+    return (isUsingLocalTestEnvironment()) ?
+        Platform.getCurrent() : SauceDriver.getEffectivePlatform();
+  }
+
   public TestSuiteBuilder withIgnoredTestCallback(IgnoredTestCallback ignoredTestCallback) {
     ignoredTestCallbacks.add(ignoredTestCallback);
     return this;

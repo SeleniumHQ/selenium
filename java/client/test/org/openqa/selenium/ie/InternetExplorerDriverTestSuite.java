@@ -22,7 +22,6 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.EmptyTest;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -34,7 +33,7 @@ public class InternetExplorerDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
     System.setProperty("webdriver.development", "true");
 
-    if (Platform.getCurrent().is(WINDOWS)) {
+    if (TestSuiteBuilder.getEffectivePlatform().is(WINDOWS)) {
       return new TestSuiteBuilder()
           .addSourceDir("java/client/test")
           .usingDriver(TestInternetExplorerDriver.class)
