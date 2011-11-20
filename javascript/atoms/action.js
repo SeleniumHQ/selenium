@@ -245,7 +245,7 @@ bot.action.focusOnElement = function(element, opt_activeElement) {
 /**
  * Clears a textual form field.
  *
- * <p/>Throws an exception if the element is not shown, disabled, or editable.
+ * <p/>Throws an exception if the element is not shown, disabled, or not editable.
  *
  * @param {!Element} element The element to clear.
  */
@@ -253,7 +253,7 @@ bot.action.clear = function(element) {
   bot.action.checkInteractable_(element);
   if (!bot.dom.isEditable(element)) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        'Element cannot contain user-editable text');
+        'Element must be user-editable in order to clear it.');
   }
 
   bot.action.focusOnElement(element);
