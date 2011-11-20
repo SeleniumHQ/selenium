@@ -15,6 +15,8 @@ static NSString * const PREF_MEMORY_CACHE_CAPACITY = @"preference_memory_cache_c
 static NSString * const PREF_CACHE_POLICY = @"preference_cache_policy";
 
 static NSString * const PREF_SERVER_MODE_PORT_NUMBER = @"preference_server_mode_port_number";
+static NSString * const PREF_GRID_HOST = @"preference_grid_mode_host";
+static NSString * const PREF_GRID_PORT = @"preference_grid_mode_port";
 static NSString * const PREF_CLIENT_MODE_CONNECTOR_ADDRESS = @"preference_client_mode_connector_address";
 static NSString * const PREF_CLIENT_MODE_REQUESTER_ID = @"preference_client_mode_requester_id";
 
@@ -25,6 +27,8 @@ static NSString * const PREF_CLIENT_MODE_REQUESTER_ID = @"preference_client_mode
 @synthesize memoryCacheCapacity = memoryCacheCapacity_;
 @synthesize cache_policy = cachePolicy_;
 @synthesize serverPortNumber = serverPortNumber_;
+@synthesize gridLocation = gridLocation_;
+@synthesize gridPort = gridPort_;
 @synthesize connectorAddr = connectorAddr_;
 @synthesize requesterId = requesterId_;
 
@@ -141,6 +145,13 @@ static WebDriverPreferences *singleton = nil;
                                  userInfo:nil];				
   }
 	
+  NSString *gridHost = [defaults stringForKey:PREF_GRID_HOST];
+  gridPort_ = [defaults stringForKey:PREF_GRID_PORT];
+  if ([gridHost length] > 0 && [gridPort_ length] > 0) {
+    gridLocation_ = [NSString stringWithFormat: @"%@", gridHost];
+  }
+	
+				
   [defaults synchronize];
   return self;
 }

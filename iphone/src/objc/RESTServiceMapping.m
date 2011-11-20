@@ -24,6 +24,7 @@
 #import "JSONRESTResource.h"
 #import "Session.h"
 #import "SessionRoot.h"
+#import "Status.h"
 #import "HTTPResponse+Utility.h"
 #import "RootViewController.h"
 
@@ -45,6 +46,9 @@
   // The root of our REST service.
   HTTPVirtualDirectory *restRoot = [[[HTTPVirtualDirectory alloc] init] autorelease];
   [serverRoot_ setResource:restRoot withName:@"hub"];
+  
+  // Respond to /status
+  [restRoot setResource:[[[Status alloc] init] autorelease] withName:@"status"];
 
   // Make the root also accessible from /wd/hub. This will allow clients hard
   // coded for the java Selenium server to also work with us.
@@ -71,6 +75,7 @@
 // Pass nil in the |query|, |method| or |data| arguments to ignore.
 + (void)propertiesOfHTTPMessage:(CFHTTPMessageRef)request
                         toQuery:(NSString **)query
+                          toUri:(NSURL **)uri
                          method:(NSString **)method
                            data:(NSData **)data {
   // Extract method
@@ -81,8 +86,8 @@
   
   // Extract requested URI
   if (query != nil) {
-    NSURL *uri = [(NSURL *)CFHTTPMessageCopyRequestURL(request) autorelease];
-    *query = [uri relativeString];
+    *uri = [(NSURL *)CFHTTPMessageCopyRequestURL(request) autorelease];
+    *query = [*uri relativeString];
   }
   
   // Extract POST data
@@ -95,11 +100,13 @@
 - (NSObject<HTTPResponse> *)httpResponseForRequest:(CFHTTPMessageRef)request {
 
   NSString *query;
+  NSURL *uri;
   NSString *method;
   NSData *data;
   
   [RESTServiceMapping propertiesOfHTTPMessage:request
                                       toQuery:&query
+                                        toUri:&uri
                                        method:&method
                                          data:&data];
   
@@ -119,10 +126,9 @@
   // Unfortunately, WebDriver only supports absolute redirects (r733). We need
   // to expand all relative redirects to absolute redirects.
   if ([response isKindOfClass:[HTTPRedirectResponse class]]) {
-    NSURL *uri = [(NSURL *)CFHTTPMessageCopyRequestURL(request) autorelease];
     [(HTTPRedirectResponse *)response expandRelativeUrlWithBase:uri];
   }
-  
+	
   if (response == nil) {
     NSLog(@"404 - could not create response for request at %@", query);
   }

@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("serial")
 public class DesiredCapabilities implements Serializable, Capabilities {
   private final Map<String, Object> capabilities = new HashMap<String, Object>();
 
@@ -190,6 +191,10 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   public static DesiredCapabilities iphone() {
     return new DesiredCapabilities("iphone", "", Platform.MAC);
   }
+  
+  public static DesiredCapabilities ipad() {
+	    return new DesiredCapabilities("ipad", "", Platform.MAC);
+	  }
 
   public static DesiredCapabilities opera() {
     return new DesiredCapabilities("opera", "", Platform.ANY);

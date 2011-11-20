@@ -25,6 +25,8 @@ package org.openqa.selenium.remote;
  */
 public interface DriverCommand {
   String NEW_SESSION = "newSession";
+  
+  String STATUS = "status";
 
   String CLOSE = "close";
   String QUIT = "quit";

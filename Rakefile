@@ -227,6 +227,7 @@ desc 'Clean build artifacts.'
 task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
+  rm_rf 'iphone/src/objc/atoms.h'
   rm_rf 'android/app/bin/'
   rm_rf 'android/app/build/'
   rm_rf 'android/app/libs/'

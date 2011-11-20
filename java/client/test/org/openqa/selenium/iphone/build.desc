@@ -2,6 +2,7 @@ java_test(name = "test",
   srcs = [
     "CreateIPhoneDriverTest.java",
     "IPhoneDriverTestSuite.java",
+    "IPhoneDriverRespondsToStatusTest.java",
     "IPhoneSimulatorCommandExecutorTest.java",
   ],
   deps = [

@@ -2,3 +2,6 @@
 
 "Server" = "Server";
 "Port" = "Port";
+"Grid" = "Grid";
+"GridHost" = "Host";
+"GridPort" = "Port";

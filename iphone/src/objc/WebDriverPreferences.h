@@ -16,6 +16,7 @@
   NSUInteger memoryCacheCapacity_;
   NSURLRequestCachePolicy cachePolicy_;
 
+  NSString* gridUrl_;
   // Preferences used when iWebDriver is running in server mode.
   UInt16 serverPortNumber_;
 
@@ -32,6 +33,8 @@
 @property (readonly, nonatomic) NSURLRequestCachePolicy cache_policy;
 
 @property (readonly, nonatomic) UInt16 serverPortNumber;
+@property (readonly, nonatomic) NSString *gridLocation;
+@property (readonly, nonatomic) NSString *gridPort;
 @property (readonly, nonatomic, copy) NSString *connectorAddr;
 @property (readonly, nonatomic, copy) NSString *requesterId;
 

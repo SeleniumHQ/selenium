@@ -21,6 +21,7 @@
 #import "WebDriverHTTPConnection.h"
 #import "RESTServiceMapping.h"
 #import "WebDriverPreferences.h"
+#import "Status.h"
 
 #import <sys/types.h>
 #import <sys/socket.h>
@@ -32,6 +33,8 @@
 @synthesize status = status_;
 @synthesize viewController = viewController_;
 @synthesize serviceMapping = serviceMapping_;
+
+static NSMutableData *webData;
 
 -(NSString *)getAddress {
   
@@ -74,6 +77,7 @@
   if (![super init])
     return nil;
   UInt16 portNumber = [[WebDriverPreferences sharedInstance] serverPortNumber];
+  NSString* grid = [[WebDriverPreferences sharedInstance] gridLocation];
 
   server_ = [[WebDriverHTTPServer alloc] init];
 
@@ -93,13 +97,78 @@
         [self getAddress],
         [server_ port]);
   
-  status_ = [[NSString alloc] initWithFormat:@"Started at http://%@:%d/hub/",
+  status_ = [[NSString alloc] initWithFormat:@"Started at http://%@:%d/wd/hub/",
              [self getAddress],
              [server_ port]];
+
+  if([grid length] > 0) {
+	  NSString *device;
+	  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+	    device = DEVICE_IPAD;
+    } else {
+	    device = DEVICE_IPHONE;
+	  }
+    NSString* gridPort = [[WebDriverPreferences sharedInstance] gridPort];
+    
+    NSString *registerUrlStr = [NSString stringWithFormat:@"http://%@:%@/grid/register", grid, gridPort];
+    
+    // make http request to grid host registering self as a single node with just safari to test.
+	  NSString *json = [NSString stringWithFormat:@"{'class':'org.openqa.grid.common.RegistrationRequest',"
+	    "'capabilities':[{'seleniumProtocol':'WebDriver','browserName':'%@','maxInstances':1,'platform':'MAC'}],"
+	    "'configuration':{'port':%d"
+	    ",'register':True,'host':%@"
+	    ",'proxy':'org.openqa.grid.selenium.proxy.DefaultRemoteProxy','maxSession':1,"
+	    "'hubHost':'%@','hubPort':'%@','role':'wd','registerCycle':5000,"
+	    "'hub':'%@','remoteHost':'http://%@:%d'"
+      "}}", device, [server_ port], [self getAddress], grid, gridPort, registerUrlStr, [self getAddress], [server_ port] ];
+	  
+	  
+	  NSURL *registerUrl = [NSURL URLWithString:registerUrlStr];
+	
+	  NSMutableURLRequest *gridRegister = [NSMutableURLRequest requestWithURL:registerUrl];
+	  
+    NSString *msgLength = [NSString stringWithFormat:@"%d", [json length]];
+	  
+	  [gridRegister addValue: msgLength forHTTPHeaderField:@"Content-Length"];
+    [gridRegister setHTTPMethod:@"POST"];
+    [gridRegister setHTTPBody: [json dataUsingEncoding:NSUTF8StringEncoding]];
+	  
+	  NSURLConnection *theConnection=[[NSURLConnection alloc] initWithRequest:gridRegister delegate:self];
+	  
+	  if (theConnection) {
+	    // Create the NSMutableData to hold the received data.
+	    // receivedData is an instance variable declared elsewhere.
+	    webData = [[NSMutableData data] retain];
+	  } else {
+	    // Inform the user that the connection failed.
+	  }
+	
+  }
 
   serviceMapping_ = [[RESTServiceMapping alloc] init];
 
   return self;
+}
+-(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    [webData setLength: 0];
+}
+-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [webData appendData:data];
+}
+-(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    NSLog(@"ERROR with theConenction");
+    [connection release];
+    [webData release];
+}
+-(void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSLog(@"DONE. Received Bytes: %d", [webData length]);
+    NSString *theXML = [[NSString alloc] initWithBytes: [webData mutableBytes] length:[webData length] encoding:NSUTF8StringEncoding];
+    NSLog(@"%@",theXML);
+    [theXML release];
 }
 
 // Singleton

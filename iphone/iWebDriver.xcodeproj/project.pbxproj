@@ -20,6 +20,8 @@
 		289233AE0DB2D0DB0083E9F9 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A90DB2D0DB0083E9F9 /* MainViewController.m */; };
 		289233AF0DB2D0DB0083E9F9 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
 		289233B00DB2D0DB0083E9F9 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
+		40BE09AB147714580042C6DA /* Status.m in Sources */ = {isa = PBXBuildFile; fileRef = 40BE09AA147714580042C6DA /* Status.m */; };
+		40BE09AC147715AA0042C6DA /* Status.m in Sources */ = {isa = PBXBuildFile; fileRef = 40BE09AA147714580042C6DA /* Status.m */; };
 		64084BF312B6C6A10049D2FB /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C4510128BBF4000261249 /* Storage.m */; };
 		64084BF412B6C6C90049D2FB /* Database.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D14FCC1289B6540074E63B /* Database.m */; };
 		64084BF512B6C6C90049D2FB /* GeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 731C450E128BBF4000261249 /* GeoLocation.m */; };
@@ -172,6 +174,8 @@
 		289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlipsideViewController.m; path = Classes/FlipsideViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* iWebDriver_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iWebDriver_Prefix.pch; sourceTree = "<group>"; };
+		40BE09A9147714580042C6DA /* Status.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Status.h; sourceTree = "<group>"; };
+		40BE09AA147714580042C6DA /* Status.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Status.m; sourceTree = "<group>"; };
 		642C489E112260150064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		642C48A3112260480064EB9C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		643822E812C0305900F0C7CC /* atoms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = atoms.h; sourceTree = "<group>"; };
@@ -466,6 +470,8 @@
 				648EB1FC137C63B800DEFD44 /* Css.m */,
 				731C450D128BBF4000261249 /* GeoLocation.h */,
 				731C450E128BBF4000261249 /* GeoLocation.m */,
+				40BE09A9147714580042C6DA /* Status.h */,
+				40BE09AA147714580042C6DA /* Status.m */,
 				731C450F128BBF4000261249 /* Storage.h */,
 				731C4510128BBF4000261249 /* Storage.m */,
 				64D8AA411120B94D001649CC /* SessionRoot.h */,
@@ -718,7 +724,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -e ${PROJECT_DIR}/../go ]; then\n  cd ${PROJECT_DIR}/..\n  echo \"Regenerating iPhone atoms header file\"\n\n  HEADER=\"${PROJECT_DIR}/src/objc/atoms.h\"\n  BACKUP=\"${HEADER}.orig\"\n\n  if [ -e ${HEADER} ]; then\n    mv ${HEADER} ${BACKUP}\n  fi\n\n  ./go iphone_atoms\n  BUILD_RESULT=$?\n  if [ $BUILD_RESULT -ne 0 ]; then\n    echo \"Failed to regenerate header file; restoring original\"\n    if [ -e ${BACKUP} ]; then\n      mv ${BACKUP} ${HEADER}\n    fi\n    exit $BUILD_RESULT\n  else\n    if [ -e ${BACKUP} ]; then\n      rm ${BACKUP}\n    fi\n  fi\nelse\n  echo \"Unable to locate \"go\" script; using existing atoms header snapshot\"\nfi\n";
+			shellScript = "if [ ! -e ${PROJECT_DIR}/src/objc/atoms.h ]; then\n if [ -e ${PROJECT_DIR}/../go ]; then\n  cd ${PROJECT_DIR}/..\n  echo \"Regenerating iPhone atoms header file\"\n\n  ./go iphone_atoms\n  BUILD_RESULT=$?\n  if [ $BUILD_RESULT -ne 0 ]; then\n    echo \"Failed to regenerate header file\"; exit $BUILD_RESULT\n  fi\nelse\n  echo \"Unable to locate \\\"go\\\" script;\"\nfi\nfi\n";
 		};
 		8399890A0EE605A30074D106 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -787,6 +793,7 @@
 				643822F712C032F600F0C7CC /* Element.mm in Sources */,
 				64A2262E12C1828000537E73 /* NSData+Base64.m in Sources */,
 				648EB1FD137C63B800DEFD44 /* Css.m in Sources */,
+				40BE09AB147714580042C6DA /* Status.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -794,6 +801,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40BE09AC147715AA0042C6DA /* Status.m in Sources */,
 				64BFFCBC12B6EC0D00FEB710 /* NSObject+SBJSON.m in Sources */,
 				64BFFCBD12B6EC0D00FEB710 /* NSString+SBJSON.m in Sources */,
 				64BFFCBE12B6EC0D00FEB710 /* SBJSON.m in Sources */,
@@ -876,7 +884,7 @@
 				GCC_PREFIX_HEADER = src/objc/iWebDriver_Prefix.pch;
 				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",
@@ -909,7 +917,7 @@
 				GCC_PREFIX_HEADER = src/objc/iWebDriver_Prefix.pch;
 				HEADER_SEARCH_PATHS = "$(COCOAHTTPSERVER_HEADERS)/**";
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/iphoneos.sdk/usr/local/lib\"",

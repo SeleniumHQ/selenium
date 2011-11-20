@@ -143,6 +143,7 @@ import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.STATUS;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
@@ -345,6 +346,8 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(TOUCH_DOUBLE_TAP, post("/session/:sessionId/touch/doubleclick"))
         .put(TOUCH_LONG_PRESS, post("/session/:sessionId/touch/longclick"))
         .put(TOUCH_FLICK, post("/session/:sessionId/touch/flick"))
+
+        .put(STATUS, get("/status"))
 
         .build();
   }

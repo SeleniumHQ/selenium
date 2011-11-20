@@ -47,6 +47,11 @@ class DesiredCapabilities(object):
                         "platform": "MAC",
                         "javascriptEnabled": True }
     
+    IPAD = {"browserName": "ipad",
+                        "version": "",
+                        "platform": "MAC",
+                        "javascriptEnabled": True }
+    
     ANDROID = {"browserName": "android",
                         "version": "",
                         "platform": "LINUX",
