@@ -2,6 +2,8 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.LocalFileDetector;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.common.base.Supplier;
 
@@ -36,6 +38,8 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
         "Didn't know how to create sauce-backed driver for class " +
             driverClass.getCanonicalName());
     }
-    return new SauceDriver(capabilities);
+    RemoteWebDriver driver = new SauceDriver(capabilities);
+    driver.setFileDetector(new LocalFileDetector());
+    return driver;
   }
 }
