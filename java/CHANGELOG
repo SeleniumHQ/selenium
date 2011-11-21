@@ -1,3 +1,12 @@
+v2.14.0 (to be released)
+=======
+
+Server:
+  * Memory leak fixed
+
+Grid:
+  * Grid nodes were leaking even more memory that regular server nodes.
+
 v2.13.0
 =======
 WebDriver:
