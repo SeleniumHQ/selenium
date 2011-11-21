@@ -29,6 +29,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.server.log.LoggingManager;
 
 import java.util.List;
 import java.util.Set;
@@ -258,6 +259,8 @@ public class Registry {
             return takeRequestHandler(input);
           }
         }, prioritizer);
+        // Just make sure we delete anything that is logged on this thread from memory
+        LoggingManager.perSessionLogHandler().clearThreadTempLogs();
       } catch (InterruptedException e) {
         log.info("Shutting down registry.");
       } catch (Throwable t) {

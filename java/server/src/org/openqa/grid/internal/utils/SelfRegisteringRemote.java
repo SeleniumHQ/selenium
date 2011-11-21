@@ -200,6 +200,7 @@ public class SelfRegisteringRemote {
         registerToHub(false);
       }
     }
+    LoggingManager.perSessionLogHandler().clearThreadTempLogs();
   }
 
   public void setTimeout(int timeout, int cycle) {
