@@ -66,7 +66,7 @@ webdriver.Locator.factory_ = function(type) {
 webdriver.Locator.Strategy = {
   'className': webdriver.Locator.factory_('class name'),
   'class name': webdriver.Locator.factory_('class name'),
-  'css': webdriver.Locator.factory_('css'),
+  'css': webdriver.Locator.factory_('css selector'),
   'id': webdriver.Locator.factory_('id'),
   'js': webdriver.Locator.factory_('js'),
   'linkText': webdriver.Locator.factory_('link text'),
