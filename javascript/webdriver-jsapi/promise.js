@@ -93,7 +93,9 @@ webdriver.promise.Promise = function() {
  *     with the result of the invoked callback.
  * @export
  */
-webdriver.promise.Promise.prototype.then = goog.abstractMethod;
+webdriver.promise.Promise.prototype.then = function(callback, opt_errback) {
+  throw new TypeError('Unimplemented function: "then"');
+};
 
 
 /**
@@ -353,13 +355,11 @@ webdriver.promise.Deferred = function() {
     }
   }
 
-  // Export our public API. This is required since these properties are not
-  // defined on a prototype for goog.exportProperty to operate on.
-  this['promise'] = promise;
-  promise['then'] = this.then;
-  this['then'] = this.then;
-  this['resolve'] = this['callback'] = resolve;
-  this['reject'] = this['errback'] = reject;
+  // Export our public API.
+  this.promise = promise;
+  this.promise.then = this.then;
+  this.resolve = this.callback = resolve;
+  this.reject = this.errback = reject;
 };
 goog.inherits(webdriver.promise.Deferred, webdriver.promise.Promise);
 
