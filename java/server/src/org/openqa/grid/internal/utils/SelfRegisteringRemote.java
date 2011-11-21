@@ -34,6 +34,7 @@ import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.log.LoggingManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -190,6 +191,8 @@ public class SelfRegisteringRemote {
                   } catch (InterruptedException e) {
                     e.printStackTrace();
                   }
+                  // While we wait for someone to rewrite server logging.
+                  LoggingManager.perSessionLogHandler().clearThreadTempLogs();
                 }
               }
             }).start();

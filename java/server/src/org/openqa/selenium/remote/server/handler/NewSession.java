@@ -26,6 +26,8 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultType;
+import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.util.Map;
 
@@ -47,6 +49,7 @@ public class NewSession implements Handler, JsonParametersAware {
   public ResultType handle() throws Exception {
     sessionId = allSessions.newSession(desiredCapabilities);
 
+    LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId.toString());
     return ResultType.SUCCESS;
   }
 
