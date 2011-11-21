@@ -639,11 +639,14 @@
 <span class="sd">        Adds a cookie to your current session.</span>
 <span class="sd">        </span>
 <span class="sd">        :Args:</span>
-<span class="sd">         - cookie_dict: A dictionary object, with the desired cookie name as the key, and</span>
-<span class="sd">            the value being the desired contents.</span>
+<span class="sd">         - cookie_dict: A dictionary object, with required keys - &quot;name&quot; and &quot;value&quot;;</span>
+<span class="sd">            optional keys - &quot;path&quot;, &quot;domain&quot;, &quot;secure&quot;, &quot;expiry&quot;</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            driver.add_cookie({&#39;foo&#39;: &#39;bar&#39;,})</span>
+<span class="sd">        Usage: </span>
+<span class="sd">            driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;})</span>
+<span class="sd">            driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;, &#39;path&#39; : &#39;/&#39;})</span>
+<span class="sd">            driver.add_cookie({&#39;name&#39; : &#39;foo&#39;, &#39;value&#39; : &#39;bar&#39;, &#39;path&#39; : &#39;/&#39;, &#39;secure&#39;:True})</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ADD_COOKIE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;cookie&#39;</span><span class="p">:</span> <span class="n">cookie_dict</span><span class="p">})</span>
 

@@ -102,8 +102,12 @@
         <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;MOZ_CRASHREPORTER_DISABLE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;MOZ_NO_REMOTE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;NO_EM_RESTART&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
+        
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;linux&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_modify_link_library_path</span><span class="p">()</span>
+        
         <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-silent&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-foreground&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_wait_until_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Blocks until the extension is connectable in the firefox.&quot;&quot;&quot;</span>
@@ -157,6 +161,36 @@
     <span class="k">def</span> <span class="nf">_default_windows_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">program_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;PROGRAMFILES&quot;</span><span class="p">,</span> <span class="s">r&quot;\Program Files&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">program_files</span><span class="p">,</span> <span class="s">&quot;Mozilla Firefox</span><span class="se">\\</span><span class="s">firefox.exe&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_modify_link_library_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">existing_ld_lib_path</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">existing_ld_lib_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">new_ld_lib_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_and_check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">,</span>
+                                                    <span class="s">&quot;x86&quot;</span><span class="p">,</span> <span class="s">&quot;amd64&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">existing_ld_lib_path</span><span class="p">:</span>
+            <span class="n">new_ld_lib_path</span> <span class="o">+=</span> <span class="n">existing_ld_lib_path</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;LD_LIBRARY_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ld_lib_path</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_PRELOAD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span>
+
+    <span class="k">def</span> <span class="nf">_extract_and_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">no_focus_so_name</span><span class="p">,</span> <span class="n">x86</span><span class="p">,</span> <span class="n">amd64</span><span class="p">):</span>
+        
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">x86</span><span class="p">,</span> <span class="n">amd64</span><span class="p">]</span>
+        <span class="n">built_path</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+            <span class="n">library_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">library_path</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">shutil</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">),</span> 
+                                    <span class="n">library_path</span><span class="p">)</span>
+            <span class="n">built_path</span> <span class="o">+=</span> <span class="n">library_path</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span>
+
+        <span class="k">return</span> <span class="n">built_path</span>
 
 <div class="viewcode-block" id="FirefoxBinary.which"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which">[docs]</a>    <span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the fully qualified path by searching Path of the given name&quot;&quot;&quot;</span>

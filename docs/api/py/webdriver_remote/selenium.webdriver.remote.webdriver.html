@@ -98,21 +98,24 @@ here: <a class="reference external" href="http://code.google.com/p/selenium/wiki
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first">
+<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last">
 <li><dl class="first docutils">
-<dt>cookie_dict: A dictionary object, with the desired cookie name as the key, and</dt>
-<dd><p class="first last">the value being the desired contents.</p>
+<dt>cookie_dict: A dictionary object, with required keys - &#8220;name&#8221; and &#8220;value&#8221;;</dt>
+<dd><p class="first last">optional keys - &#8220;path&#8221;, &#8220;domain&#8221;, &#8220;secure&#8221;, &#8220;expiry&#8221;</p>
 </dd>
 </dl>
 </li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.add_cookie({&#8216;foo&#8217;: &#8216;bar&#8217;,})</p>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Usage: </dt>
+<dd>driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; : &#8216;bar&#8217;})
+driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; : &#8216;bar&#8217;, &#8216;path&#8217; : &#8216;/&#8217;})
+driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; : &#8216;bar&#8217;, &#8216;path&#8217; : &#8216;/&#8217;, &#8216;secure&#8217;:True})</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

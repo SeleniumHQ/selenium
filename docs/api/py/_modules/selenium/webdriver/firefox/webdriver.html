@@ -120,7 +120,7 @@
 <span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
 <span class="sd">        any IOError, else returns True. Use full paths in your filename.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">png</span> <span class="o">=</span> <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">(</span><span class="n">png</span><span class="p">))</span>
@@ -129,21 +129,7 @@
             <span class="k">return</span> <span class="bp">False</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">png</span>
-        <span class="k">return</span> <span class="bp">True</span>
-</div>
-    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">ErrorInResponseException</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-            <span class="c"># Legacy behavior: calling close() multiple times should not raise</span>
-            <span class="c"># an error</span>
-            <span class="k">if</span> <span class="n">command</span> <span class="o">!=</span> <span class="n">Command</span><span class="o">.</span><span class="n">CLOSE</span> <span class="ow">and</span> <span class="n">command</span> <span class="o">!=</span> <span class="n">Command</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">e</span>
-        <span class="k">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">URLError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-            <span class="c"># Legacy behavior: calling quit() multiple times should not raise</span>
-            <span class="c"># an error</span>
-            <span class="k">if</span> <span class="n">command</span> <span class="o">!=</span> <span class="n">Command</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">e</span></div>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
 </pre></div>
 
           </div>

@@ -595,9 +595,9 @@ class WebDriver(object):
             optional keys - "path", "domain", "secure", "expiry"
 
         Usage: 
-            driver.add_cookie({'name' : 'foo': 'value' : 'bar'})
-            driver.add_cookie({'name' : 'foo': 'value' : 'bar', 'path' : '/'})
-            driver.add_cookie({'name' : 'foo': 'value' : 'bar', 'path' : '/', 'secure':True})
+            driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
+            driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
+            driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure':True})
 
         """
         self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
