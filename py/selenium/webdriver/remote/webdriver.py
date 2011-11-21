@@ -591,11 +591,14 @@ class WebDriver(object):
         Adds a cookie to your current session.
         
         :Args:
-         - cookie_dict: A dictionary object, with the desired cookie name as the key, and
-            the value being the desired contents.
+         - cookie_dict: A dictionary object, with required keys - "name" and "value";
+            optional keys - "path", "domain", "secure", "expiry"
 
-        :Usage:
-            driver.add_cookie({'foo': 'bar',})
+        Usage: 
+            driver.add_cookie({'name' : 'foo': 'value' : 'bar'})
+            driver.add_cookie({'name' : 'foo': 'value' : 'bar', 'path' : '/'})
+            driver.add_cookie({'name' : 'foo': 'value' : 'bar', 'path' : '/', 'secure':True})
+
         """
         self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
