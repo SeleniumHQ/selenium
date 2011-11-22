@@ -21,9 +21,6 @@
 #import <Foundation/Foundation.h>
 #import "HTTPVirtualDirectory.h"
 
-static NSString * const DEVICE_IPHONE = @"iphone";
-static NSString * const DEVICE_IPAD = @"ipad";
-
 @interface Status : HTTPVirtualDirectory
 
 @end

@@ -20,7 +20,7 @@
 #import "HTTPStaticResource.h"
 #import "HTTPVirtualDirectory+AccessViewController.h"
 #import "NSException+WebDriver.h"
-#import "NSString+SBJSON.h"
+#import "NSObject+SBJson.h"
 #import "WebDriverResource.h"
 #import "WebDriverResponse.h"
 #import "WebViewController.h"

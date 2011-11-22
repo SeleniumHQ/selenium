@@ -11,7 +11,6 @@
 #import "HTTPRedirectResponse.h"
 #import "HTTPResponse+Utility.h"
 #import "NSObject+SBJSON.h"
-#import "NSString+SBJSON.h"
 #import "RESTServiceMapping.h"
 #import "WebDriverPreferences.h"
 

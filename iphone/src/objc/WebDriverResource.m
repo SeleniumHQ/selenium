@@ -18,8 +18,8 @@
 
 #import "WebDriverResource.h"
 #import "WebDriverResponse.h"
-#import "NSString+SBJSON.h"
 #import "MainViewController.h"
+#import "NSObject+SBJson.h"
 #import "errorcodes.h"
 
 @implementation WebDriverResource
@@ -110,7 +110,7 @@
     [[NSString alloc] initWithData:data
                           encoding:NSUTF8StringEncoding];
     
-    requestData = [dataString JSONFragmentValue];
+    requestData = [dataString JSONValue];
     [dataString release];
   }
   

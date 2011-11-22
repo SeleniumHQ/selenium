@@ -24,7 +24,7 @@
 #import "WebDriverPreferences.h"
 #import "WebDriverRequestFetcher.h"
 #import "WebDriverUtilities.h"
-#import "NSString+SBJSON.h"
+#import "NSObject+SBJson.h"
 #import <objc/runtime.h>
 #import "RootViewController.h"
 #import <QuartzCore/QuartzCore.h>

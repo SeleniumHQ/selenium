@@ -22,6 +22,7 @@
 #import "RESTServiceMapping.h"
 #import "WebDriverPreferences.h"
 #import "Status.h"
+#import "SBJsonWriter.h"
 
 #import <sys/types.h>
 #import <sys/socket.h>
@@ -102,71 +103,96 @@ static NSMutableData *webData;
              [server_ port]];
 
   if([grid length] > 0) {
-	  NSString *device;
-	  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-	    device = DEVICE_IPAD;
-    } else {
-	    device = DEVICE_IPHONE;
-	  }
     NSString* gridPort = [[WebDriverPreferences sharedInstance] gridPort];
     
     NSString *registerUrlStr = [NSString stringWithFormat:@"http://%@:%@/grid/register", grid, gridPort];
     
-    // make http request to grid host registering self as a single node with just safari to test.
-	  NSString *json = [NSString stringWithFormat:@"{'class':'org.openqa.grid.common.RegistrationRequest',"
-	    "'capabilities':[{'seleniumProtocol':'WebDriver','browserName':'%@','maxInstances':1,'platform':'MAC'}],"
-	    "'configuration':{'port':%d"
-	    ",'register':True,'host':%@"
-	    ",'proxy':'org.openqa.grid.selenium.proxy.DefaultRemoteProxy','maxSession':1,"
-	    "'hubHost':'%@','hubPort':'%@','role':'wd','registerCycle':5000,"
-	    "'hub':'%@','remoteHost':'http://%@:%d'"
-      "}}", device, [server_ port], [self getAddress], grid, gridPort, registerUrlStr, [self getAddress], [server_ port] ];
-	  
-	  
-	  NSURL *registerUrl = [NSURL URLWithString:registerUrlStr];
-	
-	  NSMutableURLRequest *gridRegister = [NSMutableURLRequest requestWithURL:registerUrl];
-	  
+    NSNumber *num = [NSNumber numberWithInt:1];
+    
+    // just want "iPad" or "iPhone"
+    NSString *device = [[[[UIDevice currentDevice] model] componentsSeparatedByString:@" "] objectAtIndex:0];
+    
+    NSDictionary *capabilitiesDict = [NSDictionary dictionaryWithObjectsAndKeys:
+      @"WebDriver", @"seleniumProtocol",
+      device, @"browserName",
+      num, @"maxInstances",
+      @"MAC", @"platform", // TODO change from MAC to iOS
+      nil];
+
+    
+    NSDictionary *configurationDict = [NSDictionary dictionaryWithObjectsAndKeys:
+      [NSNumber numberWithInt:[server_ port]], @"port",
+      [NSNumber numberWithBool:true], @"register",
+      [self getAddress], @"host",
+      @"org.openqa.grid.selenium.proxy.DefaultRemoteProxy", @"proxy",
+      num, @"maxSession",
+      grid, @"hubHost",
+      gridPort, @"hubPort",
+      @"wd", @"role",
+      [NSNumber numberWithInt:5000], @"registerCycle",
+      registerUrlStr, @"hub",
+      [NSString stringWithFormat:@"http://%@:%d", [self getAddress], [server_ port] ], @"remoteHost",
+      nil];
+    
+    NSDictionary *gridRegistrationData = [NSDictionary dictionaryWithObjectsAndKeys:
+      @"org.openqa.grid.common.RegistrationRequest", @"class",
+      [NSArray arrayWithObject:capabilitiesDict], @"capabilities",
+      configurationDict, @"configuration",
+      nil];
+    
+    NSURL *registerUrl = [NSURL URLWithString:registerUrlStr];
+  
+    NSMutableURLRequest *gridRegister = [NSMutableURLRequest requestWithURL:registerUrl];
+    
+    NSString *json = [[[SBJsonWriter alloc] init] stringWithObject:gridRegistrationData];
+    
     NSString *msgLength = [NSString stringWithFormat:@"%d", [json length]];
-	  
-	  [gridRegister addValue: msgLength forHTTPHeaderField:@"Content-Length"];
+    
+    [gridRegister addValue: msgLength forHTTPHeaderField:@"Content-Length"];
     [gridRegister setHTTPMethod:@"POST"];
     [gridRegister setHTTPBody: [json dataUsingEncoding:NSUTF8StringEncoding]];
-	  
-	  NSURLConnection *theConnection=[[NSURLConnection alloc] initWithRequest:gridRegister delegate:self];
-	  
-	  if (theConnection) {
-	    // Create the NSMutableData to hold the received data.
-	    // receivedData is an instance variable declared elsewhere.
-	    webData = [[NSMutableData data] retain];
-	  } else {
-	    // Inform the user that the connection failed.
-	  }
-	
+    
+    NSURLConnection *theConnection=[[NSURLConnection alloc] initWithRequest:gridRegister delegate:self];
+    
+    if (theConnection) {
+      // Create the NSMutableData to hold the received data.
+      // receivedData is an instance variable declared elsewhere.
+      webData = [[NSMutableData data] retain];
+    } else {
+      // Inform the user that the connection failed.
+      status_ = [NSString stringWithFormat:@"Couldn't connect to grid at %@", registerUrlStr];
+    }
+  
   }
 
   serviceMapping_ = [[RESTServiceMapping alloc] init];
 
   return self;
 }
+
 -(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
     [webData setLength: 0];
 }
+
 -(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
     [webData appendData:data];
 }
+
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"ERROR with theConenction");
     [connection release];
     [webData release];
 }
+
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     NSLog(@"DONE. Received Bytes: %d", [webData length]);
-    NSString *theXML = [[NSString alloc] initWithBytes: [webData mutableBytes] length:[webData length] encoding:NSUTF8StringEncoding];
+    NSString *theXML = [[NSString alloc] initWithBytes: [webData mutableBytes] 
+                                                length:[webData length] 
+                                              encoding:NSUTF8StringEncoding];
     NSLog(@"%@",theXML);
     [theXML release];
 }
@@ -188,11 +214,11 @@ static HTTPServerController *singleton = nil;
 }
 
 - (NSObject *)httpResponseForQuery:(NSString *)query
-														method:(NSString *)method
-													withData:(NSData *)theData {
-	return [serviceMapping_.serverRoot httpResponseForQuery:query
-																									 method:method
-																								 withData:theData];
+                            method:(NSString *)method
+                          withData:(NSData *)theData {
+  return [serviceMapping_.serverRoot httpResponseForQuery:query
+                                                   method:method
+                                                 withData:theData];
 }
 
 @end

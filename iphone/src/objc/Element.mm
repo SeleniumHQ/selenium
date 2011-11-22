@@ -28,7 +28,7 @@
 #import "Css.h"
 #import "MainViewController.h"
 #import "WebViewController.h"
-#import "NSString+SBJSON.h"
+#import "NSObject+SBJson.h"
 #import "NSException+WebDriver.h"
 #import "Session.h"
 #include "atoms.h"

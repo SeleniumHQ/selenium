@@ -18,8 +18,9 @@
 //  limitations under the License.
 //
 
-#import "Status.h"
 #import "JSONRESTResource.h"
+#import "SBJsonWriter.h"
+#import "Status.h"
 
 @implementation Status
 
@@ -35,17 +36,31 @@
 - (NSObject<HTTPResponse> *) httpResponseForQuery: (NSString *)query
                                            method:(NSString *)method
                                          withData:(NSData *)theData {
-  NSString *device;
-  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    device = DEVICE_IPAD;
-  } else {
-    device = DEVICE_IPHONE;
-  }
-  NSString *dataString = [NSString stringWithFormat:@"{\"value\":"
-                          "{\"os\":{\"arch\":\"%@\",\"name\":\"iOS\",\"version\":\"%@\"},"
-                          "\"build\":{\"revision\":\"%@\",\"time\":\"%@\",\"version\":\"%@\"}}}",
-                          device, @"4.3", @"SVN_REVISION", @"BUILD_TIMESTAMP", @"RELEASE"];
+  
+  SBJsonWriter *jsonWriter = [[SBJsonWriter alloc] init];
+  
+  NSDictionary *osDict = [NSDictionary dictionaryWithObjectsAndKeys:
+    [[[[UIDevice currentDevice] model] componentsSeparatedByString:@" "] objectAtIndex:0], @"arch",
+    @"iOS", @"name",
+    [[UIDevice currentDevice] systemVersion], @"version",
+    nil];
+ 
+// TODO have crazy-fun create a new .h file that will have this info in it
+//
+//  NSDictionary *buildDict = [NSDictionary dictionaryWithObjectsAndKeys:
+//    @"SVN_REVISION", @"revision",
+//    @"BUILD_TIMESTAMP", @"time",
+//    @"RELEASE", @"version", nil];
+  
+  NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSDictionary dictionaryWithObjectsAndKeys:
+                             osDict, @"os", 
+                             //buildDict, @"build", 
+                             nil],
+                            @"value", nil];
+  NSString *dataString = [jsonWriter stringWithObject:dataDict];
   NSData *data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+
   return [[[HTTPDataResponse alloc] initWithData:data] autorelease];
 }
 

@@ -17,7 +17,7 @@
 //  limitations under the License.
 
 #import "HTTPJSONResponse.h"
-#import "NSObject+SBJSON.h"
+#import "NSObject+SBJson.h"
 
 @implementation HTTPJSONResponse
 
@@ -28,7 +28,7 @@
 
 // Designated initaliser
 - (id)initWithObject:(id)object {
-  NSString *contents = [object JSONFragment];
+  NSString *contents = [object JSONRepresentation];
   NSLog(@"Sending JSON: %@", contents);
   NSData *theData = [contents dataUsingEncoding:NSUTF8StringEncoding];
   return [super initWithData:theData];

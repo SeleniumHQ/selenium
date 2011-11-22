@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'SBJsonTests' target in the 'SBJsonTests' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

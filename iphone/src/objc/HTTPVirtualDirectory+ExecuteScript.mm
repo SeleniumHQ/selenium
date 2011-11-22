@@ -23,7 +23,6 @@
 #import "HTTPVirtualDirectory+AccessViewController.h"
 #import "NSException+WebDriver.h"
 #import "NSObject+SBJSON.h"
-#import "NSString+SBJSON.h"
 #import "WebViewController.h"
 #include "atoms.h"
 #include "errorcodes.h"
@@ -158,8 +157,6 @@
 
 -(id) executeJsFunction:(NSString*)script
                withArgs:(NSArray*)args {
-  NSString* argsString = [args JSONRepresentation];
-  NSLog(@"Args: %@", argsString);
   return [self executeScript:script withArgs:args];
 }
 

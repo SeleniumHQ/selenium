@@ -189,12 +189,12 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities iphone() {
-    return new DesiredCapabilities("iphone", "", Platform.MAC);
+    return new DesiredCapabilities("iPhone", "", Platform.MAC);
   }
   
   public static DesiredCapabilities ipad() {
-	    return new DesiredCapabilities("ipad", "", Platform.MAC);
-	  }
+    return new DesiredCapabilities("iPad", "", Platform.MAC);
+  }
 
   public static DesiredCapabilities opera() {
     return new DesiredCapabilities("opera", "", Platform.ANY);

@@ -27,18 +27,18 @@
   // We use the default sharedCache.
   NSURLCache *sharedCache = [NSURLCache sharedURLCache];
   NSLog(@"Current caching status:");
-  NSLog(@"currentDiskUsage: %lu Bytes", [sharedCache currentDiskUsage]);
-  NSLog(@"currentMemoryUsage: %lu Bytes", [sharedCache currentMemoryUsage]);
-  NSLog(@"diskCapacity: %lu Bytes", [sharedCache diskCapacity]);
-  NSLog(@"memoryCapacity: %lu Bytes", [sharedCache memoryCapacity]);
+  NSLog(@"currentDiskUsage: %u Bytes", [sharedCache currentDiskUsage]);
+  NSLog(@"currentMemoryUsage: %u Bytes", [sharedCache currentMemoryUsage]);
+  NSLog(@"diskCapacity: %u Bytes", [sharedCache diskCapacity]);
+  NSLog(@"memoryCapacity: %u Bytes", [sharedCache memoryCapacity]);
   
   [sharedCache removeAllCachedResponses];
   
   NSLog(@"Caching status after clean up:");
-  NSLog(@"currentDiskUsage: %lu Bytes", [sharedCache currentDiskUsage]);
-  NSLog(@"currentMemoryUsage: %lu Bytes", [sharedCache currentMemoryUsage]);
-  NSLog(@"diskCapacity: %lu Bytes", [sharedCache diskCapacity]);
-  NSLog(@"memoryCapacity: %lu Bytes", [sharedCache memoryCapacity]);
+  NSLog(@"currentDiskUsage: %u Bytes", [sharedCache currentDiskUsage]);
+  NSLog(@"currentMemoryUsage: %u Bytes", [sharedCache currentMemoryUsage]);
+  NSLog(@"diskCapacity: %u Bytes", [sharedCache diskCapacity]);
+  NSLog(@"memoryCapacity: %u Bytes", [sharedCache memoryCapacity]);
 }
 
 + (void)cleanDatabases{

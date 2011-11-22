@@ -17,8 +17,8 @@
 //  limitations under the License.
 
 #import "JSONRESTResource.h"
-#import "NSString+SBJSON.h"
 #import "HTTPJSONResponse.h"
+#import "NSObject+SBJson.h"
 
 @implementation JSONRESTResource
 
@@ -59,7 +59,7 @@
       [[NSString alloc] initWithData:theData
                             encoding:NSUTF8StringEncoding];
     
-    requestData = [dataString JSONFragmentValue];
+    requestData = [dataString JSONValue];
     [dataString release];
   }
   

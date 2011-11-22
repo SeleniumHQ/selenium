@@ -1,0 +1,18 @@
+[
+"",
+" spaces ",
+"/",
+"\\ \" \\ \"",
+"foo\"",
+"foo\"\"",
+"foo\"\"bar",
+"foo\"bar",
+"foo\\",
+"foo\\\\bar",
+"foo\\bar",
+"foobar",
+"with internal   spaces",
+"/unescaped/slashes",
+"\/escaped\/slashes",
+"\\/test\\/path"
+]

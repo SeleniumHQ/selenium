@@ -1,0 +1,409 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC70BEF8138D35AF00638110 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC70BEF7138D35AF00638110 /* Cocoa.framework */; };
+		BC70BF02138D35AF00638110 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC70BF00138D35AF00638110 /* InfoPlist.strings */; };
+		BC70BF05138D35AF00638110 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BC70BF04138D35AF00638110 /* main.m */; };
+		BC70BF08138D35AF00638110 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BC70BF06138D35AF00638110 /* Credits.rtf */; };
+		BC70BF0B138D35AF00638110 /* DisplayPrettyAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BC70BF0A138D35AF00638110 /* DisplayPrettyAppDelegate.m */; };
+		BC70BF0E138D35AF00638110 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC70BF0C138D35AF00638110 /* MainMenu.xib */; };
+		BC70BF62138D408900638110 /* DisplayPrettyController.m in Sources */ = {isa = PBXBuildFile; fileRef = BC70BF61138D408900638110 /* DisplayPrettyController.m */; };
+		BCA5BD8013BE00DD00223625 /* SBJson.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA5BD6513BE00A200223625 /* SBJson.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCA5BD6413BE00A200223625 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BC12323D1391D5CC00131607;
+			remoteInfo = SBJson;
+		};
+		BCA5BD6613BE00A200223625 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BC1232521391D5CC00131607;
+			remoteInfo = SBJsonTests;
+		};
+		BCA5BD6813BE00A200223625 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCC2626913920FC7003D9994;
+			remoteInfo = "sbjson-ios";
+		};
+		BCA5BD6A13BE00A200223625 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCC2627313920FC7003D9994;
+			remoteInfo = "sbjson-iosTests";
+		};
+		BCA5BD7E13BE00D600223625 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BC12323C1391D5CC00131607;
+			remoteInfo = SBJson;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BC70BEF3138D35AF00638110 /* DisplayPretty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DisplayPretty.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC70BEF7138D35AF00638110 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		BC70BEFA138D35AF00638110 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		BC70BEFB138D35AF00638110 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		BC70BEFC138D35AF00638110 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BC70BEFF138D35AF00638110 /* DisplayPretty-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DisplayPretty-Info.plist"; sourceTree = "<group>"; };
+		BC70BF01138D35AF00638110 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BC70BF03138D35AF00638110 /* DisplayPretty-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DisplayPretty-Prefix.pch"; sourceTree = "<group>"; };
+		BC70BF04138D35AF00638110 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BC70BF07138D35AF00638110 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		BC70BF09138D35AF00638110 /* DisplayPrettyAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DisplayPrettyAppDelegate.h; sourceTree = "<group>"; };
+		BC70BF0A138D35AF00638110 /* DisplayPrettyAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DisplayPrettyAppDelegate.m; sourceTree = "<group>"; };
+		BC70BF0D138D35AF00638110 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BC70BF60138D408900638110 /* DisplayPrettyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayPrettyController.h; sourceTree = "<group>"; };
+		BC70BF61138D408900638110 /* DisplayPrettyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayPrettyController.m; sourceTree = "<group>"; };
+		BC76484113A3600500666A48 /* SBJson.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SBJson.framework; sourceTree = SOURCE_ROOT; };
+		BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SBJson.xcodeproj; path = ../../SBJson.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BC70BEF0138D35AF00638110 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCA5BD8013BE00DD00223625 /* SBJson.framework in Frameworks */,
+				BC70BEF8138D35AF00638110 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC70BEE8138D35AF00638110 = {
+			isa = PBXGroup;
+			children = (
+				BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */,
+				BC70BEFD138D35AF00638110 /* DisplayPretty */,
+				BC70BEF6138D35AF00638110 /* Frameworks */,
+				BC70BEF4138D35AF00638110 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BC70BEF4138D35AF00638110 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BC70BEF3138D35AF00638110 /* DisplayPretty.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BC70BEF6138D35AF00638110 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BC76484113A3600500666A48 /* SBJson.framework */,
+				BC70BEF7138D35AF00638110 /* Cocoa.framework */,
+				BC70BEF9138D35AF00638110 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BC70BEF9138D35AF00638110 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BC70BEFA138D35AF00638110 /* AppKit.framework */,
+				BC70BEFB138D35AF00638110 /* CoreData.framework */,
+				BC70BEFC138D35AF00638110 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		BC70BEFD138D35AF00638110 /* DisplayPretty */ = {
+			isa = PBXGroup;
+			children = (
+				BC70BF09138D35AF00638110 /* DisplayPrettyAppDelegate.h */,
+				BC70BF0A138D35AF00638110 /* DisplayPrettyAppDelegate.m */,
+				BC70BF60138D408900638110 /* DisplayPrettyController.h */,
+				BC70BF61138D408900638110 /* DisplayPrettyController.m */,
+				BC70BF0C138D35AF00638110 /* MainMenu.xib */,
+				BC70BEFE138D35AF00638110 /* Supporting Files */,
+			);
+			path = DisplayPretty;
+			sourceTree = "<group>";
+		};
+		BC70BEFE138D35AF00638110 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BC70BEFF138D35AF00638110 /* DisplayPretty-Info.plist */,
+				BC70BF00138D35AF00638110 /* InfoPlist.strings */,
+				BC70BF03138D35AF00638110 /* DisplayPretty-Prefix.pch */,
+				BC70BF04138D35AF00638110 /* main.m */,
+				BC70BF06138D35AF00638110 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCA5BD5E13BE00A200223625 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCA5BD6513BE00A200223625 /* SBJson.framework */,
+				BCA5BD6713BE00A200223625 /* SBJsonTests.octest */,
+				BCA5BD6913BE00A200223625 /* libsbjson-ios.a */,
+				BCA5BD6B13BE00A200223625 /* sbjson-iosTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BC70BEF2138D35AF00638110 /* DisplayPretty */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC70BF11138D35AF00638110 /* Build configuration list for PBXNativeTarget "DisplayPretty" */;
+			buildPhases = (
+				BC70BEEF138D35AF00638110 /* Sources */,
+				BC70BEF0138D35AF00638110 /* Frameworks */,
+				BC70BEF1138D35AF00638110 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCA5BD7F13BE00D600223625 /* PBXTargetDependency */,
+			);
+			name = DisplayPretty;
+			productName = DisplayPretty;
+			productReference = BC70BEF3138D35AF00638110 /* DisplayPretty.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BC70BEEA138D35AF00638110 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Stig Brautaset";
+			};
+			buildConfigurationList = BC70BEED138D35AF00638110 /* Build configuration list for PBXProject "DisplayPretty" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BC70BEE8138D35AF00638110;
+			productRefGroup = BC70BEF4138D35AF00638110 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCA5BD5E13BE00A200223625 /* Products */;
+					ProjectRef = BCA5BD5D13BE00A200223625 /* SBJson.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BC70BEF2138D35AF00638110 /* DisplayPretty */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCA5BD6513BE00A200223625 /* SBJson.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SBJson.framework;
+			remoteRef = BCA5BD6413BE00A200223625 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCA5BD6713BE00A200223625 /* SBJsonTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SBJsonTests.octest;
+			remoteRef = BCA5BD6613BE00A200223625 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCA5BD6913BE00A200223625 /* libsbjson-ios.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libsbjson-ios.a";
+			remoteRef = BCA5BD6813BE00A200223625 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCA5BD6B13BE00A200223625 /* sbjson-iosTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "sbjson-iosTests.octest";
+			remoteRef = BCA5BD6A13BE00A200223625 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BC70BEF1138D35AF00638110 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC70BF02138D35AF00638110 /* InfoPlist.strings in Resources */,
+				BC70BF08138D35AF00638110 /* Credits.rtf in Resources */,
+				BC70BF0E138D35AF00638110 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BC70BEEF138D35AF00638110 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC70BF05138D35AF00638110 /* main.m in Sources */,
+				BC70BF0B138D35AF00638110 /* DisplayPrettyAppDelegate.m in Sources */,
+				BC70BF62138D408900638110 /* DisplayPrettyController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCA5BD7F13BE00D600223625 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SBJson;
+			targetProxy = BCA5BD7E13BE00D600223625 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BC70BF00138D35AF00638110 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC70BF01138D35AF00638110 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BC70BF06138D35AF00638110 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC70BF07138D35AF00638110 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		BC70BF0C138D35AF00638110 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC70BF0D138D35AF00638110 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BC70BF0F138D35AF00638110 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BC70BF10138D35AF00638110 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BC70BF12138D35AF00638110 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DisplayPretty/DisplayPretty-Prefix.pch";
+				INFOPLIST_FILE = "DisplayPretty/DisplayPretty-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BC70BF13138D35AF00638110 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DisplayPretty/DisplayPretty-Prefix.pch";
+				INFOPLIST_FILE = "DisplayPretty/DisplayPretty-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BC70BEED138D35AF00638110 /* Build configuration list for PBXProject "DisplayPretty" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC70BF0F138D35AF00638110 /* Debug */,
+				BC70BF10138D35AF00638110 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC70BF11138D35AF00638110 /* Build configuration list for PBXNativeTarget "DisplayPretty" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC70BF12138D35AF00638110 /* Debug */,
+				BC70BF13138D35AF00638110 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BC70BEEA138D35AF00638110 /* Project object */;
+}
