@@ -110,8 +110,10 @@ class FirefoxProfile(object):
             clean_value = 'true'
         elif value is False:
             clean_value = 'false'
+        elif isinstance(value, str):
+            clean_value = '"%s"' % value
         else:
-            clean_value = repr(value)
+            clean_value = str(int(value))
 
         self.default_preferences[key] = clean_value
 
