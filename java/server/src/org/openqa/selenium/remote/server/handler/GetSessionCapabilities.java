@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -30,14 +31,13 @@ public class GetSessionCapabilities extends ResponseAwareWebDriverHandler {
 
   public ResultType call() {
     Session session = getSession();
-    Map<String, ?> capabilities = session.getCapabilities().asMap();
-    describeSession(capabilities);
-    response.setValue(capabilities);
+    Map<String, Object> capabilities = (Map<String, Object>) session.getCapabilities().asMap();
+    response.setValue(describeSession(capabilities));
 
     return ResultType.SUCCESS;
   }
 
-  protected void describeSession(Map<String, ?> capabilities) {
-    // Does nothing further by default.
+  protected Map<String, Object> describeSession(Map<String, Object> capabilities) {
+    return capabilities;
   }
 }
