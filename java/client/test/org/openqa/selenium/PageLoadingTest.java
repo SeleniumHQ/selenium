@@ -93,6 +93,14 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   @Ignore({IPHONE, SELENESE})
   @NeedsFreshDriver
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
+    if (SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver)) {
+      // Sauce opens about:blank after the browser loads, which IE doesn't include in history
+      // Navigate back past it, so when we do the next navigation back, there is nothing to go
+      // back to, rather than skipping past about:blank (whose title we will get as originalTitle)
+      // to whatever as before (the WebDriver placeholder page).
+      driver.navigate().back();
+    }
+
     String originalTitle = driver.getTitle();
     driver.get(pages.formPage);
 
