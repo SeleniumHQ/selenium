@@ -129,7 +129,7 @@ public class WebDriverJsTestSuite {
       long start = System.nanoTime();
 
       try {
-        ResultSet resultSet = resultsServlet.getResultSet(2, TimeUnit.MINUTES);
+        ResultSet resultSet = resultsServlet.getResultSet(2, TimeUnit.MINUTES); // Note, MINUTES is jdk6
         if (resultSet == null) {
           long now = System.nanoTime();
           fail(String.format("TIMEOUT after %d ms",

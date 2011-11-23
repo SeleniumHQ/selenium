@@ -20,7 +20,7 @@ import org.apache.http.protocol.HttpContext;
 
 import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /*
 Copyright 2007-2011 WebDriver committers
@@ -41,7 +41,7 @@ public class HttpClientFactory {
 
   private final DefaultHttpClient httpClient;
   private final DefaultHttpClient gridClient;
-  private final int TIMEOUT_THREE_HOURS = (int) HOURS.toMillis(3);
+  private final int TIMEOUT_THREE_HOURS = (int) SECONDS.toMillis( 60 * 60 * 3);
 
   public HttpClientFactory() {
     httpClient = new DefaultHttpClient(getClientConnectionManager());
