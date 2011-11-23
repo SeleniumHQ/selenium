@@ -207,6 +207,33 @@ public class FluentWaitTest extends MockTestBase {
       assertSame(exception, expected.getCause());
     }
   }
+  
+  @Test
+  public void timeoutMessageIncludesCustomMessage() {
+    TimeoutException expected = new TimeoutException(
+        "Timed out after 0 seconds: Expected custom timout message");
+
+    checking(new Expectations() {{
+        one(mockClock).laterBy(0L);
+        will(returnValue(2L));
+
+        one(mockCondition).apply(mockDriver);
+        will(returnValue(null));
+        one(mockClock).isNowBefore(2L);
+        will(returnValue(false));
+      }});
+
+    Wait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper)
+        .withTimeout(0, TimeUnit.MILLISECONDS)
+        .withMessage("Expected custom timout message");
+
+    try {
+      wait.until(mockCondition);
+      fail();
+    } catch (TimeoutException actual) {
+      assertEquals(expected.getMessage(), actual.getMessage());
+    }
+  }
 
   public interface GenericCondition extends ExpectedCondition<Object> {
   }

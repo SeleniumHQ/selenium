@@ -74,6 +74,7 @@ public class FluentWait<T> implements Wait<T> {
 
   private Duration timeout = FIVE_HUNDRED_MILLIS;
   private Duration interval = FIVE_HUNDRED_MILLIS;
+  private String message = null;
 
   private List<Class<? extends RuntimeException>> ignoredExceptions = Lists.newLinkedList();
 
@@ -105,6 +106,17 @@ public class FluentWait<T> implements Wait<T> {
    */
   public FluentWait<T> withTimeout(long duration, TimeUnit unit) {
     this.timeout = new Duration(duration, unit);
+    return this;
+  }
+  
+  /**
+   * Sets the message to be displayed when time expires.
+   * 
+   * @param message to be appended to default.
+   * @return A self reference.
+   */
+  public FluentWait<T> withMessage(String message) {
+    this.message = message;
     return this;
   }
 
@@ -201,8 +213,12 @@ public class FluentWait<T> implements Wait<T> {
       // Check the timeout after evaluating the function to ensure conditions
       // with a zero timeout can succeed.
       if (!clock.isNowBefore(end)) {
-        throw timeoutException(String.format("Timed out after %d seconds",
-            timeout.in(SECONDS)), lastException);
+        String timeoutMessage = String.format("Timed out after %d seconds",
+            timeout.in(SECONDS));
+        if (message != null) {
+          timeoutMessage += ": " + message;
+        }
+        throw timeoutException(timeoutMessage, lastException);
       }
 
       try {
