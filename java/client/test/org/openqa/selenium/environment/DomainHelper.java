@@ -1,6 +1,5 @@
 package org.openqa.selenium.environment;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 import com.google.common.base.Preconditions;
@@ -9,11 +8,9 @@ public class DomainHelper {
 
   private String hostname;
   private AppServer appServer;
-  private WebDriver driver;
 
-  public DomainHelper(AppServer appServer, WebDriver driver) {
+  public DomainHelper(AppServer appServer) {
     this.appServer = appServer;
-    this.driver = driver;
   }
 
   public String getUrlForFirstValidHostname(String path) {

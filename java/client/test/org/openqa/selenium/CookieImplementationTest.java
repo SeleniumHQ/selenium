@@ -47,7 +47,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    domainHelper = new DomainHelper(appServer, driver);
+    domainHelper = new DomainHelper(appServer);
 
     // This page is the deepest page we go to in the cookie tests
     // We go to it to ensure that cookies with /common/... paths are deleted
