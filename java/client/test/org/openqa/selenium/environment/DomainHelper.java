@@ -3,9 +3,10 @@ package org.openqa.selenium.environment;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.AppServer;
 
+import com.google.common.base.Preconditions;
+
 public class DomainHelper {
 
-  private boolean isOnAlternativeHostName = false;
   private String hostname;
   private AppServer appServer;
   private WebDriver driver;
@@ -13,6 +14,22 @@ public class DomainHelper {
   public DomainHelper(AppServer appServer, WebDriver driver) {
     this.appServer = appServer;
     this.driver = driver;
+  }
+
+  public String getUrlForFirstValidHostname(String path) {
+    Preconditions.checkArgument(
+      isValidHostname(appServer.getHostName()),
+      "Expected valid hostname but was %s",
+      appServer.getHostName());
+    return appServer.whereIs(path);
+  }
+
+  public String getUrlForSecondValidHostname(String path) {
+    Preconditions.checkArgument(
+      isValidHostname(appServer.getAlternateHostName()),
+      "Expected valid hostname but was %s",
+      appServer.getHostName());
+    return appServer.whereElseIs(path);
   }
 
   public boolean checkIsOnValidHostname() {
@@ -40,31 +57,6 @@ public class DomainHelper {
     *
     */
     return hostname.split("\\.").length >= 3;
-  }
-
-  public void gotoValidDomain(String page) {
-    this.hostname = null;
-    String hostname = appServer.getHostName();
-    if (isValidHostname(hostname)) {
-      isOnAlternativeHostName = false;
-      this.hostname = hostname;
-    }
-    hostname = appServer.getAlternateHostName();
-    if (this.hostname == null && isValidHostname(hostname)) {
-      isOnAlternativeHostName = true;
-      this.hostname = hostname;
-    }
-    goToPage(page);
-  }
-
-  public void goToPage(String pageName) {
-    driver.get(
-        isOnAlternativeHostName ? appServer.whereElseIs(pageName) : appServer.whereIs(pageName));
-  }
-
-  public void goToOtherPage(String pageName) {
-    driver.get(
-        isOnAlternativeHostName ? appServer.whereIs(pageName) : appServer.whereElseIs(pageName));
   }
 
   private boolean isIpv4Address(String string) {

@@ -53,7 +53,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     // We go to it to ensure that cookies with /common/... paths are deleted
     // Do not write test in this class which use pages other than under /common
     // without ensuring that cookies are deleted on those pages as required
-    domainHelper.gotoValidDomain("/common/animals");
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
 
     driver.manage().deleteAllCookies();
     assertNoCookiesArePresent();
@@ -110,7 +110,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.manage().addCookie(one);
     driver.manage().addCookie(two);
 
-    domainHelper.goToPage("simpleTest.html");
+    driver.get(domainHelper.getUrlForFirstValidHostname("simpleTest.html"));
     cookies = driver.manage().getCookies();
     assertEquals(countBefore + 2, cookies.size());
 
@@ -178,19 +178,19 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    domainHelper.goToPage("/common/animals");
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
     Cookie cookie2 = new Cookie.Builder("planet", "earth").path("/common/").build();
     WebDriver.Options options = driver.manage();
     options.addCookie(cookie1);
     options.addCookie(cookie2);
 
-    domainHelper.goToPage("/common/animals");
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
 
     assertCookieIsPresentWithName(cookie1.getName());
     assertCookieIsPresentWithName(cookie2.getName());
 
-    domainHelper.goToPage("/common/simplePage.html");
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/simplePage.html"));
     assertCookieIsNotPresentWithName(cookie1.getName());
   }
 
@@ -203,7 +203,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
     driver.manage().addCookie(cookie);
 
-    domainHelper.goToPage("animals");
+    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
     assertNull(driver.manage().getCookieNamed(cookieName));
   }
 
@@ -215,7 +215,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.manage().addCookie(new Cookie.Builder(cookieName, "cod").build());
     assertCookieIsPresentWithName(cookieName);
 
-    domainHelper.goToOtherPage("simpleTest.html");
+    driver.get(domainHelper.getUrlForSecondValidHostname("simpleTest.html"));
 
     assertCookieIsNotPresentWithName(cookieName);
   }
@@ -281,7 +281,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     Cookie cookie = new Cookie.Builder("fish", "cod").domain(host).build();
     driver.manage().addCookie(cookie);
 
-    domainHelper.goToPage("javascriptPage.html");
+    driver.get(domainHelper.getUrlForFirstValidHostname("javascriptPage.html"));
     Set<Cookie> cookies = driver.manage().getCookies();
     assertTrue(cookies.contains(cookie));
   }
@@ -293,15 +293,15 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     Cookie cookie1 = new Cookie.Builder("fish", "cod").build();
     driver.manage().addCookie(cookie1);
 
-    domainHelper.goToPage("child/childPage.html");
+    driver.get(domainHelper.getUrlForFirstValidHostname("child/childPage.html"));
     Cookie cookie2 = new Cookie("rodent", "hamster", "/common/child");
     driver.manage().addCookie(cookie2);
 
-    domainHelper.goToPage("child/grandchild/grandchildPage.html");
+    driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
     Cookie cookie3 = new Cookie("dog", "dalmation", "/common/child/grandchild/");
     driver.manage().addCookie(cookie3);
 
-    domainHelper.goToPage("child/grandchild/grandchildPage.html");
+    driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
     driver.manage().deleteCookieNamed("rodent");
 
     assertNull(driver.manage().getCookies().toString(), driver.manage().getCookieNamed("rodent"));
@@ -312,7 +312,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie3));
 
     driver.manage().deleteAllCookies();
-    domainHelper.goToPage("child/grandchild/grandchildPage.html");
+    driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
     assertNoCookiesArePresent();
   }
 
@@ -336,10 +336,10 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(OPERA)
   public void testCookieEqualityAfterSetAndGet() {
+    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    domainHelper.goToOtherPage("animals");
     driver.manage().deleteAllCookies();
 
     Cookie addedCookie =
@@ -358,7 +358,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
       }
     }
 
-    assertNotNull(retrievedCookie);
+    assertNotNull("Cookie was null", retrievedCookie);
     // Cookie.equals only compares name, domain and path
     assertEquals(addedCookie, retrievedCookie);
   }
@@ -370,8 +370,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    domainHelper.goToOtherPage("animals");
-    driver.manage().deleteAllCookies();
 
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
@@ -390,8 +388,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
-    domainHelper.goToOtherPage("animals");
-    driver.manage().deleteAllCookies();
 
     long expires = System.currentTimeMillis() - 1000;
     Cookie cookie = new Cookie.Builder("expired", "yes").expiresOn(new Date(expires)).build();

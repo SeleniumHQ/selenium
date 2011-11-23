@@ -38,6 +38,8 @@ import javax.servlet.Servlet;
 
 public class Jetty7AppServer implements AppServer {
 
+  private static final String HOSTNAME_FOR_TEST_ENV_NAME = "HOSTNAME";
+  private static final String ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME = "ALTERNATIVE_HOSTNAME";
   private static final String FIXED_HTTP_PORT_ENV_NAME = "TEST_HTTP_PORT";
   private static final String FIXED_HTTPS_PORT_ENV_NAME = "TEST_HTTPS_PORT";
   private static final String DEFAULT_CONTEXT_PATH = "/common";
@@ -65,7 +67,7 @@ public class Jetty7AppServer implements AppServer {
   }
 
   private static String getHostname() {
-    String hostnameFromProperty = System.getenv("HOSTNAME");
+    String hostnameFromProperty = System.getenv(HOSTNAME_FOR_TEST_ENV_NAME);
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
   }
 
@@ -136,7 +138,9 @@ public class Jetty7AppServer implements AppServer {
   }
 
   public String getAlternateHostName() {
-    return networkUtils.getPrivateLocalAddress();
+    String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
+    return alternativeHostnameFromProperty == null ?
+        networkUtils.getPrivateLocalAddress() : alternativeHostnameFromProperty;
   }
 
   public String whereIs(String relativeUrl) {

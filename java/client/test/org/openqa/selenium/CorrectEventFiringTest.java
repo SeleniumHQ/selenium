@@ -33,6 +33,7 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 
 import java.io.File;
 import java.io.IOException;
@@ -375,8 +376,8 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     String clientX = getTextFromElementOnceAvailable("clientX");
     String clientY = getTextFromElementOnceAvailable("clientY");
 
-    assertFalse("0".equals(clientX));
-    assertFalse("0".equals(clientY));
+    assertThat(clientX, not(equalTo("0")));
+    assertThat(clientY, not(equalTo("0")));
   }
   
   @JavascriptEnabled
