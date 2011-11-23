@@ -9,6 +9,12 @@ Grid:
 
 v2.13.0
 =======
+Dependency change:
+  * Selenium/webdriver java dependencies now use apache commons-exec
+    (http://commons.apache.org/exec/) version 1.1. If you are using manual
+    dependency management you will need to add this to your project.
+    If you resolve via maven central (maven, ivy, gradle), this will
+    be handled automatically.
 WebDriver:
   * Recovering from null window references in the Firefox driver (#1438)
   * Make native events work correctly on Linux with the Python bindings (#2633)
