@@ -68,11 +68,11 @@ class FirefoxBinary(object):
         while not utils.is_connectable(self.profile.port):
             if self.process.poll() is not None:
                 # Browser has exited
-                raise WebDriverException("The browser appears to have exited " +
+                raise WebDriverException("The browser appears to have exited "
                     "before we could connect")
             if count == 30:
                 self.kill()
-                raise WebDriverException("Can't load the profile. Profile " +
+                raise WebDriverException("Can't load the profile. Profile "
                     "Dir: %s" % self.profile.path)
             count += 1
             time.sleep(1)
