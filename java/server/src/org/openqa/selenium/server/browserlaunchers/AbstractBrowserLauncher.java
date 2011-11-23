@@ -57,6 +57,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     }
   }
 
+  @Deprecated
   protected String getCommandLineFlags() {
     String cmdLineFlags = BrowserOptions
         .getCommandLineFlags(browserConfigurationOptions);
@@ -64,6 +65,16 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
       return cmdLineFlags;
     } else {
       return "";
+    }
+  }
+
+  protected String[] getCommandLineFlagsAsArray() {
+    String cmdLineFlags = BrowserOptions
+        .getCommandLineFlags(browserConfigurationOptions);
+    if (cmdLineFlags != null) {
+      return cmdLineFlags.split("\\s+");
+    } else {
+      return new String[] {};
     }
   }
 }

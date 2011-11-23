@@ -26,11 +26,14 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
+import com.google.common.collect.Lists;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -164,7 +167,8 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
   private String[] createCommandArray(String url) {
     String userDir = customProfileDir.getAbsolutePath();
 
-    return new String[] {
+    List<String> array = Lists.newArrayList(
+      new String[] {
         browserInstallation.launcherFilePath(),
         // Disable hang monitor dialogs in renderer process.
         "--disable-hang-monitor",
@@ -193,10 +197,13 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
         "--disable-web-security",
         // Set the user data (i.e. profile) directory.
         "--user-data-dir=" + userDir,
-        getUntrustedCertificatesFlag(),
-        getCommandLineFlags(),
-        url
-    };
+        getUntrustedCertificatesFlag()
+      }
+    );
+    array.addAll(Lists.newArrayList(getCommandLineFlagsAsArray()));
+    array.add(url);
+
+    return (String[]) array.toArray(new String[array.size()]);
   }
 
   /**
