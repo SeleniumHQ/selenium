@@ -108,7 +108,8 @@ wdSession.prototype.implicitWait_ = 0;
 wdSession.prototype.mousePosition_ = {
   x: 0,
   y: 0,
-  initialized: false
+  initialized: false,
+  pressed: false
 }
 
 
@@ -275,7 +276,13 @@ wdSession.prototype.setMousePosition = function(x, y) {
   this.mousePosition_.initialized = true;
 }
 
+wdSession.prototype.isMousePressed = function() {
+  return this.mousePosition_.pressed;
+}
 
+wdSession.prototype.setMousePressed = function(isPressed) {
+  this.mousePosition_.pressed = isPressed;
+}
 
 ///////////////////////////////////////////////////////////////////
 //

@@ -46,7 +46,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
       System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
       return;
     }
-
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
@@ -70,7 +69,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = FIREFOX, reason = "Consistently broken in xvfb") 
   public void testElementInDiv() {
     if (Platform.getCurrent().is(Platform.MAC)) {
       System.out.println("Skipping testElementInDiv on Mac: See issue 2281.");
@@ -104,7 +102,6 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = FIREFOX, reason = "Consistently broken in xvfb")
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 

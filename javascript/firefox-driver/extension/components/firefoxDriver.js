@@ -1041,7 +1041,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     return;
   }
   
-  var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer) {
+  var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer, isMousePressed) {
     var elementForNode = null;
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
@@ -1081,6 +1081,15 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
         throw ex;
       }
     }
+
+    var storeX = to.x;
+    var storeY = to.y;
+    if (isMousePressed) {
+      fxdriver.Logger.dumpn("Mouse button is pressed: using original coordinates.");
+      to.x = toX;
+      to.y = toY;
+    }
+
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);
 
@@ -1098,7 +1107,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
       Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, jsTimer);
 
-      respond.session.setMousePosition(to.x, to.y);
+      respond.session.setMousePosition(storeX, storeY);
     } else {
       throw generateErrorForNativeEvents(nativeEventsEnabled, events, node);
     }
@@ -1106,7 +1115,8 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   };
 
   var coords = fxdriver.events.buildCoordinates(parameters, doc);
-  mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer);
+  var isMouseButtonPressed = respond.session.isMousePressed();
+  mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer, isMouseButtonPressed);
 
   respond.send();
 };
@@ -1138,7 +1148,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
     };
 
     Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
-
+    respond.session.setMousePressed(true);
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }
@@ -1173,6 +1183,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     };
 
     Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
+    respond.session.setMousePressed(false);
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }
