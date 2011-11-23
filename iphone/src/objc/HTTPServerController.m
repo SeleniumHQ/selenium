@@ -22,7 +22,7 @@
 #import "RESTServiceMapping.h"
 #import "WebDriverPreferences.h"
 #import "Status.h"
-#import "SBJsonWriter.h"
+#import "NSObject+SBJson.h"
 
 #import <sys/types.h>
 #import <sys/socket.h>
@@ -144,7 +144,7 @@ static NSMutableData *webData;
   
     NSMutableURLRequest *gridRegister = [NSMutableURLRequest requestWithURL:registerUrl];
     
-    NSString *json = [[[SBJsonWriter alloc] init] stringWithObject:gridRegistrationData];
+    NSString *json = [gridRegistrationData JSONRepresentation];
     
     NSString *msgLength = [NSString stringWithFormat:@"%d", [json length]];
     

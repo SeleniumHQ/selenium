@@ -19,7 +19,7 @@
 //
 
 #import "JSONRESTResource.h"
-#import "SBJsonWriter.h"
+#import "NSObject+SBJson.h"
 #import "Status.h"
 
 @implementation Status
@@ -36,8 +36,6 @@
 - (NSObject<HTTPResponse> *) httpResponseForQuery: (NSString *)query
                                            method:(NSString *)method
                                          withData:(NSData *)theData {
-  
-  SBJsonWriter *jsonWriter = [[SBJsonWriter alloc] init];
   
   NSDictionary *osDict = [NSDictionary dictionaryWithObjectsAndKeys:
     [[[[UIDevice currentDevice] model] componentsSeparatedByString:@" "] objectAtIndex:0], @"arch",
@@ -58,8 +56,8 @@
                              //buildDict, @"build", 
                              nil],
                             @"value", nil];
-  NSString *dataString = [jsonWriter stringWithObject:dataDict];
-  NSData *data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSData *data = [[dataDict JSONRepresentation] dataUsingEncoding:NSUTF8StringEncoding];
 
   return [[[HTTPDataResponse alloc] initWithData:data] autorelease];
 }
