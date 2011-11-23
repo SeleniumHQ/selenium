@@ -5,7 +5,6 @@ class ExportMappings
     fun.add_mapping("export_file", Export::CheckPreconditions.new)
     fun.add_mapping("export_file", Export::CreateTask.new)
     fun.add_mapping("export_file", Export::AddDependencies.new)
-    fun.add_mapping("export_file", Export::ExportFile.new)
   end
 end
 
@@ -33,7 +32,11 @@ module Export
       to_export = dir + "/" + args[:srcs][0]
 
       name = export_name(dir, args[:name], File.extname(to_export))
-      file name => to_export
+      file name => to_export do
+        src = Platform.path_for "#{dir}/#{args[:srcs][0]}"
+        mkdir_p File.dirname(name)
+        cp_r src, name
+      end
 
       task_name = task_name(dir, args[:name])
       task task_name => name
@@ -48,18 +51,6 @@ module Export
       task = Rake::Task[name]
       add_dependencies(task, dir, args[:deps])
       add_dependencies(task, dir, args[:srcs])
-    end
-  end
-
-  class ExportFile < Tasks
-    def handle(fun, dir, args)
-      task_name = task_name(dir, args[:name])
-      output = Rake::Task[task_name].out
-
-      src = Platform.path_for "#{dir}/#{args[:srcs][0]}"
-
-      mkdir_p File.dirname(output)
-      cp_r src, output
     end
   end
 end
