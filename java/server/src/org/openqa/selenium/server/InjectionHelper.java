@@ -134,8 +134,10 @@ public class InjectionHelper {
   private static void writeScriptTags(OutputStream os) throws IOException {
     // DGF script tags are SLOWER than regular injection! (remember, we disable the browser cache
     // entirely)
+
     writeScriptTag(os, "/core/scripts/xmlextras.js");
-    writeScriptTag(os, "/core/lib/cssQuery/cssQuery-p.js");
+    writeScriptTag(os, "/core/lib/sizzle.js");
+    writeScriptTag(os, "/core/scripts/atoms.js");
     writeScriptTag(os, "/core/scripts/htmlutils.js");
     writeScriptTag(os, "/core/scripts/ui-element.js");
     writeScriptTag(os, "/core/scripts/selenium-browserdetect.js");
