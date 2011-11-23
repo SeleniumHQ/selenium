@@ -306,7 +306,7 @@
 				PATCHED_CODE = "$(PROJECT_DIR)/extensions/patched";
 				PREBINDING = NO;
 				PRODUCT_NAME = CocoaHTTPServer;
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos3.2;
 			};
 			name = Debug;
 		};
@@ -320,7 +320,7 @@
 				PATCHED_CODE = "$(PROJECT_DIR)/extensions/patched";
 				PREBINDING = NO;
 				PRODUCT_NAME = CocoaHTTPServer;
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos3.2;
 				ZERO_LINK = NO;
 			};
 			name = Release;
