@@ -1,7 +1,23 @@
 js_deps(name = "deps",
   srcs = [
-    "*.js",
-    "http/*.js"
+    "builder.js",
+    "command.js",
+    "error.js",
+    "events.js",
+    "locators.js",
+    "process.js",
+    "promise.js",
+    "session.js",
+    "webdriver.js",
+    "http/*.js",
+    "node/node.js",
+  ])
+
+js_deps(name = "test_deps",
+  srcs = [
+    "asserts.js",
+    "jsunit.js",
+    "testcase.js"
   ])
 
 # TODO(jleyba): Make a js_test_suite that farms out to multiple browsers.
@@ -16,6 +32,7 @@ js_test(name = "test_firefox",
   ],
   deps = [
     ":deps",
+    ":test_deps",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
@@ -31,6 +48,7 @@ js_test(name = "test_chrome",
   ],
   deps = [
     ":deps",
+    ":test_deps",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
@@ -46,6 +64,7 @@ js_test(name = "test_opera",
   ],
   deps = [
     ":deps",
+    ":test_deps",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     "//third_party/java/opera-driver",
@@ -62,6 +81,7 @@ js_test(name = "test_ie",
   ],
   deps = [
     ":deps",
+    ":test_deps",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])

@@ -17,7 +17,13 @@ java_library(name = "server",
     "SnapshotScreenListener.java",
     "handler/**/*.java",
     "renderer/*.java",
+    "resource/StaticResource.java",
     "rest/*.java",
+  ],
+  resources = [
+    { "//javascript/remote:client" : "org/openqa/selenium/remote/server/resource/client.js" },
+    { "//javascript/remote:hub" : "org/openqa/selenium/remote/server/resource/hub.html" },
+    { "//javascript/remote:style" : "org/openqa/selenium/remote/server/resource/style.css" },
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",

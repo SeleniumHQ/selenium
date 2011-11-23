@@ -118,12 +118,14 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
+import org.openqa.selenium.remote.server.renderer.ResourceCopyResult;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.renderer.JsonpResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
+import org.openqa.selenium.remote.server.resource.StaticResource;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.Result;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
@@ -218,6 +220,17 @@ public class DriverServlet extends HttpServlet {
     for (ResultType resultType : EnumSet.allOf(ResultType.class)) {
       addGlobalHandler(resultType, jsonpResult);
     }
+
+    // When requesting the command root from a JSON-client, just return the server
+    // status. For everyone else, redirect to the web front end.
+    getMapper.bind("/", Status.class)
+        .on(ResultType.SUCCESS, new RedirectResult("/static/resource/hub.html"))
+        .on(ResultType.SUCCESS, jsonResponse, "application/json");
+
+    getMapper.bind("/static/resource/:file", StaticResource.class)
+        .on(ResultType.SUCCESS, new ResourceCopyResult(RESPONSE))
+        // Nope, JSON clients don't get access to static resources.
+        .on(ResultType.SUCCESS, emptyResponse, "application/json");
 
     postMapper.bind("/config/drivers", AddConfig.class)
         .on(ResultType.SUCCESS, emptyResponse);

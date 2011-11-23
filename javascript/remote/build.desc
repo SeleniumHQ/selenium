@@ -1,0 +1,21 @@
+js_binary(name = "client",
+  deps = [
+    "./**/*.js",
+    "//javascript/atoms:deps",
+    "//javascript/webdriver-jsapi:deps",
+  ],
+  no_format = "1",
+  flags = [
+    "--compilation_level=ADVANCED_OPTIMIZATIONS",
+    "--create_name_map_files=true"
+  ])
+
+export_file(name = "hub",
+  srcs = [ "hub.html" ],
+  deps = [
+    ":client",
+    ":style",
+  ])
+
+export_file(name = "style",
+  srcs = [ "style.css" ])

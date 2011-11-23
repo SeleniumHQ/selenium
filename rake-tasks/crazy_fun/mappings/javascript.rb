@@ -248,12 +248,19 @@ module Javascript
         defines = declared.collect {|d| "-f \"--define=#{d}\" "}
         defines = defines.join
 
+        formatting = !args[:no_format].nil? ? "" : '-f "--formatting=PRETTY_PRINT" '
+
+        flags = args[:flags] || []
+        flags = flags.collect {|f| "-f \"#{f}\" "}
+        flags = flags.join
+
         cmd = calcdeps +
            " -o compiled " <<
            '-f "--third_party=true" ' <<
-           '-f "--formatting=PRETTY_PRINT" ' <<
            "-f \"--js_output_file=#{output}\" " <<
+           formatting <<
            defines <<
+           flags <<
            "-i " <<
            js_files.join(" -i ") <<
            " -p third_party/closure/goog -p " <<

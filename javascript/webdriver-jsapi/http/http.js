@@ -26,7 +26,6 @@ goog.provide('webdriver.http.Response');
 goog.require('bot.ErrorCode');
 goog.require('goog.json');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.WebElement');
 goog.require('webdriver.promise.Deferred');
 
 
@@ -116,10 +115,13 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
       var key = pathParameters[i].substring(1);  // Trim the :
       if (key in parameters) {
         var value = parameters[key];
-        if (value && value[webdriver.WebElement.ELEMENT_KEY]) {
+        // TODO(jleyba): move webdriver.WebElement.ELEMENT definition to a
+        // common file so we can reference it here without pulling in all of
+        // webdriver.WebElement's dependencies.
+        if (value && value['ELEMENT']) {
           // When inserting a WebElement into the URL, only use it's ID value,
           // not the full JSON.
-          value = value[webdriver.WebElement.ELEMENT_KEY];
+          value = value['ELEMENT'];
         }
         path = path.replace(pathParameters[i], value);
         delete parameters[key];
@@ -171,7 +173,9 @@ webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
  */
 webdriver.http.Executor.COMMAND_MAP_ = (function() {
   return new Builder().
+      put(webdriver.CommandName.GET_SERVER_STATUS, get('/status')).
       put(webdriver.CommandName.NEW_SESSION, post('/session')).
+      put(webdriver.CommandName.GET_SESSIONS, get('/sessions')).
       put(webdriver.CommandName.DESCRIBE_SESSION, get('/session/:sessionId')).
       put(webdriver.CommandName.QUIT, del('/session/:sessionId')).
       put(webdriver.CommandName.CLOSE, del('/session/:sessionId/window')).
@@ -364,17 +368,18 @@ webdriver.http.Response = function(status, headers, body) {
  * @return {!webdriver.http.Response} The parsed response.
  */
 webdriver.http.Response.fromXmlHttpRequest = function(xhr) {
-  var tmp = xhr.getAllResponseHeaders().
-      replace(/\r\n/g, '\n').
-      split('\n');
-
   var headers = {};
-  goog.array.forEach(tmp, function(header) {
-    var parts = header.split(/\s*:\s*/, 2);
-    if (parts[0]) {
-      headers[parts[0]] = parts[1] || '';
-    }
-  });
+
+  var tmp = xhr.getAllResponseHeaders();
+  if (tmp) {
+    tmp = tmp.replace(/\r\n/g, '\n').split('\n');
+    goog.array.forEach(tmp, function(header) {
+      var parts = header.split(/\s*:\s*/, 2);
+      if (parts[0]) {
+        headers[parts[0]] = parts[1] || '';
+      }
+    });
+  }
 
   return new webdriver.http.Response(xhr.status, headers,
       xhr.responseText.replace(/\0/g, ''));

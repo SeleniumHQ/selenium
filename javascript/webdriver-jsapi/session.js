@@ -59,6 +59,16 @@ webdriver.Session.prototype.getCapabilities = function() {
 
 
 /**
+ * Retrieves the value of a specific capability.
+ * @param {string} key The capability to retrieve.
+ * @return {*} The capability value.
+ */
+webdriver.Session.prototype.getCapability = function(key) {
+  return this.capabilities[key];
+};
+
+
+/**
  * Returns the JSON representation of this object, which is just the string
  * session ID.
  * @return {string} The JSON representation of this Session.

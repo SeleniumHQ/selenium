@@ -87,6 +87,10 @@ public class ResultConfig {
   }
 
   public boolean isFor(String urlToMatch) {
+    if (urlToMatch == null) {
+      return sections.length == 0;
+    }
+
     String[] allParts = urlToMatch.split("/");
 
     if (sections.length != allParts.length) {
@@ -108,6 +112,10 @@ public class ResultConfig {
 
 
   protected Handler populate(Handler handler, String pathString) {
+    if (pathString == null) {
+      return handler;
+    }
+
     String[] strings = pathString.split("/");
 
     for (int i = 0; i < sections.length; i++) {
