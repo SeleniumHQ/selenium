@@ -59,7 +59,8 @@ class FirefoxBinary(object):
             self._modify_link_library_path()
         
         Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=PIPE).wait()
-        self.process = Popen([self._start_cmd, "-foreground"], stdout=PIPE, stderr=PIPE)
+        self.process = Popen(
+            [self._start_cmd, "-foreground"], stdout=PIPE, stderr=PIPE)
 
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
@@ -67,10 +68,12 @@ class FirefoxBinary(object):
         while not utils.is_connectable(self.profile.port):
             if self.process.poll() is not None:
                 # Browser has exited
-                raise WebDriverException("The browser appears to have exited before we could connect")
+                raise WebDriverException("The browser appears to have exited " +
+                    "before we could connect")
             if count == 30:
                 self.kill()
-                raise WebDriverException("Can't load the profile. Profile Dir : %s" % self.profile.path)
+                raise WebDriverException("Can't load the profile. Profile " +
+                    "Dir: %s" % self.profile.path)
             count += 1
             time.sleep(1)
         return True
@@ -101,7 +104,8 @@ class FirefoxBinary(object):
         if platform.system() == "Darwin":
             start_cmd = ("/Applications/Firefox.app/Contents/MacOS/firefox-bin")
         elif platform.system() == "Windows":
-            start_cmd = self._find_exe_in_registry() or self._default_windows_location()
+            start_cmd = (self._find_exe_in_registry() or 
+                self._default_windows_location())
         else:
             # Maybe iceweasel (Debian) is another candidate...
             for ffname in ["firefox2", "firefox", "firefox-3.0", "firefox-4.0"]:
@@ -121,8 +125,8 @@ class FirefoxBinary(object):
         except:
             pass
 
-        new_ld_lib_path = self._extract_and_check(self.profile, self.NO_FOCUS_LIBRARY_NAME,
-                                                    "x86", "amd64")
+        new_ld_lib_path = self._extract_and_check(
+            self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
 
         if existing_ld_lib_path:
             new_ld_lib_path += existing_ld_lib_path
@@ -138,14 +142,16 @@ class FirefoxBinary(object):
             library_path = os.path.join(profile.path, path)
             os.makedirs(library_path)
             import shutil
-            shutil.copy(os.path.join(os.path.dirname(__file__), path, self.NO_FOCUS_LIBRARY_NAME), 
-                                    library_path)
+            shutil.copy(os.path.join(os.path.dirname(__file__), path,
+              self.NO_FOCUS_LIBRARY_NAME), 
+              library_path)
             built_path += library_path + ":"
 
         return built_path
 
     def which(self, fname):
-        """Returns the fully qualified path by searching Path of the given name"""
+        """Returns the fully qualified path by searching Path of the given 
+        name"""
         for pe in os.environ['PATH'].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):

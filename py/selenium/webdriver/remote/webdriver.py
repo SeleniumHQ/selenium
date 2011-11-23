@@ -627,7 +627,8 @@ class WebDriver(object):
         :Usage:
             driver.set_script_timeout(30)
         """
-        self.execute(Command.SET_SCRIPT_TIMEOUT, {'ms': float(time_to_wait) * 1000})
+        self.execute(Command.SET_SCRIPT_TIMEOUT,
+            {'ms': float(time_to_wait) * 1000})
 
     def find_element(self, by=By.ID, value=None):
         """
@@ -696,7 +697,8 @@ class WebDriver(object):
         :Usage:
             driver.set_window_size(800,600)
         """
-        self.execute(Command.SET_WINDOW_SIZE, {'width':width, 'height':height, 'windowHandle':windowHandle})
+        self.execute(Command.SET_WINDOW_SIZE, {'width': width, 'height': height,
+          'windowHandle': windowHandle})
 
     def get_window_size(self, windowHandle='current'):
         """
@@ -705,7 +707,8 @@ class WebDriver(object):
         :Usage:
             driver.get_window_size()
         """
-        return self.execute(Command.GET_WINDOW_SIZE, {'windowHandle':windowHandle})['value']
+        return self.execute(Command.GET_WINDOW_SIZE,
+            {'windowHandle': windowHandle})['value']
 
     def set_window_position(self, x, y, windowHandle='current'):
         """
@@ -718,7 +721,8 @@ class WebDriver(object):
         :Usage:
             driver.set_window_position(0,0)
         """
-        self.execute(Command.SET_WINDOW_POSITION, {'x':x, 'y':y, 'windowHandle':windowHandle})
+        self.execute(Command.SET_WINDOW_POSITION, {'x': x, 'y': y,
+          'windowHandle': windowHandle})
 
     def get_window_position(self, windowHandle='current'):
         """
@@ -727,4 +731,5 @@ class WebDriver(object):
         :Usage:
             driver.get_window_position()
         """
-        return self.execute(Command.GET_WINDOW_POSITION, {'windowHandle':windowHandle})['value']
+        return self.execute(Command.GET_WINDOW_POSITION,
+            {'windowHandle': windowHandle})['value']
