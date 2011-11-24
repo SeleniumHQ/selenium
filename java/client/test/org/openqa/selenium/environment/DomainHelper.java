@@ -61,7 +61,7 @@ public class DomainHelper {
   }
 
   public boolean isValidHostname(String hostname) {
-    return isIpv4Address(hostname) || "localhost".equals(hostname);
+    return !isIpv4Address(hostname) && !"localhost".equals(hostname);
   }
 
   public String getHostName() {
