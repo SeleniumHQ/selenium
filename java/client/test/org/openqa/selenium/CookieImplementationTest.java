@@ -342,10 +342,12 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(OPERA)
   public void testCookieEqualityAfterSetAndGet() {
-    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
     }
+
+    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
+
     driver.manage().deleteAllCookies();
 
     Cookie addedCookie =
