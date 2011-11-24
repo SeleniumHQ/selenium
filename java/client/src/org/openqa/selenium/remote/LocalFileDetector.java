@@ -34,8 +34,15 @@ public class LocalFileDetector implements FileDetector {
     }
     File file = new File(builder.toString());
 
-    log.fine("Detected local file: " + file.exists());
+    // It turns out that files in the CWD may not have a parent file.
+    File parentDir = file.getParentFile();
+    if (parentDir == null) {
+      parentDir = new File(".");
+    }
+    File toUpload = new File(parentDir, file.getName());
 
-    return file.exists() ? file : null;
+    log.fine("Detected local file: " + toUpload.exists());
+
+    return toUpload.exists() ? toUpload : null;
   }
 }
