@@ -53,7 +53,13 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     // We go to it to ensure that cookies with /common/... paths are deleted
     // Do not write test in this class which use pages other than under /common
     // without ensuring that cookies are deleted on those pages as required
-    driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
+    try {
+      driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
+    } catch (IllegalArgumentException e) {
+      // Ideally we would throw an IgnoredTestError or something here,
+      // but our test runner doesn't pay attention to those.
+      // Rely on the tests skipping themselves if they need to be on a useful page.
+    }
 
     driver.manage().deleteAllCookies();
     assertNoCookiesArePresent();
