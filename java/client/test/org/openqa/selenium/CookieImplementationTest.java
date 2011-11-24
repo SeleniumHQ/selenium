@@ -59,6 +59,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
       // Ideally we would throw an IgnoredTestError or something here,
       // but our test runner doesn't pay attention to those.
       // Rely on the tests skipping themselves if they need to be on a useful page.
+      return;
     }
 
     driver.manage().deleteAllCookies();
