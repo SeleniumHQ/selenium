@@ -28,6 +28,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -159,11 +160,10 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldBeAbleToStartFromProfileWithLogFileSet() {
+  public void testShouldBeAbleToStartFromProfileWithLogFileSet() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-    File destDir =
-        TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "logging-profile");
-    File logFile = new File(destDir, "firefox.log");
+    File logFile = File.createTempFile("test", "firefox.log");
+    logFile.deleteOnExit();
 
     profile.setPreference("webdriver.log.file", logFile.getAbsolutePath());
 
