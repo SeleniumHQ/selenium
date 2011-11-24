@@ -77,7 +77,7 @@ public class Registry {
     this.configuration = config;
     this.httpClientFactory = new HttpClientFactory();
     proxies = new ProxySet(config.isThrowOnCapabilityNotPresent());
-    this.matcherThread.setUncaughtExceptionHandler( new UncaughtExceptionHandler());
+    this.matcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler());
   }
 
   @SuppressWarnings({"NullableProblems"})
@@ -122,21 +122,26 @@ public class Registry {
    * release anything on the remote. The resources are released in a separate thread, so the call
    * returns immediatly. It allows release with long duration not to block the test while the hub is
    * releasing the resource.
+   *
    * @param session The session to terminate
+   * @param reason  the reason for termination
    */
- public void terminate(final TestSession session) {
-   new Thread(new Runnable() { // Thread safety reviewed
-         public void run() {
-           _release(session.getSlot());
-         }
-       }).start();
+  public void terminate(final TestSession session, final SessionTerminationReason reason) {
+    new Thread(new Runnable() { // Thread safety reviewed
+      public void run() {
+        _release(session.getSlot(), reason);
+      }
+    }).start();
   }
+
   /**
    * Release the test slot. Free the resource on the slot itself and the registry. If also invokes
-   * the {@link org.openqa.grid.internal.listeners.TestSessionListener#afterSession(TestSession)} if applicable.
+   * the {@link org.openqa.grid.internal.listeners.TestSessionListener#afterSession(TestSession)} if
+   * applicable.
+   *
    * @param testSlot The slot to release
    */
-  private void _release(TestSlot testSlot) {
+  private void _release(TestSlot testSlot, SessionTerminationReason reason) {
     if (!testSlot.startReleaseProcess()) {
       return;
     }
@@ -150,45 +155,45 @@ public class Registry {
     try {
       lock.lock();
       testSlot.finishReleaseProcess();
-      release(internalKey);
+      release(internalKey, reason);
     } finally {
       lock.unlock();
     }
   }
-  
+
   void terminateSynchronousFOR_TEST_ONLY(TestSession testSession) {
-    _release(testSession.getSlot());
+    _release(testSession.getSlot(), SessionTerminationReason.CLIENT_STOPPED_SESSION);
   }
 
   public void removeIfPresent(RemoteProxy proxy) {
     // Find the original proxy. While the supplied one is logically equivalent, it may be a fresh object with
     // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
     // those test sessions, we need to operate on that original object.
-      if (proxies.contains(proxy)) {
-        log.warning(String.format(
-            "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
+    if (proxies.contains(proxy)) {
+      log.warning(String.format(
+          "Proxy '%s' was previously registered.  Cleaning up any stale test sessions.", proxy));
 
-        final RemoteProxy p = proxies.remove(proxy);
-        for (TestSlot slot : p.getTestSlots()) {
-          forceRelease(slot);
-        }
-        p.teardown();
+      final RemoteProxy p = proxies.remove(proxy);
+      for (TestSlot slot : p.getTestSlots()) {
+        forceRelease(slot, SessionTerminationReason.PROXY_REREGISTRATION);
       }
+      p.teardown();
+    }
   }
 
   /**
    * releasing the testslot, WITHOUT running any listener.
    */
-  public void forceRelease(TestSlot testSlot) {
+  public void forceRelease(TestSlot testSlot, SessionTerminationReason reason) {
     if (testSlot.getSession() == null) {
       return;
     }
 
     String internalKey = testSlot.getInternalKey();
-    release(internalKey);
+    release(internalKey, reason);
     testSlot.doFinishRelease();
   }
-  
+
 
   /**
    * iterates the queue of incoming new session request and assign them to proxy after they've been
@@ -285,11 +290,12 @@ public class Registry {
    * free to be reserved by other tests
    *
    * @param session The session
+   * @param reason  the reason for the release
    */
-  private void release(TestSession session) {
+  private void release(TestSession session, SessionTerminationReason reason) {
     try {
       lock.lock();
-      boolean removed = activeTestSessions.remove(session);
+      boolean removed = activeTestSessions.remove(session, reason);
       if (removed) {
         fireMatcherStateChanged();
       }
@@ -298,13 +304,13 @@ public class Registry {
     }
   }
 
-  private void release(String internalKey) {
+  private void release(String internalKey, SessionTerminationReason reason) {
     if (internalKey == null) {
       return;
     }
     final TestSession session1 = activeTestSessions.findSessionByInternalKey(internalKey);
     if (session1 != null) {
-      release(session1);
+      release(session1, reason);
       return;
     }
     log.warning("Tried to release session with internal key " + internalKey +
@@ -401,6 +407,19 @@ public class Registry {
     return activeTestSessions.findSessionByExternalKey(externalKey);
   }
 
+  /**
+   * gets the test existing session associated to this external key. The external key is the session
+   * used by webdriver.
+   *
+   * This method will log complaints and reasons if the key cannot be found
+   *
+   * @param externalKey the external session key
+   * @return null if the hub doesn't have a node associated to the provided externalKey
+   */
+  public TestSession getExistingSession(ExternalSessionKey externalKey) {
+    return activeTestSessions.getExistingSession(externalKey);
+  }
+
   /*
    * May race.
    */
@@ -441,6 +460,7 @@ public class Registry {
   }
 
   private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+
     public void uncaughtException(Thread t, Throwable e) {
       log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
     }

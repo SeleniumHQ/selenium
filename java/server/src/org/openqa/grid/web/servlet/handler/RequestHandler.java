@@ -32,11 +32,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.*;
 import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.common.exception.GridException;
@@ -161,12 +158,12 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           forwardRequest(session, this);
         } catch (Throwable t) {
           log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);
-          registry.terminate(session);
+          registry.terminate(session, SessionTerminationReason.FORWARDINGFAILED);
           throw new GridException("cannot forward the request " + t.getMessage(), t);
         }
 
         if (getRequestType() == RequestType.STOP_SESSION) {
-          registry.terminate(session);
+          registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
         }
         break;
       default:
@@ -180,7 +177,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   private void cleanup() {
     registry.removeNewSessionRequest(this);
     if (session != null) {
-      registry.terminate(session);
+      registry.terminate(session, SessionTerminationReason.CREATIONFAILED);
     }
   }
 
@@ -333,7 +330,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   protected TestSession getSession() {
     if (session == null) {
       ExternalSessionKey externalKey = extractSession();
-      session = registry.getSession(externalKey);
+      session = registry.getExistingSession(externalKey);
       if (session == null) {
         log.warning("Cannot find session " + externalKey + " in the registry.");
       }

@@ -45,13 +45,12 @@ import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
 
 /**
- * Proxy to a remote server executing the tests.
- * <p/>
- * The proxy keeps a state of what is happening on the remote server and knows if a new test can be
- * run on the remote server. There are several reasons why a test could not be run on the specified
- * remote server, for instance: if the RemoteProxy decides the remote server has reached the maximum
- * number of concurrent sessions, or if the client has requested DesiredCapabilities we don't
- * support e.g. asking for Chrome when we only support Firefox.
+ * Proxy to a remote server executing the tests. <p/> The proxy keeps a state of what is happening
+ * on the remote server and knows if a new test can be run on the remote server. There are several
+ * reasons why a test could not be run on the specified remote server, for instance: if the
+ * RemoteProxy decides the remote server has reached the maximum number of concurrent sessions, or
+ * if the client has requested DesiredCapabilities we don't support e.g. asking for Chrome when we
+ * only support Firefox.
  */
 public class RemoteProxy implements Comparable<RemoteProxy> {
 
@@ -100,16 +99,12 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * Create the proxy from the info sent by the remote.
-   * <p/>
-   * If maxSession is not specified, default to 1 = max number of tests running at a given time will
-   * be 1.
-   * <p/>
-   * For each capability, maxInstances is defaulted to 1 if not specified = max number of test of
-   * each capability running at a time will be 1. maxInstances for firefox can be > 1. IE won't
-   * support it.
-   * 
-   * @param request The request
+   * Create the proxy from the info sent by the remote. <p/> If maxSession is not specified, default
+   * to 1 = max number of tests running at a given time will be 1. <p/> For each capability,
+   * maxInstances is defaulted to 1 if not specified = max number of test of each capability running
+   * at a time will be 1. maxInstances for firefox can be > 1. IE won't support it.
+   *
+   * @param request  The request
    * @param registry The registry to use
    */
   public RemoteProxy(RegistrationRequest request, Registry registry) {
@@ -146,7 +141,6 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     for (DesiredCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
-
       SeleniumProtocol protocol = getProtocol(capability);
       String path = getPath(capability);
 
@@ -177,7 +171,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         protocol = SeleniumProtocol.valueOf(type);
       } catch (IllegalArgumentException e) {
         throw new GridException(type
-            + " isn't a valid protocol type for grid. See SeleniumProtocol enim.", e);
+                                + " isn't a valid protocol type for grid. See SeleniumProtocol enim.",
+                                e);
       }
     }
     return protocol;
@@ -203,20 +198,21 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     if (this instanceof TimeoutListener) {
       if (cleanUpCycle > 0 && timeOut > 0) {
         log.fine("starting cleanup thread");
-        new Thread(new CleanUpThread(this), "RemoteProxy CleanUpThread").start(); // Thread safety reviewed (hopefully ;)
+        new Thread(new CleanUpThread(this), "RemoteProxy CleanUpThread")
+            .start(); // Thread safety reviewed (hopefully ;)
       }
     }
   }
 
   /**
    * merge the param from config 1 and 2. If a param is present in both, config2 value is used.
-   * 
+   *
    * @param configuration1 The first configuration to merge (recessive)
    * @param configuration2 The second configuration to merge (dominant)
    * @return The merged collection
    */
   private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
-      Map<String, Object> configuration2) {
+                                          Map<String, Object> configuration2) {
     Map<String, Object> res = new HashMap<String, Object>();
     res.putAll(configuration1);
     for (String key : configuration2.keySet()) {
@@ -228,7 +224,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * get the unique id for the node. Usually the url it listen on is a good id. If the network keeps
    * changing and the IP of the node is updated, you need to define nodes with a different id.
-   * 
+   *
    * @return the id
    */
   public String getId() {
@@ -244,6 +240,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   private class CleanUpThread implements Runnable {
+
     private RemoteProxy proxy;
 
     public CleanUpThread(RemoteProxy proxy) {
@@ -269,18 +266,18 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
               if (hasTimedOut) {
                 log.warning("session " + session + " has TIMED OUT and will be released");
                 ((TimeoutListener) proxy).beforeRelease(session);
-                registry.terminate(session);
+                registry.terminate(session, SessionTerminationReason.TIMEOUT);
               }
 
               if (session.isOrphaned()) {
                 log.warning("session " + session + " has been ORPHANED and will be released");
                 ((TimeoutListener) proxy).beforeRelease(session);
-                registry.terminate(session);
+                registry.terminate(session, SessionTerminationReason.ORPHAN);
               }
             }
           } catch (Throwable t) {
             log.warning("Error executing the timeout when cleaning up slot " + slot
-                + t.getMessage());
+                        + t.getMessage());
           }
         }
       }
@@ -293,7 +290,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * return the registration request that created the proxy in the first place.
-   * 
+   *
    * @return a RegistrationRequest, doh!
    */
   public RegistrationRequest getOriginalRegistrationRequest() {
@@ -302,7 +299,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * return the max number of tests that can run on this remote at a given time.
-   * 
+   *
    * @return an int, doh!
    */
   public int getMaxNumberOfConcurrentTestSessions() {
@@ -316,8 +313,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * http://localhost:5555/wd/hub ( proxy.host + slot.path where slot is a webdriver slot ) and
    * http://localhost:5555/selenium-server/driver ( proxy.host + slot.path where slot is a selenium1
    * slot )
-   * 
-   * 
+   *
    * @return the host the remote listens on.
    */
   public URL getRemoteHost() {
@@ -326,7 +322,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * return a new test session if the current proxy has the resources and is ready to run the test.
-   * 
+   *
    * @param requestedCapability .
    * @return a new TestSession if possible, null otherwise
    */
@@ -351,7 +347,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * returns the total number of test slots used on this proxy
-   * 
+   *
    * @return an int
    */
   public int getTotalUsed() {
@@ -365,13 +361,11 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   /**
-   * Return true if the remote control has the capability requested.
-   * <p/>
-   * the definition of "has" is defined by {@link CapabilityMatcher#matches(Map, Map)}
-   * <p/>
-   * hasCapability = true doesn't mean the test cast start just now, only that the proxy will be
-   * able to run a test requireing that capability at some point.
-   * 
+   * Return true if the remote control has the capability requested. <p/> the definition of "has" is
+   * defined by {@link CapabilityMatcher#matches(Map, Map)} <p/> hasCapability = true doesn't mean
+   * the test cast start just now, only that the proxy will be able to run a test requireing that
+   * capability at some point.
+   *
    * @param requestedCapability The requestedCapability
    * @return true if present
    */
@@ -395,14 +389,14 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * Takes a registration request and return the RemoteProxy associated to it. It can be any class
    * extending RemoteProxy.
-   * 
-   * @param request The request
+   *
+   * @param request  The request
    * @param registry The registry to use
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")
   public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
-      Registry registry) {
+                                                         Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
       if (proxyClass == null) {
@@ -411,8 +405,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       }
       Class<?> clazz = Class.forName(proxyClass);
       log.fine("Using class " + clazz.getName());
-      Object[] args = new Object[] {request, registry};
-      Class<?>[] argsClass = new Class[] {RegistrationRequest.class, Registry.class};
+      Object[] args = new Object[]{request, registry};
+      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, Registry.class};
       Constructor<?> c = clazz.getConstructor(argsClass);
       Object proxy = c.newInstance(args);
       if (proxy instanceof RemoteProxy) {
@@ -437,13 +431,23 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     RemoteProxy other = (RemoteProxy) obj;
     if (getId() == null) {
-      if (other.getId() != null) return false;
-    } else if (!getId().equals(other.getId())) return false;
+      if (other.getId() != null) {
+        return false;
+      }
+    } else if (!getId().equals(other.getId())) {
+      return false;
+    }
     return true;
   }
 
@@ -468,7 +472,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * im millis
-   * 
+   *
    * @return an int
    */
   public int getTimeOut() {

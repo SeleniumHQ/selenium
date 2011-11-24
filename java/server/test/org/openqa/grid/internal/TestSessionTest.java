@@ -53,6 +53,7 @@ public class TestSessionTest {
       registry.stop();
     }
   }
+
   @Test
   public void testIsOrphanedWebDriver() throws Exception {
 
@@ -80,13 +81,15 @@ public class TestSessionTest {
   }
 
 
-  class TestTimeSource implements TimeSource {
+  public static class TestTimeSource implements TimeSource {
+
     private long time = 17;
+
     public long currentTimeInMillis() {
       return time;
     }
 
-    public void ensureElapsed(long requiredElapsed){
+    public void ensureElapsed(long requiredElapsed) {
       time += (requiredElapsed + 1);
     }
   }

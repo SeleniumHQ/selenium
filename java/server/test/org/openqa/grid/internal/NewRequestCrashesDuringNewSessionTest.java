@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -28,6 +26,8 @@ import org.openqa.grid.internal.mock.MockedRequestHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 public class NewRequestCrashesDuringNewSessionTest {
 
@@ -58,15 +58,13 @@ public class NewRequestCrashesDuringNewSessionTest {
     newSessionRequest.process();
     TestSession s = newSessionRequest.getTestSession();
     Assert.assertNotNull(s);
-    registry.terminate( s);
+    registry.terminate(s, SessionTerminationReason.CLIENT_STOPPED_SESSION);
     Assert.assertEquals(0, registry.getNewSessionRequestCount());
   }
 
   /**
    * check that a crashes during the new session request handling doesn't result in a corrupted
    * state
-   * 
-   * @throws InterruptedException
    */
   @Test(timeout = 1000)
   public void requestIsremovedFromTheQeueAfterItcrashes() throws InterruptedException {
@@ -90,7 +88,7 @@ public class NewRequestCrashesDuringNewSessionTest {
   class MockedBuggyNewSessionRequestHandler extends MockedNewSessionRequestHandler {
 
     public MockedBuggyNewSessionRequestHandler(Registry registry,
-        Map<String, Object> desiredCapabilities) {
+                                               Map<String, Object> desiredCapabilities) {
       super(registry, desiredCapabilities);
     }
 

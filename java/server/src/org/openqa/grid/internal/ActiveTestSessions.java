@@ -20,7 +20,11 @@ package org.openqa.grid.internal;
 import net.jcip.annotations.ThreadSafe;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
@@ -34,6 +38,14 @@ class ActiveTestSessions {
 
   private final Set<TestSession> activeTestSessions = new CopyOnWriteArraySet<TestSession>();
 
+  private final
+  Queue<ExternalSessionKey>
+      terminatedSessions =
+      new ConcurrentLinkedQueue<ExternalSessionKey>();
+  private final
+  Map<ExternalSessionKey, SessionTerminationReason>
+      reasons =
+      new ConcurrentHashMap<ExternalSessionKey, SessionTerminationReason>();
 
 
   public boolean add(TestSession testSession) {
@@ -44,8 +56,27 @@ class ActiveTestSessions {
     return added;
   }
 
-  public boolean remove(TestSession o) {
+  public boolean remove(TestSession o, SessionTerminationReason reason) {
+    updateReason(o, reason);
     return activeTestSessions.remove(o);
+  }
+
+  private void updateReason(TestSession o, SessionTerminationReason reason) {
+    if (o.getExternalKey() == null) {
+      if (SessionTerminationReason.CREATIONFAILED != reason) { // Should not happen. Yeah.
+        log.info(
+            "Removed a session that had not yet assigned an external key " + o.getInternalKey() +
+            ", indicates failure in session creation " + reason);
+      }
+      return;
+    }
+
+    terminatedSessions.add(o.getExternalKey());
+    reasons.put(o.getExternalKey(), reason);
+    if (reasons.size() > 10000) {
+      ExternalSessionKey remove = terminatedSessions.remove();
+      reasons.remove(remove);
+    }
   }
 
   public TestSession findSessionByInternalKey(String internalKey) {
@@ -61,6 +92,20 @@ class ActiveTestSessions {
     return null;
   }
 
+  public TestSession getExistingSession(ExternalSessionKey externalkey) {
+    TestSession sessionByExternalKey = findSessionByExternalKey(externalkey);
+    if (sessionByExternalKey == null) {
+      SessionTerminationReason sessionTerminationReason = reasons.get(externalkey);
+      if (sessionTerminationReason != null) {
+        log.info("Client requested session that was terminated due to " + sessionTerminationReason);
+      } else {
+        log.info("Client requested an externalKey " + externalkey
+                 + " that is not among the last 10000 active sessions");
+      }
+    }
+    return sessionByExternalKey;
+  }
+
   public TestSession findSessionByExternalKey(ExternalSessionKey externalkey) {
     if (externalkey == null) {
       return null;
@@ -74,8 +119,8 @@ class ActiveTestSessions {
     return null;
   }
 
-  public Set<TestSession> unmodifiableSet(){
-    return Collections.unmodifiableSet( activeTestSessions);
+  public Set<TestSession> unmodifiableSet() {
+    return Collections.unmodifiableSet(activeTestSessions);
   }
 
 }
