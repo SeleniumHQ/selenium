@@ -96,3 +96,23 @@ class TimeoutException(WebDriverException):
 class UnexpectedTagNameException(WebDriverException):
     """Thrown when a support class did not get an expected web element"""
     pass
+
+class InvalidSelectiorException(NoSuchElementException):
+    """ Thrown when the selector which is used to find an element does not return
+    a WebElement. Currently this only happens when the selector is an xpath
+    expression is used which is either syntactically invalid (i.e. it is not a
+    xpath expression) or the expression does not select WebElements
+    (e.g. "count(//input)").
+    """ 
+    pass
+
+class ImeNotAvailableException(WebDriverException):
+    """
+    Indicates that IME support is not available. This exception is thrown for every IME-related
+    method call if IME support is not available on the machine.
+    """
+    pass
+
+class ImeActivationFailedException(WebDriverException):
+    """ Indicates that activating an IME engine has failed. """
+    pass
