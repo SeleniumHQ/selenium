@@ -30,4 +30,9 @@ public class StaleElementReferenceException extends WebDriverException {
   public StaleElementReferenceException(String message, Throwable cause) {
     super(message, cause);
   }
+
+  @Override
+  public String getSupportUrl() {
+    return "http://seleniumhq.org/exceptions/stale_element_reference.html";
+  }
 }
