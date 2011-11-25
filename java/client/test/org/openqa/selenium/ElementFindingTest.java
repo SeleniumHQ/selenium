@@ -447,14 +447,12 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @NeedsFreshDriver
   public void testShouldBeAbleToFindAnElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("div.content"));
   }
 
   @JavascriptEnabled
-  @NeedsFreshDriver
   public void testShouldBeAbleToFindAnElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.cssSelector("p"));
