@@ -17,11 +17,17 @@ limitations under the License.
 
 package org.openqa.grid.web;
 
-import com.google.common.collect.Maps;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.log.TerseFormatter;
+import javax.servlet.Servlet;
 
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
@@ -37,18 +43,11 @@ import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.log.TerseFormatter;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.Servlet;
+import com.google.common.collect.Maps;
 
 /**
  * Jetty server. Main entry point for everything about the grid.
@@ -134,6 +133,7 @@ public class Hub {
       root.addServlet("/*", DisplayHelpServlet.class.getName());
 
       root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
+      root.addServlet("/grid/beta/console/*", org.openqa.grid.web.servlet.beta.ConsoleServlet.class.getName());
       root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
       // TODO remove at some point. Here for backward compatibility of
       // tests etc.
