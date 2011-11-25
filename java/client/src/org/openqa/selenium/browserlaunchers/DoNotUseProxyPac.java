@@ -166,7 +166,7 @@ public class DoNotUseProxyPac implements Serializable {
       toReturn.put("proxiedHosts", unmodifiableMap(proxiedHosts));
     }
 
-    if (!defaultProxy.isEmpty()) {
+    if (defaultProxy != null && !"".equals(defaultProxy)) {
       toReturn.put("defaultProxy", defaultProxy);
     }
 

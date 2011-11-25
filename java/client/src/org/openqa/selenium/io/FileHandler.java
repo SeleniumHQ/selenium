@@ -42,6 +42,7 @@ import java.util.List;
  * Utility methods for common filesystem activities
  */
 public class FileHandler {
+  private static final Method JDK6_CANEXECUTE = findJdk6CanExecuteMethod();
   private static final Method JDK6_SETWRITABLE = findJdk6SetWritableMethod();
   private static final Method JDK6_SETEXECUTABLE = findJdk6SetExecutableMethod();
   private static final File CHMOD = findChmodCommand();
@@ -140,7 +141,7 @@ public class FileHandler {
   }
 
   public static boolean makeExecutable(File file) throws IOException {
-    if (file.canExecute()) {
+    if (canExecute(file)) {
       return true;
     }
 
@@ -157,12 +158,26 @@ public class FileHandler {
         Process process = Runtime.getRuntime().exec(
             new String[] {CHMOD.getAbsolutePath(), "+x", file.getAbsolutePath()});
         process.waitFor();
-        return file.canExecute();
+        return canExecute(file) == Boolean.TRUE;
       } catch (InterruptedException e1) {
         throw new WebDriverException(e1);
       }
     }
     return false;
+  }
+
+  private static Boolean canExecute(File file) {
+    if (JDK6_CANEXECUTE != null) {
+      try {
+        return (Boolean) JDK6_CANEXECUTE.invoke(file);
+      } catch (IllegalAccessException e) {
+        // Do nothing. We return false in the end
+      } catch (InvocationTargetException e) {
+        // Do nothing. We return false in the end
+      }
+    }
+    // Nothing sane we can do. Assume "true"
+    return true;
   }
 
   public static boolean isZipped(String fileName) {
@@ -239,6 +254,18 @@ public class FileHandler {
       Closeables.closeQuietly(in);
     }
   }
+
+  /**
+   * File.setWritable appears in Java 6. If we find the method, we can use it
+   */
+  private static Method findJdk6CanExecuteMethod() {
+    try {
+      return File.class.getMethod("canExecute", Boolean.class);
+    } catch (NoSuchMethodException e) {
+      return null;
+    }
+  }
+
 
   /**
    * File.setWritable appears in Java 6. If we find the method, we can use it
