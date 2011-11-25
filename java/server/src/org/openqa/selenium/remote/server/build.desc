@@ -32,5 +32,6 @@ java_library(name = "server",
     "//java/client/src/org/openqa/selenium/support/events",
     "//java/server/src/org/openqa/selenium/server:logging",
     "//third_party/java/guava-libraries",
+    "//third_party/java/commons-codec",
     "//third_party/java/servlet-api",
   ])
