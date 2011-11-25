@@ -323,25 +323,15 @@ public class CommandLine {
       super.start(process);
     }
 
-    @Override
-    public void stop() {
-      super.stop();
-    }
-
     public void reset() {
       starting = true;
     }
 
-    @Override
-    protected void cleanUp() {
-      super.cleanUp();
-    }
-
-    public String getPID() {
+    private String getPID() {
       return this.process.toString();
     }
 
-    public void waitForProcessStarted() {
+    private void waitForProcessStarted() {
       while (starting) {
         try {
           Thread.sleep(50);
@@ -367,7 +357,6 @@ public class CommandLine {
       Process ourProc = process;
       ProcessUtils.killProcess(ourProc);
     }
-
   }
 
   class MultioutputStream extends OutputStream {
