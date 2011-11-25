@@ -202,16 +202,6 @@ public class SeleneseTestCase extends TestCase {
     return SeleneseTestBase.seleniumEquals(expected, actual);
   }
 
-
-  /**
-   * @deprecated Use {@link #isCaptureScreenShotOnFailure()} instead
-   */
-  @Deprecated
-  protected boolean isCaptureScreetShotOnFailure() {
-    return isCaptureScreenShotOnFailure();
-  }
-
-
   protected boolean isCaptureScreenShotOnFailure() {
     return stb.isCaptureScreenShotOnFailure();
   }
@@ -219,15 +209,6 @@ public class SeleneseTestCase extends TestCase {
   protected String runtimeBrowserString() {
     return stb.runtimeBrowserString();
   }
-
-  /**
-   * @deprecated Use {@link #setCaptureScreenShotOnFailure(boolean)} instead
-   */
-  @Deprecated
-  protected void setCaptureScreetShotOnFailure(boolean b) {
-    setCaptureScreenShotOnFailure(b);
-  }
-
 
   protected void setCaptureScreenShotOnFailure(boolean b) {
     stb.setCaptureScreenShotOnFailure(b);
