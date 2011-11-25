@@ -1,8 +1,7 @@
 package org.openqa.selenium.server.commands;
 
+import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.server.RobotRetriever;
-
-import org.apache.commons.codec.binary.Base64;
 
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -52,9 +51,6 @@ public class CaptureScreenshotToStringCommand {
     outStream = new ByteArrayOutputStream();
     ImageIO.write(bufferedImage, "png", outStream);
 
-    encodedData = Base64.encodeBase64(outStream.toByteArray());
-
-    return new String(encodedData);
+    return new Base64Encoder().encode(outStream.toByteArray());
   }
-
 }

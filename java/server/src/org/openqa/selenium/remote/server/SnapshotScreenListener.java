@@ -19,9 +19,8 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
-
-import org.apache.commons.codec.binary.Base64;
 
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -54,7 +53,8 @@ public class SnapshotScreenListener extends AbstractWebDriverEventListener {
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       ImageIO.write(image, "png", outputStream);
-      encoded = new String(Base64.encodeBase64(outputStream.toByteArray()), "UTF-8");
+
+      encoded = new Base64Encoder().encode(outputStream.toByteArray());
 
       session.attachScreenshot(encoded);
     } catch (Throwable e) {

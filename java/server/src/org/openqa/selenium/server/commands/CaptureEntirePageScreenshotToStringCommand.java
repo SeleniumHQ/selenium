@@ -1,9 +1,8 @@
 package org.openqa.selenium.server.commands;
 
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.server.IOHelper;
-
-import org.apache.commons.codec.binary.Base64;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +44,6 @@ public class CaptureEntirePageScreenshotToStringCommand extends Command {
   @Override
   public String execute() {
     final String filePath;
-    final byte[] encodedData;
     InputStream inputStream = null;
 
     filePath = screenshotFilePath();
@@ -53,8 +51,7 @@ public class CaptureEntirePageScreenshotToStringCommand extends Command {
     capturePageScreenshot(filePath);
 
     try {
-      encodedData = Base64.encodeBase64(IOHelper.readFile(filePath));
-      return "OK," + new String(encodedData);
+      return "OK," + new Base64Encoder().encode(IOHelper.readFile(filePath));
     } catch (IOException e) {
       return "ERROR: " + e;
     } finally {
