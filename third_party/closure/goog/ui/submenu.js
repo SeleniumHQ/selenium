@@ -129,7 +129,7 @@ goog.ui.SubMenu.prototype.alignToEnd_ = true;
 goog.ui.SubMenu.prototype.isPositionAdjustable_ = false;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.SubMenu.prototype.enterDocument = function() {
   goog.ui.SubMenu.superClass_.enterDocument.call(this);
 
@@ -142,7 +142,7 @@ goog.ui.SubMenu.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.SubMenu.prototype.exitDocument = function() {
   this.getHandler().unlisten(this.getParent(), goog.ui.Component.EventType.HIDE,
       this.onParentHidden_);
@@ -159,7 +159,7 @@ goog.ui.SubMenu.prototype.exitDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.SubMenu.prototype.disposeInternal = function() {
   if (this.subMenu_ && !this.externalSubMenu_) {
     this.subMenu_.dispose();
@@ -170,7 +170,7 @@ goog.ui.SubMenu.prototype.disposeInternal = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  * Dismisses the submenu on a delay, with the result that the user needs less
  * accuracy when moving to submenus.  Alternate implementations could use
  * geometry instead of a timer.
@@ -355,7 +355,7 @@ goog.ui.SubMenu.prototype.onParentHidden_ = function(e) {
 
 
 /**
- * @inheritDoc
+ * @override
  * Sets a timer to show the submenu and then dispatches an ENTER event to the
  * parent menu.
  * @param {goog.events.BrowserEvent} e Mouse event to handle.

@@ -172,9 +172,7 @@ goog.dom.ViewportSizeMonitor.prototype.getSize = function() {
 };
 
 
-/**
- * Disposes of the object.
- */
+/** @override */
 goog.dom.ViewportSizeMonitor.prototype.disposeInternal = function() {
   goog.dom.ViewportSizeMonitor.superClass_.disposeInternal.call(this);
 

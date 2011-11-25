@@ -53,7 +53,7 @@ goog.editor.plugins.AbstractDialogPlugin = function(command) {
 goog.inherits(goog.editor.plugins.AbstractDialogPlugin, goog.editor.Plugin);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.AbstractDialogPlugin.prototype.isSupportedCommand =
     function(command) {
   return command == this.command_;
@@ -262,7 +262,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.disposeOriginalSelection =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.AbstractDialogPlugin.prototype.disposeInternal =
     function() {
   this.disposeDialog_();

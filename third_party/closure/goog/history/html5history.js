@@ -179,7 +179,7 @@ goog.history.Html5History.prototype.replaceToken = function(token, opt_title) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.history.Html5History.prototype.disposeInternal = function() {
   goog.events.unlisten(this.window_, goog.events.EventType.POPSTATE,
       this.onHistoryEvent_, false, this);

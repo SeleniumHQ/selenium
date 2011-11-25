@@ -53,7 +53,7 @@ goog.addSingletonGetter(goog.ui.LinkButtonRenderer);
 goog.ui.LinkButtonRenderer.CSS_CLASS = goog.getCssName('goog-link-button');
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.LinkButtonRenderer.prototype.getCssClass = function() {
   return goog.ui.LinkButtonRenderer.CSS_CLASS;
 };

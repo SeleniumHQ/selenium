@@ -129,7 +129,7 @@ goog.ui.MenuItem.prototype.getCaption = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.MenuItem.prototype.handleMouseUp = function(e) {
   var parentMenu = /** @type {goog.ui.Menu} */ (this.getParent());
 

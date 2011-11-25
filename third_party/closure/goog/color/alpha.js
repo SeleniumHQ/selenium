@@ -33,7 +33,7 @@ goog.color.alpha.parse = function(str) {
   var result = {};
   str = String(str);
 
-  var maybeHex = goog.color.prependPoundIfNecessary_(str);
+  var maybeHex = goog.color.prependHashIfNecessaryHelper(str);
   if (goog.color.alpha.isValidAlphaHexColor_(maybeHex)) {
     result.hex = goog.color.alpha.normalizeAlphaHex_(maybeHex);
     result.type = 'hex';
@@ -76,7 +76,7 @@ goog.color.alpha.hexToRgbaStyle = function(hexColor) {
  */
 goog.color.alpha.extractHexColor = function(colorWithAlpha) {
   if (goog.color.alpha.isValidAlphaHexColor_(colorWithAlpha)) {
-    var fullColor = goog.color.prependPoundIfNecessary_(colorWithAlpha);
+    var fullColor = goog.color.prependHashIfNecessaryHelper(colorWithAlpha);
     var normalizedColor = goog.color.alpha.normalizeAlphaHex_(fullColor);
     return normalizedColor.substring(0, 7);
   } else {
@@ -93,7 +93,7 @@ goog.color.alpha.extractHexColor = function(colorWithAlpha) {
  */
 goog.color.alpha.extractAlpha = function(colorWithAlpha) {
   if (goog.color.alpha.isValidAlphaHexColor_(colorWithAlpha)) {
-    var fullColor = goog.color.prependPoundIfNecessary_(colorWithAlpha);
+    var fullColor = goog.color.prependHashIfNecessaryHelper(colorWithAlpha);
     var normalizedColor = goog.color.alpha.normalizeAlphaHex_(fullColor);
     return normalizedColor.substring(7, 9);
   } else {
@@ -162,7 +162,7 @@ goog.color.alpha.rgbaToHex = function(r, g, b, a) {
     throw Error('"(' + r + ',' + g + ',' + b + ',' + a +
         '") is not a valid RGBA color');
   }
-  var hexA = goog.color.prependZeroIfNecessary_(intAlpha.toString(16));
+  var hexA = goog.color.prependZeroIfNecessaryHelper(intAlpha.toString(16));
   return goog.color.rgbToHex(r, g, b) + hexA;
 };
 
@@ -182,7 +182,7 @@ goog.color.alpha.hslaToHex = function(h, s, l, a) {
     throw Error('"(' + h + ',' + s + ',' + l + ',' + a +
         '") is not a valid HSLA color');
   }
-  var hexA = goog.color.prependZeroIfNecessary_(intAlpha.toString(16));
+  var hexA = goog.color.prependZeroIfNecessaryHelper(intAlpha.toString(16));
   return goog.color.hslToHex(h, s / 100, l / 100) + hexA;
 };
 
@@ -195,6 +195,37 @@ goog.color.alpha.hslaToHex = function(h, s, l, a) {
  */
 goog.color.alpha.rgbaArrayToHex = function(rgba) {
   return goog.color.alpha.rgbaToHex(rgba[0], rgba[1], rgba[2], rgba[3]);
+};
+
+
+/**
+ * Converts a color from RGBA to an RGBA style string.
+ * @param {number} r Value of red, in [0, 255].
+ * @param {number} g Value of green, in [0, 255].
+ * @param {number} b Value of blue, in [0, 255].
+ * @param {number} a Value of alpha, in [0, 1].
+ * @return {string} An 'rgba(r,g,b,a)' string ready for use in a CSS rule.
+ */
+goog.color.alpha.rgbaToRgbaStyle = function(r, g, b, a) {
+  if (isNaN(r) || r < 0 || r > 255 ||
+      isNaN(g) || g < 0 || g > 255 ||
+      isNaN(b) || b < 0 || b > 255 ||
+      isNaN(a) || a < 0 || a > 1) {
+    throw Error('"(' + r + ',' + g + ',' + b + ',' + a +
+        ')" is not a valid RGBA color');
+  }
+  return goog.color.alpha.rgbaStyle_([r, g, b, a]);
+};
+
+
+/**
+ * Converts a color from RGBA to an RGBA style string.
+ * @param {(Array.<number>|Float32Array)} rgba Array of [r, g, b, a],
+ *     with r, g, b in [0, 255] and a in [0, 1].
+ * @return {string} An 'rgba(r,g,b,a)' string ready for use in a CSS rule.
+ */
+goog.color.alpha.rgbaArrayToRgbaStyle = function(rgba) {
+  return goog.color.alpha.rgbaToRgbaStyle(rgba[0], rgba[1], rgba[2], rgba[3]);
 };
 
 
@@ -421,7 +452,7 @@ goog.color.alpha.rgbaStyle_ = function(rgba) {
 goog.color.alpha.hsvaToHex = function(h, s, v, a) {
   var alpha = Math.floor(a * 255);
   return goog.color.hsvArrayToHex([h, s, v]) +
-         goog.color.prependZeroIfNecessary_(alpha.toString(16));
+         goog.color.prependZeroIfNecessaryHelper(alpha.toString(16));
 };
 
 

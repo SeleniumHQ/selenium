@@ -109,7 +109,7 @@ goog.ui.MenuRenderer.prototype.getCssClass = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.MenuRenderer.prototype.initializeDom = function(container) {
   goog.ui.MenuRenderer.superClass_.initializeDom.call(this, container);
 

@@ -260,7 +260,7 @@ goog.ui.BasicMenu.prototype.setAnchorElement = function(el, opt_pos,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.BasicMenu.prototype.disposeInternal = function() {
   for (var i = 0; i < this.items_.length; i++) {
     this.items_[i].dispose();
@@ -785,7 +785,7 @@ goog.ui.BasicMenu.Item.prototype.setValue = function(value) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.BasicMenu.Item.prototype.disposeInternal = function() {
   goog.ui.BasicMenu.Item.superClass_.disposeInternal.call(this);
   this.remove();

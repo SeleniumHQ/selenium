@@ -41,6 +41,15 @@ goog.ui.AutoComplete.ArrayMatcher = function(rows, opt_noSimilar) {
 
 
 /**
+ * Replaces the rows that this object searches over.
+ * @param {Array} rows Dictionary of items to match.
+ */
+goog.ui.AutoComplete.ArrayMatcher.prototype.setRows = function(rows) {
+  this.rows_ = rows;
+};
+
+
+/**
  * Function used to pass matches to the autocomplete
  * @param {string} token Token to match.
  * @param {number} maxMatches Max number of matches to return.

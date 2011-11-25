@@ -156,9 +156,7 @@ goog.ui.media.PicasaAlbum.prototype.createDom = function(control) {
   var flash = new goog.ui.media.FlashObject(
       picasaAlbum.getPlayer().getUrl() || '',
       control.getDomHelper());
-  goog.object.forEach(picasaAlbum.getPlayer().getVars(), function(value, key) {
-    flash.setFlashVars(key, value);
-  });
+  flash.addFlashVars(picasaAlbum.getPlayer().getVars());
   flash.render(div);
 
   return div;

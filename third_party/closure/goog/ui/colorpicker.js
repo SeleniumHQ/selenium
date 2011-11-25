@@ -250,7 +250,7 @@ goog.ui.ColorPicker.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ColorPicker.prototype.disposeInternal = function() {
   goog.ui.ColorPicker.superClass_.disposeInternal.call(this);
   if (this.colorPalette_) {

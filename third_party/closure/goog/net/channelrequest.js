@@ -24,9 +24,6 @@
  */
 
 
-/**
- * Namespace for BrowserChannel
- */
 goog.provide('goog.net.ChannelRequest');
 goog.provide('goog.net.ChannelRequest.Error');
 
@@ -381,6 +378,20 @@ goog.net.ChannelRequest.INCOMPLETE_CHUNK_ = {};
 
 
 /**
+ * Returns whether XHR streaming is supported on this browser.
+ *
+ * If XHR streaming is not supported, we will try to use an ActiveXObject
+ * to create a Forever IFrame.
+ *
+ * @return {boolean} Whether XHR streaming is supported.
+ * @see http://code.google.com/p/closure-library/issues/detail?id=346
+ */
+goog.net.ChannelRequest.supportsXhrStreaming = function() {
+  return !goog.userAgent.IE;
+};
+
+
+/**
  * Sets extra HTTP headers to add to all the requests sent to the server.
  *
  * @param {Object} extraHeaders The HTTP headers.
@@ -452,6 +463,9 @@ goog.net.ChannelRequest.prototype.xmlHttpGet = function(uri, decodeChunks,
  * @private
  */
 goog.net.ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
+  this.requestStartTime_ = goog.now();
+  this.ensureWatchDogTimer_();
+
   // clone the base URI to create the request URI. The request uri has the
   // attempt number as a parameter which helps in debugging.
   this.requestUri_ = this.baseUri_.clone();
@@ -483,11 +497,9 @@ goog.net.ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
     }
     this.xmlHttp_.send(this.requestUri_, this.verb_, null, headers);
   }
-  this.requestStartTime_ = goog.now();
   this.channelDebug_.xmlHttpChannelRequest(this.verb_,
       this.requestUri_, this.rid_, this.retryId_,
       this.postData_);
-  this.ensureWatchDogTimer_();
 };
 
 
@@ -531,15 +543,16 @@ goog.net.ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
   // If it is Safari less than 420+, there is a bug that causes null to be
   // in the responseText on ready state interactive so we must wait for
   // ready state complete.
-  if (goog.userAgent.IE || (goog.userAgent.WEBKIT &&
-      !goog.userAgent.isVersion(
-          goog.net.ChannelRequest.MIN_WEBKIT_FOR_INTERACTIVE_))) {
+  if (!goog.net.ChannelRequest.supportsXhrStreaming() ||
+      (goog.userAgent.WEBKIT &&
+       !goog.userAgent.isVersion(
+           goog.net.ChannelRequest.MIN_WEBKIT_FOR_INTERACTIVE_))) {
     if (readyState < goog.net.XmlHttp.ReadyState.COMPLETE) {
       // not yet ready
       return;
     }
   } else {
-    // we get partial results in non-IE browsers on ready state interactive
+    // we get partial results in browsers that support ready state interactive.
     // We also make sure that getResponseText is not null in interactive mode
     // before we continue.  However, we don't do it in Opera because it only
     // fire readyState == INTERACTIVE once.  We need the following code to poll
@@ -780,6 +793,9 @@ goog.net.ChannelRequest.prototype.tridentGet = function(uri,
  * @private
  */
 goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
+  this.requestStartTime_ = goog.now();
+  this.ensureWatchDogTimer_();
+
   this.trident_ = new ActiveXObject('htmlfile');
 
   var hostname = '';
@@ -805,11 +821,8 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
   this.requestUri_.setParameterValue('DOMAIN', hostname);
   this.requestUri_.setParameterValue('t', this.retryId_);
   div.innerHTML = '<iframe src="' + this.requestUri_ + '"></iframe>';
-  this.requestStartTime_ = goog.now();
   this.channelDebug_.tridentChannelRequest('GET',
       this.requestUri_, this.rid_, this.retryId_);
-
-  this.ensureWatchDogTimer_();
 };
 
 

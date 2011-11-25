@@ -130,9 +130,7 @@ goog.testing.MockUserAgent.prototype.uninstall = function() {
 };
 
 
-/**
- * Disposes of the MockUserAgent.
- */
+/** @override */
 goog.testing.MockUserAgent.prototype.disposeInternal = function() {
   this.uninstall();
   delete this.userAgent_;

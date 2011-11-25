@@ -35,23 +35,15 @@
  *
  * Tested to work in:
  * <ul>
- *   <li>Firefox 1.0-3.6</li>
- *   <li>Internet Explorer 5.5-8.0</li>
- *   <li>Opera 9</li>
- *   <li>Safari 1.3-2.0, but not very well.</li>
+ *   <li>Firefox 1.0-4.0
+ *   <li>Internet Explorer 5.5-9.0
+ *   <li>Opera 9+
+ *   <li>Safari 4+
  * </ul>
- *
- * Shipping versions of Safari are incapable of creating and then reading
- * history states due to a browser bug. The bugs have been fixed in Webkit
- * nightly builds (tested on version 420+.) Older Safaris still fire the same
- * navigation events as other browsers while browsing forward, but creates dead
- * history states for going backward. Unfortunately, replacing the location
- * does not seem to help, the history states are created anyway.
  *
  * @see ../demos/history1.html
  * @see ../demos/history2.html
  */
-
 
 /* Some browser specific implementation notes:
  *
@@ -150,9 +142,12 @@
  * in this browser. Holding off on finding a solution for now.
  *
  *
- * Safari (version 3 and later)
- * TODO(brenneman): Investigate Safari 3. It almost works, but the forward
- * button seems to fail.
+ * HTML5 capable browsers (Firefox 4, Chrome, Safari 5)
+ *
+ * No known issues. The goog.history.Html5History class provides a simpler
+ * implementation more suitable for recent browsers. These implementations
+ * should be merged so the history class automatically invokes the correct
+ * implementation.
  */
 
 
@@ -259,13 +254,11 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
   /**
    * The initial page location with an empty hash component. If the page uses
    * a BASE element, setting location.hash directly will navigate away from the
-   * current document. To prevent this, the full path is always specified. The #
-   * character is appended to the base URL, since removing the hash entirely
-   * once it has been set reloads the entire page.
+   * current document. To prevent this, the full path is always specified.
    * @type {string}
    * @private
    */
-  this.baseUrl_ = this.window_.location.href.split('#')[0] + '#';
+  this.baseUrl_ = this.window_.location.href.split('#')[0];
 
   /**
    * The base URL for the hidden iframe. Must refer to a document in the
@@ -413,6 +406,14 @@ goog.History.HAS_ONHASHCHANGE =
 
 
 /**
+ * Whether the browser always requires the hash to be present. Some browsers
+ * will reload the HTML page if the hash is omitted.
+ * @type {boolean}
+ */
+goog.History.HASH_ALWAYS_REQUIRED = goog.userAgent.IE;
+
+
+/**
  * If not null, polling in the user invisible mode will be disabled until this
  * token is seen. This is used to prevent a race condition where the iframe
  * hangs temporarily while the location is changed.
@@ -422,9 +423,7 @@ goog.History.HAS_ONHASHCHANGE =
 goog.History.prototype.lockedToken_ = null;
 
 
-/**
- * Disposes of the object.
- */
+/** @override */
 goog.History.prototype.disposeInternal = function() {
   goog.History.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();
@@ -612,9 +611,9 @@ goog.History.prototype.replaceToken = function(token, opt_title) {
  * @private
  */
 goog.History.prototype.getLocationFragment_ = function(win) {
-  var loc = win.location.href;
-  var index = loc.indexOf('#');
-  return index < 0 ? '' : loc.substring(index + 1);
+  var href = win.location.href;
+  var index = href.indexOf('#');
+  return index < 0 ? '' : href.substring(index + 1);
 };
 
 
@@ -677,17 +676,23 @@ goog.History.prototype.setHistoryState_ = function(token, replace, opt_title) {
  * http://www.whatwg.org/specs/web-apps/current-work/#dom-location-replace
  * http://www.whatwg.org/specs/web-apps/current-work/#replacement-enabled
  *
- * @param {string} hash The new string to set.
+ * @param {string} token The new string to set.
  * @param {boolean=} opt_replace Set to true to replace the current token
  *    without appending a history entry.
  * @private
  */
-goog.History.prototype.setHash_ = function(hash, opt_replace) {
-  // The page is reloaded if the hash is removed, so the '#' must always be
-  // appended to the base URL, even if setting an empty token.
-  var url = this.baseUrl_ + (hash || '');
-
+goog.History.prototype.setHash_ = function(token, opt_replace) {
   var loc = this.window_.location;
+  var url = this.baseUrl_;
+
+  // If a hash has already been set, then removing it programmatically will
+  // reload the page. Once there is a hash, we won't remove it.
+  var hasHash = goog.string.contains(loc.href, '#');
+
+  if (goog.History.HASH_ALWAYS_REQUIRED || hasHash || token) {
+    url += '#' + token;
+  }
+
   if (url != loc.href) {
     if (opt_replace) {
       loc.replace(url);
@@ -938,7 +943,7 @@ goog.History.IFRAME_TEMPLATE_ =
  * @private
  */
 goog.History.INPUT_TEMPLATE_ =
-    '<input type="text" name="%s" id="%s" style="display:none" />';
+    '<input type="text" name="%s" id="%s" style="display:none">';
 
 
 /**

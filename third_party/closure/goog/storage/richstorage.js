@@ -33,7 +33,7 @@ goog.require('goog.storage.mechanism.Mechanism');
 /**
  * Provides a storage for data with attached metadata.
  *
- * @param {goog.storage.mechanism.Mechanism} mechanism The underlying
+ * @param {!goog.storage.mechanism.Mechanism} mechanism The underlying
  *     storage mechanism.
  * @constructor
  * @extends {goog.storage.Storage}
@@ -72,11 +72,11 @@ goog.storage.RichStorage.Wrapper = function(value) {
  * it. No-op if the value is already wrapped or is undefined.
  *
  * @param {*} value The value to wrap.
- * @return {?goog.storage.RichStorage.Wrapper} The wrapper.
+ * @return {(!goog.storage.RichStorage.Wrapper|undefined)} The wrapper.
  */
 goog.storage.RichStorage.Wrapper.wrapIfNecessary = function(value) {
   if (!goog.isDef(value) || value instanceof goog.storage.RichStorage.Wrapper) {
-    return (/** @type {?goog.storage.RichStorage.Wrapper} */ value);
+    return /** @type {(!goog.storage.RichStorage.Wrapper|undefined)} */ value;
   }
   return new goog.storage.RichStorage.Wrapper(value);
 };
@@ -87,7 +87,7 @@ goog.storage.RichStorage.Wrapper.wrapIfNecessary = function(value) {
  * use goog.storage.RichStorage.Wrapper.unwrapIfPossible to handle cases where
  * the wrapper is missing.
  *
- * @param {Object} wrapper The wrapper.
+ * @param {!Object} wrapper The wrapper.
  * @return {*} The wrapped value.
  */
 goog.storage.RichStorage.Wrapper.unwrap = function(wrapper) {
@@ -103,7 +103,7 @@ goog.storage.RichStorage.Wrapper.unwrap = function(wrapper) {
  * Convenience method for unwrapping a value. Returns undefined if the
  * wrapper is missing.
  *
- * @param {?Object} wrapper The wrapper.
+ * @param {(!Object|undefined)} wrapper The wrapper.
  * @return {*} The wrapped value or undefined.
  */
 goog.storage.RichStorage.Wrapper.unwrapIfPossible = function(wrapper) {
@@ -114,7 +114,7 @@ goog.storage.RichStorage.Wrapper.unwrapIfPossible = function(wrapper) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.RichStorage.prototype.set = function(key, value) {
   goog.base(this, 'set', key,
       goog.storage.RichStorage.Wrapper.wrapIfNecessary(value));
@@ -131,19 +131,18 @@ goog.storage.RichStorage.prototype.set = function(key, value) {
  * you know what you are doing when using the returned value.
  *
  * @param {string} key The key to get.
- * @return {?Object} The wrapper, or undefined if not found.
- * @protected
+ * @return {(!Object|undefined)} The wrapper, or undefined if not found.
  */
 goog.storage.RichStorage.prototype.getWrapper = function(key) {
   var wrapper = goog.storage.RichStorage.superClass_.get.call(this, key);
   if (!goog.isDef(wrapper) || wrapper instanceof Object) {
-    return (/** @type {?Object} */ wrapper);
+    return /** @type {(!Object|undefined)} */ wrapper;
   }
   throw goog.storage.ErrorCode.INVALID_VALUE;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.RichStorage.prototype.get = function(key) {
   return goog.storage.RichStorage.Wrapper.unwrapIfPossible(
       this.getWrapper(key));

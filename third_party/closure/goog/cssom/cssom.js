@@ -353,8 +353,8 @@ goog.cssom.addCssText = function(cssText, opt_domHelper) {
     cssNode.styleSheet.cssText = cssText;
   } else {
     // W3C.
-    cssText = document.createTextNode(cssText);
-    cssNode.appendChild(cssText);
+    var cssTextNode = document.createTextNode(cssText);
+    cssNode.appendChild(cssTextNode);
   }
   return cssNode;
 };

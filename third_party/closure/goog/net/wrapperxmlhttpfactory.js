@@ -55,13 +55,13 @@ goog.net.WrapperXmlHttpFactory = function(xhrFactory, optionsFactory) {
 goog.inherits(goog.net.WrapperXmlHttpFactory, goog.net.XmlHttpFactory);
 
 
-/** @inheritDoc */
+/** @override */
 goog.net.WrapperXmlHttpFactory.prototype.createInstance = function() {
   return this.xhrFactory_();
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.net.WrapperXmlHttpFactory.prototype.getOptions = function() {
   return this.optionsFactory_();
 };

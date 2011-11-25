@@ -1,4 +1,4 @@
-// Copyright 2009 The Closure Library Authors. All Rights Reserved.
+// Copyright 2011 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
 /**
  * @fileoverview PseudoRandom provides a mechanism for generating deterministic
  * psuedo random numbers based on a seed. Based on the Park-Miller algorithm.
- * See http://www.cit.gu.edu.au/~anthony/info/C/RandomNumbers and
- * http://www.erikoest.dk/rng.htm.
+ * See http://dx.doi.org/10.1145%2F63039.63042 for details.
  *
  */
 
@@ -39,13 +38,10 @@ goog.require('goog.Disposable');
 goog.testing.PseudoRandom = function(opt_seed, opt_install) {
   goog.Disposable.call(this);
 
-  /**
-   * The sequence of numbers to be returned by calls to random()
-   * @type {number}
-   * @private
-   */
-  this.seed_ = opt_seed ||
-               goog.testing.PseudoRandom.seedUniquifier_++ + goog.now();
+  if (!goog.isDef(opt_seed)) {
+    opt_seed = goog.testing.PseudoRandom.seedUniquifier_++ + goog.now();
+  }
+  this.seed(opt_seed);
 
   if (opt_install) {
     this.install();
@@ -91,10 +87,20 @@ goog.testing.PseudoRandom.R = 3399;
 
 
 /**
- * Constant used as part of the algorithm to get values between 0 and 1.
+ * Constant used as part of the algorithm to get values from range [0, 1).
  * @type {number}
  */
-goog.testing.PseudoRandom.ONE_OVER_M = 1.0 / goog.testing.PseudoRandom.M;
+goog.testing.PseudoRandom.ONE_OVER_M_MINUS_ONE =
+    1.0 / (goog.testing.PseudoRandom.M - 1);
+
+
+/**
+ * The seed of the random sequence and also the next returned value (before
+ * normalization). Must be between 1 and M - 1 (inclusive).
+ * @type {number}
+ * @private
+ */
+goog.testing.PseudoRandom.prototype.seed_ = 1;
 
 
 /**
@@ -125,9 +131,7 @@ goog.testing.PseudoRandom.prototype.install = function() {
 };
 
 
-/**
- * Disposes of the MockRandom.
- */
+/** @override */
 goog.testing.PseudoRandom.prototype.disposeInternal = function() {
   goog.testing.PseudoRandom.superClass_.disposeInternal.call(this);
   this.uninstall();
@@ -146,10 +150,23 @@ goog.testing.PseudoRandom.prototype.uninstall = function() {
 
 
 /**
+ * Seed the generator.
+ *
+ * @param {number=} seed The seed to use.
+ */
+goog.testing.PseudoRandom.prototype.seed = function(seed) {
+  this.seed_ = seed % (goog.testing.PseudoRandom.M - 1);
+  if (this.seed_ <= 0) {
+    this.seed_ += goog.testing.PseudoRandom.M - 1;
+  }
+};
+
+
+/**
  * @return {number} The next number in the sequence.
  */
 goog.testing.PseudoRandom.prototype.random = function() {
-  var hi = this.seed_ / goog.testing.PseudoRandom.Q;
+  var hi = Math.floor(this.seed_ / goog.testing.PseudoRandom.Q);
   var lo = this.seed_ % goog.testing.PseudoRandom.Q;
   var test = goog.testing.PseudoRandom.A * lo -
              goog.testing.PseudoRandom.R * hi;
@@ -158,5 +175,5 @@ goog.testing.PseudoRandom.prototype.random = function() {
   } else {
     this.seed_ = test + goog.testing.PseudoRandom.M;
   }
-  return this.seed_ * goog.testing.PseudoRandom.ONE_OVER_M;
+  return (this.seed_ - 1) * goog.testing.PseudoRandom.ONE_OVER_M_MINUS_ONE;
 };

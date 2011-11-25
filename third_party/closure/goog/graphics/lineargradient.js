@@ -21,6 +21,7 @@
 goog.provide('goog.graphics.LinearGradient');
 
 
+goog.require('goog.asserts');
 goog.require('goog.graphics.Fill');
 
 
@@ -34,10 +35,14 @@ goog.require('goog.graphics.Fill');
  * @param {number} y2 End Y position of the gradient.
  * @param {string} color1 Start color of the gradient.
  * @param {string} color2 End color of the gradient.
+ * @param {?number=} opt_opacity1 Start opacity of the gradient, both or neither
+ *     of opt_opacity1 and opt_opacity2 have to be set.
+ * @param {?number=} opt_opacity2 End opacity of the gradient.
  * @constructor
  * @extends {goog.graphics.Fill}
  */
-goog.graphics.LinearGradient = function(x1, y1, x2, y2, color1, color2) {
+goog.graphics.LinearGradient =
+    function(x1, y1, x2, y2, color1, color2, opt_opacity1, opt_opacity2) {
   /**
    * Start X position of the gradient.
    * @type {number}
@@ -79,6 +84,24 @@ goog.graphics.LinearGradient = function(x1, y1, x2, y2, color1, color2) {
    * @private
    */
   this.color2_ = color2;
+
+  goog.asserts.assert(
+      goog.isNumber(opt_opacity1) == goog.isNumber(opt_opacity2),
+      'Both or neither of opt_opacity1 and opt_opacity2 have to be set.');
+
+  /**
+   * Start opacity of the gradient.
+   * @type {?number}
+   * @private
+   */
+  this.opacity1_ = goog.isDef(opt_opacity1) ? opt_opacity1 : null;
+
+  /**
+   * End opacity of the gradient.
+   * @type {?number}
+   * @private
+   */
+  this.opacity2_ = goog.isDef(opt_opacity2) ? opt_opacity2 : null;
 };
 goog.inherits(goog.graphics.LinearGradient, goog.graphics.Fill);
 
@@ -128,4 +151,20 @@ goog.graphics.LinearGradient.prototype.getColor1 = function() {
  */
 goog.graphics.LinearGradient.prototype.getColor2 = function() {
   return this.color2_;
+};
+
+
+/**
+ * @return {?number} The start opacity of the gradient.
+ */
+goog.graphics.LinearGradient.prototype.getOpacity1 = function() {
+  return this.opacity1_;
+};
+
+
+/**
+ * @return {?number} The end opacity of the gradient.
+ */
+goog.graphics.LinearGradient.prototype.getOpacity2 = function() {
+  return this.opacity2_;
 };

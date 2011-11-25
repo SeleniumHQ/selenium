@@ -134,7 +134,7 @@ goog.graphics.AffineTransform.prototype.copyFrom = function(tx) {
 
 
 /**
- * Concatentates this transform with a scaling transformation.
+ * Concatenates this transform with a scaling transformation.
  *
  * @param {number} sx The x-axis scaling factor.
  * @param {number} sy The y-axis scaling factor.
@@ -150,7 +150,32 @@ goog.graphics.AffineTransform.prototype.scale = function(sx, sy) {
 
 
 /**
- * Concatentates this transform with a translate transformation.
+ * Pre-concatenates this transform with a scaling transformation,
+ * i.e. calculates the following matrix product:
+ *
+ * <pre>
+ * [sx  0 0] [m00 m01 m02]
+ * [ 0 sy 0] [m10 m11 m12]
+ * [ 0  0 1] [  0   0   1]
+ * </pre>
+ *
+ * @param {number} sx The x-axis scaling factor.
+ * @param {number} sy The y-axis scaling factor.
+ * @return {!goog.graphics.AffineTransform} This affine transform.
+ */
+goog.graphics.AffineTransform.prototype.preScale = function(sx, sy) {
+  this.m00_ *= sx;
+  this.m01_ *= sx;
+  this.m02_ *= sx;
+  this.m10_ *= sy;
+  this.m11_ *= sy;
+  this.m12_ *= sy;
+  return this;
+};
+
+
+/**
+ * Concatenates this transform with a translate transformation.
  *
  * @param {number} dx The distance to translate in the x direction.
  * @param {number} dy The distance to translate in the y direction.
@@ -164,7 +189,28 @@ goog.graphics.AffineTransform.prototype.translate = function(dx, dy) {
 
 
 /**
- * Concatentates this transform with a rotation transformation around an anchor
+ * Pre-concatenates this transform with a translate transformation,
+ * i.e. calculates the following matrix product:
+ *
+ * <pre>
+ * [1 0 dx] [m00 m01 m02]
+ * [0 1 dy] [m10 m11 m12]
+ * [0 0  1] [  0   0   1]
+ * </pre>
+ *
+ * @param {number} dx The distance to translate in the x direction.
+ * @param {number} dy The distance to translate in the y direction.
+ * @return {!goog.graphics.AffineTransform} This affine transform.
+ */
+goog.graphics.AffineTransform.prototype.preTranslate = function(dx, dy) {
+  this.m02_ += dx;
+  this.m12_ += dy;
+  return this;
+};
+
+
+/**
+ * Concatenates this transform with a rotation transformation around an anchor
  * point.
  *
  * @param {number} theta The angle of rotation measured in radians.
@@ -179,7 +225,22 @@ goog.graphics.AffineTransform.prototype.rotate = function(theta, x, y) {
 
 
 /**
- * Concatentates this transform with a shear transformation.
+ * Pre-concatenates this transform with a rotation transformation around an
+ * anchor point.
+ *
+ * @param {number} theta The angle of rotation measured in radians.
+ * @param {number} x The x coordinate of the anchor point.
+ * @param {number} y The y coordinate of the anchor point.
+ * @return {!goog.graphics.AffineTransform} This affine transform.
+ */
+goog.graphics.AffineTransform.prototype.preRotate = function(theta, x, y) {
+  return this.preConcatenate(
+      goog.graphics.AffineTransform.getRotateInstance(theta, x, y));
+};
+
+
+/**
+ * Concatenates this transform with a shear transformation.
  *
  * @param {number} shx The x shear factor.
  * @param {number} shy The y shear factor.
@@ -192,6 +253,34 @@ goog.graphics.AffineTransform.prototype.shear = function(shx, shy) {
   this.m10_ += shy * this.m11_;
   this.m01_ += shx * m00;
   this.m11_ += shx * m10;
+  return this;
+};
+
+
+/**
+ * Pre-concatenates this transform with a shear transformation.
+ * i.e. calculates the following matrix product:
+ *
+ * <pre>
+ * [  1 shx 0] [m00 m01 m02]
+ * [shy   1 0] [m10 m11 m12]
+ * [  0   0 1] [  0   0   1]
+ * </pre>
+ *
+ * @param {number} shx The x shear factor.
+ * @param {number} shy The y shear factor.
+ * @return {!goog.graphics.AffineTransform} This affine transform.
+ */
+goog.graphics.AffineTransform.prototype.preShear = function(shx, shy) {
+  var m00 = this.m00_;
+  var m01 = this.m01_;
+  var m02 = this.m02_;
+  this.m00_ += shx * this.m10_;
+  this.m01_ += shx * this.m11_;
+  this.m02_ += shx * this.m12_;
+  this.m10_ += shy * m00;
+  this.m11_ += shy * m01;
+  this.m12_ += shy * m02;
   return this;
 };
 

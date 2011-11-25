@@ -82,7 +82,7 @@ goog.ui.AttachableMenu.prototype.selectedItemClassName_ = 'menu-item-selected';
 goog.ui.AttachableMenu.prototype.lastKeyDown_ = goog.now();
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.AttachableMenu.prototype.disposeInternal = function() {
   goog.ui.AttachableMenu.superClass_.disposeInternal.call(this);
   this.selectedElement_ = null;
@@ -188,7 +188,7 @@ goog.ui.AttachableMenu.prototype.setSelectedItem = function(elt) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.AttachableMenu.prototype.showPopupElement = function() {
   // The scroll position cannot be set for hidden (display: none) elements in
   // gecko browsers.

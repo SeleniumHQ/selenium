@@ -257,14 +257,14 @@ goog.ui.Textarea.prototype.getValue = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Textarea.prototype.setContent = function(content) {
   goog.ui.Textarea.superClass_.setContent.call(this, content);
   this.resize();
 };
 
 
-/** @inheritDoc **/
+/** @override **/
 goog.ui.Textarea.prototype.setEnabled = function(enable) {
   goog.ui.Textarea.superClass_.setEnabled.call(this, enable);
   this.getElement().disabled = !enable;
@@ -281,7 +281,7 @@ goog.ui.Textarea.prototype.resize = function() {
 };
 
 
-/** @inheritDoc **/
+/** @override **/
 goog.ui.Textarea.prototype.enterDocument = function() {
   var textarea = this.getElement();
 

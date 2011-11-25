@@ -25,6 +25,7 @@ goog.provide('goog.fs.FileSaver.ReadyState');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.fs.Error');
+goog.require('goog.fs.ProgressEvent');
 
 
 
@@ -156,59 +157,20 @@ goog.fs.FileSaver.prototype.getError = function() {
  * @private
  */
 goog.fs.FileSaver.prototype.dispatchProgressEvent_ = function(event) {
-  this.dispatchEvent(new goog.fs.FileSaver.ProgressEvent(event, this));
+  this.dispatchEvent(new goog.fs.ProgressEvent(event, this));
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fs.FileSaver.prototype.disposeInternal = function() {
   delete this.saver_;
   goog.base(this, 'disposeInternal');
 };
 
 
-
 /**
  * A wrapper for the progress events emitted by the FileSaver.
  *
- * @param {!ProgressEvent} event The underlying event object.
- * @param {!goog.fs.FileSaver} target The FileSaver emitting the event.
- * @extends {goog.events.Event}
- * @constructor
+ * @deprecated Use {goog.fs.ProgressEvent}.
  */
-goog.fs.FileSaver.ProgressEvent = function(event, target) {
-  goog.base(this, event.type, target);
-
-  /**
-   * The underlying event object.
-   * @type {!ProgressEvent}
-   * @private
-   */
-  this.event_ = event;
-};
-goog.inherits(goog.fs.FileSaver.ProgressEvent, goog.events.Event);
-
-
-/**
- * @return {boolean} Whether or not the total size of the of the file being
- *     saved is known.
- */
-goog.fs.FileSaver.ProgressEvent.prototype.isLengthComputable = function() {
-  return this.event_.lengthComputable;
-};
-
-
-/**
- * @return {number} The number of bytes saved so far.
- */
-goog.fs.FileSaver.ProgressEvent.prototype.getLoaded = function() {
-  return this.event_.loaded;
-};
-
-
-/**
- * @return {number} The total number of bytes in the file being saved.
- */
-goog.fs.FileSaver.ProgressEvent.prototype.getTotal = function() {
-  return this.event_.total;
-};
+goog.fs.FileSaver.ProgressEvent = goog.fs.ProgressEvent;

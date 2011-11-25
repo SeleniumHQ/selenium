@@ -46,7 +46,7 @@ goog.vec.Quaternion.create = goog.vec.Vec4.create;
  * array.
  *
  * @param {goog.vec.ArrayType} vec The source 4 element array.
- * @return {goog.vec.Quaternion.Type} The new quaternion.
+ * @return {!goog.vec.Quaternion.Type} The new quaternion.
  */
 goog.vec.Quaternion.createFromArray =
     goog.vec.Vec4.createFromArray;
@@ -59,7 +59,7 @@ goog.vec.Quaternion.createFromArray =
  * @param {number} v1 The value for element at index 1.
  * @param {number} v2 The value for element at index 2.
  * @param {number} v3 The value for element at index 3.
- * @return {goog.vec.Quaternion.Type} The new quaternion.
+ * @return {!goog.vec.Quaternion.Type} The new quaternion.
  */
 goog.vec.Quaternion.createFromValues =
     goog.vec.Vec4.createFromValues;

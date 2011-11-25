@@ -36,6 +36,7 @@
 goog.provide('goog.structs.Heap');
 
 goog.require('goog.array');
+goog.require('goog.object');
 goog.require('goog.structs.Node');
 
 
@@ -162,7 +163,7 @@ goog.structs.Heap.prototype.moveDown_ = function(index) {
   // Save the node being moved down.
   var node = nodes[index];
   // While the current node has a child.
-  while (index < Math.floor(count / 2)) {
+  while (index < (count >> 1)) {
     var leftChildIndex = this.getLeftChildIndex_(index);
     var rightChildIndex = this.getRightChildIndex_(index);
 
@@ -238,7 +239,7 @@ goog.structs.Heap.prototype.getRightChildIndex_ = function(index) {
  * @private
  */
 goog.structs.Heap.prototype.getParentIndex_ = function(index) {
-  return Math.floor((index - 1) / 2);
+  return (index - 1) >> 1;
 };
 
 

@@ -843,7 +843,7 @@ goog.ui.SplitPane.prototype.handleDoubleClick_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.SplitPane.prototype.disposeInternal = function() {
   goog.ui.SplitPane.superClass_.disposeInternal.call(this);
 

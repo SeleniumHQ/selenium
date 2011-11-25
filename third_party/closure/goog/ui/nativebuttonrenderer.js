@@ -41,7 +41,7 @@ goog.inherits(goog.ui.NativeButtonRenderer, goog.ui.ButtonRenderer);
 goog.addSingletonGetter(goog.ui.NativeButtonRenderer);
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.NativeButtonRenderer.prototype.getAriaRole = function() {
   // Native buttons don't need ARIA roles to be recognized by screen readers.
   return undefined;
@@ -80,7 +80,7 @@ goog.ui.NativeButtonRenderer.prototype.canDecorate = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.NativeButtonRenderer.prototype.decorate = function(button, element) {
   this.setUpNativeButton_(button);
   if (element.disabled) {
@@ -95,7 +95,7 @@ goog.ui.NativeButtonRenderer.prototype.decorate = function(button, element) {
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons natively support BiDi and keyboard focus.
  * @suppress {visibility} getHandler and performActionInternal
  */
@@ -110,7 +110,7 @@ goog.ui.NativeButtonRenderer.prototype.initializeDom = function(button) {
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons don't support text selection.
  */
 goog.ui.NativeButtonRenderer.prototype.setAllowTextSelection =
@@ -118,14 +118,14 @@ goog.ui.NativeButtonRenderer.prototype.setAllowTextSelection =
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons natively support right-to-left rendering.
  */
 goog.ui.NativeButtonRenderer.prototype.setRightToLeft = goog.nullFunction;
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons are always focusable as long as they are enabled.
  */
 goog.ui.NativeButtonRenderer.prototype.isFocusable = function(button) {
@@ -134,14 +134,14 @@ goog.ui.NativeButtonRenderer.prototype.isFocusable = function(button) {
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons natively support keyboard focus.
  */
 goog.ui.NativeButtonRenderer.prototype.setFocusable = goog.nullFunction;
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons also expose the DISABLED state in the HTML button's
  * {@code disabled} attribute.
  */
@@ -157,7 +157,7 @@ goog.ui.NativeButtonRenderer.prototype.setState = function(button, state,
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons store their value in the HTML button's {@code value}
  * attribute.
  */
@@ -170,7 +170,7 @@ goog.ui.NativeButtonRenderer.prototype.getValue = function(element) {
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons also expose their value in the HTML button's {@code value}
  * attribute.
  */
@@ -185,7 +185,7 @@ goog.ui.NativeButtonRenderer.prototype.setValue = function(element, value) {
 
 
 /**
- * @inheritDoc
+ * @override
  * Native buttons don't need ARIA states to support accessibility, so this is
  * a no-op.
  */

@@ -2312,7 +2312,7 @@ proto2.TestAllTypes.prototype.clearRepeatedInt64String = function() {
  * @enum {number}
  */
 proto2.TestAllTypes.NestedEnum = {
-  FOO: 1,
+  FOO: 0,
   BAR: 2,
   BAZ: 3
 };

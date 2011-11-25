@@ -40,7 +40,7 @@ goog.ui.FormPost = function(opt_dom) {
 goog.inherits(goog.ui.FormPost, goog.ui.Component);
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FormPost.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom(goog.dom.TagName.FORM,
       {'method': 'POST', 'style': 'display:none'}));

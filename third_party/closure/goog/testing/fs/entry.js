@@ -28,6 +28,7 @@ goog.require('goog.async.Deferred');
 goog.require('goog.fs.DirectoryEntry');
 goog.require('goog.fs.DirectoryEntry.Behavior');
 goog.require('goog.fs.Error');
+goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.testing.fs.File');
@@ -174,6 +175,15 @@ goog.testing.fs.Entry.prototype.clone = goog.abstractMethod;
 
 
 /**
+ * @see {goog.fs.Entry#toUrl}
+ * @return {string}
+ */
+goog.testing.fs.Entry.prototype.toUrl = function(opt_mimetype) {
+  return 'fakefilesystem:' + this.getFullPath();
+};
+
+
+/**
  * @see {goog.fs.Entry#remove}
  * @return {!goog.async.Deferred}
  */
@@ -257,19 +267,19 @@ goog.testing.fs.DirectoryEntry = function(fs, parent, name, children) {
 goog.inherits(goog.testing.fs.DirectoryEntry, goog.testing.fs.Entry);
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.isFile = function() {
   return false;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.isDirectory = function() {
   return true;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.getLastModified = function() {
   var msg = 'reading last modified date for ' + this.getFullPath();
   return this.checkNotDeleted(msg).
@@ -277,14 +287,14 @@ goog.testing.fs.DirectoryEntry.prototype.getLastModified = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.clone = function() {
   return new goog.testing.fs.DirectoryEntry(
       this.getFileSystem(), this.parent, this.getName(), this.children);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.DirectoryEntry.prototype.remove = function() {
   if (!goog.object.isEmpty(this.children)) {
     var d = new goog.async.Deferred();
@@ -423,7 +433,7 @@ goog.testing.fs.DirectoryEntry.prototype.createDirectorySync = function(path) {
 goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
     path, behavior, isFile, createFn) {
   // Filter out leading, trailing, and duplicate slashes.
-  var components = goog.array.filter(path.split('/'), goog.identityFunction);
+  var components = goog.array.filter(path.split('/'), goog.functions.identity);
 
   var basename = /** @type {string} */ (goog.array.peek(components)) || '';
   var dir = goog.string.startsWith(path, '/') ?
@@ -548,19 +558,19 @@ goog.testing.fs.FileEntry = function(fs, parent, name, data) {
 goog.inherits(goog.testing.fs.FileEntry, goog.testing.fs.Entry);
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.isFile = function() {
   return true;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.isDirectory = function() {
   return false;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.clone = function() {
   return new goog.testing.fs.FileEntry(
       this.getFileSystem(), this.parent,
@@ -568,7 +578,7 @@ goog.testing.fs.FileEntry.prototype.clone = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.fs.FileEntry.prototype.getLastModified = function() {
   return this.file().addCallback(function(file) {
     return file.lastModifiedDate;

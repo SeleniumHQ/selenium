@@ -57,7 +57,7 @@ goog.ui.editor.Bubble = function(parent, zIndex) {
    * @type {!goog.dom.DomHelper}
    * @private
    */
-  this.dom_ = new goog.dom.getDomHelper(parent);
+  this.dom_ = goog.dom.getDomHelper(parent);
 
   /**
    * Event handler for this bubble.
@@ -158,7 +158,7 @@ goog.ui.editor.Bubble.prototype.logger =
     goog.debug.Logger.getLogger('goog.ui.editor.Bubble');
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.editor.Bubble.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
 

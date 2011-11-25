@@ -86,7 +86,7 @@ goog.messaging.LoggerServer.prototype.log_ = function(args) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.LoggerServer.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
   this.channel_.registerService(this.serviceName_, goog.nullFunction, true);

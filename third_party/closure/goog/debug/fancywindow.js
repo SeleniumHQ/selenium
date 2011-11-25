@@ -32,6 +32,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.debug.Logger.Level');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('goog.userAgent');
 
 
@@ -351,7 +352,11 @@ goog.debug.FancyWindow.prototype.readOptionsFromLocalStorage_ = function() {
 goog.debug.FancyWindow.getStoredKeys_ = function() {
   var storedKeys = {};
   for (var i = 0, len = window.localStorage.length; i < len; i++) {
-    storedKeys[window.localStorage.key(i)] = true;
+    var key = window.localStorage.key(i);
+    if (key != null && goog.string.startsWith(
+        key, goog.debug.FancyWindow.LOCAL_STORE_PREFIX)) {
+      storedKeys[key] = true;
+    }
   }
   return storedKeys;
 };

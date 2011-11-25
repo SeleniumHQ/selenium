@@ -140,43 +140,43 @@ goog.dom.browserrange.W3cRange.prototype.clone = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getBrowserRange = function() {
   return this.range_;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getContainer = function() {
   return this.range_.commonAncestorContainer;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getStartNode = function() {
   return this.range_.startContainer;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getStartOffset = function() {
   return this.range_.startOffset;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getEndNode = function() {
   return this.range_.endContainer;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getEndOffset = function() {
   return this.range_.endOffset;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.compareBrowserRangeEndpoints =
     function(range, thisEndpoint, otherEndpoint) {
   return this.range_.compareBoundaryPoints(
@@ -191,19 +191,19 @@ goog.dom.browserrange.W3cRange.prototype.compareBrowserRangeEndpoints =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.isCollapsed = function() {
   return this.range_.collapsed;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getText = function() {
   return this.range_.toString();
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.getValidHtml = function() {
   var div = goog.dom.getDomHelper(this.range_.startContainer).createDom('div');
   div.appendChild(this.range_.cloneContents());
@@ -231,7 +231,7 @@ goog.dom.browserrange.W3cRange.prototype.getValidHtml = function() {
 // SELECTION MODIFICATION
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.select = function(reverse) {
   var win = goog.dom.getWindow(goog.dom.getOwnerDocument(this.getStartNode()));
   this.selectInternal(win.getSelection(), reverse);
@@ -254,7 +254,7 @@ goog.dom.browserrange.W3cRange.prototype.selectInternal = function(selection,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.removeContents = function() {
   var range = this.range_;
   range.extractContents();
@@ -278,14 +278,14 @@ goog.dom.browserrange.W3cRange.prototype.removeContents = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.surroundContents = function(element) {
   this.range_.surroundContents(element);
   return element;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.insertNode = function(node, before) {
   var range = this.range_.cloneRange();
   range.collapse(before);
@@ -296,7 +296,7 @@ goog.dom.browserrange.W3cRange.prototype.insertNode = function(node, before) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.surroundWithNodes = function(
     startNode, endNode) {
   var win = goog.dom.getWindow(
@@ -358,7 +358,7 @@ goog.dom.browserrange.W3cRange.prototype.surroundWithNodes = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.W3cRange.prototype.collapse = function(toStart) {
   this.range_.collapse(toStart);
 };

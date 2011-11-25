@@ -29,7 +29,7 @@
 
 .goog-palette-cell-selected .goog-palette-colorswatch {
   /* Client apps may override the URL at which they serve the sprite. */
-  background: url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -368px 0;
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -368px 0;
   border: 1px solid #333;
   color: #fff;
   font-weight: bold;

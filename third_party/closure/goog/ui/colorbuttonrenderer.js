@@ -36,7 +36,7 @@ goog.ui.ColorButtonRenderer = function() {
   goog.base(this);
 
   /**
-   * @inheritDoc
+   * @override
    */
   // TODO(user): enable disabling the dropdown in goog.ui.ColorMenuButton
   this.createDropdown = goog.functions.NULL;
@@ -54,7 +54,7 @@ goog.addSingletonGetter(goog.ui.ColorButtonRenderer);
 goog.ui.ColorButtonRenderer.CSS_CLASS = goog.getCssName('goog-color-button');
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ColorButtonRenderer.prototype.createCaption = function(content, dom) {
   var caption = goog.base(this, 'createCaption', content, dom);
   goog.dom.classes.add(caption, goog.ui.ColorButtonRenderer.CSS_CLASS);
@@ -62,7 +62,7 @@ goog.ui.ColorButtonRenderer.prototype.createCaption = function(content, dom) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ColorButtonRenderer.prototype.initializeDom = function(button) {
   goog.base(this, 'initializeDom', button);
   goog.dom.classes.add(button.getElement(),

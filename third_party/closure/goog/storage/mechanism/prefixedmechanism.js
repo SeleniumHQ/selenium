@@ -28,7 +28,7 @@ goog.require('goog.storage.mechanism.IterableMechanism');
 /**
  * Wraps an iterable storage mechanism and creates artificial namespaces.
  *
- * @param {goog.storage.mechanism.IterableMechanism} mechanism Underlying
+ * @param {!goog.storage.mechanism.IterableMechanism} mechanism Underlying
  *     iterable storage mechanism.
  * @param {string} prefix Prefix for creating an artificial namespace.
  * @constructor
@@ -61,25 +61,25 @@ goog.storage.mechanism.PrefixedMechanism.prototype.mechanism_ = null;
 goog.storage.mechanism.PrefixedMechanism.prototype.prefix_ = '';
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.PrefixedMechanism.prototype.set = function(key, value) {
   this.mechanism_.set(this.prefix_ + key, value);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.PrefixedMechanism.prototype.get = function(key) {
   return this.mechanism_.get(this.prefix_ + key);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.PrefixedMechanism.prototype.remove = function(key) {
   this.mechanism_.remove(this.prefix_ + key);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.PrefixedMechanism.prototype.__iterator__ = function(
     opt_keys) {
   var subIter = this.mechanism_.__iterator__(true);

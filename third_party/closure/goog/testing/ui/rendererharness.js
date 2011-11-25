@@ -155,6 +155,7 @@ goog.testing.ui.RendererHarness.prototype.assertDomMatches = function() {
 /**
  * Destroy the harness, verifying that all assertions had been checked.
  * @override
+ * @protected
  */
 goog.testing.ui.RendererHarness.prototype.disposeInternal = function() {
   // If the harness was not verified appropriately, throw an exception.

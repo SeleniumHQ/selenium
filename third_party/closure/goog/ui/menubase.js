@@ -68,7 +68,7 @@ goog.ui.MenuBase.Events = {};
 goog.ui.MenuBase.Events.ITEM_ACTION = 'itemaction';
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.MenuBase.prototype.disposeInternal = function() {
   goog.ui.MenuBase.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();

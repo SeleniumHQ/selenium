@@ -67,7 +67,7 @@ goog.structs.PriorityPool.prototype.delayTimeout_;
 goog.structs.PriorityPool.DEFAULT_PRIORITY_ = 100;
 
 
-/** @inheritDoc */
+/** @override */
 goog.structs.PriorityPool.prototype.setDelay = function(delay) {
   goog.base(this, 'setDelay', delay);
 
@@ -170,9 +170,7 @@ goog.structs.PriorityPool.prototype.adjustForMinMax = function() {
 };
 
 
-/**
- * Disposes of the pool.
- */
+/** @override */
 goog.structs.PriorityPool.prototype.disposeInternal = function() {
   goog.structs.PriorityPool.superClass_.disposeInternal.call(this);
   goog.global.clearTimeout(this.delayTimeout_);

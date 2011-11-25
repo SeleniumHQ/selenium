@@ -19,21 +19,21 @@
  * Example:
  * <pre>
  * function Something() {
- *   goog.events.EventHandler.call(this);
+ *   goog.base(this);
  *
  *   ... set up object ...
  *
  *   // Add event listeners
- *   this.listen(this.starEl, 'click', this.handleStar);
- *   this.listen(this.headerEl, 'click', this.expand);
- *   this.listen(this.collapseEl, 'click', this.collapse);
- *   this.listen(this.infoEl, 'mouseover', this.showHover);
- *   this.listen(this.infoEl, 'mouseout', this.hideHover);
+ *   this.listen(this.starEl, goog.events.EventType.CLICK, this.handleStar);
+ *   this.listen(this.headerEl, goog.events.EventType.CLICK, this.expand);
+ *   this.listen(this.collapseEl, goog.events.EventType.CLICK, this.collapse);
+ *   this.listen(this.infoEl, goog.events.EventType.MOUSEOVER, this.showHover);
+ *   this.listen(this.infoEl, goog.events.EventType.MOUSEOUT, this.hideHover);
  * }
  * goog.inherits(Something, goog.events.EventHandler);
  *
  * Something.prototype.disposeInternal = function() {
- *   Something.superClass_.disposeInternal.call(this);
+ *   goog.base(this, 'disposeInternal');
  *   goog.dom.removeNode(this.container);
  * };
  *
@@ -58,19 +58,16 @@
 goog.provide('goog.events.EventHandler');
 
 goog.require('goog.Disposable');
+goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventWrapper');
-goog.require('goog.object');
-goog.require('goog.structs.SimplePool');
 
 
 
 /**
  * Super class for objects that want to easily manage a number of event
  * listeners.  It allows a short cut to listen and also provides a quick way
- * to remove all events listeners belonging to this object. It is optimized to
- * use less objects if only one event is being listened to, but if that's the
- * case, it may not be worth using the EventHandler anyway.
+ * to remove all events listeners belonging to this object.
  * @param {Object=} opt_handler Object in whose scope to call the listeners.
  * @constructor
  * @extends {goog.Disposable}
@@ -78,54 +75,15 @@ goog.require('goog.structs.SimplePool');
 goog.events.EventHandler = function(opt_handler) {
   goog.Disposable.call(this);
   this.handler_ = opt_handler;
+
+  /**
+   * Keys for events that are being listened to.
+   * @type {Array.<number>}
+   * @private
+   */
+  this.keys_ = [];
 };
 goog.inherits(goog.events.EventHandler, goog.Disposable);
-
-
-/**
- * Initial count for the keyPool_
- * @type {number}
- */
-goog.events.EventHandler.KEY_POOL_INITIAL_COUNT = 0;
-
-
-/**
- * Max count for the keyPool_
- * @type {number}
- */
-goog.events.EventHandler.KEY_POOL_MAX_COUNT = 100;
-
-
-/**
- * SimplePool to cache the key object. This was implemented to make IE6
- * performance better and removed an object allocation in the listen method
- * when in steady state.
- * @type {goog.structs.SimplePool}
- * @private
- */
-goog.events.EventHandler.keyPool_ = new goog.structs.SimplePool(
-    goog.events.EventHandler.KEY_POOL_INITIAL_COUNT,
-    goog.events.EventHandler.KEY_POOL_MAX_COUNT);
-
-
-/**
- * Keys for events that are being listened to. This is used once there are more
- * than one event to listen to. If there is only one event to listen to, key_
- * is used.
- * @type {Object}
- * @private
- */
-goog.events.EventHandler.keys_ = null;
-
-
-/**
- * Keys for event that is being listened to if only one event is being listened
- * to. This is a performance optimization to avoid creating an extra object
- * if not necessary.
- * @type {?string}
- * @private
- */
-goog.events.EventHandler.key_ = null;
 
 
 /**
@@ -159,11 +117,13 @@ goog.events.EventHandler.prototype.listen = function(src, type, opt_fn,
     type = goog.events.EventHandler.typeArray_;
   }
   for (var i = 0; i < type.length; i++) {
+    // goog.events.listen generates unique keys so we don't have to check their
+    // presence in the this.keys_ array.
     var key = (/** @type {number} */
         goog.events.listen(src, type[i], opt_fn || this,
                            opt_capture || false,
                            opt_handler || this.handler_ || this));
-    this.recordListenerKey_(key);
+    this.keys_.push(key);
   }
 
   return this;
@@ -194,10 +154,9 @@ goog.events.EventHandler.prototype.listenOnce = function(src, type, opt_fn,
     }
   } else {
     var key = (/** @type {number} */
-        goog.events.listenOnce(src, type, opt_fn || this,
-                               opt_capture || false,
+        goog.events.listenOnce(src, type, opt_fn || this, opt_capture,
                                opt_handler || this.handler_ || this));
-    this.recordListenerKey_(key);
+    this.keys_.push(key);
   }
 
   return this;
@@ -228,25 +187,10 @@ goog.events.EventHandler.prototype.listenWithWrapper = function(src, wrapper,
 
 
 /**
- * Record the key returned for the listener so that it can be user later
- * to remove the listener.
- * @param {number} key Unique key for the listener.
- * @private
+ * @return {number} Number of listeners registered by this handler.
  */
-goog.events.EventHandler.prototype.recordListenerKey_ = function(key) {
-  if (this.keys_) {
-    // already have multiple keys
-    this.keys_[key] = true;
-  } else if (this.key_) {
-    // going from one key to multiple - must now use object as map
-    this.keys_ = goog.events.EventHandler.keyPool_.getObject();
-    this.keys_[this.key_] = true;
-    this.key_ = null;
-    this.keys_[key] = true;
-  } else {
-    // first key - can use single key
-    this.key_ = key;
-  }
+goog.events.EventHandler.prototype.getListenerCount = function() {
+  return this.keys_.length;
 };
 
 
@@ -264,25 +208,18 @@ goog.events.EventHandler.prototype.recordListenerKey_ = function(key) {
 goog.events.EventHandler.prototype.unlisten = function(src, type, opt_fn,
                                                        opt_capture,
                                                        opt_handler) {
-  if (this.key_ || this.keys_) {
-    if (goog.isArray(type)) {
-      for (var i = 0; i < type.length; i++) {
-        this.unlisten(src, type[i], opt_fn, opt_capture, opt_handler);
-      }
-    } else {
-      var listener = goog.events.getListener(src, type, opt_fn || this,
-          opt_capture || false, opt_handler || this.handler_ || this);
+  if (goog.isArray(type)) {
+    for (var i = 0; i < type.length; i++) {
+      this.unlisten(src, type[i], opt_fn, opt_capture, opt_handler);
+    }
+  } else {
+    var listener = goog.events.getListener(src, type, opt_fn || this,
+        opt_capture, opt_handler || this.handler_ || this);
 
-      if (listener) {
-        var key = listener.key;
-        goog.events.unlistenByKey(key);
-
-        if (this.keys_) {
-          goog.object.remove(this.keys_, key);
-        } else if (this.key_ == key) {
-          this.key_ = null;
-        }
-      }
+    if (listener) {
+      var key = listener.key;
+      goog.events.unlistenByKey(key);
+      goog.array.remove(this.keys_, key);
     }
   }
 
@@ -315,23 +252,15 @@ goog.events.EventHandler.prototype.unlistenWithWrapper = function(src, wrapper,
  * Unlistens to all events.
  */
 goog.events.EventHandler.prototype.removeAll = function() {
-  if (this.keys_) {
-    for (var key in this.keys_) {
-      goog.events.unlistenByKey((/** @type {number} */ key));
-      // Clean the keys before returning object to the pool.
-      delete this.keys_[key];
-    }
-    goog.events.EventHandler.keyPool_.releaseObject(this.keys_);
-    this.keys_ = null;
-
-  } else if (this.key_) {
-    goog.events.unlistenByKey(this.key_);
-  }
+  goog.array.forEach(this.keys_, goog.events.unlistenByKey);
+  this.keys_.length = 0;
 };
 
 
 /**
- * Disposes of this EventHandler and remove all listeners that it registered.
+ * Disposes of this EventHandler and removes all listeners that it registered.
+ * @override
+ * @protected
  */
 goog.events.EventHandler.prototype.disposeInternal = function() {
   goog.events.EventHandler.superClass_.disposeInternal.call(this);

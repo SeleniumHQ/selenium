@@ -66,14 +66,14 @@ goog.testing.fs.objectUrls_ = {};
 
 
 /**
- * Create a fake object URL for a given fake blob. This can't be used as a real
- * URL, but it can be created and revoked normally.
+ * Create a fake object URL for a given fake blob. This can be used as a real
+ * URL, and it can be created and revoked normally.
  *
  * @param {!goog.testing.fs.Blob} blob The blob for which to create the URL.
  * @return {string} The URL.
  */
 goog.testing.fs.createObjectUrl = function(blob) {
-  var url = 'fakeblob:' + blob.toString();
+  var url = blob.toDataUrl();
   goog.testing.fs.objectUrls_[url] = true;
   return url;
 };
@@ -96,7 +96,7 @@ goog.testing.fs.revokeObjectUrl = function(url) {
  * @return {boolean} Whether a URL has been granted.
  */
 goog.testing.fs.isObjectUrlGranted = function(blob) {
-  return ('fakeblob:' + blob.toString()) in goog.testing.fs.objectUrls_;
+  return (blob.toDataUrl()) in goog.testing.fs.objectUrls_;
 };
 
 

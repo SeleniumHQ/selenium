@@ -45,9 +45,19 @@ goog.reflect.object = function(type, object) {
  *     // Force a layout
  *     goog.reflect.sinkValue(dialog.offsetHeight);
  * </code>
- * @type {Function}
+ * @type {!Function}
  */
-goog.reflect.sinkValue = new Function('a', 'return a');
+goog.reflect.sinkValue = function(x) {
+  goog.reflect.sinkValue[' '](x);
+  return x;
+};
+
+
+/**
+ * The compiler should optimize this function away iff no one ever uses
+ * goog.reflect.sinkValue.
+ */
+goog.reflect.sinkValue[' '] = goog.nullFunction;
 
 
 /**

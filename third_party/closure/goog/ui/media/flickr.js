@@ -170,10 +170,7 @@ goog.ui.media.FlickrSet.prototype.createDom = function(control) {
   var flash = new goog.ui.media.FlashObject(
       model.getPlayer().getUrl() || '',
       control.getDomHelper());
-  goog.object.forEach(model.getPlayer().getVars(), function(value, key) {
-    flash.setFlashVars(key, value);
-  });
-
+  flash.addFlashVars(model.getPlayer().getVars());
   flash.render(div);
 
   return div;

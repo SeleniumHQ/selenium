@@ -59,7 +59,7 @@ goog.dom.iter.SiblingIterator = function(node, opt_includeNode, opt_reverse) {
 goog.inherits(goog.dom.iter.SiblingIterator, goog.iter.Iterator);
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.iter.SiblingIterator.prototype.next = function() {
   var node = this.node_;
   if (!node) {
@@ -115,7 +115,7 @@ goog.dom.iter.AncestorIterator = function(node, opt_includeNode) {
 goog.inherits(goog.dom.iter.AncestorIterator, goog.iter.Iterator);
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.iter.AncestorIterator.prototype.next = function() {
   var node = this.node_;
   if (!node) {

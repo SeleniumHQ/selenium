@@ -45,6 +45,7 @@ goog.editor.Command = {
   FONT_FACE: '+fontName',
   FONT_COLOR: '+foreColor',
   EMOTICON: '+emoticon',
+  EQUATION: '+equation',
   BACKGROUND_COLOR: '+backColor',
   ORDERED_LIST: '+insertOrderedList',
   UNORDERED_LIST: '+insertUnorderedList',

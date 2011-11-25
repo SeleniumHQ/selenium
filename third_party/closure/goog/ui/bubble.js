@@ -134,7 +134,7 @@ goog.ui.Bubble.prototype.listener_ = null;
 goog.ui.Bubble.prototype.anchor_ = null;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Bubble.prototype.createDom = function() {
   goog.ui.Bubble.superClass_.createDom.call(this);
 
@@ -232,7 +232,7 @@ goog.ui.Bubble.prototype.isVisible = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Bubble.prototype.disposeInternal = function() {
   this.unconfigureElement_();
   this.popup_.dispose();

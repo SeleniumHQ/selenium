@@ -190,6 +190,26 @@ goog.testing.Mock = function(objectToMock, opt_mockStaticMethods,
 
 
 /**
+ * Option that may be passed when constructing function, method, and
+ * constructor mocks. Indicates that the expected calls should be accepted in
+ * any order.
+ * @const
+ * @type {number}
+ */
+goog.testing.Mock.LOOSE = 1;
+
+
+/**
+ * Option that may be passed when constructing function, method, and
+ * constructor mocks. Indicates that the expected calls should be accepted in
+ * the recorded order only.
+ * @const
+ * @type {number}
+ */
+goog.testing.Mock.STRICT = 0;
+
+
+/**
  * A proxy for the mock.  This can be used for dependency injection in lieu of
  * the mock if the test requires a strict instanceof check.
  * @type {Object}
@@ -499,8 +519,11 @@ goog.testing.Mock.prototype.$verifyCall = function(expectation, name, args) {
   if (expectation.name != name) {
     return false;
   }
-  var verifierFn = this.$argumentListVerifiers_[expectation.name] ||
+  var verifierFn =
+      this.$argumentListVerifiers_.hasOwnProperty(expectation.name) ?
+      this.$argumentListVerifiers_[expectation.name] :
       goog.testing.mockmatchers.flexibleArrayMatcher;
+
   return verifierFn(expectation.argumentList, args, expectation);
 };
 

@@ -24,6 +24,7 @@ goog.provide('goog.debug');
 goog.require('goog.array');
 goog.require('goog.string');
 goog.require('goog.structs.Set');
+goog.require('goog.userAgent');
 
 
 /**
@@ -37,6 +38,9 @@ goog.require('goog.structs.Set');
 goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
   var target = opt_target || goog.global;
   var oldErrorHandler = target.onerror;
+  // Chrome interprets onerror return value backwards (http://crbug.com/92062).
+  // Safari doesn't support onerror at all.
+  var retVal = goog.userAgent.WEBKIT ? !opt_cancel : !!opt_cancel;
   target.onerror = function(message, url, line) {
     if (oldErrorHandler) {
       oldErrorHandler(message, url, line);
@@ -46,7 +50,7 @@ goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
       fileName: url,
       line: line
     });
-    return Boolean(opt_cancel);
+    return retVal;
   };
 };
 
@@ -408,11 +412,33 @@ goog.debug.getStacktraceHelper_ = function(fn, visited) {
 
 
 /**
+ * Set a custom function name resolver.
+ * @param {function(Function): string} resolver Resolves functions to their
+ *     names.
+ */
+goog.debug.setFunctionResolver = function(resolver) {
+  goog.debug.fnNameResolver_ = resolver;
+};
+
+
+/**
  * Gets a function name
  * @param {Function} fn Function to get name of.
  * @return {string} Function's name.
  */
 goog.debug.getFunctionName = function(fn) {
+  if (goog.debug.fnNameCache_[fn]) {
+    return goog.debug.fnNameCache_[fn];
+  }
+  if (goog.debug.fnNameResolver_) {
+    var name = goog.debug.fnNameResolver_(fn);
+    if (name) {
+      goog.debug.fnNameCache_[fn] = name;
+      return name;
+    }
+  }
+
+  // Heuristically determine function name based on code.
   var functionSource = String(fn);
   if (!goog.debug.fnNameCache_[functionSource]) {
     var matches = /function ([^\(]+)/.exec(functionSource);
@@ -450,3 +476,11 @@ goog.debug.makeWhitespaceVisible = function(string) {
  * @private
  */
 goog.debug.fnNameCache_ = {};
+
+
+/**
+ * Resolves functions to their names.  Resolved function names will be cached.
+ * @type {function(Function):string}
+ * @private
+ */
+goog.debug.fnNameResolver_;

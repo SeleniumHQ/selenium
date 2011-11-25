@@ -31,7 +31,7 @@ goog.testing.benchmark.run_ = function() {
   var search = window.location.search;
   var timesMatch = search.match(/(?:\?|&)times=([^?&]+)/i);
   if (timesMatch) {
-    times = timesMatch[1];
+    times = Number(timesMatch[1]);
   }
 
   var prefix = 'benchmark';

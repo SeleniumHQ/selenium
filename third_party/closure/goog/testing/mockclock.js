@@ -30,6 +30,23 @@ goog.require('goog.testing.PropertyReplacer');
 
 /**
  * Class for unit testing code that uses setTimeout and clearTimeout.
+ *
+ * NOTE: If you are using MockClock to test code that makes use of
+ *       goog.fx.Animation, then you must either:
+ *
+ * 1. Install and dispose of the MockClock in setUpPage() and tearDownPage()
+ *    respectively (rather than setUp()/tearDown()).
+ *
+ * or
+ *
+ * 2. Ensure that every test clears the animation queue by calling
+ *    mockClock.tick(x) at the end of each test function (where `x` is large
+ *    enough to complete all animations).
+ *
+ * Otherwise, if any animation is left pending at the time that
+ * MockClock.dispose() is called, that will permanently prevent any future
+ * animations from playing on the page.
+ *
  * @param {boolean=} opt_autoInstall Install the MockClock at construction time.
  * @constructor
  * @extends {goog.Disposable}
@@ -146,9 +163,7 @@ goog.testing.MockClock.prototype.uninstall = function() {
 };
 
 
-/**
- * Disposes of the MockClock.
- */
+/** @override */
 goog.testing.MockClock.prototype.disposeInternal = function() {
   this.uninstall();
   this.queue_ = null;

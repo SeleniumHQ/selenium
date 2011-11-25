@@ -55,9 +55,9 @@ goog.require('goog.ui.ContainerRenderer');
  *  </ul>
  * @param {?goog.ui.Container.Orientation=} opt_orientation Container
  *     orientation; defaults to {@code VERTICAL}.
- * @param {?goog.ui.ContainerRenderer=} opt_renderer Renderer used to render or
+ * @param {goog.ui.ContainerRenderer=} opt_renderer Renderer used to render or
  *     decorate the container; defaults to {@link goog.ui.ContainerRenderer}.
- * @param {?goog.dom.DomHelper=} opt_domHelper DOM helper, used for document
+ * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for document
  *     interaction.
  * @extends {goog.ui.Component}
  * @constructor
@@ -103,7 +103,7 @@ goog.ui.Container.Orientation = {
 
 
 /**
- * Allows an alternative element to be set to recieve key events, otherwise
+ * Allows an alternative element to be set to receive key events, otherwise
  * defers to the renderer's element choice.
  * @type {Element|undefined}
  * @private
@@ -364,7 +364,6 @@ goog.ui.Container.prototype.enterDocument = function() {
     }
   }, this);
 
-  // Detect right-to-left direction.
   var elem = this.getElement();
 
   // Call the renderer's initializeDom method to initialize the container's DOM.
@@ -447,7 +446,7 @@ goog.ui.Container.prototype.exitDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Container.prototype.disposeInternal = function() {
   goog.ui.Container.superClass_.disposeInternal.call(this);
 
@@ -456,6 +455,7 @@ goog.ui.Container.prototype.disposeInternal = function() {
     this.keyHandler_ = null;
   }
 
+  this.keyEventTarget_ = null;
   this.childElementIdMap_ = null;
   this.openItem_ = null;
   this.renderer_ = null;
@@ -871,7 +871,7 @@ goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
   goog.ui.Container.superClass_.addChildAt.call(this, control, index,
       opt_render);
 
-  if (opt_render && this.isInDocument()) {
+  if (control.isInDocument() && this.isInDocument()) {
     this.registerChildId_(control);
   }
 
@@ -908,7 +908,7 @@ goog.ui.Container.prototype.removeChild = function(control, opt_unrender) {
 
     // Remove the mapping from the child element ID map.
     var childElem = control.getElement();
-    if (childElem && childElem.id) {
+    if (childElem && childElem.id && this.childElementIdMap_) {
       goog.object.remove(this.childElementIdMap_, childElem.id);
     }
   }

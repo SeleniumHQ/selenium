@@ -183,7 +183,7 @@ goog.editor.Plugin.prototype.activeOnUneditableFields = goog.functions.FALSE;
 goog.editor.Plugin.prototype.isSilentCommand = goog.functions.FALSE;
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.Plugin.prototype.disposeInternal = function() {
   if (this.fieldObject) {
     this.unregisterFieldObject(this.fieldObject);

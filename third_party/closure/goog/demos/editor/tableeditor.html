@@ -1,0 +1,93 @@
+<html>
+<!--
+Copyright 2009 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>goog.editor.plugins.TableEditor Demo</title>
+  <script src="../../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.editor.Command');
+    goog.require('goog.editor.Field');
+    goog.require('goog.editor.plugins.TableEditor');
+    goog.require('goog.ui.editor.DefaultToolbar');
+    goog.require('goog.ui.editor.ToolbarController');
+  </script>
+
+  <link rel="stylesheet" href="../css/demo.css">
+
+  <link rel="stylesheet" href="../../css/button.css" />
+  <link rel="stylesheet" href="../../css/dialog.css" />
+  <link rel="stylesheet" href="../../css/linkbutton.css" />
+  <link rel="stylesheet" href="../../css/menu.css">
+  <link rel="stylesheet" href="../../css/menuitem.css">
+  <link rel="stylesheet" href="../../css/menuseparator.css">
+  <link rel="stylesheet" href="../../css/tab.css" />
+  <link rel="stylesheet" href="../../css/tabbar.css" />
+  <link rel="stylesheet" href="../../css/toolbar.css" />
+  <link rel="stylesheet" href="../../css/editortoolbar.css" />
+
+  <style>
+    #editMe {
+      width: 600px;
+      height: 300px;
+      background-color: white;
+      border: 1px solid grey;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>goog.editor.plugins.TableEditor Demo</h1>
+  <p>This is a demonstration of the table editor plugin for goog.editor.</p>
+  <br>
+  <div id='toolbar' style='width:602px'></div>
+  <div id='editMe'></div>
+  <hr>
+  <p><b>Current field contents</b>
+  (updates as contents of the editable field above change):<br>
+  <textarea id="fieldContents" style="height:100px;width:400px;"></textarea><br>
+  <input type="button" value="Set Field Contents"
+      onclick="myField.setHtml(false, goog.dom.getElement('fieldContents').value);" />
+  (Use to set contents of the editable field to the contents of this textarea)
+  </p>
+
+  <script>
+  function updateFieldContents() {
+    goog.dom.getElement('fieldContents').value = myField.getCleanContents();
+  }
+
+  var myField = new goog.editor.Field('editMe');
+
+  myField.registerPlugin(new goog.editor.plugins.TableEditor());
+
+  // Specify the buttons to add to the toolbar, using built in default buttons.
+  var buttonIds = goog.object.getValues(
+      goog.editor.plugins.TableEditor.COMMAND);
+  var buttons = []
+  for (var i = 0; i < buttonIds.length; i++) {
+    var cmd = buttonIds[i];
+    buttons[i] = goog.ui.editor.ToolbarFactory.makeButton(cmd, cmd, cmd);
+  }
+  var myToolbar = goog.ui.editor.DefaultToolbar.makeToolbar(buttons,
+      goog.dom.getElement('toolbar'));
+
+  // Hook the toolbar into the field.
+  var myToolbarController =
+      new goog.ui.editor.ToolbarController(myField, myToolbar);
+
+  // Watch for field changes, to display below.
+  goog.events.listen(myField, goog.editor.Field.EventType.DELAYEDCHANGE,
+      updateFieldContents);
+
+  myField.makeEditable();
+  updateFieldContents();
+  </script>
+</body>
+</html>

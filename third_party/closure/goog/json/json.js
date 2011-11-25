@@ -85,7 +85,7 @@ goog.json.parse = function(s) {
   if (goog.json.isValid_(o)) {
     /** @preserveTry */
     try {
-      return eval('(' + o + ')');
+      return /** @type {Object} */ (eval('(' + o + ')'));
     } catch (ex) {
     }
   }
@@ -101,28 +101,50 @@ goog.json.parse = function(s) {
  * @return {Object} The object generated from the JSON string.
  */
 goog.json.unsafeParse = function(s) {
-  return eval('(' + s + ')');
+  return /** @type {Object} */ (eval('(' + s + ')'));
 };
+
+
+/**
+ * JSON replacer, as defined in Section 15.12.3 of the ES5 spec.
+ *
+ * TODO(nicksantos): Array should also be a valid replacer.
+ *
+ * @typedef {function(this:Object, string, *): *}
+ */
+goog.json.Replacer;
 
 
 /**
  * Serializes an object or a value to a JSON string.
  *
  * @param {*} object The object to serialize.
+ * @param {?goog.json.Replacer=} opt_replacer A replacer function
+ *     called for each (key, value) pair that determines how the value
+ *     should be serialized. By defult, this just returns the value
+ *     and allows default serialization to kick in.
  * @throws Error if there are loops in the object graph.
  * @return {string} A JSON string representation of the input.
  */
-goog.json.serialize = function(object) {
-  return new goog.json.Serializer().serialize(object);
+goog.json.serialize = function(object, opt_replacer) {
+  // TODO(nicksantos): Change this to default to JSON.stringify when available.
+  // I need to fiddle with the default externs a bit to make this happen.
+  return new goog.json.Serializer(opt_replacer).serialize(object);
 };
 
 
 
 /**
  * Class that is used to serialize JSON objects to a string.
+ * @param {?goog.json.Replacer=} opt_replacer Replacer.
  * @constructor
  */
-goog.json.Serializer = function() {
+goog.json.Serializer = function(opt_replacer) {
+  /**
+   * @type {goog.json.Replacer|null|undefined}
+   * @private
+   */
+  this.replacer_ = opt_replacer;
 };
 
 
@@ -268,7 +290,12 @@ goog.json.Serializer.prototype.serializeArray_ = function(arr, sb) {
   var sep = '';
   for (var i = 0; i < l; i++) {
     sb.push(sep);
-    this.serialize_(arr[i], sb);
+
+    var value = arr[i];
+    this.serialize_(
+        this.replacer_ ? this.replacer_.call(arr, String(i), value) : value,
+        sb);
+
     sep = ',';
   }
   sb.push(']');
@@ -293,7 +320,11 @@ goog.json.Serializer.prototype.serializeObject_ = function(obj, sb) {
         sb.push(sep);
         this.serializeString_(key, sb);
         sb.push(':');
-        this.serialize_(value, sb);
+
+        this.serialize_(
+            this.replacer_ ? this.replacer_.call(obj, key, value) : value,
+            sb);
+
         sep = ',';
       }
     }

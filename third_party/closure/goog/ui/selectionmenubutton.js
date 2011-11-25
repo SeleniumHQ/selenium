@@ -78,9 +78,9 @@ goog.ui.SelectionMenuButton.SelectionState = {
 /**
  * Select button state
  * @type {goog.ui.SelectionMenuButton.SelectionState}
- * @private
+ * @protected
  */
-goog.ui.SelectionMenuButton.prototype.selectionState_ =
+goog.ui.SelectionMenuButton.prototype.selectionState =
     goog.ui.SelectionMenuButton.SelectionState.NONE;
 
 
@@ -93,19 +93,30 @@ goog.ui.SelectionMenuButton.prototype.initialItemRenderer_;
 
 
 /**
- * Disables button and embedded checkbox.
+ * Enables button and embedded checkbox.
  * @param {boolean} enable Whether to enable or disable the button.
  * @override
  */
 goog.ui.SelectionMenuButton.prototype.setEnabled = function(enable) {
-  goog.ui.SelectionMenuButton.superClass_.setEnabled.call(this, enable);
-  this.getCheckbox_().disabled = !enable;
+  goog.base(this, 'setEnabled', enable);
+  this.setCheckboxEnabled(enable);
 };
 
 
-/** @inheritDoc */
+/**
+ * Enables the embedded checkbox.
+ * @param {boolean} enable Whether to enable or disable the checkbox.
+ * @protected
+ */
+goog.ui.SelectionMenuButton.prototype.setCheckboxEnabled = function(enable) {
+  this.getCheckboxElement().disabled = !enable;
+};
+
+
+/** @override */
 goog.ui.SelectionMenuButton.prototype.handleMouseDown = function(e) {
-  if (e.target != this.getCheckbox_()) {
+  if (!this.getDomHelper().contains(this.getCheckboxElement(),
+      /** @type {Element} */ (e.target))) {
     goog.ui.SelectionMenuButton.superClass_.handleMouseDown.call(this, e);
   }
 };
@@ -115,10 +126,10 @@ goog.ui.SelectionMenuButton.prototype.handleMouseDown = function(e) {
  * Gets the checkbox element. Needed because if decorating html, getContent()
  * may include and comment/text elements in addition to the input element.
  * @return {Element} Checkbox.
- * @private
+ * @protected
  */
-goog.ui.SelectionMenuButton.prototype.getCheckbox_ = function() {
-  var elements = this.dom_.getElementsByTagNameAndClass(
+goog.ui.SelectionMenuButton.prototype.getCheckboxElement = function() {
+  var elements = this.getDomHelper().getElementsByTagNameAndClass(
       'input',
       goog.getCssName('goog-selectionmenubutton-checkbox'),
       this.getContentElement());
@@ -129,10 +140,10 @@ goog.ui.SelectionMenuButton.prototype.getCheckbox_ = function() {
 /**
  * Checkbox click handler.
  * @param {goog.events.BrowserEvent} e Checkbox click event.
- * @private
+ * @protected
  */
-goog.ui.SelectionMenuButton.prototype.handleCheckboxClick_ = function(e) {
-  if (e.target.checked) {
+goog.ui.SelectionMenuButton.prototype.handleCheckboxClick = function(e) {
+  if (this.selectionState == goog.ui.SelectionMenuButton.SelectionState.NONE) {
     this.setSelectionState(goog.ui.SelectionMenuButton.SelectionState.ALL);
     if (this.getItemAt(0)) {
       this.getItemAt(0).dispatchEvent(  // 'All' item
@@ -179,12 +190,12 @@ goog.ui.SelectionMenuButton.prototype.addMenuEvent_ = function() {
 
 /**
  * Set up events related to the checkbox.
- * @private
+ * @protected
  */
-goog.ui.SelectionMenuButton.prototype.addCheckboxEvent_ = function() {
-  this.getHandler().listen(this.getCheckbox_(),
+goog.ui.SelectionMenuButton.prototype.addCheckboxEvent = function() {
+  this.getHandler().listen(this.getCheckboxElement(),
                            goog.events.EventType.CLICK,
-                           this.handleCheckboxClick_);
+                           this.handleCheckboxClick);
 };
 
 
@@ -196,10 +207,8 @@ goog.ui.SelectionMenuButton.prototype.addCheckboxEvent_ = function() {
  */
 goog.ui.SelectionMenuButton.prototype.createDom = function() {
   goog.ui.SelectionMenuButton.superClass_.createDom.call(this);
-  var checkbox = this.dom_.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.className = goog.getCssName('goog-selectionmenubutton-checkbox');
-  this.setContent(checkbox);
+
+  this.createCheckbox();
 
   /** @desc Text for 'All' button, used to select all items in a list. */
   var MSG_SELECTIONMENUITEM_ALL = goog.getMsg('All');
@@ -208,29 +217,41 @@ goog.ui.SelectionMenuButton.prototype.createDom = function() {
 
   var itemAll = new goog.ui.MenuItem(MSG_SELECTIONMENUITEM_ALL,
                                      null,
-                                     this.dom_,
+                                     this.getDomHelper(),
                                      this.initialItemRenderer_);
   var itemNone = new goog.ui.MenuItem(MSG_SELECTIONMENUITEM_NONE,
                                       null,
-                                      this.dom_,
+                                      this.getDomHelper(),
                                       this.initialItemRenderer_);
   this.addItem(itemAll);
   this.addItem(itemNone);
 
-  this.addCheckboxEvent_();
+  this.addCheckboxEvent();
   this.addMenuEvent_();
 };
 
 
-/** @inheritDoc */
+/**
+ * Creates and adds the checkbox to the button.
+ * @protected
+ */
+goog.ui.SelectionMenuButton.prototype.createCheckbox = function() {
+  var checkbox = this.getDomHelper().createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = goog.getCssName('goog-selectionmenubutton-checkbox');
+  this.setContent(checkbox);
+};
+
+
+/** @override */
 goog.ui.SelectionMenuButton.prototype.decorateInternal = function(element) {
   goog.ui.SelectionMenuButton.superClass_.decorateInternal.call(this, element);
-  this.addCheckboxEvent_();
+  this.addCheckboxEvent();
   this.addMenuEvent_();
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.SelectionMenuButton.prototype.setMenu = function(menu) {
   goog.ui.SelectionMenuButton.superClass_.setMenu.call(this, menu);
   this.addMenuEvent_();
@@ -242,8 +263,8 @@ goog.ui.SelectionMenuButton.prototype.setMenu = function(menu) {
  * @param {goog.ui.SelectionMenuButton.SelectionState} state Selection state.
  */
 goog.ui.SelectionMenuButton.prototype.setSelectionState = function(state) {
-  if (this.selectionState_ != state) {
-    var checkbox = this.getCheckbox_();
+  if (this.selectionState != state) {
+    var checkbox = this.getCheckboxElement();
     if (state == goog.ui.SelectionMenuButton.SelectionState.ALL) {
       checkbox.checked = true;
       goog.style.setOpacity(checkbox, 1);
@@ -255,7 +276,7 @@ goog.ui.SelectionMenuButton.prototype.setSelectionState = function(state) {
       checkbox.checked = false;
       goog.style.setOpacity(checkbox, 1);
     }
-    this.selectionState_ = state;
+    this.selectionState = state;
   }
 };
 
@@ -265,7 +286,7 @@ goog.ui.SelectionMenuButton.prototype.setSelectionState = function(state) {
 * @return {goog.ui.SelectionMenuButton.SelectionState} Selection state.
 */
 goog.ui.SelectionMenuButton.prototype.getSelectionState = function() {
-  return this.selectionState_;
+  return this.selectionState;
 };
 
 

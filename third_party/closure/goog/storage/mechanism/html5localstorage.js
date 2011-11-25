@@ -56,7 +56,7 @@ goog.storage.mechanism.HTML5LocalStorage.prototype.isAvailable = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.HTML5LocalStorage.prototype.set = function(key, value) {
   /** @preserveTry */
   try {
@@ -68,7 +68,7 @@ goog.storage.mechanism.HTML5LocalStorage.prototype.set = function(key, value) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.HTML5LocalStorage.prototype.get = function(key) {
   // According to W3C specs, values can be of any type. Since we only save
   // strings, any other type is a storage error. If we returned nulls for
@@ -83,19 +83,19 @@ goog.storage.mechanism.HTML5LocalStorage.prototype.get = function(key) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.HTML5LocalStorage.prototype.remove = function(key) {
   window.localStorage.removeItem(key);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.HTML5LocalStorage.prototype.getCount = function() {
   return window.localStorage.length;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.HTML5LocalStorage.prototype.__iterator__ = function(
     opt_keys) {
   var i = 0;
@@ -119,7 +119,7 @@ goog.storage.mechanism.HTML5LocalStorage.prototype.__iterator__ = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.HTML5LocalStorage.prototype.clear = function() {
   window.localStorage.clear();
 };

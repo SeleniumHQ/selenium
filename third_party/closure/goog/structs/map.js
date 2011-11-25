@@ -48,21 +48,23 @@ goog.structs.Map = function(opt_map, var_args) {
    */
   this.map_ = {};
 
-  /**
-   * An array of keys. This is necessary for two reasons:
-   *   1. Iterating the keys using for (var key in this.map_) allocates an
-   *      object for every key in IE which is really bad for IE6 GC perf.
-   *   2. Without a side data structure, we would need to escape all the keys
-   *      as that would be the only way we could tell during iteration if the
-   *      key was an internal key or a property of the object.
-   *
-   * This array can contain deleted keys so it's necessary to check the map
-   * as well to see if the key is still in the map (this doesn't require a
-   * memory allocation in IE).
-   * @type {!Array.<string>}
-   * @private
-   */
-  this.keys_ = [];
+  if (goog.structs.Map.PRESERVE_NON_STRING_KEYS) {
+    /**
+     * A map of internal keys that are numeric and should be cast back to a
+     * number on retrieval.
+     *
+     * A previous implementation had optimizations for IE6's bad GC.  However,
+     * the keys weren't correctly cast to strings so people started to depend on
+     * the behavior of numeric keys in tests.
+     *
+     * To ensure backwards compatibility this part remains, but it would be nice
+     * to strip out entirely.  See http://b/5622311.
+     *
+     * @type {!Object}
+     * @private
+     */
+    this.numericKeyMap_ = {};
+  }
 
   var argLength = arguments.length;
 
@@ -77,6 +79,21 @@ goog.structs.Map = function(opt_map, var_args) {
     this.addAll(/** @type {Object} */ (opt_map));
   }
 };
+
+
+/**
+ * @define {boolean} Whether to preserve non-string keys, even though the docs
+ *     state that keys are cast to a string.
+ */
+goog.structs.Map.PRESERVE_NON_STRING_KEYS = true;
+
+
+/**
+ * The prefix to mark keys with.
+ * @type {string}
+ * @const
+ */
+goog.structs.Map.KEY_PREFIX = ':';
 
 
 /**
@@ -108,12 +125,11 @@ goog.structs.Map.prototype.getCount = function() {
  * @return {!Array} The values in the map.
  */
 goog.structs.Map.prototype.getValues = function() {
-  this.cleanupKeysArray_();
-
   var rv = [];
-  for (var i = 0; i < this.keys_.length; i++) {
-    var key = this.keys_[i];
-    rv.push(this.map_[key]);
+  for (var key in this.map_) {
+    if (goog.structs.Map.isKey_(key)) {
+      rv.push(this.map_[key]);
+    }
   }
   return rv;
 };
@@ -124,8 +140,13 @@ goog.structs.Map.prototype.getValues = function() {
  * @return {!Array.<string>} Array of string values.
  */
 goog.structs.Map.prototype.getKeys = function() {
-  this.cleanupKeysArray_();
-  return /** @type {!Array.<string>} */ (this.keys_.concat());
+  var rv = [];
+  for (var key in this.map_) {
+    if (goog.structs.Map.isKey_(key)) {
+      rv.push(this.getKey_(key));
+    }
+  }
+  return rv;
 };
 
 
@@ -135,7 +156,7 @@ goog.structs.Map.prototype.getKeys = function() {
  * @return {boolean} Whether the map contains the key.
  */
 goog.structs.Map.prototype.containsKey = function(key) {
-  return goog.structs.Map.hasKey_(this.map_, key);
+  return goog.structs.Map.makeKey_(key) in this.map_;
 };
 
 
@@ -145,9 +166,9 @@ goog.structs.Map.prototype.containsKey = function(key) {
  * @return {boolean} Whether the map contains the value.
  */
 goog.structs.Map.prototype.containsValue = function(val) {
-  for (var i = 0; i < this.keys_.length; i++) {
-    var key = this.keys_[i];
-    if (goog.structs.Map.hasKey_(this.map_, key) && this.map_[key] == val) {
+  for (var key in this.map_) {
+    if (goog.structs.Map.isKey_(key) &&
+        this.map_[key] == val) {
       return true;
     }
   }
@@ -174,8 +195,8 @@ goog.structs.Map.prototype.equals = function(otherMap, opt_equalityFn) {
 
   var equalityFn = opt_equalityFn || goog.structs.Map.defaultEquals;
 
-  this.cleanupKeysArray_();
-  for (var key, i = 0; key = this.keys_[i]; i++) {
+  for (var key in this.map_) {
+    key = this.getKey_(key);
     if (!equalityFn(this.get(key), otherMap.get(key))) {
       return false;
     }
@@ -209,9 +230,11 @@ goog.structs.Map.prototype.isEmpty = function() {
  */
 goog.structs.Map.prototype.clear = function() {
   this.map_ = {};
-  this.keys_.length = 0;
   this.count_ = 0;
   this.version_ = 0;
+  if (goog.structs.Map.PRESERVE_NON_STRING_KEYS) {
+    this.numericKeyMap_ = {};
+  }
 };
 
 
@@ -223,61 +246,16 @@ goog.structs.Map.prototype.clear = function() {
  * @return {boolean} Whether object was removed.
  */
 goog.structs.Map.prototype.remove = function(key) {
-  if (goog.structs.Map.hasKey_(this.map_, key)) {
-    delete this.map_[key];
+  var internalKey = goog.structs.Map.makeKey_(key);
+  if (goog.object.remove(this.map_, internalKey)) {
+    if (goog.structs.Map.PRESERVE_NON_STRING_KEYS) {
+      delete this.numericKeyMap_[internalKey];
+    }
     this.count_--;
     this.version_++;
-
-    // clean up the keys array if the threshhold is hit
-    if (this.keys_.length > 2 * this.count_) {
-      this.cleanupKeysArray_();
-    }
-
     return true;
   }
   return false;
-};
-
-
-/**
- * Cleans up the temp keys array by removing entries that are no longer in the
- * map.
- * @private
- */
-goog.structs.Map.prototype.cleanupKeysArray_ = function() {
-  if (this.count_ != this.keys_.length) {
-    // First remove keys that are no longer in the map.
-    var srcIndex = 0;
-    var destIndex = 0;
-    while (srcIndex < this.keys_.length) {
-      var key = this.keys_[srcIndex];
-      if (goog.structs.Map.hasKey_(this.map_, key)) {
-        this.keys_[destIndex++] = key;
-      }
-      srcIndex++;
-    }
-    this.keys_.length = destIndex;
-  }
-
-  if (this.count_ != this.keys_.length) {
-    // If the count still isn't correct, that means we have duplicates. This can
-    // happen when the same key is added and removed multiple times. Now we have
-    // to allocate one extra Object to remove the duplicates. This could have
-    // been done in the first pass, but in the common case, we can avoid
-    // allocating an extra object by only doing this when necessary.
-    var seen = {};
-    var srcIndex = 0;
-    var destIndex = 0;
-    while (srcIndex < this.keys_.length) {
-      var key = this.keys_[srcIndex];
-      if (!(goog.structs.Map.hasKey_(seen, key))) {
-        this.keys_[destIndex++] = key;
-        seen[key] = 1;
-      }
-      srcIndex++;
-    }
-    this.keys_.length = destIndex;
-  }
 };
 
 
@@ -290,8 +268,9 @@ goog.structs.Map.prototype.cleanupKeysArray_ = function() {
  * @return {*} The value for the given key.
  */
 goog.structs.Map.prototype.get = function(key, opt_val) {
-  if (goog.structs.Map.hasKey_(this.map_, key)) {
-    return this.map_[key];
+  var internalKey = goog.structs.Map.makeKey_(key);
+  if (internalKey in this.map_) {
+    return this.map_[internalKey];
   }
   return opt_val;
 };
@@ -303,13 +282,15 @@ goog.structs.Map.prototype.get = function(key, opt_val) {
  * @param {*} value The value to add.
  */
 goog.structs.Map.prototype.set = function(key, value) {
-  if (!(goog.structs.Map.hasKey_(this.map_, key))) {
-    this.count_++;
-    this.keys_.push(key);
-    // Only change the version if we add a new key.
+  var internalKey = goog.structs.Map.makeKey_(key);
+  if (!(internalKey in this.map_)) {
     this.version_++;
+    this.count_++;
+    if (goog.structs.Map.PRESERVE_NON_STRING_KEYS && goog.isNumber(key)) {
+      this.numericKeyMap_[internalKey] = true;
+    }
   }
-  this.map_[key] = value;
+  this.map_[internalKey] = value;
 };
 
 
@@ -354,12 +335,9 @@ goog.structs.Map.prototype.clone = function() {
  */
 goog.structs.Map.prototype.transpose = function() {
   var transposed = new goog.structs.Map();
-  for (var i = 0; i < this.keys_.length; i++) {
-    var key = this.keys_[i];
-    var value = this.map_[key];
-    transposed.set(value, key);
+  for (var key in this.map_) {
+    transposed.set(this.map_[key], this.getKey_(key));
   }
-
   return transposed;
 };
 
@@ -368,13 +346,13 @@ goog.structs.Map.prototype.transpose = function() {
  * @return {!Object} Object representation of the map.
  */
 goog.structs.Map.prototype.toObject = function() {
-  this.cleanupKeysArray_();
-  var obj = {};
-  for (var i = 0; i < this.keys_.length; i++) {
-    var key = this.keys_[i];
-    obj[key] = this.map_[key];
+  var res = {};
+  for (var key in this.map_) {
+    if (goog.structs.Map.isKey_(key)) {
+      res[this.getKey_(key)] = this.map_[key];
+    }
   }
-  return obj;
+  return res;
 };
 
 
@@ -407,11 +385,8 @@ goog.structs.Map.prototype.getValueIterator = function() {
  * @return {!goog.iter.Iterator} An iterator over the values or keys in the map.
  */
 goog.structs.Map.prototype.__iterator__ = function(opt_keys) {
-  // Clean up keys to minimize the risk of iterating over dead keys.
-  this.cleanupKeysArray_();
-
   var i = 0;
-  var keys = this.keys_;
+  var keys = this.getKeys();
   var map = this.map_;
   var version = this.version_;
   var selfObj = this;
@@ -426,7 +401,7 @@ goog.structs.Map.prototype.__iterator__ = function(opt_keys) {
         throw goog.iter.StopIteration;
       }
       var key = keys[i++];
-      return opt_keys ? key : map[key];
+      return opt_keys ? key : map[goog.structs.Map.makeKey_(key)];
     }
   };
   return newIter;
@@ -434,13 +409,41 @@ goog.structs.Map.prototype.__iterator__ = function(opt_keys) {
 
 
 /**
- * Safe way to test for hasOwnProperty.  It even allows testing for
- * 'hasOwnProperty'.
- * @param {Object} obj The object to test for presence of the given key.
- * @param {*} key The key to check for.
- * @return {boolean} Whether the object has the key.
+ * Gets the key part of a string.
+ * @param {string} s Key string in the form ":foo".
+ * @return {string} "foo".
  * @private
  */
-goog.structs.Map.hasKey_ = function(obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key);
+goog.structs.Map.prototype.getKey_ = function(s) {
+  var key = s.substring(1);
+  if (goog.structs.Map.PRESERVE_NON_STRING_KEYS) {
+    // NOTE(user): Yes, this is gross.  We lie to the compiler because we need
+    // to maintain backwards compatibility with a previous bug.  See comment
+    // associated with numericKeyMap_.
+    return /** @type {string} */ (this.numericKeyMap_[s] ? Number(key) : key);
+  } else {
+    return key;
+  }
+};
+
+
+/**
+ * Checks to see if a string is a valid map key
+ * @param {string} s Key to test.
+ * @return {boolean} Whether string is a valid key.
+ * @private
+ */
+goog.structs.Map.isKey_ = function(s) {
+  return s.charAt(0) == goog.structs.Map.KEY_PREFIX;
+};
+
+
+/**
+ * Makes a key string, i.e. "foo" -> ":foo"
+ * @param {*} s Key to convert, non string keys will be cast.
+ * @return {string} Key string.
+ * @private
+ */
+goog.structs.Map.makeKey_ = function(s) {
+  return goog.structs.Map.KEY_PREFIX + s;
 };

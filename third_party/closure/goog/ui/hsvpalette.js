@@ -265,7 +265,7 @@ goog.ui.HsvPalette.prototype.canDecorate = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.HsvPalette.prototype.createDom = function() {
   var dom = this.getDomHelper();
   var noalpha = (goog.userAgent.IE && !goog.userAgent.isVersion('7')) ?
@@ -322,7 +322,7 @@ goog.ui.HsvPalette.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.HsvPalette.prototype.disposeInternal = function() {
   goog.ui.HsvPalette.superClass_.disposeInternal.call(this);
 

@@ -104,6 +104,21 @@ goog.debug.reflect.init_ = function() {
 
 
 /**
+ * Returns the name of a type of object.
+ * @param {!Function} classConstructor A object constructor to get the name of.
+ * @return {string|undefined} The string name of the class.
+ */
+goog.debug.reflect.className = function(classConstructor) {
+  goog.debug.reflect.init_();
+  if (goog.isDefAndNotNull(classConstructor)) {
+    return goog.debug.reflect.typeMap_[goog.getUid(classConstructor)];
+  } else {
+    return undefined;
+  }
+};
+
+
+/**
  * Guesses the real type of the object, even if its {@code toString} method is
  * overridden. Gives exact result for all goog.provided classes in non-compiled
  * code, and some often used native classes in compiled code too. Not tested in

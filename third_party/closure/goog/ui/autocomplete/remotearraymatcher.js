@@ -265,7 +265,7 @@ goog.ui.AutoComplete.RemoteArrayMatcher.prototype.requestMatchingRows =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.AutoComplete.RemoteArrayMatcher.prototype.disposeInternal = function() {
   this.xhr_.dispose();
   goog.ui.AutoComplete.RemoteArrayMatcher.superClass_.disposeInternal.call(

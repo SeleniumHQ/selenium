@@ -162,9 +162,7 @@ goog.events.OnlineHandler.prototype.handleChange_ = function(e) {
 };
 
 
-/**
- * @inheritDoc
- */
+/** @override */
 goog.events.OnlineHandler.prototype.disposeInternal = function() {
   goog.events.OnlineHandler.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();

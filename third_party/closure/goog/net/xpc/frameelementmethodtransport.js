@@ -24,6 +24,7 @@
 goog.provide('goog.net.xpc.FrameElementMethodTransport');
 
 goog.require('goog.net.xpc');
+goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
 
 
@@ -111,7 +112,7 @@ goog.net.xpc.FrameElementMethodTransport.outgoing_ = null;
  * Connect this transport.
  */
 goog.net.xpc.FrameElementMethodTransport.prototype.connect = function() {
-  if (this.channel_.getRole() == goog.net.xpc.CrossPageChannel.Role.OUTER) {
+  if (this.channel_.getRole() == goog.net.xpc.CrossPageChannelRole.OUTER) {
     // get shortcut to iframe-element
     this.iframeElm_ = this.channel_.iframeElement_;
 
@@ -179,7 +180,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.attemptSetup_ = function() {
  */
 goog.net.xpc.FrameElementMethodTransport.prototype.transportServiceHandler =
     function(payload) {
-  if (this.channel_.getRole() == goog.net.xpc.CrossPageChannel.Role.OUTER &&
+  if (this.channel_.getRole() == goog.net.xpc.CrossPageChannelRole.OUTER &&
       !this.channel_.isConnected() && payload == goog.net.xpc.SETUP_ACK_) {
     // get a reference to the gateway function
     this.outgoing_ = this.iframeElm_['XPC_toOuter']['XPC_toInner'];
@@ -239,9 +240,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.send =
 };
 
 
-/**
- * Disposes of the transport.
- */
+/** @override */
 goog.net.xpc.FrameElementMethodTransport.prototype.disposeInternal =
     function() {
   goog.net.xpc.FrameElementMethodTransport.superClass_.disposeInternal.call(

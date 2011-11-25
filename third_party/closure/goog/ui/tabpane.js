@@ -218,7 +218,7 @@ goog.ui.TabPane.prototype.createClear_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.TabPane.prototype.disposeInternal = function() {
   goog.ui.TabPane.superClass_.disposeInternal.call(this);
   goog.events.unlisten(this.elButtonBar_,

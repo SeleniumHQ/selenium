@@ -40,13 +40,13 @@ goog.inherits(goog.editor.plugins.ListTabHandler,
     goog.editor.plugins.AbstractTabHandler);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.ListTabHandler.prototype.getTrogClassId = function() {
   return 'ListTabHandler';
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.ListTabHandler.prototype.handleTabKey = function(e) {
   var range = this.fieldObject.getRange();
   if (goog.dom.getAncestorByTagNameAndClass(range.getContainerElement(),

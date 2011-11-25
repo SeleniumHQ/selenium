@@ -129,7 +129,7 @@ goog.ui.MenuItemRenderer.prototype.createDom = function(item) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.MenuItemRenderer.prototype.getContentElement = function(element) {
   return /** @type {Element} */ (element && element.firstChild);
 };
@@ -347,7 +347,7 @@ goog.ui.MenuItemRenderer.prototype.getStateFromClass = function(className) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.MenuItemRenderer.prototype.getCssClass = function() {
   return goog.ui.MenuItemRenderer.CSS_CLASS;
 };

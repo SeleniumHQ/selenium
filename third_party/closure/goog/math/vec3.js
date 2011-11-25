@@ -87,7 +87,7 @@ goog.math.Vec3.randomUnit = function() {
  * @return {!goog.math.Vec3} A random vector.
  */
 goog.math.Vec3.random = function() {
-  return new goog.math.Vec3.randomUnit().scale(Math.random());
+  return goog.math.Vec3.randomUnit().scale(Math.random());
 };
 
 

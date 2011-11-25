@@ -211,7 +211,7 @@ goog.ui.editor.ToolbarController.prototype.blur = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.editor.ToolbarController.prototype.disposeInternal = function() {
   goog.ui.editor.ToolbarController.superClass_.disposeInternal.call(this);
   if (this.handler_) {

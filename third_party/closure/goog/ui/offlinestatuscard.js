@@ -288,7 +288,7 @@ goog.ui.OfflineStatusCard.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineStatusCard.prototype.enterDocument = function() {
   goog.ui.OfflineStatusCard.superClass_.enterDocument.call(this);
 
@@ -562,7 +562,7 @@ goog.ui.OfflineStatusCard.prototype.getAdditionalMessage = function(status) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineStatusCard.prototype.disposeInternal = function() {
   goog.ui.OfflineStatusCard.superClass_.disposeInternal.call(this);
 

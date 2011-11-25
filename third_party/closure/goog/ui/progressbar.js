@@ -363,7 +363,7 @@ goog.ui.ProgressBar.prototype.getOrientation = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ProgressBar.prototype.disposeInternal = function() {
   this.detachEvents_();
   goog.ui.ProgressBar.superClass_.disposeInternal.call(this);

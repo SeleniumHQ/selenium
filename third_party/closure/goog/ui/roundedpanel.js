@@ -224,7 +224,7 @@ goog.ui.BaseRoundedPanel.prototype.decorateInternal = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.BaseRoundedPanel.prototype.disposeInternal = function() {
   if (this.backgroundElement_) {
     this.getDomHelper().removeNode(this.backgroundElement_);
@@ -490,18 +490,29 @@ goog.ui.GraphicsRoundedPanel.prototype.decorateInternal =
 
   // Create the path, starting from the bottom-right corner, moving clockwise.
   // End with the top-right corner.
-  var path = this.graphics_.createPath();
+  var path = new goog.graphics.Path();
   for (var i = 0; i < 4; i++) {
     if (this.radii_[i]) {
       // If radius > 0, draw an arc, moving to the first point and drawing
       // a line to the others.
-      path.arc(this.arcCenters_[i].x,
-               this.arcCenters_[i].y,
-               this.radii_[i],
-               this.radii_[i],
-               this.startAngles_[i],
-               this.endAngles_[i] - this.startAngles_[i],
-               i > 0);
+      var cx = this.arcCenters_[i].x;
+      var cy = this.arcCenters_[i].y;
+      var rx = this.radii_[i];
+      var ry = rx;
+      var fromAngle = this.startAngles_[i];
+      var extent = this.endAngles_[i] - fromAngle;
+      var startX = cx + goog.math.angleDx(fromAngle, rx);
+      var startY = cy + goog.math.angleDy(fromAngle, ry);
+      if (i > 0) {
+        var currentPoint = path.getCurrentPoint();
+        if (!currentPoint || startX != currentPoint[0] ||
+            startY != currentPoint[1]) {
+          path.lineTo(startX, startY);
+        }
+      } else {
+        path.moveTo(startX, startY);
+      }
+      path.arcTo(rx, ry, fromAngle, extent);
     } else if (i == 0) {
       // If we're just starting out (ie. i == 0), move to the starting point.
       path.moveTo(this.cornerStarts_[i].x,
@@ -527,9 +538,7 @@ goog.ui.GraphicsRoundedPanel.prototype.decorateInternal =
 };
 
 
-/**
- * Disposes of resources used by the component.
- */
+/** @override */
 goog.ui.GraphicsRoundedPanel.prototype.disposeInternal = function() {
   goog.ui.GraphicsRoundedPanel.superClass_.disposeInternal.call(this);
   this.graphics_.dispose();

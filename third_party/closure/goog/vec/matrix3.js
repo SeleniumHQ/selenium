@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview Implements 3x3 matrices and their related functions which are
+ * @fileoverview WARNING: DEPRECATED.  Use Mat3 instead.
+ * Implements 3x3 matrices and their related functions which are
  * compatible with WebGL. The API is structured to avoid unnecessary memory
  * allocations.  The last parameter will typically be the output vector and
  * an object can be both an input and output parameter to all methods except
@@ -27,7 +28,7 @@ goog.require('goog.vec');
 
 
 /**
- * @typedef {Float32Array}
+ * @typedef {goog.vec.ArrayType}
  */
 goog.vec.Matrix3.Type;
 
@@ -604,7 +605,7 @@ goog.vec.Matrix3.invert = function(mat0, resultMat) {
   var t10 = a12 * a20 - a10 * a22;
   var t20 = a10 * a21 - a11 * a20;
   var det = a00 * t00 + a01 * t10 + a02 * t20;
-  if (Math.abs(det) <= 1.0e-06) {
+  if (det == 0) {
     return false;
   }
 

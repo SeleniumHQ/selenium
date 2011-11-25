@@ -141,10 +141,9 @@ goog.inherits(goog.events.ImeHandler.Event, goog.events.Event);
  * Whether to use the composition events.
  * @type {boolean}
  */
-// TODO(user): Fix this to use real webkit version numbers
-// instead of product sniffing.
 goog.events.ImeHandler.USES_COMPOSITION_EVENTS =
-    goog.userAgent.GECKO || goog.userAgent.product.CHROME;
+    goog.userAgent.GECKO ||
+    (goog.userAgent.WEBKIT && goog.userAgent.isVersion(532));
 
 
 /**
@@ -216,17 +215,17 @@ goog.events.ImeHandler.prototype.handleImeActivate_ = function(e) {
     return;
   }
 
-  // Listens for keyup events to handle unexpected IME keydown events on Safari.
-  // In Safari, we currently use textInput events deactivate IME
+  // Listens for keyup events to handle unexpected IME keydown events on older
+  // versions of webkit.
+  //
+  // In those versions, we currently use textInput events deactivate IME
   // (see handleTextInput_() for the reason). However,
   // Safari fires a keydown event (as a result of pressing keys to commit IME
   // text) with keyCode == WIN_IME after textInput event. This activates IME
   // mode again unnecessarily. To prevent this problem, listens keyup events
   // which can use to determine whether IME text has been committed.
-  //
-  // TODO(user): Fix this to use real webkit version numbers
-  // instead of product sniffing.
-  if (goog.userAgent.product.SAFARI) {
+  if (goog.userAgent.WEBKIT &&
+      !goog.events.ImeHandler.USES_COMPOSITION_EVENTS) {
     this.keyUpHandler_.listen(this.el_,
         goog.events.EventType.KEYUP, this.handleKeyUpSafari4_);
   }
@@ -356,7 +355,7 @@ goog.events.ImeHandler.isImeDeactivateKeyEvent_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.events.ImeHandler.prototype.disposeInternal = function() {
   this.handler_.dispose();
   this.keyUpHandler_.dispose();

@@ -64,14 +64,14 @@ goog.ui.style.app.PrimaryActionButtonRenderer.IE6_CLASS_COMBINATIONS = [
 ];
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.PrimaryActionButtonRenderer.prototype.getCssClass =
     function() {
   return goog.ui.style.app.PrimaryActionButtonRenderer.CSS_CLASS;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.PrimaryActionButtonRenderer.prototype.
     getIe6ClassCombinations = function() {
   return goog.ui.style.app.PrimaryActionButtonRenderer.IE6_CLASS_COMBINATIONS;

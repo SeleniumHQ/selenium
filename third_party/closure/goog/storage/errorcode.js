@@ -25,5 +25,6 @@ goog.provide('goog.storage.ErrorCode');
  * @enum {string}
  */
 goog.storage.ErrorCode = {
-  INVALID_VALUE: 'Storage: Invalid value was encountered'
+  INVALID_VALUE: 'Storage: Invalid value was encountered',
+  DECRYPTION_ERROR: 'Storage: The value could not be decrypted'
 };

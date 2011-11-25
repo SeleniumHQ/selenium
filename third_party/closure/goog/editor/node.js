@@ -237,28 +237,6 @@ goog.editor.node.isEmpty = function(node, opt_prohibitSingleNbsp) {
 
 
 /**
- * Determines the active element in the given document.  IE only.
- * @param {Document} doc The document to look in.
- * @return {Element} The active element in IE.
- */
-goog.editor.node.getActiveElementIE = function(doc) {
-  try {
-    return doc.activeElement;
-  } catch (e) {
-    // NOTE(nicksantos): Sometimes, evaluating document.activeElement in IE
-    // throws an exception. I'm not 100% sure why, but I suspect it chokes
-    // on document.activeElement if the activeElement has been recently
-    // removed from the DOM by a JS operation.
-    //
-    // We assume that an exception here simply means
-    // "there is no active element."
-  }
-
-  return null;
-};
-
-
-/**
  * Returns the length of the text in node if it is a text node, or the number
  * of children of the node, if it is an element. Useful for range-manipulation
  * code where you need to know the offset for the right side of the node.

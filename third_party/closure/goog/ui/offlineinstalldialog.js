@@ -301,7 +301,7 @@ goog.ui.OfflineInstallDialog.prototype.registerScreen = function(screen) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineInstallDialog.prototype.setVisible = function(visible) {
   if (this.isInDocument() && visible) {
     if (this.dirty_) {
@@ -313,14 +313,14 @@ goog.ui.OfflineInstallDialog.prototype.setVisible = function(visible) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineInstallDialog.prototype.createDom = function() {
   goog.ui.OfflineInstallDialog.superClass_.createDom.call(this);
   this.update();
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineInstallDialog.prototype.enterDocument = function() {
   goog.ui.OfflineInstallDialog.superClass_.enterDocument.call(this);
 
@@ -372,7 +372,7 @@ goog.ui.OfflineInstallDialog.prototype.goToGearsDownloadPage = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineInstallDialog.prototype.disposeInternal = function() {
   goog.ui.OfflineInstallDialog.superClass_.disposeInternal.call(this);
 
@@ -804,7 +804,7 @@ goog.ui.OfflineInstallDialog.InstallScreen.prototype.setInstallDescription =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.OfflineInstallDialog.InstallScreen.prototype.getContent = function() {
   if (!this.content_) {
     var sb = new goog.string.StringBuffer(this.installDescription_);
@@ -869,7 +869,7 @@ goog.ui.OfflineInstallDialog.InstallScreen.prototype.getStepHtml_ = function(
 
 /**
  * Overrides to go to Gears page.
- * @inheritDoc
+ * @override
  */
 goog.ui.OfflineInstallDialog.InstallScreen.prototype.handleSelect =
     function(e) {

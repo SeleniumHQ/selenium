@@ -21,6 +21,8 @@
 goog.provide('goog.ui.Checkbox');
 goog.provide('goog.ui.Checkbox.State');
 
+goog.require('goog.dom.a11y');
+goog.require('goog.dom.a11y.State');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.CheckboxRenderer');
@@ -48,9 +50,8 @@ goog.ui.Checkbox = function(opt_checked, opt_domHelper, opt_renderer) {
   var renderer = opt_renderer || goog.ui.CheckboxRenderer.getInstance();
   goog.ui.Control.call(this, null, renderer, opt_domHelper);
   // The checkbox maintains its own tri-state CHECKED state.
-  // The control class maintains DISABLED and FOCUSED (which enable tab
+  // The control class maintains DISABLED, ACTIVE, and FOCUSED (which enable tab
   // navigation, and keyHandling with SPACE).
-  this.setSupportedState(goog.ui.Component.State.ACTIVE, false);
 
   /**
    * Checked state of the checkbox.
@@ -116,11 +117,11 @@ goog.ui.Checkbox.prototype.isUndetermined = function() {
 
 /**
  * Sets the checked state of the checkbox.
- * @param {goog.ui.Checkbox.State} checked The checked state to set.
+ * @param {?boolean} checked The checked state to set.
  */
 goog.ui.Checkbox.prototype.setChecked = function(checked) {
   if (checked != this.checked_) {
-    this.checked_ = checked;
+    this.checked_ = /** @type {goog.ui.Checkbox.State} */ (checked);
     this.getRenderer().setCheckboxState(this.getElement(), this.checked_);
   }
 };
@@ -171,18 +172,40 @@ goog.ui.Checkbox.prototype.toggle = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Checkbox.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
   if (this.isHandleMouseEvents()) {
+    var handler = this.getHandler();
     // Listen to the label, if it was set.
     if (this.label_) {
-      this.getHandler().listen(this.label_,
-          goog.events.EventType.CLICK, this.handleClickOrSpace_);
+      // Any mouse events that happen to the associated label should have the
+      // same effect on the checkbox as if they were happening to the checkbox
+      // itself.
+      handler.
+          listen(this.label_, goog.events.EventType.CLICK,
+              this.handleClickOrSpace_).
+          listen(this.label_, goog.events.EventType.MOUSEOVER,
+              this.handleMouseOver).
+          listen(this.label_, goog.events.EventType.MOUSEOUT,
+              this.handleMouseOut).
+          listen(this.label_, goog.events.EventType.MOUSEDOWN,
+              this.handleMouseDown).
+          listen(this.label_, goog.events.EventType.MOUSEUP,
+              this.handleMouseUp);
     }
-    // Always listen to the checkbox element.
-    this.getHandler().listen(this.getElement(),
+    // Checkbox needs to explicitly listen for click event.
+    handler.listen(this.getElement(),
         goog.events.EventType.CLICK, this.handleClickOrSpace_);
+  }
+
+  // Set aria label.
+  if (this.label_) {
+    if (!this.label_.id) {
+      this.label_.id = this.makeId('lbl');
+    }
+    goog.dom.a11y.setState(this.getElement(),
+        goog.dom.a11y.State.LABELLEDBY, this.label_.id);
   }
 };
 
@@ -192,7 +215,7 @@ goog.ui.Checkbox.prototype.enterDocument = function() {
  * focusable. In particular this fails in Chrome.
  * Note: in general tabIndex=-1 will prevent from keyboard focus but enables
  * mouse focus, however in this case the control class prevents mouse focus.
- * @inheritDoc
+ * @override
  */
 goog.ui.Checkbox.prototype.setEnabled = function(enabled) {
   goog.base(this, 'setEnabled', enabled);
@@ -220,7 +243,7 @@ goog.ui.Checkbox.prototype.handleClickOrSpace_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Checkbox.prototype.handleKeyEventInternal = function(e) {
   if (e.keyCode == goog.events.KeyCodes.SPACE) {
     this.handleClickOrSpace_(e);

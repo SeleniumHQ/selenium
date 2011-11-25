@@ -307,7 +307,7 @@ goog.ui.RichTextSpellChecker.prototype.isTextLeaf_ = function(node) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.RichTextSpellChecker.prototype.setExcludeMarker = function(marker) {
   var parts = marker.split('.');
   this.excludeTag = parts[0] || undefined;
@@ -592,7 +592,7 @@ goog.ui.RichTextSpellChecker.prototype.onWordClick_ = function(event) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.RichTextSpellChecker.prototype.disposeInternal = function() {
   goog.ui.RichTextSpellChecker.superClass_.disposeInternal.call(this);
   this.rootNode_ = null;

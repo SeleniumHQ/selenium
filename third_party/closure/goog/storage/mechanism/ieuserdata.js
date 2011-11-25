@@ -48,8 +48,8 @@ goog.storage.mechanism.IEUserData = function(storageKey, opt_storageNodeId) {
     if (!goog.storage.mechanism.IEUserData.storageMap_) {
       goog.storage.mechanism.IEUserData.storageMap_ = new goog.structs.Map();
     }
-    this.storageNode_ = (/** @type {Element} */
-        goog.storage.mechanism.IEUserData.storageMap_.get(storageKey));
+    this.storageNode_ = /** @type {Element} */
+        goog.storage.mechanism.IEUserData.storageMap_.get(storageKey);
     if (!this.storageNode_) {
       if (opt_storageNodeId) {
         this.storageNode_ = document.getElementById(opt_storageNodeId);
@@ -80,7 +80,7 @@ goog.inherits(goog.storage.mechanism.IEUserData,
 /**
  * Encoding map for characters which are not encoded by encodeURIComponent().
  *
- * @type {Object}
+ * @type {!Object}
  * @const
  */
 goog.storage.mechanism.IEUserData.ENCODE_MAP = {'.': '.2E', '!': '.21',
@@ -99,7 +99,7 @@ goog.storage.mechanism.IEUserData.storageMap_ = null;
 /**
  * The document element used for storing data.
  *
- * @type {?Element}
+ * @type {Element}
  * @private
  */
 goog.storage.mechanism.IEUserData.prototype.storageNode_ = null;
@@ -152,7 +152,7 @@ goog.storage.mechanism.IEUserData.prototype.isAvailable = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.IEUserData.prototype.set = function(key, value) {
   this.storageNode_.setAttribute(
       goog.storage.mechanism.IEUserData.encodeKey_(key), value);
@@ -160,7 +160,7 @@ goog.storage.mechanism.IEUserData.prototype.set = function(key, value) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.IEUserData.prototype.get = function(key) {
   // According to Microsoft, values can be strings, numbers or booleans. Since
   // we only save strings, any other type is a storage error. If we returned
@@ -176,7 +176,7 @@ goog.storage.mechanism.IEUserData.prototype.get = function(key) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.IEUserData.prototype.remove = function(key) {
   this.storageNode_.removeAttribute(
       goog.storage.mechanism.IEUserData.encodeKey_(key));
@@ -184,13 +184,13 @@ goog.storage.mechanism.IEUserData.prototype.remove = function(key) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.IEUserData.prototype.getCount = function() {
   return this.getNode_().attributes.length;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.IEUserData.prototype.__iterator__ = function(opt_keys) {
   var i = 0;
   var attributes = this.getNode_().attributes;
@@ -214,7 +214,7 @@ goog.storage.mechanism.IEUserData.prototype.__iterator__ = function(opt_keys) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.storage.mechanism.IEUserData.prototype.clear = function() {
   var node = this.getNode_();
   for (var left = node.attributes.length; left > 0; left--) {
@@ -261,6 +261,6 @@ goog.storage.mechanism.IEUserData.prototype.saveNode_ = function() {
  */
 goog.storage.mechanism.IEUserData.prototype.getNode_ = function() {
   // This is a special IE-only property letting us browse persistent data.
-  var doc = /** @type {Document} */(this.storageNode_['XMLDocument']);
+  var doc = /** @type {Document} */ this.storageNode_['XMLDocument'];
   return doc.documentElement;
 };

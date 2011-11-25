@@ -23,9 +23,12 @@
  *   var hash = md5.digest();
  *
  * Performance:
- *   Chrome 10/11  ~100 Mbit/s
- *   Firefox 4.0    ~16 Mbit/s
- *   IE9            ~20 Mbit/s
+ *   Chrome 14              ~450 Mbit/s
+ *   Chrome 13 (in a VM)    ~250 Mbit/s
+ *   Firefox 6.0 (in a VM)  ~100 Mbit/s
+ *   IE9 (in a VM)           ~27 Mbit/s
+ *   Firefox 3.6             ~15 Mbit/s
+ *   IE8 (in a VM)           ~13 Mbit/s
  *
  */
 
@@ -119,7 +122,7 @@ goog.crypt.Md5.T_ = [
  */
 
 
-/** @inheritDoc */
+/** @override */
 goog.crypt.Md5.prototype.reset = function() {
   this.chain_[0] = 0x67452301;
   this.chain_[1] = 0xefcdab89;
@@ -134,7 +137,7 @@ goog.crypt.Md5.prototype.reset = function() {
 /**
  * Internal compress helper function. It takes a block of data (64 bytes)
  * and updates the accumulator.
- * @param {Array.<number>} buf Buffer with the block to compress.
+ * @param {Array.<number>|Uint8Array|string} buf The block to compress.
  * @param {number=} opt_offset Offset of the block in the buffer.
  * @private
  */
@@ -147,11 +150,20 @@ goog.crypt.Md5.prototype.compress_ = function(buf, opt_offset) {
   var X = new Array(16);
 
   // Get 16 little endian words. It is not worth unrolling this for Chrome 11.
-  for (var i = opt_offset; i < opt_offset + 64; i += 4) {
-    X[i / 4] = (buf[i]) |
-               (buf[i + 1] << 8) |
-               (buf[i + 2] << 16) |
-               (buf[i + 3] << 24);
+  if (goog.isString(buf)) {
+    for (var i = 0; i < 16; ++i) {
+      X[i] = (buf.charCodeAt(opt_offset++)) |
+             (buf.charCodeAt(opt_offset++) << 8) |
+             (buf.charCodeAt(opt_offset++) << 16) |
+             (buf.charCodeAt(opt_offset++) << 24);
+    }
+  } else {
+    for (var i = 0; i < 16; ++i) {
+      X[i] = (buf[opt_offset++]) |
+             (buf[opt_offset++] << 8) |
+             (buf[opt_offset++] << 16) |
+             (buf[opt_offset++] << 24);
+    }
   }
 
   var A = this.chain_[0];
@@ -333,11 +345,12 @@ goog.crypt.Md5.prototype.compress_ = function(buf, opt_offset) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
   if (!goog.isDef(opt_length)) {
     opt_length = bytes.length;
   }
+  var lengthMinusBlock = opt_length - 64;
 
   // Copy some object properties to local variables in order to save on access
   // time from inside the loop (~10% speedup was observed on Chrome 11).
@@ -345,24 +358,37 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
   var blockLength = this.blockLength_;
   var i = 0;
 
-  // Strangely enough, it is faster to copy the data than to pass over the
-  // buffer and an offset. Copying in a loop is also as fast as array slicing.
-  // This was tested on Chrome 11 and Firefox 3.6. Please do not optimize
-  // the following without careful profiling.
-  if (goog.isString(bytes)) {
-    while (i < opt_length) {
-      block[blockLength++] = bytes.charCodeAt(i++);
-      if (blockLength == 64) {
-        this.compress_(block);
-        blockLength = 0;
+  // The outer while loop should execute at most twice.
+  while (i < opt_length) {
+    // When we have no data in the block to top up, we can directly process the
+    // input buffer (assuming it contains sufficient data). This gives ~30%
+    // speedup on Chrome 14 and ~70% speedup on Firefox 6.0, but requires that
+    // the data is provided in large chunks (or in multiples of 64 bytes).
+    if (blockLength == 0) {
+      while (i <= lengthMinusBlock) {
+        this.compress_(bytes, i);
+        i += 64;
       }
     }
-  } else {
-    while (i < opt_length) {
-      block[blockLength++] = bytes[i++];
-      if (blockLength == 64) {
-        this.compress_(block);
-        blockLength = 0;
+    if (goog.isString(bytes)) {
+      while (i < opt_length) {
+        block[blockLength++] = bytes.charCodeAt(i++);
+        if (blockLength == 64) {
+          this.compress_(block);
+          blockLength = 0;
+          // Jump to the outer loop so we use the full-block optimization.
+          break;
+        }
+      }
+    } else {
+      while (i < opt_length) {
+        block[blockLength++] = bytes[i++];
+        if (blockLength == 64) {
+          this.compress_(block);
+          blockLength = 0;
+          // Jump to the outer loop so we use the full-block optimization.
+          break;
+        }
       }
     }
   }
@@ -372,7 +398,7 @@ goog.crypt.Md5.prototype.update = function(bytes, opt_length) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.crypt.Md5.prototype.digest = function() {
   // This must accommodate at least 1 padding byte (0x80), 8 bytes of
   // total bitlength, and must end at a 64-byte boundary.

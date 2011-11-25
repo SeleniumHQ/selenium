@@ -70,7 +70,7 @@ goog.graphics.VmlGroupElement = function(element, graphics) {
 goog.inherits(goog.graphics.VmlGroupElement, goog.graphics.GroupElement);
 
 
-/** @inheritDoc */
+/** @override */
 goog.graphics.VmlGroupElement.prototype.getElement =
     goog.graphics.vmlGetElement_;
 
@@ -170,7 +170,7 @@ goog.graphics.VmlEllipseElement = function(element, graphics,
 goog.inherits(goog.graphics.VmlEllipseElement, goog.graphics.EllipseElement);
 
 
-/** @inheritDoc */
+/** @override */
 goog.graphics.VmlEllipseElement.prototype.getElement =
     goog.graphics.vmlGetElement_;
 
@@ -222,7 +222,7 @@ goog.graphics.VmlRectElement = function(element, graphics, stroke, fill) {
 goog.inherits(goog.graphics.VmlRectElement, goog.graphics.RectElement);
 
 
-/** @inheritDoc */
+/** @override */
 goog.graphics.VmlRectElement.prototype.getElement =
     goog.graphics.vmlGetElement_;
 
@@ -272,7 +272,7 @@ goog.graphics.VmlPathElement = function(element, graphics, stroke, fill) {
 goog.inherits(goog.graphics.VmlPathElement, goog.graphics.PathElement);
 
 
-/** @inheritDoc */
+/** @override */
 goog.graphics.VmlPathElement.prototype.getElement =
     goog.graphics.vmlGetElement_;
 
@@ -308,7 +308,7 @@ goog.graphics.VmlTextElement = function(element, graphics, stroke, fill) {
 goog.inherits(goog.graphics.VmlTextElement, goog.graphics.TextElement);
 
 
-/** @inheritDoc */
+/** @override */
 goog.graphics.VmlTextElement.prototype.getElement =
     goog.graphics.vmlGetElement_;
 
@@ -342,7 +342,7 @@ goog.graphics.VmlImageElement = function(element, graphics) {
 goog.inherits(goog.graphics.VmlImageElement, goog.graphics.ImageElement);
 
 
-/** @inheritDoc */
+/** @override */
 goog.graphics.VmlImageElement.prototype.getElement =
     goog.graphics.vmlGetElement_;
 

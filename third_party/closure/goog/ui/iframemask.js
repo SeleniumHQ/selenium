@@ -107,6 +107,7 @@ goog.ui.IframeMask.prototype.opacity_ = 0;
 /**
  * Removes the iframe from the DOM.
  * @override
+ * @protected
  */
 goog.ui.IframeMask.prototype.disposeInternal = function() {
   if (this.iframePool_) {

@@ -765,7 +765,7 @@ goog.ui.AbstractSpellChecker.prototype.onWordChanged_ = function(event) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.AbstractSpellChecker.prototype.disposeInternal = function() {
   if (this.isVisible_) {
     // Clears wordElements_

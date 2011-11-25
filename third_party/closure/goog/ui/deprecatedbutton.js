@@ -359,7 +359,7 @@ goog.ui.DeprecatedButton.prototype.onClick_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.DeprecatedButton.prototype.disposeInternal = function() {
   goog.ui.DeprecatedButton.superClass_.disposeInternal.call(this);
 

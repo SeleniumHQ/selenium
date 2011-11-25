@@ -121,9 +121,7 @@ goog.gears.LoggerClient.prototype.sendLog_ = function(name,
 };
 
 
-/**
- * Disposes of the logger client.
- */
+/** @override */
 goog.gears.LoggerClient.prototype.disposeInternal = function() {
   goog.gears.LoggerClient.superClass_.disposeInternal.call(this);
   this.mainThread_ = null;

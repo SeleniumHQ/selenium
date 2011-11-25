@@ -101,26 +101,47 @@ goog.crypt.Arc4.prototype.setKey = function(key, opt_length) {
  * These days 1536 is considered a decent amount to drop to get the key state
  * warmed-up enough for secure usage. This is not done in the constructor to
  * preserve efficiency for use cases that do not need this.
- * @param {number} n Number of bytes to disregard from the stream.
+ * NOTE: Discard is identical to crypt without actually xoring any data. It's
+ * unfortunate to have this code duplicated, but this was done for performance
+ * reasons. Alternatives which were attempted:
+ * 1. Create a temp array of the correct length and pass it to crypt. This
+ *    works but needlessly allocates an array. But more importantly this
+ *    requires choosing an array type (Array or Uint8Array) in discard, and
+ *    choosing a different type than will be passed to crypt by the client
+ *    code hurts the javascript engines ability to optimize crypt (7x hit in
+ *    v8).
+ * 2. Make data option in crypt so discard can pass null, this has a huge
+ *    perf hit for crypt.
+ * @param {number} length Number of bytes to disregard from the stream.
  */
-goog.crypt.Arc4.prototype.discard = function(n) {
-  var devnul = new Array(n);
-  this.crypt(devnul);
+goog.crypt.Arc4.prototype.discard = function(length) {
+  var i = this.index1_;
+  var j = this.index2_;
+  var state = this.state_;
+
+  for (var n = 0; n < length; ++n) {
+    i = (i + 1) & 255;
+    j = (j + state[i]) & 255;
+
+    var tmp = state[i];
+    state[i] = state[j];
+    state[j] = tmp;
+  }
+
+  this.index1_ = i;
+  this.index2_ = j;
 };
 
 
 /**
  * En- or decrypt (same operation for streamciphers like ARC4)
- * @param {Array.<number>} data The data to be xor-ed in place.
+ * @param {Array.<number>|Uint8Array} data The data to be xor-ed in place.
  * @param {number=} opt_length The number of bytes to crypt.
  */
 goog.crypt.Arc4.prototype.crypt = function(data, opt_length) {
   if (!opt_length) {
     opt_length = data.length;
   }
-
-  goog.asserts.assertArray(data, 'Data parameter must be a byte array');
-
   var i = this.index1_;
   var j = this.index2_;
   var state = this.state_;

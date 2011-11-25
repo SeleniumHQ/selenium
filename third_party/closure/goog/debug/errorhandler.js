@@ -18,7 +18,9 @@
  */
 
 goog.provide('goog.debug.ErrorHandler');
+goog.provide('goog.debug.ErrorHandler.ProtectedFunctionError');
 
+goog.require('goog.asserts');
 goog.require('goog.debug');
 goog.require('goog.debug.EntryPointMonitor');
 goog.require('goog.debug.Trace');
@@ -73,14 +75,15 @@ goog.debug.ErrorHandler.prototype.setAddTracersToProtectedFunctions =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.debug.ErrorHandler.prototype.wrap = function(fn) {
-  return this.protectEntryPoint(fn);
+  return this.protectEntryPoint(goog.asserts.assertFunction(fn));
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.debug.ErrorHandler.prototype.unwrap = function(fn) {
+  goog.asserts.assertFunction(fn);
   return fn[this.getFunctionIndex_(false)] || fn;
 };
 
@@ -161,7 +164,8 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn) {
       return fn.apply(this, arguments);
     } catch (e) {
       that.errorHandlerFn_(e);
-      throw e;  // Re-throw it since this may be expected by the caller.
+      // Re-throw it since this may be expected by the caller.
+      throw new goog.debug.ErrorHandler.ProtectedFunctionError(e);
     } finally {
       if (tracers) {
         goog.debug.Trace.stopTracer(tracer);
@@ -223,7 +227,7 @@ goog.debug.ErrorHandler.prototype.protectWindowFunctionsHelper_ =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.debug.ErrorHandler.prototype.disposeInternal = function() {
   // Try to unwrap window.setTimeout and window.setInterval.
   var win = goog.getObjectByName('window');
@@ -232,3 +236,33 @@ goog.debug.ErrorHandler.prototype.disposeInternal = function() {
 
   goog.base(this, 'disposeInternal');
 };
+
+
+
+/**
+ * Error thrown to the caller of a protected entry point if the entry point
+ * throws an error.
+ * @param {*} cause The error thrown by the entry point.
+ * @constructor
+ * @extends {goog.debug.Error}
+ */
+goog.debug.ErrorHandler.ProtectedFunctionError = function(cause) {
+  var message = goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX +
+      (cause && cause.message ? String(cause.message) : String(cause));
+  goog.base(this, message);
+
+  /**
+   * The error thrown by the entry point.
+   * @type {*}
+   */
+  this.cause = cause;
+};
+goog.inherits(goog.debug.ErrorHandler.ProtectedFunctionError, goog.debug.Error);
+
+
+/**
+ * Text to prefix the message with.
+ * @type {string}
+ */
+goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX =
+    'Error in protected function: ';

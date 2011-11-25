@@ -41,6 +41,7 @@ goog.require('goog.userAgent');
  * @constructor
  */
 goog.net.IframeLoadMonitor = function(iframe, opt_hasContent) {
+  goog.base(this);
 
   /**
    * Iframe whose load state is monitored by this IframeLoadMonitor
@@ -141,7 +142,7 @@ goog.net.IframeLoadMonitor.prototype.getIframe = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.net.IframeLoadMonitor.prototype.disposeInternal = function() {
   delete this.iframe_;
   this.maybeStopTimer_();
@@ -166,9 +167,9 @@ goog.net.IframeLoadMonitor.prototype.isLoadedHelper_ = function() {
     // the LOAD event and then a few hundred ms later replace the
     // contentDocument once the content is loaded.
     isLoaded = goog.userAgent.IE ? this.iframe_.readyState == 'complete' :
-         !!goog.dom.getFrameContentDocument(this.iframe_).body &&
-         (!this.hasContent_ ||
-         !!goog.dom.getFrameContentDocument(this.iframe_).body.firstChild);
+        !!goog.dom.getFrameContentDocument(this.iframe_).body &&
+        (!this.hasContent_ ||
+        !!goog.dom.getFrameContentDocument(this.iframe_).body.firstChild);
   } catch (e) {
     // Ignore these errors. This just means that the iframe is not loaded
     // IE will throw error reading readyState if the iframe is not appended

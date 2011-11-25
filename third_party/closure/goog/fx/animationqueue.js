@@ -25,115 +25,84 @@ goog.provide('goog.fx.AnimationQueue');
 goog.provide('goog.fx.AnimationSerialQueue');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.events.EventHandler');
-goog.require('goog.fx.Animation');
-goog.require('goog.fx.Animation.EventType');
+goog.require('goog.fx.Transition.EventType');
+goog.require('goog.fx.TransitionBase');
+goog.require('goog.fx.TransitionBase.State');
 
 
 
 /**
  * Constructor for AnimationQueue object.
+ *
  * @constructor
- * @extends {goog.fx.Animation}
+ * @extends {goog.fx.TransitionBase}
  */
 goog.fx.AnimationQueue = function() {
-  goog.fx.Animation.call(this, [0], [0], 0);
+  goog.base(this);
 
   /**
    * An array holding all animations in the queue.
-   * @type {Array}
-   * @private
+   * @type {Array.<goog.fx.TransitionBase>}
+   * @protected
    */
-  this.queue_ = [];
+  this.queue = [];
 };
-goog.inherits(goog.fx.AnimationQueue, goog.fx.Animation);
+goog.inherits(goog.fx.AnimationQueue, goog.fx.TransitionBase);
 
 
 /**
- * Calls resume on the children animations.
- * @protected
- * @override
+ * Pushes an Animation to the end of the queue.
+ * @param {goog.fx.TransitionBase} animation The animation to add to the queue.
  */
-goog.fx.AnimationQueue.prototype.onResume = function() {
-  this.executeChildrenAction(function(anim) {
-    anim.play(anim.progress == 0);
-  });
-  goog.fx.AnimationQueue.superClass_.onResume.call(this);
-};
+goog.fx.AnimationQueue.prototype.add = function(animation) {
+  goog.asserts.assert(this.isStopped(),
+      'Not allowed to add animations to a running animation queue.');
 
+  if (goog.array.contains(this.queue, animation)) {
+    return;
+  }
 
-/**
- * Calls stop on the children animations.
- * @protected
- * @override
- */
-goog.fx.AnimationQueue.prototype.onStop = function() {
-  this.executeChildrenAction(function(anim) {
-    anim.stop();
-  });
-  goog.fx.AnimationQueue.superClass_.onStop.call(this);
+  this.queue.push(animation);
+  goog.events.listen(animation, goog.fx.Transition.EventType.FINISH,
+                     this.onAnimationFinish, false, this);
 };
 
 
 /**
- * Calls pause on the children animations.
- * @protected
- * @override
- */
-goog.fx.AnimationQueue.prototype.onPause = function() {
-  this.executeChildrenAction(function(anim) {
-    anim.pause();
-  });
-  goog.fx.AnimationQueue.superClass_.onPause.call(this);
-};
-
-
-/**
- * Destroy the queue when the animation is destroyed.
- * @protected
- * @override
- */
-goog.fx.AnimationQueue.prototype.onDestroy = function() {
-  this.destroyQueueAndHandlers_();
-  goog.fx.AnimationQueue.superClass_.onDestroy.call(this);
-};
-
-
-/**
- * Calls a function on the children in implementation specific order.
- * @param {function(goog.fx.Animation)} f The function that will be called on
- *     the children animation.
- * @protected
- */
-goog.fx.AnimationQueue.prototype.executeChildrenAction = goog.abstractMethod;
-
-
-/**
- * Push an Animation to the end of the queue.
- * @param {goog.fx.Animation} animation The animation to add to the queue.
- */
-goog.fx.AnimationQueue.prototype.add = goog.abstractMethod;
-
-
-/**
- * Remove an Animation from the queue.
+ * Removes an Animation from the queue.
  * @param {goog.fx.Animation} animation The animation to remove.
  */
-goog.fx.AnimationQueue.prototype.remove = goog.abstractMethod;
+goog.fx.AnimationQueue.prototype.remove = function(animation) {
+  goog.asserts.assert(this.isStopped(),
+      'Not allowed to remove animations from a running animation queue.');
+
+  if (goog.array.remove(this.queue, animation)) {
+    goog.events.unlisten(animation, goog.fx.Transition.EventType.FINISH,
+                         this.onAnimationFinish, false, this);
+  }
+};
 
 
 /**
- * Destroy all animations in the queue as well as the event handler.  We don't
- * override the destroy method in the parent class, but instead can call this
- * upon receiving its DESTROY event.
- * @private
+ * Handles the event that an animation has finished.
+ * @param {goog.events.Event} e The finishing event.
+ * @protected
  */
-goog.fx.AnimationQueue.prototype.destroyQueueAndHandlers_ = function() {
-  goog.array.forEach(
-      this.queue_,
-      function(element) {
-        element.destroy();
-      });
+goog.fx.AnimationQueue.prototype.onAnimationFinish = goog.abstractMethod;
+
+
+/**
+ * Disposes of the animations.
+ */
+goog.fx.AnimationQueue.prototype.disposeInternal = function() {
+  goog.array.forEach(this.queue, function(animation) {
+    animation.dispose();
+  });
+  this.queue.length = 0;
+
+  goog.base(this, 'disposeInternal');
 };
 
 
@@ -144,205 +113,194 @@ goog.fx.AnimationQueue.prototype.destroyQueueAndHandlers_ = function() {
  * @extends {goog.fx.AnimationQueue}
  */
 goog.fx.AnimationParallelQueue = function() {
-  goog.fx.AnimationQueue.call(this);
+  goog.base(this);
+
+  /**
+   * Number of finished animations.
+   * @type {number}
+   * @private
+   */
+  this.finishedCounter_ = 0;
 };
 goog.inherits(goog.fx.AnimationParallelQueue, goog.fx.AnimationQueue);
 
 
-/**
- * Plays all animations in the queue at once.
- * @private
- */
-goog.fx.AnimationParallelQueue.prototype.playAll_ = function() {
-  for (var i = 0; i < this.queue_.length; i++) {
-    this.queue_[i].play();
+/** @inheritDoc */
+goog.fx.AnimationParallelQueue.prototype.play = function(opt_restart) {
+  if (this.queue.length == 0) {
+    return false;
   }
-};
 
+  if (opt_restart || this.isStopped()) {
+    this.finishedCounter_ = 0;
+    this.onBegin();
+  } else if (this.isPlaying()) {
+    return false;
+  }
 
-/**
- * Play all on begin.
- * @override
- */
-goog.fx.AnimationParallelQueue.prototype.onBegin = function() {
-  // TODO(user): Shouldn't this be done onPlay?
-  this.playAll_();
-  goog.fx.AnimationParallelQueue.superClass_.onBegin.call(this);
+  this.onPlay();
+  if (this.isPaused()) {
+    this.onResume();
+  }
+  var resuming = this.isPaused() && !opt_restart;
+
+  this.startTime = goog.now();
+  this.endTime = null;
+  this.setStatePlaying();
+
+  goog.array.forEach(this.queue, function(anim) {
+    if (!resuming || anim.isPaused()) {
+      anim.play(opt_restart);
+    }
+  });
+
+  return true;
 };
 
 
 /** @inheritDoc */
-goog.fx.AnimationParallelQueue.prototype.executeChildrenAction = function(f) {
-  goog.array.forEach(this.queue_, f);
+goog.fx.AnimationParallelQueue.prototype.pause = function() {
+  if (this.isPlaying()) {
+    goog.array.forEach(this.queue, function(anim) {
+      if (anim.isPlaying()) {
+        anim.pause();
+      }
+    });
+
+    this.setStatePaused();
+    this.onPause();
+  }
 };
 
 
-/**
- * Add an animation to the queue.
- * @param {goog.fx.Animation} animation The animation to add.
- */
-goog.fx.AnimationParallelQueue.prototype.add = function(animation) {
-  this.queue_.push(animation);
-
-  this.duration = Math.max(this.duration, animation.duration);
-};
-
-
-/**
- * Remove an Animation from the queue.
- * @param {goog.fx.Animation} animation The animation to remove.
- */
-goog.fx.AnimationParallelQueue.prototype.remove = function(animation) {
-  if (goog.array.remove(this.queue_, animation)) {
-    // ensure that duration reflects the length of the longest animation
-    if (animation.duration == this.duration) {
-      this.duration = 0;
-      goog.array.forEach(this.queue_, function(element) {
-        this.duration = Math.max(element.duration, this.duration);
-      }, this);
+/** @inheritDoc */
+goog.fx.AnimationParallelQueue.prototype.stop = function(opt_gotoEnd) {
+  goog.array.forEach(this.queue, function(anim) {
+    if (!anim.isStopped()) {
+      anim.stop(opt_gotoEnd);
     }
+  });
+
+  this.setStateStopped();
+  this.endTime = goog.now();
+
+  this.onStop();
+  this.onEnd();
+};
+
+
+/** @inheritDoc */
+goog.fx.AnimationParallelQueue.prototype.onAnimationFinish = function(e) {
+  this.finishedCounter_++;
+  if (this.finishedCounter_ == this.queue.length) {
+    this.endTime = goog.now();
+
+    this.setStateStopped();
+
+    this.onFinish();
+    this.onEnd();
   }
 };
 
 
 
 /**
- * Constructor for an AnimationSerialQueue object.
+ * Constructor for AnimationSerialQueue object.
  * @constructor
  * @extends {goog.fx.AnimationQueue}
  */
 goog.fx.AnimationSerialQueue = function() {
-  goog.fx.AnimationQueue.call(this);
+  goog.base(this);
 
   /**
-   * A separate handler is needed to handle FINISH events for animations in the
-   * queue, since it's necessary to remove the listeners after the animation
-   * stops playing, and we don't want to clobber the listeners for other events,
-   * like BEGIN and END.
-   * @type {goog.events.EventHandler}
+   * Current animation in queue currently active.
+   * @type {number}
    * @private
    */
-  this.childHandler_ = new goog.events.EventHandler(this);
+  this.current_ = 0;
 };
 goog.inherits(goog.fx.AnimationSerialQueue, goog.fx.AnimationQueue);
 
 
-/**
- * Records the animation currently being played.
- * @type {number}
- * @private
- */
-goog.fx.AnimationSerialQueue.prototype.counter_ = 0;
-
-
-/**
- * Play next on begin.
- * @override
- */
-goog.fx.AnimationSerialQueue.prototype.onBegin = function() {
-  this.playNext_();
-  goog.fx.AnimationSerialQueue.superClass_.onBegin.call(this);
-};
-
-
-/**
- * Reset on end.
- * @override
- */
-goog.fx.AnimationSerialQueue.prototype.onEnd = function() {
-  this.reset_();
-  goog.fx.AnimationSerialQueue.superClass_.onEnd.call(this);
-};
-
-
-/**
- * Reset the counter and remove all listeners.
- * @private
- */
-goog.fx.AnimationSerialQueue.prototype.reset_ = function() {
-  this.counter_ = 0;
-
-  this.childHandler_.removeAll();
-};
-
-
-/**
- * Plays the next animation in the queue.
- * @private
- */
-goog.fx.AnimationSerialQueue.prototype.playNext_ = function() {
-  // if the state is paused, and this method was called (only called through the
-  // dispatch of a BEGIN event), then we know that we must be restarting, so we
-  // should stop all animations in the queue, reset the listeners, and rezero
-  // the counter
-  if (this.getStateInternal() == goog.fx.Animation.State.PAUSED) {
-    this.reset_();
-
-    goog.array.forEach(this.queue_, function(animation) {
-      // reset the progress to zero and update the coords to reset the position
-      animation.progress = 0;
-      animation.updateCoords_(animation.progress);
-
-      animation.stop();
-    });
+/** @inheritDoc */
+goog.fx.AnimationSerialQueue.prototype.play = function(opt_restart) {
+  if (this.queue.length == 0) {
+    return false;
   }
 
-  this.queue_[this.counter_].play();
-  this.counter_++;
+  if (opt_restart || this.isStopped()) {
+    if (this.current_ < this.queue.length &&
+        !this.queue[this.current_].isStopped()) {
+      this.queue[this.current_].stop(false);
+    }
 
-  if (this.counter_ < this.queue_.length) {
-    this.childHandler_.listen(
-        this.queue_[this.counter_ - 1],
-        goog.fx.Animation.EventType.FINISH,
-        function() {
-          this.playNext_();
-        });
+    this.current_ = 0;
+    this.onBegin();
+  } else if (this.isPlaying()) {
+    return false;
   }
+
+  this.onPlay();
+  if (this.isPaused()) {
+    this.onResume();
+  }
+
+  this.startTime = goog.now();
+  this.endTime = null;
+  this.setStatePlaying();
+
+  this.queue[this.current_].play(opt_restart);
+
+  return true;
 };
 
 
-/**
- * Add an animation to the queue.
- * @param {goog.fx.Animation} animation The animation to add.
- */
-goog.fx.AnimationSerialQueue.prototype.add = function(animation) {
-  this.queue_.push(animation);
-
-  this.duration += animation.duration;
-};
-
-
-/**
- * Remove an Animation from the queue.
- * @param {goog.fx.Animation} animation The animation to remove.
- */
-goog.fx.AnimationSerialQueue.prototype.remove = function(animation) {
-  if (goog.array.remove(this.queue_, animation)) {
-    this.duration -= animation.duration;
+/** @inheritDoc */
+goog.fx.AnimationSerialQueue.prototype.pause = function() {
+  if (this.isPlaying()) {
+    this.queue[this.current_].pause();
+    this.setStatePaused();
+    this.onPause();
   }
 };
 
 
 /** @inheritDoc */
-goog.fx.AnimationSerialQueue.prototype.executeChildrenAction = function(f) {
-  if (this.counter_ > 0) {
-    f(this.queue_[this.counter_ - 1]);
+goog.fx.AnimationSerialQueue.prototype.stop = function(opt_gotoEnd) {
+  this.setStateStopped();
+  this.endTime = goog.now();
+
+  if (opt_gotoEnd) {
+    for (var i = this.current_; i < this.queue.length; ++i) {
+      var anim = this.queue[i];
+      // If the animation is stopped, start it to initiate rendering.  This
+      // might be needed to make the next line work.
+      if (anim.isStopped()) anim.play();
+      // If the animation is not done, stop it and go to the end state of the
+      // animation.
+      if (!anim.isStopped()) anim.stop(true);
+    }
+  } else if (this.current_ < this.queue.length) {
+    this.queue[this.current_].stop(false);
   }
+
+  this.onStop();
+  this.onEnd();
 };
 
 
-/**
- * Destroy all animations in the queue as well as the event handler.  We don't
- * override the destroy method in the parent class, but instead can call this
- * upon receiving its DESTROY event.
- * @private
- */
-goog.fx.AnimationSerialQueue.prototype.destroyQueueAndHandlers_ = function() {
-  goog.array.forEach(
-      this.queue_,
-      function(element) {
-        element.destroy();
-      });
+/** @inheritDoc */
+goog.fx.AnimationSerialQueue.prototype.onAnimationFinish = function(e) {
+  if (this.isPlaying()) {
+    this.current_++;
+    if (this.current_ < this.queue.length) {
+      this.queue[this.current_].play();
+    } else {
+      this.endTime = goog.now();
+      this.setStateStopped();
 
-  this.childHandler_.dispose();
+      this.onFinish();
+      this.onEnd();
+    }
+  }
 };

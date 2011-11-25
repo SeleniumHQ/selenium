@@ -96,13 +96,13 @@ goog.editor.plugins.RemoveFormatting.createRangeDelimitedByRanges_ = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.RemoveFormatting.prototype.getTrogClassId = function() {
   return 'RemoveFormatting';
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.RemoveFormatting.prototype.isSupportedCommand = function(
     command) {
   return command ==
@@ -110,7 +110,7 @@ goog.editor.plugins.RemoveFormatting.prototype.isSupportedCommand = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.RemoveFormatting.prototype.execCommandInternal =
     function(command, var_args) {
   if (command ==
@@ -120,7 +120,7 @@ goog.editor.plugins.RemoveFormatting.prototype.execCommandInternal =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.RemoveFormatting.prototype.handleKeyboardShortcut =
     function(e, key, isModifierPressed) {
   if (!isModifierPressed) {

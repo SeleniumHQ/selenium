@@ -43,5 +43,5 @@ goog.debug.Error = function(opt_msg) {
 goog.inherits(goog.debug.Error, Error);
 
 
-/** @inheritDoc */
+/** @override */
 goog.debug.Error.prototype.name = 'CustomError';

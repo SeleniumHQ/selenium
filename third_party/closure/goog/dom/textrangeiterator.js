@@ -131,7 +131,7 @@ goog.dom.TextRangeIterator.prototype.startOffset_ = 0;
 goog.dom.TextRangeIterator.prototype.endOffset_ = 0;
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.TextRangeIterator.prototype.getStartTextOffset = function() {
   // Offsets only apply to text nodes.  If our current node is the start node,
   // return the saved offset.  Otherwise, return 0.
@@ -140,7 +140,7 @@ goog.dom.TextRangeIterator.prototype.getStartTextOffset = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.TextRangeIterator.prototype.getEndTextOffset = function() {
   // Offsets only apply to text nodes.  If our current node is the end node,
   // return the saved offset.  Otherwise, return the length of the node.
@@ -149,7 +149,7 @@ goog.dom.TextRangeIterator.prototype.getEndTextOffset = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.TextRangeIterator.prototype.getStartNode = function() {
   return this.startNode_;
 };
@@ -169,7 +169,7 @@ goog.dom.TextRangeIterator.prototype.setStartNode = function(node) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.TextRangeIterator.prototype.getEndNode = function() {
   return this.endNode_;
 };
@@ -185,7 +185,7 @@ goog.dom.TextRangeIterator.prototype.setEndNode = function(node) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.TextRangeIterator.prototype.isLast = function() {
   return this.isStarted() && this.node == this.endNode_ &&
       (!this.endOffset_ || !this.isStartTag());
@@ -207,7 +207,7 @@ goog.dom.TextRangeIterator.prototype.next = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.TextRangeIterator.prototype.skipTag = function() {
   goog.dom.TextRangeIterator.superClass_.skipTag.apply(this);
 

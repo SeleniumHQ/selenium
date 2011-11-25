@@ -93,14 +93,18 @@ goog.provide('goog.ui.AutoComplete.InputHandler');
 
 goog.require('goog.Disposable');
 goog.require('goog.Timer');
+goog.require('goog.dom');
 goog.require('goog.dom.a11y');
 goog.require('goog.dom.selection');
-goog.require('goog.events');
 goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
+goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.string');
 goog.require('goog.ui.AutoComplete');
+goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 
 
@@ -192,6 +196,20 @@ goog.ui.AutoComplete.InputHandler = function(opt_separators, opt_literals,
   this.lastKeyCode_ = -1;  // Initialize to a non-existent value.
 };
 goog.inherits(goog.ui.AutoComplete.InputHandler, goog.Disposable);
+
+
+/**
+ * Whether or not we need to pause the execution of the blur handler in order
+ * to allow the execution of the selection handler to run first. This is
+ * currently true when running on IOS version prior to 4.2, since we need
+ * some special logic for these devices to handle bug 4484488.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.AutoComplete.InputHandler.REQUIRES_ASYNC_BLUR_ =
+    (goog.userAgent.product.IPHONE || goog.userAgent.product.IPAD) &&
+        // Check the webkit version against the version for iOS 4.2.1.
+        !goog.userAgent.isVersion('533.17.9');
 
 
 /**
@@ -295,6 +313,14 @@ goog.ui.AutoComplete.InputHandler.prototype.separatorUpdates_ = true;
  * @private
  */
 goog.ui.AutoComplete.InputHandler.prototype.separatorSelects_ = true;
+
+
+/**
+ * The id of the currently active timeout, so it can be cleared if required.
+ * @type {?number}
+ * @private
+ */
+goog.ui.AutoComplete.InputHandler.prototype.activeTimeoutId_ = null;
 
 
 /**
@@ -405,38 +431,53 @@ goog.ui.AutoComplete.InputHandler.prototype.setCursorPosition = function(pos) {
 
 
 /**
- * Attaches the input handler to an element such as a textarea or input box.
- * The element could basically be anything as long as it exposes the correct
- * interface and events.
- * @param {Element} el An element to attach the input handler too.
+ * Attaches the input handler to a target element. The target element
+ * should be a textarea, input box, or other focusable element with the
+ * same interface.
+ * @param {Element|goog.events.EventTarget} target An element to attach the
+ *     input handler too.
  */
-goog.ui.AutoComplete.InputHandler.prototype.attachInput = function(el) {
-  goog.dom.a11y.setState(el, 'haspopup', true);
+goog.ui.AutoComplete.InputHandler.prototype.attachInput = function(target) {
+  if (goog.dom.isElement(target)) {
+    goog.dom.a11y.setState(/** @type {Element} */ (target), 'haspopup', true);
+  }
 
-  this.eh_.listen(el, goog.events.EventType.FOCUS, this.handleFocus);
-  this.eh_.listen(el, goog.events.EventType.BLUR, this.handleBlur);
+  this.eh_.listen(target, goog.events.EventType.FOCUS, this.handleFocus);
+  this.eh_.listen(target, goog.events.EventType.BLUR, this.handleBlur);
 
   if (!this.activeElement_) {
     this.activateHandler_.listen(
-        el, goog.events.EventType.KEYDOWN, this.onKeyDownOnInactiveElement_);
+        target, goog.events.EventType.KEYDOWN,
+        this.onKeyDownOnInactiveElement_);
+
+    // Don't wait for a focus event if the element already has focus.
+    if (goog.dom.isElement(target)) {
+      var ownerDocument = goog.dom.getOwnerDocument(
+          /** @type {Element} */ (target));
+      if (goog.dom.getActiveElement(ownerDocument) == target) {
+        this.processFocus(/** @type {Element} */ (target));
+      }
+    }
   }
 };
 
 
 /**
  * Detaches the input handler from the provided element.
- * @param {Element} el An element to detach the input handler from.
+ * @param {Element|goog.events.EventTarget} target An element to detach the
+ *     input handler from.
  */
-goog.ui.AutoComplete.InputHandler.prototype.detachInput = function(el) {
-  if (el == this.activeElement_) {
+goog.ui.AutoComplete.InputHandler.prototype.detachInput = function(target) {
+  if (target == this.activeElement_) {
     this.handleBlur();
   }
-  this.eh_.unlisten(el, goog.events.EventType.FOCUS, this.handleFocus);
-  this.eh_.unlisten(el, goog.events.EventType.BLUR, this.handleBlur);
+  this.eh_.unlisten(target, goog.events.EventType.FOCUS, this.handleFocus);
+  this.eh_.unlisten(target, goog.events.EventType.BLUR, this.handleBlur);
 
   if (!this.activeElement_) {
     this.activateHandler_.unlisten(
-        el, goog.events.EventType.KEYDOWN, this.onKeyDownOnInactiveElement_);
+        target, goog.events.EventType.KEYDOWN,
+        this.onKeyDownOnInactiveElement_);
   }
 };
 
@@ -523,14 +564,16 @@ goog.ui.AutoComplete.InputHandler.prototype.setTokenText = function(tokenText,
       entries[index] = replaceValue;
 
       var el = this.activeElement_;
-      // If there is an uncommitted IME in Firefox, setting the value fails and
-      // results in actually clearing the value that's already in the input.
+      // If there is an uncommitted IME in Firefox or IE 9, setting the value
+      // fails and results in actually clearing the value that's already in the
+      // input.
       // The FF bug is http://bugzilla.mozilla.org/show_bug.cgi?id=549674
       // Blurring before setting the value works around this problem. We'd like
       // to do this only if there is an uncommitted IME, but this isn't possible
-      // to detect for FF/Mac. Since text editing is finicky we restrict this
-      // workaround to Firefox.
-      if (goog.userAgent.GECKO) {
+      // to detect. Since text editing is finicky we restrict this
+      // workaround to Firefox and IE 9 where it's necessary.
+      if (goog.userAgent.GECKO ||
+          (goog.userAgent.IE && goog.userAgent.isVersion('9'))) {
         el.blur();
       }
       // Join the array and replace the contents of the input.
@@ -555,11 +598,13 @@ goog.ui.AutoComplete.InputHandler.prototype.setTokenText = function(tokenText,
 };
 
 
-/**
- * Disposes of the input handler.
- */
+/** @override */
 goog.ui.AutoComplete.InputHandler.prototype.disposeInternal = function() {
   goog.ui.AutoComplete.InputHandler.superClass_.disposeInternal.call(this);
+  if (this.activeTimeoutId_ != null) {
+    // Need to check against null explicitly because 0 is a valid value.
+    window.clearTimeout(this.activeTimeoutId_);
+  }
   this.eh_.dispose();
   delete this.eh_;
   this.activateHandler_.dispose();
@@ -908,6 +953,16 @@ goog.ui.AutoComplete.InputHandler.prototype.removeKeyEvents_ = function() {
  * @protected
  */
 goog.ui.AutoComplete.InputHandler.prototype.handleFocus = function(e) {
+  this.processFocus(/** @type {Element} */ (e.target || null));
+};
+
+
+/**
+ * Registers handlers for the active element when it receives focus.
+ * @param {Element} target The element to focus.
+ * @protected
+ */
+goog.ui.AutoComplete.InputHandler.prototype.processFocus = function(target) {
   this.activateHandler_.removeAll();
 
   if (this.ac_) {
@@ -916,8 +971,8 @@ goog.ui.AutoComplete.InputHandler.prototype.handleFocus = function(e) {
 
   // Double-check whether the active element has actually changed.
   // This is a fix for Safari 3, which fires spurious focus events.
-  if (e.target != this.activeElement_) {
-    this.activeElement_ = /** @type {Element} */ (e.target) || null;
+  if (target != this.activeElement_) {
+    this.activeElement_ = target;
     if (this.timer_) {
       this.timer_.start();
       this.eh_.listen(this.timer_, goog.Timer.TICK, this.onTick_);
@@ -934,6 +989,27 @@ goog.ui.AutoComplete.InputHandler.prototype.handleFocus = function(e) {
  * @protected
  */
 goog.ui.AutoComplete.InputHandler.prototype.handleBlur = function(opt_e) {
+  // Phones running iOS prior to version 4.2.
+  if (goog.ui.AutoComplete.InputHandler.REQUIRES_ASYNC_BLUR_) {
+    // @bug 4484488 This is required so that the menu works correctly on
+    // iOS prior to version 4.2. Otherwise, the blur action closes the menu
+    // before the menu button click can be processed.
+    // In order to fix the bug, we set a timeout to process the blur event, so
+    // that any pending selection event can be processed first.
+    this.activeTimeoutId_ =
+        window.setTimeout(goog.bind(this.processBlur_, this), 0);
+    return;
+  } else {
+    this.processBlur_();
+  }
+};
+
+
+/**
+ * Helper function that does the logic to handle an element blurring.
+ * @private
+ */
+goog.ui.AutoComplete.InputHandler.prototype.processBlur_ = function() {
   // it's possible that a blur event could fire when there's no active element,
   // in the case where attachInput was called on an input that already had
   // the focus
@@ -1069,7 +1145,8 @@ goog.ui.AutoComplete.InputHandler.prototype.onIeKeyPress_ = function(e) {
  * @param {boolean=} opt_force If true the menu will be forced to update.
  */
 goog.ui.AutoComplete.InputHandler.prototype.update = function(opt_force) {
-  if (opt_force || this.activeElement_ && this.getValue() != this.lastValue_) {
+  if (this.activeElement_ &&
+      (opt_force || this.getValue() != this.lastValue_)) {
     if (opt_force || !this.rowJustSelected_) {
       var token = this.parseToken();
 
@@ -1154,7 +1231,7 @@ goog.ui.AutoComplete.InputHandler.prototype.getTokenIndex_ = function(text,
 
   // Calculate which of the entries the cursor is currently in
   var current = 0;
-  for (var i = 0, pos = 0; i < entries.length && pos < caret; i++) {
+  for (var i = 0, pos = 0; i < entries.length && pos <= caret; i++) {
     pos += entries[i].length;
     current = i;
   }

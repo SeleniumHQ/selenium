@@ -213,7 +213,7 @@ goog.ui.ContainerScroller.prototype.temporarilyDisableHover_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ContainerScroller.prototype.disposeInternal = function() {
   goog.ui.ContainerScroller.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();

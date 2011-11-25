@@ -69,7 +69,7 @@ goog.addSingletonGetter(goog.ui.Css3MenuButtonRenderer);
 goog.ui.Css3MenuButtonRenderer.CSS_CLASS = goog.getCssName('goog-css3-button');
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Css3MenuButtonRenderer.prototype.getContentElement = function(element) {
   if (element) {
     var captionElem = goog.dom.getElementsByTagNameAndClass(

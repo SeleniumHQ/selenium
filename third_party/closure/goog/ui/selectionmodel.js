@@ -214,6 +214,14 @@ goog.ui.SelectionModel.prototype.getSelectedItem = function() {
 
 
 /**
+ * @return {!Array.<Object>} All items in the selection model.
+ */
+goog.ui.SelectionModel.prototype.getItems = function() {
+  return goog.array.clone(this.items_);
+};
+
+
+/**
  * Selects the given item, deselecting any previously selected item, and
  * dispatches a {@code SELECT} event.
  * @param {Object} item Item to select (null to clear the selection).
@@ -259,7 +267,7 @@ goog.ui.SelectionModel.prototype.clear = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.SelectionModel.prototype.disposeInternal = function() {
   goog.ui.SelectionModel.superClass_.disposeInternal.call(this);
   delete this.items_;

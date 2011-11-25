@@ -10,8 +10,9 @@ See the COPYING file for details.
   <title>goog.ui.PopupMenu</title>
   <script src="../base.js"></script>
   <script>
-    goog.require('goog.debug');
+    goog.require('goog.debug.reflect');
     goog.require('goog.positioning.Corner');
+    goog.require('goog.object');
     goog.require('goog.ui.MenuItem');
     goog.require('goog.ui.PopupMenu');
   </script>
@@ -19,6 +20,20 @@ See the COPYING file for details.
   <link rel="stylesheet" href="../css/menu.css">
   <link rel="stylesheet" href="../css/menuitem.css">
   <link rel="stylesheet" href="../css/menuseparator.css">
+  <style>
+    .event-log {
+      border: 1px solid #CCC;
+      height: 300px;
+      position: absolute;
+      right: 20px;
+      width: 400px;
+    }
+
+    .event-log-content {
+      height: 280px;
+      overflow: auto;
+    }
+  </style>
 </head>
 <body>
   <h1>goog.ui.PopupMenu</h1>
@@ -27,6 +42,10 @@ See the COPYING file for details.
     <br><br>
   </div>
 
+  <fieldset class="event-log">
+    <legend>Event log</legend>
+    <div id="event-log" class="event-log-content"></div>
+  </fieldset>
   <div id="foo" style="width: 600px; height: 300px; background-color: #EEE">
     <div>
       <span>Hello there <i>I'm italic!</i></span>
@@ -76,12 +95,20 @@ See the COPYING file for details.
         goog.positioning.Corner.BOTTOM_LEFT,
         goog.positioning.Corner.TOP_LEFT);
 
+    function logEvent(e) {
+      var entry = goog.dom.createDom('div', null,
+          'type: ' + e.type +
+          ', target: ' + goog.debug.reflect.typeOf(e.target) +
+          (e.target.getCaption ? ', caption: ' + e.target.getCaption() : ''));
+      var eventLog = goog.dom.getElement('event-log');
+      eventLog.appendChild(entry);
+      // Scroll to the bottom.
+      eventLog.scrollTop = eventLog.scrollHeight;
+    }
 
-    goog.events.listen(pm, 'action', function(e) {
-      alert(e.target.getCaption());
-    });
-    goog.events.listen(pm2, 'action', function(e) {
-      alert(e.target.getCaption());
+    goog.object.forEach(goog.ui.Component.EventType, function(type) {
+      goog.events.listen(pm, type, logEvent);
+      goog.events.listen(pm2, type, logEvent);
     });
 
   </script>

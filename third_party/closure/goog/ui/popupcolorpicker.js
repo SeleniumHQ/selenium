@@ -130,7 +130,7 @@ goog.ui.PopupColorPicker.prototype.focusable_ = true;
 goog.ui.PopupColorPicker.prototype.toggleMode_ = true;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.PopupColorPicker.prototype.createDom = function() {
   goog.ui.PopupColorPicker.superClass_.createDom.call(this);
   this.popup_ = new goog.ui.Popup(this.getElement());
@@ -141,7 +141,7 @@ goog.ui.PopupColorPicker.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.PopupColorPicker.prototype.disposeInternal = function() {
   goog.ui.PopupColorPicker.superClass_.disposeInternal.call(this);
   this.colorPicker_ = null;

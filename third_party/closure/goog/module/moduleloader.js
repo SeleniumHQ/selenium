@@ -75,7 +75,7 @@ goog.module.ModuleLoader.prototype.logger = goog.debug.Logger.getLogger(
     'goog.module.ModuleLoader');
 
 
-/** @inheritDoc */
+/** @override */
 goog.module.ModuleLoader.prototype.loadModulesInternal = function(
     ids, moduleInfoMap, opt_successFn, opt_errorFn, opt_timeoutFn,
     opt_forceReload) {
@@ -241,7 +241,7 @@ goog.module.ModuleLoader.prototype.handleError = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.module.ModuleLoader.prototype.disposeInternal = function() {
   goog.module.ModuleLoader.superClass_.disposeInternal.call(this);
 

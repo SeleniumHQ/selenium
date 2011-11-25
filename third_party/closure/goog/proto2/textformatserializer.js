@@ -507,7 +507,7 @@ goog.proto2.TextFormatSerializer.Parser = function() {
 
   /**
    * The current tokenizer.
-   * @type {?goog.proto2.TextFormatSerializer.Tokenizer_}
+   * @type {goog.proto2.TextFormatSerializer.Tokenizer_}
    * @private
    */
   this.tokenizer_ = null;
@@ -699,7 +699,7 @@ goog.proto2.TextFormatSerializer.Parser.prototype.getFieldValue_ =
         }
 
         var enumValue = field.getNativeType()[name];
-        if (!enumValue) {
+        if (enumValue == null) {
           this.reportError_('Unknown enum value: ' + name);
           return null;
         }

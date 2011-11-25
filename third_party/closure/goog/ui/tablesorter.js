@@ -90,20 +90,19 @@ goog.ui.TableSorter.EventType = {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.TableSorter.prototype.canDecorate = function(element) {
   return element.tagName == goog.dom.TagName.TABLE;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.TableSorter.prototype.enterDocument = function() {
   goog.ui.TableSorter.superClass_.enterDocument.call(this);
 
   var table = this.getElement();
   var headerRow = table.getElementsByTagName(goog.dom.TagName.TR)[0];
-  goog.events.listen(headerRow, goog.events.EventType.CLICK,
-      this.sort_, false, this);
+  this.getHandler().listen(headerRow, goog.events.EventType.CLICK, this.sort_);
 };
 
 

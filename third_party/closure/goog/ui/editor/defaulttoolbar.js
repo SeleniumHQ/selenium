@@ -573,10 +573,11 @@ goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(id, tooltip,
  * Function to update the state of a color menu button.
  * @param {goog.ui.ToolbarColorMenuButton} button The button to which the
  *     color menu is attached.
- * @param {number} value Color value to update to.
+ * @param {number} color Color value to update to.
  * @private
  */
-goog.ui.editor.DefaultToolbar.colorUpdateFromValue_ = function(button, value) {
+goog.ui.editor.DefaultToolbar.colorUpdateFromValue_ = function(button, color) {
+  var value = color;
   /** @preserveTry */
   try {
     if (goog.userAgent.IE) {

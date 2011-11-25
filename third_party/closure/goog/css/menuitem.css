@@ -80,7 +80,7 @@
 .goog-option-selected .goog-menuitem-checkbox,
 .goog-option-selected .goog-menuitem-icon {
   /* Client apps may override the URL at which they serve the sprite. */
-  background: url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -512px 0;
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -512px 0;
 }
 
 /* Keyboard shortcut ("accelerator") style. */

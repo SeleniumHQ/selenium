@@ -49,12 +49,12 @@ goog.editor.plugins.LoremIpsum = function(message) {
 goog.inherits(goog.editor.plugins.LoremIpsum, goog.editor.Plugin);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.LoremIpsum.prototype.getTrogClassId =
     goog.functions.constant('LoremIpsum');
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.LoremIpsum.prototype.activeOnUneditableFields =
     goog.functions.TRUE;
 
@@ -94,7 +94,7 @@ goog.editor.plugins.LoremIpsum.prototype.execCommand = function(command,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.LoremIpsum.prototype.isSupportedCommand =
     function(command) {
   return command == goog.editor.Command.CLEAR_LOREM ||

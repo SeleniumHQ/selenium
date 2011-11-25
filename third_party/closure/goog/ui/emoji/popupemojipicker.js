@@ -242,7 +242,7 @@ goog.ui.emoji.PopupEmojiPicker.prototype.loadImages = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.emoji.PopupEmojiPicker.prototype.createDom = function() {
   goog.ui.emoji.PopupEmojiPicker.superClass_.createDom.call(this);
 
@@ -256,7 +256,7 @@ goog.ui.emoji.PopupEmojiPicker.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.emoji.PopupEmojiPicker.prototype.disposeInternal = function() {
   goog.ui.emoji.PopupEmojiPicker.superClass_.disposeInternal.call(this);
   this.emojiPicker_ = null;

@@ -155,21 +155,21 @@ goog.testing.ContinuationTestCase.prototype.enableWaitFunctions_ =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.ContinuationTestCase.prototype.runTests = function() {
   this.enableWaitFunctions_(true);
   goog.testing.ContinuationTestCase.superClass_.runTests.call(this);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.ContinuationTestCase.prototype.finalize = function() {
   this.enableWaitFunctions_(false);
   goog.testing.ContinuationTestCase.superClass_.finalize.call(this);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.ContinuationTestCase.prototype.cycleTests = function() {
   // Get the next test in the queue.
   if (!this.currentTest_) {

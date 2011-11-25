@@ -62,8 +62,11 @@ goog.dom.FontSizeMonitor = function(opt_domHelper) {
       // which will cause the iframe to be resized when the font size changes.
       // The actual values are not relevant as long as we can ensure that the
       // iframe has a non zero size and is completely off screen.
-      goog.userAgent.IE ? 'div' : 'iframe',
-      {'style': 'position:absolute;width:9em;height:9em;top:-99em'});
+      goog.userAgent.IE ? 'div' : 'iframe', {
+        'style': 'position:absolute;width:9em;height:9em;top:-99em',
+        'tabIndex': -1,
+        'aria-hidden': 'true'
+      });
   var p = dom.getDocument().body;
   p.insertBefore(this.sizeElement_, p.firstChild);
 
@@ -80,10 +83,8 @@ goog.dom.FontSizeMonitor = function(opt_domHelper) {
   // We need to open and close the document to get Firefox 2 to work.  We must
   // not do this for IE in case we are using HTTPS since accessing the document
   // on an about:blank iframe in IE using HTTPS raises a Permission Denied
-  // error. Additionally, firefox shows this frame in tab order by default,
-  // suppress it by using a tabindex of -1.
+  // error.
   if (goog.userAgent.GECKO) {
-    this.sizeElement_.tabIndex = -1;
     var doc = resizeTarget.document;
     doc.open();
     doc.close();
@@ -122,9 +123,7 @@ goog.dom.FontSizeMonitor.CHANGE_EVENT =
     goog.dom.FontSizeMonitor.EventType.CHANGE;
 
 
-/**
- * Disposes of the font size monitor.
- */
+/** @override */
 goog.dom.FontSizeMonitor.prototype.disposeInternal = function() {
   goog.dom.FontSizeMonitor.superClass_.disposeInternal.call(this);
 

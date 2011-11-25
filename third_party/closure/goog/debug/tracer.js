@@ -218,6 +218,12 @@ goog.debug.Trace_.Stat_ = function() {
 
 
 /**
+ * @type {string|null|undefined}
+ */
+goog.debug.Trace_.Stat_.prototype.type;
+
+
+/**
  * @return {string} A string describing the tracer stat.
  */
 goog.debug.Trace_.Stat_.prototype.toString = function() {
@@ -241,6 +247,12 @@ goog.debug.Trace_.Stat_.prototype.toString = function() {
 goog.debug.Trace_.Event_ = function() {
   // the fields are different for different events - see usage in code
 };
+
+
+/**
+ * @type {string|null|undefined}
+ */
+goog.debug.Trace_.Event_.prototype.type;
 
 
 /**
@@ -404,7 +416,7 @@ goog.debug.Trace_.prototype.startTracer = function(comment, opt_type) {
     }
   }
 
-  this.logToProfilers_('Start : ' + comment);
+  goog.debug.Logger.logToProfilers('Start : ' + comment);
 
   var event = (/** @type {goog.debug.Trace_.Event_} */
       this.eventPool_.getObject());
@@ -486,7 +498,7 @@ goog.debug.Trace_.prototype.stopTracer = function(id, opt_silenceThreshold) {
     stat.time += elapsed;
   }
   if (stopEvent) {
-    this.logToProfilers_('Stop : ' + stopEvent.comment);
+    goog.debug.Logger.logToProfilers('Stop : ' + stopEvent.comment);
 
     stopEvent.totalVarAlloc = this.getTotalVarAlloc();
 
@@ -653,47 +665,6 @@ goog.debug.Trace_.prototype.toString = function() {
       'Overhead comment: ', this.tracerOverheadComment_, ' ms\n');
 
   return sb.join('');
-};
-
-
-/**
- * Logs the trace event to profiling tools.
- * @param {string} msg The message to log.
- * @private
- */
-goog.debug.Trace_.prototype.logToProfilers_ = function(msg) {
-  this.logToSpeedTracer_(msg);
-  this.logToMsProfiler_(msg);
-};
-
-
-/**
- * Logs the trace event to speed tracer, if it is available.
- * {@see http://code.google.com/webtoolkit/speedtracer/logging-api.html}
- * @param {string} msg The message to log.
- * @private
- */
-goog.debug.Trace_.prototype.logToSpeedTracer_ = function(msg) {
-  // Use goog.global because Tracers are used in contexts that may not have a
-  // window.
-  if (goog.global['console'] && goog.global['console']['markTimeline']) {
-    goog.global['console']['markTimeline'](msg);
-  }
-};
-
-
-/**
- * Logs the trace event to the Microsoft Profiler.
- * {@see http://msdn.microsoft.com/en-us/library/dd433074(VS.85).aspx}
- * @param {string} msg The message to log.
- * @private
- */
-goog.debug.Trace_.prototype.logToMsProfiler_ = function(msg) {
-  // Use goog.global because Tracers are used in contexts that may not have a
-  // window.
-  if (goog.global['msWriteProfilerMark']) {
-    goog.global['msWriteProfilerMark'](msg);
-  }
 };
 
 

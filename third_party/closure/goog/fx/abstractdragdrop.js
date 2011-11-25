@@ -399,8 +399,9 @@ goog.fx.AbstractDragDrop.prototype.startDrag = function(event, item) {
                      this.suppressSelect_);
 
   this.recalculateDragTargets();
+  this.recalculateScrollableContainers();
   this.activeTarget_ = null;
-  this.initScrollableContainers_();
+  this.initScrollableContainerListeners_();
   this.dragger_.startDrag(event);
 
   event.preventDefault();
@@ -424,6 +425,35 @@ goog.fx.AbstractDragDrop.prototype.recalculateDragTargets = function() {
   }
   if (!this.targetBox_) {
     this.targetBox_ = new goog.math.Box(0, 0, 0, 0);
+  }
+};
+
+
+/**
+ * Recalculates the current scroll positions of scrollable containers and
+ * allocates targets. Call this if the position of a container changed or if
+ * targets are added or removed.
+ */
+goog.fx.AbstractDragDrop.prototype.recalculateScrollableContainers =
+    function() {
+  var container, i, j, target;
+  for (i = 0; container = this.scrollableContainers_[i]; i++) {
+    container.containedTargets_ = [];
+    container.savedScrollLeft_ = container.element_.scrollLeft;
+    container.savedScrollTop_ = container.element_.scrollTop;
+    var pos = goog.style.getPageOffset(container.element_);
+    var size = goog.style.getSize(container.element_);
+    container.box_ = new goog.math.Box(pos.y, pos.x + size.width,
+                                       pos.y + size.height, pos.x);
+  }
+
+  for (i = 0; target = this.targetList_[i]; i++) {
+    for (j = 0; container = this.scrollableContainers_[j]; j++) {
+      if (goog.dom.contains(container.element_, target.element_)) {
+        container.containedTargets_.push(target);
+        target.scrollableContainer_ = container;
+      }
+    }
   }
 };
 
@@ -642,32 +672,16 @@ goog.fx.AbstractDragDrop.prototype.suppressSelect_ = function(event) {
 
 
 /**
- * Stores current scroll positions of containers and allocates targets
- * to the approptiate containers.
+ * Sets up listeners for the scrollable containers that keep track of their
+ * scroll positions.
  * @private
  */
-goog.fx.AbstractDragDrop.prototype.initScrollableContainers_ = function() {
-  var container, i, j, target;
+goog.fx.AbstractDragDrop.prototype.initScrollableContainerListeners_ =
+    function() {
+  var container, i;
   for (i = 0; container = this.scrollableContainers_[i]; i++) {
     goog.events.listen(container.element_, goog.events.EventType.SCROLL,
         this.containerScrollHandler_, false, this);
-    container.containedTargets_ = [];
-    container.savedScrollLeft_ = container.element_.scrollLeft;
-    container.savedScrollTop_ = container.element_.scrollTop;
-    var pos = goog.style.getPageOffset(container.element_);
-    var size = goog.style.getSize(container.element_);
-    container.box_ = new goog.math.Box(pos.y, pos.x + size.width,
-                                       pos.y + size.height, pos.x);
-
-  }
-
-  for (i = 0; target = this.targetList_[i]; i++) {
-    for (j = 0; container = this.scrollableContainers_[j]; j++) {
-      if (goog.dom.contains(container.element_, target.element_)) {
-        container.containedTargets_.push(target);
-        target.scrollableContainer_ = container;
-      }
-    }
   }
 };
 
@@ -696,6 +710,15 @@ goog.fx.AbstractDragDrop.prototype.addScrollableContainer = function(element) {
 
 
 /**
+ * Removes all scrollable containers.
+ */
+goog.fx.AbstractDragDrop.prototype.removeAllScrollableContainers = function() {
+  this.disposeScrollableContainerListeners_();
+  this.scrollableContainers_ = [];
+};
+
+
+/**
  * Event handler for containers scrolling.
  * @param {goog.events.Event} e The event.
  * @private
@@ -709,6 +732,22 @@ goog.fx.AbstractDragDrop.prototype.containerScrollHandler_ = function(e) {
       container.savedScrollTop_ = container.element_.scrollTop;
       container.savedScrollLeft_ = container.element_.scrollLeft;
 
+      // When the container scrolls, it's possible that one of the targets will
+      // move to the region contained by the dummy target. Since we don't know
+      // which sides (if any) of the dummy target are defined by targets
+      // contained by this container, we are conservative and just shrink it.
+      if (this.activeTarget_ == this.dummyTarget_) {
+        if (deltaTop > 0) {
+          this.dummyTarget_.box_.top += deltaTop;
+        } else {
+          this.dummyTarget_.box_.bottom += deltaTop;
+        }
+        if (deltaLeft > 0) {
+          this.dummyTarget_.box_.left += deltaLeft;
+        } else {
+          this.dummyTarget_.box_.right += deltaLeft;
+        }
+      }
       for (var j = 0, target; target = container.containedTargets_[j]; j++) {
         var box = target.box_;
         box.top += deltaTop;
@@ -720,6 +759,7 @@ goog.fx.AbstractDragDrop.prototype.containerScrollHandler_ = function(e) {
       }
     }
   }
+  this.dragger_.onScroll_(e);
 };
 
 
@@ -943,7 +983,7 @@ goog.fx.AbstractDragDrop.prototype.maybeCreateDummyTargetForPosition_ =
     // mouse pointer. The clipping coordinate cannot be computed and is set to
     // a negative value if the projected DnD target contains the mouse pointer.
 
-    var horizontalClip = -1; // Assume mouse is above or below the DnD box.
+    var horizontalClip = null; // Assume mouse is above or below the DnD box.
     if (x >= box.right) { // Mouse is to the right of the DnD box.
       // Clip the fake box only if the DnD box overlaps it.
       horizontalClip = box.right > fakeTargetBox.left ?
@@ -953,7 +993,7 @@ goog.fx.AbstractDragDrop.prototype.maybeCreateDummyTargetForPosition_ =
       horizontalClip = box.left < fakeTargetBox.right ?
           box.left : fakeTargetBox.right;
     }
-    var verticalClip = -1;
+    var verticalClip = null;
     if (y >= box.bottom) {
       verticalClip = box.bottom > fakeTargetBox.top ?
           box.bottom : fakeTargetBox.top;
@@ -962,26 +1002,26 @@ goog.fx.AbstractDragDrop.prototype.maybeCreateDummyTargetForPosition_ =
           box.top : fakeTargetBox.bottom;
     }
 
-    // If both clippings are possible (positive values have been set), choose
-    // one that gives us larger distance to mouse pointer (mark the shorter
-    // clipping as impossible, by setting it to negative value).
-    if (horizontalClip >= 0 && verticalClip >= 0) {
+    // If both clippings are possible, choose one that gives us larger distance
+    // to mouse pointer (mark the shorter clipping as impossible, by setting it
+    // to null).
+    if (!goog.isNull(horizontalClip) && !goog.isNull(verticalClip)) {
       if (Math.abs(horizontalClip - x) > Math.abs(verticalClip - y)) {
-        verticalClip = -1;
+        verticalClip = null;
       } else {
-        horizontalClip = -1;
+        horizontalClip = null;
       }
     }
 
     // Clip none or one of fake target box sides (at most one clipping
     // coordinate can be active).
-    if (horizontalClip >= 0) {
+    if (!goog.isNull(horizontalClip)) {
       if (horizontalClip <= x) {
         fakeTargetBox.left = horizontalClip;
       } else {
         fakeTargetBox.right = horizontalClip;
       }
-    } else if (verticalClip >= 0) {
+    } else if (!goog.isNull(verticalClip)) {
       if (verticalClip <= y) {
         fakeTargetBox.top = verticalClip;
       } else {
@@ -1055,9 +1095,7 @@ goog.fx.AbstractDragDrop.prototype.getScrollPos = function() {
 };
 
 
-/**
- * Disposes of the drag and drop object.
- */
+/** @override */
 goog.fx.AbstractDragDrop.prototype.disposeInternal = function() {
   goog.fx.AbstractDragDrop.superClass_.disposeInternal.call(this);
   this.removeItems();
@@ -1154,9 +1192,7 @@ goog.fx.DragDropEvent = function(type, source, sourceItem,
 goog.inherits(goog.fx.DragDropEvent, goog.events.Event);
 
 
-/**
- * Disposes of the event.
- */
+/** @override */
 goog.fx.DragDropEvent.prototype.disposeInternal = function() {
   goog.fx.DragDropEvent.superClass_.disposeInternal.call(this);
 
@@ -1322,9 +1358,16 @@ goog.fx.DragDropItem.prototype.maybeStartDrag_ = function(event, element) {
 goog.fx.DragDropItem.prototype.mouseMove_ = function(event) {
   var distance = Math.abs(event.clientX - this.startPosition_.x) +
       Math.abs(event.clientY - this.startPosition_.y);
-
-  if (distance > goog.fx.AbstractDragDrop.initDragDistanceThreshold) {
-    var currentDragElement = this.currentDragElement_;
+  // Fire dragStart event if the drag distance exceeds the threshold or if the
+  // mouse leave the dragged element.
+  // TODO(user): Consider using the goog.fx.Dragger to track the distance
+  // even after the mouse leaves the dragged element.
+  var currentDragElement = this.currentDragElement_;
+  var distanceAboveThreshold =
+      distance > goog.fx.AbstractDragDrop.initDragDistanceThreshold;
+  var mouseOutOnDragElement = event.type == goog.events.EventType.MOUSEOUT &&
+      event.relatedTarget == currentDragElement;
+  if (distanceAboveThreshold || mouseOutOnDragElement) {
     goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEMOVE,
                          this.mouseMove_, false, this);
     goog.events.unlisten(currentDragElement, goog.events.EventType.MOUSEOUT,

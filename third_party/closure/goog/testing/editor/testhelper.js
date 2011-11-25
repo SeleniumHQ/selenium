@@ -21,10 +21,11 @@
 goog.provide('goog.testing.editor.TestHelper');
 
 goog.require('goog.Disposable');
+goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.editor.BrowserFeature');
+goog.require('goog.editor.node');
 goog.require('goog.testing.dom');
-
 
 
 /**
@@ -93,6 +94,7 @@ goog.testing.editor.TestHelper.prototype.tearDownEditableElement = function() {
   } else {
     this.root_.ownerDocument.designMode = 'off';
   }
+  goog.dom.removeChildren(this.root_);
   this.root_.innerHTML = this.savedHtml_;
   this.root_.removeAttribute('g_editable');
 
@@ -162,7 +164,11 @@ goog.testing.editor.TestHelper.prototype.select = function(from, fromOffset,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.editor.TestHelper.prototype.disposeInternal = function() {
+  if (goog.editor.node.isEditableContainer(this.root_)) {
+    this.tearDownEditableElement();
+  }
   delete this.root_;
+  goog.base(this, 'disposeInternal');
 };

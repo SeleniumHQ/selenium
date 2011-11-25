@@ -104,6 +104,13 @@ goog.testing.recordFunction = function(opt_f) {
     return calls.pop() || null;
   };
 
+  /**
+   * Resets the recorded function and removes all calls.
+   */
+  recordedFunction.reset = function() {
+    calls.length = 0;
+  };
+
   return recordedFunction;
 };
 

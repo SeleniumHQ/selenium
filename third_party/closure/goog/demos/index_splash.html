@@ -9,6 +9,11 @@ See the COPYING file for details.
 <head>
   <title>Closure Demos</title>
   <link rel="stylesheet" type="text/css" href="css/demo.css">
+  <script>
+    if (window == top) {
+      location = 'index.html';  // HTML with the frameset
+    }
+  </script>
 </head>
 <body>
   <h1>Welcome to Closure!</h1>

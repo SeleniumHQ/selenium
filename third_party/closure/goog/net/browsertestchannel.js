@@ -23,12 +23,10 @@
  */
 
 
-/**
- * Namespace for BrowserChannel
- */
 goog.provide('goog.net.BrowserTestChannel');
 
 goog.require('goog.json');
+goog.require('goog.net.ChannelRequest');
 goog.require('goog.net.ChannelRequest.Error');
 goog.require('goog.net.tmpnetwork');
 goog.require('goog.userAgent');
@@ -312,7 +310,7 @@ goog.net.BrowserTestChannel.prototype.connectStage2_ = function() {
 
   goog.net.BrowserChannel.notifyStatEvent(
       goog.net.BrowserChannel.Stat.TEST_STAGE_TWO_START);
-  if (goog.userAgent.IE) {
+  if (!goog.net.ChannelRequest.supportsXhrStreaming()) {
     recvDataUri.setParameterValues('TYPE', 'html');
     this.request_.tridentGet(recvDataUri, Boolean(this.hostPrefix_));
   } else {
@@ -462,7 +460,7 @@ goog.net.BrowserTestChannel.prototype.onRequestComplete =
     this.channelDebug_.debug('TestConnection: request complete for stage 2');
     var goodConn = false;
 
-    if (goog.userAgent.IE) {
+    if (!goog.net.ChannelRequest.supportsXhrStreaming()) {
       // we always get Trident responses in separate calls to
       // onRequestData, so we have to check the time they came
       var ms = this.lastTime_ - this.firstTime_;
@@ -538,6 +536,6 @@ goog.net.BrowserTestChannel.prototype.checkForEarlyNonBuffered_ =
   // onRequestData, so we have to check the time that the first came in
   // and verify that the data arrived before the second portion could
   // have been sent. For all other browser's we skip the timing test.
-  return !goog.userAgent.IE ||
+  return goog.net.ChannelRequest.supportsXhrStreaming() ||
       ms < goog.net.BrowserTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_;
 };

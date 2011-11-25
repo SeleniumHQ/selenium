@@ -342,7 +342,7 @@ goog.ui.Menu.prototype.getAllowHighlightDisabled = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  * @param {goog.events.Event=} opt_e Mousedown event that caused this menu to
  *     be made visible (ignored if show is false).
  */
@@ -362,7 +362,7 @@ goog.ui.Menu.prototype.setVisible = function(show, opt_force, opt_e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Menu.prototype.handleEnterItem = function(e) {
   if (this.allowAutoFocus_) {
     this.getKeyEventTarget().focus();
@@ -406,14 +406,14 @@ goog.ui.Menu.prototype.highlightNextPrefix = function(charStr) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Menu.prototype.canHighlightItem = function(item) {
   return (this.allowHighlightDisabled_ || item.isEnabled()) &&
       item.isVisible() && item.isSupportedState(goog.ui.Component.State.HOVER);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Menu.prototype.decorateInternal = function(element) {
   this.decorateContent(element);
   goog.ui.Menu.superClass_.decorateInternal.call(this, element);
@@ -430,7 +430,12 @@ goog.ui.Menu.prototype.decorateContent = function(element) {
   var renderer = this.getRenderer();
   var contentElements = this.getDomHelper().getElementsByTagNameAndClass('div',
       goog.getCssName(renderer.getCssClass(), 'content'), element);
-  for (var el, i = 0; el = contentElements[i]; i++) {
-    renderer.decorateChildren(this, el);
+
+  // Some versions of IE do not like it when you access this nodeList
+  // with invalid indices. See
+  // http://code.google.com/p/closure-library/issues/detail?id=373
+  var length = contentElements.length;
+  for (var i = 0; i < length; i++) {
+    renderer.decorateChildren(this, contentElements[i]);
   }
 };

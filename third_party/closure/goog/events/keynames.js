@@ -60,6 +60,7 @@ goog.events.KeyNames = {
   55: '7',
   56: '8',
   57: '9',
+  59: 'semicolon',
   61: 'equals',
   65: 'a',
   66: 'b',
@@ -115,10 +116,13 @@ goog.events.KeyNames = {
   121: 'f10',
   122: 'f11',
   123: 'f12',
+  186: 'semicolon',
   187: 'equals',
   188: ',',
   190: '.',
   191: '/',
+  192: '~',
+  219: 'open-square-bracket',
   220: '\\',
   224: 'win'
 };

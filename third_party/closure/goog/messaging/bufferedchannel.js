@@ -144,7 +144,7 @@ goog.messaging.BufferedChannel.USER_CHANNEL_NAME_ = 'user';
 goog.messaging.BufferedChannel.CONTROL_CHANNEL_NAME_ = 'control';
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.connect = function(opt_connectCb) {
   if (opt_connectCb) {
     opt_connectCb();
@@ -152,7 +152,7 @@ goog.messaging.BufferedChannel.prototype.connect = function(opt_connectCb) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.isConnected = function() {
   return true;
 };
@@ -212,14 +212,14 @@ goog.messaging.BufferedChannel.prototype.onTick_ = function(unusedEvent) {
 goog.messaging.BufferedChannel.prototype.peerReady_;
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.registerService = function(
     serviceName, callback, opt_objectPayload) {
   this.userChannel_.registerService(serviceName, callback, opt_objectPayload);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.registerDefaultService = function(
     callback) {
   this.userChannel_.registerDefaultService(callback);
@@ -269,7 +269,7 @@ goog.messaging.BufferedChannel.prototype.setPeerReady_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.BufferedChannel.prototype.disposeInternal = function() {
   goog.dispose(this.multiChannel_);
   goog.dispose(this.timer_);

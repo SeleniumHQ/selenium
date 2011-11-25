@@ -67,7 +67,7 @@ goog.gears.FakeWorkerPool_.mainWorkerId_ = 0;
  */
 goog.gears.FakeWorkerPool_.prototype.createWorkerFromUrl = function(url) {
   // TODO(user) make this async
-  var xhr = new goog.net.XmlHttp();
+  var xhr = goog.net.XmlHttp();
   xhr.open('GET', url, false);
   xhr.send(null);
   return this.createWorker(xhr.responseText);

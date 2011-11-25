@@ -207,9 +207,7 @@ goog.events.InputHandler.prototype.dispatchAndDisposeEvent_ = function(event) {
 };
 
 
-/**
- * Disposes of the input handler.
- */
+/** @override */
 goog.events.InputHandler.prototype.disposeInternal = function() {
   goog.events.InputHandler.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();

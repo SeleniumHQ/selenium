@@ -416,7 +416,7 @@ goog.uri.utils.getHost = function(uri) {
 /**
  * Extracts the path of the URL and everything after.
  * @param {string} uri The URI string.
- * @return {?string} The URI, starting at the path and including the query
+ * @return {string} The URI, starting at the path and including the query
  *     parameters and fragment identifier.
  */
 goog.uri.utils.getPathAndAfter = function(uri) {

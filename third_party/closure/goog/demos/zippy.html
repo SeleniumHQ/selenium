@@ -11,6 +11,10 @@ See the COPYING file for details.
   <meta charset="utf-8">
   <script src="../base.js"></script>
   <script>
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.LogManager');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.events');
     goog.require('goog.ui.AnimatedZippy');
     goog.require('goog.ui.Zippy');
     goog.require('goog.ui.ZippyEvent');
@@ -109,11 +113,29 @@ See the COPYING file for details.
     Zippy 2 and 3 are animated, zippy 1 is not.
   </div>
 
-
+  <hr>
+  <div id="log"></div>
   <script>
+    // Set up a logger.
+    goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
+    var logger = goog.debug.Logger.getLogger('zippy');
+    var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+    logconsole.setCapturing(true);
+
+    var EVENTS = goog.object.getValues(goog.ui.Zippy.Events);
+    logger.fine('Listening for: ' + EVENTS.join(', ') + '.');
+
+    function logEvent(e) {
+      var caption = e.target.elHeader_.id;
+      logger.info('"' + caption + '" dispatched: ' + e.type);
+    }
+
     var z1 = new goog.ui.Zippy('header1', 'content1');
+    goog.events.listen(z1, EVENTS, logEvent);
     var z2 = new goog.ui.AnimatedZippy('header2', 'content2', true);
+    goog.events.listen(z2, EVENTS, logEvent);
     var z3 = new goog.ui.AnimatedZippy('header3', 'content3', false);
+    goog.events.listen(z3, EVENTS, logEvent);
 
     z1.expand();
 

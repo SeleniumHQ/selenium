@@ -160,7 +160,13 @@ goog.dom.Range.clearSelection = function(opt_win) {
       // Emptying an already empty selection throws an exception in IE
     }
   } else {
-    sel.removeAllRanges();
+    try {
+      sel.removeAllRanges();
+    } catch (e) {
+      // This throws in IE9 if the range has been invalidated; for example, if
+      // the user clicked on an element which disappeared during the event
+      // handler.
+    }
   }
 };
 

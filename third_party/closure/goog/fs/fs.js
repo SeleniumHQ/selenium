@@ -28,6 +28,7 @@ goog.provide('goog.fs');
 goog.require('goog.async.Deferred');
 goog.require('goog.events');
 goog.require('goog.fs.Error');
+goog.require('goog.fs.FileReader');
 goog.require('goog.fs.FileSystem');
 
 
@@ -182,18 +183,10 @@ goog.fs.getBlob = function(var_args) {
  * @param {string=} opt_encoding The name of the encoding to use.
  * @return {!goog.async.Deferred} The deferred string. If an error occurrs, the
  *     errback is called with a {@link goog.fs.Error}.
+ * @deprecated Use {@link goog.fs.FileReader.readAsText} instead.
  */
 goog.fs.blobToString = function(blob, opt_encoding) {
-  // TODO(user): write a proper wrapper for FileReader
-  var reader = new FileReader();
-  var d = new goog.async.Deferred();
-  reader.onload = function() { d.callback(reader.result); };
-  reader.onerror = function() {
-    d.errback(
-        new goog.fs.Error(reader.error.code, 'converting blob to string'));
-  };
-  reader.readAsText(blob, opt_encoding);
-  return d;
+  return goog.fs.FileReader.readAsText(blob, opt_encoding);
 };
 
 

@@ -36,7 +36,7 @@ goog.editor.plugins.HeaderFormatter = function() {
 goog.inherits(goog.editor.plugins.HeaderFormatter, goog.editor.Plugin);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.HeaderFormatter.prototype.getTrogClassId = function() {
   return 'HeaderFormatter';
 };
@@ -60,7 +60,7 @@ goog.editor.plugins.HeaderFormatter.HEADER_COMMAND = {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.HeaderFormatter.prototype.handleKeyboardShortcut = function(
     e, key, isModifierPressed) {

@@ -15,7 +15,7 @@
 /* State: resting. */
 .goog-menu-button {
   /* Client apps may override the URL at which they serve the image. */
-  background: #ddd url(https://ssl.gstatic.com/editor/button-bg.png) repeat-x top left;
+  background: #ddd url(//ssl.gstatic.com/editor/button-bg.png) repeat-x top left;
   border: 0;
   color: #000;
   cursor: pointer;
@@ -141,7 +141,7 @@
   height: 15px;
   width: 7px;
   /* Client apps may override the URL at which they serve the sprite. */
-  background: url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
   vertical-align: top;
 }
 

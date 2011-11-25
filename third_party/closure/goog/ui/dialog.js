@@ -30,23 +30,21 @@ goog.provide('goog.ui.Dialog.DefaultButtonKeys');
 goog.provide('goog.ui.Dialog.Event');
 goog.provide('goog.ui.Dialog.EventType');
 
-goog.require('goog.Timer');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.a11y');
 goog.require('goog.dom.classes');
-goog.require('goog.dom.iframe');
-goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.events.FocusHandler');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.fx.Dragger');
 goog.require('goog.math.Rect');
 goog.require('goog.structs');
 goog.require('goog.structs.Map');
 goog.require('goog.style');
-goog.require('goog.ui.Component');
+goog.require('goog.ui.ModalPopup');
 goog.require('goog.userAgent');
 
 
@@ -79,10 +77,10 @@ goog.require('goog.userAgent');
  *     issue by using an iframe instead of a div for bg element.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper; see {@link
  *     goog.ui.Component} for semantics.
- * @extends {goog.ui.Component}
+ * @extends {goog.ui.ModalPopup}
  */
 goog.ui.Dialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
-  goog.ui.Component.call(this, opt_domHelper);
+  goog.base(this, opt_useIframeMask, opt_domHelper);
 
   /**
    * CSS class name for the dialog element, also used as a class name prefix for
@@ -92,20 +90,17 @@ goog.ui.Dialog = function(opt_class, opt_useIframeMask, opt_domHelper) {
    */
   this.class_ = opt_class || goog.getCssName('modal-dialog');
 
-  this.useIframeMask_ = !!opt_useIframeMask;
-
-  // Set the default button set to show ok and cancel
   this.buttons_ = goog.ui.Dialog.ButtonSet.createOkCancel();
 };
-goog.inherits(goog.ui.Dialog, goog.ui.Component);
+goog.inherits(goog.ui.Dialog, goog.ui.ModalPopup);
 
 
 /**
- * Focus handler. It will be initialized in enterDocument.
- * @type {goog.events.FocusHandler}
+ * Button set.  Default to Ok/Cancel.
+ * @type {goog.ui.Dialog.ButtonSet}
  * @private
  */
-goog.ui.Dialog.prototype.focusHandler_ = null;
+goog.ui.Dialog.prototype.buttons_;
 
 
 /**
@@ -122,15 +117,6 @@ goog.ui.Dialog.prototype.escapeToCancel_ = true;
  * @private
  */
 goog.ui.Dialog.prototype.hasTitleCloseButton_ = true;
-
-
-/**
- * Whether the dialog should use an iframe as the background element to work
- * around z-order issues.  Defaults to false.
- * @type {boolean}
- * @private
- */
-goog.ui.Dialog.prototype.useIframeMask_ = false;
 
 
 /**
@@ -174,27 +160,11 @@ goog.ui.Dialog.prototype.content_ = '';
 
 
 /**
- * Button set.  Default: Ok/Cancel.
- * @type {goog.ui.Dialog.ButtonSet?}
- * @private
- */
-goog.ui.Dialog.prototype.buttons_ = null;
-
-
-/**
  * Dragger.
- * @type {?goog.fx.Dragger}
+ * @type {goog.fx.Dragger}
  * @private
  */
 goog.ui.Dialog.prototype.dragger_ = null;
-
-
-/**
- * Whether dialog is visible.
- * @type {boolean}
- * @private
- */
-goog.ui.Dialog.prototype.visible_ = false;
 
 
 /**
@@ -203,23 +173,6 @@ goog.ui.Dialog.prototype.visible_ = false;
  * @private
  */
 goog.ui.Dialog.prototype.disposeOnHide_ = false;
-
-
-/**
- * Element for the background which obscures the UI and blocks events.
- * @type {Element}
- * @private
- */
-goog.ui.Dialog.prototype.bgEl_ = null;
-
-
-/**
- * Iframe element that is only used for IE as a workaround to keep select-type
- * elements from burning through background.
- * @type {Element}
- * @private
- */
-goog.ui.Dialog.prototype.bgIframeEl_ = null;
 
 
 /**
@@ -268,6 +221,12 @@ goog.ui.Dialog.prototype.contentEl_ = null;
  * @private
  */
 goog.ui.Dialog.prototype.buttonEl_ = null;
+
+
+/** @override */
+goog.ui.Dialog.prototype.getCssClass = function() {
+  return this.class_;
+};
 
 
 /**
@@ -401,7 +360,7 @@ goog.ui.Dialog.prototype.getDialogElement = function() {
  */
 goog.ui.Dialog.prototype.getBackgroundElement = function() {
   this.renderIfNoDom_();
-  return this.bgEl_;
+  return goog.base(this, 'getBackgroundElement');
 };
 
 
@@ -421,8 +380,11 @@ goog.ui.Dialog.prototype.getBackgroundElementOpacity = function() {
 goog.ui.Dialog.prototype.setBackgroundElementOpacity = function(opacity) {
   this.backgroundElementOpacity_ = opacity;
 
-  if (this.bgEl_) {
-    goog.style.setOpacity(this.bgEl_, this.backgroundElementOpacity_);
+  if (this.getElement()) {
+    var bgEl = this.getBackgroundElement();
+    if (bgEl) {
+      goog.style.setOpacity(bgEl, this.backgroundElementOpacity_);
+    }
   }
 };
 
@@ -437,19 +399,32 @@ goog.ui.Dialog.prototype.setBackgroundElementOpacity = function(opacity) {
  * @param {boolean} modal Whether the dialog is modal.
  */
 goog.ui.Dialog.prototype.setModal = function(modal) {
+  if (modal != this.modal_) {
+    this.setModalInternal_(modal);
+  }
+};
+
+
+/**
+ * Sets the modal property of the dialog.
+ * @param {boolean} modal Whether the dialog is modal.
+ * @private
+ */
+goog.ui.Dialog.prototype.setModalInternal_ = function(modal) {
   this.modal_ = modal;
-  this.manageBackgroundDom_();
-  var dom = this.getDomHelper();
-  if (this.isInDocument() && modal && this.isVisible()) {
-    // Insert the bg elements before the dialog so that they don't block
-    // the dialog itself.
-    if (this.bgIframeEl_) {
-      dom.insertSiblingBefore(this.bgIframeEl_, this.getElement());
+  if (this.isInDocument()) {
+    var dom = this.getDomHelper();
+    var bg = this.getBackgroundElement();
+    var bgIframe = this.getBackgroundIframe();
+    if (modal) {
+      if (bgIframe) {
+        dom.insertSiblingBefore(bgIframe, this.getElement());
+      }
+      dom.insertSiblingBefore(bg, this.getElement());
+    } else {
+      dom.removeNode(bgIframe);
+      dom.removeNode(bg);
     }
-    if (this.bgEl_) {
-      dom.insertSiblingBefore(this.bgEl_, this.getElement());
-    }
-    this.resizeBackground_();
   }
 };
 
@@ -466,7 +441,7 @@ goog.ui.Dialog.prototype.getModal = function() {
  * @return {string} The CSS class name for the dialog element.
  */
 goog.ui.Dialog.prototype.getClass = function() {
-  return this.class_;
+  return this.getCssClass();
 };
 
 
@@ -476,35 +451,19 @@ goog.ui.Dialog.prototype.getClass = function() {
  */
 goog.ui.Dialog.prototype.setDraggable = function(draggable) {
   this.draggable_ = draggable;
-
-  // this will add the dragger if we've already rendered, and gone through
-  // the enterDocument routine, but now want to dynamically add draggability
-  if (this.draggable_ && !this.dragger_ && this.getElement()) {
-    this.dragger_ = this.createDraggableTitleDom_();
-
-  } else if (!this.draggable_ && this.dragger_) {
-    // removes draggable classname post-render
-    if (this.getElement()) {
-      goog.dom.classes.remove(this.titleEl_,
-          goog.getCssName(this.class_, 'title-draggable'));
-    }
-    this.dragger_.dispose();
-    this.dragger_ = null;
-  }
+  this.setDraggingEnabled_(draggable && this.isInDocument());
 };
 
 
 /**
- * Creates a dragger on the title element and adds a classname for
- * cursor:move targeting.
- * @return {goog.fx.Dragger} The created dragger instance.
- * @private
+ * Returns a dragger for moving the dialog and adds a class for the move cursor.
+ * Defaults to allow dragging of the title only, but can be overridden if
+ * different drag targets or dragging behavior is desired.
+ * @return {!goog.fx.Dragger} The created dragger instance.
+ * @protected
  */
-goog.ui.Dialog.prototype.createDraggableTitleDom_ = function() {
-  var dragger = new goog.fx.Dragger(this.getElement(), this.titleEl_);
-  goog.dom.classes.add(this.titleEl_,
-      goog.getCssName(this.class_, 'title-draggable'));
-  return dragger;
+goog.ui.Dialog.prototype.createDragger = function() {
+  return new goog.fx.Dragger(this.getElement(), this.titleEl_);
 };
 
 
@@ -517,171 +476,70 @@ goog.ui.Dialog.prototype.getDraggable = function() {
 
 
 /**
- * Creates the initial DOM representation for the dialog.  Overrides {@link
- * goog.ui.Component#createDom}.
+ * Enables or disables dragging.
+ * @param {boolean} enabled Whether to enable it.
+ * @private.
  */
-goog.ui.Dialog.prototype.createDom = function() {
-  // Manages the DOM for background mask elements.
-  this.manageBackgroundDom_();
+goog.ui.Dialog.prototype.setDraggingEnabled_ = function(enabled) {
+  if (this.getElement()) {
+    goog.dom.classes.enable(this.titleEl_,
+        goog.getCssName(this.class_, 'title-draggable'), enabled);
+  }
 
-  // Create the dialog element, and make sure it's hidden.
+  if (enabled && !this.dragger_) {
+    this.dragger_ = this.createDragger();
+    goog.dom.classes.add(this.titleEl_,
+        goog.getCssName(this.class_, 'title-draggable'));
+    goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.START,
+        this.setDraggerLimits_, false, this);
+  } else if (!enabled && this.dragger_) {
+    this.dragger_.dispose();
+    this.dragger_ = null;
+  }
+};
+
+
+/** @override */
+goog.ui.Dialog.prototype.createDom = function() {
+  goog.base(this, 'createDom');
+  var element = this.getElement();
+  goog.asserts.assert(element, 'getElement() returns null');
+
   var dom = this.getDomHelper();
-  this.setElementInternal(dom.createDom('div',
-      {'className': this.class_, 'tabIndex': 0},
-      this.titleEl_ = dom.createDom('div',
-          {'className': goog.getCssName(this.class_, 'title'),
-           'id': this.getId()},
-          this.titleTextEl_ = dom.createDom('span',
-              goog.getCssName(this.class_, 'title-text'), this.title_),
-          this.titleCloseEl_ = dom.createDom('span',
-              goog.getCssName(this.class_, 'title-close'))),
+  this.titleEl_ = dom.createDom('div',
+      {'className': goog.getCssName(this.class_, 'title'), 'id': this.getId()},
+      this.titleTextEl_ = dom.createDom(
+          'span', goog.getCssName(this.class_, 'title-text'), this.title_),
+      this.titleCloseEl_ = dom.createDom(
+          'span', goog.getCssName(this.class_, 'title-close'))),
+  goog.dom.append(element, this.titleEl_,
       this.contentEl_ = dom.createDom('div',
           goog.getCssName(this.class_, 'content')),
       this.buttonEl_ = dom.createDom('div',
-          goog.getCssName(this.class_, 'buttons')),
-      this.tabCatcherEl_ = dom.createDom('span', {'tabIndex': 0})));
+          goog.getCssName(this.class_, 'buttons')));
+
   this.titleId_ = this.titleEl_.id;
-  goog.dom.a11y.setRole(this.getElement(), 'dialog');
-  goog.dom.a11y.setState(this.getElement(), 'labelledby', this.titleId_ || '');
+  goog.dom.a11y.setRole(element, 'dialog');
+  goog.dom.a11y.setState(element, 'labelledby', this.titleId_ || '');
   // If setContent() was called before createDom(), make sure the inner HTML of
   // the content element is initialized.
   if (this.content_) {
     this.contentEl_.innerHTML = this.content_;
   }
   goog.style.showElement(this.titleCloseEl_, this.hasTitleCloseButton_);
-  goog.style.showElement(this.getElement(), false);
 
   // Render the buttons.
   if (this.buttons_) {
     this.buttons_.attachToElement(this.buttonEl_);
   }
+  goog.style.showElement(this.buttonEl_, !!this.buttons_);
+  this.setBackgroundElementOpacity(this.backgroundElementOpacity_);
 };
 
 
-/**
- * Creates and disposes of the DOM for background mask elements.
- * @private
- */
-goog.ui.Dialog.prototype.manageBackgroundDom_ = function() {
-  if (this.useIframeMask_ && this.modal_ && !this.bgIframeEl_) {
-    // IE renders the iframe on top of the select elements while still
-    // respecting the z-index of the other elements on the page.  See
-    // http://support.microsoft.com/kb/177378 for more information.
-    // Flash and other controls behave in similar ways for other browsers
-    this.bgIframeEl_ = goog.dom.iframe.createBlank(this.getDomHelper());
-    this.bgIframeEl_.className = goog.getCssName(this.class_, 'bg');
-    goog.style.showElement(this.bgIframeEl_, false);
-    goog.style.setOpacity(this.bgIframeEl_, 0);
-
-  // Removes the iframe mask if it exists and we don't want it to
-  } else if ((!this.useIframeMask_ || !this.modal_) && this.bgIframeEl_) {
-    goog.dom.removeNode(this.bgIframeEl_);
-    this.bgIframeEl_ = null;
-  }
-
-  // Create the backgound mask, initialize its opacity, and make sure it's
-  // hidden.
-  if (this.modal_ && !this.bgEl_) {
-    this.bgEl_ = this.getDomHelper().createDom('div',
-        goog.getCssName(this.class_, 'bg'));
-    goog.style.setOpacity(this.bgEl_, this.backgroundElementOpacity_);
-    goog.style.showElement(this.bgEl_, false);
-
-  // Removes the background mask if it exists and we don't want it to
-  } else if (!this.modal_ && this.bgEl_) {
-    goog.dom.removeNode(this.bgEl_);
-    this.bgEl_ = null;
-  }
-};
-
-
-/**
- * Renders the component.  Overrides {@link goog.ui.Component#render}.  Accepts
- * an {@code opt_parent} argument for compatibility with the superclass method,
- * but rendering a dialog into anything other than a body element will likely
- * have unexpected results.  The parent element defaults to the current document
- * body if unspecified, which is almost always what you want.
- *
- * @param {Element=} opt_parent Element into which the component is to be
- *    rendered; defaults to the current document's body element if unspecified.
- * @throws {goog.ui.Component.Error.ALREADY_RENDERED} If the component is
- *    already rendered.
- */
-goog.ui.Dialog.prototype.render = function(opt_parent) {
-  // We have to replicate some of the logic from goog.ui.Component#render here,
-  // since dialogs are made up of three elements (the bacground mask, the dialog
-  // itself, and the optional iframe mask on IE), and all of them must be
-  // appended to the parent element before enterDocument is called.
-  if (this.isInDocument()) {
-    throw Error(goog.ui.Component.Error.ALREADY_RENDERED);
-  }
-
-  if (!this.getElement()) {
-    // This creates both (or, on IE, possibly all three) elements.
-    this.createDom();
-  }
-
-  // First, render the background mask...
-  var parent = opt_parent || this.getDomHelper().getDocument().body;
-  this.renderBackground_(parent);
-
-  // ...then call the superclass method to attach the dialog element and call
-  // enterDocument().
-  goog.ui.Dialog.superClass_.render.call(this, parent);
-};
-
-
-/**
- * Renders the background mask.
- * @param {Element} parent Parent element; typically the document body.
- * @private
- */
-goog.ui.Dialog.prototype.renderBackground_ = function(parent) {
-  if (this.bgIframeEl_) {
-    parent.appendChild(this.bgIframeEl_);
-  }
-  if (this.bgEl_) {
-    parent.appendChild(this.bgEl_);
-  }
-};
-
-
-/**
- * Overrides {@link goog.ui.Component#renderBefore} to throw a NOT_SUPPORTED
- * error, since dialogs don't support being rendered before another DOM element.
- * TODO(user): Figure out how to do this cleanly between Component and this.
- *
- * @param {Element} sibling Element before which the component is to be
- *    rendered (ignored).
- */
-goog.ui.Dialog.prototype.renderBefore = function(sibling) {
-  throw Error(goog.ui.Component.Error.NOT_SUPPORTED);
-};
-
-
-/**
- * Determines if the given element can be decorated by this dialog component.
- * Overrides {@link goog.ui.Component#canDecorate}.
- * @param {Element} element Element to decorate.
- * @return {*} True-ish if the element can be decorated, false-ish otherwise.
- */
-goog.ui.Dialog.prototype.canDecorate = function(element) {
-  // Assume we can decorate any DIV.
-  return element && element.tagName && element.tagName == 'DIV' &&
-         goog.ui.Dialog.superClass_.canDecorate.call(this, element);
-};
-
-
-/**
- * Decorates the given element as a dialog.  Overrides {@link
- * goog.ui.Component#decorateInternal}.  Considered protected.
- * @param {Element} element Element to decorate.
- * @protected
- */
+/** @override */
 goog.ui.Dialog.prototype.decorateInternal = function(element) {
-  // Decorate the dialog area element.
-  goog.ui.Dialog.superClass_.decorateInternal.call(this, element);
-  goog.dom.classes.add(this.getElement(), this.class_);
+  goog.base(this, 'decorateInternal', element);
 
   // Decorate or create the content element.
   var contentClass = goog.getCssName(this.class_, 'content');
@@ -750,71 +608,50 @@ goog.ui.Dialog.prototype.decorateInternal = function(element) {
     if (this.buttons_) {
       this.buttons_.attachToElement(this.buttonEl_);
     }
+    goog.style.showElement(this.buttonEl_, !!this.buttons_);
   }
-
-  // Create the background mask...
-  this.manageBackgroundDom_();
-
-  // ...and render it.
-  this.renderBackground_(goog.dom.getOwnerDocument(this.getElement()).body);
-
-  // Make sure the decorated dialog is hidden.
-  goog.style.showElement(this.getElement(), false);
+  this.setBackgroundElementOpacity(this.backgroundElementOpacity_);
 };
 
 
-/**
- * Initializes the component just after its DOM has been rendered into the
- * document.  Overrides {@link goog.ui.Component#enterDocument}.
- */
+/** @override */
 goog.ui.Dialog.prototype.enterDocument = function() {
-  goog.ui.Dialog.superClass_.enterDocument.call(this);
+  goog.base(this, 'enterDocument');
 
-  this.focusHandler_ = new goog.events.FocusHandler(
-      this.getDomHelper().getDocument());
+  this.getHandler().listen(this,
+      [goog.ui.PopupBase.EventType.SHOW, goog.ui.PopupBase.EventType.HIDE],
+      this.setVisibleInternal_);
 
   // Add drag support.
-  if (this.draggable_ && !this.dragger_) {
-    this.dragger_ = this.createDraggableTitleDom_();
-  }
+  this.setDraggingEnabled_(this.draggable_);
 
   // Add event listeners to the close box and the button container.
-  this.getHandler().
-      listen(this.titleCloseEl_, goog.events.EventType.CLICK,
-          this.onTitleCloseClick_).
-
-      // We need to watch the entire document so that we can detect when the
-      // focus is moved out of this dialog.
-      listen(this.focusHandler_, goog.events.FocusHandler.EventType.FOCUSIN,
-          this.onFocus_);
+  this.getHandler().listen(
+      this.titleCloseEl_, goog.events.EventType.CLICK,
+      this.onTitleCloseClick_);
 
   goog.dom.a11y.setRole(this.getElement(), 'dialog');
   if (this.titleTextEl_.id !== '') {
     goog.dom.a11y.setState(
         this.getElement(), 'labelledby', this.titleTextEl_.id);
   }
+
+  if (!this.modal_) {
+    this.setModalInternal_(false);
+  }
 };
 
 
-/**
- * Cleans up the dialog component just before it is disposed of.  Overrides
- * {@link goog.ui.Component#exitDocument}.
- */
+/** @override */
 goog.ui.Dialog.prototype.exitDocument = function() {
   if (this.isVisible()) {
     this.setVisible(false);
   }
 
-  this.focusHandler_.dispose();
-  this.focusHandler_ = null;
-
   // Remove drag support.
-  if (this.dragger_) {
-    this.dragger_.dispose();
-    this.dragger_ = null;
-  }
+  this.setDraggingEnabled_(false);
 
-  goog.ui.Dialog.superClass_.exitDocument.call(this);
+  goog.base(this, 'exitDocument');
 };
 
 
@@ -824,62 +661,38 @@ goog.ui.Dialog.prototype.exitDocument = function() {
  * @param {boolean} visible Whether the dialog should be visible.
  */
 goog.ui.Dialog.prototype.setVisible = function(visible) {
-  if (visible == this.visible_) {
+  if (visible == this.isVisible()) {
     return;
   }
 
-  // TODO(user):  Add utility methods to Component to get window & document?
-  var doc = this.getDomHelper().getDocument();
-
-  // Older versions of Safari did not know how to get a window for a given
-  // document, so just fall up to the window we're running in.
-  var win = goog.dom.getWindow(doc) || window;
-
   // If the dialog hasn't been rendered yet, render it now.
   if (!this.isInDocument()) {
-    this.render(doc.body);
+    this.render();
   }
 
+  goog.base(this, 'setVisible', visible);
+};
+
+
+/**
+ * Sets visibility after super class setVisible is completed.
+ * @param {goog.events.Event} e The event object.
+ * @private
+ */
+goog.ui.Dialog.prototype.setVisibleInternal_ = function(e) {
+  if (e.target != this) {
+    return;
+  }
+
+  var visible = this.isVisible();
+
   if (visible) {
-    this.resizeBackground_();
-    this.reposition();
     // Listen for keyboard and resize events while the dialog is visible.
     this.getHandler().
         listen(this.getElement(), goog.events.EventType.KEYDOWN, this.onKey_).
-        listen(this.getElement(), goog.events.EventType.KEYPRESS, this.onKey_).
-        listen(win, goog.events.EventType.RESIZE, this.onResize_);
-  } else {
-    // Stop listening for keyboard and resize events while the dialog is hidden.
-    this.getHandler().
-        unlisten(this.getElement(), goog.events.EventType.KEYDOWN, this.onKey_).
-        unlisten(this.getElement(), goog.events.EventType.KEYPRESS,
-            this.onKey_).
-        unlisten(win, goog.events.EventType.RESIZE, this.onResize_);
-  }
+        listen(this.getElement(), goog.events.EventType.KEYPRESS, this.onKey_);
 
-  // Show/hide the iframe mask (on IE), the background mask, and the dialog.
-  if (this.bgIframeEl_) {
-    goog.style.showElement(this.bgIframeEl_, visible);
-  }
-  if (this.bgEl_) {
-    goog.style.showElement(this.bgEl_, visible);
-  }
-  goog.style.showElement(this.getElement(), visible);
-
-  if (visible) {
-    this.focus();
-  }
-
-  this.visible_ = visible;
-
-  if (!visible) {
-    this.getHandler().unlisten(this.buttonEl_,
-        goog.events.EventType.CLICK, this.onButtonClick_);
-    this.dispatchEvent(goog.ui.Dialog.EventType.AFTER_HIDE);
-    if (this.disposeOnHide_) {
-      this.dispose();
-    }
-  } else {
+    this.dispatchEvent(goog.ui.Dialog.EventType.AFTER_SHOW);
     // NOTE: see bug 1163154 for an example of an edge case where making the
     // dialog visible in response to a KEYDOWN will result in a CLICK event
     // firing on the default button (immediately closing the dialog) if the key
@@ -888,17 +701,22 @@ goog.ui.Dialog.prototype.setVisible = function(visible) {
     //
     // This could be worked around by attaching the onButtonClick_ handler in a
     // setTimeout, but that was deemed undesirable.
-    this.getHandler().listen(this.buttonEl_,
-        goog.events.EventType.CLICK, this.onButtonClick_);
+    this.getHandler().listen(this.buttonEl_, goog.events.EventType.CLICK,
+        this.onButtonClick_);
+  } else {
+    // Stop listening for keyboard and resize events while the dialog is hidden.
+    this.getHandler().
+        unlisten(this.getElement(), goog.events.EventType.KEYDOWN, this.onKey_).
+        unlisten(this.getElement(), goog.events.EventType.KEYPRESS,
+            this.onKey_).
+        unlisten(this.buttonEl_, goog.events.EventType.CLICK,
+            this.onButtonClick_);
+
+    this.dispatchEvent(goog.ui.Dialog.EventType.AFTER_HIDE);
+    if (this.disposeOnHide_) {
+      this.dispose();
+    }
   }
-};
-
-
-/**
- * @return {boolean} Whether the dialog box is visible.
- */
-goog.ui.Dialog.prototype.isVisible = function() {
-  return this.visible_;
 };
 
 
@@ -906,15 +724,8 @@ goog.ui.Dialog.prototype.isVisible = function() {
  * Focuses the dialog contents and the default dialog button if there is one.
  */
 goog.ui.Dialog.prototype.focus = function() {
-  // Start with the focus on the dialog itself.  In FF, if we focus on a
-  // sub-element first, then hitting tab moves the focus outside of the
-  // dialog, which we don't want.  In addition, there may not be a default
-  // button, but we certainly want focus to remain within the dialog.
-  try {
-    this.getElement().focus();
-  } catch (e) {
-    // Swallow this. IE can throw an error if the element can not be focused.
-  }
+  goog.base(this, 'focus');
+
   // Move focus to the default button (if any).
   if (this.getButtonSet()) {
     var defaultButton = this.getButtonSet().getDefault();
@@ -949,22 +760,11 @@ goog.ui.Dialog.prototype.focus = function() {
 
 
 /**
- * Make the background element the size of the document.
- *
- * NOTE(user): We must hide the background element before measuring the
- * document, otherwise the size of the background will stop the document from
- * shrinking to fit a smaller window.  This does cause a slight flicker in Linux
- * browsers, but should not be a common scenario.
+ * Sets dragger limits when dragging is started.
+ * @param {!goog.events.Event} e goog.fx.Dragger.EventType.START event.
  * @private
  */
-goog.ui.Dialog.prototype.resizeBackground_ = function() {
-  if (this.bgIframeEl_) {
-    goog.style.showElement(this.bgIframeEl_, false);
-  }
-  if (this.bgEl_) {
-    goog.style.showElement(this.bgEl_, false);
-  }
-
+goog.ui.Dialog.prototype.setDraggerLimits_ = function(e) {
   var doc = this.getDomHelper().getDocument();
   var win = goog.dom.getWindow(doc) || window;
 
@@ -974,47 +774,16 @@ goog.ui.Dialog.prototype.resizeBackground_ = function() {
   var w = Math.max(doc.body.scrollWidth, viewSize.width);
   var h = Math.max(doc.body.scrollHeight, viewSize.height);
 
-  if (this.bgIframeEl_) {
-    goog.style.showElement(this.bgIframeEl_, true);
-    goog.style.setSize(this.bgIframeEl_, w, h);
-  }
-  if (this.bgEl_) {
-    goog.style.showElement(this.bgEl_, true);
-    goog.style.setSize(this.bgEl_, w, h);
-  }
-
-  if (this.draggable_) {
-    var dialogSize = goog.style.getSize(this.getElement());
-    this.dragger_.limits =
-        new goog.math.Rect(0, 0, w - dialogSize.width, h - dialogSize.height);
-  }
-};
-
-
-/**
- * Centers the dialog in the viewport, taking scrolling into account.
- */
-goog.ui.Dialog.prototype.reposition = function() {
-  // Get the current viewport to obtain the scroll offset.
-  var doc = this.getDomHelper().getDocument();
-  var win = goog.dom.getWindow(doc) || window;
-  if (goog.style.getComputedPosition(this.getElement()) == 'fixed') {
-    var x = 0;
-    var y = 0;
-  } else {
-    var scroll = this.getDomHelper().getDocumentScroll();
-    var x = scroll.x;
-    var y = scroll.y;
-  }
-
   var dialogSize = goog.style.getSize(this.getElement());
-  var viewSize = goog.dom.getViewportSize(win);
-
-  // Make sure left and top are non-negatives.
-  var left = Math.max(x + viewSize.width / 2 - dialogSize.width / 2, 0);
-  var top = Math.max(y + viewSize.height / 2 - dialogSize.height / 2, 0);
-
-  goog.style.setPosition(this.getElement(), left, top);
+  if (goog.style.getComputedPosition(this.getElement()) == 'fixed') {
+    // Ensure position:fixed dialogs can't be dragged beyond the viewport.
+    this.dragger_.setLimits(new goog.math.Rect(0, 0,
+        Math.max(0, viewSize.width - dialogSize.width),
+        Math.max(0, viewSize.height - dialogSize.height)));
+  } else {
+    this.dragger_.setLimits(new goog.math.Rect(0, 0,
+        w - dialogSize.width, h - dialogSize.height));
+  }
 };
 
 
@@ -1099,27 +868,11 @@ goog.ui.Dialog.prototype.getDisposeOnHide = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Dialog.prototype.disposeInternal = function() {
-  // The superclass method calls exitDocument, which in turn calls
-  // setVisible(false).  Between them they clean up all event handlers.
-  goog.ui.Dialog.superClass_.disposeInternal.call(this);
-
-  // The superclass method disposes of the element and its children,
-  // unless the dialog was decorated.  We only have to worry about
-  // background mask elements.
-  if (this.bgEl_) {
-    goog.dom.removeNode(this.bgEl_);
-    this.bgEl_ = null;
-  }
-  if (this.bgIframeEl_) {
-    goog.dom.removeNode(this.bgIframeEl_);
-    this.bgIframeEl_ = null;
-  }
-
   this.titleCloseEl_ = null;
   this.buttonEl_ = null;
-  this.tabCatcherEl_ = null;
+  goog.base(this, 'disposeInternal');
 };
 
 
@@ -1136,6 +889,7 @@ goog.ui.Dialog.prototype.setButtonSet = function(buttons) {
     } else {
       this.buttonEl_.innerHTML = '';
     }
+    goog.style.showElement(this.buttonEl_, !!this.buttons_);
   }
 };
 
@@ -1249,7 +1003,7 @@ goog.ui.Dialog.prototype.onKey_ = function(e) {
         key = defaultKey;
       }
     }
-    if (key) {
+    if (key && buttonSet) {
       hasHandler = true;
       close = this.dispatchEvent(
           new goog.ui.Dialog.Event(key, String(buttonSet.get(key))));
@@ -1264,43 +1018,6 @@ goog.ui.Dialog.prototype.onKey_ = function(e) {
   if (close) {
     this.setVisible(false);
   }
-};
-
-
-/**
- * Handles window resize events.
- * @param {goog.events.BrowserEvent} e Browser's event object.
- * @private
- */
-goog.ui.Dialog.prototype.onResize_ = function(e) {
-  this.resizeBackground_();
-};
-
-
-/**
- * Handles focus events.  Makes sure that if the user tabs past the
- * elements in the dialog, the focus wraps back to the beginning.
- * @param {goog.events.BrowserEvent} e Browser's event object.
- * @private
- */
-goog.ui.Dialog.prototype.onFocus_ = function(e) {
-  if (this.tabCatcherEl_ == e.target) {
-    goog.Timer.callOnce(this.focusElement_, 0, this);
-  }
-};
-
-
-/**
- * Moves the focus to the dialog.
- * @private
- */
-goog.ui.Dialog.prototype.focusElement_ = function() {
-  if (goog.userAgent.IE) {
-    // In IE, we must first focus on the body or else focussing on a
-    // sub-element will not work.
-    this.getDomHelper().getDocument().body.focus();
-  }
-  this.getElement().focus();
 };
 
 
@@ -1343,8 +1060,15 @@ goog.ui.Dialog.EventType = {
 
   /**
    * Dispatched after the dialog is closed. Not cancelable.
+   * @deprecated Use goog.ui.PopupBase.EventType.HIDE.
    */
-  AFTER_HIDE: 'afterhide'
+  AFTER_HIDE: 'afterhide',
+
+  /**
+   * Dispatched after the dialog is shown. Not cancelable.
+   * @deprecated Use goog.ui.PopupBase.EventType.SHOW.
+   */
+  AFTER_SHOW: 'aftershow'
 };
 
 
@@ -1440,7 +1164,7 @@ goog.ui.Dialog.ButtonSet.prototype.set = function(key, caption,
  *     "addButton" calls and build new ButtonSets.
  */
 goog.ui.Dialog.ButtonSet.prototype.addButton = function(button, opt_isDefault,
-      opt_isCancel) {
+    opt_isCancel) {
   return this.set(button.key, button.caption, opt_isDefault, opt_isCancel);
 };
 

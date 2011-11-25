@@ -70,7 +70,7 @@ goog.dom.browserrange.WebKitRange.createFromNodes = function(startNode,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
     function(range, thisEndpoint, otherEndpoint) {
   // Webkit pre-528 has some bugs where compareBoundaryPoints() doesn't work the
@@ -94,7 +94,7 @@ goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.WebKitRange.prototype.selectInternal = function(
     selection, reversed) {
   // Unselect everything. This addresses a bug in Webkit where it sometimes

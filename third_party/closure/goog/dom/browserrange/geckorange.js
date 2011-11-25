@@ -67,7 +67,7 @@ goog.dom.browserrange.GeckoRange.createFromNodes = function(startNode,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.GeckoRange.prototype.selectInternal = function(
     selection, reversed) {
   var anchorNode = reversed ? this.getEndNode() : this.getStartNode();

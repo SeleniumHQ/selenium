@@ -50,7 +50,7 @@ goog.demos.editor.HelloWorldDialogPlugin.Command = {
   HELLO_WORLD_DIALOG: 'helloWorldDialog'
 };
 
-/** @inheritDoc */
+/** @override */
 goog.demos.editor.HelloWorldDialogPlugin.prototype.getTrogClassId =
     goog.functions.constant('HelloWorldDialog');
 

@@ -854,6 +854,9 @@ goog.net.BrowserChannel.prototype.getSessionId = function() {
  */
 goog.net.BrowserChannel.prototype.connectTest_ = function(testPath) {
   this.channelDebug_.debug('connectTest_()');
+  if (!this.okToMakeRequest_()) {
+    return; // channel is cancelled
+  }
   this.connectionTest_ = new goog.net.BrowserTestChannel(
       this, this.channelDebug_);
   this.connectionTest_.setExtraHeaders(this.extraHeaders_);
@@ -1222,8 +1225,9 @@ goog.net.BrowserChannel.prototype.onStartForwardChannelTimer_ = function(
 goog.net.BrowserChannel.prototype.startForwardChannel_ = function(
     opt_retryRequest) {
   this.channelDebug_.debug('startForwardChannel_');
-
-  if (this.state_ == goog.net.BrowserChannel.State.INIT) {
+  if (!this.okToMakeRequest_()) {
+    return; // channel is cancelled
+  } else if (this.state_ == goog.net.BrowserChannel.State.INIT) {
     if (opt_retryRequest) {
       this.channelDebug_.severe('Not supposed to retry the open');
       return;
@@ -1231,11 +1235,6 @@ goog.net.BrowserChannel.prototype.startForwardChannel_ = function(
     this.open_();
     this.state_ = goog.net.BrowserChannel.State.OPENING;
   } else if (this.state_ == goog.net.BrowserChannel.State.OPENED) {
-    if (!this.okToMakeRequest_()) {
-      // channel is cancelled
-      return;
-    }
-
     if (opt_retryRequest) {
       this.makeForwardChannelRequest_(opt_retryRequest);
       return;
@@ -1503,7 +1502,7 @@ goog.net.BrowserChannel.prototype.startBackChannel_ = function() {
   // Add the reconnect parameters.
   this.addAdditionalParams_(uri);
 
-  if (goog.userAgent.IE) {
+  if (!goog.net.ChannelRequest.supportsXhrStreaming()) {
     uri.setParameterValue('TYPE', 'html');
     this.backChannelRequest_.tridentGet(uri, Boolean(this.hostPrefix_));
   } else {
@@ -2079,23 +2078,34 @@ goog.net.BrowserChannel.prototype.getBackChannelUri =
  * Creates a data Uri applying logic for secondary hostprefix, port
  * overrides, and versioning.
  * @param {?string} hostPrefix The host prefix.
- * @param {string} path The path on the host.
+ * @param {string} path The path on the host (may be absolute or relative).
  * @param {number=} opt_overridePort Optional override port.
  * @return {goog.Uri} The data URI.
  */
 goog.net.BrowserChannel.prototype.createDataUri =
     function(hostPrefix, path, opt_overridePort) {
-  var locationPage = window.location;
-  var hostName;
-  if (hostPrefix) {
-    hostName = hostPrefix + '.' + locationPage.hostname;
+  var uri = goog.Uri.parse(path);
+  var uriAbsolute = (uri.getDomain() != '');
+  if (uriAbsolute) {
+    if (hostPrefix) {
+      uri.setDomain(hostPrefix + '.' + uri.getDomain());
+    }
+
+    uri.setPort(opt_overridePort || uri.getPort());
   } else {
-    hostName = locationPage.hostname;
+    var locationPage = window.location;
+    var hostName;
+    if (hostPrefix) {
+      hostName = hostPrefix + '.' + locationPage.hostname;
+    } else {
+      hostName = locationPage.hostname;
+    }
+
+    var port = opt_overridePort || locationPage.port;
+
+    uri = goog.Uri.create(locationPage.protocol, null, hostName, port, path);
   }
 
-  var port = opt_overridePort || locationPage.port;
-
-  var uri = goog.Uri.create(locationPage.protocol, null, hostName, port, path);
   if (this.extraParams_) {
     goog.structs.forEach(this.extraParams_, function(value, key, coll) {
       uri.setParameterValue(key, value);
@@ -2212,9 +2222,21 @@ goog.net.BrowserChannel.notifyTimingEvent = function(size, rtt, retries) {
 
 
 /**
- * Override this in a subclass to enable secondary domains for non-IE browsers.
- * @return {boolean} Whether to use a secondary domain when the server
- *     recommends it.
+ * Determines whether to use a secondary domain when the server gives us
+ * a host prefix. This allows us to work around browser per-domain
+ * connection limits.
+ *
+ * Currently, we only use secondary domains when using Trident's ActiveXObject,
+ * because it supports cross-domain requests out of the box. Even if we wanted
+ * to use secondary domains on Gecko/Webkit, they wouldn't work due to
+ * security restrictions on cross-origin XHRs.
+ *
+ * If you need to use secondary domains on other browsers, you'll need
+ * to override this method in a subclass, and make sure that those browsers
+ * use some messaging mechanism that works cross-domain.
+ *
+ * @return {boolean} Whether to use secondary domains.
+ * @see http://code.google.com/p/closure-library/issues/detail?id=339
  */
 goog.net.BrowserChannel.prototype.shouldUseSecondaryDomains = function() {
   return goog.userAgent.IE;

@@ -125,9 +125,7 @@ goog.ui.HoverCard.EventType = {
 };
 
 
-/**
- * Destroys widget and remove listeners.
- */
+/** @override */
 goog.ui.HoverCard.prototype.disposeInternal = function() {
   goog.ui.HoverCard.superClass_.disposeInternal.call(this);
 

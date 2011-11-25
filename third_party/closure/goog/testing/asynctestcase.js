@@ -120,12 +120,27 @@ goog.testing.AsyncTestCase = function(opt_name) {
 goog.inherits(goog.testing.AsyncTestCase, goog.testing.TestCase);
 
 
+/**
+ * Represents result of top stack function call.
+ * @typedef {{controlBreakingExceptionThrown: boolean, message: string}}
+ * @private
+ */
+goog.testing.AsyncTestCase.TopStackFuncResult_;
+
+
 
 /**
  * An exception class used solely for control flow.
+ * @param {string=} opt_message Error message.
  * @constructor
  */
-goog.testing.AsyncTestCase.ControlBreakingException = function() {};
+goog.testing.AsyncTestCase.ControlBreakingException = function(opt_message) {
+  /**
+   * The exception message.
+   * @type {string}
+   */
+  this.message = opt_message || '';
+};
 
 
 /**
@@ -144,7 +159,7 @@ goog.testing.AsyncTestCase.ControlBreakingException.prototype.
     isControlBreakingException = true;
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.AsyncTestCase.ControlBreakingException.prototype.toString =
     function() {
   // This shows up in the console when the exception is not caught.
@@ -337,8 +352,8 @@ goog.testing.AsyncTestCase.prototype.continueTesting = function() {
 
 /**
  * Handles an exception thrown by a test.
- * @param {string|Error=} opt_e The exception object associated with the
- *     failure or a string.
+ * @param {*=} opt_e The exception object associated with the failure
+ *     or a string.
  * @throws Always throws a ControlBreakingException.
  */
 goog.testing.AsyncTestCase.prototype.doAsyncError = function(opt_e) {
@@ -380,7 +395,14 @@ goog.testing.AsyncTestCase.prototype.doAsyncError = function(opt_e) {
         this.numControlExceptionsExpected_ + ' and throwing exception.');
   }
 
-  throw new goog.testing.AsyncTestCase.ControlBreakingException();
+  // Copy the error message to ControlBreakingException.
+  var message = '';
+  if (typeof opt_e == 'string') {
+    message = opt_e;
+  } else if (opt_e && opt_e.message) {
+    message = opt_e.message;
+  }
+  throw new goog.testing.AsyncTestCase.ControlBreakingException(message);
 };
 
 
@@ -553,7 +575,8 @@ goog.testing.AsyncTestCase.prototype.hookOnError_ = function() {
       // Ignore exceptions that we threw on purpose.
       var cbe =
           goog.testing.AsyncTestCase.ControlBreakingException.TO_STRING;
-      if (error.indexOf(cbe) != -1 && self.numControlExceptionsExpected_) {
+      if (String(error).indexOf(cbe) != -1 &&
+          self.numControlExceptionsExpected_) {
         self.numControlExceptionsExpected_ -= 1;
         self.dbgLog_('window.onerror: numControlExceptionsExpected_ = ' +
             self.numControlExceptionsExpected_ + ' and ignoring exception. ' +
@@ -635,26 +658,26 @@ goog.testing.AsyncTestCase.prototype.setNextStep_ = function(func, name) {
 /**
  * Calls the given function, redirecting any exceptions to doAsyncError.
  * @param {Function} func The function to call.
- * @return {boolean} Returns true iff the function threw a
- *     ControlBreakingException.
+ * @return {!goog.testing.AsyncTestCase.TopStackFuncResult_} Returns a
+ * TopStackFuncResult_.
  * @private
  */
 goog.testing.AsyncTestCase.prototype.callTopOfStackFunc_ = function(func) {
   /** @preserveTry */
   try {
     func.call(this);
-    return false;
+    return {controlBreakingExceptionThrown: false, message: ''};
   } catch (e) {
     this.dbgLog_('Caught exception in callTopOfStackFunc_');
     /** @preserveTry */
     try {
       this.doAsyncError(e);
-      return false;
+      return {controlBreakingExceptionThrown: false, message: ''};
     } catch (e2) {
       if (!e2.isControlBreakingException) {
         throw e2;
       }
-      return true;
+      return {controlBreakingExceptionThrown: true, message: e2.message};
     }
   }
 };
@@ -680,31 +703,32 @@ goog.testing.AsyncTestCase.prototype.pump_ = function(opt_doFirst) {
     //   - ...
     //   - pump_();
     // We don't want fail(2) to ever be called.
-    var shouldThrowAndNotReturn = false;
+    var topFuncResult = {};
 
     if (opt_doFirst) {
-      shouldThrowAndNotReturn = this.callTopOfStackFunc_(opt_doFirst);
+      topFuncResult = this.callTopOfStackFunc_(opt_doFirst);
     }
     // Note: we don't check for this.running here because it is not set to true
     // while executing setUpPage and tearDownPage.
     // Also, if isReady_ is false, then one of two things will happen:
     // 1. Our timeout callback will be called.
     // 2. The tests will call continueTesting(), which will call pump_() again.
-    while (this.isReady_ && this.nextStepFunc_ && !shouldThrowAndNotReturn) {
+    while (this.isReady_ && this.nextStepFunc_ &&
+        !topFuncResult.controlBreakingExceptionThrown) {
       this.curStepFunc_ = this.nextStepFunc_;
       this.curStepName_ = this.nextStepName_;
       this.nextStepFunc_ = null;
       this.nextStepName_ = '';
 
       this.dbgLog_('Performing step: ' + this.curStepName_);
-      shouldThrowAndNotReturn =
+      topFuncResult =
           this.callTopOfStackFunc_(/** @type {Function} */(this.curStepFunc_));
 
       // If the max run time is exceeded call this function again async so as
       // not to block the browser.
       var delta = this.now_() - this.getBatchTime();
       if (delta > goog.testing.TestCase.MAX_RUN_TIME &&
-          !shouldThrowAndNotReturn) {
+          !topFuncResult.controlBreakingExceptionThrown) {
         this.saveMessage('Breaking async');
         var self = this;
         this.timeout(function() { self.pump_(); }, 100);
@@ -713,11 +737,12 @@ goog.testing.AsyncTestCase.prototype.pump_ = function(opt_doFirst) {
     }
     this.returnWillPump_ = false;
     // See note at top of this function.
-    if (shouldThrowAndNotReturn) {
+    if (topFuncResult.controlBreakingExceptionThrown) {
       this.numControlExceptionsExpected_ += 1;
       this.dbgLog_('pump: numControlExceptionsExpected_ = ' +
           this.numControlExceptionsExpected_ + ' and throwing exception.');
-      throw new goog.testing.AsyncTestCase.ControlBreakingException();
+      throw new goog.testing.AsyncTestCase.
+          ControlBreakingException(topFuncResult.message);
     }
   } else if (opt_doFirst) {
     opt_doFirst.call(this);

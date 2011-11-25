@@ -36,6 +36,8 @@ goog.provide('goog.events.PasteHandler');
 goog.provide('goog.events.PasteHandler.EventType');
 goog.provide('goog.events.PasteHandler.State');
 
+goog.require('goog.Timer');
+goog.require('goog.async.ConditionalDelay');
 goog.require('goog.debug.Logger');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
@@ -108,6 +110,17 @@ goog.events.PasteHandler = function(element) {
     ];
     this.eventHandler_.listen(element, events, this.handleEvent_);
   }
+
+  /**
+   * ConditionalDelay used to poll for changes in the text element once users
+   * paste text. Browsers fire paste events BEFORE the text is actually present
+   * in the element.value property.
+   * @type {goog.async.ConditionalDelay}
+   * @private
+   */
+  this.delay_ = new goog.async.ConditionalDelay(
+      goog.bind(this.checkUpdatedText_, this));
+
 };
 goog.inherits(goog.events.PasteHandler, goog.events.EventTarget);
 
@@ -117,7 +130,17 @@ goog.inherits(goog.events.PasteHandler, goog.events.EventTarget);
  * @enum {string}
  */
 goog.events.PasteHandler.EventType = {
-  PASTE: 'paste'
+  /**
+   * Dispatched as soon as the paste event is detected, but before the pasted
+   * text has been added to the text element we're listening to.
+   */
+  PASTE: 'paste',
+
+  /**
+   * Dispatched after detecting a change to the value of text element
+   * (within 200msec of receiving the PASTE event).
+   */
+  AFTER_PASTE: 'after_paste'
 };
 
 
@@ -128,6 +151,23 @@ goog.events.PasteHandler.EventType = {
  */
 goog.events.PasteHandler.MANDATORY_MS_BETWEEN_INPUT_EVENTS_TIE_BREAKER =
     400;
+
+
+/**
+ * The period between each time we check whether the pasted text appears in the
+ * text element or not.
+ * @type {number}
+ * @private
+ */
+goog.events.PasteHandler.PASTE_POLLING_PERIOD_MS_ = 50;
+
+
+/**
+ * The maximum amount of time we want to poll for changes.
+ * @type {number}
+ * @private
+ */
+goog.events.PasteHandler.PASTE_POLLING_TIMEOUT_MS_ = 200;
 
 
 /**
@@ -167,11 +207,13 @@ goog.events.PasteHandler.prototype.logger_ =
     goog.debug.Logger.getLogger('goog.events.PasteHandler');
 
 
-/** @inheritDoc */
+/** @override */
 goog.events.PasteHandler.prototype.disposeInternal = function() {
   goog.events.PasteHandler.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();
   this.eventHandler_ = null;
+  this.delay_.dispose();
+  this.delay_ = null;
 };
 
 
@@ -196,6 +238,23 @@ goog.events.PasteHandler.prototype.getEventHandler = function() {
 
 
 /**
+ * Checks whether the element.value property was updated, and if so, dispatches
+ * the event that let clients know that the text is available.
+ * @return {boolean} Whether the polling should stop or not, based on whether
+ *     we found a text change or not.
+ * @private
+ */
+goog.events.PasteHandler.prototype.checkUpdatedText_ = function() {
+  if (this.oldValue_ == this.element_.value) {
+    return false;
+  }
+  this.logger_.info('detected textchange after paste');
+  this.dispatchEvent(goog.events.PasteHandler.EventType.AFTER_PASTE);
+  return true;
+};
+
+
+/**
  * Dispatches the paste event.
  * @param {goog.events.BrowserEvent} e The underlying browser event.
  * @private
@@ -208,6 +267,18 @@ goog.events.PasteHandler.prototype.dispatch_ = function(e) {
   } finally {
     event.dispose();
   }
+
+  // Starts polling for updates in the element.value property so we can tell
+  // when do dispatch the AFTER_PASTE event. (We do an initial check after an
+  // async delay of 0 msec since some browsers update the text right away and
+  // our poller will always wait one period before checking).
+  goog.Timer.callOnce(function() {
+    if (!this.checkUpdatedText_()) {
+      this.delay_.start(
+          goog.events.PasteHandler.PASTE_POLLING_PERIOD_MS_,
+          goog.events.PasteHandler.PASTE_POLLING_TIMEOUT_MS_);
+    }
+  }, 0, this);
 };
 
 

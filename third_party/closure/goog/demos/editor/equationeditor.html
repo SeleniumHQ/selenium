@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<head>
+<title>Equation Editor Test</title>
+<script src="../../base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('goog.demos.editor.EquationEditor');
+</script>
+<link rel="stylesheet" href="../css/demo.css">
+<link rel="stylesheet" href="../../css/dialog.css" />
+<link rel="stylesheet" href="../../css/editor/equationeditor.css" />
+</head>
+
+<body>
+
+<a href="#" onclick="openEditor()">Open Editor Dialog</a>
+&nbsp;&nbsp;
+Initial equation:
+<input type="text" value="" id="init">
+
+<script>
+
+function openEditor() {
+  var ed = new goog.demos.editor.EquationEditor();
+  ed.openEditor(document.getElementById('init').value);
+}
+</script>
+</body>
+</html>

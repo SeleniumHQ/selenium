@@ -30,8 +30,8 @@ goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.fs.Error');
 goog.require('goog.fs.FileWriter');
+goog.require('goog.functions');
 goog.require('goog.string');
-
 
 
 /**
@@ -185,14 +185,24 @@ goog.fs.Entry.prototype.wrapEntry = function(entry) {
 
 
 /**
+ * Get the URL for this file.
+ *
+ * @param {string=} opt_mimeType The MIME type that will be served for the URL.
+ * @return {string} The URL.
+ */
+goog.fs.Entry.prototype.toUrl = function(opt_mimeType) {
+  return this.entry_.toURL(opt_mimeType);
+};
+
+
+/**
  * Get the URI for this file.
  *
+ * @deprecated Use {@link #toUrl} instead.
  * @param {string=} opt_mimeType The MIME type that will be served for the URI.
  * @return {string} The URI.
  */
-goog.fs.Entry.prototype.toUri = function(opt_mimeType) {
-  return this.entry_.toURI(opt_mimeType);
-};
+goog.fs.Entry.prototype.toUri = goog.fs.Entry.prototype.toUrl;
 
 
 /**
@@ -350,7 +360,7 @@ goog.fs.DirectoryEntry.prototype.createPath = function(path) {
   }
 
   // Filter out any empty path components caused by '//' or a leading slash.
-  var parts = goog.array.filter(path.split('/'), goog.identityFunction);
+  var parts = goog.array.filter(path.split('/'), goog.functions.identity);
   var existed = [];
 
   function getNextDirectory(dir) {

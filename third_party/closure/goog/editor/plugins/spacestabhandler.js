@@ -40,13 +40,13 @@ goog.inherits(goog.editor.plugins.SpacesTabHandler,
     goog.editor.plugins.AbstractTabHandler);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.SpacesTabHandler.prototype.getTrogClassId = function() {
   return 'SpacesTabHandler';
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.SpacesTabHandler.prototype.handleTabKey = function(e) {
   var dh = this.getFieldDomHelper();
   var range = this.fieldObject.getRange();

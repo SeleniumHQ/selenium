@@ -14,11 +14,11 @@
 
 /**
  * @fileoverview Implements a 3D ray that are compatible with WebGL.
- * Each element is a float32 since that is typically the desired size of a
- * 3-vector in the GPU.  The API is structured to avoid unnecessary memory
- * allocations.  The last parameter will typically be the output vector and
- * an object can be both an input and output parameter to all methods except
- * where noted.
+ * Each element is a float64 in case high precision is required.
+ * The API is structured to avoid unnecessary memory allocations.
+ * The last parameter will typically be the output vector and an
+ * object can be both an input and output parameter to all methods
+ * except where noted.
  *
  */
 goog.provide('goog.vec.Ray');
@@ -36,16 +36,20 @@ goog.require('goog.vec.Vec3');
  */
 goog.vec.Ray = function(opt_origin, opt_dir) {
   /**
-   * @type {goog.vec.Vec3.Type}
+   * @type {Array.<number>}
    */
-  this.origin = goog.vec.Vec3.createFromArray(
-      opt_origin || [0, 0, 0]);
+  this.origin = [0, 0, 0];
+  if (opt_origin) {
+    goog.vec.Vec3.setFromArray(this.origin, opt_origin);
+  }
 
   /**
-   * @type {goog.vec.Vec3.Type}
+   * @type {Array.<number>}
    */
-  this.dir = goog.vec.Vec3.createFromArray(
-      opt_dir || [0, 0, 0]);
+  this.dir = [0, 0, 0];
+  if (opt_dir) {
+    goog.vec.Vec3.setFromArray(this.dir, opt_dir);
+  }
 };
 
 

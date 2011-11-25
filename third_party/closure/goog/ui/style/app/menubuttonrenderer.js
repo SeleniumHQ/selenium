@@ -176,7 +176,7 @@ goog.ui.style.app.MenuButtonRenderer.prototype.createButton = function(content,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(element,
     content) {
   var dom = goog.dom.getDomHelper(this.getContentElement(element));
@@ -220,7 +220,7 @@ goog.ui.style.app.MenuButtonRenderer.prototype.getCssClass = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.MenuButtonRenderer.prototype.getIe6ClassCombinations =
     function() {
   return goog.ui.style.app.MenuButtonRenderer.IE6_CLASS_COMBINATIONS;

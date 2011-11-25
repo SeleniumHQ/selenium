@@ -35,7 +35,6 @@ goog.require('goog.dom.TagName');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Field.EventType');
-goog.require('goog.editor.node');
 goog.require('goog.editor.range');
 goog.require('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.EventHandler');
@@ -135,9 +134,7 @@ goog.editor.ClickToEditWrapper.prototype.getOriginalDomHelper = function() {
 };
 
 
-/**
- * Destroy the wrapper.
- */
+/** @override */
 goog.editor.ClickToEditWrapper.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
   this.exitDocument();
@@ -375,7 +372,7 @@ goog.editor.ClickToEditWrapper.prototype.makeFieldEditable = function(field) {
 
 /**
  * Gets a saved caret range for the given range.
- * @param {?goog.dom.AbstractRange} range A range wrapper.
+ * @param {goog.dom.AbstractRange} range A range wrapper.
  * @return {goog.dom.SavedCaretRange} The range, saved with carets, or null
  *    if the range wrapper was null.
  * @private
@@ -413,7 +410,7 @@ goog.editor.ClickToEditWrapper.prototype.insertCarets_ = function() {
     // document.activeElement. In FF, we have to be more hacky.
     var specialNodeClicked;
     if (goog.editor.BrowserFeature.HAS_ACTIVE_ELEMENT) {
-      specialNodeClicked = goog.editor.node.getActiveElementIE(
+      specialNodeClicked = goog.dom.getActiveElement(
           this.originalDomHelper_.getDocument());
     } else {
       specialNodeClicked = this.savedAnchorClicked_;

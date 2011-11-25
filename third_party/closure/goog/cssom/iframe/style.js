@@ -499,11 +499,12 @@ goog.cssom.iframe.style.CssSelectorPart_.prototype.testElement =
  * Represents an element and all its parent/ancestor nodes.
  * This class exists as an optimization so we run tests on an element
  * hierarchy multiple times without walking the dom each time.
- * @param {Element} node The DOM element whose ancestry should be stored.
+ * @param {Element} el The DOM element whose ancestry should be stored.
  * @constructor
  * @private
  */
-goog.cssom.iframe.style.NodeAncestry_ = function(node) {
+goog.cssom.iframe.style.NodeAncestry_ = function(el) {
+  var node = el;
   var nodeUid = goog.getUid(node);
 
   // Return an existing object from the cache if one exits for this node.

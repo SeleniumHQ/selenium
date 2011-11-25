@@ -875,10 +875,7 @@ goog.editor.Field.prototype.clearListeners_ = function() {
 };
 
 
-/**
- * Removes all listeners and destroys the eventhandler object.
- * @override
- */
+/** @override */
 goog.editor.Field.prototype.disposeInternal = function() {
   if (this.isLoading() || this.isLoaded()) {
     this.logger.warning('Disposing a field that is in use.');
@@ -1370,15 +1367,16 @@ goog.editor.Field.prototype.queryCommandValueInternal_ = function(command,
  * state change)
  * @param {Function} handler The function to call if this is not an internal
  *     browser event.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {goog.events.BrowserEvent} browserEvent The browser event.
  * @protected
  */
-goog.editor.Field.prototype.handleDomAttrChange = function(handler, e) {
+goog.editor.Field.prototype.handleDomAttrChange =
+    function(handler, browserEvent) {
   if (this.isEventStopped(goog.editor.Field.EventType.CHANGE)) {
     return;
   }
 
-  e = e.getBrowserEvent();
+  var e = browserEvent.getBrowserEvent();
 
   // For XUL elements, since we don't care what they are doing
   try {

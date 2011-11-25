@@ -502,7 +502,7 @@ goog.gears.ManagedResourceStore.prototype.handleError_ = function(error) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.gears.ManagedResourceStore.prototype.disposeInternal = function() {
   goog.gears.ManagedResourceStore.superClass_.disposeInternal.call(this);
   if (this.supportsEvents_ && this.gearsStore_) {

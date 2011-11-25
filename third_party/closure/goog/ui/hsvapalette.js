@@ -98,7 +98,7 @@ goog.ui.HsvaPalette.prototype.aHandleEl_;
 goog.ui.HsvaPalette.prototype.swatchBackdropEl_;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.HsvaPalette.prototype.getAlpha = function() {
   return this.alpha_;
 };
@@ -169,7 +169,7 @@ goog.ui.HsvaPalette.prototype.setColorAlphaHelper_ = function(color, alpha) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.HsvaPalette.prototype.createDom = function() {
   goog.ui.HsvaPalette.superClass_.createDom.call(this);
 
@@ -186,10 +186,7 @@ goog.ui.HsvaPalette.prototype.createDom = function() {
 };
 
 
-/**
- * Destroys this widget and removes all event listeners.
- * @override
- */
+/** @override */
 goog.ui.HsvaPalette.prototype.disposeInternal = function() {
   goog.ui.HsvaPalette.superClass_.disposeInternal.call(this);
 
@@ -218,7 +215,7 @@ goog.ui.HsvaPalette.prototype.updateUi_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.HsvaPalette.prototype.updateInput = function() {
   if (!goog.array.equals([this.color_, this.alpha_],
       goog.ui.HsvaPalette.parseUserInput_(this.inputEl_.value))) {
@@ -257,7 +254,7 @@ goog.ui.HsvaPalette.prototype.handleMouseDown_ = function(e) {
  */
 goog.ui.HsvaPalette.prototype.handleMouseMoveA_ = function(b, e) {
   e.preventDefault();
-  var vportPos = goog.dom.getPageScroll();
+  var vportPos = this.getDomHelper().getDocumentScroll();
   var newA = (b.top + b.height - Math.min(
       Math.max(vportPos.y + e.clientY, b.top),
       b.top + b.height)) / b.height;

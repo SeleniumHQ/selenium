@@ -86,7 +86,7 @@ goog.messaging.PortCaller = function(operatorPort) {
 goog.inherits(goog.messaging.PortCaller, goog.Disposable);
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortCaller.prototype.dial = function(name) {
   if (name in this.connections_) {
     return this.connections_[name].channel;
@@ -140,7 +140,7 @@ goog.messaging.PortCaller.prototype.connectionGranted_ = function(args) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortCaller.prototype.disposeInternal = function() {
   goog.dispose(this.operatorPort_);
   goog.object.forEach(this.connections_, goog.dispose);

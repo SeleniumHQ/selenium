@@ -229,7 +229,7 @@ goog.ui.ComboBox.prototype.setEnabled = function(enabled) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ComboBox.prototype.enterDocument = function() {
   goog.ui.ComboBox.superClass_.enterDocument.call(this);
 
@@ -255,7 +255,7 @@ goog.ui.ComboBox.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ComboBox.prototype.exitDocument = function() {
   this.keyHandler_.dispose();
   delete this.keyHandler_;
@@ -274,7 +274,7 @@ goog.ui.ComboBox.prototype.canDecorate = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ComboBox.prototype.disposeInternal = function() {
   goog.ui.ComboBox.superClass_.disposeInternal.call(this);
 
@@ -550,9 +550,21 @@ goog.ui.ComboBox.prototype.maybeShowMenu_ = function(showAll) {
     // wait for all event processing to happen.
     goog.Timer.callOnce(this.clearDismissTimer_, 1, this);
 
+    this.showMenu_();
+    this.positionMenu();
+  }
+};
+
+
+/**
+ * Positions the menu.
+ * @protected
+ */
+goog.ui.ComboBox.prototype.positionMenu = function() {
+  if (this.menu_) {
+    // TODO(user):  Make it right-aligned for RTL.
     var pos = goog.style.getPageOffset(this.getElement());
     this.menu_.setPosition(pos.x, pos.y + this.getElement().offsetHeight);
-    this.showMenu_();
   }
 };
 
@@ -752,7 +764,8 @@ goog.ui.ComboBox.prototype.onInputEvent_ = function(e) {
 goog.ui.ComboBox.prototype.handleInputChange_ = function() {
   var token = this.getTokenText_();
   this.setItemVisibilityFromToken_(token);
-  if (this.getDomHelper().getDocument().activeElement == this.input_) {
+  if (goog.dom.getActiveElement(this.getDomHelper().getDocument()) ==
+      this.input_) {
     // Do not alter menu visibility unless the user focus is currently on the
     // combobox (otherwise programmatic changes may cause the menu to become
     // visible).

@@ -123,9 +123,7 @@ goog.demos.SampleComponent.prototype.decorateInternal = function(element) {
 };
 
 
-/**
- * Disposes of the component.
- */
+/** @override */
 goog.demos.SampleComponent.prototype.disposeInternal = function() {
   goog.demos.SampleComponent.superClass_.disposeInternal.call(this);
   this.eh_.dispose();

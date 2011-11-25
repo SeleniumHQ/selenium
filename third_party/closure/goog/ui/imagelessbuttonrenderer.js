@@ -87,7 +87,7 @@ goog.ui.ImagelessButtonRenderer.prototype.createDom =
     goog.ui.ImagelessButtonRenderer.superClass_.createDom;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ImagelessButtonRenderer.prototype.getContentElement = function(
     element) {
   return (/** @type {Element} */ element && element.firstChild &&

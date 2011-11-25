@@ -71,8 +71,12 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(button) {
     'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' '),
     'title': button.getTooltip() || ''
   };
-  return button.getDomHelper().createDom('div', attributes,
+  var buttonElement = button.getDomHelper().createDom('div', attributes,
       this.createButton(button.getContent(), button.getDomHelper()));
+
+  this.setAriaStates(button, buttonElement);
+
+  return buttonElement;
 };
 
 
@@ -83,6 +87,34 @@ goog.ui.CustomButtonRenderer.prototype.createDom = function(button) {
  */
 goog.ui.CustomButtonRenderer.prototype.getAriaRole = function() {
   return goog.dom.a11y.Role.BUTTON;
+};
+
+
+/**
+ * Sets the button's ARIA states.
+ * @param {!goog.ui.Button} button Button whose ARIA state will be updated.
+ * @param {!Element} element Element whose ARIA state is to be updated.
+ */
+goog.ui.CustomButtonRenderer.prototype.setAriaStates = function(button,
+    element) {
+  goog.asserts.assert(button);
+  goog.asserts.assert(element);
+  if (!button.isEnabled()) {
+    this.updateAriaState(element, goog.ui.Component.State.DISABLED,
+                         true);
+  }
+  if (button.isSelected()) {
+    this.updateAriaState(element, goog.ui.Component.State.SELECTED,
+                         true);
+  }
+  if (button.isSupportedState(goog.ui.Component.State.CHECKED)) {
+    this.updateAriaState(element, goog.ui.Component.State.CHECKED,
+                         true);
+  }
+  if (button.isOpen()) {
+    this.updateAriaState(element, goog.ui.Component.State.OPENED,
+                         true);
+  }
 };
 
 

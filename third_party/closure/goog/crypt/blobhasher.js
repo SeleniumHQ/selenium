@@ -28,6 +28,7 @@
  */
 
 goog.provide('goog.crypt.BlobHasher');
+goog.provide('goog.crypt.BlobHasher.EventType');
 
 goog.require('goog.asserts');
 goog.require('goog.crypt');
@@ -150,7 +151,7 @@ goog.crypt.BlobHasher.prototype.getBytesProcessed = function() {
 
 
 /**
- * @return {?Array.<number>} The computed hash value or null if not ready.
+ * @return {Array.<number>} The computed hash value or null if not ready.
  */
 goog.crypt.BlobHasher.prototype.getHash = function() {
   return this.hashVal_;
@@ -211,7 +212,8 @@ goog.crypt.BlobHasher.prototype.onLoad_ = function() {
   if (this.fileReader_.result instanceof Array ||
       goog.isString(this.fileReader_.result)) {
     array = this.fileReader_.result;
-  } else if (this.fileReader_.result instanceof ArrayBuffer) {
+  } else if (goog.global['ArrayBuffer'] && goog.global['Uint8Array'] &&
+             this.fileReader_.result instanceof ArrayBuffer) {
     array = new Uint8Array(this.fileReader_.result);
   }
   if (!array) {

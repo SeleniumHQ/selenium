@@ -51,7 +51,7 @@
 
 .modal-dialog-title-close {
   /* Client apps may override the URL at which they serve the sprite. */
-  background: #e0edfe url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -528px 0;
+  background: #e0edfe url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -528px 0;
   cursor: default;
   height: 15px;
   position: absolute;

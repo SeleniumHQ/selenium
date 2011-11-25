@@ -190,7 +190,7 @@ goog.inherits(goog.testing.mockmatchers.ObjectEquals,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.mockmatchers.ObjectEquals.prototype.matches =
     function(toVerify, opt_expectation) {
   // Override the default matches implementation to capture the exception thrown
@@ -240,7 +240,7 @@ goog.inherits(goog.testing.mockmatchers.SaveArgument,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.mockmatchers.SaveArgument.prototype.matches = function(
     toVerify, opt_expectation) {
   this.arg = toVerify;

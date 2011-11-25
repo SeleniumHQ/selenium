@@ -503,9 +503,7 @@ goog.ui.KeyboardShortcutHandler.prototype.getGlobalKeys = function() {
 };
 
 
-/**
- * Removes all event listeners and clears shortcuts.
- */
+/** @override */
 goog.ui.KeyboardShortcutHandler.prototype.disposeInternal = function() {
   goog.ui.KeyboardShortcutHandler.superClass_.disposeInternal.call(this);
   this.unregisterAll();

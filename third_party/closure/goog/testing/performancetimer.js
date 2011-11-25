@@ -138,16 +138,15 @@ goog.testing.PerformanceTimer.prototype.isDiscardOutliers = function() {
 goog.testing.PerformanceTimer.prototype.run = function(testFn) {
   var samples = [];
   var testStart = goog.now();
+  var totalRunTime = 0;
 
-  for (var i = 0; i < this.numSamples_; i++) {
+  for (var i = 0; i < this.numSamples_ && totalRunTime <= this.timeoutInterval_;
+       i++) {
     var sampleStart = goog.now();
     testFn();
     var sampleEnd = goog.now();
     samples[i] = sampleEnd - sampleStart;
-    if (sampleEnd - testStart > this.timeoutInterval_) {
-      // Timed out.
-      break;
-    }
+    totalRunTime = sampleEnd - testStart;
   }
 
   if (this.discardOutliers_ && samples.length > 2) {

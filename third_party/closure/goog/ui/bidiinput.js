@@ -154,7 +154,7 @@ goog.ui.BidiInput.prototype.getValue = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.BidiInput.prototype.disposeInternal = function() {
   if (this.inputHandler_) {
     goog.events.removeAll(this.inputHandler_);

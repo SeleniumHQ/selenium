@@ -22,6 +22,7 @@ goog.provide('goog.storage.mechanism.mechanismfactory');
 
 goog.require('goog.storage.mechanism.HTML5LocalStorage');
 goog.require('goog.storage.mechanism.IEUserData');
+goog.require('goog.storage.mechanism.IterableMechanism');
 goog.require('goog.storage.mechanism.PrefixedMechanism');
 
 
@@ -36,14 +37,32 @@ goog.storage.mechanism.mechanismfactory.USER_DATA_SHARED_KEY =
 /**
  * Returns the best local storage mechanism, or null if unavailable.
  * Local storage means that the database is placed on user's computer.
- * The key-value database is shared between all the code paths that
- * request it, so an optional namespace can be used to provide separation
- * and avoid key collisions.
+ * The key-value database is normally shared between all the code paths
+ * that request it, so using an optional namespace is recommended. This
+ * provides separation and makes key collisions unlikely.
  *
  * @param {string=} opt_namespace Restricts the visibility to given namespace.
- * @return {?goog.storage.mechanism.Mechanism} Created mechanism or null.
+ * @return {goog.storage.mechanism.IterableMechanism} Created mechanism or null.
  */
 goog.storage.mechanism.mechanismfactory.create = function(opt_namespace) {
+  var factory = goog.storage.mechanism.mechanismfactory;
+  return factory.createHTML5LocalStorage(opt_namespace) ||
+      factory.createIEUserData(opt_namespace);
+};
+
+
+/**
+ * Returns an HTML5 local storage mechanism, or null if unavailable.
+ * Since the HTML5 local storage does not support namespaces natively,
+ * and the key-value database is shared between all the code paths
+ * that request it, it is recommended that an optional namespace is
+ * used to provide key separation employing a prefix.
+ *
+ * @param {string=} opt_namespace Restricts the visibility to given namespace.
+ * @return {goog.storage.mechanism.IterableMechanism} Created mechanism or null.
+ */
+goog.storage.mechanism.mechanismfactory.createHTML5LocalStorage = function(
+    opt_namespace) {
   var storage = new goog.storage.mechanism.HTML5LocalStorage();
   if (storage.isAvailable()) {
     if (opt_namespace) {
@@ -53,7 +72,21 @@ goog.storage.mechanism.mechanismfactory.create = function(opt_namespace) {
       return storage;
     }
   }
-  storage = new goog.storage.mechanism.IEUserData(opt_namespace ||
+  return null;
+};
+
+
+/**
+ * Returns an IE userData local storage mechanism, or null if unavailable.
+ * Using an optional namespace is recommended to provide separation and
+ * avoid key collisions.
+ *
+ * @param {string=} opt_namespace Restricts the visibility to given namespace.
+ * @return {goog.storage.mechanism.IterableMechanism} Created mechanism or null.
+ */
+goog.storage.mechanism.mechanismfactory.createIEUserData = function(
+    opt_namespace) {
+  var storage = new goog.storage.mechanism.IEUserData(opt_namespace ||
       goog.storage.mechanism.mechanismfactory.USER_DATA_SHARED_KEY);
   if (storage.isAvailable()) {
     return storage;

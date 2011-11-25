@@ -21,9 +21,11 @@
  * Namespace for locale number format functions
  */
 goog.provide('goog.i18n.NumberFormat');
+goog.provide('goog.i18n.NumberFormat.CurrencyStyle');
+goog.provide('goog.i18n.NumberFormat.Format');
 
 goog.require('goog.i18n.NumberFormatSymbols');
-goog.require('goog.i18n.currencyCodeMap');
+goog.require('goog.i18n.currency');
 
 
 
@@ -31,15 +33,19 @@ goog.require('goog.i18n.currencyCodeMap');
  * Constructor of NumberFormat.
  * @param {number|string} pattern The number that indicates a predefined
  *     number format pattern.
- * @param {string=} opt_currency Optional international currency code. This
- *     determines the currency code/symbol used in format/parse. If not given,
- *     the currency code for current locale will be used.
+ * @param {string=} opt_currency Optional international currency
+ *     code. This determines the currency code/symbol used in format/parse. If
+ *     not given, the currency code for current locale will be used.
+ * @param {number=} opt_currencyStyle currency style, value defined in
+ *        goog.i18n.NumberFormat.CurrencyStyle.
  * @constructor
  */
-goog.i18n.NumberFormat = function(pattern, opt_currency) {
+goog.i18n.NumberFormat = function(pattern, opt_currency, opt_currencyStyle) {
   this.intlCurrencyCode_ = opt_currency ||
       goog.i18n.NumberFormatSymbols.DEF_CURRENCY_CODE;
-  this.currencySymbol_ = goog.i18n.currencyCodeMap[this.intlCurrencyCode_];
+
+  this.currencyStyle_ = opt_currencyStyle ||
+      goog.i18n.NumberFormat.CurrencyStyle.LOCAL;
 
   this.maximumIntegerDigits_ = 40;
   this.minimumIntegerDigits_ = 1;
@@ -76,6 +82,17 @@ goog.i18n.NumberFormat.Format = {
   SCIENTIFIC: 2,
   PERCENT: 3,
   CURRENCY: 4
+};
+
+
+/**
+ * Currency styles.
+ * @enum {number}
+ */
+goog.i18n.NumberFormat.CurrencyStyle = {
+  LOCAL: 0,     // currency style as it is used in its circulating country.
+  PORTABLE: 1,  // currency style that differentiate it from other popular ones.
+  GLOBAL: 2     // currency style that is unique among all currencies.
 };
 
 
@@ -128,7 +145,9 @@ goog.i18n.NumberFormat.prototype.applyStandardPattern_ = function(patternType) {
       this.applyPattern_(goog.i18n.NumberFormatSymbols.PERCENT_PATTERN);
       break;
     case goog.i18n.NumberFormat.Format.CURRENCY:
-      this.applyPattern_(goog.i18n.NumberFormatSymbols.CURRENCY_PATTERN);
+      this.applyPattern_(goog.i18n.currency.adjustPrecision(
+          goog.i18n.NumberFormatSymbols.CURRENCY_PATTERN,
+          this.intlCurrencyCode_));
       break;
     default:
       throw Error('Unsupported pattern type.');
@@ -622,7 +641,22 @@ goog.i18n.NumberFormat.prototype.parseAffix_ = function(pattern, pos) {
             pos[0]++;
             affix += this.intlCurrencyCode_;
           } else {
-            affix += this.currencySymbol_;
+            switch (this.currencyStyle_) {
+              case goog.i18n.NumberFormat.CurrencyStyle.LOCAL:
+                affix += goog.i18n.currency.getLocalCurrencySign(
+                    this.intlCurrencyCode_);
+                break;
+              case goog.i18n.NumberFormat.CurrencyStyle.GLOBAL:
+                affix += goog.i18n.currency.getGlobalCurrencySign(
+                    this.intlCurrencyCode_);
+                break;
+              case goog.i18n.NumberFormat.CurrencyStyle.PORTABLE:
+                affix += goog.i18n.currency.getPortableCurrencySign(
+                    this.intlCurrencyCode_);
+                break;
+              default:
+                break;
+            }
           }
           break;
         case goog.i18n.NumberFormat.PATTERN_PERCENT_:

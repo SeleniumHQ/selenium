@@ -85,7 +85,7 @@ goog.messaging.PortOperator.prototype.logger_ =
     goog.debug.Logger.getLogger('goog.messaging.PortOperator');
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortOperator.prototype.dial = function(name) {
   this.connectSelfToPort_(name);
   return this.connections_[name];
@@ -186,7 +186,7 @@ goog.messaging.PortOperator.prototype.connectSelfToPort_ = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortOperator.prototype.disposeInternal = function() {
   goog.object.forEach(this.switchboard_, goog.dispose);
   goog.object.forEach(this.connections_, goog.dispose);

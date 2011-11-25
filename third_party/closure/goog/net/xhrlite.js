@@ -36,7 +36,7 @@ goog.net.XhrLite = goog.net.XhrIo;
 /**
  * Static send that creates a short lived instance of XhrIo to send the
  * request.
- * @see goog.net.XhrIo.cleanupAllPendingStaticSends
+ * @see goog.net.XhrIo.cleanup
  * @param {string} url Uri to make request too.
  * @param {Function=} opt_callback Callback function for when request is
  *     complete.
@@ -63,7 +63,7 @@ goog.net.XhrLite.send = goog.net.XhrIo.send;
  * significantly more complicated for the client, and the whole point
  * of {@link goog.net.XhrIo.send} is that it's simple and easy to use.
  * Clients of {@link goog.net.XhrIo.send} should call
- * {@link goog.net.XhrIo.cleanupAllPendingStaticSends} when doing final
+ * {@link goog.net.XhrIo.cleanup} when doing final
  * cleanup on window unload.
  */
 goog.net.XhrLite.cleanup = goog.net.XhrIo.cleanup;
@@ -112,7 +112,7 @@ goog.net.XhrLite.FORM_CONTENT_TYPE = goog.net.XhrIo.FORM_CONTENT_TYPE;
 /**
  * All non-disposed instances of goog.net.XhrIo created
  * by {@link goog.net.XhrIo.send} are in this Array.
- * @see goog.net.XhrIo.cleanupAllPendingStaticSends
+ * @see goog.net.XhrIo.cleanup
  * @type {Array.<goog.net.XhrIo>}
  * @private
  */

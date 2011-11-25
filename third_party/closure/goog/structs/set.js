@@ -166,7 +166,7 @@ goog.structs.Set.prototype.containsAll = function(col) {
 /**
  * Finds all values that are present in both this set and the given collection.
  * @param {Array|Object} col A collection.
- * @return {goog.structs.Set} A new set containing all the values (primitives
+ * @return {!goog.structs.Set} A new set containing all the values (primitives
  *     or objects) present in both this set and the given collection.
  */
 goog.structs.Set.prototype.intersection = function(col) {
@@ -195,7 +195,7 @@ goog.structs.Set.prototype.getValues = function() {
 
 /**
  * Creates a shallow clone of this set.
- * @return {goog.structs.Set} A new set containing all the same elements as
+ * @return {!goog.structs.Set} A new set containing all the same elements as
  *     this set.
  */
 goog.structs.Set.prototype.clone = function() {
@@ -246,7 +246,7 @@ goog.structs.Set.prototype.isSubsetOf = function(col) {
 /**
  * Returns an iterator that iterates over the elements in this set.
  * @param {boolean=} opt_keys This argument is ignored.
- * @return {goog.iter.Iterator} An iterator over the elements in this set.
+ * @return {!goog.iter.Iterator} An iterator over the elements in this set.
  */
 goog.structs.Set.prototype.__iterator__ = function(opt_keys) {
   return this.map_.__iterator__(false);

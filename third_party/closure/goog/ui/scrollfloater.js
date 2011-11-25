@@ -35,6 +35,7 @@
 
 
 goog.provide('goog.ui.ScrollFloater');
+goog.provide('goog.ui.ScrollFloater.EventType');
 
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
@@ -84,6 +85,25 @@ goog.ui.ScrollFloater = function(opt_parentElement, opt_domHelper) {
   this.originalStyles_ = {};
 };
 goog.inherits(goog.ui.ScrollFloater, goog.ui.Component);
+
+
+/**
+ * Events dispatched by this component.
+ * @enum {string}
+ */
+goog.ui.ScrollFloater.EventType = {
+  /**
+   * Dispatched when the component starts floating. The event is
+   * cancellable.
+   */
+  FLOAT: 'float',
+
+  /**
+   * Dispatched when the component stops floating and returns to its
+   * original state. The event is cancellable.
+   */
+  DOCK: 'dock'
+};
 
 
 /**
@@ -171,7 +191,7 @@ goog.ui.ScrollFloater.prototype.decorateInternal = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ScrollFloater.prototype.enterDocument = function() {
   goog.ui.ScrollFloater.superClass_.enterDocument.call(this);
 
@@ -189,7 +209,7 @@ goog.ui.ScrollFloater.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ScrollFloater.prototype.disposeInternal = function() {
   goog.ui.ScrollFloater.superClass_.disposeInternal.call(this);
 
@@ -256,7 +276,9 @@ goog.ui.ScrollFloater.prototype.update_ = function(opt_e) {
  * @private
  */
 goog.ui.ScrollFloater.prototype.startFloating_ = function() {
-  if (this.floating_) {
+  // Ignore if the component is floating or the FLOAT event is cancelled.
+  if (this.floating_ ||
+      !this.dispatchEvent(goog.ui.ScrollFloater.EventType.FLOAT)) {
     return;
   }
 
@@ -298,8 +320,14 @@ goog.ui.ScrollFloater.prototype.startFloating_ = function() {
     'cssFloat': 'none'
   });
 
-  elem.parentNode.replaceChild(this.placeholder_, elem);
-  this.parentElement_.appendChild(elem);
+  // If parents are the same, avoid detaching and reattaching elem.
+  // This prevents Flash embeds from being reloaded, for example.
+  if (elem.parentNode == this.parentElement_) {
+    elem.parentNode.insertBefore(this.placeholder_, elem);
+  } else {
+    elem.parentNode.replaceChild(this.placeholder_, elem);
+    this.parentElement_.appendChild(elem);
+  }
 
   // Versions of IE below 7-in-standards-mode don't handle 'position: fixed',
   // so we must emulate it using an IE-specific idiom for JS-based calculated
@@ -324,20 +352,31 @@ goog.ui.ScrollFloater.prototype.startFloating_ = function() {
  * @private
  */
 goog.ui.ScrollFloater.prototype.stopFloating_ = function() {
-  if (this.floating_) {
-    var elem = this.getElement();
-
-    for (var prop in this.originalStyles_) {
-      elem.style[prop] = this.originalStyles_[prop];
-    }
-
-    if (this.needsIePositionHack_()) {
-      elem.style.removeExpression('top');
-    }
-
-    this.placeholder_.parentNode.replaceChild(elem, this.placeholder_);
-    this.floating_ = false;
+  // Ignore if the component is docked or the DOCK event is cancelled.
+  if (!this.floating_ ||
+      !this.dispatchEvent(goog.ui.ScrollFloater.EventType.DOCK)) {
+    return;
   }
+
+  var elem = this.getElement();
+
+  for (var prop in this.originalStyles_) {
+    elem.style[prop] = this.originalStyles_[prop];
+  }
+
+  if (this.needsIePositionHack_()) {
+    elem.style.removeExpression('top');
+  }
+
+  // If placeholder_ was inserted and didn't replace elem then elem has
+  // the right parent already, no need to replace (which removes elem before
+  // inserting it).
+  if (this.placeholder_.parentNode == this.parentElement_) {
+    this.placeholder_.parentNode.removeChild(this.placeholder_);
+  } else {
+    this.placeholder_.parentNode.replaceChild(elem, this.placeholder_);
+  }
+  this.floating_ = false;
 };
 
 

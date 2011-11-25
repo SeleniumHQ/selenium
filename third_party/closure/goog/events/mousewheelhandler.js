@@ -220,9 +220,7 @@ goog.events.MouseWheelHandler.smartScale_ = function(mouseWheelDelta,
 };
 
 
-/**
- * Stops listening to the underlying mouse wheel event, and cleans up state.
- */
+/** @override */
 goog.events.MouseWheelHandler.prototype.disposeInternal = function() {
   goog.events.MouseWheelHandler.superClass_.disposeInternal.call(this);
   goog.events.unlistenByKey(this.listenKey_);

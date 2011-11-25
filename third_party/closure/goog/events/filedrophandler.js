@@ -117,7 +117,7 @@ goog.events.FileDropHandler.EventType = {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.events.FileDropHandler.prototype.disposeInternal = function() {
   goog.events.FileDropHandler.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();

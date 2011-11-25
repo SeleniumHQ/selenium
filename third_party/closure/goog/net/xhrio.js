@@ -51,7 +51,6 @@ goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.HttpStatus');
 goog.require('goog.net.XmlHttp');
-goog.require('goog.net.xhrMonitor');
 goog.require('goog.object');
 goog.require('goog.structs');
 goog.require('goog.structs.Map');
@@ -135,7 +134,7 @@ goog.net.XhrIo.FORM_CONTENT_TYPE =
 /**
  * All non-disposed instances of goog.net.XhrIo created
  * by {@link goog.net.XhrIo.send} are in this Array.
- * @see goog.net.XhrIo.cleanupAllPendingStaticSends
+ * @see goog.net.XhrIo.cleanup
  * @type {Array.<goog.net.XhrIo>}
  * @private
  */
@@ -145,7 +144,7 @@ goog.net.XhrIo.sendInstances_ = [];
 /**
  * Static send that creates a short lived instance of XhrIo to send the
  * request.
- * @see goog.net.XhrIo.cleanupAllPendingStaticSends
+ * @see goog.net.XhrIo.cleanup
  * @param {string|goog.Uri} url Uri to make request to.
  * @param {Function=} opt_callback Callback function for when request is
  *     complete.
@@ -187,7 +186,7 @@ goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
  * significantly more complicated for the client, and the whole point
  * of {@link goog.net.XhrIo.send} is that it's simple and easy to use.
  * Clients of {@link goog.net.XhrIo.send} should call
- * {@link goog.net.XhrIo.cleanupAllPendingStaticSends} when doing final
+ * {@link goog.net.XhrIo.cleanup} when doing final
  * cleanup on window unload.
  */
 goog.net.XhrIo.cleanup = function() {
@@ -460,12 +459,6 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
   this.xhrOptions_ = this.xmlHttpFactory_ ?
       this.xmlHttpFactory_.getOptions() : goog.net.XmlHttp.getOptions();
 
-  // We tell the Xhr Monitor that we are opening an XMLHttpRequest.  This stops
-  // IframeIo from destroying iframes that may have been the source of the
-  // execution context, which can result in an error in FF.  See xhrmonitor.js
-  // for more details.
-  goog.net.xhrMonitor.markXhrOpen(this.xhr_);
-
   // Set up the onreadystatechange callback
   this.xhr_.onreadystatechange = goog.bind(this.onReadyStateChange_, this);
 
@@ -554,27 +547,7 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
  */
 goog.net.XhrIo.prototype.createXhr = function() {
   return this.xmlHttpFactory_ ?
-      this.xmlHttpFactory_.createInstance() : new goog.net.XmlHttp();
-};
-
-
-/**
- * Override of dispatchEvent.  We need to keep track if an XMLHttpRequest is
- * being sent from the context of another requests' response.  If it is then, we
- * make the XHR send async.
- * @override
- */
-goog.net.XhrIo.prototype.dispatchEvent = function(e) {
-  if (this.xhr_) {
-    goog.net.xhrMonitor.pushContext(this.xhr_);
-    try {
-      return goog.net.XhrIo.superClass_.dispatchEvent.call(this, e);
-    } finally {
-      goog.net.xhrMonitor.popContext();
-    }
-  } else {
-    return goog.net.XhrIo.superClass_.dispatchEvent.call(this, e);
-  }
+      this.xmlHttpFactory_.createInstance() : goog.net.XmlHttp();
 };
 
 
@@ -655,13 +628,15 @@ goog.net.XhrIo.prototype.abort = function(opt_failureCode) {
 
 /**
  * Nullifies all callbacks to reduce risks of leaks.
+ * @override
+ * @protected
  */
 goog.net.XhrIo.prototype.disposeInternal = function() {
   if (this.xhr_) {
     // We explicitly do not call xhr_.abort() unless active_ is still true.
     // This is to avoid unnecessarily aborting a successful request when
-    // disposeInternal() is called in a callback triggered by a complete
-    // response, but in which browser cleanup has not yet finished.
+    // dispose() is called in a callback triggered by a complete response, but
+    // in which browser cleanup has not yet finished.
     // (See http://b/issue?id=1684217.)
     if (this.active_) {
       this.active_ = false;
@@ -796,13 +771,8 @@ goog.net.XhrIo.prototype.cleanUpXhr_ = function(opt_fromDispose) {
     }
 
     if (!opt_fromDispose) {
-      goog.net.xhrMonitor.pushContext(xhr);
       this.dispatchEvent(goog.net.EventType.READY);
-      goog.net.xhrMonitor.popContext();
     }
-
-    // Mark the request as having completed.
-    goog.net.xhrMonitor.markXhrClosed(xhr);
 
     try {
       // NOTE(user): Not nullifying in FireFox can still leak if the callbacks
@@ -846,6 +816,8 @@ goog.net.XhrIo.prototype.isSuccess = function() {
       return !this.isLastUriEffectiveSchemeHttp_();
 
     case goog.net.HttpStatus.OK:
+    case goog.net.HttpStatus.CREATED:
+    case goog.net.HttpStatus.ACCEPTED:
     case goog.net.HttpStatus.NO_CONTENT:
     case goog.net.HttpStatus.NOT_MODIFIED:
     case goog.net.HttpStatus.QUIRK_IE_NO_CONTENT:
@@ -1009,15 +981,55 @@ goog.net.XhrIo.prototype.getResponseJson = function(opt_xssiPrefix) {
 
 /**
  * Get the response as the type specificed by {@link #setResponseType}. At time
- * of writing, this is only supported in very recent versions of WebKit
- * (10.0.612.1 dev and later).
+ * of writing, this is only directly supported in very recent versions of WebKit
+ * (10.0.612.1 dev and later). If the field is not supported directly, we will
+ * try to emulate it.
+ *
+ * Emulating the response means following the rules laid out at
+ * http://dev.w3.org/2006/webapi/XMLHttpRequest-2/#the-response-attribute.
+ *
+ * On browsers with no support for this (Chrome < 10, Firefox < 4, etc), only
+ * response types of DEFAULT or TEXT may be used, and the response returned will
+ * be the text response.
+ *
+ * On browsers with Mozilla's draft support for array buffers (Firefox 4, 5),
+ * only response types of DEFAULT, TEXT, and ARRAY_BUFFER may be used, and the
+ * response returned will be either the text response or the Mozilla
+ * implementation of the array buffer response.
+ *
+ * On browsers will full support, any valid response type supported by the
+ * browser may be used, and the response provided by the browser will be
+ * returned.
  *
  * @return {*} The response.
  */
 goog.net.XhrIo.prototype.getResponse = function() {
   /** @preserveTry */
   try {
-    return this.xhr_ && this.xhr_.response;
+    if (!this.xhr_) {
+      return null;
+    }
+    if ('response' in this.xhr_) {
+      return this.xhr_.response;
+    }
+    switch (this.responseType_) {
+      case goog.net.XhrIo.ResponseType.DEFAULT:
+      case goog.net.XhrIo.ResponseType.TEXT:
+        return this.xhr_.responseText;
+        // DOCUMENT and BLOB don't need to be handled here because they are
+        // introduced in the same spec that adds the .response field, and would
+        // have been caught above.
+        // ARRAY_BUFFER needs an implementation for Firefox 4, where it was
+        // implemented using a draft spec rather than the final spec.
+      case goog.net.XhrIo.ResponseType.ARRAY_BUFFER:
+        if ('mozResponseArrayBuffer' in this.xhr_) {
+          return this.xhr_.mozResponseArrayBuffer;
+        }
+    }
+    // Fell through to a response type that is not supported on this browser.
+    this.logger_.severe('Response type ' + this.responseType_ + ' is not ' +
+                        'supported on this browser');
+    return null;
   } catch (e) {
     this.logger_.fine('Can not get response: ' + e.message);
     return null;

@@ -22,6 +22,7 @@
 
 goog.provide('goog.fs.FileWriter');
 
+goog.require('goog.fs.Error');
 goog.require('goog.fs.FileSaver');
 
 

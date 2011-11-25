@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Functions for listing timezone names.
+ * @suppress {deprecated} Use goog.i18n instead.
  */
 
 goog.provide('goog.locale.TimeZoneList');

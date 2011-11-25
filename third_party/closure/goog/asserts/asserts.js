@@ -71,7 +71,7 @@ goog.asserts.AssertionError = function(messagePattern, messageArgs) {
 goog.inherits(goog.asserts.AssertionError, goog.debug.Error);
 
 
-/** @inheritDoc */
+/** @override */
 goog.asserts.AssertionError.prototype.name = 'AssertionError';
 
 

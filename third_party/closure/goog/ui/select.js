@@ -22,6 +22,9 @@
 
 goog.provide('goog.ui.Select');
 
+goog.require('goog.dom.a11y');
+goog.require('goog.dom.a11y.Role');
+goog.require('goog.dom.a11y.State');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.ControlContent');
@@ -49,6 +52,7 @@ goog.require('goog.ui.registry');
 goog.ui.Select = function(caption, opt_menu, opt_renderer, opt_domHelper) {
   goog.ui.MenuButton.call(this, caption, opt_menu, opt_renderer, opt_domHelper);
   this.setDefaultCaption(caption);
+  this.setPreferredAriaRole(goog.dom.a11y.Role.LISTBOX);
 };
 goog.inherits(goog.ui.Select, goog.ui.MenuButton);
 
@@ -75,8 +79,11 @@ goog.ui.Select.prototype.defaultCaption_ = null;
  */
 goog.ui.Select.prototype.enterDocument = function() {
   goog.ui.Select.superClass_.enterDocument.call(this);
-  this.updateCaption_();
+  this.updateCaption();
   this.listenToSelectionModelEvents_();
+  // Need to set HASPOPUP to false since it's set to true in the parent class.
+  goog.dom.a11y.setState(this.getElement(),
+      goog.dom.a11y.State.HASPOPUP, 'false');
 };
 
 
@@ -98,7 +105,7 @@ goog.ui.Select.prototype.decorateInternal = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Select.prototype.disposeInternal = function() {
   goog.ui.Select.superClass_.disposeInternal.call(this);
 
@@ -136,7 +143,7 @@ goog.ui.Select.prototype.handleMenuAction = function(e) {
 goog.ui.Select.prototype.handleSelectionChange = function(e) {
   var item = this.getSelectedItem();
   goog.ui.Select.superClass_.setValue.call(this, item && item.getValue());
-  this.updateCaption_();
+  this.updateCaption();
 };
 
 
@@ -162,6 +169,7 @@ goog.ui.Select.prototype.setMenu = function(menu) {
     if (menu) {
       if (this.selectionModel_) {
         menu.forEachChild(function(child, index) {
+          this.setCorrectAriaRole_(child);
           this.selectionModel_.addItem(child);
         }, this);
       } else {
@@ -190,7 +198,7 @@ goog.ui.Select.prototype.getDefaultCaption = function() {
  */
 goog.ui.Select.prototype.setDefaultCaption = function(caption) {
   this.defaultCaption_ = caption;
-  this.updateCaption_();
+  this.updateCaption();
 };
 
 
@@ -200,6 +208,7 @@ goog.ui.Select.prototype.setDefaultCaption = function(caption) {
  *     menu.
  */
 goog.ui.Select.prototype.addItem = function(item) {
+  this.setCorrectAriaRole_(item);
   goog.ui.Select.superClass_.addItem.call(this, item);
 
   if (this.selectionModel_) {
@@ -217,6 +226,7 @@ goog.ui.Select.prototype.addItem = function(item) {
  * @param {number} index Index at which to insert the menu item.
  */
 goog.ui.Select.prototype.addItemAt = function(item, index) {
+  this.setCorrectAriaRole_(item);
   goog.ui.Select.superClass_.addItemAt.call(this, item, index);
 
   if (this.selectionModel_) {
@@ -272,8 +282,8 @@ goog.ui.Select.prototype.setSelectedItem = function(item) {
  */
 goog.ui.Select.prototype.setSelectedIndex = function(index) {
   if (this.selectionModel_) {
-    this.setSelectedItem(
-      /** @type {goog.ui.MenuItem} */ (this.selectionModel_.getItemAt(index)));
+    this.setSelectedItem(/** @type {goog.ui.MenuItem} */
+        (this.selectionModel_.getItemAt(index)));
   }
 };
 
@@ -341,6 +351,7 @@ goog.ui.Select.prototype.createSelectionModel_ = function(opt_component) {
   this.selectionModel_ = new goog.ui.SelectionModel();
   if (opt_component) {
     opt_component.forEachChild(function(child, index) {
+      this.setCorrectAriaRole_(child);
       this.selectionModel_.addItem(child);
     }, this);
   }
@@ -364,11 +375,22 @@ goog.ui.Select.prototype.listenToSelectionModelEvents_ = function() {
  * Updates the caption to be shown in the select button.  If no option is
  * selected and a default caption is set, sets the caption to the default
  * caption; otherwise to the empty string.
- * @private
+ * @protected
  */
-goog.ui.Select.prototype.updateCaption_ = function() {
+goog.ui.Select.prototype.updateCaption = function() {
   var item = this.getSelectedItem();
   this.setContent(item ? item.getCaption() : this.defaultCaption_);
+};
+
+
+/**
+ * Sets the correct ARIA role for the menu item or separator.
+ * @param {goog.ui.MenuItem|goog.ui.MenuSeparator} item The item to set.
+ * @private
+ */
+goog.ui.Select.prototype.setCorrectAriaRole_ = function(item) {
+  item.setPreferredAriaRole(item instanceof goog.ui.MenuItem ?
+      goog.dom.a11y.Role.OPTION : goog.dom.a11y.Role.SEPARATOR);
 };
 
 
@@ -392,6 +414,6 @@ goog.ui.Select.prototype.setOpen = function(open, opt_e) {
 // Register a decorator factory function for goog.ui.Selects.
 goog.ui.registry.setDecoratorByClassName(
     goog.getCssName('goog-select'), function() {
-  // Select defaults to using MenuButtonRenderer, since it shares its L&F.
-  return new goog.ui.Select(null);
-});
+      // Select defaults to using MenuButtonRenderer, since it shares its L&F.
+      return new goog.ui.Select(null);
+    });

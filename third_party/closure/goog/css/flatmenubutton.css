@@ -54,7 +54,7 @@
 
 .goog-flat-menu-button-dropdown {
   /* Client apps may override the URL at which they serve the sprite. */
-  background: url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
   position: absolute;
   right: 2px;
   top: 0;

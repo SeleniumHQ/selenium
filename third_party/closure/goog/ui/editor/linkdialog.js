@@ -85,10 +85,13 @@ goog.ui.editor.LinkDialog.EventType = {
  * OK event object for the link dialog.
  * @param {string} linkText Text the user chose to display for the link.
  * @param {string} linkUrl Url the user chose for the link to point to.
+ * @param {boolean} openInNewWindow Whether the link should open in a new window
+ *     when clicked.
  * @constructor
  * @extends {goog.events.Event}
  */
-goog.ui.editor.LinkDialog.OkEvent = function(linkText, linkUrl) {
+goog.ui.editor.LinkDialog.OkEvent = function(
+    linkText, linkUrl, openInNewWindow) {
   goog.base(this, goog.ui.editor.AbstractDialog.EventType.OK);
 
   /**
@@ -102,6 +105,12 @@ goog.ui.editor.LinkDialog.OkEvent = function(linkText, linkUrl) {
    * @type {string}
    */
   this.linkUrl = linkUrl;
+
+  /**
+   * Whether the link should open in a new window when clicked.
+   * @type {boolean}
+   */
+  this.openInNewWindow = openInNewWindow;
 };
 goog.inherits(goog.ui.editor.LinkDialog.OkEvent, goog.events.Event);
 
@@ -135,6 +144,25 @@ goog.ui.editor.LinkDialog.prototype.emailWarning_;
 
 
 /**
+ * Whether to show a checkbox where the user can choose to have the link open in
+ * a new window.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.showOpenLinkInNewWindow_ = false;
+
+
+/**
+ * Whether the "open link in new window" checkbox should be checked when the
+ * dialog is shown, and also whether it was checked last time the dialog was
+ * closed.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.isOpenLinkInNewWindowChecked_ = false;
+
+
+/**
  * Sets the warning message to show to users about including email addresses on
  * public web pages.
  * @param {string} emailWarning Warning message to show users about including
@@ -146,7 +174,21 @@ goog.ui.editor.LinkDialog.prototype.setEmailWarning = function(
 };
 
 
-/** @inheritDoc */
+/**
+ * Tells the dialog to show a checkbox where the user can choose to have the
+ * link open in a new window.
+ * @param {boolean} startChecked Whether to check the checkbox the first
+ *     time the dialog is shown. Subesquent times the checkbox will remember its
+ *     previous state.
+ */
+goog.ui.editor.LinkDialog.prototype.showOpenLinkInNewWindow = function(
+    startChecked) {
+  this.showOpenLinkInNewWindow_ = true;
+  this.isOpenLinkInNewWindowChecked_ = startChecked;
+};
+
+
+/** @override */
 goog.ui.editor.LinkDialog.prototype.show = function() {
   goog.base(this, 'show');
 
@@ -154,10 +196,19 @@ goog.ui.editor.LinkDialog.prototype.show = function() {
   this.selectAppropriateTab_(this.textToDisplayInput_.value,
                              this.getTargetUrl_());
   this.syncOkButton_();
+
+  if (this.showOpenLinkInNewWindow_) {
+    if (!this.targetLink_.isNew()) {
+      // If link is not new, checkbox should reflect current target.
+      this.isOpenLinkInNewWindowChecked_ =
+          this.targetLink_.getAnchor().target == '_blank';
+    }
+    this.openInNewWindowCheckbox_.checked = this.isOpenLinkInNewWindowChecked_;
+  }
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.editor.LinkDialog.prototype.hide = function() {
   this.disableAutogenFlag_(false);
   goog.base(this, 'hide');
@@ -203,7 +254,7 @@ goog.ui.editor.LinkDialog.prototype.setAutogenFeatureEnabled = function(
 // *** Protected interface ************************************************** //
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.editor.LinkDialog.prototype.createDialogControl = function() {
   this.textToDisplayDiv_ = /** @type {HTMLDivElement} */(
       this.buildTextToDisplayDiv_());
@@ -229,6 +280,10 @@ goog.ui.editor.LinkDialog.prototype.createDialogControl = function() {
   this.eventHandler_.listen(this.tabPane_, goog.ui.Component.EventType.SELECT,
       this.onChangeTab_);
 
+  if (this.showOpenLinkInNewWindow_) {
+    content.appendChild(this.buildOpenInNewWindowDiv_());
+  }
+
   return builder.build();
 };
 
@@ -252,7 +307,7 @@ goog.ui.editor.LinkDialog.prototype.createOkEvent = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.editor.LinkDialog.prototype.disposeInternal = function() {
   this.eventHandler_.dispose();
   this.eventHandler_ = null;
@@ -351,6 +406,15 @@ goog.ui.editor.LinkDialog.prototype.disableAutogen_;
 
 
 /**
+ * The input element (checkbox) to indicate that the link should open in a new
+ * window.
+ * @type {HTMLInputElement}
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.openInNewWindowCheckbox_;
+
+
+/**
  * Whether to stop leaking the page's url via the referrer header when the
  * "test this link" link is clicked.
  * @type {boolean}
@@ -391,6 +455,22 @@ goog.ui.editor.LinkDialog.prototype.buildTextToDisplayDiv_ = function() {
 
   goog.dom.appendChild(textToDisplayDiv, table);
   return textToDisplayDiv;
+};
+
+
+/**
+ * Builds and returns the "checkbox to open the link in a new window" section of
+ * the edit link dialog.
+ * @return {Element} A div element to be appended into the dialog div.
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.buildOpenInNewWindowDiv_ = function() {
+  this.openInNewWindowCheckbox_ = /** @type {HTMLInputElement} */(
+      this.dom.createDom(goog.dom.TagName.INPUT, {'type': 'checkbox'}));
+  return this.dom.createDom(goog.dom.TagName.DIV, null,
+      this.dom.createDom(goog.dom.TagName.LABEL, null,
+                         this.openInNewWindowCheckbox_,
+                         goog.ui.editor.messages.MSG_OPEN_IN_NEW_WINDOW));
 };
 
 
@@ -650,7 +730,7 @@ goog.ui.editor.LinkDialog.prototype.createOkEventFromWebTab_ = function() {
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.createOkEventFromEmailTab_ = function(
-     opt_inputId) {
+    opt_inputId) {
   var linkURL = this.dom.getElement(
       opt_inputId || goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_INPUT).value;
   linkURL = 'mailto:' + linkURL;
@@ -780,8 +860,12 @@ goog.ui.editor.LinkDialog.prototype.disableAutogenFlag_ = function(autogen) {
 goog.ui.editor.LinkDialog.prototype.createOkEventFromUrl_ = function(url) {
   // Fill in the text to display input in case it is empty.
   this.setTextToDisplayFromAuto_();
+  if (this.showOpenLinkInNewWindow_) {
+    // Save checkbox state for next time.
+    this.isOpenLinkInNewWindowChecked_ = this.openInNewWindowCheckbox_.checked;
+  }
   return new goog.ui.editor.LinkDialog.OkEvent(this.textToDisplayInput_.value,
-                                               url);
+      url, this.showOpenLinkInNewWindow_ && this.isOpenLinkInNewWindowChecked_);
 };
 
 

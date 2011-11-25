@@ -52,13 +52,13 @@ goog.inherits(goog.editor.plugins.TagOnEnterHandler,
     goog.editor.plugins.EnterHandler);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.getTrogClassId = function() {
   return 'TagOnEnterHandler';
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.getNonCollapsingBlankHtml =
     function() {
   if (this.tag == goog.dom.TagName.P) {
@@ -79,21 +79,21 @@ goog.editor.plugins.TagOnEnterHandler.prototype.activeOnUneditableFields =
     goog.functions.TRUE;
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.isSupportedCommand = function(
     command) {
   return command == goog.editor.Command.DEFAULT_TAG;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.queryCommandValue = function(
     command) {
   return command == goog.editor.Command.DEFAULT_TAG ? this.tag : null;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.handleBackspaceInternal =
     function(e, range) {
   goog.editor.plugins.TagOnEnterHandler.superClass_.handleBackspaceInternal.
@@ -105,7 +105,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleBackspaceInternal =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.processParagraphTagsInternal =
     function(e, split) {
   if ((goog.userAgent.OPERA || goog.userAgent.IE) &&
@@ -115,7 +115,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.processParagraphTagsInternal =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.handleDeleteGecko = function(
     e) {
   var range = this.fieldObject.getRange();
@@ -139,7 +139,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleDeleteGecko = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.handleKeyUpInternal = function(
     e) {
   if (goog.userAgent.GECKO) {
@@ -218,7 +218,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.ensureNodeIsWrappedW3c_ =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.handleEnterWebkitInternal =
     function(e) {
   if (this.tag == goog.dom.TagName.DIV) {
@@ -233,7 +233,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleEnterWebkitInternal =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.
     handleEnterAtCursorGeckoInternal = function(e, wasCollapsed, range) {
   // We use this because there are a few cases where FF default
@@ -548,8 +548,9 @@ goog.editor.plugins.TagOnEnterHandler.prototype.scrollCursorIntoViewGecko_ =
   // element to be in view.
   var bottomOfNode = elementY + element.offsetHeight;
 
+  var dom = this.getFieldDomHelper();
   var win = this.getFieldDomHelper().getWindow();
-  var scrollY = goog.dom.getPageScroll(win).y;
+  var scrollY = dom.getDocumentScroll().y;
   var viewportHeight = goog.dom.getViewportSize(win).height;
 
   // If the botom of the element is outside the viewport, move it into view

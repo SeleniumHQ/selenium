@@ -135,7 +135,7 @@ See the COPYING file for details.
   <h2>You can drag any square into any of the first 6 lists.</h2>
   <hr class="hr_clear">
 
-  <h4>Horizonal list 1 (grows right):</h4>
+  <h4>Horizontal list 1 (grows right):</h4>
   <div id="horiz1_div" class="horiz1_class">
     <div class="red_box">1</div>
     <div class="red_box">2</div>
@@ -170,7 +170,7 @@ See the COPYING file for details.
   </tr>
   </table>
   <hr class="hr_clear">
-  <h4>Horizonal list 3 (grows left):</h4>
+  <h4>Horizontal list 3 (grows left):</h4>
   <p style="color:red;font-style:italic">Bug: drop position is off by one.</p>
   <div id="horiz3_div" class="horiz3_class">
     <div class="yellow_box">1</div>
@@ -180,7 +180,7 @@ See the COPYING file for details.
   </div>
   <hr class="hr_clear">
 
-  <h4>Horizontal list 5 (grows right, has multiple rows):</h4>
+  <h4>Horizontal list 5 (grows right, has multiple rows, hysteresis is enabled):</h4>
   <p style="color:red;font-style:italic">Bug: can't drop into the last row.</p>
   <div id="horiz5_div" class="horiz5_class">
     <div class="blue_box">11</div>
@@ -194,19 +194,29 @@ See the COPYING file for details.
     <div class="blue_box">99</div>
   </div>
   <hr class="hr_clear">
-  <script>
 
-  var $ = goog.dom.getElement;
+  <h4>The items in this list can be moved around with shift-dragging:</h4>
+  <div id="horiz6_div" class="horiz1_class">
+    <div class="red_box">1</div>
+    <div class="red_box">2</div>
+    <div class="red_box">3</div>
+    <div class="red_box">4</div>
+  </div>
+  <hr class="hr_clear">
+  <script>
 
   var dlg = new goog.fx.DragListGroup();
   dlg.setDragItemHoverClass('cursor_move');
   dlg.setDraggerElClass('cursor_move opacity_40');
 
-  dlg.addDragList($('horiz1_div'), goog.fx.DragListDirection.RIGHT);
-  dlg.addDragList($('horiz3_div'), goog.fx.DragListDirection.LEFT);
-  dlg.addDragList($('vert1_div'), goog.fx.DragListDirection.DOWN);
-  dlg.addDragList($('vert2_div'), goog.fx.DragListDirection.DOWN, true,
-                  'drag_hover_class');
+  dlg.addDragList(goog.dom.getElement('horiz1_div'),
+      goog.fx.DragListDirection.RIGHT);
+  dlg.addDragList(goog.dom.getElement('horiz3_div'),
+      goog.fx.DragListDirection.LEFT);
+  dlg.addDragList(goog.dom.getElement('vert1_div'),
+      goog.fx.DragListDirection.DOWN);
+  dlg.addDragList(goog.dom.getElement('vert2_div'),
+      goog.fx.DragListDirection.DOWN, true, 'drag_hover_class');
 
   dlg.init();
 
@@ -215,8 +225,23 @@ See the COPYING file for details.
   dlg2.setDraggerElClass('cursor_move opacity_40');
   dlg2.setCurrDragItemClass('opacity_40');
   dlg2.setIsCurrDragItemAlwaysDisplayed();
-  dlg2.addDragList($('horiz5_div'), goog.fx.DragListDirection.RIGHT_2D);
+  dlg2.addDragList(goog.dom.getElement('horiz5_div'),
+      goog.fx.DragListDirection.RIGHT_2D);
+  dlg2.setHysteresis(5);
   dlg2.init();
+
+  var dlg3 = new goog.fx.DragListGroup();
+  dlg3.setDragItemHoverClass('cursor_move');
+  dlg3.setDraggerElClass('cursor_move opacity_40');
+  dlg3.addDragList(goog.dom.getElement('horiz6_div'),
+      goog.fx.DragListDirection.RIGHT);
+  goog.events.listen(dlg3, goog.fx.DragListGroup.EventType.BEFOREDRAGSTART,
+      function(e) {
+        if (!e.event.shiftKey) {
+          e.preventDefault();
+        }
+      });
+  dlg3.init();
   </script>
 </body>
 </html>

@@ -32,6 +32,7 @@ goog.provide('goog.ui.VmlRoundedCorner');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.graphics.SolidFill');
 goog.require('goog.graphics.Stroke');
+goog.require('goog.graphics.Path');
 goog.require('goog.graphics.VmlGraphics');
 goog.require('goog.userAgent');
 
@@ -626,7 +627,7 @@ goog.ui.CanvasRoundedCorner.RADIANS_THREE_HALVES_ = 1.5 * Math.PI;
 goog.ui.CanvasRoundedCorner.RADIANS_TWO_ = 2 * Math.PI;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CanvasRoundedCorner.prototype.getEndAngle = function() {
   return this.isLeft_ ?
       goog.ui.CanvasRoundedCorner.RADIANS_ONE_ :
@@ -634,7 +635,7 @@ goog.ui.CanvasRoundedCorner.prototype.getEndAngle = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CanvasRoundedCorner.prototype.getStartAngle = function() {
   return this.isTop_ ?
       goog.ui.CanvasRoundedCorner.RADIANS_THREE_HALVES_ :
@@ -642,13 +643,13 @@ goog.ui.CanvasRoundedCorner.prototype.getStartAngle = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CanvasRoundedCorner.prototype.getElement = function() {
   return this.canvas_;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CanvasRoundedCorner.prototype.draw = function() {
   // Determine which direction to draw, and obtain the context.
   var counterClockwise = this.isLeft_ && this.isTop_ ||
@@ -829,25 +830,25 @@ goog.ui.VmlRoundedCorner = function(element,
 goog.inherits(goog.ui.VmlRoundedCorner, goog.ui.AbstractImagelessRoundedCorner);
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.VmlRoundedCorner.prototype.getEndAngle = function() {
   return this.isLeft_ ? 180 : 360;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.VmlRoundedCorner.prototype.getStartAngle = function() {
   return this.isTop_ ? 270 : 90;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.VmlRoundedCorner.prototype.getElement = function() {
   return this.container_;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.VmlRoundedCorner.prototype.draw = function() {
   // Determine which direction to draw, and enable VML.
   var clockwise = this.isLeft_ && !this.isTop_ ||
@@ -860,7 +861,7 @@ goog.ui.VmlRoundedCorner.prototype.draw = function() {
   }
 
   // Draw the defined path.
-  var path = this.graphics_.createPath();
+  var path = new goog.graphics.Path();
   path.moveTo(this.start_[0], this.start_[1]);
   path.arc(this.xCenter_,
            this.yCenter_,
@@ -911,7 +912,7 @@ goog.ui.VmlRoundedCorner.prototype.drawBackground_ =
       this.start_[0] -
           goog.ui.AbstractImagelessRoundedCorner.BORDER_WIDTH_FACTOR :
       goog.ui.AbstractImagelessRoundedCorner.BORDER_WIDTH_FACTOR;
-  var path = this.graphics_.createPath();
+  var path = new goog.graphics.Path();
 
   // Draw out the path according to the points just defined.
   path.moveTo(this.start_[0], this.start_[1]);

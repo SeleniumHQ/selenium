@@ -15,6 +15,7 @@
 /**
  * @fileoverview Plugin that enables table editing.
  *
+ * @see ../../demos/editor/tableeditor.html
  */
 
 goog.provide('goog.editor.plugins.TableEditor');
@@ -57,7 +58,7 @@ goog.editor.plugins.TableEditor = function() {
 goog.inherits(goog.editor.plugins.TableEditor, goog.editor.Plugin);
 
 
-/** @inheritDoc */
+/** @override */
 // TODO(user): remove this once there's a sensible default
 // implementation in the base Plugin.
 goog.editor.plugins.TableEditor.prototype.getTrogClassId = function() {
@@ -107,7 +108,7 @@ goog.editor.plugins.TableEditor.prototype.isSupportedCommand =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TableEditor.prototype.enable = function(fieldObject) {
   goog.base(this, 'enable', fieldObject);
 
@@ -153,7 +154,7 @@ goog.editor.plugins.TableEditor.prototype.getAncestorTable_ = function(node) {
 /**
  * Returns the current value of a given command. Currently this plugin
  * only returns a value for goog.editor.plugins.TableEditor.COMMAND.TABLE.
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.TableEditor.prototype.queryCommandValue =
     function(command) {
@@ -163,7 +164,7 @@ goog.editor.plugins.TableEditor.prototype.queryCommandValue =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
     command, opt_arg) {
   var result = null;
@@ -324,45 +325,19 @@ goog.editor.plugins.TableEditor.CellSelection_ =
 
   // Mozilla lets users select groups of cells, with each cell showing
   // up as a separate range in the selection. goog.dom.Range doesn't
-  // currently support this, so we check for it here and use a custom
-  // function instead of selection.containsNode if needed.
+  // currently support this.
   // TODO(user): support this case in range.js
-  var browserSelection = range.getBrowserRangeObject();
-  var elementInSelection;
-  var selectionContainer;
-  if (browserSelection && browserSelection.rangeCount > 1) {
-    var rangeElements = [];
-    for (var i = 0; i < browserSelection.rangeCount; i++) {
-      var browserRange = browserSelection.getRangeAt(i);
-      // In this scenario, each range will contain only one cell,
-      // a TD or TH, so we only have to check the element at the start
-      // of the range.
-      rangeElements.push(
-          browserRange.startContainer.childNodes[browserRange.startOffset]);
-    }
-    elementInSelection = function(element) {
-      for (var i = 0; i < rangeElements.length; i++) {
-        if (element == rangeElements[i]) {
-          return true;
-        }
-      }
-      return false;
-    };
-    // TODO(user): verify that it's not possible to have separate
-    // ranges selected in two different tables.
-    selectionContainer = browserSelection.getRangeAt(0).startContainer;
-  } else {
-    selectionContainer = range.getContainerElement();
-    elementInSelection = function(node) {
-      // TODO(user): revert to the more liberal containsNode(node, true),
-      // which will match partially-selected cells. We're using
-      // containsNode(node, false) at the moment because otherwise it's
-      // broken in WebKit due to a closure range bug.
-      return selectionContainer == node ||
-          selectionContainer.parentNode == node ||
-          range.containsNode(node, false);
-    };
-  }
+  var selectionContainer = range.getContainerElement();
+  var elementInSelection = function(node) {
+    // TODO(user): revert to the more liberal containsNode(node, true),
+    // which will match partially-selected cells. We're using
+    // containsNode(node, false) at the moment because otherwise it's
+    // broken in WebKit due to a closure range bug.
+    return selectionContainer == node ||
+        selectionContainer.parentNode == node ||
+        range.containsNode(node, false);
+  };
+
   var parentTableElement = selectionContainer &&
       getParentTableFunction(selectionContainer);
   if (!parentTableElement) {

@@ -97,6 +97,8 @@ goog.async.Delay.prototype.id_ = 0;
 /**
  * Disposes of the object, cancelling the timeout if it is still outstanding and
  * removing all object references.
+ * @override
+ * @protected
  */
 goog.async.Delay.prototype.disposeInternal = function() {
   goog.async.Delay.superClass_.disposeInternal.call(this);

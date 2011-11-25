@@ -19,6 +19,8 @@
 
 goog.provide('goog.testing.fs.Blob');
 
+goog.require('goog.crypt.base64');
+
 
 
 /**
@@ -56,10 +58,10 @@ goog.testing.fs.Blob.prototype.size;
 
 /**
  * @see http://www.w3.org/TR/FileAPI/#dfn-slice
- * @param {number} start
- * @param {number} length
- * @param {string=} opt_contentType
- * @return {!goog.testing.fs.Blob}
+ * @param {number} start The start byte offset.
+ * @param {number} length The number of bytes to slice.
+ * @param {string=} opt_contentType The type of the resulting Blob.
+ * @return {!goog.testing.fs.Blob} The result of the slice operation.
  */
 goog.testing.fs.Blob.prototype.slice = function(
     start, length, opt_contentType) {
@@ -79,10 +81,33 @@ goog.testing.fs.Blob.prototype.toString = function() {
 
 
 /**
+ * @return {ArrayBuffer} The string data encapsulated by the blob as an
+ *     ArrayBuffer.
+ */
+goog.testing.fs.Blob.prototype.toArrayBuffer = function() {
+  var buf = new ArrayBuffer(this.data_.length * 2);
+  var arr = new Uint16Array(buf);
+  for (var i = 0; i < this.data_.length; i++) {
+    arr[i] = this.data_.charCodeAt(i);
+  }
+  return buf;
+};
+
+
+/**
+ * @return {string} The string data encapsulated by the blob as a data: URI.
+ */
+goog.testing.fs.Blob.prototype.toDataUrl = function() {
+  return 'data:' + this.type + ';base64,' +
+      goog.crypt.base64.encodeString(this.data_);
+};
+
+
+/**
  * Sets the internal contents of the blob. This should only be called by other
  * functions inside the {@code goog.testing.fs} namespace.
  *
- * @param {string} data
+ * @param {string} data The data for this Blob.
  */
 goog.testing.fs.Blob.prototype.setDataInternal = function(data) {
   this.data_ = data;

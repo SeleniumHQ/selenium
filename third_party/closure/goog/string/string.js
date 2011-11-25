@@ -574,9 +574,7 @@ goog.string.unescapeEntities = function(str) {
     // We are careful not to use a DOM if we do not have one. We use the []
     // notation so that the JSCompiler will not complain about these objects and
     // fields in the case where we have no DOM.
-    // If the string contains < then there could be a script tag in there and in
-    // that case we fall back to a non DOM solution as well.
-    if ('document' in goog.global && !goog.string.contains(str, '<')) {
+    if ('document' in goog.global) {
       return goog.string.unescapeEntitiesUsingDom_(str);
     } else {
       // Fall back on pure XML entities
@@ -588,32 +586,45 @@ goog.string.unescapeEntities = function(str) {
 
 
 /**
- * Unescapes an HTML string using a DOM. Don't use this function directly, it
- * should only be used by unescapeEntities. If used directly you will be
- * vulnerable to XSS attacks.
+ * Unescapes an HTML string using a DOM to resolve non-XML, non-numeric
+ * entities. This function is XSS-safe and whitespace-preserving.
  * @private
  * @param {string} str The string to unescape.
  * @return {string} The unescaped {@code str} string.
  */
 goog.string.unescapeEntitiesUsingDom_ = function(str) {
-  // Use a DIV as FF3 generates bogus markup for A > PRE.
-  var el = goog.global['document']['createElement']('div');
-  // Wrap in PRE to preserve whitespace in IE.
-  // The PRE must be part of the innerHTML markup,
-  // just setting innerHTML on a PRE element does not work.
-  // Also include a leading character since conforming HTML5
-  // UAs will strip leading newlines inside a PRE element.
-  el['innerHTML'] = '<pre>x' + str + '</pre>';
-  // Accesing the function directly triggers some virus scanners.
-  if (el['firstChild'][goog.string.NORMALIZE_FN_]) {
-    el['firstChild'][goog.string.NORMALIZE_FN_]();
-  }
-  // Remove the leading character we added.
-  str = el['firstChild']['firstChild']['nodeValue'].slice(1);
-  el['innerHTML'] = '';
-  // IE will also return non-standard newlines for TextNode.nodeValue,
-  // switching \r and \n, so canonicalize them before returning.
-  return goog.string.canonicalizeNewlines(str);
+  var seen = {'&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"'};
+  var div = document.createElement('div');
+  // Match as many valid entity characters as possible. If the actual entity
+  // happens to be shorter, it will still work as innerHTML will return the
+  // trailing characters unchanged. Since the entity characters do not include
+  // open angle bracket, there is no chance of XSS from the innerHTML use.
+  // Since no whitespace is passed to innerHTML, whitespace is preserved.
+  return str.replace(goog.string.HTML_ENTITY_PATTERN_, function(s, entity) {
+    // Check for cached entity.
+    var value = seen[s];
+    if (value) {
+      return value;
+    }
+    // Check for numeric entity.
+    if (entity.charAt(0) == '#') {
+      // Prefix with 0 so that hex entities (e.g. &#x10) parse as hex numbers.
+      var n = Number('0' + entity.substr(1));
+      if (!isNaN(n)) {
+        value = String.fromCharCode(n);
+      }
+    }
+    // Fall back to innerHTML otherwise.
+    if (!value) {
+      // Append a non-entity character to avoid a bug in Webkit that parses
+      // an invalid entity at the end of innerHTML text as the empty string.
+      div.innerHTML = s + ' ';
+      // Then remove the trailing character from the result.
+      value = div.firstChild.nodeValue.slice(0, -1);
+    }
+    // Cache and return.
+    return seen[s] = value;
+  });
 };
 
 
@@ -636,6 +647,7 @@ goog.string.unescapePureXmlEntities_ = function(str) {
         return '"';
       default:
         if (entity.charAt(0) == '#') {
+          // Prefix with 0 so that hex entities (e.g. &#x10) parse as hex.
           var n = Number('0' + entity.substr(1));
           if (!isNaN(n)) {
             return String.fromCharCode(n);
@@ -649,12 +661,12 @@ goog.string.unescapePureXmlEntities_ = function(str) {
 
 
 /**
- * String name for the node.normalize function. Anti-virus programs use this as
- * a signature for some viruses so we need a work around (temporary).
+ * Regular expression that matches an HTML entity.
+ * See also HTML5: Tokenization / Tokenizing character references.
  * @private
- * @type {string}
+ * @type {!RegExp}
  */
-goog.string.NORMALIZE_FN_ = 'normalize';
+goog.string.HTML_ENTITY_PATTERN_ = /&([^;\s<&]+);?/g;
 
 
 /**
@@ -876,7 +888,7 @@ goog.string.escapeChar = function(c) {
  * @param {string} s The string to build the map from.
  * @return {Object} The map of characters used.
  */
-// TODO(user): It seems like we should have a generic goog.array.toMap. But do
+// TODO(arv): It seems like we should have a generic goog.array.toMap. But do
 //            we want a dependency on goog.array in goog.string?
 goog.string.toMap = function(s) {
   var rv = {};

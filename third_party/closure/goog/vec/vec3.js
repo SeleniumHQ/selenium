@@ -28,6 +28,22 @@ goog.require('goog.vec');
 
 
 /**
+ * Type used when an argument can be either an array of numbers or a
+ * typed float32 array. This allows using the class on normal js arrays too.
+ * E.g. the following code is perfectly valid:
+ * <pre>
+ * var vecA = [1, 2, 3];
+ * var vecB = goog.vec.Vec3.createFromArray([0, 1 ,2]);
+ * goog.vec.Vec3.subtract(vecA, vecB, vecA);
+ * </pre>
+ * Note that vecA is a double precision vector (doubles), while vecB is a
+ * single precision vector (floats).
+ * @typedef {goog.vec.ArrayType}
+ */
+goog.vec.Vec3.Vec3Like;
+
+
+/**
  * @typedef {Float32Array}
  */
 goog.vec.Vec3.Type;
@@ -36,7 +52,7 @@ goog.vec.Vec3.Type;
 /**
  * Creates a 3 element vector of Float32Array. The array is initialized to zero.
  *
- * @return {goog.vec.Vec3.Type} The new 3 element array.
+ * @return {!goog.vec.Vec3.Type} The new 3 element array.
  */
 goog.vec.Vec3.create = function() {
   return new Float32Array(3);
@@ -47,8 +63,8 @@ goog.vec.Vec3.create = function() {
  * Creates a new 3 element vector initialized with the value from the given
  * array.
  *
- * @param {goog.vec.ArrayType} vec The source 3 element array.
- * @return {goog.vec.Vec3.Type} The new 3 element array.
+ * @param {goog.vec.Vec3.Vec3Like} vec The source 3 element array.
+ * @return {!goog.vec.Vec3.Type} The new 3 element array.
  */
 goog.vec.Vec3.createFromArray = function(vec) {
   var newVec = goog.vec.Vec3.create();
@@ -63,7 +79,7 @@ goog.vec.Vec3.createFromArray = function(vec) {
  * @param {number} v0 The value for element at index 0.
  * @param {number} v1 The value for element at index 1.
  * @param {number} v2 The value for element at index 2.
- * @return {goog.vec.Vec3.Type} The new vector.
+ * @return {!goog.vec.Vec3.Type} The new vector.
  */
 goog.vec.Vec3.createFromValues = function(v0, v1, v2) {
   var vec = goog.vec.Vec3.create();
@@ -75,8 +91,8 @@ goog.vec.Vec3.createFromValues = function(v0, v1, v2) {
 /**
  * Creates a clone of the given 3 element vector.
  *
- * @param {goog.vec.Vec3.Type} vec The source 3 element vector.
- * @return {goog.vec.Vec3.Type} The new cloned vector.
+ * @param {goog.vec.Vec3.Vec3Like} vec The source 3 element vector.
+ * @return {!goog.vec.Vec3.Type} The new cloned vector.
  */
 goog.vec.Vec3.clone = goog.vec.Vec3.createFromArray;
 
@@ -84,7 +100,7 @@ goog.vec.Vec3.clone = goog.vec.Vec3.createFromArray;
 /**
  * Initializes the vector with the given values.
  *
- * @param {goog.vec.ArrayType} vec The vector to receive the values.
+ * @param {goog.vec.Vec3.Vec3Like} vec The vector to receive the values.
  * @param {number} v0 The value for element at index 0.
  * @param {number} v1 The value for element at index 1.
  * @param {number} v2 The value for element at index 2.
@@ -99,9 +115,9 @@ goog.vec.Vec3.setFromValues = function(vec, v0, v1, v2) {
 /**
  * Initializes the vector with the given array of values.
  *
- * @param {goog.vec.ArrayType} vec The vector to receive the
+ * @param {goog.vec.Vec3.Vec3Like} vec The vector to receive the
  *     values.
- * @param {goog.vec.ArrayType} values The array of values.
+ * @param {goog.vec.Vec3.Vec3Like} values The array of values.
  */
 goog.vec.Vec3.setFromArray = function(vec, values) {
   vec[0] = values[0];
@@ -114,11 +130,11 @@ goog.vec.Vec3.setFromArray = function(vec, values) {
  * Performs a component-wise addition of vec0 and vec1 together storing the
  * result into resultVec.
  *
- * @param {goog.vec.ArrayType} vec0 The first addend.
- * @param {goog.vec.ArrayType} vec1 The second addend.
- * @param {goog.vec.ArrayType} resultVec The vector to
+ * @param {goog.vec.Vec3.Vec3Like} vec0 The first addend.
+ * @param {goog.vec.Vec3.Vec3Like} vec1 The second addend.
+ * @param {goog.vec.Vec3.Vec3Like} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
- * @return {goog.vec.ArrayType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.Vec3Like} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.add = function(vec0, vec1, resultVec) {
@@ -133,11 +149,11 @@ goog.vec.Vec3.add = function(vec0, vec1, resultVec) {
  * Performs a component-wise subtraction of vec1 from vec0 storing the
  * result into resultVec.
  *
- * @param {goog.vec.ArrayType} vec0 The minuend.
- * @param {goog.vec.ArrayType} vec1 The subtrahend.
- * @param {goog.vec.ArrayType} resultVec The vector to
+ * @param {goog.vec.Vec3.Vec3Like} vec0 The minuend.
+ * @param {goog.vec.Vec3.Vec3Like} vec1 The subtrahend.
+ * @param {goog.vec.Vec3.Vec3Like} resultVec The vector to
  *     receive the result. May be vec0 or vec1.
- * @return {goog.vec.ArrayType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.Vec3Like} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.subtract = function(vec0, vec1, resultVec) {
@@ -151,10 +167,10 @@ goog.vec.Vec3.subtract = function(vec0, vec1, resultVec) {
 /**
  * Negates vec0, storing the result into resultVec.
  *
- * @param {goog.vec.ArrayType} vec0 The vector to negate.
- * @param {goog.vec.ArrayType} resultVec The vector to
+ * @param {goog.vec.Vec3.Vec3Like} vec0 The vector to negate.
+ * @param {goog.vec.Vec3.Vec3Like} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {goog.vec.ArrayType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.Vec3Like} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.negate = function(vec0, resultVec) {
@@ -169,11 +185,11 @@ goog.vec.Vec3.negate = function(vec0, resultVec) {
  * Multiplies each component of vec0 with scalar storing the product into
  * resultVec.
  *
- * @param {goog.vec.ArrayType} vec0 The source vector.
+ * @param {goog.vec.Vec3.Vec3Like} vec0 The source vector.
  * @param {number} scalar The value to multiply with each component of vec0.
- * @param {goog.vec.ArrayType} resultVec The vector to
+ * @param {goog.vec.Vec3.Vec3Like} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {goog.vec.ArrayType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.Vec3Like} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.scale = function(vec0, scalar, resultVec) {
@@ -187,7 +203,7 @@ goog.vec.Vec3.scale = function(vec0, scalar, resultVec) {
 /**
  * Returns the magnitudeSquared of the given vector.
  *
- * @param {goog.vec.ArrayType} vec0 The vector.
+ * @param {goog.vec.Vec3.Vec3Like} vec0 The vector.
  * @return {number} The magnitude of the vector.
  */
 goog.vec.Vec3.magnitudeSquared = function(vec0) {
@@ -199,7 +215,7 @@ goog.vec.Vec3.magnitudeSquared = function(vec0) {
 /**
  * Returns the magnitude of the given vector.
  *
- * @param {goog.vec.ArrayType} vec0 The vector.
+ * @param {goog.vec.Vec3.Vec3Like} vec0 The vector.
  * @return {number} The magnitude of the vector.
  */
 goog.vec.Vec3.magnitude = function(vec0) {
@@ -211,10 +227,10 @@ goog.vec.Vec3.magnitude = function(vec0) {
 /**
  * Normalizes the given vector storing the result into resultVec.
  *
- * @param {goog.vec.ArrayType} vec0 The vector to normalize.
- * @param {goog.vec.ArrayType} resultVec The vector to
+ * @param {goog.vec.Vec3.Vec3Like} vec0 The vector to normalize.
+ * @param {goog.vec.Vec3.Vec3Like} resultVec The vector to
  *     receive the result. May be vec0.
- * @return {goog.vec.ArrayType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.Vec3Like} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.normalize = function(vec0, resultVec) {
@@ -229,8 +245,8 @@ goog.vec.Vec3.normalize = function(vec0, resultVec) {
 /**
  * Returns the scalar product of vectors v0 and v1.
  *
- * @param {goog.vec.ArrayType} v0 The first vector.
- * @param {goog.vec.ArrayType} v1 The second vector.
+ * @param {goog.vec.Vec3.Vec3Like} v0 The first vector.
+ * @param {goog.vec.Vec3.Vec3Like} v1 The second vector.
  * @return {number} The scalar product.
  */
 goog.vec.Vec3.dot = function(v0, v1) {
@@ -242,11 +258,11 @@ goog.vec.Vec3.dot = function(v0, v1) {
  * Computes the vector (cross) product of v0 and v1 storing the result into
  * resultVec.
  *
- * @param {goog.vec.ArrayType} v0 The first vector.
- * @param {goog.vec.ArrayType} v1 The second vector.
- * @param {goog.vec.ArrayType} resultVec The vector to receive the
+ * @param {goog.vec.Vec3.Vec3Like} v0 The first vector.
+ * @param {goog.vec.Vec3.Vec3Like} v1 The second vector.
+ * @param {goog.vec.Vec3.Vec3Like} resultVec The vector to receive the
  *     results. May be either v0 or v1.
- * @return {goog.vec.ArrayType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.Vec3Like} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.cross = function(v0, v1, resultVec) {
@@ -263,12 +279,12 @@ goog.vec.Vec3.cross = function(v0, v1, resultVec) {
  * Linearly interpolate from v0 to v1 according to f. The value of f should be
  * in the range [0..1] otherwise the results are undefined.
  *
- * @param {goog.vec.ArrayType} v0 The first vector.
- * @param {goog.vec.ArrayType} v1 The second vector.
+ * @param {goog.vec.Vec3.Vec3Like} v0 The first vector.
+ * @param {goog.vec.Vec3.Vec3Like} v1 The second vector.
  * @param {number} f The interpolation factor.
- * @param {goog.vec.ArrayType} resultVec The vector to receive the
+ * @param {goog.vec.Vec3.Vec3Like} resultVec The vector to receive the
  *     results (may be v0 or v1).
- * @return {goog.vec.ArrayType} return resultVec so that operations can be
+ * @return {!goog.vec.Vec3.Vec3Like} return resultVec so that operations can be
  *     chained together.
  */
 goog.vec.Vec3.lerp = function(v0, v1, f, resultVec) {
@@ -283,8 +299,8 @@ goog.vec.Vec3.lerp = function(v0, v1, f, resultVec) {
 /**
  * Returns true if the components of v0 are equal to the components of v1.
  *
- * @param {goog.vec.ArrayType} v0 The first vector.
- * @param {goog.vec.ArrayType} v1 The second vector.
+ * @param {goog.vec.Vec3.Vec3Like} v0 The first vector.
+ * @param {goog.vec.Vec3.Vec3Like} v1 The second vector.
  * @return {boolean} True if the vectors are equal, false otherwise.
  */
 goog.vec.Vec3.equals = function(v0, v1) {

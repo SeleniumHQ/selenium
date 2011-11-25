@@ -133,7 +133,7 @@ goog.ui.TriStateMenuItem.prototype.setCheckedState_ = function(state) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.TriStateMenuItem.prototype.performActionInternal = function(e) {
   switch (this.getCheckedState()) {
     case goog.ui.TriStateMenuItem.State.NOT_CHECKED:

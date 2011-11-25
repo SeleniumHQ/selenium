@@ -80,7 +80,7 @@ goog.crypt.Sha1 = function() {
 goog.inherits(goog.crypt.Sha1, goog.crypt.Hash);
 
 
-/** @inheritDoc */
+/** @override */
 goog.crypt.Sha1.prototype.reset = function() {
   this.chain_[0] = 0x67452301;
   this.chain_[1] = 0xefcdab89;
@@ -164,7 +164,7 @@ goog.crypt.Sha1.prototype.compress_ = function(buf, opt_offset) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.crypt.Sha1.prototype.update = function(bytes, opt_length) {
   if (!goog.isDef(opt_length)) {
     opt_length = bytes.length;
@@ -201,7 +201,7 @@ goog.crypt.Sha1.prototype.update = function(bytes, opt_length) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.crypt.Sha1.prototype.digest = function() {
   var digest = [];
   var totalBits = this.total_ * 8;

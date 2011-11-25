@@ -39,7 +39,10 @@ goog.userAgent.platform.determineVersion_ = function() {
     }
   } else if (goog.userAgent.MAC) {
     re = /10[_.][0-9_.]+/;
-    return re.exec(goog.userAgent.getUserAgentString())[0].replace(/_/g, '.');
+    var match = re.exec(goog.userAgent.getUserAgentString());
+    // Note: some old versions of Camino do not report an OSX version.
+    // Default to 10.
+    return match ? match[0].replace(/_/g, '.') : '10';
   }
 
   return '';

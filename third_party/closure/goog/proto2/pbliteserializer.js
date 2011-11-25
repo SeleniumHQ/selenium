@@ -97,7 +97,7 @@ goog.proto2.PbLiteSerializer.prototype.serialize = function(message) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.proto2.PbLiteSerializer.prototype.deserializeField =
     function(message, field, value) {
 
@@ -123,7 +123,7 @@ goog.proto2.PbLiteSerializer.prototype.deserializeField =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.proto2.PbLiteSerializer.prototype.getSerializedValue =
     function(field, value) {
   if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL) {
@@ -136,7 +136,7 @@ goog.proto2.PbLiteSerializer.prototype.getSerializedValue =
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.proto2.PbLiteSerializer.prototype.getDeserializedValue =
     function(field, value) {
 

@@ -152,13 +152,13 @@ goog.ui.tree.TreeControl.prototype.showRootNode_ = true;
 goog.ui.tree.TreeControl.prototype.showRootLines_ = true;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.getTree = function() {
   return this;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.getDepth = function() {
   return 0;
 };
@@ -208,14 +208,14 @@ goog.ui.tree.TreeControl.prototype.hasFocus = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.getExpanded = function() {
   return !this.showRootNode_ ||
       goog.ui.tree.TreeControl.superClass_.getExpanded.call(this);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.setExpanded = function(expanded) {
   if (!this.showRootNode_) {
     this.setExpandedInternal(expanded);
@@ -225,34 +225,34 @@ goog.ui.tree.TreeControl.prototype.setExpanded = function(expanded) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.getExpandIconHtml = function() {
   // no expand icon for root element
   return '';
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.getIconElement = function() {
   var el = this.getRowElement();
   return el ? /** @type {Element} */ (el.firstChild) : null;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.getExpandIconElement = function() {
   // no expand icon for root element
   return null;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.updateExpandIcon = function() {
   // no expand icon
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.getRowClassName = function() {
   return goog.ui.tree.TreeControl.superClass_.getRowClassName.call(this) +
       (this.showRootNode_ ? '' : ' ' + this.getConfig().cssHideRoot);
@@ -457,7 +457,7 @@ goog.ui.tree.TreeControl.prototype.initAccessibility = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.enterDocument = function() {
   goog.ui.tree.TreeControl.superClass_.enterDocument.call(this);
   var el = this.getElement();
@@ -468,7 +468,7 @@ goog.ui.tree.TreeControl.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.tree.TreeControl.prototype.exitDocument = function() {
   goog.ui.tree.TreeControl.superClass_.exitDocument.call(this);
   this.detachEvents_();

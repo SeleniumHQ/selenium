@@ -132,10 +132,19 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
           href = "'" + href.replace(/'/g, '%27') + "'";
         }
       }
-      href = goog.string.htmlEscape(href);
-      newWin.document.write('<META HTTP-EQUIV="refresh" content="0; url=' +
-                            href + '">');
-      newWin.document.close();
+      newWin.opener = null;
+      if (goog.userAgent.WEBKIT) {
+        // In some versions of Chrome (tested on 15), using meta refresh won't
+        // put the new page in a new process, but setting location.href does. If
+        // Chrome fixes that bug, we can get rid of this conditional.
+        // http://code.google.com/p/chromium/issues/detail?id=93517
+        newWin.location.href = href;
+      } else {
+        href = goog.string.htmlEscape(href);
+        newWin.document.write('<META HTTP-EQUIV="refresh" content="0; url=' +
+                              href + '">');
+        newWin.document.close();
+      }
     }
   } else {
     newWin = parentWin.open(href, target, optionString);

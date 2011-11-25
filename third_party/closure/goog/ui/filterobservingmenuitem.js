@@ -58,7 +58,7 @@ goog.inherits(goog.ui.FilterObservingMenuItem, goog.ui.MenuItem);
 goog.ui.FilterObservingMenuItem.prototype.observer_ = null;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.FilterObservingMenuItem.prototype.enterDocument = function() {
   goog.ui.FilterObservingMenuItem.superClass_.enterDocument.call(this);
   this.callObserver();

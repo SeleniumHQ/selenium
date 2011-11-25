@@ -91,7 +91,7 @@ goog.module.BaseModuleLoader.prototype.setCodePostfix = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.module.BaseModuleLoader.prototype.loadModules = function(
     ids, moduleInfoMap, opt_successFn, opt_errorFn, opt_timeoutFn,
     opt_forceReload) {

@@ -93,7 +93,9 @@ goog.editor.BrowserFeature = {
 
   // Whether this browser's "FormatBlock" command may create multiple
   // blockquotes.
-  CREATES_MULTIPLE_BLOCKQUOTES: goog.userAgent.WEBKIT || goog.userAgent.OPERA,
+  CREATES_MULTIPLE_BLOCKQUOTES:
+      (goog.userAgent.WEBKIT && !goog.userAgent.isVersion('534.16')) ||
+      goog.userAgent.OPERA,
 
   // Whether this browser's "FormatBlock" command will wrap blockquotes
   // inside of divs, instead of replacing divs with blockquotes.
@@ -157,9 +159,8 @@ goog.editor.BrowserFeature = {
 
   // Whether this browser can't set background color when the selection
   // is collapsed.
-  // Fixed in nightly webkit - https://bugs.webkit.org/show_bug.cgi?id=16049,
-  // should restrict to browser version once we have more info.
-  EATS_EMPTY_BACKGROUND_COLOR: goog.userAgent.GECKO || goog.userAgent.WEBKIT,
+  EATS_EMPTY_BACKGROUND_COLOR: goog.userAgent.GECKO ||
+      goog.userAgent.WEBKIT && !goog.userAgent.isVersion('527'),
 
   // Whether this browser supports the "focusin" or "DOMFocusIn" event
   // consistently.
@@ -248,7 +249,8 @@ goog.editor.BrowserFeature = {
   // browser: http://www.whatwg/org/specs/web-apps/current-work/#dnd
   SUPPORTS_HTML5_FILE_DRAGGING: (goog.userAgent.product.CHROME &&
                                  goog.userAgent.product.isVersion('4')) ||
-      (goog.userAgent.product.SAFARI && goog.userAgent.isVersion('533')),
+      (goog.userAgent.product.SAFARI && goog.userAgent.isVersion('533')) ||
+      (goog.userAgent.GECKO && goog.userAgent.isVersion('2.0')),
 
   // Version of Opera that supports the opera-defaultBlock execCommand to change
   // the default block inserted when [return] is pressed. Note that this only is

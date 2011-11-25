@@ -1775,7 +1775,7 @@ goog.ui.ServerChart.prototype.arrayMax_ = function(ary) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ServerChart.prototype.disposeInternal = function() {
   goog.ui.ServerChart.superClass_.disposeInternal.call(this);
   delete this.xLabels_;

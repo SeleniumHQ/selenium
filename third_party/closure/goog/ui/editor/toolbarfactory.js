@@ -86,7 +86,7 @@ goog.ui.editor.ToolbarFactory.addFont = function(button, caption, value) {
   var id = goog.ui.editor.ToolbarFactory.getPrimaryFont(value);
 
   // Construct the option, and add it to the button.
-  var option = new goog.ui.Option(caption, value, button.dom_);
+  var option = new goog.ui.Option(caption, value, button.getDomHelper());
   option.setId(id);
   button.addItem(option);
 
@@ -123,7 +123,7 @@ goog.ui.editor.ToolbarFactory.addFontSizes = function(button, sizes) {
  */
 goog.ui.editor.ToolbarFactory.addFontSize = function(button, caption, value) {
   // Construct the option, and add it to the button.
-  var option = new goog.ui.Option(caption, value, button.dom_);
+  var option = new goog.ui.Option(caption, value, button.getDomHelper());
   button.addItem(option);
 
   // Adjust the font size of the menu item and the height of the checkbox
@@ -203,8 +203,9 @@ goog.ui.editor.ToolbarFactory.addFormatOptions = function(button, formats) {
 goog.ui.editor.ToolbarFactory.addFormatOption = function(button, caption, tag) {
   // Construct the option, and add it to the button.
   // TODO(user): Create boring but functional menu item for now...
-  var option = new goog.ui.Option(button.dom_.createDom(goog.dom.TagName.DIV,
-      null, caption), tag, button.dom_);
+  var buttonDom = button.getDomHelper();
+  var option = new goog.ui.Option(buttonDom.createDom(goog.dom.TagName.DIV,
+      null, caption), tag, buttonDom);
   option.setId(tag);
   button.addItem(option);
 };

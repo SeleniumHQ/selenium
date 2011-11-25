@@ -69,7 +69,7 @@ sa2.play();
 var el3 = document.getElementById('test3');
 var sa3 = new goog.fx.CssSpriteAnimation(el3, size,
     new goog.math.Box(11, 11, 99, 0), 8000);
-goog.events.listen(sa3, goog.fx.Animation.EventType.FINISH, function() {
+goog.events.listen(sa3, goog.fx.Transition.EventType.FINISH, function() {
   sa3.stop();
 });
 sa3.play();

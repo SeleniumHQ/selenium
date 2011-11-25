@@ -43,7 +43,7 @@ div.tr_bubble {
 .tr_bubble_closebox {
   position: absolute;
   cursor: default;
-  background: url(https://ssl.gstatic.com/editor/bubble_closebox.gif) top left no-repeat;
+  background: url(//ssl.gstatic.com/editor/bubble_closebox.gif) top left no-repeat;
   padding: 0;
   margin: 0;
   width: 10px;

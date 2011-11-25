@@ -125,7 +125,7 @@ goog.ui.Button.prototype.getTooltip = function() {
  */
 goog.ui.Button.prototype.setTooltip = function(tooltip) {
   this.tooltip_ = tooltip;
-  this.getRenderer().setTooltip(this. getElement(), tooltip);
+  this.getRenderer().setTooltip(this.getElement(), tooltip);
 };
 
 
@@ -156,7 +156,7 @@ goog.ui.Button.prototype.setCollapsed = function(sides) {
 // goog.ui.Control & goog.ui.Component API implementation.
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Button.prototype.disposeInternal = function() {
   goog.ui.Button.superClass_.disposeInternal.call(this);
   delete this.value_;
@@ -164,7 +164,7 @@ goog.ui.Button.prototype.disposeInternal = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Button.prototype.enterDocument = function() {
   goog.ui.Button.superClass_.enterDocument.call(this);
   if (this.isSupportedState(goog.ui.Component.State.FOCUSED)) {

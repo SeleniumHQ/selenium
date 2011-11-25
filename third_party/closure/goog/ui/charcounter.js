@@ -191,7 +191,7 @@ goog.ui.CharCounter.prototype.checkLength_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharCounter.prototype.disposeInternal = function() {
   goog.ui.CharCounter.superClass_.disposeInternal.call(this);
   delete this.elInput_;

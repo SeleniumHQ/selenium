@@ -476,9 +476,7 @@ goog.events.KeyHandler.prototype.detach = function() {
 };
 
 
-/**
- * Disposes of the key handler.
- */
+/** @override */
 goog.events.KeyHandler.prototype.disposeInternal = function() {
   goog.events.KeyHandler.superClass_.disposeInternal.call(this);
   this.detach();

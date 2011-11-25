@@ -68,7 +68,7 @@ goog.inherits(goog.positioning.MenuAnchoredPosition,
               goog.positioning.AnchoredViewportPosition);
 
 
-/** @inheritDoc */
+/** @override */
 goog.positioning.MenuAnchoredPosition.prototype.getLastResortOverflow =
     function() {
   var overflowX = goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN;

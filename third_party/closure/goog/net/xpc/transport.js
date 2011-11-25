@@ -21,6 +21,7 @@
 goog.provide('goog.net.xpc.Transport');
 
 goog.require('goog.Disposable');
+goog.require('goog.dom');
 goog.require('goog.net.xpc');
 
 

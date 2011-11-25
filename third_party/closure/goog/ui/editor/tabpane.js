@@ -135,7 +135,7 @@ goog.ui.editor.TabPane.prototype.addTab = function(id, caption, tooltip,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.editor.TabPane.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 

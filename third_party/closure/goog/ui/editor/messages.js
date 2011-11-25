@@ -111,5 +111,13 @@ goog.ui.editor.messages.MSG_EMAIL_EXPLANATION = goog.getMsg(
     'nasty spammers can find it too.', {'preb': '<b>', 'postb': '</b>'});
 
 
+/**
+ * @desc Label for the checkbox that allows the user to specify what when this
+ *     link is clicked, it should be opened in a new window.
+ */
+goog.ui.editor.messages.MSG_OPEN_IN_NEW_WINDOW = goog.getMsg(
+    'Open this link in a new window');
+
+
 /** @desc Image bubble caption. */
 goog.ui.editor.messages.MSG_IMAGE_CAPTION = goog.getMsg('Image');

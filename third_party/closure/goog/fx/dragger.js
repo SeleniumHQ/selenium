@@ -62,9 +62,9 @@ goog.fx.Dragger = function(target, opt_handle, opt_limits) {
 
   // Add listener. Do not use the event handler here since the event handler is
   // used for listeners added and removed during the drag operation.
-  goog.events.listen(this.handle, [goog.events.EventType.TOUCHSTART,
-                     goog.events.EventType.MOUSEDOWN], this.startDrag, false,
-                     this);
+  goog.events.listen(this.handle,
+      [goog.events.EventType.TOUCHSTART, goog.events.EventType.MOUSEDOWN],
+      this.startDrag, false, this);
 };
 goog.inherits(goog.fx.Dragger, goog.events.EventTarget);
 
@@ -86,6 +86,10 @@ goog.fx.Dragger.HAS_SET_CAPTURE_ =
  * @enum {string}
  */
 goog.fx.Dragger.EventType = {
+  // The drag action was canceled before the START event. Possible reasons:
+  // disabled dragger, dragging with the right mouse button or releasing the
+  // button before reaching the hysteresis distance.
+  EARLY_CANCEL: 'earlycancel',
   START: 'start',
   BEFOREDRAG: 'beforedrag',
   DRAG: 'drag',
@@ -101,7 +105,7 @@ goog.fx.Dragger.prototype.target;
 
 
 /**
- * Reference to the handler that inititates the drag.
+ * Reference to the handler that initiates the drag.
  * @type {Element}
  */
 goog.fx.Dragger.prototype.handle;
@@ -130,20 +134,18 @@ goog.fx.Dragger.prototype.clientY = 0;
 
 /**
  * Current x position of mouse or touch relative to screen. Deprecated because
- * it doesn't take into affect zoom level or pixel density. Consider switching
- * to clientX instead.
+ * it doesn't take into affect zoom level or pixel density.
  * @type {number}
- * @deprecated
+ * @deprecated Consider switching to clientX instead.
  */
 goog.fx.Dragger.prototype.screenX = 0;
 
 
 /**
  * Current y position of mouse or touch relative to screen. Deprecated because
- * it doesn't take into affect zoom level or pixel density. Consider switching
- * to clientY instead.
+ * it doesn't take into affect zoom level or pixel density.
  * @type {number}
- * @deprecated
+ * @deprecated Consider switching to clientY instead.
  */
 goog.fx.Dragger.prototype.screenY = 0;
 
@@ -327,15 +329,13 @@ goog.fx.Dragger.prototype.setEnabled = function(enabled) {
 };
 
 
-/**
- * Tears down the drag object, removes listeners, and nullifies references.
- */
+/** @override */
 goog.fx.Dragger.prototype.disposeInternal = function() {
   goog.fx.Dragger.superClass_.disposeInternal.call(this);
 
-  goog.events.unlisten(this.handle, [goog.events.EventType.TOUCHSTART,
-                       goog.events.EventType.MOUSEDOWN], this.startDrag, false,
-                       this);
+  goog.events.unlisten(this.handle,
+      [goog.events.EventType.TOUCHSTART, goog.events.EventType.MOUSEDOWN],
+      this.startDrag, false, this);
   this.eventHandler_.dispose();
 
   delete this.target;
@@ -382,6 +382,8 @@ goog.fx.Dragger.prototype.startDrag = function(e) {
     this.pageScroll = goog.dom.getDomHelper(this.document_).getDocumentScroll();
 
     this.mouseDownTime_ = goog.now();
+  } else {
+    this.dispatchEvent(goog.fx.Dragger.EventType.EARLY_CANCEL);
   }
 };
 
@@ -397,12 +399,12 @@ goog.fx.Dragger.prototype.setupDragHandlers = function() {
   // problems with the capturing events in combination with setCapture.
   var useCapture = !goog.fx.Dragger.HAS_SET_CAPTURE_;
 
-  this.eventHandler_.listen(doc, [goog.events.EventType.TOUCHMOVE,
-                            goog.events.EventType.MOUSEMOVE],
-                            this.handleMove_, useCapture);
-  this.eventHandler_.listen(doc, [goog.events.EventType.TOUCHEND,
-                            goog.events.EventType.MOUSEUP], this.endDrag,
-                            useCapture);
+  this.eventHandler_.listen(doc,
+      [goog.events.EventType.TOUCHMOVE, goog.events.EventType.MOUSEMOVE],
+      this.handleMove_, useCapture);
+  this.eventHandler_.listen(doc,
+      [goog.events.EventType.TOUCHEND, goog.events.EventType.MOUSEUP],
+      this.endDrag, useCapture);
 
   if (goog.fx.Dragger.HAS_SET_CAPTURE_) {
     docEl.setCapture(false);
@@ -459,17 +461,20 @@ goog.fx.Dragger.prototype.endDrag = function(e, opt_dragCanceled) {
     this.document_.releaseCapture();
   }
 
+  var x = this.limitX(this.deltaX);
+  var y = this.limitY(this.deltaY);
+
   if (this.dragging_) {
     this.maybeReinitTouchEvent_(e);
     this.dragging_ = false;
 
-    var x = this.limitX(this.deltaX);
-    var y = this.limitY(this.deltaY);
     var dragCancelled = opt_dragCanceled ||
                         e.type == goog.events.EventType.TOUCHCANCEL;
     this.dispatchEvent(new goog.fx.DragEvent(
         goog.fx.Dragger.EventType.END, this, e.clientX, e.clientY, e, x, y,
         dragCancelled));
+  } else {
+    this.dispatchEvent(goog.fx.Dragger.EventType.EARLY_CANCEL);
   }
 
   // Call preventDefault to prevent mouseup from being raised if this is a
@@ -493,7 +498,7 @@ goog.fx.Dragger.prototype.endDragCancel = function(e) {
 /**
  * Re-initializes the event with the first target touch event or, in the case
  * of a stop event, the last changed touch.
- * @param {goog.events.BrowserEvent} e
+ * @param {goog.events.BrowserEvent} e A TOUCH... event.
  * @private
  */
 goog.fx.Dragger.prototype.maybeReinitTouchEvent_ = function(e) {
@@ -514,7 +519,6 @@ goog.fx.Dragger.prototype.maybeReinitTouchEvent_ = function(e) {
  * @param {goog.events.BrowserEvent} e Event object.
  * @private
  */
-// TODO(nicksantos): Rename this function to handleMove_ once we've fixed gmail.
 goog.fx.Dragger.prototype.handleMove_ = function(e) {
   if (this.enabled_) {
     this.maybeReinitTouchEvent_(e);
@@ -591,8 +595,8 @@ goog.fx.Dragger.prototype.calculatePosition_ = function(dx, dy) {
  */
 goog.fx.Dragger.prototype.onScroll_ = function(e) {
   var pos = this.calculatePosition_(0, 0);
-  e.clientX = this.pageScroll.x - this.clientX;
-  e.clientY = this.pageScroll.y - this.clientY;
+  e.clientX = this.clientX;
+  e.clientY = this.clientY;
   this.doDrag(e, pos.x, pos.y, true);
 };
 

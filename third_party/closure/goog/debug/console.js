@@ -34,17 +34,31 @@ goog.require('goog.debug.TextFormatter');
  */
 goog.debug.Console = function() {
   this.publishHandler_ = goog.bind(this.addLogRecord, this);
+
+  /**
+   * Formatter for formatted output.
+   * @type {!goog.debug.TextFormatter}
+   * @private
+   */
   this.formatter_ = new goog.debug.TextFormatter();
   this.formatter_.showAbsoluteTime = false;
   this.formatter_.showExceptionText = false;
+
   this.isCapturing_ = false;
   this.logBuffer_ = '';
+
+  /**
+   * Loggers that we shouldn't output.
+   * @type {!Object.<boolean>}
+   * @private
+   */
+  this.filteredLoggers_ = {};
 };
 
 
 /**
  * Returns the text formatter used by this console
- * @return {goog.debug.TextFormatter} The text formatter.
+ * @return {!goog.debug.TextFormatter} The text formatter.
  */
 goog.debug.Console.prototype.getFormatter = function() {
   return this.formatter_;
@@ -77,27 +91,34 @@ goog.debug.Console.prototype.setCapturing = function(capturing) {
  * @param {goog.debug.LogRecord} logRecord The log entry.
  */
 goog.debug.Console.prototype.addLogRecord = function(logRecord) {
+
+  // Check to see if the log record is filtered or not.
+  if (this.filteredLoggers_[logRecord.getLoggerName()]) {
+    return;
+  }
+
   var record = this.formatter_.formatRecord(logRecord);
-  if (window.console && window.console['firebug']) {
+  var console = goog.debug.Console.console_;
+  if (console && console['firebug']) {
     // NOTE(user): info, error, warn and debug aren't in the externs and are
     // only available to FireBug, so we need to reference them by array
     // notation to stop the compiler complaining.
     switch (logRecord.getLevel()) {
       case goog.debug.Logger.Level.SHOUT:
-        window.console['info'](record);
+        console['info'](record);
         break;
       case goog.debug.Logger.Level.SEVERE:
-        window.console['error'](record);
+        console['error'](record);
         break;
       case goog.debug.Logger.Level.WARNING:
-        window.console['warn'](record);
+        console['warn'](record);
         break;
       default:
-        window.console['debug'](record);
+        console['debug'](record);
         break;
     }
-  } else if (window.console) {
-    window.console.log(record);
+  } else if (console) {
+    console.log(record);
   } else if (window.opera) {
     // window.opera.postError is considered an undefined property reference
     // by JSCompiler, so it has to be referenced using array notation instead.
@@ -109,10 +130,37 @@ goog.debug.Console.prototype.addLogRecord = function(logRecord) {
 
 
 /**
+ * Adds a logger name to be filtered.
+ * @param {string} loggerName the logger name to add.
+ */
+goog.debug.Console.prototype.addFilter = function(loggerName) {
+  this.filteredLoggers_[loggerName] = true;
+};
+
+
+/**
+ * Removes a logger name to be filtered.
+ * @param {string} loggerName the logger name to remove.
+ */
+goog.debug.Console.prototype.removeFilter = function(loggerName) {
+  delete this.filteredLoggers_[loggerName];
+};
+
+
+/**
  * Global console logger instance
  * @type {goog.debug.Console}
  */
 goog.debug.Console.instance = null;
+
+
+/**
+ * The console to which to log.  This is a property so it can be mocked out in
+ * unit testing.
+ * @type {!Object}
+ * @private
+ */
+goog.debug.Console.console_ = window.console;
 
 
 /**

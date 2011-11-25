@@ -20,7 +20,9 @@
 
 goog.provide('goog.storage.mechanism.IterableMechanism');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.iter');
 goog.require('goog.iter.Iterator');
 goog.require('goog.storage.mechanism.Mechanism');
 
@@ -63,7 +65,7 @@ goog.storage.mechanism.IterableMechanism.prototype.getCount = function() {
  *
  * @param {boolean=} opt_keys True to iterate over the keys. False to iterate
  *     over the values.  The default value is false.
- * @return {goog.iter.Iterator} The iterator.
+ * @return {!goog.iter.Iterator} The iterator.
  */
 goog.storage.mechanism.IterableMechanism.prototype.__iterator__ =
     goog.abstractMethod;

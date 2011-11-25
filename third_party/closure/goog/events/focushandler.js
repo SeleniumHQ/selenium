@@ -100,9 +100,7 @@ goog.events.FocusHandler.prototype.handleEvent = function(e) {
 };
 
 
-/**
- * Disposes of the focus handler.
- */
+/** @override */
 goog.events.FocusHandler.prototype.disposeInternal = function() {
   goog.events.FocusHandler.superClass_.disposeInternal.call(this);
   goog.events.unlistenByKey(this.listenKeyIn_);

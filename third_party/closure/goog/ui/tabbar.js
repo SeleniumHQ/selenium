@@ -111,7 +111,7 @@ goog.ui.TabBar.prototype.selectedTab_ = null;
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.ui.TabBar.prototype.enterDocument = function() {
   goog.ui.TabBar.superClass_.enterDocument.call(this);
@@ -120,7 +120,7 @@ goog.ui.TabBar.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.TabBar.prototype.disposeInternal = function() {
   goog.ui.TabBar.superClass_.disposeInternal.call(this);
   this.selectedTab_ = null;

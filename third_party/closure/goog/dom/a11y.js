@@ -21,10 +21,14 @@
  *
  */
 goog.provide('goog.dom.a11y');
+goog.provide('goog.dom.a11y.Announcer');
+goog.provide('goog.dom.a11y.LivePriority');
 goog.provide('goog.dom.a11y.Role');
 goog.provide('goog.dom.a11y.State');
 
+goog.require('goog.Disposable');
 goog.require('goog.dom');
+goog.require('goog.object');
 
 
 /**
@@ -361,6 +365,31 @@ goog.dom.a11y.Role = {
 
 
 /**
+ * Enumeration of ARIA state values for live regions.
+ *
+ * See http://www.w3.org/TR/wai-aria/states_and_properties#aria-live
+ * for more information.
+ * @enum {string}
+ */
+goog.dom.a11y.LivePriority = {
+  /**
+   * Default value.  Used for live regions that should never be spoken.
+   */
+  OFF: 'off',
+  /**
+   * Spoke only when the user is idle.  Best option in most cases.
+   */
+  POLITE: 'polite',
+  /**
+   * Spoken as soon as possible, which means that the information has a
+   * higher priority than normal, but does not necessarily interrupt
+   * immediately.
+   */
+  ASSERTIVE: 'assertive'
+};
+
+
+/**
  * Sets the role of an element.
  * @param {Element} element DOM node to set role of.
  * @param {string} roleName role name(s).
@@ -435,4 +464,78 @@ goog.dom.a11y.getActiveDescendant = function(element) {
 goog.dom.a11y.setActiveDescendant = function(element, activeElement) {
   goog.dom.a11y.setState(element, goog.dom.a11y.State.ACTIVEDESCENDANT,
       activeElement ? activeElement.id : '');
+};
+
+
+
+/**
+ * Class that allows messages to be spoken by assistive technologies that the
+ * user may have active.
+ *
+ * @param {goog.dom.DomHelper} domHelper DOM helper.
+ * @constructor
+ * @extends {goog.Disposable}
+ */
+goog.dom.a11y.Announcer = function(domHelper) {
+  goog.base(this);
+
+  /**
+   * @type {goog.dom.DomHelper}
+   * @private
+   */
+  this.domHelper_ = domHelper;
+
+  /**
+   * Map of priority to live region elements to use for communicating updates.
+   * Elements are created on demand.
+   * @type {Object.<goog.dom.a11y.LivePriority, Element>}
+   * @private
+   */
+  this.liveRegions_ = {};
+};
+goog.inherits(goog.dom.a11y.Announcer, goog.Disposable);
+
+
+/** @override */
+goog.dom.a11y.Announcer.prototype.disposeInternal = function() {
+  goog.object.forEach(
+      this.liveRegions_, this.domHelper_.removeNode, this.domHelper_);
+  this.liveRegions_ = null;
+  this.domHelper_ = null;
+  goog.base(this, 'disposeInternal');
+};
+
+
+/**
+ * Announce a message to be read by any assistive technologies the user may
+ * have active.
+ * @param {string} message The message to announce to screen readers.
+ * @param {goog.dom.a11y.LivePriority=} opt_priority The priority of the
+ *     message. Defaults to POLITE.
+ */
+goog.dom.a11y.Announcer.prototype.say = function(message, opt_priority) {
+  goog.dom.setTextContent(this.getLiveRegion_(
+      opt_priority || goog.dom.a11y.LivePriority.POLITE), message);
+};
+
+
+/**
+ * Returns an aria-live region that can be used to communicate announcements.
+ * @param {goog.dom.a11y.LivePriority} priority The required priority.
+ * @return {Element} A live region of the requested priority.
+ * @private
+ */
+goog.dom.a11y.Announcer.prototype.getLiveRegion_ = function(priority) {
+  if (this.liveRegions_[priority]) {
+    return this.liveRegions_[priority];
+  }
+  var liveRegion;
+  liveRegion = this.domHelper_.createElement('div');
+  liveRegion.style.position = 'absolute';
+  liveRegion.style.top = '-1000px';
+  goog.dom.a11y.setState(liveRegion, 'live', priority);
+  goog.dom.a11y.setState(liveRegion, 'atomic', 'true');
+  this.domHelper_.getDocument().body.appendChild(liveRegion);
+  this.liveRegions_[priority] = liveRegion;
+  return liveRegion;
 };

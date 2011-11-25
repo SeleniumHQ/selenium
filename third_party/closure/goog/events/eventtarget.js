@@ -30,45 +30,47 @@ goog.require('goog.events');
 
 
 /**
- * This implements the EventTarget interface as defined by W3C DOM 2/3. The
- * main difference from the spec is that the this does not know about event
- * propagation and therefore the flag whether to use bubbling or capturing is
- * not used.
+ * Inherit from this class to give your object the ability to dispatch events.
+ * Note that this class provides event <em>sending</em> behaviour, not event
+ * receiving behaviour: your object will be able to broadcast events, and other
+ * objects will be able to listen for those events using goog.events.listen().
  *
- * Another difference is that event objects do not really have to implement
- * the Event interface. An object is treated as an event object if it has a
- * type property.
+ * <p>The name "EventTarget" reflects the fact that this class implements the
+ * <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html">
+ * EventTarget interface</a> as defined by W3C DOM 2/3, with a few differences:
+ * <ul>
+ * <li>Event objects do not have to implement the Event interface. An object
+ *     is treated as an event object if it has a 'type' property.
+ * <li>You can use a plain string instead of an event object; an event-like
+ *     object will be created with the 'type' set to the string value.
+ * </ul>
  *
- * It also allows you to pass a string instead of an event object and in that
- * case an event like object is created with the type set to the string value.
+ * <p>Unless propagation is stopped, an event dispatched by an EventTarget
+ * will bubble to the parent returned by <code>getParentEventTarget</code>.
+ * To set the parent, call <code>setParentEventTarget</code> or override
+ * <code>getParentEventTarget</code> in a subclass.  Subclasses that don't
+ * support changing the parent should override the setter to throw an error.
  *
- * Unless propagation is stopped, events dispatched by an EventTarget bubble
- * to its parent event target, returned by <code>getParentEventTarget</code>.
- * To set the parent event target, call <code>setParentEventTarget</code> or
- * override <code>getParentEventTarget</code> in a subclass.  Subclasses that
- * don't support changing the parent event target should override the setter
- * to throw an error.
- *
- * Example usage:
+ * <p>Example usage:
  * <pre>
- *   var et = new goog.events.EventTarget;
- *   function f(e) {
- *      alert("Type: " + e.type + "\nTarget: " + e.target);
+ *   var source = new goog.events.EventTarget();
+ *   function handleEvent(event) {
+ *     alert('Type: ' + e.type + '\nTarget: ' + e.target);
  *   }
- *   et.addEventListener("foo", f);
+ *   goog.events.listen(source, 'foo', handleEvent);
  *   ...
- *   et.dispatchEvent({type: "foo"}); // will call f
- *   // or et.dispatchEvent("foo");
+ *   source.dispatchEvent({type: 'foo'}); // will call handleEvent
+ *   // or source.dispatchEvent('foo');
  *   ...
- *   et.removeEventListener("foo", f);
+ *   goog.events.unlisten(source, 'foo', handleEvent);
  *
- *  // You can also use the EventHandler interface:
- *  var eh = {
- *    handleEvent: function(e) {
- *      ...
- *    }
- *  };
- *  et.addEventListener("bar", eh);
+ *   // You can also use the Listener interface:
+ *   var listener = {
+ *     handleEvent: function(event) {
+ *       ...
+ *     }
+ *   };
+ *   goog.events.listen(source, 'bar', listener);
  * </pre>
  *
  * @constructor
@@ -188,6 +190,7 @@ goog.events.EventTarget.prototype.dispatchEvent = function(e) {
  *   // Dispose logic for MyClass
  * };
  * </pre>
+ * @override
  * @protected
  */
 goog.events.EventTarget.prototype.disposeInternal = function() {

@@ -346,6 +346,32 @@ goog.debug.Logger.getLogger = function(name) {
 
 
 /**
+ * Logs a message to profiling tools, if available.
+ * {@see http://code.google.com/webtoolkit/speedtracer/logging-api.html}
+ * {@see http://msdn.microsoft.com/en-us/library/dd433074(VS.85).aspx}
+ * @param {string} msg The message to log.
+ */
+goog.debug.Logger.logToProfilers = function(msg) {
+  // Using goog.global, as loggers might be used in window-less contexts.
+  if (goog.global['console']) {
+    if (goog.global['console']['timeStamp']) {
+      // Logs a message to Firebug, Web Inspector, SpeedTracer, etc.
+      goog.global['console']['timeStamp'](msg);
+    } else if (goog.global['console']['markTimeline']) {
+      // TODO(user): markTimeline is deprecated. Drop this else clause entirely
+      // after Chrome M14 hits stable.
+      goog.global['console']['markTimeline'](msg);
+    }
+  }
+
+  if (goog.global['msWriteProfilerMark']) {
+    // Logs a message to the Microsoft profiler
+    goog.global['msWriteProfilerMark'](msg);
+  }
+};
+
+
+/**
  * Gets the name of this logger.
  * @return {string} The name of this logger.
  */
@@ -626,25 +652,12 @@ goog.debug.Logger.prototype.logRecord = function(logRecord) {
 
 
 /**
- * Logs the message to speed tracer, if it is available.
- * {@see http://code.google.com/webtoolkit/speedtracer/logging-api.html}
- * @param {string} msg The message to log.
- * @private
- */
-goog.debug.Logger.prototype.logToSpeedTracer_ = function(msg) {
-  if (goog.global['console'] && goog.global['console']['markTimeline']) {
-    goog.global['console']['markTimeline'](msg);
-  }
-};
-
-
-/**
  * Log a LogRecord.
  * @param {goog.debug.LogRecord} logRecord A log record to log.
  * @private
  */
 goog.debug.Logger.prototype.doLogRecord_ = function(logRecord) {
-  this.logToSpeedTracer_('log:' + logRecord.getMessage());
+  goog.debug.Logger.logToProfilers('log:' + logRecord.getMessage());
   if (goog.debug.Logger.ENABLE_HIERARCHY) {
     var target = this;
     while (target) {

@@ -97,7 +97,7 @@ goog.ui.Slider.prototype.getCssClass = function(orient) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Slider.prototype.createThumbs = function() {
   // find thumb
   var element = this.getElement();

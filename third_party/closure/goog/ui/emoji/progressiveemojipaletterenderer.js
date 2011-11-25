@@ -42,7 +42,7 @@ goog.inherits(goog.ui.emoji.ProgressiveEmojiPaletteRenderer,
               goog.ui.emoji.EmojiPaletteRenderer);
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype.
     buildElementFromSpriteMetadata = function(dom, spriteInfo, displayUrl) {
   var width = spriteInfo.getWidthCssValue();
@@ -69,7 +69,7 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype.
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype.
     updateAnimatedPaletteItem = function(item, animatedImg) {
   // Just to be safe, we check for the existence of the img element within this

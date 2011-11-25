@@ -401,7 +401,7 @@ goog.date.DateRange.Iterator = function(dateRange) {
 goog.inherits(goog.date.DateRange.Iterator, goog.iter.Iterator);
 
 
-/** @inheritDoc */
+/** @override */
 goog.date.DateRange.Iterator.prototype.next = function() {
   if (Number(this.nextDate_.toIsoString()) > this.endDate_) {
     throw goog.iter.StopIteration;

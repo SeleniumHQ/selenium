@@ -153,8 +153,8 @@ goog.proto2.Message.prototype.setUnknown = function(tag, value) {
 goog.proto2.Message.prototype.forEachUnknown = function(callback, opt_scope) {
   var scope = opt_scope || this;
   for (var key in this.values_) {
-    if (!this.fields_[key]) {
-      callback.call(scope, /** @type {number} */ (key), this.values_[key]);
+    if (!this.fields_[/** @type {number} */ (key)]) {
+      callback.call(scope, Number(key), this.values_[key]);
     }
   }
 };
@@ -231,7 +231,7 @@ goog.proto2.Message.prototype.countOf = function(field) {
  * @param {number=} opt_index If the field is repeated, the index to use when
  *     looking up the value.
  *
- * @return {*} The value found or undefined if none.
+ * @return {*} The value found or null if none.
  */
 goog.proto2.Message.prototype.get = function(field, opt_index) {
   goog.proto2.Util.assert(
@@ -467,7 +467,8 @@ goog.proto2.Message.prototype.has$Value = function(tag) {
   goog.proto2.Util.assert(this.fields_[tag],
                           'No field found for the given tag');
 
-  return tag in this.values_ && goog.isDef(this.values_[tag]);
+  return tag in this.values_ && goog.isDef(this.values_[tag]) &&
+      this.values_[tag] !== null;
 };
 
 
@@ -503,7 +504,8 @@ goog.proto2.Message.prototype.lazyDeserialize_ = function(field) {
  * @param {number=} opt_index If the field is a repeated field, the index
  *     at which to get the value.
  *
- * @return {*} The value found or undefined for none.
+ * @return {*} The value found or null for none.
+ * @protected
  */
 goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
   var field = this.getFieldByTag_(tag);
@@ -513,13 +515,13 @@ goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
 
   if (field.isRepeated()) {
     var index = opt_index || 0;
-    goog.proto2.Util.assert(index < this.count$Values(tag),
-                            'Field value count is less than index given');
+    goog.proto2.Util.assert(index >= 0 && index < this.count$Values(tag),
+        'Given index is out of bounds');
 
     return this.values_[tag][index];
   } else {
     goog.proto2.Util.assert(!goog.isArray(this.values_[tag]));
-    return this.values_[tag];
+    return tag in this.values_ ? this.values_[tag] : null;
   }
 };
 
@@ -535,6 +537,7 @@ goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
  *     at which to get the value.
  *
  * @return {*} The value found or the default value if none set.
+ * @protected
  */
 goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
 
@@ -556,6 +559,7 @@ goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
  * @param {number} tag The field's tag index.
  *
  * @return {!Array} The values found. If none, returns an empty array.
+ * @protected
  */
 goog.proto2.Message.prototype.array$Values = function(tag) {
   goog.proto2.Util.assert(this.getFieldByTag_(tag).isRepeated(),
@@ -578,6 +582,7 @@ goog.proto2.Message.prototype.array$Values = function(tag) {
  * @param {number} tag The tag.
  *
  * @return {number} The number of values.
+ * @protected
  */
 goog.proto2.Message.prototype.count$Values = function(tag) {
   var field = this.getFieldByTag_(tag);
@@ -601,6 +606,7 @@ goog.proto2.Message.prototype.count$Values = function(tag) {
  *
  * @param {number} tag The field's tag index.
  * @param {*} value The field's value.
+ * @protected
  */
 goog.proto2.Message.prototype.set$Value = function(tag, value) {
   if (goog.proto2.Util.conductChecks()) {
@@ -613,6 +619,9 @@ goog.proto2.Message.prototype.set$Value = function(tag, value) {
   }
 
   this.values_[tag] = value;
+  if (this.deserializedFields_) {
+    this.deserializedFields_[tag] = true;
+  }
 };
 
 
@@ -623,6 +632,7 @@ goog.proto2.Message.prototype.set$Value = function(tag, value) {
  *
  * @param {number} tag The field's tag index.
  * @param {*} value The value to add.
+ * @protected
  */
 goog.proto2.Message.prototype.add$Value = function(tag, value) {
   if (goog.proto2.Util.conductChecks()) {
@@ -680,6 +690,7 @@ goog.proto2.Message.prototype.checkFieldType_ = function(field, value) {
  * GENERATED CODE USE ONLY. Basis of the clear{Field} methods.
  *
  * @param {number} tag The tag of the field to clear.
+ * @protected
  */
 goog.proto2.Message.prototype.clear$Field = function(tag) {
   goog.proto2.Util.assert(this.getFieldByTag_(tag), 'Unknown field');

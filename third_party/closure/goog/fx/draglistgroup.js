@@ -255,6 +255,15 @@ goog.fx.DragListGroup.prototype.dragger_;
 
 
 /**
+ * The amount of distance, in pixels, after which a mousedown or touchstart is
+ * considered a drag.
+ * @type {number}
+ * @private
+ */
+goog.fx.DragListGroup.prototype.hysteresisDistance_ = 0;
+
+
+/**
  * Sets the property of the currDragItem that it is always displayed in the
  * list.
  */
@@ -270,6 +279,26 @@ goog.fx.DragListGroup.prototype.setIsCurrDragItemAlwaysDisplayed = function() {
  */
 goog.fx.DragListGroup.prototype.setNoUpdateWhileDragging = function() {
   this.updateWhileDragging_ = false;
+};
+
+
+/**
+ * Sets the distance the user has to drag the element before a drag operation
+ * is started.
+ * @param {number} distance The number of pixels after which a mousedown and
+ *     move is considered a drag.
+ */
+goog.fx.DragListGroup.prototype.setHysteresis = function(distance) {
+  this.hysteresisDistance_ = distance;
+};
+
+
+/**
+ * @return {number} distance The number of pixels after which a mousedown and
+ *     move is considered a drag.
+ */
+goog.fx.DragListGroup.prototype.getHysteresis = function() {
+  return this.hysteresisDistance_;
 };
 
 
@@ -405,9 +434,9 @@ goog.fx.DragListGroup.prototype.init = function() {
       }
 
       this.dragItems_.push(dragItem);
-      this.eventHandler_.listen(
-          dragItemHandle, goog.events.EventType.MOUSEDOWN,
-          this.handleDragStart_);
+      this.eventHandler_.listen(dragItemHandle,
+          [goog.events.EventType.MOUSEDOWN, goog.events.EventType.TOUCHSTART],
+          this.handlePotentialDragStart_);
     }
   }
 
@@ -415,9 +444,7 @@ goog.fx.DragListGroup.prototype.init = function() {
 };
 
 
-/**
- * Disposes of the DragListGroup.
- */
+/** @override */
 goog.fx.DragListGroup.prototype.disposeInternal = function() {
   this.eventHandler_.dispose();
 
@@ -465,54 +492,18 @@ goog.fx.DragListGroup.prototype.recacheListAndItemBounds_ = function(
 
 
 /**
- * Handles the start of a drag action (i.e. MOUSEDOWN on any drag item).
- *
- * @param {goog.events.BrowserEvent} e Event object fired on a drag item handle.
+ * Handles mouse and touch events which may start a drag action.
+ * @param {!goog.events.BrowserEvent} e MOUSEDOWN or TOUCHSTART event.
  * @private
  */
-goog.fx.DragListGroup.prototype.handleDragStart_ = function(e) {
-  if (!e.isMouseActionButton()) {
-    e.preventDefault();
-    return;
-  }
-
+goog.fx.DragListGroup.prototype.handlePotentialDragStart_ = function(e) {
   var uid = goog.getUid(/** @type {Node} */ (e.currentTarget));
-  var currDragItem = /** @type {Element} */ (this.dragItemForHandle_[uid]);
+  this.currDragItem_ = /** @type {Element} */ (this.dragItemForHandle_[uid]);
 
-  var rv = this.dispatchEvent(
-      new goog.fx.DragListGroupEvent(
-          goog.fx.DragListGroup.EventType.BEFOREDRAGSTART, this, e,
-          currDragItem, null, null));
-  if (!rv) {
-    e.preventDefault();
-    return;
-  }
-
-  this.currDragItem_ = currDragItem;
-
-  // Record the original location of the current drag item.
-  // Note: this.origNextItem_ may be null.
-  this.origList_ = /** @type {Element} */ (currDragItem.parentNode);
-  this.origNextItem_ = goog.dom.getNextElementSibling(currDragItem);
-  this.currHoverItem_ = this.origNextItem_;
-  this.currHoverList_ = this.origList_;
-
-  // Create a clone for dragging.
-  var draggerEl = this.cloneNode_(currDragItem);
-  this.draggerEl_ = draggerEl;
-
-  // If there's a CSS class specified for the current drag item, add it.
-  // Otherwise, make the actual current drag item hidden (takes up space).
-  if (this.currDragItemClasses_) {
-    goog.dom.classes.add.apply(null,
-        goog.array.concat(currDragItem, this.currDragItemClasses_));
-  } else {
-    currDragItem.style.visibility = 'hidden';
-  }
-
-  // Add CSS class for the clone, if any.
+  this.draggerEl_ = this.cloneNode_(this.currDragItem_);
   if (this.draggerElClass_) {
-    goog.dom.classes.add(draggerEl, this.draggerElClass_);
+    // Add CSS class for the clone, if any.
+    goog.dom.classes.add(this.draggerEl_, this.draggerElClass_);
   }
 
   // Place the clone (i.e. draggerEl) at the same position as the actual
@@ -522,18 +513,70 @@ goog.fx.DragListGroup.prototype.handleDragStart_ = function(e) {
   // It's difficult to adjust for the margins of the clone because it's
   // difficult to read it: goog.style.getComputedStyle() doesn't work for IE.
   // Instead, our workaround is simply to set the clone's margins to 0px.
-  draggerEl.style.margin = '0px';
-  draggerEl.style.position = 'absolute';
-  goog.dom.getOwnerDocument(currDragItem).body.appendChild(draggerEl);
+  this.draggerEl_.style.margin = '0';
+  this.draggerEl_.style.position = 'absolute';
+  this.draggerEl_.style.visibility = 'hidden';
+  var doc = goog.dom.getOwnerDocument(this.currDragItem_);
+  doc.body.appendChild(this.draggerEl_);
+
   // Important: goog.style.setPageOffset() only works correctly for IE when the
   // element is already in the document.
-  var currDragItemPos = goog.style.getPageOffset(currDragItem);
-  goog.style.setPageOffset(draggerEl, currDragItemPos);
+  var currDragItemPos = goog.style.getPageOffset(this.currDragItem_);
+  goog.style.setPageOffset(this.draggerEl_, currDragItemPos);
+
+  this.dragger_ = new goog.fx.Dragger(this.draggerEl_);
+  this.dragger_.setHysteresis(this.hysteresisDistance_);
+
+  // Listen to events on the dragger. These handlers will be unregistered at
+  // DRAGEND, when the dragger is disposed of. We can't use eventHandler_,
+  // because it creates new references to the handler functions at each
+  // dragging action, and keeps them until DragListGroup is disposed of.
+  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.START,
+      this.handleDragStart_, false, this);
+  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.END,
+      this.handleDragEnd_, false, this);
+  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.EARLY_CANCEL,
+      this.cleanup_, false, this);
+  this.dragger_.startDrag(e);
+};
+
+
+/**
+ * Handles the start of a drag action.
+ * @param {!goog.fx.DragEvent} e goog.fx.Dragger.EventType.START event.
+ * @private
+ */
+goog.fx.DragListGroup.prototype.handleDragStart_ = function(e) {
+  if (!this.dispatchEvent(new goog.fx.DragListGroupEvent(
+      goog.fx.DragListGroup.EventType.BEFOREDRAGSTART, this, e.browserEvent,
+      this.currDragItem_, null, null))) {
+    e.preventDefault();
+    this.cleanup_();
+    return;
+  }
+
+  // Record the original location of the current drag item.
+  // Note: this.origNextItem_ may be null.
+  this.origList_ = /** @type {Element} */ (this.currDragItem_.parentNode);
+  this.origNextItem_ = goog.dom.getNextElementSibling(this.currDragItem_);
+  this.currHoverItem_ = this.origNextItem_;
+  this.currHoverList_ = this.origList_;
+
+  // If there's a CSS class specified for the current drag item, add it.
+  // Otherwise, make the actual current drag item hidden (takes up space).
+  if (this.currDragItemClasses_) {
+    goog.dom.classes.add.apply(null,
+        goog.array.concat(this.currDragItem_, this.currDragItemClasses_));
+  } else {
+    this.currDragItem_.style.visibility = 'hidden';
+  }
 
   // Precompute distances from top-left corner to center for efficiency.
-  var draggerElSize = goog.style.getSize(draggerEl);
-  draggerEl.halfWidth = draggerElSize.width / 2;
-  draggerEl.halfHeight = draggerElSize.height / 2;
+  var draggerElSize = goog.style.getSize(this.draggerEl_);
+  this.draggerEl_.halfWidth = draggerElSize.width / 2;
+  this.draggerEl_.halfHeight = draggerElSize.height / 2;
+
+  this.draggerEl_.style.visibility = '';
 
   // Record the bounds of all the drag lists and all the other drag items. This
   // caching is for efficiency, so that we don't have to recompute the bounds on
@@ -541,27 +584,19 @@ goog.fx.DragListGroup.prototype.handleDragStart_ = function(e) {
   // any of the lists, except when update while dragging is disabled, as in this
   // case the current drag item does not get removed until drag ends.
   if (this.updateWhileDragging_) {
-    currDragItem.style.display = 'none';
+    this.currDragItem_.style.display = 'none';
   }
-  this.recacheListAndItemBounds_(currDragItem);
-  currDragItem.style.display = '';
-
-  // Create the dragger object.
-  this.dragger_ = new goog.fx.Dragger(draggerEl);
+  this.recacheListAndItemBounds_(this.currDragItem_);
+  this.currDragItem_.style.display = '';
 
   // Listen to events on the dragger.
-  this.eventHandler_.listen(
-      this.dragger_, goog.fx.Dragger.EventType.DRAG, this.handleDragMove_);
-  this.eventHandler_.listen(
-      this.dragger_, goog.fx.Dragger.EventType.END, this.handleDragEnd_);
-
-  // Manually start up the dragger.
-  this.dragger_.startDrag(e);
+  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.DRAG,
+      this.handleDragMove_, false, this);
 
   this.dispatchEvent(
       new goog.fx.DragListGroupEvent(
-          goog.fx.DragListGroup.EventType.DRAGSTART, this, e,
-          currDragItem, draggerEl, this.dragger_));
+          goog.fx.DragListGroup.EventType.DRAGSTART, this, e.browserEvent,
+          this.currDragItem_, this.draggerEl_, this.dragger_));
 };
 
 
@@ -646,14 +681,42 @@ goog.fx.DragListGroup.prototype.handleDragMove_ = function(dragEvent) {
 
 
 /**
- * Handles the end of a drag action (i.e. END event fired by the dragger).
+ * Clear all our temporary fields that are only defined while dragging, and
+ * all the bounds info stored on the drag lists and drag elements.
+ * @param {!goog.events.Event=} opt_e EARLY_CANCEL event from the dragger if
+ *     cleanup_ was called as an event handler.
+ * @private
+ */
+goog.fx.DragListGroup.prototype.cleanup_ = function(opt_e) {
+  this.cleanupDragDom_();
+
+  delete this.currDragItem_;
+  delete this.currHoverList_;
+  delete this.origList_;
+  delete this.origNextItem_;
+  delete this.draggerEl_;
+  delete this.dragger_;
+
+  // Note: IE doesn't allow 'delete' for fields on HTML elements (because
+  // they're not real JS objects in IE), so we just set them to null.
+  for (var i = 0, n = this.dragLists_.length; i < n; i++) {
+    this.dragLists_[i].dlgBounds_ = null;
+  }
+  for (var i = 0, n = this.dragItems_.length; i < n; i++) {
+    this.dragItems_[i].dlgBounds_ = null;
+  }
+};
+
+
+/**
+ * Handles the end or the cancellation of a drag action, i.e. END or CLEANUP
+ * event fired by the dragger.
  *
- * @param {goog.fx.DragEvent} dragEvent Event object fired by the dragger.
+ * @param {!goog.fx.DragEvent} dragEvent Event object fired by the dragger.
  * @return {boolean} Whether the event was handled.
  * @private
  */
 goog.fx.DragListGroup.prototype.handleDragEnd_ = function(dragEvent) {
-
   var rv = this.dispatchEvent(
       new goog.fx.DragListGroupEvent(
           goog.fx.DragListGroup.EventType.BEFOREDRAGEND, this, dragEvent,
@@ -669,6 +732,9 @@ goog.fx.DragListGroup.prototype.handleDragEnd_ = function(dragEvent) {
     this.insertCurrHoverItem();
   }
 
+  // The DRAGEND handler may need the new order of the list items. Clean up the
+  // garbage.
+  // TODO(user): Regression test.
   this.cleanupDragDom_();
 
   this.dispatchEvent(
@@ -676,23 +742,7 @@ goog.fx.DragListGroup.prototype.handleDragEnd_ = function(dragEvent) {
           goog.fx.DragListGroup.EventType.DRAGEND, this, dragEvent,
           this.currDragItem_, this.draggerEl_, this.dragger_));
 
-  // Clear all our temporary fields that are only defined while dragging.
-  this.currDragItem_ = null;
-  this.currHoverList_ = null;
-  this.origList_ = null;
-  this.origNextItem_ = null;
-  this.draggerEl_ = null;
-  this.dragger_ = null;
-
-  // Clear all the bounds info stored on the drag lists and drag elements.
-  // Note: IE doesn't allow 'delete' for fields on HTML elements (because
-  // they're not real JS objects in IE), so we just set them to undefined.
-  for (var i = 0, n = this.dragLists_.length; i < n; i++) {
-    this.dragLists_[i].dlgBounds_ = null;
-  }
-  for (var i = 0, n = this.dragItems_.length; i < n; i++) {
-    this.dragItems_[i].dlgBounds_ = null;
-  }
+  this.cleanup_();
 
   return true;
 };
@@ -733,7 +783,7 @@ goog.fx.DragListGroup.prototype.cleanupDragDom_ = function() {
       goog.dom.classes.remove(dragList, dragList.dlgDragHoverClass_);
     }
   }
-}
+};
 
 
 /**

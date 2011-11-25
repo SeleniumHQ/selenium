@@ -68,7 +68,7 @@ goog.ui.ImagelessMenuButtonRenderer.CSS_CLASS =
     goog.getCssName('goog-imageless-button');
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ImagelessMenuButtonRenderer.prototype.getContentElement = function(
     element) {
   if (element) {

@@ -337,7 +337,7 @@ goog.events.BrowserEvent.prototype.isMouseActionButton = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.events.BrowserEvent.prototype.stopPropagation = function() {
   goog.events.BrowserEvent.superClass_.stopPropagation.call(this);
@@ -350,7 +350,7 @@ goog.events.BrowserEvent.prototype.stopPropagation = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.events.BrowserEvent.prototype.preventDefault = function() {
   goog.events.BrowserEvent.superClass_.preventDefault.call(this);
@@ -397,9 +397,7 @@ goog.events.BrowserEvent.prototype.getBrowserEvent = function() {
 };
 
 
-/**
- * @inheritDoc
- */
+/** @override */
 goog.events.BrowserEvent.prototype.disposeInternal = function() {
   goog.events.BrowserEvent.superClass_.disposeInternal.call(this);
   this.event_ = null;

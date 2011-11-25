@@ -259,7 +259,7 @@ goog.ui.IdleTimer.prototype.removeActivityListener_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.IdleTimer.prototype.disposeInternal = function() {
   this.removeActivityListener_();
   if (this.onActivityTimerId_ != null) {

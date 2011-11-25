@@ -44,12 +44,12 @@ goog.inherits(goog.editor.plugins.Emoticons, goog.editor.Plugin);
 goog.editor.plugins.Emoticons.COMMAND = '+emoticon';
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.Emoticons.prototype.getTrogClassId =
     goog.functions.constant(goog.editor.plugins.Emoticons.COMMAND);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.Emoticons.prototype.isSupportedCommand = function(
     command) {
   return command == goog.editor.plugins.Emoticons.COMMAND;

@@ -447,7 +447,7 @@ goog.tweak.BasePrimitiveSetting.prototype.setDefaultValue =
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.BasePrimitiveSetting.prototype.getNewValueEncoded = function() {
   this.ensureInitialized();
@@ -519,7 +519,7 @@ goog.tweak.StringSetting.prototype.getDefaultValue;
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.StringSetting.prototype.encodeNewValue = function(value) {
   return this.getNewValue();
@@ -551,7 +551,7 @@ goog.tweak.StringSetting.prototype.getValidValues = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.StringSetting.prototype.initialize = function(value) {
   if (value == null) {
@@ -642,7 +642,7 @@ goog.tweak.NumericSetting.prototype.getDefaultValue;
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.NumericSetting.prototype.encodeNewValue = function() {
   return '' + this.getNewValue();
@@ -675,7 +675,7 @@ goog.tweak.NumericSetting.prototype.getValidValues = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.NumericSetting.prototype.initialize = function(value) {
   if (value == null) {
@@ -759,7 +759,7 @@ goog.tweak.BooleanSetting.prototype.getDefaultValue;
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.BooleanSetting.prototype.encodeNewValue = function() {
   return this.getNewValue() ? '1' : '0';
@@ -767,7 +767,7 @@ goog.tweak.BooleanSetting.prototype.encodeNewValue = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.BooleanSetting.prototype.initialize = function(value) {
   if (value == null) {
@@ -823,7 +823,7 @@ goog.tweak.BooleanInGroupSetting.prototype.logger =
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.BooleanInGroupSetting.prototype.setParamName = function(value) {
   goog.asserts.fail('Use setToken() for BooleanInGroupSetting.');
@@ -932,7 +932,7 @@ goog.tweak.BooleanGroup.prototype.addChild = function(boolEntry) {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.BooleanGroup.prototype.initialize = function(value) {
   var queryParamValues = {};
@@ -953,7 +953,7 @@ goog.tweak.BooleanGroup.prototype.initialize = function(value) {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.tweak.BooleanGroup.prototype.getNewValueEncoded = function() {
   this.ensureInitialized();

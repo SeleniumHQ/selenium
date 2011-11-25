@@ -276,7 +276,7 @@ goog.ui.CharPicker.prototype.getRecentChars = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.createDom = function() {
   goog.ui.CharPicker.superClass_.createDom.call(this);
 
@@ -284,7 +284,7 @@ goog.ui.CharPicker.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.disposeInternal = function() {
   this.hc_.dispose();
   this.hc_ = null;
@@ -294,7 +294,7 @@ goog.ui.CharPicker.prototype.disposeInternal = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.decorateInternal = function(element) {
   goog.ui.CharPicker.superClass_.decorateInternal.call(this, element);
 
@@ -435,7 +435,7 @@ goog.ui.CharPicker.prototype.decorateInternal = function(element) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.CharPicker.prototype.enterDocument = function() {
   goog.ui.CharPicker.superClass_.enterDocument.call(this);
   var inputkh = new goog.events.InputHandler(this.input_.getElement());

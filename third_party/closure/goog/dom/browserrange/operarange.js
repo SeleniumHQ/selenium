@@ -66,7 +66,7 @@ goog.dom.browserrange.OperaRange.createFromNodes = function(startNode,
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.browserrange.OperaRange.prototype.selectInternal = function(
     selection, reversed) {
   // Avoid using addRange as we have to removeAllRanges first, which

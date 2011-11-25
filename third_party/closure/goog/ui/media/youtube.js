@@ -240,31 +240,34 @@ goog.inherits(goog.ui.media.YoutubeModel, goog.ui.media.MediaModel);
  * @private
  * @const
  */
+// Be careful about the placement of the dashes in the character classes. Eg,
+// use "[\\w=-]" instead of "[\\w-=]" if you mean to include the dash as a
+// character and not create a character range like "[a-f]".
 goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
     // Lead in.
-    'http://(?:[a-zA_Z]{2,3}.)?' +
+    'http://(?:[a-zA-Z]{2,3}\\.)?' +
     // Watch URL prefix.  This should handle new URLs of the form:
     // http://www.youtube.com/watch#!v=jqxENMKaeCU&feature=related
     // where the parameters appear after "#!" instead of "?".
-    '(?:youtube\.com/watch)' +
+    '(?:youtube\\.com/watch)' +
     // Get the video id:
     // The video ID is a parameter v=[videoid] either right after the "?"
     // or after some other parameters.
-    '(?:\\?(?:[\\w\-\=]+&(?:amp;)?)*v=([\\w\-]+)' +
-    '(?:&(?:amp;)?[\\w\-\=]+)*)?' +
+    '(?:\\?(?:[\\w=-]+&(?:amp;)?)*v=([\\w-]+)' +
+    '(?:&(?:amp;)?[\\w=-]+)*)?' +
     // Get any extra arguments in the URL's hash part.
     '(?:#[!]?(?:' +
     // Video ID from the v=[videoid] parameter, optionally surrounded by other
     // & separated parameters.
-    '(?:(?:[\\w\-\=]+&(?:amp;)?)*(?:v=([\\w\-]+))' +
-    '(?:&(?:amp;)?[\\w\-\=]+)*)' +
+    '(?:(?:[\\w=-]+&(?:amp;)?)*(?:v=([\\w-]+))' +
+    '(?:&(?:amp;)?[\\w=-]+)*)' +
     '|' +
     // Continue supporting "?" for the video ID
     // and "#" for other hash parameters.
-    '(?:[\\w\-\=&]+)' +
+    '(?:[\\w=&-]+)' +
     '))?' +
-    // Should terminate with a word break or a /.
-    '(?:/|\\b)', 'i');
+    // Should terminate with a non-word, non-dash (-) character.
+    '[^\\w-]?', 'i');
 
 
 /**

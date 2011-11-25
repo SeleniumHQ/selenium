@@ -52,13 +52,13 @@ goog.testing.StrictMock = function(objectToMock, opt_mockStaticMethods,
 goog.inherits(goog.testing.StrictMock, goog.testing.Mock);
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.StrictMock.prototype.$recordExpectation = function() {
   this.$expectations_.push(this.$pendingExpectation);
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.StrictMock.prototype.$recordCall = function(name, args) {
   if (this.$expectations_.length == 0) {
     this.$throwCallException(name, args);
@@ -76,7 +76,7 @@ goog.testing.StrictMock.prototype.$recordCall = function(name, args) {
     }
 
     this.$expectations_.shift();
-    if (this.$expectations_.length == 0) {
+    if (this.$expectations_.length < 1) {
       // Nothing left, but this may be a failed attempt to call the previous
       // item on the list, which may have been between its min and max.
       this.$throwCallException(name, args, currentExpectation);
@@ -84,10 +84,14 @@ goog.testing.StrictMock.prototype.$recordCall = function(name, args) {
     currentExpectation = this.$expectations_[0];
   }
 
+  if (currentExpectation.maxCalls == 0) {
+    this.$throwCallException(name, args);
+  }
+
   currentExpectation.actualCalls++;
   // If we hit the max number of calls for this expectation, we're finished
   // with it.
-  if (currentExpectation.actualCalls >= currentExpectation.maxCalls) {
+  if (currentExpectation.actualCalls == currentExpectation.maxCalls) {
     this.$expectations_.shift();
   }
 
@@ -95,7 +99,7 @@ goog.testing.StrictMock.prototype.$recordCall = function(name, args) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.StrictMock.prototype.$reset = function() {
   goog.testing.StrictMock.superClass_.$reset.call(this);
 
@@ -103,7 +107,7 @@ goog.testing.StrictMock.prototype.$reset = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.testing.StrictMock.prototype.$verify = function() {
   goog.testing.StrictMock.superClass_.$verify.call(this);
 

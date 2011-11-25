@@ -171,6 +171,37 @@ goog.math.Vec2.prototype.subtract = function(b) {
 
 
 /**
+ * Rotates this vector in-place by a given angle, specified in radians.
+ * @param {number} angle The angle, in radians.
+ * @return {!goog.math.Vec2} This vector rotated {@code angle} radians.
+ */
+goog.math.Vec2.prototype.rotate = function(angle) {
+  var cos = Math.cos(angle);
+  var sin = Math.sin(angle);
+  var newX = this.x * cos - this.y * sin;
+  var newY = this.y * cos + this.x * sin;
+  this.x = newX;
+  this.y = newY;
+  return this;
+};
+
+
+/**
+ * Rotates a vector by a given angle, specified in radians, relative to a given
+ * axis rotation point. The returned vector is a newly created instance - no
+ * in-place changes are done.
+ * @param {!goog.math.Vec2} v A vector.
+ * @param {!goog.math.Vec2} axisPoint The rotation axis point.
+ * @param {number} angle The angle, in radians.
+ * @return {!goog.math.Vec2} The rotated vector in a newly created instance.
+ */
+goog.math.Vec2.rotateAroundPoint = function(v, axisPoint, angle) {
+  var res = v.clone();
+  return res.subtract(axisPoint).rotate(angle).add(axisPoint);
+};
+
+
+/**
  * Compares this vector with another for equality.
  * @param {!goog.math.Vec2} b The other vector.
  * @return {boolean} Whether this vector has the same x and y as the given

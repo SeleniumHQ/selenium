@@ -46,6 +46,24 @@ goog.inherits(goog.positioning.ViewportClientPosition,
 
 
 /**
+ * The last-resort overflow strategy, if the popup fails to fit.
+ * @type {number}
+ * @private
+ */
+goog.positioning.ViewportClientPosition.prototype.lastResortOverflow_ = 0;
+
+
+/**
+ * Set the last-resort overflow strategy, if the popup fails to fit.
+ * @param {number} overflow A bitmask of goog.positioning.Overflow strategies.
+ */
+goog.positioning.ViewportClientPosition.prototype.setLastResortOverflow =
+    function(overflow) {
+  this.lastResortOverflow_ = overflow;
+};
+
+
+/**
  * Repositions the popup according to the current state.
  *
  * @param {Element} element The DOM element of the popup.
@@ -97,6 +115,6 @@ goog.positioning.ViewportClientPosition.prototype.reposition = function(
   // If that failed, the viewport is simply too small to contain the popup.
   // Revert to the original position.
   goog.positioning.positionAtCoordinate(
-      clientPos, element, popupCorner, opt_margin, viewport, undefined,
-      opt_preferredSize);
+      clientPos, element, popupCorner, opt_margin, viewport,
+      this.lastResortOverflow_, opt_preferredSize);
 };

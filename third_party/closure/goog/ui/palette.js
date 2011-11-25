@@ -88,7 +88,7 @@ goog.ui.Palette.prototype.selectionModel_ = null;
 // goog.ui.Component / goog.ui.Control implementation.
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Palette.prototype.disposeInternal = function() {
   goog.ui.Palette.superClass_.disposeInternal.call(this);
 

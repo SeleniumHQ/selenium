@@ -40,9 +40,13 @@ goog.memoize = function(f, opt_serializer) {
 
   return function() {
     if (goog.memoize.ENABLE_MEMOIZE) {
+      // In the strict mode, when this function is called as a global function,
+      // the value of 'this' is undefined instead of a global object. See:
+      // https://developer.mozilla.org/en/JavaScript/Strict_mode
+      var thisOrGlobal = this || goog.global;
       // Maps the serialized list of args to the corresponding return value.
-      var cache = this[goog.memoize.CACHE_PROPERTY_] ||
-          (this[goog.memoize.CACHE_PROPERTY_] = {});
+      var cache = thisOrGlobal[goog.memoize.CACHE_PROPERTY_] ||
+          (thisOrGlobal[goog.memoize.CACHE_PROPERTY_] = {});
       var key = serializer(functionUid, arguments);
       return cache.hasOwnProperty(key) ? cache[key] :
           (cache[key] = f.apply(this, arguments));

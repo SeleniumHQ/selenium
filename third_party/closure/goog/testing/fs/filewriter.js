@@ -18,7 +18,6 @@
  */
 
 goog.provide('goog.testing.fs.FileWriter');
-goog.provide('goog.testing.fs.FileWriter.ProgressEvent');
 
 goog.require('goog.Timer');
 goog.require('goog.events.Event');
@@ -28,6 +27,7 @@ goog.require('goog.fs.FileSaver.EventType');
 goog.require('goog.fs.FileSaver.ReadyState');
 goog.require('goog.string');
 goog.require('goog.testing.fs.File');
+goog.require('goog.testing.fs.ProgressEvent');
 
 
 
@@ -92,7 +92,7 @@ goog.testing.fs.FileWriter.prototype.position_ = 0;
 
 /**
  * @see {goog.fs.FileSaver#getReadyState}
- * @return {goog.fs.FileSaver.ReadyState}
+ * @return {goog.fs.FileSaver.ReadyState} The ready state.
  */
 goog.testing.fs.FileWriter.prototype.getReadyState = function() {
   return this.readyState_;
@@ -101,7 +101,7 @@ goog.testing.fs.FileWriter.prototype.getReadyState = function() {
 
 /**
  * @see {goog.fs.FileSaver#getError}
- * @return {goog.fs.Error}
+ * @return {goog.fs.Error} The error.
  */
 goog.testing.fs.FileWriter.prototype.getError = function() {
   return this.error_;
@@ -110,7 +110,7 @@ goog.testing.fs.FileWriter.prototype.getError = function() {
 
 /**
  * @see {goog.fs.FileWriter#getPosition}
- * @return {number}
+ * @return {number} The position.
  */
 goog.testing.fs.FileWriter.prototype.getPosition = function() {
   return this.position_;
@@ -119,7 +119,7 @@ goog.testing.fs.FileWriter.prototype.getPosition = function() {
 
 /**
  * @see {goog.fs.FileWriter#getLength}
- * @return {number}
+ * @return {number} The length.
  */
 goog.testing.fs.FileWriter.prototype.getLength = function() {
   return this.file_.size;
@@ -141,7 +141,7 @@ goog.testing.fs.FileWriter.prototype.abort = function() {
 
 /**
  * @see {goog.fs.FileWriter#write}
- * @param {!goog.testing.fs.Blob} blob
+ * @param {!goog.testing.fs.Blob} blob The blob to write.
  */
 goog.testing.fs.FileWriter.prototype.write = function(blob) {
   if (this.readyState_ == goog.fs.FileSaver.ReadyState.WRITING) {
@@ -174,7 +174,7 @@ goog.testing.fs.FileWriter.prototype.write = function(blob) {
 
 /**
  * @see {goog.fs.FileWriter#truncate}
- * @param {number} size
+ * @param {number} size The size to truncate to.
  */
 goog.testing.fs.FileWriter.prototype.truncate = function(size) {
   if (this.readyState_ == goog.fs.FileSaver.ReadyState.WRITING) {
@@ -209,7 +209,7 @@ goog.testing.fs.FileWriter.prototype.truncate = function(size) {
 
 /**
  * @see {goog.fs.FileWriter#seek}
- * @param {number} offset
+ * @param {number} offset The offset to seek to.
  */
 goog.testing.fs.FileWriter.prototype.seek = function(offset) {
   if (this.readyState_ == goog.fs.FileSaver.ReadyState.WRITING) {
@@ -257,65 +257,5 @@ goog.testing.fs.FileWriter.prototype.progressEvent_ = function(
     this.file_.lastModifiedDate = new Date(goog.now());
   }
 
-  this.dispatchEvent(new goog.testing.fs.FileWriter.ProgressEvent(
-      type, loaded, total));
-};
-
-
-
-/**
- * A mock progress event.
- *
- * @param {goog.fs.FileSaver.EventType} type The type of the event.
- * @param {number} loaded The number of bytes processed.
- * @param {number} total The total data that was to be processed, in bytes.
- * @constructor
- * @extends {goog.events.Event}
- */
-goog.testing.fs.FileWriter.ProgressEvent = function(type, loaded, total) {
-  goog.base(this, type);
-
-  /**
-   * The number of bytes processed.
-   * @type {number}
-   * @private
-   */
-  this.loaded_ = loaded;
-
-
-  /**
-   * The total data that was to be procesed, in bytes.
-   * @type {number}
-   * @private
-   */
-  this.total_ = total;
-};
-goog.inherits(goog.testing.fs.FileWriter.ProgressEvent, goog.events.Event);
-
-
-/**
- * @see {goog.fs.FileSaver.ProgressEvent#isLengthComputable}
- * @return {boolean}
- */
-goog.testing.fs.FileWriter.ProgressEvent.prototype.isLengthComputable =
-    function() {
-  return true;
-};
-
-
-/**
- * @see {goog.fs.FileSaver.ProgressEvent#getLoaded}
- * @return {number}
- */
-goog.testing.fs.FileWriter.ProgressEvent.prototype.getLoaded = function() {
-  return this.loaded_;
-};
-
-
-/**
- * @see {goog.fs.FileSaver.ProgressEvent#getTotal}
- * @return {number}
- */
-goog.testing.fs.FileWriter.ProgressEvent.prototype.getTotal = function() {
-  return this.total_;
+  this.dispatchEvent(new goog.testing.fs.ProgressEvent(type, loaded, total));
 };

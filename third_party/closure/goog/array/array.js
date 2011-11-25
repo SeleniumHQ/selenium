@@ -161,14 +161,14 @@ goog.array.lastIndexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
  *
  * @param {goog.array.ArrayLike} arr Array or array like object over
  *     which to iterate.
- * @param {Function} f The function to call for every element. This function
- *     takes 3 arguments (the element, the index and the array). The return
- *     value is ignored. The function is called only for indexes of the array
- *     which have assigned values; it is not called for indexes which have
- *     been deleted or which have never been assigned values.
- *
- * @param {Object=} opt_obj The object to be used as the value of 'this'
+ * @param {?function(this: T, ...)} f The function to call for every element.
+ *     This function takes 3 arguments (the element, the index and the array).
+ *     The return value is ignored. The function is called only for indexes of
+ *     the array which have assigned values; it is not called for indexes which
+ *     have been deleted or which have never been assigned values.
+ * @param {T=} opt_obj The object to be used as the value of 'this'
  *     within f.
+ * @template T
  */
 goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
                      goog.array.ARRAY_PROTOTYPE_.forEach ?
@@ -1106,6 +1106,32 @@ goog.array.equals = function(arr1, arr2, opt_equalsFn) {
  */
 goog.array.compare = function(arr1, arr2, opt_equalsFn) {
   return goog.array.equals(arr1, arr2, opt_equalsFn);
+};
+
+
+/**
+ * 3-way array compare function.
+ * @param {!goog.array.ArrayLike} arr1 The first array to compare.
+ * @param {!goog.array.ArrayLike} arr2 The second array to compare.
+ * @param {(function(*, *): number)=} opt_compareFn Optional comparison function
+ *     by which the array is to be ordered. Should take 2 arguments to compare,
+ *     and return a negative number, zero, or a positive number depending on
+ *     whether the first argument is less than, equal to, or greater than the
+ *     second.
+ * @return {number} Negative number, zero, or a positive number depending on
+ *     whether the first argument is less than, equal to, or greater than the
+ *     second.
+ */
+goog.array.compare3 = function(arr1, arr2, opt_compareFn) {
+  var compare = opt_compareFn || goog.array.defaultCompare;
+  var l = Math.min(arr1.length, arr2.length);
+  for (var i = 0; i < l; i++) {
+    var result = compare(arr1[i], arr2[i]);
+    if (result != 0) {
+      return result;
+    }
+  }
+  return goog.array.defaultCompare(arr1.length, arr2.length);
 };
 
 

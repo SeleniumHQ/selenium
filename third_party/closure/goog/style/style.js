@@ -94,7 +94,7 @@ goog.style.getStyle = function(element, property) {
 /**
  * Retrieves a computed style value of a node. It returns empty string if the
  * value cannot be computed (which will be the case in Internet Explorer) or
- * "none" if the property requested is a SVG one and it has not been
+ * "none" if the property requested is an SVG one and it has not been
  * explicitly set (firefox and webkit).
  *
  * @param {Element} element Element to get style of.
@@ -290,7 +290,7 @@ goog.style.getClientViewportElement = function(opt_node) {
   }
 
   // In old IE versions the document.body represented the viewport
-  if (goog.userAgent.IE && !goog.userAgent.isVersion(9) &&
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(9) &&
       !goog.dom.getDomHelper(doc).isCss1CompatMode()) {
     return doc.body;
   }
@@ -379,7 +379,7 @@ goog.style.getOffsetParent = function(element) {
 
 /**
  * Calculates and returns the visible rectangle for a given element. Returns a
- * box describing the visible portion of the nearest scrollable ancestor.
+ * box describing the visible portion of the nearest scrollable offset ancestor.
  * Coordinates are given relative to the document.
  *
  * @param {Element} element Element to get the visible rect for.
@@ -390,8 +390,8 @@ goog.style.getVisibleRectForElement = function(element) {
   var visibleRect = new goog.math.Box(0, Infinity, Infinity, 0);
   var dom = goog.dom.getDomHelper(element);
   var body = dom.getDocument().body;
+  var documentElement = dom.getDocument().documentElement;
   var scrollEl = dom.getDocumentScrollElement();
-  var inContainer;
 
   // Determine the size of the visible rect by climbing the dom accounting for
   // all scrollable containers.
@@ -400,9 +400,11 @@ goog.style.getVisibleRectForElement = function(element) {
     // on WEBKIT, body element can have clientHeight = 0 and scrollHeight > 0
     if ((!goog.userAgent.IE || el.clientWidth != 0) &&
         (!goog.userAgent.WEBKIT || el.clientHeight != 0 || el != body) &&
-        (el.scrollWidth != el.clientWidth ||
-         el.scrollHeight != el.clientHeight) &&
-        goog.style.getStyle_(el, 'overflow') != 'visible') {
+        // body may have overflow set on it, yet we still get the entire
+        // viewport. In some browsers, el.offsetParent may be
+        // document.documentElement, so check for that too.
+        (el != body && el != documentElement &&
+            goog.style.getStyle_(el, 'overflow') != 'visible')) {
       var pos = goog.style.getPageOffset(el);
       var client = goog.style.getClientLeftTop(el);
       pos.x += client.x;
@@ -414,32 +416,16 @@ goog.style.getVisibleRectForElement = function(element) {
       visibleRect.bottom = Math.min(visibleRect.bottom,
                                     pos.y + el.clientHeight);
       visibleRect.left = Math.max(visibleRect.left, pos.x);
-      // TODO(user): We may want to check whether the current element is
-      // the document element or the body element, in case somebody sets
-      // overflow on the body element in CSS.
-      inContainer = inContainer || el != scrollEl;
     }
   }
 
-  // Compensate for document scroll in non webkit browsers.
+  // Clip by window's viewport.
   var scrollX = scrollEl.scrollLeft, scrollY = scrollEl.scrollTop;
-  if (goog.userAgent.WEBKIT) {
-    visibleRect.left += scrollX;
-    visibleRect.top += scrollY;
-  } else {
-    visibleRect.left = Math.max(visibleRect.left, scrollX);
-    visibleRect.top = Math.max(visibleRect.top, scrollY);
-  }
-  if (!inContainer || goog.userAgent.WEBKIT) {
-    visibleRect.right += scrollX;
-    visibleRect.bottom += scrollY;
-  }
-
-  // Clip by the window's viewport.
+  visibleRect.left = Math.max(visibleRect.left, scrollX);
+  visibleRect.top = Math.max(visibleRect.top, scrollY);
   var winSize = dom.getViewportSize();
   visibleRect.right = Math.min(visibleRect.right, scrollX + winSize.width);
   visibleRect.bottom = Math.min(visibleRect.bottom, scrollY + winSize.height);
-
   return visibleRect.top >= 0 && visibleRect.left >= 0 &&
          visibleRect.bottom > visibleRect.top &&
          visibleRect.right > visibleRect.left ?
@@ -451,7 +437,7 @@ goog.style.getVisibleRectForElement = function(element) {
  * Changes the scroll position of {@code container} with the minimum amount so
  * that the content and the borders of the given {@code element} become visible.
  * If the element is bigger than the container, its top left corner will be
- * aligned to the container's top left corner.
+ * aligned as close to the container's top left corner as possible.
  *
  * @param {Element} element The element to make visible.
  * @param {Element} container The container to scroll.
@@ -868,12 +854,12 @@ goog.style.setWidth = function(element, width) {
  * Gets the height and width of an element, even if its display is none.
  * Specifically, this returns the height and width of the border box,
  * irrespective of the box model in effect.
- * @param {Element} element Element to get width of.
+ * @param {Element} element Element to get size of.
  * @return {!goog.math.Size} Object with width/height properties.
  */
 goog.style.getSize = function(element) {
   if (goog.style.getStyle_(element, 'display') != 'none') {
-    return new goog.math.Size(element.offsetWidth, element.offsetHeight);
+    return goog.style.getSizeWithDisplay_(element);
   }
 
   var style = element.style;
@@ -885,14 +871,39 @@ goog.style.getSize = function(element) {
   style.position = 'absolute';
   style.display = 'inline';
 
-  var originalWidth = element.offsetWidth;
-  var originalHeight = element.offsetHeight;
+  var size = goog.style.getSizeWithDisplay_(element);
 
   style.display = originalDisplay;
   style.position = originalPosition;
   style.visibility = originalVisibility;
 
-  return new goog.math.Size(originalWidth, originalHeight);
+  return size;
+};
+
+
+/**
+ * Gets the height and with of an element when the display is not none.
+ * @param {Element} element Element to get size of.
+ * @return {!goog.math.Size} Object with width/height properties.
+ * @private
+ */
+goog.style.getSizeWithDisplay_ = function(element) {
+  var offsetWidth = element.offsetWidth;
+  var offsetHeight = element.offsetHeight;
+  var webkitOffsetsZero =
+      goog.userAgent.WEBKIT && !offsetWidth && !offsetHeight;
+  if ((!goog.isDef(offsetWidth) || webkitOffsetsZero) &&
+      element.getBoundingClientRect) {
+    // Fall back to calling getBoundingClientRect when offsetWidth or
+    // offsetHeight are not defined, or when they are zero in WebKit browsers.
+    // This makes sure that we return for the correct size for SVG elements, but
+    // will still return 0 on Webkit prior to 534.8, see
+    // http://trac.webkit.org/changeset/67252.
+    var clientRect = goog.style.getBoundingClientRect_(element);
+    return new goog.math.Size(clientRect.right - clientRect.left,
+        clientRect.bottom - clientRect.top);
+  }
+  return new goog.math.Size(offsetWidth, offsetHeight);
 };
 
 
@@ -1771,15 +1782,27 @@ goog.style.getFloat = function(el) {
  * Returns the scroll bar width (represents the width of both horizontal
  * and vertical scroll).
  *
+ * @param {string=} opt_className An optional class name (or names) to apply
+ *     to the invisible div created to measure the scrollbar. This is necessary
+ *     if some scrollbars are styled differently than others.
  * @return {number} The scroll bar width in px.
  */
-goog.style.getScrollbarWidth = function() {
-  // Add a div outside of the viewport.
-  var mockElement = goog.dom.createElement('div');
-  mockElement.style.cssText = 'visibility:hidden;overflow:scroll;' +
+goog.style.getScrollbarWidth = function(opt_className) {
+  // Add two hidden divs.  The child div is larger than the parent and
+  // forces scrollbars to appear on it.
+  // Using overflow:scroll does not work consistently with scrollbars that
+  // are styled with ::-webkit-scrollbar.
+  var outerDiv = goog.dom.createElement('div');
+  if (opt_className) {
+    outerDiv.className = opt_className;
+  }
+  outerDiv.style.cssText = 'visiblity:hidden;overflow:auto;' +
       'position:absolute;top:0;width:100px;height:100px';
-  goog.dom.appendChild(goog.dom.getDocument().body, mockElement);
-  var width = mockElement.offsetWidth - mockElement.clientWidth;
-  goog.dom.removeNode(mockElement);
+  var innerDiv = goog.dom.createElement('div');
+  goog.style.setSize(innerDiv, '200px', '200px');
+  outerDiv.appendChild(innerDiv);
+  goog.dom.appendChild(goog.dom.getDocument().body, outerDiv);
+  var width = outerDiv.offsetWidth - outerDiv.clientWidth;
+  goog.dom.removeNode(outerDiv);
   return width;
 };

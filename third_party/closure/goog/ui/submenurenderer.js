@@ -57,6 +57,15 @@ goog.ui.SubMenuRenderer.CSS_CLASS = goog.getCssName('goog-submenu');
 
 
 /**
+ * The CSS class for submenus that displays the submenu arrow.
+ * @type {string}
+ * @private
+ */
+goog.ui.SubMenuRenderer.CSS_CLASS_SUBMENU_ =
+    goog.getCssName('goog-submenu-arrow');
+
+
+/**
  * Overrides {@link goog.ui.MenuItemRenderer#createDom} by adding
  * the additional class 'goog-submenu' to the created element,
  * and passes the element to {@link goog.ui.SubMenuItemRenderer#addArrow_}
@@ -109,6 +118,31 @@ goog.ui.SubMenuRenderer.prototype.decorate = function(subMenu, element) {
 
 
 /**
+ * Takes a menu item's root element, and sets its content to the given text
+ * caption or DOM structure.  Overrides the superclass immplementation by
+ * making sure that the submenu arrow structure is preserved.
+ * @param {Element} element The item's root element.
+ * @param {goog.ui.ControlContent} content Text caption or DOM structure to be
+ *     set as the item's content.
+ * @override
+ */
+goog.ui.SubMenuRenderer.prototype.setContent = function(element, content) {
+  // Save the submenu arrow element, if present.
+  var contentElement = this.getContentElement(element);
+  var arrowElement = contentElement && contentElement.lastChild;
+  goog.ui.SubMenuRenderer.superClass_.setContent.call(this, element, content);
+  // If the arrowElement was there, is no longer there, and really was an arrow,
+  // reappend it.
+  if (arrowElement &&
+      contentElement.lastChild != arrowElement &&
+      goog.dom.classes.has(arrowElement,
+          goog.ui.SubMenuRenderer.CSS_CLASS_SUBMENU_)) {
+    contentElement.appendChild(arrowElement);
+  }
+};
+
+
+/**
  * Overrides {@link goog.ui.MenuItemRenderer#initializeDom} to tweak
  * the DOM structure for the span.goog-submenu-arrow element
  * depending on the text direction (LTR or RTL). When the SubMenu is RTL
@@ -123,7 +157,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function(subMenu) {
   goog.ui.SubMenuRenderer.superClass_.initializeDom.call(this, subMenu);
   var element = subMenu.getContentElement();
   var arrow = subMenu.getDomHelper().getElementsByTagNameAndClass(
-      'span', goog.getCssName('goog-submenu-arrow'), element)[0];
+      'span', goog.ui.SubMenuRenderer.CSS_CLASS_SUBMENU_, element)[0];
   goog.ui.SubMenuRenderer.setArrowTextContent_(subMenu, arrow);
   if (arrow != element.lastChild) {
     element.appendChild(arrow);
@@ -142,7 +176,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function(subMenu) {
  */
 goog.ui.SubMenuRenderer.prototype.addArrow_ = function(subMenu, element) {
   var arrow = subMenu.getDomHelper().createDom('span');
-  arrow.className = goog.getCssName('goog-submenu-arrow');
+  arrow.className = goog.ui.SubMenuRenderer.CSS_CLASS_SUBMENU_;
   goog.ui.SubMenuRenderer.setArrowTextContent_(subMenu, arrow);
   this.getContentElement(element).appendChild(arrow);
 };

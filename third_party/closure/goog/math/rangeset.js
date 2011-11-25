@@ -239,6 +239,25 @@ goog.math.RangeSet.prototype.union = function(set) {
 
 
 /**
+ * Subtracts the ranges of another set from this one, returning the result
+ * as a new RangeSet.
+ *
+ * @param {!goog.math.RangeSet} set The RangeSet to subtract.
+ * @return {!goog.math.RangeSet} A new RangeSet containing all values in this
+ *     set minus the values of the input set.
+ */
+goog.math.RangeSet.prototype.difference = function(set) {
+  var ret = this.clone();
+
+  for (var i = 0, a; a = set.ranges_[i]; i++) {
+    ret.remove(a);
+  }
+
+  return ret;
+};
+
+
+/**
  * Intersects this RangeSet with another.
  *
  * @param {goog.math.RangeSet} set The RangeSet to intersect with.
@@ -250,14 +269,7 @@ goog.math.RangeSet.prototype.intersection = function(set) {
     return new goog.math.RangeSet();
   }
 
-  set = set.inverse(this.getBounds());
-  var r = this.clone();
-
-  for (var i = 0, a; a = set.ranges_[i]; i++) {
-    r.remove(a);
-  }
-
-  return r;
+  return this.difference(set.inverse(this.getBounds()));
 };
 
 
@@ -313,6 +325,18 @@ goog.math.RangeSet.prototype.inverse = function(range) {
   }
 
   return set;
+};
+
+
+/**
+ * @return {number} The sum of the lengths of ranges covered in the set.
+ */
+goog.math.RangeSet.prototype.coveredLength = function() {
+  return /** @type {number} */ (goog.array.reduce(
+      this.ranges_,
+      function(res, range) {
+        return res + range.end - range.start;
+      }, 0));
 };
 
 

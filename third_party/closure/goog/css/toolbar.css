@@ -18,7 +18,7 @@
 
 .goog-toolbar {
   /* Client apps may override the URL at which they serve the image. */
-  background: #fafafa url(https://ssl.gstatic.com/editor/toolbar-bg.png) repeat-x bottom left;
+  background: #fafafa url(//ssl.gstatic.com/editor/toolbar-bg.png) repeat-x bottom left;
   border-bottom: 1px solid #d5d5d5;
   cursor: default;
   font: normal 12px Arial, sans-serif;
@@ -353,7 +353,7 @@
 .goog-toolbar-menu-button-dropdown {
   width: 7px;
   /* Client apps may override the URL at which they serve the sprite. */
-  background: url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
   vertical-align: middle;
 }
 

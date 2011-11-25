@@ -158,7 +158,7 @@ goog.async.Throttle.prototype.resume = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.async.Throttle.prototype.disposeInternal = function() {
   goog.async.Throttle.superClass_.disposeInternal.call(this);
   this.stop();

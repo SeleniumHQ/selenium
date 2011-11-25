@@ -104,7 +104,7 @@ goog.dom.NodeOffset.prototype.findTargetNode = function(baseNode) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.dom.NodeOffset.prototype.disposeInternal = function() {
   delete this.offsetStack_;
   delete this.nameStack_;

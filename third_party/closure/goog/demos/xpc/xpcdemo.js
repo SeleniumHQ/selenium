@@ -28,6 +28,13 @@ goog.require('goog.net.xpc.CrossPageChannel');
 
 
 /**
+ * Namespace for the demo. We don't use goog.provide here because it's not a
+ * real module (cannot be required).
+ */
+var xpcdemo = {};
+
+
+/**
  * Global function to kick off initialization in the containing document.
  */
 goog.global.initOuter = function() {
@@ -41,13 +48,6 @@ goog.global.initOuter = function() {
 goog.global.initInner = function() {
   goog.events.listen(window, 'load', function() { xpcdemo.initInner(); });
 };
-
-
-/**
- * Namespace for the demo. We don't use goog.provide here because it's not a
- * real module (cannot be required).
- */
-xpcdemo = {};
 
 
 /**

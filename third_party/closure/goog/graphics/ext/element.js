@@ -686,9 +686,7 @@ goog.graphics.ext.Element.prototype.getPixelScaleY = function() {
 // EVENT HANDLING
 
 
-/**
- * Unattaches listeners from this element.
- */
+/** @override */
 goog.graphics.ext.Element.prototype.disposeInternal = function() {
   goog.graphics.ext.Element.superClass_.disposeInternal.call();
   this.wrapper_.dispose();

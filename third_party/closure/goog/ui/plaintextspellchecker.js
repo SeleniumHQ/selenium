@@ -163,7 +163,7 @@ goog.ui.PlainTextSpellChecker.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.PlainTextSpellChecker.prototype.exitDocument = function() {
   goog.ui.PlainTextSpellChecker.superClass_.exitDocument.call(this);
 
@@ -522,7 +522,7 @@ goog.ui.PlainTextSpellChecker.prototype.positionOverlay_ = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.PlainTextSpellChecker.prototype.disposeInternal = function() {
   this.getDomHelper().removeNode(this.overlay_);
   delete this.overlay_;

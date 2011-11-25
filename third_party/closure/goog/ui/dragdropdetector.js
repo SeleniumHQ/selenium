@@ -557,7 +557,7 @@ goog.ui.DragDropDetector.prototype.handleNodeInserted_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.DragDropDetector.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
   this.handler_.dispose();

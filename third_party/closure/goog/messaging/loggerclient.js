@@ -122,7 +122,7 @@ goog.messaging.LoggerClient.prototype.sendLog_ = function(logRecord) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.LoggerClient.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
   goog.debug.LogManager.getRoot().removeHandler(this.publishHandler_);

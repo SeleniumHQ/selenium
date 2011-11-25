@@ -30,6 +30,7 @@ goog.require('goog.editor.range');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.editor.messages');
+goog.require('goog.uri.utils');
 goog.require('goog.window');
 
 
@@ -57,6 +58,13 @@ goog.editor.plugins.LinkBubble = function(var_args) {
    * @private
    */
   this.actionSpans_ = [];
+
+  /**
+   * A list of whitelisted URL schemes which are safe to open.
+   * @type {Array.<string>}
+   * @private
+   */
+  this.safeToOpenSchemes_ = ['http', 'https', 'ftp'];
 };
 goog.inherits(goog.editor.plugins.LinkBubble,
     goog.editor.plugins.AbstractBubblePlugin);
@@ -155,6 +163,15 @@ goog.editor.plugins.LinkBubble.prototype.stopReferrerLeaks_ = false;
 
 
 /**
+ * Whether to block opening links with a non-whitelisted URL scheme.
+ * @type {boolean}
+ * @private
+ */
+goog.editor.plugins.LinkBubble.prototype.blockOpeningUnsafeSchemes_ =
+    true;
+
+
+/**
  * Tells the plugin to stop leaking the page's url via the referrer header when
  * the link text link is clicked. When the user clicks on a link, the
  * browser makes a request for the link url, passing the url of the current page
@@ -167,18 +184,46 @@ goog.editor.plugins.LinkBubble.prototype.stopReferrerLeaks_ = false;
 goog.editor.plugins.LinkBubble.prototype.stopReferrerLeaks = function() {
   // TODO(user): Right now only 2 plugins have this API to stop
   // referrer leaks. If more plugins need to do this, come up with a way to
-  // enable the functionality in all plugins at once.
+  // enable the functionality in all plugins at once. Same thing for
+  // setBlockOpeningUnsafeSchemes and associated functionality.
   this.stopReferrerLeaks_ = true;
 };
 
 
-/** @inheritDoc */
+/**
+ * Tells the plugin whether to block URLs with schemes not in the whitelist.
+ * If blocking is enabled, this plugin will not linkify the link in the bubble
+ * popup.
+ * @param {boolean} blockOpeningUnsafeSchemes Whether to block non-whitelisted
+ *     schemes.
+ */
+goog.editor.plugins.LinkBubble.prototype.setBlockOpeningUnsafeSchemes =
+    function(blockOpeningUnsafeSchemes) {
+  this.blockOpeningUnsafeSchemes_ = blockOpeningUnsafeSchemes;
+};
+
+
+/**
+ * Sets a whitelist of allowed URL schemes that are safe to open.
+ * Schemes should all be in lowercase. If the plugin is set to block opening
+ * unsafe schemes, user-entered URLs will be converted to lowercase and checked
+ * against this list. The whitelist has no effect if blocking is not enabled.
+ * @param {Array.<String>} schemes String array of URL schemes to allow (http,
+ *     https, etc.).
+ */
+goog.editor.plugins.LinkBubble.prototype.setSafeToOpenSchemes =
+    function(schemes) {
+  this.safeToOpenSchemes_ = schemes;
+};
+
+
+/** @override */
 goog.editor.plugins.LinkBubble.prototype.getTrogClassId = function() {
   return 'LinkBubble';
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.LinkBubble.prototype.getBubbleTargetFromSelection =
     function(selectedElement) {
   var bubbleTarget = goog.dom.getAncestorByTagNameAndClass(selectedElement,
@@ -230,19 +275,19 @@ goog.editor.plugins.LinkBubble.prototype.getTargetUrl = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.LinkBubble.prototype.getBubbleType = function() {
   return goog.dom.TagName.A;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.LinkBubble.prototype.getBubbleTitle = function() {
   return goog.ui.editor.messages.MSG_LINK_CAPTION;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
     bubbleContainer) {
   var linkObj = this.getLinkToTextObj_();
@@ -252,9 +297,10 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
   // create a link if URL.  Only linkify valid links.
   // TODO(robbyw): Repalce this color with a CSS class.
   var color = linkObj.valid ? 'black' : 'red';
+  var shouldOpenUrl = this.shouldOpenUrl(linkObj.linkText);
   var linkTextSpan;
   if (goog.editor.Link.isLikelyEmailAddress(linkObj.linkText) ||
-      !linkObj.valid) {
+      !linkObj.valid || !shouldOpenUrl) {
     linkTextSpan = this.dom_.createDom(goog.dom.TagName.SPAN,
         {
           id: goog.editor.plugins.LinkBubble.LINK_TEXT_ID_,
@@ -433,6 +479,31 @@ goog.editor.plugins.LinkBubble.prototype.onShow = function() {
 goog.editor.plugins.LinkBubble.prototype.getTestLinkAction_ = function() {
   var targetUrl = this.getTargetUrl();
   return this.testLinkUrlFn_ ? this.testLinkUrlFn_(targetUrl) : targetUrl;
+};
+
+
+/**
+ * Checks whether the plugin should open the given url in a new window.
+ * @param {string} url The url to check.
+ * @return {boolean} If the plugin should open the given url in a new window.
+ * @protected
+ */
+goog.editor.plugins.LinkBubble.prototype.shouldOpenUrl = function(url) {
+  return !this.blockOpeningUnsafeSchemes_ || this.isSafeSchemeToOpen_(url);
+};
+
+
+/**
+ * Determines whether or not a url has a scheme which is safe to open.
+ * Schemes like javascript are unsafe due to the possibility of XSS.
+ * @param {string} url A url.
+ * @return {boolean} Whether the url has a safe scheme.
+ * @private
+ */
+goog.editor.plugins.LinkBubble.prototype.isSafeSchemeToOpen_ =
+    function(url) {
+  var scheme = goog.uri.utils.getScheme(url) || 'http';
+  return goog.array.contains(this.safeToOpenSchemes_, scheme.toLowerCase());
 };
 
 

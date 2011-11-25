@@ -66,7 +66,7 @@ goog.ui.CustomColorPalette.prototype.createColorNodes_ = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  * @param {goog.events.Event} e Mouse or key event that triggered the action.
  * @return {boolean} True if the action was allowed to proceed, false otherwise.
  */

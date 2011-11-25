@@ -25,6 +25,7 @@ goog.provide('goog.ui.media.MediaModel.Credit.Scheme');
 goog.provide('goog.ui.media.MediaModel.Medium');
 goog.provide('goog.ui.media.MediaModel.MimeType');
 goog.provide('goog.ui.media.MediaModel.Player');
+goog.provide('goog.ui.media.MediaModel.SubTitle');
 goog.provide('goog.ui.media.MediaModel.Thumbnail');
 
 goog.require('goog.array');
@@ -143,6 +144,13 @@ goog.ui.media.MediaModel = function(opt_url,
    * @private
    */
   this.credits_ = [];
+
+  /**
+   * The list of subtitles for the media object.
+   * @type {Array.<goog.ui.media.MediaModel.SubTitle>}
+   * @private
+   */
+  this.subTitles_ = [];
 };
 
 
@@ -459,6 +467,26 @@ goog.ui.media.MediaModel.prototype.findCreditWithRole = function(role) {
     return role == credit.getRole();
   });
   return /** @type {goog.ui.media.MediaModel.Credit} */ (credit);
+};
+
+
+/**
+ * Gets the subtitles for the media.
+ * @return {Array.<goog.ui.media.MediaModel.SubTitle>} The subtitles.
+ */
+goog.ui.media.MediaModel.prototype.getSubTitles = function() {
+  return this.subTitles_;
+};
+
+
+/**
+ * Sets the subtitles for the media
+ * @param {Array.<goog.ui.media.MediaModel.SubTitle>} subtitles The subtitles.
+ * @return {!goog.ui.media.MediaModel} The object itself.
+ */
+goog.ui.media.MediaModel.prototype.setSubTitles = function(subtitles) {
+  this.subTitles_ = subtitles;
+  return this;
 };
 
 
@@ -837,4 +865,99 @@ goog.ui.media.MediaModel.Credit.prototype.getScheme = function() {
 goog.ui.media.MediaModel.Credit.prototype.setScheme = function(scheme) {
   this.scheme_ = scheme;
   return this;
+};
+
+
+
+/**
+ * A reference to the subtitle URI for a media object.
+ * Implements the 'media.subTitle' in the rss spec.
+ *
+ * @param {string} href The subtitle's URI.
+ *     to fetch the subtitle file.
+ * @param {string} lang An RFC 3066 language.
+ * @param {string} type The MIME type of the URI.
+ * @constructor
+ */
+goog.ui.media.MediaModel.SubTitle = function(href, lang, type) {
+  /**
+   * The subtitle href.
+   * @type {string}
+   * @private
+   */
+  this.href_ = href;
+
+  /**
+   * The RFC 3066 language.
+   * @type {string}
+   * @private
+   */
+  this.lang_ = lang;
+
+  /**
+   * The MIME type of the resource.
+   * @type {string}
+   * @private
+   */
+  this.type_ = type;
+};
+
+
+/**
+ * Sets the href for the subtitle object.
+ * @param {string} href The subtitle's URI.
+ * @return {goog.ui.media.MediaModel.SubTitle} The object itself.
+ */
+goog.ui.media.MediaModel.SubTitle.prototype.setHref = function(href) {
+  this.href_ = href;
+  return this;
+};
+
+
+/**
+ * Get the href for the subtitle object.
+ * @return {string} href The subtitle's URI.
+ */
+goog.ui.media.MediaModel.SubTitle.prototype.getHref = function() {
+  return this.href_;
+};
+
+
+/**
+ * Sets the language for the subtitle object.
+ * @param {string} lang The RFC 3066 language.
+ * @return {goog.ui.media.MediaModel.SubTitle} The object itself.
+ */
+goog.ui.media.MediaModel.SubTitle.prototype.setLang = function(lang) {
+  this.lang_ = lang;
+  return this;
+};
+
+
+/**
+ * Get the lang for the subtitle object.
+ * @return {string} lang The RFC 3066 language.
+ */
+goog.ui.media.MediaModel.SubTitle.prototype.getLang = function() {
+  return this.lang_;
+};
+
+
+/**
+ * Sets the type for the subtitle object.
+ * @param {string} type The MIME type.
+ * @return {goog.ui.media.MediaModel.SubTitle} The object itself.
+ */
+goog.ui.media.MediaModel.SubTitle.prototype.setType = function(type) {
+  this.type_ = type;
+  return this;
+};
+
+
+/**
+ * Get the type for the subtitle object.
+ * @return {string} type The MIME type.
+ */
+goog.ui.media.MediaModel.SubTitle.prototype.getType = function() {
+  return this.type_;
 };

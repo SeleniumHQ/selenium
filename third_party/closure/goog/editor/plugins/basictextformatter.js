@@ -51,7 +51,7 @@ goog.editor.plugins.BasicTextFormatter = function() {
 goog.inherits(goog.editor.plugins.BasicTextFormatter, goog.editor.Plugin);
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.BasicTextFormatter.prototype.getTrogClassId = function() {
   return 'BTF';
 };
@@ -316,7 +316,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.execCommandInternal = function(
        * goog.editor.plugins.BasicTextFormatter.COMMAND.FONT_SIZE:
        * goog.editor.plugins.BasicTextFormatter.COMMAND.FONT_FACE:
        */
-      this.execCommandHelper_(command, opt_arg, preserveDir, styleWithCss);
+      this.execCommandHelper_(command, opt_arg, preserveDir, !!styleWithCss);
 
       if (hasDummySelection) {
         this.getDocument_().execCommand('Delete', false, true);
@@ -413,7 +413,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.queryCommandValue = function(
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.BasicTextFormatter.prototype.prepareContentsHtml =
     function(html) {
@@ -436,7 +436,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.prepareContentsHtml =
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsDom =
     function(fieldCopy) {
@@ -465,7 +465,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsDom =
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsHtml =
     function(html) {
@@ -493,7 +493,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsHtml =
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.editor.plugins.BasicTextFormatter.prototype.handleKeyboardShortcut =
     function(e, key, isModifierPressed) {

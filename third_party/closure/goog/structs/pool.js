@@ -362,6 +362,8 @@ goog.structs.Pool.prototype.isEmpty = function() {
 
 /**
  * Disposes of the pool and all objects currently held in the pool.
+ * @override
+ * @protected
  */
 goog.structs.Pool.prototype.disposeInternal = function() {
   goog.structs.Pool.superClass_.disposeInternal.call(this);

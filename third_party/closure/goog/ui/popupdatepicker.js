@@ -85,7 +85,7 @@ goog.ui.PopupDatePicker.prototype.lastTarget_ = null;
 goog.ui.PopupDatePicker.prototype.allowAutoFocus_ = true;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.PopupDatePicker.prototype.createDom = function() {
   goog.ui.PopupDatePicker.superClass_.createDom.call(this);
   this.getElement().className = goog.getCssName('goog-popupdatepicker');
@@ -93,7 +93,7 @@ goog.ui.PopupDatePicker.prototype.createDom = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.PopupDatePicker.prototype.enterDocument = function() {
   goog.ui.PopupDatePicker.superClass_.enterDocument.call(this);
   // Create the DatePicker, if it isn't already.
@@ -111,7 +111,7 @@ goog.ui.PopupDatePicker.prototype.enterDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.PopupDatePicker.prototype.disposeInternal = function() {
   goog.ui.PopupDatePicker.superClass_.disposeInternal.call(this);
   if (this.popup_) {

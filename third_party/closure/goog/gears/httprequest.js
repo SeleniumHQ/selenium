@@ -24,6 +24,7 @@ goog.provide('goog.gears.HttpRequest');
 
 goog.require('goog.Timer');
 goog.require('goog.gears');
+goog.require('goog.net.WrapperXmlHttpFactory');
 goog.require('goog.net.XmlHttp');
 
 
@@ -33,8 +34,10 @@ goog.require('goog.net.XmlHttp');
  */
 goog.gears.HttpRequest.setup = function() {
   // Set the XmlHttp factory.
-  goog.net.XmlHttp.setFactory(
-      goog.gears.HttpRequest.factory_, goog.gears.HttpRequest.optionsFactory_);
+  goog.net.XmlHttp.setGlobalFactory(
+      new goog.net.WrapperXmlHttpFactory(
+          goog.gears.HttpRequest.factory_,
+          goog.gears.HttpRequest.optionsFactory_));
 
   // Use the Gears timer as the default timer object to ensure that the XhrIo
   // timeouts function in the Workers.
@@ -45,7 +48,7 @@ goog.gears.HttpRequest.setup = function() {
 
 /**
  * The factory for creating Gears HttpRequest's.
- * @return {XMLHttpRequest} The request object.
+ * @return {!(GearsHttpRequest|XMLHttpRequest)} The request object.
  * @private
  */
 goog.gears.HttpRequest.factory_ = function() {
@@ -55,7 +58,7 @@ goog.gears.HttpRequest.factory_ = function() {
 
 /**
  * The options object for the Gears HttpRequest.
- * @type {Object}
+ * @type {!Object}
  * @private
  */
 goog.gears.HttpRequest.options_ = {};
@@ -69,7 +72,7 @@ goog.gears.HttpRequest.options_[goog.net.XmlHttp.OptionType.USE_NULL_FUNCTION] =
 
 /**
  * The factory for creating the options object for Gears HttpRequest's.
- * @return {Object} The options.
+ * @return {!Object} The options.
  * @private
  */
 goog.gears.HttpRequest.optionsFactory_ = function() {

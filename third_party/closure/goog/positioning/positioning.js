@@ -255,10 +255,10 @@ goog.positioning.positionAtAnchor = function(anchorElement,
   if (opt_overflow) {
     viewport = goog.style.getVisibleRectForElement(movableElement);
     if (viewport && moveableParentTopLeft) {
-      viewport.top = Math.max(0, viewport.top - moveableParentTopLeft.y);
+      viewport.top = viewport.top - moveableParentTopLeft.y;
       viewport.right -= moveableParentTopLeft.x;
       viewport.bottom -= moveableParentTopLeft.y;
-      viewport.left = Math.max(0, viewport.left - moveableParentTopLeft.x);
+      viewport.left = viewport.left - moveableParentTopLeft.x;
     }
   }
 
@@ -347,7 +347,7 @@ goog.positioning.positionAtCoordinate = function(absolutePos,
   // Adjust position to fit inside viewport.
   if (opt_overflow) {
     status = opt_viewport ?
-        goog.positioning.adjustForViewport(
+        goog.positioning.adjustForViewport_(
             absolutePos, size, opt_viewport, opt_overflow) :
         goog.positioning.OverflowStatus.FAILED_OUTSIDE_VIEWPORT;
     if (status & goog.positioning.OverflowStatus.FAILED) {
@@ -357,7 +357,7 @@ goog.positioning.positionAtCoordinate = function(absolutePos,
 
   goog.style.setPosition(movableElement, absolutePos);
   if (!goog.math.Size.equals(elementSize, size)) {
-    goog.style.setSize(movableElement, size);
+    goog.style.setBorderBoxSize(movableElement, size);
   }
 
   return status;
@@ -378,8 +378,9 @@ goog.positioning.positionAtCoordinate = function(absolutePos,
  *     {@see goog.positioning.Overflow}.
  * @return {goog.positioning.OverflowStatus} Status bitmap,
  *     {@see goog.positioning.OverflowStatus}.
+ * @private
  */
-goog.positioning.adjustForViewport = function(pos, size, viewport, overflow) {
+goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
   var status = goog.positioning.OverflowStatus.NONE;
 
   var ADJUST_X_EXCEPT_OFFSCREEN =
@@ -420,9 +421,9 @@ goog.positioning.adjustForViewport = function(pos, size, viewport, overflow) {
   // specified, ignore it otherwise.
   if (overflow & goog.positioning.Overflow.FAIL_X) {
     status |= (pos.x < viewport.left ?
-                  goog.positioning.OverflowStatus.FAILED_LEFT : 0) |
+                   goog.positioning.OverflowStatus.FAILED_LEFT : 0) |
               (pos.x + size.width > viewport.right ?
-                  goog.positioning.OverflowStatus.FAILED_RIGHT : 0);
+                   goog.positioning.OverflowStatus.FAILED_RIGHT : 0);
   }
 
   // Top edge outside viewport, try to move it.
@@ -450,9 +451,9 @@ goog.positioning.adjustForViewport = function(pos, size, viewport, overflow) {
   // specified, ignore it otherwise.
   if (overflow & goog.positioning.Overflow.FAIL_Y) {
     status |= (pos.y < viewport.top ?
-                  goog.positioning.OverflowStatus.FAILED_TOP : 0) |
+                   goog.positioning.OverflowStatus.FAILED_TOP : 0) |
               (pos.y + size.height > viewport.bottom ?
-                  goog.positioning.OverflowStatus.FAILED_BOTTOM : 0);
+                   goog.positioning.OverflowStatus.FAILED_BOTTOM : 0);
   }
 
   return status;

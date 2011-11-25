@@ -486,7 +486,7 @@ goog.ui.media.FlashObject.prototype.hasRequiredVersion = function() {
 /**
  * Writes the Flash embedding {@code HTMLObjectElement} to this components root
  * element and adds listeners for all events to handle them consistently.
- * @inheritDoc
+ * @override
  */
 goog.ui.media.FlashObject.prototype.enterDocument = function() {
   goog.ui.media.FlashObject.superClass_.enterDocument.call(this);
@@ -530,7 +530,7 @@ goog.ui.media.FlashObject.prototype.enterDocument = function() {
 /**
  * Creates the DOM structure.
  *
- * @inheritDoc
+ * @override
  */
 goog.ui.media.FlashObject.prototype.createDom = function() {
   if (this.hasRequiredVersion() &&
@@ -596,7 +596,7 @@ goog.ui.media.FlashObject.prototype.getFlashElement = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.media.FlashObject.prototype.disposeInternal = function() {
   goog.ui.media.FlashObject.superClass_.disposeInternal.call(this);
   this.flashVars_ = null;

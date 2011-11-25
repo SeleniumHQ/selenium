@@ -63,13 +63,13 @@ goog.inherits(goog.editor.plugins.EnterHandler, goog.editor.Plugin);
 goog.editor.plugins.EnterHandler.prototype.tag = goog.dom.TagName.DIV;
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.EnterHandler.prototype.getTrogClassId = function() {
   return 'EnterHandler';
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.EnterHandler.prototype.enable = function(fieldObject) {
   goog.base(this, 'enable', fieldObject);
 
@@ -260,7 +260,7 @@ goog.editor.plugins.EnterHandler.prototype.deleteBrGecko = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
   // If a dialog doesn't have selectable field, Gecko grabs the event and
   // performs actions in editor window. This solves that problem and allows

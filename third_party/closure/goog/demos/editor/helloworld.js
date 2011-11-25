@@ -40,7 +40,7 @@ goog.demos.editor.HelloWorld = function() {
 goog.inherits(goog.demos.editor.HelloWorld, goog.editor.Plugin);
 
 
-/** @inheritDoc */
+/** @override */
 goog.demos.editor.HelloWorld.prototype.getTrogClassId = function() {
   return 'HelloWorld';
 };
@@ -55,7 +55,7 @@ goog.demos.editor.HelloWorld.COMMAND = {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.demos.editor.HelloWorld.prototype.isSupportedCommand = function(
     command) {
   return command == goog.demos.editor.HelloWorld.COMMAND.HELLO_WORLD;

@@ -23,6 +23,8 @@ goog.provide('goog.ui.AnimatedZippy');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.fx.Animation');
+goog.require('goog.fx.Animation.EventType');
+goog.require('goog.fx.Transition.EventType');
 goog.require('goog.fx.easing');
 goog.require('goog.ui.Zippy');
 goog.require('goog.ui.ZippyEvent');
@@ -50,7 +52,7 @@ goog.ui.AnimatedZippy = function(header, content, opt_expanded) {
   elWrapper.appendChild(elContent);
 
   /**
-   * Contant wrapper, used for animation.
+   * Content wrapper, used for animation.
    * @type {Element}
    * @private
    */
@@ -94,7 +96,7 @@ goog.ui.AnimatedZippy.prototype.animationAcceleration = goog.fx.easing.easeOut;
  * @return {boolean} Whether the zippy is in the process of being expanded or
  *     collapsed.
  */
-goog.ui.Zippy.prototype.isBusy = function() {
+goog.ui.AnimatedZippy.prototype.isBusy = function() {
   return this.anim_ != null;
 };
 
@@ -140,12 +142,12 @@ goog.ui.AnimatedZippy.prototype.setExpanded = function(expanded) {
                                      this.animationDuration,
                                      this.animationAcceleration);
 
-  var events = [goog.fx.Animation.EventType.BEGIN,
+  var events = [goog.fx.Transition.EventType.BEGIN,
                 goog.fx.Animation.EventType.ANIMATE,
-                goog.fx.Animation.EventType.END];
+                goog.fx.Transition.EventType.END];
   goog.events.listen(this.anim_, events, this.onAnimate_, false, this);
   goog.events.listen(this.anim_,
-                     goog.fx.Animation.EventType.END,
+                     goog.fx.Transition.EventType.END,
                      goog.bind(this.onAnimationCompleted_, this, expanded));
 
   // Start animation.

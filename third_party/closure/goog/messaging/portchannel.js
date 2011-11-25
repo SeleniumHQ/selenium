@@ -366,7 +366,7 @@ goog.messaging.PortChannel.prototype.injectPorts_ = function(ports, message) {
   if (goog.isArray(message)) {
     return goog.array.map(message, goog.bind(this.injectPorts_, this, ports));
   } else if (message && message.constructor == Object) {
-    message = /** @type {Object} */ (message);
+    message = /** @type {!Object} */ (message);
     if (message['_port'] && message['_port']['type'] == 'real') {
       return /** @type {!MessagePort} */ (ports[message['_port']['index']]);
     }
@@ -379,7 +379,7 @@ goog.messaging.PortChannel.prototype.injectPorts_ = function(ports, message) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.messaging.PortChannel.prototype.disposeInternal = function() {
   goog.events.unlistenByKey(this.listenerKey_);
   // Can't use instanceof here because MessagePort is undefined in workers and

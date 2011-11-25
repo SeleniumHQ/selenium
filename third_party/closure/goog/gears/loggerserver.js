@@ -144,9 +144,7 @@ goog.gears.LoggerServer.prototype.onCommand_ = function(e) {
 };
 
 
-/**
- * Disposes of the logger server.
- */
+/** @override */
 goog.gears.LoggerServer.prototype.disposeInternal = function() {
   goog.gears.LoggerServer.superClass_.disposeInternal.call(this);
 

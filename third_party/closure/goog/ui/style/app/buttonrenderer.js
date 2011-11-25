@@ -88,7 +88,7 @@ goog.ui.style.app.ButtonRenderer.prototype.createDom =
     goog.ui.style.app.ButtonRenderer.superClass_.createDom;
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.ButtonRenderer.prototype.getContentElement = function(
     element) {
   return element && /** @type {Element} */(
@@ -174,20 +174,20 @@ goog.ui.style.app.ButtonRenderer.prototype.hasBoxStructure = function(
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.ButtonRenderer.prototype.getCssClass = function() {
   return goog.ui.style.app.ButtonRenderer.CSS_CLASS;
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.ButtonRenderer.prototype.getStructuralCssClass = function() {
   // TODO(user): extract to a constant.
   return goog.getCssName('goog-button-base');
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.style.app.ButtonRenderer.prototype.getIe6ClassCombinations =
     function() {
   return goog.ui.style.app.ButtonRenderer.IE6_CLASS_COMBINATIONS;

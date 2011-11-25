@@ -13,13 +13,13 @@
  * Styles used by goog.ui.TabBarRenderer.
  */
 .goog-tab-bar {
-  border: 0;
-  cursor: default;
-  list-style: none;
   margin: 0;
-  outline: none;
+  border: 0;
   padding: 0;
-  position: relative;
+  list-style: none;
+  cursor: default;
+  outline: none;
+  background: #ebeff9;
 }
 
 .goog-tab-bar-clear {

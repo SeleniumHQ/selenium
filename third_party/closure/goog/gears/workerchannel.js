@@ -94,7 +94,7 @@ goog.gears.WorkerChannel.prototype.logger =
 
 
 /**
- * @inheritDoc
+ * @override
  */
 goog.gears.WorkerChannel.prototype.send =
     function(serviceName, payload) {
@@ -104,9 +104,7 @@ goog.gears.WorkerChannel.prototype.send =
 };
 
 
-/**
- * @inheritDoc
- */
+/** @override */
 goog.gears.WorkerChannel.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
   this.worker_.dispose();

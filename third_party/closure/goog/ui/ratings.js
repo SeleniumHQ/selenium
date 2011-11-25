@@ -192,7 +192,7 @@ goog.ui.Ratings.prototype.exitDocument = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Ratings.prototype.disposeInternal = function() {
   goog.ui.Ratings.superClass_.disposeInternal.call(this);
   this.ratings_.length = 0;

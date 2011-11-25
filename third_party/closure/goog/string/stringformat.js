@@ -126,7 +126,10 @@ goog.string.format.demuxes_['s'] = function(value,
                                             wholeString) {
   var replacement = value;
   // If no padding is necessary we're done.
-  if (isNaN(width) || replacement.length >= width) {
+  // The check for '' is necessary because Firefox incorrectly provides the
+  // empty string instead of undefined for non-participating capture groups,
+  // and isNaN('') == false.
+  if (isNaN(width) || width == '' || replacement.length >= width) {
     return replacement;
   }
 
@@ -165,6 +168,9 @@ goog.string.format.demuxes_['f'] = function(value,
 
   var replacement = value.toString();
 
+  // The check for '' is necessary because Firefox incorrectly provides the
+  // empty string instead of undefined for non-participating capture groups,
+  // and isNaN('') == false.
   if (!(isNaN(precision) || precision == '')) {
     replacement = value.toFixed(precision);
   }
@@ -232,12 +238,10 @@ goog.string.format.demuxes_['d'] = function(value,
                                             type,
                                             offset,
                                             wholeString) {
-
-  value = parseInt(value, 10);
-  precision = 0;
-
-  return goog.string.format.demuxes_['f'](value, flags, width, dotp, precision,
-                                          type, offset, wholeString);
+  return goog.string.format.demuxes_['f'](
+      parseInt(value, 10) /* value */,
+      flags, width, dotp, 0 /* precision */,
+      type, offset, wholeString);
 };
 
 

@@ -146,15 +146,15 @@ goog.net.Cookies.prototype.isValidValue = function(value) {
  *
  * @param {string} name  The cookie name.
  * @param {string} value  The cookie value.
- * @param {number=} opt_maxAge  The max age in seconds (from now). Use -1 to set
- *     a session cookie. If not provided, the default is -1 (i.e. set a session
- *     cookie).
- * @param {string=} opt_path  The path of the cookie. If not present then this
+ * @param {number=} opt_maxAge  The max age in seconds (from now). Use -1 to
+ *     set a session cookie. If not provided, the default is -1
+ *     (i.e. set a session cookie).
+ * @param {?string=} opt_path  The path of the cookie. If not present then this
  *     uses the full request path.
- * @param {string=} opt_domain  The domain of the cookie, or null to not specify
- *     a domain attribute (browser will use the full request host name). If not
- *     provided, the default is null (i.e. let browser use full request host
- *     name).
+ * @param {?string=} opt_domain  The domain of the cookie, or null to not
+ *     specify a domain attribute (browser will use the full request host name).
+ *     If not provided, the default is null (i.e. let browser use full request
+ *     host name).
  * @param {boolean=} opt_secure Whether the cookie should only be sent over
  *     a secure channel.
  */

@@ -118,9 +118,7 @@ goog.net.BulkLoaderHelper.prototype.isLoadComplete = function() {
 };
 
 
-/**
- * Disposes of the BulkLoaderHelper.
- */
+/** @override */
 goog.net.BulkLoaderHelper.prototype.disposeInternal = function() {
   goog.net.BulkLoaderHelper.superClass_.disposeInternal.call(this);
 

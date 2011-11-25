@@ -152,7 +152,7 @@ goog.ui.ActivityMonitor.Event = {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.ActivityMonitor.prototype.disposeInternal = function() {
   goog.ui.ActivityMonitor.superClass_.disposeInternal.call(this);
   this.eventHandler_.dispose();

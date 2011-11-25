@@ -59,7 +59,7 @@ goog.events.Event = function(type, opt_target) {
 goog.inherits(goog.events.Event, goog.Disposable);
 
 
-/** @inheritDoc */
+/** @override */
 goog.events.Event.prototype.disposeInternal = function() {
   delete this.type;
   delete this.target;
