@@ -17,6 +17,16 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.SessionTerminationReason;
+import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.listeners.TestSessionListener;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,19 +42,12 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.grid.internal.*;
-import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.listeners.TestSessionListener;
-import org.openqa.grid.common.exception.GridException;
-
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should be only 1 concrete
- * class, but to support both legacy selenium1 and web driver, 2 classes are needed.
- * <p/>
- * {@link Selenium1RequestHandler} for the part specific to selenium1 protocol
- * {@link WebDriverRequestHandler} for the part specific to webdriver protocol
- * 
+ * class, but to support both legacy selenium1 and web driver, 2 classes are needed. <p/> {@link
+ * Selenium1RequestHandler} for the part specific to selenium1 protocol {@link
+ * WebDriverRequestHandler} for the part specific to webdriver protocol
+ *
  * Threading notes; RequestHandlers are instantiated per-request, run on the servlet container
  * thread. The instance is also accessed by the matcher thread.
  */
@@ -72,7 +75,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    * associated handler.
    */
   public static RequestHandler createHandler(HttpServletRequest request,
-      HttpServletResponse response, Registry registry) {
+                                             HttpServletResponse response, Registry registry) {
     if (isSeleniumProtocol(request)) {
       return new Selenium1RequestHandler(request, response, registry);
     } else {
@@ -81,7 +84,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   }
 
   protected RequestHandler(HttpServletRequest request, HttpServletResponse response,
-      Registry registry) {
+                           Registry registry) {
     this.request = request;
     this.response = response;
     this.registry = registry;
@@ -96,7 +99,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Extract the session from the request. This only works for a request that has a session already
    * assigned. It shouldn't be called for a new session request.
-   * 
+   *
    * @return the external session id sent by the remote. Null is the session cannot be found.
    */
   public abstract ExternalSessionKey extractSession();
@@ -104,7 +107,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Parse the request to extract the desiredCapabilities. For non web driver protocol ( selenium1 )
    * some mapping will be necessary
-   * 
+   *
    * @return the desired capabilities requested by the client.
    */
   public abstract Map<String, Object> extractDesiredCapability();
@@ -112,7 +115,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   /**
    * Forward the new session request to the TestSession that has been assigned, and parse the
    * response to extract and return the external key assigned by the remote.
-   * 
+   *
    * @return the external key sent by the remote.
    * @throws NewSessionException in case anything wrong happens during the new session process.
    */
@@ -150,9 +153,10 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           ExternalSessionKey sessionKey = null;
           try {
             sessionKey = extractSession();
-          } catch (RuntimeException ignore) {}
+          } catch (RuntimeException ignore) {
+          }
           throw new GridException("Session [" + sessionKey + "] not available - "
-              + registry.getActiveSessions());
+                                  + registry.getActiveSessions());
         }
         try {
           forwardRequest(session, this);
@@ -173,7 +177,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   }
 
 
-
   private void cleanup() {
     registry.removeNewSessionRequest(this);
     if (session != null) {
@@ -183,7 +186,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   /**
    * allocate a new TestSession for the test, forward the request and update the resource used.
-   * 
+   *
    * @throws NewSessionException in case anything bad happens during the new session process.
    */
   private void forwardAndGetRemoteKey() throws NewSessionException {
@@ -198,7 +201,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   /**
    * calls the TestSessionListener is the proxy for that node has one specified.
-   * 
+   *
    * @throws NewSessionException in case anything goes wrong with the listener.
    */
   private void beforeSessionEvent() throws NewSessionException {
@@ -216,10 +219,9 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
 
   /**
    * wait for the registry to match the request with a TestSlot.
-   * 
-   * @throws InterruptedException
+   *
    * @throws TimeoutException if the request reaches the new session wait timeout before being
-   *         assigned.
+   *                          assigned.
    */
   public void waitForSessionBound() throws InterruptedException, TimeoutException {
     // Maintain compatibility with Grid 1.x, which had the ability to
@@ -331,9 +333,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     if (session == null) {
       ExternalSessionKey externalKey = extractSession();
       session = registry.getExistingSession(externalKey);
-      if (session == null) {
-        log.warning("Cannot find session " + externalKey + " in the registry.");
-      }
     }
     return session;
   }

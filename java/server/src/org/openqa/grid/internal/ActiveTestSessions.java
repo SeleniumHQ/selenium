@@ -96,10 +96,12 @@ class ActiveTestSessions {
     TestSession sessionByExternalKey = findSessionByExternalKey(externalkey);
     if (sessionByExternalKey == null) {
       SessionTerminationReason sessionTerminationReason = reasons.get(externalkey);
+      String keyId = externalkey != null ? externalkey.getKey() : "(null externalkey)";
       if (sessionTerminationReason != null) {
-        log.info("Client requested session that was terminated due to " + sessionTerminationReason);
+        log.warning("Client requested session " + keyId + " that was terminated due to "
+                    + sessionTerminationReason);
       } else {
-        log.info("Client requested an externalKey " + externalkey
+        log.info("Client requested an externalKey " + keyId
                  + " that is not among the last 10000 active sessions");
       }
     }
