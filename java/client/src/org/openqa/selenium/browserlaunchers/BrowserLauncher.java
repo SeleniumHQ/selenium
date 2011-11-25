@@ -44,16 +44,4 @@ public interface BrowserLauncher {
    * Stop (kill) the browser process
    */
   void close();
-
-  /**
-   * Returns a process if there is an associated one running with this browser launcher (this is
-   * <b>not</b> required to be implementd).
-   * 
-   * @return a handle to a process if one is available, or null if one is not available or if no
-   *         browser is running
-   * @deprecated This will be removed in 2.12 as all instances now return null
-   */
-  @Deprecated
-  Process getProcess();
-
 }
