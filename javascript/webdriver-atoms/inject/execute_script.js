@@ -23,6 +23,7 @@ goog.provide('webdriver.inject');
 goog.require('bot.inject');
 goog.require('bot.inject.cache');
 
+
 /**
  * Wrapper to allow passing a seliazed window object to executeScript.
  *
@@ -39,6 +40,7 @@ webdriver.inject.executeScript = function(fn, args, opt_window) {
       fn, args, true, webdriver.inject.getWindow_(opt_window));
 };
 
+
 /**
  *
  * @param {!(string|function)} fn The function to execute.
@@ -53,7 +55,7 @@ webdriver.inject.executeScript = function(fn, args, opt_window) {
 webdriver.inject.executeAsyncScript =
     function(fn, args, timeout, onDone, opt_window) {
   return bot.inject.executeScript(fn, args, timeout, onDone, true,
-          webdriver.inject.getWindow_(opt_window));
+      webdriver.inject.getWindow_(opt_window));
 };
 
 

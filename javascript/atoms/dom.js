@@ -502,7 +502,11 @@ bot.dom.getEffectiveStyle = function(elem, styleName) {
  * @private
  */
 bot.dom.getCascadedStyle_ = function(elem, styleName) {
-  var value = (elem.currentStyle || elem.style)[styleName];
+  var style = elem.currentStyle || elem.style;
+  var value = style[styleName];
+  if (!goog.isDef(value) && style['getPropertyValue']) {
+    value = style.getPropertyValue(styleName);
+  }
   if (value != 'inherit') {
     return goog.isDef(value) ? value : null;
   }

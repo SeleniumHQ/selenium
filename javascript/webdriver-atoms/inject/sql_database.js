@@ -24,6 +24,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.inject');
 goog.require('bot.storage.database');
 
+
 /**
  * Executes the given query in the Web SQL database specified.
  *
@@ -44,8 +45,8 @@ webdriver.inject.storage.database.executeSql =
   var onErrorCallback = function(error) {
     onDone(bot.inject.executeScript(function() {
       throw new bot.Error(bot.ErrorCode.SQL_DATABASE_ERROR,
-              + 'SQL Error Code: ' + error.code + '. SQL Error Message: ' +
-              error.message);
+          'SQL Error Code: ' + error.code + '. SQL Error Message: ' +
+          error.message);
     }, [], true));
   };
 

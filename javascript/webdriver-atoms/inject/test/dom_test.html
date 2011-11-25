@@ -19,16 +19,17 @@ limitations under the License.
 <head>
   <title>find_element_test.html</title>
   <script type="text/javascript" src="../../../webdriver-bootstrap.js"></script>
-
   <script type="text/javascript">
-    goog.require("goog.testing.jsunit");
-    goog.require("webdriver.inject.dom");
-    goog.require("webdriver.inject.locators");
-
+    goog.require('bot.dom');
+    goog.require('goog.array');
+    goog.require('goog.dom');
+    goog.require('goog.style');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.inject.dom');
+    goog.require('webdriver.inject.locators');
   </script>
 
   <script type="text/javascript">
-
     function testGetText() {
       var e = webdriver.inject.locators.findElement("id", "x");
       var actual = getValueFromJSONObject(
@@ -37,10 +38,8 @@ limitations under the License.
     }
 
     function testGetIsSelected() {
-      var apples = webdriver.inject.locators.findElement("xpath",
-          ".//option[@value='apples']");
-      var oranges = webdriver.inject.locators.findElement("xpath",
-          ".//option[@value='oranges']");
+      var apples = webdriver.inject.locators.findElement('id', 'apples');
+      var oranges = webdriver.inject.locators.findElement('id', 'oranges');
 
       assertFalse(getValueFromJSONObject(webdriver.inject.dom.isSelected(
               getValueFromJSONObject(oranges))));
@@ -49,10 +48,13 @@ limitations under the License.
     }
 
     function testGetTopLeftCoordinates() {
+      var elementX = goog.dom.$('x');
+      var expectedX = bot.dom.getLocationInView(elementX).x;
+
       var e = webdriver.inject.locators.findElement("id", "x");
       var coords = webdriver.inject.dom.getTopLeftCoordinates(
               getValueFromJSONObject(e));
-      assertEquals(8, getValueFromJSONObject(coords).x);
+      assertEquals(expectedX, getValueFromJSONObject(coords).x);
     }
 
     function testGetAttributeValue() {
@@ -63,18 +65,24 @@ limitations under the License.
     }
 
     function testGetSize() {
+      var elementX = goog.dom.$('x');
+      var expectedHeight = goog.style.getSize(elementX).height;
+
       var e = webdriver.inject.locators.findElement("id", "x");
       var size = getValueFromJSONObject(
               webdriver.inject.dom.getSize(getValueFromJSONObject(e)));
-      assertEquals(20, size.height);
+
+      assertEquals(expectedHeight, size.height);
     }
 
     function testGetValueOfCssProperty() {
-        var e = webdriver.inject.locators.findElement("id", "after");
+        var e = webdriver.inject.locators.findElement('id', 'after');
         var prop = getValueFromJSONObject(
                 webdriver.inject.dom.getValueOfCssProperty(
                         getValueFromJSONObject(e), "background-color"));
-        assertEquals("green", prop);
+
+        var expected = ['green', 'rgb(0, 128, 0)'];
+        assert(goog.array.contains(expected, prop));
     }
 
     function testIsEnabled() {
@@ -99,9 +107,9 @@ limitations under the License.
 
     function testGetAttributeWithProperty() {
       var working = webdriver.inject.locators.findElement("id", "after");
-      assertEquals("background-color: green; ",
+      assertEquals("DIV",
           getValueFromJSONObject(webdriver.inject.dom.getAttributeValue(
-              getValueFromJSONObject(working), "style")))
+              getValueFromJSONObject(working), "tagName")))
     }
 
     function getValueFromJSONObject(arg) {
@@ -117,8 +125,8 @@ limitations under the License.
    <div>
       <label for="multiSelect">Multi-select</label>
       <select id="multiSelect" multiple>
-        <option value="apples" selected>apples</option>
-        <option value="oranges">oranges</option>
+        <option id="apples" value="apples" selected>apples</option>
+        <option id="oranges" value="oranges">oranges</option>
         <option value="cherries">cherries</option>
       </select>
     </div>

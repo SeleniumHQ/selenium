@@ -6,6 +6,7 @@
     <script type="text/javascript">
       goog.require('bot.dom');
       goog.require('bot.locators');
+      goog.require('goog.array');
       goog.require('goog.testing.jsunit');
     </script>
 
@@ -86,6 +87,15 @@
         }
       }
 
+      function testCanRetreiveValueFromStyleTag() {
+        var green = goog.dom.$('green');
+        var color = bot.dom.getEffectiveStyle(green, 'background-color');
+
+        // Depending on the browser, we get different values back.
+        // TODO(simonstewart): Make the return value of colors consistent.
+        var expected = ['green', 'rgb(0, 128, 0)'];
+        assert(goog.array.contains(expected, color));
+      }
     </script>
 
     <style type="text/css">
@@ -104,5 +114,7 @@
       <div id="child" style="visibility: inherit;display:;">A child div</div>
     </div>
 
+    <div id="green" style="background-color:green; width:100px; height:50px">
+    </div>
   </body>
 </html>

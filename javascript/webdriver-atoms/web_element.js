@@ -20,14 +20,12 @@
 
 goog.provide('webdriver.element');
 
-
 goog.require('bot.dom');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.math');
 goog.require('goog.string');
 goog.require('goog.style');
-
 
 
 /**

@@ -35,7 +35,7 @@ limitations under the License.
 
     function testShouldReturnNullIfAValueDoesNotExistAsAnAttributeOrAProperty() {
       var element = bot.locators.findElement({id: 'has_id'});
-      
+
       assertNull(webdriver.element.getAttribute(element, 'this_does_not_exist'));
     }
 

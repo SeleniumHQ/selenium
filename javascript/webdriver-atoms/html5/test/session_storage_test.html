@@ -2,8 +2,7 @@
 <html>
 <head>
   <title>HTML5 session storage</title>
-  <script type="text/javascript" src="../../../webdriver-bootstrap.js">
-  </script>
+  <script type="text/javascript" src="../../../webdriver-bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.html5');
     goog.require('goog.testing.jsunit');
@@ -87,7 +86,7 @@
       var keys = webdriver.storage.session.keySet();
       var sortedKeys = keys.sort();
       assertArrayEquals(['first', 'second', 'third'], sortedKeys);
-    }    
+    }
   </script>
 
 </head>

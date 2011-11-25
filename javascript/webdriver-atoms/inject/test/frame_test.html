@@ -21,19 +21,28 @@ limitations under the License.
     <title>frame_test.html</title>
     <script type="text/javascript" src="../../../webdriver-bootstrap.js"></script>
     <script type="text/javascript">
-        goog.require("goog.testing.jsunit");
-        goog.require("goog.json");
-        goog.require("bot.inject.cache");
-        goog.require("webdriver.inject.frame");
+        goog.require('goog.json');
+        goog.require('goog.testing.jsunit');
+        goog.require('goog.userAgent');
+        goog.require('bot.inject.cache');
+        goog.require('webdriver.inject.frame');
     </script>
 
     <script type="text/javascript">
         function testInjectFindFrameByIdOrName() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
           var res = webdriver.inject.frame.findFrameByIdOrName("first");
           assertEquals(window.frames[0], getWindowFromCache(res));
         }
 
         function testInjectFindFrameByIdOrNameWithWindowRoot() {
+          if (goog.userAgent.IE) {
+            return;
+          }
+
           var wrappedWindow =
               {"WINDOW": bot.inject.cache.addElement(window.frames[1])}
           var res2 = webdriver.inject.frame.findFrameByIdOrName("iframe1", wrappedWindow);
@@ -41,36 +50,52 @@ limitations under the License.
         }
 
         function testInjectFindFrameByIndex() {
-            var win = webdriver.inject.frame.findFrameByIndex(1);
-            assertEquals(window.frames[1], getWindowFromCache(win));
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var win = webdriver.inject.frame.findFrameByIndex(1);
+          assertEquals(window.frames[1], getWindowFromCache(win));
         }
 
         function testInjectFindFrameByIndexWithWindowRoot() {
-            var wrappedWindow = {"ELEMENT": bot.inject.cache.addElement(window.frames[1])}
-            var win = webdriver.inject.frame.findFrameByIndex(0, wrappedWindow);
-            assertEquals(window.frames[1].frames[0], getWindowFromCache(win));
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var wrappedWindow = {"ELEMENT": bot.inject.cache.addElement(window.frames[1])}
+          var win = webdriver.inject.frame.findFrameByIndex(0, wrappedWindow);
+          assertEquals(window.frames[1].frames[0], getWindowFromCache(win));
         }
 
         function testInjectDefaultContent() {
-            var win = webdriver.inject.frame.defaultContent();
-            assertEquals(window, getWindowFromCache(win));
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var win = webdriver.inject.frame.defaultContent();
+          assertEquals(window, getWindowFromCache(win));
         }
 
         function testInjectGetFrameWindow() {
-            var wrappedElement = {"ELEMENT": bot.inject.cache.addElement(
-                    window.document.getElementById("first"))};
-            var win = webdriver.inject.frame.getFrameWindow(wrappedElement);
-            assertEquals(window.frames[0], getWindowFromCache(win));
+          if (goog.userAgent.IE) {
+            return;
+          }
+
+          var wrappedElement = {"ELEMENT": bot.inject.cache.addElement(
+              window.document.getElementById("first"))};
+          var win = webdriver.inject.frame.getFrameWindow(wrappedElement);
+          assertEquals(window.frames[0], getWindowFromCache(win));
         }
 
         function getWindowFromCache(rawResult) {
-            var id = goog.json.parse(rawResult).value.WINDOW;
-            return bot.inject.cache.getElement(id);
+          var id = goog.json.parse(rawResult).value.WINDOW;
+          return bot.inject.cache.getElement(id);
         }
     </script>
 </head>
 <frameset>
-    <frame src="../../../atoms/test/testdata/nested_frames.html" id="first"></frame>
-    <frame src="../../../atoms/test/testdata/nested_iframes.html" id="second"></frame>
+    <frame src="nested_frames.html" id="first"></frame>
+    <frame src="nested_iframes.html" id="second"></frame>
 </frameset>
 </html>

@@ -28,7 +28,7 @@ goog.require('bot.inject.cache');
  * Finds a frame by id or name.
  *
  * @param {string} idOrName The frame id or name.
- * @param {bot.inject.WINDOW_KEY: string} opt_root The wrapped window to
+ * @param {{bot.inject.WINDOW_KEY: string}=} opt_root The wrapped window to
  *     perform the search under. Defaults to window.
  * @return {string} A frame element wrapped in a JSON string as defined by
  *     the wire protocol.
@@ -37,6 +37,7 @@ webdriver.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
   return bot.inject.executeScript(bot.frame.findFrameByNameOrId,
       [idOrName, opt_root], true);
 };
+
 
 /**
  * @return {string} A string representing the currently active element.
@@ -50,7 +51,7 @@ webdriver.inject.frame.activeElement = function() {
  *Finds a frame by index.
  *
  * @param {number} index The index of the frame to search for.
- * @param {Window} opt_root The window to perform the search under.
+ * @param {!Window=} opt_root The window to perform the search under.
  * If not specified window is used as the default.
  * @return {string} A frame element wrapped in a JSON string as defined by
  *     the wire protocol.

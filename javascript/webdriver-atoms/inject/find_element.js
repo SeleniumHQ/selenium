@@ -37,8 +37,9 @@ webdriver.inject.locators.findElement = function(strategy, using, opt_root) {
   var locator = {};
   locator[strategy] = using;
   return bot.inject.executeScript(bot.locators.findElement,
-                           [locator, opt_root], true);
+      [locator, opt_root], true);
 };
+
 
 /**
  * Finds all elements by using the given lookup strategy.

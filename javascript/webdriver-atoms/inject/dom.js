@@ -24,6 +24,7 @@ goog.require('bot.dom');
 goog.require('bot.inject');
 goog.require('webdriver.element');
 
+
 /**
  * Gets the visisble text for the given element.
  * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
@@ -85,7 +86,7 @@ webdriver.inject.dom.getSize = function(element) {
  *     string as defined by the wire protocol.
  */
 webdriver.inject.dom.getValueOfCssProperty = function(element, property) {
-  return bot.inject.executeScript(bot.dom.getCascadedStyle_,
+  return bot.inject.executeScript(bot.dom.getEffectiveStyle,
       [element, property], true);
 };
 

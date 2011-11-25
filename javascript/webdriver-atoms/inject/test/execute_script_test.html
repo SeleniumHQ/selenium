@@ -17,23 +17,35 @@ limitations under the License.
 -->
 <html>
 <head>
-  <title>find_element_test.html</title>
+  <title>execute_script_test.html</title>
   <script type="text/javascript" src="../../../webdriver-bootstrap.js"></script>
 
   <script type="text/javascript">
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
     goog.require("goog.testing.jsunit");
     goog.require("webdriver.inject");
     goog.require("webdriver.inject.frame");
   </script>
 
   <script type="text/javascript">
+    function isTestSkipped() {
+      return goog.userAgent.IE || goog.userAgent.product.SAFARI;
+    }
+
     function testExecuteScriptWithWindow() {
+      if (isTestSkipped()) {
+        return;
+      }
       var func = function () {return document.getElementById('bou').value;};
       var win = getValue(webdriver.inject.frame.findFrameByIdOrName("iframe"));
       assertEquals("there", getValue(webdriver.inject.executeScript(func, [], win)));
     }
 
     function testExecuteScriptWithStringFunctionWithWindow() {
+      if (isTestSkipped()) {
+        return;
+      }
       var func = "return document.getElementById('bou').value";
       var win = getValue(webdriver.inject.frame.findFrameByIdOrName("iframe"));
       assertEquals("there", getValue(webdriver.inject.executeScript(func, [], win)));
@@ -63,6 +75,6 @@ limitations under the License.
 <body>
   <p id="x" name="para">Para</p>
   <input type="text" id="bou" value="here"/>
-  <iframe src="../../../atoms/test/testdata/nested_iframes.html" id="iframe"></iframe>
+  <iframe src="nested_iframes.html" id="iframe"></iframe>
   </body>
 </html>

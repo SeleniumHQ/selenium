@@ -33,7 +33,7 @@ goog.require('webdriver.storage.local');
  */
 webdriver.inject.storage.local.setItem = function(key, value) {
   return bot.inject.executeScript(webdriver.storage.local.setItem,
-          [key, value], true);
+      [key, value], true);
 };
 
 
@@ -46,7 +46,7 @@ webdriver.inject.storage.local.setItem = function(key, value) {
  */
 webdriver.inject.storage.local.getItem = function(key) {
   return bot.inject.executeScript(webdriver.storage.local.getItem,
-          [key], true);
+      [key], true);
 };
 
 
@@ -58,7 +58,7 @@ webdriver.inject.storage.local.getItem = function(key) {
  */
 webdriver.inject.storage.local.keySet = function() {
   return bot.inject.executeScript(webdriver.storage.local.keySet,
-          [], true);
+      [], true);
 };
 
 
@@ -71,7 +71,7 @@ webdriver.inject.storage.local.keySet = function() {
  */
 webdriver.inject.storage.local.removeItem = function(key) {
   return bot.inject.executeScript(webdriver.storage.local.removeItem,
-          [key], true);
+      [key], true);
 };
 
 
@@ -83,7 +83,7 @@ webdriver.inject.storage.local.removeItem = function(key) {
  */
 webdriver.inject.storage.local.clear = function() {
   return bot.inject.executeScript(webdriver.storage.local.clear,
-          [], true);
+      [], true);
 };
 
 
@@ -95,5 +95,5 @@ webdriver.inject.storage.local.clear = function() {
  */
 webdriver.inject.storage.local.size = function() {
   return bot.inject.executeScript(webdriver.storage.local.size,
-          [], true);
+      [], true);
 };

@@ -33,6 +33,7 @@ webdriver.inject.action.submit = function(element) {
   bot.inject.executeScript(bot.action.submit, [element], true);
 };
 
+
 /**
  * Clear an element.
  *
