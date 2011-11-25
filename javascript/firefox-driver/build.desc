@@ -79,7 +79,7 @@ mozilla_extension(name = "webdriver",
 
 js_binary(name = "synthetic_mouse",
   srcs = [
-    "extension/components/syntheticMouse.js",
+    "js/syntheticMouse.js",
     "js/moz.js",
     "js/firefox-utils.js",
   ],
