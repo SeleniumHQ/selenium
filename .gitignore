@@ -47,5 +47,6 @@ android/libs
 android/bin
 android/local.properties
 android/proguard.cfg
+junit*.properties
 WebDriver.suo
 WebDriver.sln.cache

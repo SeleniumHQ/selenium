@@ -325,7 +325,6 @@ public class CommandLine {
 
     @Override
     public void stop() {
-      this.process = null;
       super.stop();
     }
 
@@ -335,7 +334,6 @@ public class CommandLine {
 
     @Override
     protected void cleanUp() {
-      this.process = null;
       super.cleanUp();
     }
 
@@ -367,7 +365,7 @@ public class CommandLine {
     private void destroyHarder() {
       log.info("Command failed to close cleanly. Destroying forcefully (v2). " + this);
       Process ourProc = process;
-      if (ourProc != null) ProcessUtils.killProcess(ourProc);
+      ProcessUtils.killProcess(ourProc);
     }
 
   }
