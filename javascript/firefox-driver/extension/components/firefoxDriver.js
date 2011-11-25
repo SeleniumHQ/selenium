@@ -315,24 +315,34 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
 
 
 /**
- * Map of strategy keys used by the wire protocol to those used by the
- * automation atoms.
- *
- *  TODO: this really needs to be handled by bot.locators.
- *
- * @type {!Object.<string, string>}
- * @const
+ * If the given error is a {@link bot.ErrorCode.INVALID_SELECTOR_ERROR}, will
+ * annotate that error with additional info for the user.
+ * @param {string} selector The selector used which generated the error.
+ * @param {!Error} ex The error to check.
+ * @return {!Error} The new error.
  * @private
  */
-FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_ = {
-  'id': 'id',
-  'name': 'name',
-  'class name': 'className',
-  'css selector': 'css',
-  'tag name': 'tagName',
-  'link text': 'linkText',
-  'partial link text': 'partialLinkText',
-  'xpath': 'xpath'
+FirefoxDriver.annotateInvalidSelectorError_ = function(selector, ex) {
+  if(ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
+    return new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+        'The given selector ' + selector +
+            ' is either invalid or does not result' +
+            ' in a WebElement. The following error occurred:\n' + ex);
+  }
+
+  try {
+    var converted = ex.QueryInterface(Components.interfaces['nsIException']);
+    fxdriver.Logger.dumpn("Converted the exception: " + converted.name);
+    if ("NS_ERROR_DOM_SYNTAX_ERR" == converted.name) {
+      return new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+          'The given selector ' + selector +
+              ' is either invalid or does not result' +
+              ' in a WebElement. The following error occurred:\n' + ex);
+    }
+  } catch (ignored) {
+  }
+
+  return ex;
 };
 
 
@@ -353,59 +363,39 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
                                                         selector,
                                                         opt_parentElementId,
                                                         opt_startTime) {
-  var startTime = typeof opt_startTime == 'number' ? opt_startTime :
-                                                     new Date().getTime();
+  var startTime = goog.isNumber(opt_startTime) ? opt_startTime : goog.now();
   var theDocument = respond.session.getDocument();
-  var rootNode = typeof opt_parentElementId == 'string' ?
-      Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
 
-  var target = {};
-  target[FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_[method] || method] = selector;
-
-  var element;
   try {
-    element = bot.locators.findElement(target, rootNode);
-  } catch(ex) {
-    if(ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
-      // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
-      // every retry.
-      respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'The given selector ' + selector + ' is either invalid or does not result' +
-        ' in a WebElement. The following error occurred:\n' + ex));
-      return;
-    } else {
-      try {
-        var converted = ex.QueryInterface(Components.interfaces['nsIException']);
-        fxdriver.Logger.dumpn("Converted the exception: " + converted.name);
-        if ("NS_ERROR_DOM_SYNTAX_ERR" == converted.name) {
-          respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-              'The given selector ' + selector + ' is either invalid or does not result' +
-              ' in a WebElement. The following error occurred:\n' + ex));
-          return;
-        }
-      } catch (ignored) {}
-      // this is not the exception we are interested in, so we propagate it.
-      throw ex;
+    var rootNode = goog.isString(opt_parentElementId) ?
+        Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
+
+    var target = {};
+    target[method] = selector;
+
+    var element = bot.locators.findElement(target, rootNode);
+
+    if (element) {
+      var id = Utils.addToKnownElements(element, respond.session.getDocument());
+      respond.value = {'ELEMENT': id};
+      return respond.send();
     }
-  }
-  if (element) {
-    var id = Utils.addToKnownElements(element, respond.session.getDocument());
-    respond.value = {'ELEMENT': id};
-    respond.send();
-  } else {
+
     var wait = respond.session.getImplicitWait();
-    if (wait == 0 || new Date().getTime() - startTime > wait) {
-      respond.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_ELEMENT,
+    if (wait == 0 || goog.now() - startTime > wait) {
+      return respond.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_ELEMENT,
           'Unable to locate element: ' + JSON.stringify({
               method: method,
               selector: selector
           })));
-    } else {
-      var callback = goog.bind(this.findElementInternal_, this, respond, method, selector,
-              opt_parentElementId, startTime);
-
-      this.jsTimer.setTimeout(callback, 100);
     }
+
+    var callback = goog.bind(this.findElementInternal_, this, respond, method,
+        selector, opt_parentElementId, startTime);
+    this.jsTimer.setTimeout(callback, 100);
+  } catch (ex) {
+    ex = FirefoxDriver.annotateInvalidSelectorError_(selector, ex);
+    respond.sendError(ex);
   }
 };
 
@@ -459,60 +449,37 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
                                                          selector,
                                                          opt_parentElementId,
                                                          opt_startTime) {
-  var startTime = typeof opt_startTime == 'number' ? opt_startTime :
-                                                     new Date().getTime();
+  var startTime = goog.isNumber(opt_startTime) ? opt_startTime : goog.now();
   var theDocument = respond.session.getDocument();
-  var rootNode = typeof opt_parentElementId == 'string' ?
-      Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
 
-  var target = {};
-  target[FirefoxDriver.WIRE_TO_ATOMS_STRATEGY_[method] || method] = selector;
-
-  var elements;
   try {
-    elements = bot.locators.findElements(target, rootNode);
-  } catch (ex) {
-    if(ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
-      // We send the INVALID_SELECTOR_ERROR immediately because it will occur in
-      // every retry.
-      respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'The given selector "' + selector + ' is either invalid or does not result' +
-        'in a Webelement. The following error occurred:\n' + ex));
-      return;
-    } else {
-      try {
-        var converted = ex.QueryInterface(Components.interfaces['nsIException']);
-        fxdriver.Logger.dumpn("Converted the exception: " + converted.name);
-        if ("NS_ERROR_DOM_SYNTAX_ERR" == converted.name) {
-          respond.sendError(new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-              'The given selector ' + selector + ' is either invalid or does not result' +
-              ' in a WebElement. The following error occurred:\n' + ex));
-          return;
-        }
-      } catch (ignored) {}
-      // this is not the exception we are interested in, so we propagate it.
-      throw ex;
+    var rootNode = goog.isString(opt_parentElementId) ?
+        Utils.getElementAt(opt_parentElementId, theDocument) : theDocument;
+
+    var target = {};
+    target[method] = selector;
+
+    var elements = bot.locators.findElements(target, rootNode);
+
+    var elementIds = [];
+    for (var j = 0; j < elements.length; j++) {
+      var element = elements[j];
+      var elementId = Utils.addToKnownElements(element, theDocument);
+      elementIds.push({'ELEMENT': elementId});
     }
-  }
 
-  var elementIds = [];
-  for (var j = 0; j < elements.length; j++) {
-    var element = elements[j];
-    var elementId = Utils.addToKnownElements(
-        element, respond.session.getDocument());
-    elementIds.push({'ELEMENT': elementId});
-  }
-
-  var wait = respond.session.getImplicitWait();
-  if (wait && !elementIds.length && new Date().getTime() - startTime <= wait) {
-    var self = this;
-    var callback = function() {
-        self.findElementsInternal_(respond, method, selector, opt_parentElementId, startTime);
-    };
-    this.jsTimer.setTimeout(callback, 10);
-  } else {
-    respond.value = elementIds;
-    respond.send();
+    var wait = respond.session.getImplicitWait();
+    if (wait && !elements.length && goog.now() - startTime <= wait) {
+      var callback = goog.bind(this.findElementsInternal_, this, respond,
+          method, selector, opt_parentElementId, startTime);
+      this.jsTimer.setTimeout(callback, 10);
+    } else {
+      respond.value = elementIds;
+      respond.send();
+    }
+  } catch (ex) {
+    ex = FirefoxDriver.annotateInvalidSelectorError_(selector, ex);
+    respond.sendError(ex);
   }
 };
 
