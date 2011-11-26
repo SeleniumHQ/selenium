@@ -110,7 +110,7 @@ limitations under the License.
 
   function testBuildPath_withWebElement() {
     var parameters = {'sessionId':'foo', 'id': {}};
-    parameters['id'][webdriver.WebElement.ELEMENT_KEY] = 'bar';
+    parameters['id']['ELEMENT'] = 'bar';
 
     var finalPath = webdriver.http.Executor.buildPath_(
         '/session/:sessionId/element/:id/click', parameters);

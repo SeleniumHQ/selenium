@@ -1,23 +1,13 @@
 js_deps(name = "deps",
   srcs = [
-    "builder.js",
-    "command.js",
-    "error.js",
-    "events.js",
-    "locators.js",
-    "process.js",
-    "promise.js",
-    "session.js",
-    "webdriver.js",
+    "*.js",
     "http/*.js",
     "node/node.js",
   ])
 
 js_deps(name = "test_deps",
   srcs = [
-    "asserts.js",
-    "jsunit.js",
-    "testcase.js"
+    "testing/*.js",
   ])
 
 # TODO(jleyba): Make a js_test_suite that farms out to multiple browsers.

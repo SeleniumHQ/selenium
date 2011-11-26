@@ -629,9 +629,6 @@ task :webdriverjs do
     "javascript/webdriver-jsapi/*.js",
     "javascript/webdriver-jsapi/http/*.js",
     "javascript/webdriver-jsapi/node/node.js" ]
-  files = files.exclude("asserts.js")
-  files = files.exclude("jsunit.js")
-  files = files.exclude("testcase.js")
 
   files = files.to_a.collect do |f|
     "-i #{f}"

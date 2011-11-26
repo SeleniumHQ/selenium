@@ -27,7 +27,7 @@ limitations under the License.
     goog.require('goog.testing.mockmatchers');
     goog.require('goog.testing.jsunit');
     goog.require('goog.testing.recordFunction');
-    goog.require('webdriver.TestCase');
+    goog.require('webdriver.testing.TestCase');
   </script>
 </head>
 <body>
@@ -96,7 +96,7 @@ limitations under the License.
   }
 
   function runTest() {
-    webdriver.TestCase.prototype.runSingleTest_.
+    webdriver.testing.TestCase.prototype.runSingleTest_.
         call(mockTestCase, testStub, mockOnError, mockOnExpectationFailures).
         then(mockOnComplete);
     consumeTimeouts();

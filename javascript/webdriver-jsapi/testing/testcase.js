@@ -20,17 +20,18 @@
  * test.
  *
  * This file requires the global {@code G_testRunner} to be initialized before
- * use. This can be accomplished by also importing {@code webdriver.jsunit}.
- * This namespace is not required by default to improve interoperability with
- * other namespaces that may initialize G_testRunner.
+ * use. This can be accomplished by also importing
+ * {@link webdriver.testing.jsunit}. This namespace is not required by default
+ * to improve interoperability with other namespaces that may initialize
+ * G_testRunner.
  */
 
-goog.provide('webdriver.TestCase');
+goog.provide('webdriver.testing.TestCase');
 
 goog.require('goog.array');
 goog.require('goog.testing.TestCase');
-goog.require('webdriver.asserts');
 goog.require('webdriver.promise.Application');
+goog.require('webdriver.testing.asserts');
 
 
 /**
@@ -42,17 +43,17 @@ goog.require('webdriver.promise.Application');
  * @constructor
  * @extends {goog.testing.TestCase}
  */
-webdriver.TestCase = function(opt_name) {
+webdriver.testing.TestCase = function(opt_name) {
   goog.base(this, opt_name);
 };
-goog.inherits(webdriver.TestCase, goog.testing.TestCase);
+goog.inherits(webdriver.testing.TestCase, goog.testing.TestCase);
 
 
 /**
  * Executes the next test inside its own {@code webdriver.Application}.
  * @override
  */
-webdriver.TestCase.prototype.cycleTests = function() {
+webdriver.testing.TestCase.prototype.cycleTests = function() {
   var test = this.next();
   if (!test) {
     this.finalize();
@@ -125,13 +126,13 @@ webdriver.TestCase.prototype.cycleTests = function() {
  *     test has finished running.
  * @private
  */
-webdriver.TestCase.prototype.runSingleTest_ = function(test, onError,
-                                                       onExpectationFailures) {
+webdriver.testing.TestCase.prototype.runSingleTest_ = function(
+    test, onError, onExpectationFailures) {
   var app = webdriver.promise.Application.getInstance();
 
   var expectationFailures = [];
 
-  webdriver.asserts.on(webdriver.asserts.EXPECTATION_FAILURE,
+  webdriver.testing.asserts.on(webdriver.testing.asserts.EXPECTATION_FAILURE,
       recordExpectationFailure);
 
   return scheduleAndWait(test.name + '.setUp', this.setUp)().
@@ -157,7 +158,8 @@ webdriver.TestCase.prototype.runSingleTest_ = function(test, onError,
   }
 
   function removeRecordExpectationFailure() {
-    webdriver.asserts.removeListener(webdriver.asserts.EXPECTATION_FAILURE,
+    webdriver.testing.asserts.removeListener(
+        webdriver.testing.asserts.EXPECTATION_FAILURE,
         recordExpectationFailure);
   }
 

@@ -23,7 +23,7 @@ limitations under the License.
   goog.require('goog.array');
   goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
-  goog.require('webdriver.asserts');
+  goog.require('webdriver.testing.asserts');
   goog.require('webdriver.promise.Application');
 </script>
 <script>
@@ -41,7 +41,8 @@ limitations under the License.
     });
     messages = [];
     setAppExpectations();
-    webdriver.asserts.on(webdriver.asserts.EXPECTATION_FAILURE, onExpectFail);
+    webdriver.testing.asserts.on(webdriver.testing.asserts.EXPECTATION_FAILURE,
+        onExpectFail);
   }
 
 
@@ -50,7 +51,7 @@ limitations under the License.
     app.reset();
     clock.dispose();
     stubs.reset();
-    webdriver.asserts.removeAllListeners();
+    webdriver.testing.asserts.removeAllListeners();
   }
 
 

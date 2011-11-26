@@ -23,7 +23,7 @@ limitations under the License.
   <script src="testutil.js"></script>
   <script>
     goog.require('goog.testing.jsunit');
-    goog.require('webdriver.asserts');
+    goog.require('webdriver.testing.asserts');
   </script>
   <script>
     var result, expectationFailure;
@@ -31,17 +31,17 @@ limitations under the License.
     function setUp() {
       result = callbackPair();
       expectationFailure = callbackHelper();
-      webdriver.asserts.on('expectationFailure', expectationFailure);
+      webdriver.testing.asserts.on('expectationFailure', expectationFailure);
     }
 
 
     function tearDown() {
-      webdriver.asserts.removeAllListeners('expectationFailure');
+      webdriver.testing.asserts.removeAllListeners('expectationFailure');
     }
 
 
     function testApplyMatcher_nonPromiseValue_valueMatches() {
-      webdriver.asserts.applyMatcher('foo', equals('foo')).
+      webdriver.testing.asserts.applyMatcher('foo', equals('foo')).
           then(result.callback, result.errback);
       result.assertCallback();
       expectationFailure.assertNotCalled();
@@ -49,7 +49,7 @@ limitations under the License.
 
 
     function testApplyMatcher_nonPromiseValue_notValueMatches() {
-      webdriver.asserts.applyMatcher('foo', equals('bar')).
+      webdriver.testing.asserts.applyMatcher('foo', equals('bar')).
           then(result.callback, result.errback);
       result.assertErrback();
       expectationFailure.assertNotCalled();
@@ -58,7 +58,7 @@ limitations under the License.
 
     function testApplyMatcher_promiseValue_valueMatches() {
       var d = new webdriver.promise.Deferred();
-      webdriver.asserts.applyMatcher(d, equals('foo')).
+      webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
       expectationFailure.assertNotCalled();
@@ -70,7 +70,7 @@ limitations under the License.
 
     function testApplyMatcher_promiseValue_notValueMatches() {
       var d = new webdriver.promise.Deferred();
-      webdriver.asserts.applyMatcher(d, equals('foo')).
+      webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
       expectationFailure.assertNotCalled();
@@ -82,7 +82,7 @@ limitations under the License.
 
     function testApplyMatcher_promiseValue_promiseRejected() {
       var d = new webdriver.promise.Deferred();
-      webdriver.asserts.applyMatcher(d, equals('foo')).
+      webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
       expectationFailure.assertNotCalled();

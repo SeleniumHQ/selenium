@@ -19,12 +19,12 @@
  * instantiate and start the test runner.
  */
 
-goog.provide('webdriver.jsunit');
-goog.provide('webdriver.jsunit.TestRunner');
+goog.provide('webdriver.testing.jsunit');
+goog.provide('webdriver.testing.jsunit.TestRunner');
 
 goog.require('goog.json');
 goog.require('goog.testing.TestRunner');
-goog.require('webdriver.TestCase');
+goog.require('webdriver.testing.TestCase');
 
 
 /**
@@ -32,10 +32,10 @@ goog.require('webdriver.TestCase');
  * @constructor
  * @extends {goog.testing.TestRunner}
  */
-webdriver.jsunit.TestRunner = function() {
+webdriver.testing.jsunit.TestRunner = function() {
   goog.base(this);
 };
-goog.inherits(webdriver.jsunit.TestRunner, goog.testing.TestRunner);
+goog.inherits(webdriver.testing.jsunit.TestRunner, goog.testing.TestRunner);
 
 
 /**
@@ -43,7 +43,7 @@ goog.inherits(webdriver.jsunit.TestRunner, goog.testing.TestRunner);
  * visibility.
  * @private
  */
-webdriver.jsunit.TestRunner.prototype.onComplete_ = function() {
+webdriver.testing.jsunit.TestRunner.prototype.onComplete_ = function() {
   var log = this.testCase.getReport(true);
   if (this.errors.length > 0) {
     log += '\n' + this.errors.join('\n');
@@ -60,7 +60,7 @@ webdriver.jsunit.TestRunner.prototype.onComplete_ = function() {
 };
 
 
-webdriver.jsunit.TestRunner.prototype.reportResults_ = function() {
+webdriver.testing.jsunit.TestRunner.prototype.reportResults_ = function() {
   var report = {
     'isSuccess': this.isSuccess(),
     'report': this.getReport()
@@ -75,7 +75,7 @@ webdriver.jsunit.TestRunner.prototype.reportResults_ = function() {
 
 
 (function() {
-  var tr = new webdriver.jsunit.TestRunner();
+  var tr = new webdriver.testing.jsunit.TestRunner();
 
   // Export our test runner so it can be accessed by Selenium/WebDriver. This
   // will only work if webdriver.WebDriver is using a pure-JavaScript
@@ -106,7 +106,7 @@ webdriver.jsunit.TestRunner.prototype.reportResults_ = function() {
       onload();
     }
 
-    var testCase = new webdriver.TestCase(document.title);
+    var testCase = new webdriver.testing.TestCase(document.title);
     testCase.autoDiscoverTests();
 
     tr.initialize(testCase);
