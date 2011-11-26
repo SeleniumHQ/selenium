@@ -24,7 +24,6 @@ goog.provide('webdriver.http.Request');
 goog.provide('webdriver.http.Response');
 
 goog.require('bot.ErrorCode');
-goog.require('goog.json');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise.Deferred');
 
@@ -142,7 +141,7 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
  */
 webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
   try {
-    return goog.json.parse(httpResponse.body);
+    return JSON.parse(httpResponse.body);
   } catch (ex) {
     // Whoops, looks like the server sent us a malformed response. We'll need
     // to manually build a response object based on the response code.

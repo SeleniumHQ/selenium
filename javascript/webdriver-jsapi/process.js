@@ -30,7 +30,6 @@ goog.provide('webdriver.process');
 
 goog.require('goog.Uri');
 goog.require('goog.array');
-goog.require('goog.json');
 
 
 /**
@@ -103,7 +102,7 @@ webdriver.process.initBrowserProcess_ = function(opt_window) {
         var values = data.getValues(key);
         process.env[key] = values.length == 0 ? '' :
                            values.length == 1 ? values[0] :
-                           goog.json.serialize(values);
+                           JSON.stringify(values);
       });
     }
   }

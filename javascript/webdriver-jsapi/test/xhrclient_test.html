@@ -67,7 +67,7 @@ limitations under the License.
     for (var header in REQUEST.headers) {
       mockXhr.setRequestHeader(header, REQUEST.headers[header]);
     }
-    return mockXhr.send(goog.json.serialize(REQUEST.data));
+    return mockXhr.send(JSON.stringify(REQUEST.data));
   }
 
   function testDetectsWhenCorsIsAvailable() {

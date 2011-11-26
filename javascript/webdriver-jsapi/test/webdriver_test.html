@@ -24,7 +24,6 @@ limitations under the License.
   <script>
     goog.require('bot.ErrorCode');
     goog.require('goog.functions');
-    goog.require('goog.json');
     goog.require('goog.testing.PropertyReplacer');
     goog.require('goog.testing.MockControl');
     goog.require('goog.testing.jsunit');
@@ -189,8 +188,8 @@ limitations under the License.
           assertEquals('wrong name', commandName, actualCommand.getName());
           var actualParameters = actualCommand.getParameters();
 
-          var expected = goog.json.serialize(parameters);
-          var actual = goog.json.serialize(actualParameters);
+          var expected = JSON.stringify(parameters);
+          var actual = JSON.stringify(actualParameters);
           var differences = goog.testing.asserts.findDifferences(
               parameters, actualParameters);
           assertNull(
@@ -199,7 +198,7 @@ limitations under the License.
               '\n    Actual: ' + actual,
               differences);
           return true;
-        }, commandName + '(' + goog.json.serialize(parameters) + ')');
+        }, commandName + '(' + JSON.stringify(parameters) + ')');
 
     assertNotNull(this.toDo_);
     this.helper_.executor_.

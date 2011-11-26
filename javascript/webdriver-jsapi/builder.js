@@ -15,7 +15,6 @@
 
 goog.provide('webdriver.Builder');
 
-goog.require('goog.json');
 goog.require('goog.string');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');

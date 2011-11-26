@@ -22,7 +22,6 @@
 goog.provide('webdriver.testing.jsunit');
 goog.provide('webdriver.testing.jsunit.TestRunner');
 
-goog.require('goog.json');
 goog.require('goog.testing.TestRunner');
 goog.require('webdriver.testing.TestCase');
 
@@ -70,7 +69,7 @@ webdriver.testing.jsunit.TestRunner.prototype.reportResults_ = function() {
   // TODO(jleyba): /common/testReport should be configurable.
   xhr.open('POST', '/common/testResults', true);
   xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.send(goog.json.serialize(report));
+  xhr.send(JSON.stringify(report));
 };
 
 

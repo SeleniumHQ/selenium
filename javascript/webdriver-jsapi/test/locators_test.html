@@ -82,8 +82,7 @@ limitations under the License.
       function assertThrows(locator) {
         try {
           webdriver.Locator.checkLocator(locator);
-          fail('Should have thrown for locator: ' +
-               goog.json.serialize(locator));
+          fail('Should have thrown for locator: ' + JSON.stringify(locator));
         } catch (expected) {
           assertContains(
               'Compound class names are not allowed for searches: ',
