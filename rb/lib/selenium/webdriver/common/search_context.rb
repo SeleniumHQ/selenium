@@ -2,6 +2,7 @@ module Selenium
   module WebDriver
     module SearchContext
 
+      # @api private
       FINDERS = {
         :class             => 'class name',
         :class_name        => 'class name',
@@ -25,9 +26,9 @@ module Selenium
       #
       # @param [:class, :class_name, :css, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
       # @param [String] what
-      # @return [WebDriver::Element]
+      # @return [Element]
       #
-      # @raise [NoSuchElementError] if the element doesn't exist
+      # @raise [Error::NoSuchElementError] if the element doesn't exist
       #
       #
 
@@ -48,7 +49,7 @@ module Selenium
       #
       # @param [:class, :class_name, :css, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
       # @param [String] what
-      # @return [Array<WebDriver::Element>]
+      # @return [Array<Element>]
       #
 
       def find_elements(*args)

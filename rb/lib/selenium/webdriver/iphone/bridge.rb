@@ -1,6 +1,10 @@
 module Selenium
   module WebDriver
     module IPhone
+      #
+      # @api private
+      #
+
       class Bridge < Remote::Bridge
 
         DEFAULT_URL = "http://#{Platform.localhost}:3001/hub/"

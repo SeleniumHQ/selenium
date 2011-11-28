@@ -37,9 +37,10 @@ module Selenium
       class InvalidSelectorError < WebDriverError; end           # 32
                                                                  # 33
       class MoveTargetOutOfBoundsError < WebDriverError; end     # 34
-      
+
       class UnsupportedOperationError < WebDriverError; end
 
+      # @api private
       Errors = [
         IndexOutOfBoundsError,          # 1
         NoCollectionError,              # 2

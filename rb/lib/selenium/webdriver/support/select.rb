@@ -3,6 +3,10 @@ module Selenium
     module Support
       class Select
 
+        #
+        # @param [Element] element The select element to use
+        #
+
         def initialize(element)
           tag_name = element.tag_name
 
@@ -17,6 +21,8 @@ module Selenium
         #
         # Does this select element support selecting multiple options?
         #
+        # @return [Boolean]
+        #
 
         def multiple?
           @multi
@@ -24,6 +30,8 @@ module Selenium
 
         #
         # Get all options for this select element
+        #
+        # @return [Array<Element>]
         #
 
         def options
@@ -33,6 +41,8 @@ module Selenium
         #
         # Get all selected options for this select element
         #
+        # @return [Array<Element>]
+        #
 
         def selected_options
           options.select { |e| e.selected? }
@@ -40,6 +50,9 @@ module Selenium
 
         #
         # Get the first selected option in this select element
+        #
+        # @raise [Error::NoSuchElementError] if no options are selected
+        # @return [Element]
         #
 
         def first_selected_option
@@ -49,9 +62,6 @@ module Selenium
 
         #
         # Select options by visible text, index or value.
-        #
-        # @param [:text, :index, :value] how How to find the option
-        # @param [String] what What value to find the option by.
         #
         # When selecting by :text, selects options that display text matching the argument. That is, when given "Bar" this
         # would select an option like:
@@ -65,6 +75,9 @@ module Selenium
         #
         # When selecting by :index, selects the option at the given index. This is done by examining the "index" attribute of an
         # element, and not merely by counting.
+        #
+        # @param [:text, :index, :value] how How to find the option
+        # @param [String] what What value to find the option by.
         #
 
         def select_by(how, what)
@@ -105,6 +118,8 @@ module Selenium
         #
         # Select all unselected options. Only valid if the element supports multiple selections.
         #
+        # @raise [Error::UnsupportedOperationError] if the element does not support multiple selections.
+        #
 
         def select_all
           unless multiple?
@@ -116,6 +131,8 @@ module Selenium
 
         #
         # Deselect all selected options. Only valid if the element supports multiple selections.
+        #
+        # @raise [Error::UnsupportedOperationError] if the element does not support multiple selections.
         #
 
         def deselect_all
@@ -246,6 +263,10 @@ module Selenium
         def find_by_value(value)
           @element.find_elements(:xpath, ".//option[@value = #{Escaper.escape value}]")
         end
+
+        #
+        # @api private
+        #
 
         module Escaper
           def self.escape(str)

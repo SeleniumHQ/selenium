@@ -4,6 +4,10 @@ require 'find'
 
 module Selenium
   module WebDriver
+    #
+    # @api private
+    #
+
     module Zipper
 
       EXTENSIONS = %w[.zip .xpi]

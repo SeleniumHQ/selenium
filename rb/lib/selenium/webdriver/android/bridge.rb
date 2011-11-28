@@ -1,6 +1,11 @@
 module Selenium
   module WebDriver
     module Android
+
+      #
+      # @api private
+      #
+
       class Bridge < Remote::Bridge
 
         DEFAULT_URL = "http://#{Platform.localhost}:8080/wd/hub/"

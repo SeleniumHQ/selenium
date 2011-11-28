@@ -1,5 +1,10 @@
 module Selenium
   module WebDriver
+
+    #
+    # @api private
+    #
+
     module FileReaper
 
       class << self

@@ -20,6 +20,8 @@ module Selenium
         #
         # @see Selenium::WebDriver.for
         #
+        # @return [Driver]
+        #
 
         def for(browser, opts = {})
           listener = opts.delete(:listener)

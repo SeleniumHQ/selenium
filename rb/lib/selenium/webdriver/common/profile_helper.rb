@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
 
     #
-    # @private
+    # @api private
     #
     # Common methods for Chrome::Profile and Firefox::Profile
     # Includers must implement #layout_on_disk

@@ -28,6 +28,8 @@ module Selenium
         #
         # By default, no file detection is performed.
         #
+        # @api public
+        #
 
         def file_detector=(detector)
           unless detector.nil? or detector.respond_to? :call
