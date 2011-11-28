@@ -119,6 +119,10 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
 
   @Ignore({ANDROID, IPHONE, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
+    if (TestUtilities.isIe6(driver)) {
+      System.out.println("Ignoring xpath error test in IE6");
+      return;
+    }
     driver.get(pages.formPage);
 
     try {
@@ -145,6 +149,10 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
+    if (TestUtilities.isIe6(driver)) {
+      System.out.println("Ignoring xpath error test in IE6");
+      return;
+    }
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     try {
@@ -172,6 +180,10 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
+    if (TestUtilities.isIe6(driver)) {
+      System.out.println("Ignoring xpath error test in IE6");
+      return;
+    }
     driver.get(pages.formPage);
 
     try {
@@ -200,6 +212,10 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
+    if (TestUtilities.isIe6(driver)) {
+      System.out.println("Ignoring xpath error test in IE6");
+      return;
+    }
     driver.get(pages.formPage);
 
     WebElement body = driver.findElement(By.tagName("body"));

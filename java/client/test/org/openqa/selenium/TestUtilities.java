@@ -47,6 +47,10 @@ public class TestUtilities {
     return getUserAgent(driver).contains("MSIE");
   }
 
+  public static boolean isIe6(WebDriver driver) {
+    return getUserAgent(driver).contains("MSIE 6");
+  }
+
   public  static boolean isFirefox30(WebDriver driver) {
     return getUserAgent(driver).contains("Firefox/3.0.");
   }
