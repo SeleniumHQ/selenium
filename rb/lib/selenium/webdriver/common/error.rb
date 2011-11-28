@@ -3,42 +3,147 @@ module Selenium
     module Error
 
       class WebDriverError < StandardError; end
+      class UnsupportedOperationError < WebDriverError; end
+
       class IndexOutOfBoundsError < WebDriverError; end          # 1
       class NoCollectionError < WebDriverError; end              # 2
       class NoStringError < WebDriverError; end                  # 3
       class NoStringLengthError < WebDriverError; end            # 4
       class NoStringWrapperError < WebDriverError; end           # 5
       class NoSuchDriverError < WebDriverError; end              # 6
+
+      #
+      # An element could not be located on the page using the given search
+      # parameters.
+      #
+
       class NoSuchElementError < WebDriverError; end             # 7
+
+      #
+      # A request to switch to a frame could not be satisfied because the
+      # frame could not be found.
+      #
+
       class NoSuchFrameError < WebDriverError; end               # 8
       class UnknownCommandError < WebDriverError; end            # 9
-      class ObsoleteElementError < WebDriverError; end           # 10
-      class ElementNotDisplayedError < WebDriverError; end       # 11
+
+
+      #
+      # Indicates that a reference to an element is now "stale" - the element
+      # no longer appears in the DOM of the page.
+      #
+
+      class StaleElementReferenceError < WebDriverError; end     # 10
+
+      #
+      # Raised to indicate that although an element is present on the DOM,
+      # it is not visible, and so is not able to be interacted with.
+      #
+
+      class ElementNotVisibleError < WebDriverError; end         # 11
+
+      #
+      # Raised when an interaction could not be performed because the element
+      # is in an invalid state (e.g. attempting to click a disabled element).
+      #
+
       class InvalidElementStateError < WebDriverError; end       # 12
-      class UnhandledError < WebDriverError; end                 # 13
+
+      #
+      # An unknown server-side error occurred while processing the command.
+      #
+
+      class UnknownError < WebDriverError; end                   # 13
       class ExpectedError < WebDriverError; end                  # 14
+
+      #
+      # An attempt was made to select an element that cannot be selected.
+      #
+
       class ElementNotSelectableError < WebDriverError; end      # 15
       class NoSuchDocumentError < WebDriverError; end            # 16
-      class UnexpectedJavascriptError < WebDriverError; end      # 17
+
+      #
+      # An error occurred while executing user supplied JavaScript.
+      #
+
+      class JavascriptError < WebDriverError; end                # 17
       class NoScriptResultError < WebDriverError; end            # 18
+
+      #
+      # An error occurred while searching for an element by XPath.
+      #
+
       class XPathLookupError < WebDriverError; end               # 19
       class NoSuchCollectionError < WebDriverError; end          # 20
+
+      #
+      # Raised when a command does not complete in enough time.
+      #
+
       class TimeOutError < WebDriverError; end                   # 21
       class NullPointerError < WebDriverError; end               # 22
       class NoSuchWindowError < WebDriverError; end              # 23
+
+      #
+      # Raised when attempting to add a cookie under a different domain than
+      # the current URL.
+      #
+
       class InvalidCookieDomainError < WebDriverError; end       # 24
+
+      #
+      # Raised when a driver fails to set a cookie.
+      #
+
       class UnableToSetCookieError < WebDriverError; end         # 25
       class UnexpectedAlertError < WebDriverError; end           # 26
-      class NoAlertOpenError < WebDriverError; end               # 27
+
+      #
+      # Indicates that a user has tried to access an alert when one is not present.
+      #
+
+      class NoAlertPresentError < WebDriverError; end            # 27
+
+      #
+      # A script did not complete before its timeout expired.
+      #
+
       class ScriptTimeOutError < WebDriverError; end             # 28
+
+      #
+      # The coordinates provided to an interactions operation are invalid.
+      #
+
       class InvalidElementCoordinatesError < WebDriverError; end # 29
+
+      #
+      # Indicates that IME support is not available. This exception is rasied
+      # for every IME-related method call if IME support is not available on
+      # the machine.
+      #
+
       class IMENotAvailableError < WebDriverError; end           # 30
+
+      #
+      # Indicates that activating an IME engine has failed.
+      #
+
       class IMEEngineActivationFailedError < WebDriverError; end # 31
+
+      #
+      # Argument was an invalid selector (e.g. XPath/CSS).
+      #
+
       class InvalidSelectorError < WebDriverError; end           # 32
                                                                  # 33
-      class MoveTargetOutOfBoundsError < WebDriverError; end     # 34
 
-      class UnsupportedOperationError < WebDriverError; end
+      #
+      # Indicates that the target provided to the actions #move method is
+      # invalid, e.g. outside of the bounds of the window.
+      #
+
+      class MoveTargetOutOfBoundsError < WebDriverError; end     # 34
 
       # @api private
       Errors = [
@@ -51,14 +156,14 @@ module Selenium
         NoSuchElementError,             # 7
         NoSuchFrameError,               # 8
         UnknownCommandError,            # 9
-        ObsoleteElementError,           # 10
-        ElementNotDisplayedError,       # 11
+        StaleElementReferenceError,     # 10
+        ElementNotVisibleError,         # 11
         InvalidElementStateError,       # 12
-        UnhandledError,                 # 13
+        UnknownError,                   # 13
         ExpectedError,                  # 14
         ElementNotSelectableError,      # 15
         NoSuchDocumentError,            # 16
-        UnexpectedJavascriptError,      # 17
+        JavascriptError,                # 17
         NoScriptResultError,            # 18
         XPathLookupError,               # 19
         NoSuchCollectionError,          # 20
@@ -68,7 +173,7 @@ module Selenium
         InvalidCookieDomainError,       # 24
         UnableToSetCookieError,         # 25
         UnexpectedAlertError,           # 26
-        NoAlertOpenError,               # 27
+        NoAlertPresentError,            # 27
         ScriptTimeOutError,             # 28
         InvalidElementCoordinatesError, # 29
         IMENotAvailableError,           # 30
@@ -77,6 +182,21 @@ module Selenium
         nil,                            # 33
         MoveTargetOutOfBoundsError      # 34
       ]
+
+      # aliased for backwards compatibility
+      ObsoleteElementError = StaleElementReferenceError
+
+      # aliased for backwards compatibility
+      UnhandledError = UnknownError
+
+      # aliased for backwards compatibility
+      UnexpectedJavascriptError = JavascriptError
+
+      # aliased for backwards compatibility
+      NoAlertOpenError = NoAlertPresentError
+
+      # aliased for backwards compatibility
+      ElementNotDisplayedError = ElementNotVisibleError
 
       class << self
         def for_code(code)
