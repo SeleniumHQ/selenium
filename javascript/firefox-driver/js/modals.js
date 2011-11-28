@@ -28,10 +28,6 @@ goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 
 
-var CI = Components.interfaces;
-var CC = Components.classes;
-
-
 fxdriver.modals.isModalPresent = function(callback, timeout) {
   var timer = new fxdriver.Timer();
   timer.runWhenTrue(

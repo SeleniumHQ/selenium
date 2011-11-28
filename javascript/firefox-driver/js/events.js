@@ -25,12 +25,6 @@ goog.require('goog.style');
 
 
 /**
- * @const
- */
-var CI = Components.interfaces;
-
-
-/**
  * Converts a parameters object to a coordinate, defaulting to the centre if
  * no x and y offset are specified.
  *

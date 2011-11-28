@@ -27,11 +27,8 @@ goog.require('bot.window');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('fxdriver.Logger');
+goog.require('goog.events.EventType');
 goog.require('goog.math.Coordinate');
-
-
-var CC = Components.classes;
-var CI = Components.interfaces;
 
 
 SyntheticMouse = function() {
