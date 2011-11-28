@@ -1100,7 +1100,7 @@ Utils.wrapResult = function(result, doc) {
 Utils.getXPathOfElement = function(element) {
   var path = "";
   for (; element && element.nodeType == 1; element = element.parentNode) {
-    index = Utils.getElementIndexForXPath_(element);
+    var index = Utils.getElementIndexForXPath_(element);
     path = "/" + element.tagName + "[" + index + "]" + path;
   }
   return path;	

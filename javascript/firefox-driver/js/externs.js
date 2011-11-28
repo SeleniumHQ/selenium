@@ -33,3 +33,25 @@ var XPCNativeWrapper;
 var XPCOMUtils;
 XPCOMUtils.generateNSGetFactory;
 XPCOMUtils.generateNSGetModule;
+
+
+// Constants on constants
+Components.resources.NS_ERROR_NO_INTERFACE;
+Components.resources.NS_NOINTERFACE;
+
+
+// Classes we use
+Components.interfaces.nsIDOMChromeWindow;
+Components.interfaces.nsIDOMWindow;
+Components.interfaces.nsIDocShellTreeItem;
+Components.interfaces.nsIDocShellTreeItem.rootTreeItem;
+Components.interfaces.nsIFile;
+Components.interfaces.nsIFile.NORMAL_FILE_TYPE;
+Components.interfaces.nsIFile.initWithPath;
+Components.interfaces.nsIInterfaceRequestor;
+Components.interfaces.nsISupports;
+Components.interfaces.nsIWebNavigation;
+
+// WebDriver constants
+Components.interfaces.wdICoordinate;
+Components.interfaces.wdIMouse;

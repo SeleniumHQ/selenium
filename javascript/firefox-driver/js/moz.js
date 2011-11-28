@@ -40,7 +40,7 @@ fxdriver.moz.getService = function(className, serviceName) {
   var clazz = Components.classes[className];
   if (clazz == undefined) {
     // TODO(simon): Replace this with a proper error
-    throw new Exception();
+    throw new Error('Cannot create component ' + className);
   }
 
   return clazz.getService(Components.interfaces[serviceName]);

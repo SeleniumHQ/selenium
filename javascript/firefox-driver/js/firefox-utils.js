@@ -108,7 +108,7 @@ fxdriver.utils.getUniqueId = function() {
 fxdriver.utils.newCoordinates = function(element, x, y) {
   return {
     QueryInterface: function(iid) {
-      if (iid.equals(Components.interfaces.wdICoorinate) ||
+      if (iid.equals(Components.interfaces.wdICoordinate) ||
           iid.equals(Components.interfaces.nsISupports))
         return this;
       throw Components.results.NS_NOINTERFACE;
