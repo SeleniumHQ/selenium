@@ -24,10 +24,15 @@
 // root of the WebDriver REST service.
 @interface SessionRoot : HTTPVirtualDirectory {
   int nextId_;
+  NSString *ipAddress_;
+  NSString *port_;
 }
+
+- (id)initWithAddress:(NSString *)ipAddress
+                 port:(NSString *)port;
 
 - (NSObject<HTTPResponse> *)createSessionWithData:(id)desiredCapabilities
                                            method:(NSString*)method;
-- (void)deleteSessionWithId:(int)sessionId;
+- (void)deleteSessionWithId:(NSString *)sessionId;
 
 @end;

@@ -27,12 +27,11 @@ static const NSString* kQueryDatabaseDicKey = @"dbName";
 
 @implementation Database
 
-- (id)initWithSessionId:(int)sessionId {
+- (id)init {
   self = [super init];
   if (!self) {
     return nil;
   }
-  sessionId_ = sessionId;
   
   [self setIndex:
    [WebDriverResource resourceWithTarget:self
@@ -41,10 +40,6 @@ static const NSString* kQueryDatabaseDicKey = @"dbName";
                                PUTAction:NULL
                             DELETEAction:NULL]];
   return self;
-}
-
-+ (Database *)databaseWithSessionId:(int)sessionId {
-  return [[[Database alloc] initWithSessionId:sessionId] autorelease];
 }
 
 

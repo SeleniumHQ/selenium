@@ -32,7 +32,8 @@
 
 @synthesize serverRoot = serverRoot_;
 
-- (id)init {
+- (id)initWithIpAddress:(NSString *)ipAddress 
+                   port:(int)port {
   if (![super init])
     return nil;
 
@@ -65,7 +66,7 @@
   [restRoot setIndex:[HTTPStaticResource resourceWithResponse:response]];
   [response release];
   
-  [restRoot setResource:[[[SessionRoot alloc] init] autorelease]
+  [restRoot setResource:[[SessionRoot alloc] initWithAddress:ipAddress port:[NSString stringWithFormat:@"%d", port] ]
                withName:@"session"];
   	
   return self;

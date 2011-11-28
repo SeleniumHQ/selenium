@@ -23,7 +23,9 @@
 
 @implementation SessionRoot
 
-- (id)init {
+
+- (id)initWithAddress:(NSString*)ipAddress 
+                 port:(NSString *)port {
   if (![super init])
     return nil;
 
@@ -35,6 +37,8 @@
 
   // Session IDs start at 1001.
   nextId_ = 1001;
+  ipAddress_ = [[NSString alloc] initWithString:ipAddress];
+  port_ = [[NSString alloc] initWithString:port];
 
   return self;
 }
@@ -49,10 +53,10 @@
 
   if (![method isEqualToString:@"POST"] && ![method isEqualToString:@"GET"])
     return nil;
-
-  int sessionId = nextId_++;
+   
+  NSString* sessionId = [NSString stringWithFormat:@"%@:%@:%d", ipAddress_, port_, nextId_++];
   
-  NSLog(@"session %d created", sessionId);
+  NSLog(@"session %@ created", sessionId);
 
   // Sessions don't really mean anything on the iphone. There's only one
   // browser and only one session.
@@ -63,20 +67,15 @@
                        initWithSessionRootAndSessionId:self
                        sessionId:sessionId] autorelease];
 
-  NSString *sessionIdStr = [NSString stringWithFormat:@"%d", sessionId];
-  [self setResource:session withName:sessionIdStr];
+  [self setResource:session withName:sessionId];
 
   return [HTTPRedirectResponse redirectToURL:
-          [NSString stringWithFormat:@"session/%d/", sessionId]];
+          [NSString stringWithFormat:@"session/%@/", sessionId]];
 }
 
-- (void) deleteSessionWithId:(int)sessionId {
-  NSString *sessionIdStr = [NSString stringWithFormat:@"%d", sessionId];
-  [self setResource:nil withName:sessionIdStr];
-  NSLog(@"session %d deleted", sessionId);
-  if (sessionId == nextId_ - 1) {
-    nextId_--;
-  }
+- (void) deleteSessionWithId:(NSString *)sessionId {
+  [self setResource:nil withName:sessionId];
+  NSLog(@"session %@ deleted", sessionId);
 }
 
 - (void)dealloc {

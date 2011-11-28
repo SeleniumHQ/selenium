@@ -22,12 +22,11 @@
 
 @implementation Storage
 
-- (id)initWithSessionId:(int)sessionId andType:(NSString *)type {
+- (id)initWithType:(NSString *)type {
   self = [super init];
   if (!self) {
     return nil;
   }
-  sessionId_ = sessionId;
   storageType_ = type;
 
   [self setIndex:
@@ -43,9 +42,10 @@
   return self;
 }
 
-+ (Storage *)storageWithSessionId:(int)sessionId andType:(NSString *)type {
-  return [[[Storage alloc] initWithSessionId:sessionId andType:type] autorelease];
++ (Storage *)storageWithType:(NSString *)type {
+  return [[[Storage alloc] initWithType:type] autorelease];
 }
+
 
 - (NSString *)storageSize {
   NSString *size = [[self viewController] jsEval:[NSString stringWithFormat:

@@ -26,19 +26,19 @@
 // expects.
 @interface Session : HTTPVirtualDirectory {
   SessionRoot* sessionRoot_;
-  int sessionId_;
+  NSString* sessionId_;
   ElementStore* elementStore_;
   NSTimeInterval implicitWait_;
   NSTimeInterval scriptTimeout_;
 }
 
 @property (nonatomic, readonly) ElementStore* elementStore;
-@property (nonatomic) int sessionId;
+@property (nonatomic, retain) NSString *sessionId;
 @property (nonatomic) NSTimeInterval implicitWait;
 @property (nonatomic) NSTimeInterval scriptTimeout;
 
 - (id) initWithSessionRootAndSessionId:(SessionRoot*)root
-                             sessionId:(int)sessionId;
+                             sessionId:(NSString *)sessionId;
 
 - (void)cleanSessionStatus;
 

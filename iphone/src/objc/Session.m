@@ -58,13 +58,13 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
 }
 
 - (id) initWithSessionRootAndSessionId:(SessionRoot*)root
-                             sessionId:(int)sessionId {
+                             sessionId:(NSString*)sessionId {
   self = [super init];
   if (!self) {
     return nil;
   }
   sessionRoot_ = root;
-  sessionId_ = sessionId;
+  sessionId_ = [[NSString alloc] initWithString:sessionId];
   
   [self setIndex:[WebDriverResource
                   resourceWithTarget:self
@@ -114,13 +114,11 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
                           withName:@"screenshot"];
 
   // HTML5 Local WebStorage
-  [self setResource:[Storage storageWithSessionId:sessionId_ 
-                                          andType:LOCAL_STORAGE]
+  [self setResource:[Storage storageWithType:LOCAL_STORAGE]
            withName:@"local_storage"];
   
   // HTML5 Session WebStorage
-  [self setResource:[Storage storageWithSessionId:sessionId_ 
-                                          andType:SESSION_STORAGE]
+  [self setResource:[Storage storageWithType:SESSION_STORAGE]
            withName:@"session_storage"];
   
   // HTML5 Get and Set GeoLocation
@@ -129,7 +127,7 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
                           withName:@"location"];
   
   // HTML5 Database Storage
-  [self setResource:[Database databaseWithSessionId:sessionId_] 
+  [self setResource:[Database alloc] 
            withName:@"execute_sql"];
   
   // Execute JS function with the given body.
@@ -151,7 +149,7 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   // page.
   elementStore_ = [ElementStore elementStoreForSession:self];
 
-  [self setResource:[Cookie cookieWithSessionId:sessionId_]
+  [self setResource:[Cookie alloc]
            withName:@"cookie"];
   
   [self setResource:[Timeouts timeoutsForSession:self]
@@ -169,26 +167,21 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
 }
 
 - (id)capabilities {
-  NSMutableDictionary *caps = [NSMutableDictionary dictionary];
-  [caps setObject:@"mobile safari" forKey:@"browserName"];
-  [caps setObject:@"MAC" forKey:@"platform"];
-  [caps setValue:[NSNumber numberWithBool:YES]
-          forKey:@"javascriptEnabled"];
-  [caps setValue:[NSNumber numberWithBool:YES]
-          forKey:@"webStorageEnabled"];
-  [caps setValue:[NSNumber numberWithBool:YES]
-          forKey:@"databaseEnabled"];
-  [caps setValue:[NSNumber numberWithBool:YES]
-          forKey:@"locationContextEnabled"];
-  [caps setValue:[NSNumber numberWithBool:YES]
-          forKey:@"takesScreenshot"];
-  [caps setObject:[[UIDevice currentDevice] systemVersion]
-           forKey:@"version"];
+  NSMutableDictionary *caps = [NSMutableDictionary dictionaryWithObjectsAndKeys: 
+    [[[[UIDevice currentDevice] model] componentsSeparatedByString:@" "] objectAtIndex:0], @"browserName",
+    @"MAC", @"platform",
+    [NSNumber numberWithBool:YES], @"javascriptEnabled",
+    [NSNumber numberWithBool:YES], @"webStorageEnabled",
+    [NSNumber numberWithBool:YES], @"databaseEnabled",
+    [NSNumber numberWithBool:YES], @"locationContextEnabled",
+    [NSNumber numberWithBool:YES], @"takesScreenshot",
+    [[UIDevice currentDevice] systemVersion], @"version", 
+    nil];
   return caps;
 }
 
 - (void)deleteSession {
-  NSLog( @"Delete session: %d", sessionId_ );
+  NSLog( @"Delete session: %@", sessionId_ );
   [contents removeAllObjects];
   // Tell the session root to remove this resource.
   [sessionRoot_ deleteSessionWithId:sessionId_];
@@ -211,7 +204,7 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
 
 - (void)configureResource:(id<HTTPResource>)resource {
   if ([resource respondsToSelector:@selector(setSession:)]) {
-    [(id)resource setSession:[NSString stringWithFormat:@"%d", sessionId_]];
+    [(id)resource setSession:sessionId_];
   }
 }
 

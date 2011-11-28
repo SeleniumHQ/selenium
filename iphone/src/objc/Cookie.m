@@ -28,12 +28,11 @@
 
 @implementation Cookie
 
-- (id) initWithSessionId:(int)sessionId {
+- (id) init {
   self = [super init];
   if (!self) {
     return nil;
   }
-  sessionId_ = sessionId;
   
   [self setIndex:
    [WebDriverResource resourceWithTarget:self
@@ -45,9 +44,6 @@
   return self;
 }
 
-+ (Cookie*) cookieWithSessionId:(int)sessionId {
-  return [[[Cookie alloc] initWithSessionId:sessionId] autorelease];
-}
 
 - (NSURL *)currentUrl {
   return [NSURL URLWithString:[[self viewController] URL]];

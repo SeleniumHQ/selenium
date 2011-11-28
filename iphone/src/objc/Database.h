@@ -20,14 +20,8 @@
 #import <sqlite3.h>
 
 @interface Database : HTTPVirtualDirectory {
-  int sessionId_;
 }
 
-- (id)initWithSessionId:(int)sessionId;
-
-+ (Database *)databaseWithSessionId:(int)sessionId;
-
 - (NSDictionary *)executeSql:(NSDictionary *)dict;
-
 
 @end

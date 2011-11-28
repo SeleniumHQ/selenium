@@ -20,7 +20,7 @@
 #import <CFNetwork/CFNetwork.h>
 #import "HTTPResponse.h"
 
-@class VirtualDirectory;
+@class HTTPVirtualDirectory;
 
 // |RESTServiceMapping| stores the tree of virtual directories. When the HTTP
 // server recieves an http request, the request is forwarded through
@@ -28,10 +28,13 @@
 // the appropriate |HTTPResource|.
 @interface RESTServiceMapping : NSObject {
   // Stores the root directory of the HTTP server
-  VirtualDirectory *serverRoot_;
+  HTTPVirtualDirectory *serverRoot_;
 }
 
-@property (nonatomic, copy) VirtualDirectory *serverRoot;
+@property (nonatomic, copy) HTTPVirtualDirectory *serverRoot;
+
+- (id) initWithIpAddress:(NSString *)ipAddress 
+                    port:(int)port;
 
 - (NSObject<HTTPResponse> *)httpResponseForRequest:(CFHTTPMessageRef)request;
 

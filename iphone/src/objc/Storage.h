@@ -23,13 +23,12 @@
 // This |HTTPVirtualDirectory| matches the /hub/:session/local_storage
 //  | session_storage directory in the WebDriver REST service.
 @interface Storage : HTTPVirtualDirectory {
-  int sessionId_;
   NSString *storageType_;
 }
 
-- (id)initWithSessionId:(int)sessionId andType:(NSString *)type;
+- (id)initWithType:(NSString *)type;
 
-+ (Storage *)storageWithSessionId:(int)sessionId andType:(NSString *)type;
++ (Storage *)storageWithType:(NSString *)type;
 
 - (NSString *)storageSize;
 - (NSArray *)keySet;

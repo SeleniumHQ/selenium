@@ -24,12 +24,7 @@
 // This |HTTPVirtualDirectory| matches the /hub/:session/cookie
 // directory in the WebDriver REST service.
 @interface Cookie : HTTPVirtualDirectory {
-  int sessionId_;
 }
-
-- (id)initWithSessionId:(int)sessionId;
-
-+ (Cookie*)cookieWithSessionId:(int)sessionId;
 
 - (NSURL *)currentUrl;
 - (NSArray *)getCookies;

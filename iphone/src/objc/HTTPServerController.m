@@ -65,7 +65,12 @@ static NSMutableData *webData;
       struct in_addr inaddr = ((struct sockaddr_in *)sock)->sin_addr;
       char *name = inet_ntoa(inaddr);
       address = [NSString stringWithUTF8String:name];
-      break;
+      // if wifi use this, otherwise it's the carrier network (pdp_ip0)
+      // keep looking for the wifi, if no other network interface is found
+      // it will use the carrier network.
+      if ([interfaceName isEqualToString:@"en0"]) {
+        break;
+      }
     }
   }
   
@@ -165,7 +170,8 @@ static NSMutableData *webData;
   
   }
 
-  serviceMapping_ = [[RESTServiceMapping alloc] init];
+  serviceMapping_ = [[RESTServiceMapping alloc] initWithIpAddress:[self getAddress] 
+                                                             port:[server_ port]];
 
   return self;
 }
