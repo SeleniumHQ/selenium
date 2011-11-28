@@ -211,10 +211,19 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Method to return a new DesiredCapabilities using defaults
         /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with IPhone</returns>
+        /// <returns>New instance of DesiredCapabilities for use with iPhone</returns>
         public static DesiredCapabilities IPhone()
         {
-            return new DesiredCapabilities("iphone", string.Empty, new Platform(PlatformType.Mac));
+            return new DesiredCapabilities("iPhone", string.Empty, new Platform(PlatformType.Mac));
+        }
+
+        /// <summary>
+        /// Method to return a new DesiredCapabilities using defaults
+        /// </summary>
+        /// <returns>New instance of DesiredCapabilities for use with iPad</returns>
+        public static DesiredCapabilities IPad()
+        {
+            return new DesiredCapabilities("iPad", string.Empty, new Platform(PlatformType.Mac));
         }
 
         /// <summary>
