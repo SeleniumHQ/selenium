@@ -63,8 +63,8 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\..\..\third_party\csharp\dotnetzip-1.9\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json.Net35">
-      <HintPath>..\..\..\third_party\csharp\json-net-4.0r2\Newtonsoft.Json.Net35.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\third_party\csharp\json-net-4.0r4\Net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
