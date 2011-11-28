@@ -1,3 +1,8 @@
+v2.14.0
+=======
+ * Implemented iPad desired capability.
+ * Updated Json.NET version to 4.0r4
+
 v2.13.0
 =======
  * Do not use "which" to find Firefox on Windows in the .NET bindings.
