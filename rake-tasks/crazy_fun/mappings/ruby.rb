@@ -113,7 +113,7 @@ class RubyMappings
 
     def add_jruby_requires(args)
       jars = %w[
-        json-jruby.jar
+        multi_json.jar
         rubyzip.jar
         childprocess.jar
         rack.jar

@@ -3,28 +3,7 @@ require 'tmpdir'
 require 'fileutils'
 require 'date'
 
-have_lib = lambda { |lib|
-  begin
-    require lib
-    true
-  rescue LoadError
-    false
-  end
-}
-
-unless have_lib['yajl/json_gem'] || have_lib['json']
-  raise LoadError, <<-END
-
-       You need to require rubygems or install one of these gems:
-
-           yajl-ruby (best on MRI)
-           json
-           json-jruby (native JRuby)
-           json_pure (any platform)
-
-  END
-end
-
+require 'multi_json'
 require 'selenium/webdriver/common'
 
 module Selenium

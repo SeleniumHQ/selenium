@@ -95,6 +95,10 @@ module Selenium
         json_result if json_result.length > 1
       end
 
+      def to_json(*args)
+        MultiJson.encode as_json
+      end
+
       class << self
         def json_create(data)
           proxy = new

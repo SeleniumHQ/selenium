@@ -78,6 +78,8 @@ module Selenium
           caps.merge! 'chrome.nativeEvents' => true if native_events
           caps.merge! 'chrome.verbose'      => true if verbose
           caps.merge! 'chrome.detach'       => detach.nil? || !!detach
+
+          caps
         end
 
       end # Bridge

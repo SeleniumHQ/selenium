@@ -44,7 +44,7 @@ module Selenium
 
           model_profile.layout_on_disk
 
-          result = JSON.parse(mock_io.string)
+          result = MultiJson.decode(mock_io.string)
 
           result['autofill']['enabled'].should == false
           result['some']['other']['pref'].should == 123

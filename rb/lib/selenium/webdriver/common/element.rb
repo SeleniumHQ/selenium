@@ -224,7 +224,7 @@ module Selenium
       #
 
       def to_json(*args)
-        as_json.to_json(*args)
+        MultiJson.encode as_json
       end
 
       #

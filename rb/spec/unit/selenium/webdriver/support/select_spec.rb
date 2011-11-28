@@ -205,7 +205,8 @@ module Selenium
         end
 
         it 'should fall back to slow lookups when "get by visible text fails" and there is a space' do
-          first_option = mock(Element, :selected? => false, :text => 'foo bar', :to_a => nil)
+          first_option = mock(Element, :selected? => false, :text => 'foo bar')
+          first_option.stub(:to_a => [first_option])
 
           xpath1 = './/option[normalize-space(.) = "foo bar"]'
           xpath2 = './/option[contains(., "foo")]'
