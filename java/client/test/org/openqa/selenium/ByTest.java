@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.List;
+
 import org.jmock.Expectations;
 import org.junit.Test;
 import org.openqa.selenium.internal.FindsById;
@@ -69,6 +71,19 @@ public class ByTest extends MockTestBase {
     assertThat(new By.ByTagName("a").toString(), equalTo("By.tagName: a"));
     assertThat(new By.ByCssSelector("a").toString(), equalTo("By.selector: a"));
     assertThat(new By.ByPartialLinkText("a").toString(), equalTo("By.partialLinkText: a"));
+  }
+
+  // See http://code.google.com/p/selenium/issues/detail?id=2917
+  @Test
+  public void testHashCodeDoesNotFallIntoEndlessRecursion() {
+    By locator = new By() {
+      @Override
+      public List<WebElement> findElements(SearchContext context) {
+        // TODO Auto-generated method stub
+        return null;
+      }
+    };
+    locator.hashCode();
   }
 
   private interface AllDriver

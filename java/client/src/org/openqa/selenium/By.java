@@ -189,6 +189,12 @@ public abstract class By {
     return toString().hashCode();
   }
 
+  @Override
+  public String toString() {
+    // A stub to prevent endless recursion in hashCode()
+    return "[unknown locator]";
+  }
+
   public static class ById extends By {
     private final String id;
 
