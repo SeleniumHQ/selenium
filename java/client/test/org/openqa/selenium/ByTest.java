@@ -59,17 +59,17 @@ public class ByTest extends MockTestBase {
     by.findElement(driver);
   }
 
-    @Test
-    public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
-        assertThat(new By.ByXPath("a").toString(), equalTo("By.xpath: a"));
-        assertThat(new By.ById("a").toString(), equalTo("By.id: a"));
-        assertThat(new By.ByClassName("a").toString(), equalTo("By.className: a"));
-        assertThat(new By.ByLinkText("a").toString(), equalTo("By.linkText: a"));
-        assertThat(new By.ByName("a").toString(), equalTo("By.name: a"));
-        assertThat(new By.ByTagName("a").toString(), equalTo("By.tagName: a"));
-        assertThat(new By.ByCssSelector("a").toString(), equalTo("By.selector: a"));
-        assertThat(new By.ByPartialLinkText("a").toString(), equalTo("By.partialLinkText: a"));
-    }
+  @Test
+  public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
+    assertThat(new By.ByXPath("a").toString(), equalTo("By.xpath: a"));
+    assertThat(new By.ById("a").toString(), equalTo("By.id: a"));
+    assertThat(new By.ByClassName("a").toString(), equalTo("By.className: a"));
+    assertThat(new By.ByLinkText("a").toString(), equalTo("By.linkText: a"));
+    assertThat(new By.ByName("a").toString(), equalTo("By.name: a"));
+    assertThat(new By.ByTagName("a").toString(), equalTo("By.tagName: a"));
+    assertThat(new By.ByCssSelector("a").toString(), equalTo("By.selector: a"));
+    assertThat(new By.ByPartialLinkText("a").toString(), equalTo("By.partialLinkText: a"));
+  }
 
   private interface AllDriver
       extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
