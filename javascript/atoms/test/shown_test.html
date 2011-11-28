@@ -277,16 +277,16 @@
       assertTrue('Should still be considered shown', isShown(root));
     }
 
-    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
-    function testInvisibleSelectsOptionsAreNotShown() {
+    /** @see http://code.google.com/p/selenium/issues/detail?id=2922 */
+    function testOptionsInInvisibleSelectAreStillShown() {
       var select = goog.dom.$('invisiSelect');
       assertEquals(0, bot.dom.getOpacity(select));
       assertFalse(bot.dom.isShown(select));
-      assertFalse(bot.dom.isShown(select.firstChild));
+      assertTrue(bot.dom.isShown(select.firstChild));
     }
 
-    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
-    function testInvisibleSelectsOptionsAreShownWhenIgnoringOpacity() {
+    /** @see http://code.google.com/p/selenium/issues/detail?id=2922 */
+    function testOptionsInInvisibleSelectAlwaysIgnoreParentSelectOpacity() {
       var select = goog.dom.$('invisiSelect');
       assertEquals(0, bot.dom.getOpacity(select));
       assertFalse(bot.dom.isShown(select));
@@ -294,6 +294,8 @@
           bot.dom.isShown(select, true));
       assertTrue('Option should be visible when ignoring opacity',
           bot.dom.isShown(select.firstChild, true));
+      assertTrue('Option should be visible when not ignoring opacity',
+          bot.dom.isShown(select.firstChild, false));
     }
 
     /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
@@ -392,7 +394,9 @@
 </select>
 <option id="orphanOption"></option>
 
+<label>invisible select:
 <select id="invisiSelect" style="opacity:0; filter:alpha(opacity=0)"><option>Test</option></select>
+</label>
 
 <img usemap="#shownMap" src="testdata/map.png">
 <map id="shownMap" name="shownMap">

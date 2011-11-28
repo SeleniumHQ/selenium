@@ -551,13 +551,14 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return titleWindow == bot.getWindow();
   }
 
-  // Option or optgroup is shown iff enclosing select is shown.
+  // Option or optgroup is shown iff enclosing select is shown (ignoring the
+  // select's opacity).
   if (bot.dom.isElement(elem, goog.dom.TagName.OPTION) ||
       bot.dom.isElement(elem, goog.dom.TagName.OPTGROUP)) {
     var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
       return bot.dom.isElement(e, goog.dom.TagName.SELECT);
     }));
-    return !!select && bot.dom.isShown(select, opt_ignoreOpacity);
+    return !!select && bot.dom.isShown(select, true);
   }
 
   // Map is shown iff image that uses it is shown.
