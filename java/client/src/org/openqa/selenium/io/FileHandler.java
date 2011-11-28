@@ -256,11 +256,11 @@ public class FileHandler {
   }
 
   /**
-   * File.setWritable appears in Java 6. If we find the method, we can use it
+   * File.canExecute appears in Java 6. If we find the method, we can use it
    */
   private static Method findJdk6CanExecuteMethod() {
     try {
-      return File.class.getMethod("canExecute", Boolean.class);
+      return File.class.getMethod("canExecute");
     } catch (NoSuchMethodException e) {
       return null;
     }
