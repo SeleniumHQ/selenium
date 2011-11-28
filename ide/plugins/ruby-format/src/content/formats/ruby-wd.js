@@ -358,7 +358,7 @@ WDAPI.Element.prototype.submit = function() {
 };
 
 WDAPI.Element.prototype.select = function(label) {
-  return "Select.new(" + this.ref + ").select_by(:text, " + xlateArgument(label) + ")";
+  return "Selenium::WebDriver::Support::Select.new(" + this.ref + ").select_by(:text, " + xlateArgument(label) + ")";
 };
 
 WDAPI.ElementList = function(ref) {
