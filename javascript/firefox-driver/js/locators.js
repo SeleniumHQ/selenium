@@ -27,7 +27,7 @@ goog.require('goog.dom');
 
 if (!bot.userAgent.isVersion('3.5')) {
   fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
-  bot.locators.add('css', (function() {
+  var cssSelectorFunction = (function() {
     var sizzle = [
         'var originalSizzle = window.Sizzle;',
         Utils.loadUrl('resource://fxdriver/sizzle.js') + ';',
@@ -53,5 +53,7 @@ if (!bot.userAgent.isVersion('3.5')) {
         return fn.call(null, target, root);
       }
     };
-  })());
+  })();
+  bot.locators.add('css', cssSelectorFunction);
+  bot.locators.add('css selector', cssSelectorFunction);
 }
