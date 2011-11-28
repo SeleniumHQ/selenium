@@ -131,7 +131,13 @@ public class ExpectedConditions {
    *         null.
    */
   private static WebElement elementIfVisible(WebElement element) {
-    return element.isDisplayed() ? element : null;
+    try {
+      return element.isDisplayed() ? element : null;
+    } catch (StaleElementReferenceException e) {
+      // Returns null because a stale element reference implies that element
+      // is no longer visible.
+      return null;
+    }
   }
 
   /**
@@ -248,9 +254,13 @@ public class ExpectedConditions {
 
       public WebElement apply(WebDriver driver) {
         WebElement element = visibilityOfElementLocated.apply(driver);
-        if (element != null && element.isEnabled()) {
-          return element;
-        } else {
+        try {
+          if (element != null && element.isEnabled()) {
+            return element;
+          } else {
+            return null;
+          }
+        } catch (StaleElementReferenceException e) {
           return null;
         }
       }
@@ -279,6 +289,28 @@ public class ExpectedConditions {
     };
   }
 
+  /**
+   * An expectation for checking if the given element is selected.
+   */
+  public static ExpectedCondition<Boolean> elementToBeSelected(final WebElement element) {
+    return elementSelectionStateToBe(element, true);
+  }
+
+  /**
+   * An expectation for checking if the given element is selected.
+   */
+  public static ExpectedCondition<Boolean> elementSelectionStateToBe(final WebElement element,
+                                                                     final boolean selected) {
+    return new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver from) {
+        try {
+          return element.isSelected() == selected;
+        } catch (StaleElementReferenceException e) {
+          return false;
+        }
+      }
+    };
+  }
 
   /**
    * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/>
