@@ -357,6 +357,10 @@ WDAPI.Element.prototype.submit = function() {
   return this.ref + ".submit";
 };
 
+WDAPI.Element.prototype.select = function(label) {
+  return "Select.new(" + this.ref + ").select_by(:text, " + xlateArgument(label) + ")";
+};
+
 WDAPI.ElementList = function(ref) {
   this.ref = ref;
 };
