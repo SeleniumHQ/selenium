@@ -142,6 +142,26 @@ js_fragment(name = "get_frame_index",
   function = "bot.frame.getFrameIndex",
   deps = [ "//javascript/atoms:deps" ])
 
+js_fragment(name = "get_window_size",
+  module = "bot.window",
+  function = "bot.window.getSize",
+  deps = [ "//javascript/atoms:deps" ])
+
+js_fragment(name = "set_window_size",
+  module = "bot.window",
+  function = "bot.window.setSize",
+  deps = [ "//javascript/atoms:deps" ])
+
+js_fragment(name = "get_window_position",
+  module = "bot.window",
+  function = "bot.window.getPosition",
+  deps = [ "//javascript/atoms:deps" ])
+
+js_fragment(name = "set_window_position",
+  module = "bot.window",
+  function = "bot.window.setPosition",
+  deps = [ "//javascript/atoms:deps" ])
+
 # TODO(simon): Consider pulling in the cookie functions from closure
 
 # HTML5 atoms

@@ -43,6 +43,8 @@
 #include "CommandHandlers/GetSessionCapabilitiesCommandHandler.h"
 #include "CommandHandlers/GetPageSourceCommandHandler.h"
 #include "CommandHandlers/GetTitleCommandHandler.h"
+#include "CommandHandlers/GetWindowPositionCommandHandler.h"
+#include "CommandHandlers/GetWindowSizeCommandHandler.h"
 #include "CommandHandlers/GoBackCommandHandler.h"
 #include "CommandHandlers/GoForwardCommandHandler.h"
 #include "CommandHandlers/GoToUrlCommandHandler.h"
@@ -63,6 +65,8 @@
 #include "CommandHandlers/SendKeysToAlertCommandHandler.h"
 #include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
 #include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
+#include "CommandHandlers/SetWindowPositionCommandHandler.h"
+#include "CommandHandlers/SetWindowSizeCommandHandler.h"
 #include "CommandHandlers/SubmitElementCommandHandler.h"
 #include "CommandHandlers/SwitchToFrameCommandHandler.h"
 #include "CommandHandlers/SwitchToWindowCommandHandler.h"
@@ -559,12 +563,13 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[MouseButtonUp] = CommandHandlerHandle(new MouseButtonUpCommandHandler);
   this->command_handlers_[SendKeysToActiveElement] = CommandHandlerHandle(new SendKeysToActiveElementCommandHandler);
 
+  this->command_handlers_[GetWindowSize] = CommandHandlerHandle(new GetWindowSizeCommandHandler);
+  this->command_handlers_[SetWindowSize] = CommandHandlerHandle(new SetWindowSizeCommandHandler);
+  this->command_handlers_[GetWindowPosition] = CommandHandlerHandle(new GetWindowPositionCommandHandler);
+  this->command_handlers_[SetWindowPosition] = CommandHandlerHandle(new SetWindowPositionCommandHandler);
+
   // As-yet unimplemented commands
   this->command_handlers_[Status] = CommandHandlerHandle(new IECommandHandler);
-  this->command_handlers_[GetWindowSize] = CommandHandlerHandle(new IECommandHandler);
-  this->command_handlers_[SetWindowSize] = CommandHandlerHandle(new IECommandHandler);
-  this->command_handlers_[GetWindowPosition] = CommandHandlerHandle(new IECommandHandler);
-  this->command_handlers_[SetWindowPosition] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[GetOrientation] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[SetOrientation] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[ListAvailableImeEngines] = CommandHandlerHandle(new IECommandHandler);

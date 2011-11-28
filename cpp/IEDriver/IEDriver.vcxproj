@@ -243,7 +243,11 @@
   <ItemGroup>
     <ClInclude Include="Browser.h" />
     <ClInclude Include="BrowserFactory.h" />
+    <ClInclude Include="CommandHandlers\GetWindowPositionCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetWindowSizeCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendKeysToActiveElementCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\SetWindowPositionCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\SetWindowSizeCommandHandler.h" />
     <ClInclude Include="DocumentHost.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementFinder.h" />
