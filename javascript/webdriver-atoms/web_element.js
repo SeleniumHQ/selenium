@@ -29,63 +29,6 @@ goog.require('goog.style');
 
 
 /**
- * List of input types that support the "selected" or "checked" property.
- * @type {!Array.<string>}
- * @const
- * @private
- */
-webdriver.element.SELECTABLE_TYPES_ = [
-  'checkbox',
-  'radio'
-];
-
-
-/**
- * @param {!Element} element The element to check.
- * @return {boolean} Whether the element could be checked or selected.
- * @private
- */
-webdriver.element.isSelectable_ = function(element) {
-  var tagName = element.tagName.toUpperCase();
-
-  if (tagName == goog.dom.TagName.OPTION) {
-    return true;
-  }
-
-  if (tagName == goog.dom.TagName.INPUT) {
-    var type = element.type;
-
-    if (goog.array.contains(webdriver.element.SELECTABLE_TYPES_, type)) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-
-/**
- * @param {!Element} element The element to use.
- * @return {boolean} Whether the element is checked or selected.
- */
-webdriver.element.isSelected = function(element) {
-  if (!webdriver.element.isSelectable_(element)) {
-    return false;
-  }
-
-  var propertyName = 'selected';
-  var tagName = element.tagName.toUpperCase();
-  var type = element.type && element.type.toLowerCase();
-
-  if ('checkbox' == type || 'radio' == type) {
-    propertyName = 'checked';
-  }
-
-  return !!element[propertyName];
-};
-
-
-/**
  * Get the value of the given property or attribute. If the "attribute" is for
  * a boolean property, we return null in the case where the value is false. If
  * the attribute name is "style" an attempt to convert that style into a string
@@ -110,8 +53,8 @@ webdriver.element.getAttribute = function(element, attribute) {
   }
 
   if ('selected' == name || 'checked' == name &&
-      webdriver.element.isSelectable_(element)) {
-    return webdriver.element.isSelected(element) ? 'true' : null;
+      bot.dom.isSelectable(element)) {
+    return bot.dom.isSelected(element) ? 'true' : null;
   }
 
   // Our tests suggest that returning the attribute is desirable for
