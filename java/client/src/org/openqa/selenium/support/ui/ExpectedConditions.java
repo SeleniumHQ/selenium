@@ -131,13 +131,7 @@ public class ExpectedConditions {
    *         null.
    */
   private static WebElement elementIfVisible(WebElement element) {
-    try {
-      return element.isDisplayed() ? element : null;
-    } catch (StaleElementReferenceException e) {
-      // Returns null because a stale element reference implies that element
-      // is no longer visible.
-      return null;
-    }
+    return element.isDisplayed() ? element : null;
   }
 
   /**
@@ -303,10 +297,24 @@ public class ExpectedConditions {
                                                                      final boolean selected) {
     return new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver from) {
+        return element.isSelected() == selected;
+      }
+    };
+  }
+
+  public static ExpectedCondition<Boolean> elementToBeSelected(final By locator) {
+    return elementSelectionStateToBe(locator, true);
+  }
+
+  public static ExpectedCondition<Boolean> elementSelectionStateToBe(final By locator,
+                                                                     final boolean selected) {
+    return new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver from) {
         try {
+          WebElement element = from.findElement(locator);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
-          return false;
+          return null;
         }
       }
     };
