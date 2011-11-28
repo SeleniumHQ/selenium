@@ -15,6 +15,7 @@
 # limitations under the License.
 
 
+import time
 import unittest
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -32,11 +33,9 @@ def not_available_on_remote(func):
             return func(self)
     return testMethod
 
-def findBox0(driver):
-    return driver.find_element_by_id("box0")
+findBox0 = lambda driver: driver.find_element_by_id("box0")
 
-def findRedBoxes(driver):
-    return driver.find_elements_by_class_name("redbox")
+findRedBoxes = lambda driver: driver.find_elements_by_class_name("redbox")
 
 def findAtLeastOneRedBox(driver):
     boxes = driver.find_elements_by_class_name("redbox")
@@ -80,6 +79,22 @@ class WebDriverWaitTest(unittest.TestCase):
             pass # we should get a timeout
         except Exception, e:
             self.fail("Expected TimeoutException but got " + str(e))
+
+    def testShouldWaitOnlyAsLongAsTimeoutSpecifiedWhenImplicitWaitsAreSet(self):
+        self._loadPage("dynamic")
+        self.driver.implicitly_wait(0.5)
+        try:
+            start = time.time()
+            try:
+                WebDriverWait(self.driver, 1).until(findBox0)
+                self.fail("Expected TimeoutException to have been thrown")
+            except TimeoutException, e:
+                pass
+            self.assertTrue(time.time() - start < 1.5, 
+                "Expected to take just over 1 second to execute, but took %f" % 
+                (time.time() - start))
+        finally:
+            self.driver.implicitly_wait(0)
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
