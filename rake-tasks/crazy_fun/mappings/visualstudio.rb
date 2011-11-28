@@ -338,7 +338,7 @@ module CrazyFunDotNet
         nuspec_task.version = version
         nuspec_task.authors = "Selenium Committers"
         nuspec_task.description = args[:description]
-        nuspec_task.owners = "Software Freedom Conservatory"
+        nuspec_task.owners = "Software Freedom Conservancy"
         nuspec_task.title = args[:title] unless args[:title].nil?
         nuspec_task.summary = args[:summary] unless args[:summary].nil?
         nuspec_task.projectUrl = "http://code.google.com/p/selenium/"
