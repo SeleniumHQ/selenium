@@ -23,8 +23,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.common.exception.RemoteUnregisterException;
@@ -40,7 +43,9 @@ import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -128,6 +133,9 @@ public class DefaultRemoteProxy extends RemoteProxy
   private List<RemoteException> errors = new CopyOnWriteArrayList<RemoteException>();
   private Thread pollingThread = null;
 
+  
+
+  // TODO freynaud replace with getstatus.
   public boolean isAlive() {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
@@ -146,6 +154,9 @@ public class DefaultRemoteProxy extends RemoteProxy
     // webdriver returns a 200 on /status. selenium RC returns a 404
     return code == 200 || code == 404;
   }
+
+
+ 
 
   public void startPolling() {
     pollingThread = new Thread(new Runnable() { // Thread safety reviewed

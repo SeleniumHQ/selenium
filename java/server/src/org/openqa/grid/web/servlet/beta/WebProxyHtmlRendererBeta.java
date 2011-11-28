@@ -2,6 +2,7 @@ package org.openqa.grid.web.servlet.beta;
 
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.RemoteProxy;
@@ -31,7 +32,8 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
     builder.append(proxy.getClass().getSimpleName());
 
     // TODO freynaud
-    builder.append(" //TODO:node version");
+
+    builder.append(getHtmlNodeVersion());
 
     String platform = getPlatform(proxy);
 
@@ -51,6 +53,16 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
     return builder.toString();
 
+  }
+
+  private String getHtmlNodeVersion() {
+    try {
+      JSONObject object = proxy.getStatus();
+      String version = object.getJSONObject("value").getJSONObject("build").getString("version");   
+      return " (version : "+version+ ")";
+    }catch (Exception e) {
+      return " unknown version,"+e.getMessage();
+    }
   }
 
   // content of the config tab.
@@ -111,7 +123,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
         builder.append("v:" + version);
       }
       for (TestSlot s : lines.getLine(cap)) {
-        getSingleSlotHtml(s, icon);
+        builder.append(getSingleSlotHtml(s, icon));
       }
       builder.append("</p>");
     }
