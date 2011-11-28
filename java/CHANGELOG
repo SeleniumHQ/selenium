@@ -1,11 +1,35 @@
-v2.14.0 (to be released)
+v2.14.0
 =======
+WebDriver:
+  * Deleted all deprecated methods in the Java API.
+  * Client code cleaned to work with Java 5. Server code needs Java 6.
+  * Added a front-end for executing WebDriverJS scripts. Point a
+    browser at http://localhost:4444/wd/hub.
+  * Can now query an Android driver for supported capabilities.
+  * Updated JSON framework used in the iOS driver.
+  * Fixed issue with scrolling on small viewports with native events
+    in Firefox.
+  * FIXED: 2889: FluentWait supports adding a custom message to
+    timeout exception.
+  * FIXED 2798: When implicit waits are enabled in the FirefoxDriver,
+    stale element reference errors when searching for child elements
+    are now handled properly
+  * FIXED 2917: Preventing endless recursion in hashCode.
 
 Server:
   * Memory leak fixed
 
 Grid:
-  * Grid nodes were leaking even more memory that regular server nodes.
+  * New beta console added.  
+  * Grid nodes were leaking even more memory that regular server
+    nodes.  
+  * Fixed a scenario that used to lead to "session = null" errors.
+  * Now support iOS nodes.
+
+Known issues:
+  * Continuing problems with element out of bounds exception being
+    thrown.
+
 
 v2.13.0
 =======
@@ -299,3 +323,9 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
+
+
+
+
+
+
