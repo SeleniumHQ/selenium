@@ -17,6 +17,13 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -28,6 +35,9 @@ import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -171,8 +181,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         protocol = SeleniumProtocol.valueOf(type);
       } catch (IllegalArgumentException e) {
         throw new GridException(type
-                                + " isn't a valid protocol type for grid. See SeleniumProtocol enim.",
-                                e);
+            + " isn't a valid protocol type for grid. See SeleniumProtocol enim.", e);
       }
     }
     return protocol;
@@ -198,8 +207,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     if (this instanceof TimeoutListener) {
       if (cleanUpCycle > 0 && timeOut > 0) {
         log.fine("starting cleanup thread");
-        new Thread(new CleanUpThread(this), "RemoteProxy CleanUpThread")
-            .start(); // Thread safety reviewed (hopefully ;)
+        new Thread(new CleanUpThread(this), "RemoteProxy CleanUpThread").start(); // Thread safety reviewed (hopefully ;)
       }
     }
   }
@@ -212,7 +220,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * @return The merged collection
    */
   private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
-                                          Map<String, Object> configuration2) {
+      Map<String, Object> configuration2) {
     Map<String, Object> res = new HashMap<String, Object>();
     res.putAll(configuration1);
     for (String key : configuration2.keySet()) {
@@ -277,7 +285,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
             }
           } catch (Throwable t) {
             log.warning("Error executing the timeout when cleaning up slot " + slot
-                        + t.getMessage());
+                + t.getMessage());
           }
         }
       }
@@ -396,7 +404,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    */
   @SuppressWarnings("unchecked")
   public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
-                                                         Registry registry) {
+      Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
       if (proxyClass == null) {
@@ -405,8 +413,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       }
       Class<?> clazz = Class.forName(proxyClass);
       log.fine("Using class " + clazz.getName());
-      Object[] args = new Object[]{request, registry};
-      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, Registry.class};
+      Object[] args = new Object[] {request, registry};
+      Class<?>[] argsClass = new Class[] {RegistrationRequest.class, Registry.class};
       Constructor<?> c = clazz.getConstructor(argsClass);
       Object proxy = c.newInstance(args);
       if (proxy instanceof RemoteProxy) {
@@ -483,4 +491,43 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   public HttpClientFactory getHttpClientFactory() {
     return getRegistry().getHttpClientFactory();
   }
+
+  /**
+   * the status of the node.
+   * @return
+   * @throws GridException. If the node if down or doesn't recognize the /wd/hub/status request. 
+   */
+  public JSONObject getStatus() throws GridException {
+    String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
+    BasicHttpRequest r = new BasicHttpRequest("GET", url);
+    HttpClient client = getHttpClientFactory().getHttpClient();
+    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
+    HttpResponse response;
+    try {
+      response = client.execute(host, r);
+      int code = response.getStatusLine().getStatusCode();
+      if (code == 200) {
+        JSONObject status = extractObject(response);
+        EntityUtils.consume(response.getEntity());
+        return status;
+      } else {
+        EntityUtils.consume(response.getEntity());
+        throw new GridException("server response code : " + code);
+      }
+    } catch (Exception e) {
+      throw new GridException(e.getMessage(), e);
+    }
+  }
+
+  private JSONObject extractObject(HttpResponse resp) throws IOException, JSONException {
+    BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+    StringBuilder s = new StringBuilder();
+    String line;
+    while ((line = rd.readLine()) != null) {
+      s.append(line);
+    }
+    rd.close();
+    return new JSONObject(s.toString());
+  }
+
 }

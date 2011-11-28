@@ -17,24 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.openqa.grid.common.exception.GridException;
-
-import com.google.common.io.ByteStreams;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.util.EntityUtils;
-import org.openqa.grid.internal.listeners.CommandListener;
-import org.openqa.grid.web.Hub;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -54,6 +36,26 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.util.EntityUtils;
+import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.listeners.CommandListener;
+import org.openqa.grid.internal.utils.ForwardConfiguration;
+import org.openqa.grid.web.Hub;
+
+import com.google.common.io.ByteStreams;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
@@ -83,8 +85,7 @@ public class TestSession {
   /**
    * Creates a test session on the specified testSlot.
    */
-  TestSession(TestSlot slot, Map<String, Object> requestedCapabilities,
-              TimeSource timeSource) {
+  TestSession(TestSlot slot, Map<String, Object> requestedCapabilities, TimeSource timeSource) {
     internalKey = UUID.randomUUID().toString();
     this.slot = slot;
     this.requestedCapabilities = requestedCapabilities;
@@ -140,8 +141,8 @@ public class TestSession {
     // seen any new
     // commands during that time frame.
     return slot.getProtocol().isSelenium()
-           && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
-           && sessionCreatedAt == lastActivity;
+        && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
+        && sessionCreatedAt == lastActivity;
   }
 
   /**
@@ -177,14 +178,16 @@ public class TestSession {
   @Override
   public String toString() {
     return externalKey != null ? "ext. key " + externalKey : internalKey
-                                                             + " (int. key, remote not contacted yet.)";
+        + " (int. key, remote not contacted yet.)";
   }
+
+
 
   /**
    * Forward the request to the remote, execute the TestSessionListeners if applicable.
    */
   public void forward(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    forward(request, response, null, false);
+    forward(request, response, new ForwardConfiguration());
   }
 
   private HttpClient getClient() {
@@ -192,16 +195,16 @@ public class TestSession {
   }
 
   /**
-   * Forward the request to the remote.
-   *
-   * @param content               Overwrite the body. Useful when the body of the request was
-   *                              already read.
-   * @param interceptResponseBody for selenium1 protocol, you need to read the content of the
-   *                              response to find the session.
-   * @return the content of the response if interceptResponseBody=true. null otherwise
+   * 
+   * @param request
+   * @param response
+   * @param config for special cases of forwards. Typically is the content has to be intercepted, 
+   *        or if the hub has to be updated before the new session request is forwarded.
+   * @return
+   * @throws IOException
    */
-  public String forward(HttpServletRequest request, HttpServletResponse response, String content,
-                        boolean interceptResponseBody) throws IOException {
+  public String forward(HttpServletRequest request, HttpServletResponse response,
+      ForwardConfiguration config) throws IOException {
     String res = null;
 
     if (slot.getProxy() instanceof CommandListener) {
@@ -209,65 +212,31 @@ public class TestSession {
     }
 
     lastActivity = timeSource.currentTimeInMillis();
-    URL remoteURL = slot.getRemoteURL();
 
-    String pathSpec = request.getServletPath() + request.getContextPath();
-    String path = request.getRequestURI();
-    if (!path.startsWith(pathSpec)) {
-      throw new IllegalStateException("Expected path " + path + " to start with pathSpec "
-                                      + pathSpec);
-    }
-    String end = path.substring(pathSpec.length());
-    String ok = remoteURL + end;
-    String uri = new URL(remoteURL, ok).toExternalForm();
+    HttpRequest proxyRequest = prepareProxyRequest(request, config);
 
-    InputStream body = null;
-    if (request.getContentLength() > 0 || request.getHeader("Transfer-Encoding") != null) {
-      body = request.getInputStream();
-    }
+    HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
 
-    HttpRequest proxyRequest;
-    if (content != null) {
-      BasicHttpEntityEnclosingRequest r =
-          new BasicHttpEntityEnclosingRequest(request.getMethod(), uri);
-      r.setEntity(new StringEntity(content));
-      proxyRequest = r;
-    } else if (body != null) {
-      BasicHttpEntityEnclosingRequest r =
-          new BasicHttpEntityEnclosingRequest(request.getMethod(), uri);
-      r.setEntity(new InputStreamEntity(body, request.getContentLength()));
-      proxyRequest = r;
-    } else {
-      proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
-    }
-
-    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements(); ) {
-      String headerName = (String) e.nextElement();
-
-      if ("Content-Length".equalsIgnoreCase(headerName)) {
-        continue; // already set
-      }
-
-      proxyRequest.setHeader(headerName, request.getHeader(headerName));
-    }
-
-    HttpClient client = getClient();
-
-    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
-
-    HttpResponse proxyResponse = client.execute(host, proxyRequest);
     lastActivity = timeSource.currentTimeInMillis();
 
     response.setStatus(proxyResponse.getStatusLine().getStatusCode());
+    processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
+
+
+    updateHubIfNewWebDriverSession(config, proxyResponse);
+
     HttpEntity responseBody = proxyResponse.getEntity();
-
-    processResponseHeaders(response, remoteURL, pathSpec, proxyResponse);
-
     if (responseBody != null) {
       InputStream in = responseBody.getContent();
 
-      if (interceptResponseBody) {
+      boolean isSeleniumNewSessionRequest =
+          config.isNewSessionRequest() && config.getProtocol() == SeleniumProtocol.Selenium;
+      if (config.isBodyHasToBeRead() || isSeleniumNewSessionRequest) {
         res = getResponseUtf8Content(in);
+
+        if (isSeleniumNewSessionRequest) {
+          updateHubNewSeleniumSession(res);
+        }
         in = new ByteArrayInputStream(res.getBytes("UTF-8"));
       }
 
@@ -280,6 +249,80 @@ public class TestSession {
       ((CommandListener) slot.getProxy()).afterCommand(this, request, response);
     }
     return res;
+  }
+
+
+  private void updateHubNewSeleniumSession(String content) {
+    ExternalSessionKey key = ExternalSessionKey.fromResponseBody(content);
+    setExternalKey(key);
+  }
+
+  private void updateHubIfNewWebDriverSession(ForwardConfiguration config,
+      HttpResponse proxyResponse) {
+    if (config.isNewSessionRequest() && config.getProtocol() == SeleniumProtocol.WebDriver) {
+      Header h = proxyResponse.getFirstHeader("Location");
+      if (h == null) {
+        throw new GridException(
+            "new session request for webdriver should contain a location header with the session.");
+      }
+      ExternalSessionKey key = ExternalSessionKey.fromWebDriverRequest(h.getValue());
+      setExternalKey(key);
+    }
+  }
+
+  private HttpResponse sendRequestToNode(HttpRequest proxyRequest) throws ClientProtocolException,
+      IOException {
+    HttpClient client = getClient();
+    URL remoteURL = slot.getRemoteURL();
+    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
+
+    return client.execute(host, proxyRequest);
+  }
+
+  private HttpRequest prepareProxyRequest(HttpServletRequest request, ForwardConfiguration config)
+      throws IOException {
+    URL remoteURL = slot.getRemoteURL();
+
+    String pathSpec = request.getServletPath() + request.getContextPath();
+    String path = request.getRequestURI();
+    if (!path.startsWith(pathSpec)) {
+      throw new IllegalStateException("Expected path " + path + " to start with pathSpec "
+          + pathSpec);
+    }
+    String end = path.substring(pathSpec.length());
+    String ok = remoteURL + end;
+    String uri = new URL(remoteURL, ok).toExternalForm();
+
+    InputStream body = null;
+    if (request.getContentLength() > 0 || request.getHeader("Transfer-Encoding") != null) {
+      body = request.getInputStream();
+    }
+
+    HttpRequest proxyRequest;
+    if (config.getContentOverWrite() != null) {
+      BasicHttpEntityEnclosingRequest r =
+          new BasicHttpEntityEnclosingRequest(request.getMethod(), uri);
+      r.setEntity(new StringEntity(config.getContentOverWrite()));
+      proxyRequest = r;
+    } else if (body != null) {
+      BasicHttpEntityEnclosingRequest r =
+          new BasicHttpEntityEnclosingRequest(request.getMethod(), uri);
+      r.setEntity(new InputStreamEntity(body, request.getContentLength()));
+      proxyRequest = r;
+    } else {
+      proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
+    }
+
+    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+      String headerName = (String) e.nextElement();
+
+      if ("Content-Length".equalsIgnoreCase(headerName)) {
+        continue; // already set
+      }
+
+      proxyRequest.setHeader(headerName, request.getHeader(headerName));
+    }
+    return proxyRequest;
   }
 
   private void writeRawBody(HttpServletResponse response, InputStream in) throws IOException {
@@ -338,8 +381,9 @@ public class TestSession {
     return res;
   }
 
-  private void processResponseHeaders(HttpServletResponse response, URL remoteURL, String pathSpec,
-                                      HttpResponse proxyResponse) throws MalformedURLException {
+  private void processResponseHeaders(HttpServletRequest request, HttpServletResponse response,
+      URL remoteURL, HttpResponse proxyResponse) throws MalformedURLException {
+    String pathSpec = request.getServletPath() + request.getContextPath();
     for (Header header : proxyResponse.getAllHeaders()) {
       String name = header.getName();
       String value = header.getValue();
@@ -405,8 +449,7 @@ public class TestSession {
       case Selenium:
         request =
             new BasicHttpRequest("POST", remoteURL.toExternalForm()
-                                         + "/?cmd=testComplete&sessionId=" + getExternalKey()
-                .getKey());
+                + "/?cmd=testComplete&sessionId=" + getExternalKey().getKey());
         break;
       case WebDriver:
         String uri = remoteURL.toString() + "/session/" + externalKey;

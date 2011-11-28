@@ -18,8 +18,10 @@ limitations under the License.
 package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.grid.internal.utils.ForwardConfiguration;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.utils.BrowserNameUtils;
@@ -123,7 +125,7 @@ public class Selenium1RequestHandler extends RequestHandler {
   // TODO freynaud do some real parsing here instead. BrowserString to
   // Capabilities service or so.
   @Override
-  public ExternalSessionKey forwardNewSessionRequest(TestSession session) throws NewSessionException {
+  public ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session) throws NewSessionException {
     String responseBody;
 
     try {
@@ -158,7 +160,11 @@ public class Selenium1RequestHandler extends RequestHandler {
         builder.append(piece).append("&");
       }
 
-      responseBody = session.forward(getRequest(), getResponse(), builder.toString(), true);
+      ForwardConfiguration config = new ForwardConfiguration();
+      config.setProtocol(SeleniumProtocol.Selenium);
+      config.setNewSessionRequest(true);
+      config.setContentOverWrite(builder.toString());
+      responseBody = session.forward(getRequest(), getResponse(), config);
     } catch (IOException e) {
       throw new NewSessionException("Error forwarding the request " + e.getMessage(),e);
     }

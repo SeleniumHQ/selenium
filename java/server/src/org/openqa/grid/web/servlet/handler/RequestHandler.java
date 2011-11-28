@@ -17,16 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.SessionTerminationReason;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.listeners.TestSessionListener;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +31,18 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.SessionTerminationReason;
+import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.grid.internal.utils.ForwardConfiguration;
+
 
 /**
  * Base stuff to handle the request coming from a remote. Ideally, there should be only 1 concrete
@@ -119,12 +121,14 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
    * @return the external key sent by the remote.
    * @throws NewSessionException in case anything wrong happens during the new session process.
    */
-  public abstract ExternalSessionKey forwardNewSessionRequest(TestSession session)
+  public abstract ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session)
       throws NewSessionException;
 
   protected void forwardRequest(TestSession session, RequestHandler handler) throws IOException {
     if (bodyHasBeenRead) {
-      session.forward(request, response, getRequestBody(), false);
+      ForwardConfiguration config = new ForwardConfiguration();
+      config.setContentOverWrite(getRequestBody());
+      session.forward(request, response, config);
     } else {
       session.forward(request, response);
     }
@@ -140,7 +144,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           registry.addNewSessionRequest(this);
           waitForSessionBound();
           beforeSessionEvent();
-          forwardAndGetRemoteKey();
+          forwardNewSessionRequestAndUpdateRegistry(session);
         } catch (Exception e) {
           cleanup();
           throw new GridException("Error forwarding the new session " + e.getMessage(), e);
@@ -184,21 +188,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     }
   }
 
-  /**
-   * allocate a new TestSession for the test, forward the request and update the resource used.
-   *
-   * @throws NewSessionException in case anything bad happens during the new session process.
-   */
-  private void forwardAndGetRemoteKey() throws NewSessionException {
-    ExternalSessionKey externalKey = forwardNewSessionRequest(session);
-    if (externalKey != null) {
-      session.setExternalKey(externalKey);
-    } else {
-      throw new NewSessionException(
-          "Error forwarding the new session request.external key should never be null");
-    }
-  }
-
+  
   /**
    * calls the TestSessionListener is the proxy for that node has one specified.
    *

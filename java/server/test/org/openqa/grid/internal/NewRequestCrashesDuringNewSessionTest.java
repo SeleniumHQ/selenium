@@ -93,7 +93,7 @@ public class NewRequestCrashesDuringNewSessionTest {
     }
 
     @Override
-    public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
+    public ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session) {
       throw new RuntimeException("something horrible happened.");
     }
 

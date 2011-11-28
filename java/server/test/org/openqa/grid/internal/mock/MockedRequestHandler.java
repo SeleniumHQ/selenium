@@ -41,7 +41,7 @@ public class MockedRequestHandler extends WebDriverRequestHandler {
   }
 
   @Override
-  public ExternalSessionKey forwardNewSessionRequest(TestSession session) {
+  public ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session) {
     // System.out.println("forwarding to " + session.getInternalKey());
     return ExternalSessionKey.fromString("");
   }

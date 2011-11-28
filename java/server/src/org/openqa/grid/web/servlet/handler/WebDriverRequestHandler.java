@@ -29,8 +29,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.grid.internal.utils.ForwardConfiguration;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.jetty.jetty.servlet.ServletHttpResponse;
@@ -97,7 +99,7 @@ public class WebDriverRequestHandler extends RequestHandler {
   }
 
   @Override
-  public ExternalSessionKey forwardNewSessionRequest(TestSession session) throws NewSessionException{
+  public ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session) throws NewSessionException{
     try {
       // here, don't forward the requestBody directly, but read the
       // desiredCapabilities from the session instead.
@@ -106,7 +108,11 @@ public class WebDriverRequestHandler extends RequestHandler {
       JSONObject c = new JSONObject();
       c.put("desiredCapabilities", session.getRequestedCapabilities());
       String content = c.toString();
-      session.forward(getRequest(), getResponse(), content, false);
+      ForwardConfiguration config = new ForwardConfiguration();
+      config.setProtocol(SeleniumProtocol.WebDriver);
+      config.setNewSessionRequest(true);
+      config.setContentOverWrite(content);
+      session.forward(getRequest(), getResponse(), config);
     } catch (IOException e) {
       //log.warning("Error forwarding the request " + e.getMessage());
       throw new NewSessionException("Error forwarding the request " + e.getMessage(),e);
