@@ -518,6 +518,9 @@ public <A HREF="../../../../../org/openqa/selenium/WebElement.html" title="inter
  This method is affected by the 'implicit wait' times in force at the time of execution.
  The findElement(..) invocation will return a matching row, or try again repeatedly until 
  the configured timeout is reached.
+
+ findElement should not be used to look for non-present elements, use <A HREF="../../../../../org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)"><CODE>WebDriver.findElements(By)</CODE></A>
+ and assert zero length response instead.
 <P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/SearchContext.html#findElement(org.openqa.selenium.By)">findElement</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A></CODE><DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)">findElement</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>

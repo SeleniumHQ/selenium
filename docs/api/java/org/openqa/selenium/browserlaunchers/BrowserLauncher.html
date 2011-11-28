@@ -120,14 +120,6 @@ The launcher interface for classes that will start/stop the browser process.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.Process</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/BrowserLauncher.html#getProcess()">getProcess</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>This will be removed in 2.12 as all instances now return null</I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/BrowserLauncher.html#launchHTMLSuite(java.lang.String, java.lang.String)">launchHTMLSuite</A></B>(java.lang.String&nbsp;suiteUrl,
                 java.lang.String&nbsp;baseUrl)</CODE>
@@ -195,25 +187,6 @@ void <B>close</B>()</PRE>
 <P>
 <DD><DL>
 </DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getProcess()"><!-- --></A><H3>
-getProcess</H3>
-<PRE>
-<FONT SIZE="-1">@Deprecated
-</FONT>java.lang.Process <B>getProcess</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>This will be removed in 2.12 as all instances now return null</I>
-<P>
-<DD>Returns a process if there is an associated one running with this browser launcher (this is
- <b>not</b> required to be implementd).
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a handle to a process if one is available, or null if one is not available or if no
-         browser is running</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
