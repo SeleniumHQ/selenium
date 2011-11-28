@@ -85,7 +85,15 @@ module Selenium
 
           def iphone(opts = {})
             new({
-              :browser_name       => "iphone",
+              :browser_name       => "iPhone",
+              :platform           => :mac,
+              :javascript_enabled => true
+            }.merge(opts))
+          end
+
+          def ipad(opts = {})
+            new({
+              :browser_name       => "iPad",
               :platform           => :mac,
               :javascript_enabled => true
             }.merge(opts))

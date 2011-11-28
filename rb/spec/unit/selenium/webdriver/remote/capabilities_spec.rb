@@ -5,6 +5,48 @@ module Selenium
     module Remote
       describe Capabilities do
 
+        it "has default capabilities for Android" do
+          caps = Capabilities.android
+          caps.browser_name.should == "android"
+          caps.platform.should == :android
+        end
+
+        it "has default capabilities for Chrome" do
+          caps = Capabilities.chrome
+          caps.browser_name.should == "chrome"
+        end
+
+        it "has default capabilities for Firefox" do
+          caps = Capabilities.firefox
+          caps.browser_name.should == "firefox"
+        end
+
+        it "has default capabilities for HtmlUnit" do
+          caps = Capabilities.htmlunit
+          caps.browser_name.should == "htmlunit"
+        end
+
+        it "has default capabilities for Internet Explorer" do
+          caps = Capabilities.internet_explorer
+          caps.browser_name.should == "internet explorer"
+        end
+
+        it "has default capabilities for iPhone" do
+          caps = Capabilities.iphone
+          caps.browser_name.should == "iPhone"
+        end
+
+        it "has default capabilities for iPad" do
+          caps = Capabilities.ipad
+          caps.browser_name.should == "iPad"
+        end
+
+        it "has default capabilities for Opera" do
+          caps = Capabilities.opera
+          caps.browser_name.should == "opera"
+        end
+
+
         it "should default to no proxy" do
           Capabilities.new.proxy.should be_nil
         end
