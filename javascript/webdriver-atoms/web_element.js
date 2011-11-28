@@ -29,6 +29,21 @@ goog.require('goog.style');
 
 
 /**
+ * @param {!Element} element The element to use.
+ * @return {boolean} Whether the element is checked or selected.
+ */
+webdriver.element.isSelected = function(element) {
+  // Although this method looks unloved, its compiled form is used by 
+  //
+  if (!bot.dom.isSelectable(element)) {
+    return false;
+  }
+
+  return bot.dom.isSelected(element);
+};
+
+
+/**
  * Get the value of the given property or attribute. If the "attribute" is for
  * a boolean property, we return null in the case where the value is false. If
  * the attribute name is "style" an attempt to convert that style into a string

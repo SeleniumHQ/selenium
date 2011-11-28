@@ -113,8 +113,8 @@ js_fragment(name = "is_enabled",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "is_selected",
-  module = "bot.dom",
-  function = "bot.dom.isSelected",
+  module = "webdriver.element",
+  function = "webdriver.element.isSelected",
   deps = [ ":deps" ])
 
 js_fragment(name = "set_selected",

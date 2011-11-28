@@ -80,6 +80,20 @@ limitations under the License.
       assertNull(webdriver.element.getAttribute(unselected, 'checked'));
     }
 
+    function testShouldIndicateWhetherAnElementIsSelected() {
+      var input = bot.locators.findElement({id: 'normal'});
+      var unselectedRadio = bot.locators.findElement({id: 'unselected-radio'});
+      var selectedRadio = bot.locators.findElement({id: 'selected-radio'});
+      var unselectedOption = bot.locators.findElement({id: 'unselected-option'});
+      var selectedOption = bot.locators.findElement({id: 'selected-option'});
+
+      assertTrue(webdriver.element.isSelected(selectedRadio));
+      assertTrue(webdriver.element.isSelected(selectedOption));
+      assertFalse(webdriver.element.isSelected(unselectedRadio));
+      assertFalse(webdriver.element.isSelected(unselectedOption));
+      assertFalse(webdriver.element.isSelected(input));
+    }
+
     function testShouldCorrectlyReportTheValueOfSelectedForRadioButtons() {
       var selected = bot.locators.findElement({id: 'selected-radio'});
       var unselected = bot.locators.findElement({id: 'unselected-radio'});
