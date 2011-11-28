@@ -32,9 +32,12 @@ public class TestUtilities {
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
-    } catch (WebDriverException e) {
-      // some drivers will only execute JS once a page has been loaded. Since those
-      // drivers aren't Firefox, we don't worry about that here.
+    } catch (Throwable e) {
+      // Some drivers will only execute JS once a page has been loaded. Since those
+      // drivers aren't Firefox or IE, we don't worry about that here.
+      //
+      // Non-javascript-enabled HtmlUnit throws an UnsupportedOperationException here.
+      // Let's just ignore that.
       return "";
     }
   }
