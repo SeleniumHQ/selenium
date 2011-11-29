@@ -136,12 +136,14 @@
 <span class="sd">           This defaults to None and will create a new</span>
 <span class="sd">           directory when object is created.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span>
+            <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">profile_directory</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_tempfolder</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">newprof</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(),</span> <span class="s">&quot;webdriver-py-profilecopy&quot;</span><span class="p">)</span>
+            <span class="n">newprof</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(),</span>
+                <span class="s">&quot;webdriver-py-profilecopy&quot;</span><span class="p">)</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="n">newprof</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">newprof</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_existing_userjs</span><span class="p">()</span>
@@ -158,8 +160,10 @@
             <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;true&#39;</span>
         <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
             <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;false&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">clean_value</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">clean_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">clean_value</span>
 </div>
@@ -195,7 +199,8 @@
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">])</span>
 
     <span class="nd">@accept_untrusted_certs.setter</span>
 <div class="viewcode-block" id="FirefoxProfile.accept_untrusted_certs"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs">[docs]</a>    <span class="k">def</span> <span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -268,14 +273,16 @@
 
         <span class="c">#Get directories ready</span>
         <span class="k">for</span> <span class="n">file_in_xpi</span> <span class="ow">in</span> <span class="n">xpi</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">file_in_xpi</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">file_in_xpi</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
             <span class="n">dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">)):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
 
         <span class="c">#Copy files</span>
         <span class="k">for</span> <span class="n">file_in_xpi</span> <span class="ow">in</span> <span class="n">xpi</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">file_in_xpi</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">file_in_xpi</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
             <span class="n">dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)):</span>
                 <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
@@ -285,7 +292,8 @@
         <span class="k">if</span> <span class="n">ext_dir</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
             <span class="n">installrdfpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="p">,</span><span class="s">&quot;install.rdf&quot;</span><span class="p">)</span>
             <span class="n">ext_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">extensionsDir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_id_from_install_rdf</span><span class="p">(</span><span class="n">installrdfpath</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">extensionsDir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_id_from_install_rdf</span><span class="p">(</span>
+                  <span class="n">installrdfpath</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ext_dir</span><span class="p">):</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">ext_dir</span><span class="p">)</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">tempdir</span><span class="p">,</span> <span class="n">ext_dir</span><span class="p">)</span>

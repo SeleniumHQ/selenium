@@ -96,6 +96,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">existing_ld_preload</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;LD_PRELOAD&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">existing_ld_preload</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;LD_PRELOAD&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
 </div>
     <span class="k">def</span> <span class="nf">_start_from_profile_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;XRE_PROFILE_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
@@ -107,7 +111,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_modify_link_library_path</span><span class="p">()</span>
         
         <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-silent&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-foreground&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-foreground&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_wait_until_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Blocks until the extension is connectable in the firefox.&quot;&quot;&quot;</span>
@@ -115,10 +120,12 @@
         <span class="k">while</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">port</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="c"># Browser has exited</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;The browser appears to have exited before we could connect&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;The browser appears to have exited &quot;</span>
+                    <span class="s">&quot;before we could connect&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can&#39;t load the profile. Profile Dir : </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can&#39;t load the profile. Profile &quot;</span>
+                    <span class="s">&quot;Dir: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">True</span>
@@ -149,7 +156,8 @@
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Darwin&quot;</span><span class="p">:</span>
             <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;/Applications/Firefox.app/Contents/MacOS/firefox-bin&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Windows&quot;</span><span class="p">:</span>
-            <span class="n">start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">()</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># Maybe iceweasel (Debian) is another candidate...</span>
             <span class="k">for</span> <span class="n">ffname</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;firefox2&quot;</span><span class="p">,</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span> <span class="s">&quot;firefox-3.0&quot;</span><span class="p">,</span> <span class="s">&quot;firefox-4.0&quot;</span><span class="p">]:</span>
@@ -164,36 +172,47 @@
 
     <span class="k">def</span> <span class="nf">_modify_link_library_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">existing_ld_lib_path</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">existing_ld_preload</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">existing_ld_lib_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">existing_ld_preload</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_PRELOAD&#39;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
 
-        <span class="n">new_ld_lib_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_and_check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">,</span>
-                                                    <span class="s">&quot;x86&quot;</span><span class="p">,</span> <span class="s">&quot;amd64&quot;</span><span class="p">)</span>
+        <span class="n">new_ld_lib_path</span><span class="p">,</span> <span class="n">preload_paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_and_check</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">,</span> <span class="s">&quot;x86&quot;</span><span class="p">,</span> <span class="s">&quot;amd64&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">existing_ld_lib_path</span><span class="p">:</span>
             <span class="n">new_ld_lib_path</span> <span class="o">+=</span> <span class="n">existing_ld_lib_path</span>
+        
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;32bit&#39;</span><span class="p">:</span>
+            <span class="n">preload</span> <span class="o">=</span> <span class="n">preload_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">preload</span> <span class="o">=</span> <span class="n">preload_paths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;LD_LIBRARY_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ld_lib_path</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_PRELOAD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_PRELOAD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">preload</span> 
 
     <span class="k">def</span> <span class="nf">_extract_and_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">no_focus_so_name</span><span class="p">,</span> <span class="n">x86</span><span class="p">,</span> <span class="n">amd64</span><span class="p">):</span>
         
         <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">x86</span><span class="p">,</span> <span class="n">amd64</span><span class="p">]</span>
         <span class="n">built_path</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="n">preload_paths</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
             <span class="n">library_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">library_path</span><span class="p">)</span>
             <span class="kn">import</span> <span class="nn">shutil</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">),</span> 
-                                    <span class="n">library_path</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">path</span><span class="p">,</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">),</span> 
+              <span class="n">library_path</span><span class="p">)</span>
             <span class="n">built_path</span> <span class="o">+=</span> <span class="n">library_path</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span>
+            <span class="n">preload_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">library_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">built_path</span>
+        <span class="k">return</span> <span class="n">built_path</span><span class="p">,</span> <span class="n">preload_paths</span>
 
 <div class="viewcode-block" id="FirefoxBinary.which"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which">[docs]</a>    <span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the fully qualified path by searching Path of the given name&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns the fully qualified path by searching Path of the given </span>
+<span class="sd">        name&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">pe</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;PATH&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">):</span>
             <span class="n">checkname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">checkname</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">checkname</span><span class="p">):</span>

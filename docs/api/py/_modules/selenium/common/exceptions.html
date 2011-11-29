@@ -143,6 +143,26 @@
 </div>
 <div class="viewcode-block" id="UnexpectedTagNameException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedTagNameException">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedTagNameException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Thrown when a support class did not get an expected web element&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="InvalidSelectiorException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectiorException">[docs]</a><span class="k">class</span> <span class="nc">InvalidSelectiorException</span><span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Thrown when the selector which is used to find an element does not return</span>
+<span class="sd">    a WebElement. Currently this only happens when the selector is an xpath</span>
+<span class="sd">    expression is used which is either syntactically invalid (i.e. it is not a</span>
+<span class="sd">    xpath expression) or the expression does not select WebElements</span>
+<span class="sd">    (e.g. &quot;count(//input)&quot;).</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="ImeNotAvailableException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeNotAvailableException">[docs]</a><span class="k">class</span> <span class="nc">ImeNotAvailableException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Indicates that IME support is not available. This exception is thrown for every IME-related</span>
+<span class="sd">    method call if IME support is not available on the machine.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="ImeActivationFailedException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeActivationFailedException">[docs]</a><span class="k">class</span> <span class="nc">ImeActivationFailedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Indicates that activating an IME engine has failed. &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 </pre></div>
 

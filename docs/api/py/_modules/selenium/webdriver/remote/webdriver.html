@@ -675,7 +675,8 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.set_script_timeout(30)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_SCRIPT_TIMEOUT</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_SCRIPT_TIMEOUT</span><span class="p">,</span>
+            <span class="p">{</span><span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">})</span>
 </div>
 <div class="viewcode-block" id="WebDriver.find_element"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.find_element">[docs]</a>    <span class="k">def</span> <span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -744,7 +745,8 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.set_window_size(800,600)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_SIZE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;width&#39;</span><span class="p">:</span><span class="n">width</span><span class="p">,</span> <span class="s">&#39;height&#39;</span><span class="p">:</span><span class="n">height</span><span class="p">,</span> <span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_SIZE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;width&#39;</span><span class="p">:</span> <span class="n">width</span><span class="p">,</span> <span class="s">&#39;height&#39;</span><span class="p">:</span> <span class="n">height</span><span class="p">,</span>
+          <span class="s">&#39;windowHandle&#39;</span><span class="p">:</span> <span class="n">windowHandle</span><span class="p">})</span>
 </div>
 <div class="viewcode-block" id="WebDriver.get_window_size"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windowHandle</span><span class="o">=</span><span class="s">&#39;current&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -753,7 +755,8 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.get_window_size()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_SIZE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_SIZE</span><span class="p">,</span>
+            <span class="p">{</span><span class="s">&#39;windowHandle&#39;</span><span class="p">:</span> <span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="WebDriver.set_window_position"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.set_window_position">[docs]</a>    <span class="k">def</span> <span class="nf">set_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">windowHandle</span><span class="o">=</span><span class="s">&#39;current&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -766,7 +769,8 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.set_window_position(0,0)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;x&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span> <span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
+          <span class="s">&#39;windowHandle&#39;</span><span class="p">:</span> <span class="n">windowHandle</span><span class="p">})</span>
 </div>
 <div class="viewcode-block" id="WebDriver.get_window_position"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windowHandle</span><span class="o">=</span><span class="s">&#39;current&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -775,8 +779,36 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.get_window_position()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;windowHandle&#39;</span><span class="p">:</span><span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span></div></div>
-</pre></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">,</span>
+            <span class="p">{</span><span class="s">&#39;windowHandle&#39;</span><span class="p">:</span> <span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the current orientation of the device</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            orientation = driver.orientation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_SCREEN_ORIENTATION</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="nd">@orientation.setter</span>
+<div class="viewcode-block" id="WebDriver.orientation"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.orientation">[docs]</a>    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the current orientation of the device</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: orientation to set it to.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.orientation = &#39;landscape&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">allowed_values</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;LANDSCAPE&#39;</span><span class="p">,</span> <span class="s">&#39;PORTRAIT&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_SCREEN_ORIENTATION</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;You can only set the orientation to &#39;LANDSCAPE&#39; and &#39;PORTRAIT&#39;&quot;</span><span class="p">)</span>
+</pre></div></div></div>
 
           </div>
         </div>

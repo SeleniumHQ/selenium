@@ -301,7 +301,11 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">:</span>
-                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">)</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_SCREEN_ORIENTATION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/orientation&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_SCREEN_ORIENTATION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/orientation&#39;</span><span class="p">),</span>
             <span class="p">}</span>
 
 <div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>

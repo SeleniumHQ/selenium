@@ -65,6 +65,9 @@
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ElementNotVisibleException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidCookieDomainException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidElementStateException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectiorException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ImeNotAvailableException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ImeActivationFailedException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchFrameException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchWindowException</span>
@@ -100,7 +103,13 @@
     <span class="n">NO_ALERT_OPEN</span> <span class="o">=</span> <span class="mi">27</span>
     <span class="n">SCRIPT_TIMEOUT</span> <span class="o">=</span> <span class="mi">28</span>
     <span class="n">INVALID_ELEMENT_COORDINATES</span> <span class="o">=</span> <span class="mi">29</span>
+    <span class="n">IME_NOT_AVAILABLE</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+    <span class="n">IME_ENGINE_ACTIVATION_FAILED</span> <span class="o">=</span> <span class="mi">31</span>
     <span class="n">INVALID_SELECTOR</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">MOVE_TARGET_OUT_OF_BOUNDS</span> <span class="o">=</span> <span class="mi">34</span>
+    <span class="n">INVALID_XPATH_SELECTOR</span> <span class="o">=</span> <span class="mi">51</span>
+    <span class="n">INVALID_XPATH_SELECTOR_RETURN_TYPER</span> <span class="o">=</span> <span class="mi">52</span>
+    <span class="n">METHOD_NOT_ALLOWED</span> <span class="o">=</span> <span class="mi">405</span>
 
 </div>
 <div class="viewcode-block" id="ErrorHandler"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorHandler">[docs]</a><span class="k">class</span> <span class="nc">ErrorHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -133,6 +142,10 @@
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotVisibleException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_ELEMENT_STATE</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_SELECTOR</span> \
+                <span class="ow">or</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_XPATH_SELECTOR</span> \
+                <span class="ow">or</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_XPATH_SELECTOR_RETURN_TYPER</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidSelectiorException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_IS_NOT_SELECTABLE</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotSelectableException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_COOKIE_DOMAIN</span><span class="p">:</span>
@@ -147,6 +160,10 @@
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_ALERT_OPEN</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoAlertPresentException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">IME_NOT_AVAILABLE</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ImeNotAvailableException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">IME_ENGINE_ACTIVATION_FAILED</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ImeActivationFailedException</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
@@ -164,7 +181,11 @@
 
         <span class="n">stacktrace</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="s">&#39;stackTrace&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="n">zeroeth</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;stackTrace&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">zeroeth</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">zeroeth</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;stackTrace&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
             <span class="k">if</span> <span class="n">zeroeth</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;methodName&#39;</span><span class="p">):</span>
                 <span class="n">stacktrace</span> <span class="o">=</span> <span class="s">&quot;Method </span><span class="si">%s</span><span class="s"> threw an error in </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> \
                     <span class="p">(</span><span class="n">zeroeth</span><span class="p">[</span><span class="s">&#39;methodName&#39;</span><span class="p">],</span>
