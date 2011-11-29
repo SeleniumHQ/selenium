@@ -156,6 +156,7 @@
     <Compile Include="InvalidCookieDomainException.cs" />
     <Compile Include="InvalidElementStateException.cs" />
     <Compile Include="IOptions.cs" />
+    <Compile Include="IRotatable.cs" />
     <Compile Include="ISearchContext.cs" />
     <Compile Include="ITakesScreenshot.cs" />
     <Compile Include="ITargetLocator.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="Remote\Response.cs" />
     <Compile Include="Remote\SessionId.cs" />
     <Compile Include="Remote\StackTraceElement.cs" />
+    <Compile Include="ScreenOrientation.cs" />
     <Compile Include="Screenshot.cs" />
     <Compile Include="StaleElementReferenceException.cs" />
     <Compile Include="UnableToSetCookieException.cs" />

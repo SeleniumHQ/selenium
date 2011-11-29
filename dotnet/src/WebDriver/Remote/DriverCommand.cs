@@ -289,6 +289,16 @@ namespace OpenQA.Selenium.Remote
         Screenshot,
 
         /// <summary>
+        /// Represents GetOrientation command
+        /// </summary>
+        GetOrientation,
+
+        /// <summary>
+        /// Represents SetOrientation command
+        /// </summary>
+        SetOrientation,
+
+        /// <summary>
         /// Represents GetWindowSize command
         /// </summary>
         GetWindowSize,
