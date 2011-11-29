@@ -59,10 +59,6 @@ public class OpacityTest extends AbstractDriverTestCase {
     WebElement apples = options.get(0);
     WebElement oranges = options.get(1);
 
-    assertFalse("Select should not be displayed", select.isDisplayed());
-    assertFalse("Apples should not be displayed", apples.isDisplayed());
-    assertFalse("Oranges should not be displayed", oranges.isDisplayed());
-
     assertTrue("Apples should be selected", apples.isSelected());
     assertFalse("Oranges shoudl be selected", oranges.isSelected());
 
