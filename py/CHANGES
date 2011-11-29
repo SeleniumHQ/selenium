@@ -1,3 +1,8 @@
+Selenium 2.14
+* Fix for LD_PRELOAD being polluted by WebDriver
+* Added Orientation API
+* A fix for Error Handling
+
 Selenium 2.13
 * Fixed switch_to_window so that it didnt crash Firefox Bug 2633
 * Fixed Screenshot handling to work in all browsers. Bug 2829
