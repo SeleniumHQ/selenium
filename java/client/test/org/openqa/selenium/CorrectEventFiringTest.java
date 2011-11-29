@@ -368,7 +368,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   @Ignore(value = {SELENESE, ANDROID},
       reason = "Not implemented")
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
-    driver.get(pages.javascriptPage);
+    driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
     element.click();

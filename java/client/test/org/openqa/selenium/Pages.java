@@ -22,6 +22,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 public class Pages {
   public String alertsPage;
   public String clickJacker;
+  public String clickEventPage;
   public String clicksPage;
   public String simpleTestPage;
   public String simpleXmlDocument;
@@ -75,6 +76,7 @@ public class Pages {
     childPage = appServer.whereIs("child/childPage.html");
     chinesePage = appServer.whereIs("cn-test.html");
     clickJacker = appServer.whereIs("click_jacker.html");
+    clickEventPage = appServer.whereIs("clickEventPage.html");
     clicksPage = appServer.whereIs("clicks.html");
     draggableLists = appServer.whereIs("draggableLists.html");
     dragAndDropPage = appServer.whereIs("dragAndDropTest.html");

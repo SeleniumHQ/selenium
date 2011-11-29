@@ -30,16 +30,6 @@
             blackBox.style.display = show ? '' : 'none';
           }, delay);
         }
-
-        function displayEvent(event) {
-          var keys = ['x', 'y', 'clientX', 'clientY', 'pageX', 'pageY', 'screenX', 'screenY'];
-          var message = "<ul>";
-          for (var i = 0; i < keys.length; i++) {
-            message += "<li>" + keys[i] + ": <span id='" + keys[i] + "'>" + event[keys[i]] + "</span></li>";
-          }
-          message += "</ul>";
-          document.getElementById('result').innerHTML = message;
-        }
     </script>
     <script type="text/javascript">
         var startList = function() {
@@ -256,10 +246,6 @@
     Click to hide black box
   </div>
   <div style="clear: both"></div>
-</div>
-
-<div id="eventish" onclick="displayEvent(event);">
-  Click me to view my coordinates
 </div>
 
 <a id="new_window" onmouseup="window.open('closeable_window.html', 'close_me')" href="#">Click me to open a new window</a>

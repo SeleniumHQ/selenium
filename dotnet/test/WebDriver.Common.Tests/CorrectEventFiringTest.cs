@@ -356,7 +356,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldReportTheXAndYCoordinatesWhenClicking()
         {
-            driver.Url = javascriptPage;
+            driver.Url = clickEventPage;
 
             IWebElement element = driver.FindElement(By.Id("eventish"));
             element.Click();
