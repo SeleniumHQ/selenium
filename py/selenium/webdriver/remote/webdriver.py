@@ -753,7 +753,7 @@ class WebDriver(object):
          - value: orientation to set it to.
 
         :Usage:
-            orientation = driver.orienation
+            driver.orienation = 'landscape'
         """
         allowed_values = ['LANDSCAPE', 'PORTRAIT']
         if value.upper() in allowed_values:
