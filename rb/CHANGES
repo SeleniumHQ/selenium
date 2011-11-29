@@ -1,3 +1,23 @@
+2.14.0 (???)
+===================
+
+* Add Selenium::WebDriver::Support::Select class to ease working with select lists.
+* Add Capabilities.ipad and Capabilities.iphone (#2895)
+* Replace json_pure dependency with multi_json. (#2901)
+* Don't leave sockets hanging in SYN_SENT state while polling.
+* Allow selecting option elements even if the enclosing select has zero opacity.
+* Exception renames (old names aliased and will still work in rescues):
+  * ObsoleteElementError      -> StaleElementReferenceError
+  * UnhandledError            -> UnknownError
+  * UnexpectedJavascriptError -> JavascriptError
+  * NoAlertOpenError          -> NoAlertPresentError
+  * ElementNotDisplayedError  -> ElementNotVisibleError
+* Firefox:
+  * Fixed issue with scrolling on small viewports with native events.
+  * Fix CSS selector support in Firefox 3.0
+* IE:
+  * Implement the window control API
+
 2.13.0 (2011-11-18)
 ===================
 
