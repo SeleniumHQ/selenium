@@ -53,6 +53,10 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(ALL)
   public void testShouldDismissAlertOnException() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("alert")).click();
 
     try {
@@ -65,6 +69,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertManually() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -76,6 +84,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("empty-alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -87,6 +99,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowUsersToDismissAnAlertManually() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -98,6 +114,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowAUserToAcceptAPrompt() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("prompt")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -109,6 +129,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowAUserToDismissAPrompt() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("prompt")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -120,6 +144,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("prompt")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -131,6 +159,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testSettingTheValueOfAnAlertThrows() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -145,6 +177,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -156,6 +192,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testAlertShouldNotAllowAdditionalCommandsIfDimissed() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -170,6 +210,10 @@ public class AlertsTest extends AbstractDriverTestCase {
   @Ignore(ANDROID)
   @JavascriptEnabled
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.switchTo().frame("iframeWithAlert");
 
     driver.findElement(By.id("alertInFrame")).click();
@@ -183,6 +227,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @Ignore({ANDROID, CHROME, FIREFOX, HTMLUNIT, IE})
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("alert")).click();
     try {
       driver.getTitle();
@@ -210,6 +258,10 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {ALL}, issues = {2764, 2834})
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-new-window")).click();
@@ -231,6 +283,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("prompt-with-default")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -242,6 +298,10 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(ANDROID)
   public void testPromptShouldHaveNullValueIfDismissed() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("prompt-with-default")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -252,6 +312,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testHandlesTwoAlertsFromOneInteraction() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("double-prompt")).click();
 
     Alert alert1 = waitFor(alertToBePresent(driver));
@@ -268,6 +332,10 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   public void testShouldHandleAlertOnPageLoad() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("open-page-with-onload-alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -282,6 +350,10 @@ public class AlertsTest extends AbstractDriverTestCase {
   @Ignore(value = {FIREFOX, ANDROID, IE}, reason = "FF waits too long, may be hangs out." +
       "Android currently does not store the source of the alert. IE8: Not confirmed working.")
   public void testShouldNotHandleAlertInAnotherWindow() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onload-alert")).click();
@@ -305,6 +377,10 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE}, reason = "IE crashes")
   public void testShouldHandleAlertOnPageUnload() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
     driver.navigate().back();
 
@@ -319,6 +395,10 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE}, reason = "IE crashes")
   public void testShouldHandleAlertOnWindowClose() {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();
@@ -335,6 +415,13 @@ public class AlertsTest extends AbstractDriverTestCase {
       driver.switchTo().window(mainWindow);
       waitFor(elementTextToEqual(driver, By.id("open-window-with-onclose-alert"), "open new window"));
     }
+  }
+
+  private boolean cannotTestAlerts() {
+    return
+        SauceDriver.shouldUseSauce() &&
+        TestUtilities.getEffectivePlatform().equals(Platform.XP) &&
+        TestUtilities.isInternetExplorer(driver);
   }
 
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
