@@ -740,7 +740,7 @@ class WebDriver(object):
         Gets the current orientation of the device
 
         :Usage:
-            orientation = driver.orienation
+            orientation = driver.orientation
         """
         return self.execute(Command.GET_SCREEN_ORIENTATION)['value']
 
@@ -753,12 +753,12 @@ class WebDriver(object):
          - value: orientation to set it to.
 
         :Usage:
-            driver.orienation = 'landscape'
+            driver.orientation = 'landscape'
         """
         allowed_values = ['LANDSCAPE', 'PORTRAIT']
         if value.upper() in allowed_values:
             self.execute(Command.SET_SCREEN_ORIENTATION, {'orientation': value})['value']
         else:
-            raise WebDriverException("You can only set the orienation to 'LANDSCAPE' and 'PORTRAIT'")
+            raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
 
 
