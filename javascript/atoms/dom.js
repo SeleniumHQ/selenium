@@ -1112,3 +1112,22 @@ bot.dom.getLocationInView = function(elem, opt_elemRegion) {
   return new goog.math.Coordinate(elemClientPos.x + elemRegion.left,
                                   elemClientPos.y + elemRegion.top);
 };
+
+
+/**
+ * Checks whether the element is currently scrolled in to view, such that the
+ * offset given, relative to the top-left corner of the element, is displayed.
+ *
+ * @param {!Element} element The element to check.
+ * @param {!goog.math.Coordinate} offset Coordinate in the element, relative to
+ *     the top-left corner of the element, to check.
+ * @return {boolean} Whether the coordinates specified, relative to the element,
+ *     are scrolled in to view.
+ */
+bot.dom.isCurrentlyScrolledIntoView = function(element, offset) {
+  var coords = goog.style.getClientPosition(element);
+  coords.x += offset.x;
+  coords.y += offset.y;
+  var visibleRect = goog.style.getVisibleRectForElement(element);
+  return !!visibleRect && (visibleRect.contains(coords));
+};

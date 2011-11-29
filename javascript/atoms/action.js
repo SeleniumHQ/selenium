@@ -613,3 +613,25 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
   mouse.releaseButton();
 };
 
+
+
+/**
+ * Scrolls the element in to the current viewport. Aims to do the minimum
+ * scrolling necessary
+ * @param {!Element} element The element to scroll in to view.
+ * @param {!goog.math.Coordinate=} opt_coords Offset relative to the top-left
+ *     corner of the element, to ensure is scrolled in to view.
+ * @return {boolean} Whether the element is in view after scrolling.
+ */
+bot.action.scrollIntoViewIfNecessary = function(element, opt_coords) {
+  var coords = opt_coords;
+  if (!coords) {
+    var size = goog.style.getSize(element);
+    coords = new goog.math.Coordinate(size.width / 2, size.height /2);
+  }
+
+  if (!bot.dom.isCurrentlyScrolledIntoView(element, coords)) {
+    element.scrollIntoView();
+  }
+  return bot.dom.isCurrentlyScrolledIntoView(element, coords);
+};
