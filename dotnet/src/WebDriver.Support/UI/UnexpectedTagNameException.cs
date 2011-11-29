@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Support.UI
     /// does not support the HTML select element's selection semantics.
     /// </summary>
     [Serializable]
-    public class UnexpectedTagNameException : Exception
+    public class UnexpectedTagNameException : WebDriverException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UnexpectedTagNameException"/> class with

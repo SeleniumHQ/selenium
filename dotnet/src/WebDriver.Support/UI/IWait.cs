@@ -27,6 +27,28 @@ namespace OpenQA.Selenium.Support.UI
     public interface IWait<TSource>
     {
         /// <summary>
+        /// Gets or sets how long to wait for the evaluated condition to be true.
+        /// </summary>
+        TimeSpan Timeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets how often the condition should be evaluated.
+        /// </summary>
+        TimeSpan PollingInterval { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message to be displayed when time expires.
+        /// </summary>
+        string Message { get; set; }
+
+        /// <summary>
+        /// Configures this instance to ignore specific types of exceptions while waiting for a condition.
+        /// Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
+        /// </summary>
+        /// <param name="exceptionTypes">The types of exceptions to ignore.</param>
+        void IgnoreExceptionTypes(params Type[] exceptionTypes);
+
+        /// <summary>
         /// Waits until a condition is true or times out.
         /// </summary>
         /// <typeparam name="TResult">The type of result to expect from the condition.</typeparam>

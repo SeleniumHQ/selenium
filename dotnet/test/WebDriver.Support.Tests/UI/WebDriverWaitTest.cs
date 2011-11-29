@@ -26,9 +26,10 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void CanGetListOfOptions()
         {
+            var mockDriver = mocks.NewMock<IWebDriver>();
             var condition = GetCondition(() => null, () => SOME_STRING);
 
-            var wait = new WebDriverWait(new TickingClock(), null, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver, FIVE_SECONDS, ZERO_SECONDS);
             Assert.AreEqual(SOME_STRING, wait.Until(condition));
             
             mocks.VerifyAllExpectationsHaveBeenMet();
@@ -37,9 +38,10 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void WaitsForBaseObjectType()
         {
+            var mockDriver = mocks.NewMock<IWebDriver>();
             var condition = GetCondition(() => null, () => new object());
 
-            var wait = new WebDriverWait(new TickingClock(), null, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver, FIVE_SECONDS, ZERO_SECONDS);
             Assert.IsNotNull(wait.Until(condition));
 
             mocks.VerifyAllExpectationsHaveBeenMet();
@@ -48,19 +50,21 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void WaitsUntilABooleanResultIsTrue()
         {
+            var mockDriver = mocks.NewMock<IWebDriver>();
             var condition = GetCondition(() => false, () => true);
 
-            var wait = new WebDriverWait(new TickingClock(), null, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver, FIVE_SECONDS, ZERO_SECONDS);
             Assert.True(wait.Until(condition));
         }
 
         [Test]
         public void ThrowsForInvalidTypes()
         {
+            var mockDriver = mocks.NewMock<IWebDriver>();
             var nullableBooleanCondition = GetCondition<bool?>(() => null, () => true);
             var intCondition = GetCondition(() => 1, () => 2);
 
-            var wait = new WebDriverWait(new TickingClock(), null, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver, FIVE_SECONDS, ZERO_SECONDS);
             
             Assert.Throws(typeof(ArgumentException), () => wait.Until(nullableBooleanCondition));
             Assert.Throws(typeof(ArgumentException), () => wait.Until(intCondition));
@@ -69,7 +73,8 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void ThrowsAnExceptionIfTheTimerRunsOut()
         {
-            var wait = new WebDriverWait(GetClock(), null, ONE_SECONDS, ZERO_SECONDS);
+            var mockDriver = mocks.NewMock<IWebDriver>();
+            var wait = new WebDriverWait(GetClock(), mockDriver, ONE_SECONDS, ZERO_SECONDS);
 
             Assert.Throws(typeof(TimeoutException), () => wait.Until(driver => false));
         }
@@ -77,10 +82,11 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void SilentlyCapturesNoSuchElementExceptions()
         {
+            var mockDriver = mocks.NewMock<IWebDriver>();
             var element = mocks.NewMock<IWebElement>();
             var condition = GetCondition(() => { throw new NoSuchElementException(); }, () => element);
 
-            var wait = new WebDriverWait(new TickingClock(), null, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver, FIVE_SECONDS, ZERO_SECONDS);
 
             Assert.AreEqual(element, wait.Until(condition));
         }
@@ -103,9 +109,10 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void ChainsNoSuchElementExceptionWhenTimingOut()
         {
+            var mockDriver = mocks.NewMock<IWebDriver>();
             var condition = GetCondition<string>(() => { throw new NoSuchElementException(); }, () => { throw new NoSuchElementException(); });
-            
-            var wait = new WebDriverWait(GetClock(), null, ONE_SECONDS, ZERO_SECONDS);
+
+            var wait = new WebDriverWait(GetClock(), mockDriver, ONE_SECONDS, ZERO_SECONDS);
 
             try
             {

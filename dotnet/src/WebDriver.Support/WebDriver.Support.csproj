@@ -82,6 +82,7 @@
     <Compile Include="PageObjects\PageFactory.cs" />
     <Compile Include="PageObjects\WebElementProxyComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\DefaultWait.cs" />
     <Compile Include="UI\IClock.cs" />
     <Compile Include="UI\IWait.cs" />
     <Compile Include="UI\PopupWindowFinder.cs" />

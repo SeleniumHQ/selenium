@@ -29,14 +29,9 @@ namespace OpenQA.Selenium.Support.UI
     /// IWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3))
     /// IWebElement element = wait.until(driver => driver.FindElement(By.Name("q")));
     /// </example>
-    public class WebDriverWait : IWait<IWebDriver>
+    public class WebDriverWait : DefaultWait<IWebDriver>
     {
         private static readonly TimeSpan DefaultSleepTimeout = TimeSpan.FromMilliseconds(500);
-    
-        private readonly IClock clock;
-        private readonly IWebDriver driver;
-        private readonly TimeSpan timeout;
-        private readonly TimeSpan sleepInterval;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverWait"/> class.
@@ -56,76 +51,11 @@ namespace OpenQA.Selenium.Support.UI
         /// <param name="timeout">The timeout value indicating how long to wait for the condition.</param>
         /// <param name="sleepInterval">A <see cref="TimeSpan"/> value indiciating how often to check for the condition to be true.</param>
         public WebDriverWait(IClock clock, IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
+            : base(driver, clock)
         {
-            this.clock = clock;
-            this.driver = driver;
-            this.timeout = timeout;
-            this.sleepInterval = sleepInterval;
-        }
-
-        /// <summary>
-        /// Waits until a condition is true or times out.
-        /// </summary>
-        /// <typeparam name="TResult">The type of result to expect from the condition.</typeparam>
-        /// <param name="condition">A delegate taking an <see cref="IWebDriver"/> as its parameter, and returning a TResult.</param>
-        /// <returns>If TResult is a boolean, the method returns <see langword="true"/> when the condition is true, and <see langword="false"/> otherwise.
-        /// If TResult is an object, the method returns the object when the condition evaluates to a value other than <see langword="null"/>.</returns>
-        /// <exception cref="ArgumentException">Thrown when TResult is not boolean or an object type.</exception>
-        public TResult Until<TResult>(Func<IWebDriver, TResult> condition)
-        {
-            if (condition == null)
-            {
-                throw new ArgumentNullException("condition", "condition cannot be null");
-            }
-
-            var resultType = typeof(TResult);
-            if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
-            {
-                throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), "condition");
-            }
-
-            NotFoundException lastException = null;
-            var endTime = this.clock.LaterBy(this.timeout);
-            while (this.clock.IsNowBefore(endTime))
-            {
-                try
-                {
-                    var result = condition(this.driver);
-                    if (resultType == typeof(bool))
-                    {
-                        var boolResult = result as bool?;
-                        if (boolResult.HasValue && boolResult.Value)
-                        {
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        if (result != null)
-                        {
-                            return result;
-                        }
-                    }
-                }
-                catch (NotFoundException e)
-                {
-                    lastException = e;
-                }
-
-                Thread.Sleep(this.sleepInterval);
-            }
-
-            throw new TimeoutException(string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds", this.timeout.TotalSeconds), lastException);
-        }
-
-        /// <summary>
-        /// Throws a <see cref="TimeoutException"/> with the given message.
-        /// </summary>
-        /// <param name="message">The message of the exception.</param>
-        /// <param name="lastException">The last exception thrown by the condition.</param>
-        protected virtual void ThrowTimeoutException(string message, Exception lastException)
-        {
-            throw new TimeoutException(message, lastException);
+            this.Timeout = timeout;
+            this.PollingInterval = sleepInterval;
+            this.IgnoreExceptionTypes(typeof(NotFoundException));
         }
     }
 }
