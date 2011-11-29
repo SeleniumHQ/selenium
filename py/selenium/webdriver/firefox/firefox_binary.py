@@ -48,6 +48,10 @@ class FirefoxBinary(object):
         if self.process:
             self.process.kill()
             self.process.wait()
+        if self.existing_ld_preload:
+            os.environ["LD_PRELOAD"] = self.existing_ld_preload
+        else:
+            os.environ["LD_PRELOAD"] = ""
 
     def _start_from_profile_path(self, path):
         os.environ["XRE_PROFILE_PATH"] = path
@@ -120,24 +124,34 @@ class FirefoxBinary(object):
 
     def _modify_link_library_path(self):
         existing_ld_lib_path = None
+        self.existing_ld_preload = None
         try:
             existing_ld_lib_path = os.environ['LD_LIBRARY_PATH']
+            self.existing_ld_preload = os.environ['LD_PRELOAD']
         except:
             pass
 
-        new_ld_lib_path = self._extract_and_check(
+        new_ld_lib_path, preload_paths = self._extract_and_check(
             self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
+        print new_ld_lib_path
+        print preload_paths
 
         if existing_ld_lib_path:
             new_ld_lib_path += existing_ld_lib_path
+        
+        if platform.architecture()[0] == '32bit':
+            preload = preload_paths[0]
+        else:
+            preload = preload_paths[1]
 
         os.environ["LD_LIBRARY_PATH"] = new_ld_lib_path
-        os.environ['LD_PRELOAD'] = self.NO_FOCUS_LIBRARY_NAME
+        os.environ['LD_PRELOAD'] = preload 
 
     def _extract_and_check(self, profile, no_focus_so_name, x86, amd64):
         
         paths = [x86, amd64]
         built_path = ""
+        preload_paths = []
         for path in paths:
             library_path = os.path.join(profile.path, path)
             os.makedirs(library_path)
@@ -146,8 +160,9 @@ class FirefoxBinary(object):
               self.NO_FOCUS_LIBRARY_NAME), 
               library_path)
             built_path += library_path + ":"
+            preload_paths.append(os.path.join(library_path, self.NO_FOCUS_LIBRARY_NAME))
 
-        return built_path
+        return built_path, preload_paths
 
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given 
