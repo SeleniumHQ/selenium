@@ -133,8 +133,6 @@ class FirefoxBinary(object):
 
         new_ld_lib_path, preload_paths = self._extract_and_check(
             self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
-        print new_ld_lib_path
-        print preload_paths
 
         if existing_ld_lib_path:
             new_ld_lib_path += existing_ld_lib_path
