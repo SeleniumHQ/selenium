@@ -76,6 +76,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="n">firefox_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">existing_ld_preload</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_firefox_start_cmd</span><span class="p">()</span>
 
@@ -172,7 +173,6 @@
 
     <span class="k">def</span> <span class="nf">_modify_link_library_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">existing_ld_lib_path</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">existing_ld_preload</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">existing_ld_lib_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">existing_ld_preload</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;LD_PRELOAD&#39;</span><span class="p">]</span>
