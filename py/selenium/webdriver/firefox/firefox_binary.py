@@ -28,6 +28,7 @@ class FirefoxBinary(object):
 
     def __init__(self, firefox_path=None):
         self._start_cmd = firefox_path
+        self.existing_ld_preload = None
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
 
@@ -124,7 +125,6 @@ class FirefoxBinary(object):
 
     def _modify_link_library_path(self):
         existing_ld_lib_path = None
-        self.existing_ld_preload = None
         try:
             existing_ld_lib_path = os.environ['LD_LIBRARY_PATH']
             self.existing_ld_preload = os.environ['LD_PRELOAD']
