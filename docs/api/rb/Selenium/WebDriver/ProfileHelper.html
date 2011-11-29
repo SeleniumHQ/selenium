@@ -59,7 +59,7 @@
     <div id="content"><h1>Module: Selenium::WebDriver::ProfileHelper
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 
 <dl class="box">
@@ -83,7 +83,11 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This module is part of a private API.</strong> 
+  You should avoid using this module if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 Common methods for Chrome::Profile and Firefox::Profile Includers must
 implement #layout_on_disk
 </p>
@@ -130,7 +134,7 @@ implement #layout_on_disk
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -160,7 +164,7 @@ implement #layout_on_disk
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -181,7 +185,7 @@ implement #layout_on_disk
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -205,7 +209,20 @@ implement #layout_on_disk
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -239,7 +256,20 @@ implement #layout_on_disk
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -267,7 +297,20 @@ implement #layout_on_disk
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -281,7 +324,7 @@ implement #layout_on_disk
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/profile_helper.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='id as_json'>as_json</span><span class='period'>.</span><span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='const'>MultiJson</span><span class='period'>.</span><span class='id encode'>encode</span> <span class='id as_json'>as_json</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -293,7 +336,7 @@ implement #layout_on_disk
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:40 2011 by 
+  Generated on Tue Nov 29 01:07:04 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

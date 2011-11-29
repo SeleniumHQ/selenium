@@ -268,6 +268,27 @@ the server is being asked to create.
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#ipad-class_method" title="ipad (class method)">+ (Object) <strong>ipad</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#iphone-class_method" title="iphone (class method)">+ (Object) <strong>iphone</strong>(opts = {}) </a>
     
 
@@ -707,13 +728,13 @@ a customizable set of options
       <pre class="lines">
 
 
-144
-145
-146
-147</pre>
+152
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 144</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 152</span>
 
 <span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span> <span class='op'>=</span> <span class='const'>DEFAULTS</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span>
@@ -983,6 +1004,55 @@ a customizable set of options
 </div>
     
       <div class="method_details ">
+  <p class="signature " id="ipad-class_method">
+  
+    + (<tt>Object</tt>) <strong>ipad</strong>(opts = {}) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+94
+95
+96
+97
+98
+99
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 94</span>
+
+<span class='kw'>def</span> <span class='id ipad'>ipad</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='symbol'>:browser_name</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>iPad</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:platform</span>           <span class='op'>=&gt;</span> <span class='symbol'>:mac</span><span class='comma'>,</span>
+    <span class='symbol'>:javascript_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <p class="signature " id="iphone-class_method">
   
     + (<tt>Object</tt>) <strong>iphone</strong>(opts = {}) 
@@ -1021,7 +1091,7 @@ a customizable set of options
 
 <span class='kw'>def</span> <span class='id iphone'>iphone</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
-    <span class='symbol'>:browser_name</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>iphone</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+    <span class='symbol'>:browser_name</span>       <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>iPhone</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
     <span class='symbol'>:platform</span>           <span class='op'>=&gt;</span> <span class='symbol'>:mac</span><span class='comma'>,</span>
     <span class='symbol'>:javascript_enabled</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
   <span class='rbrace'>}</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1057,14 +1127,6 @@ a customizable set of options
       <pre class="lines">
 
 
-107
-108
-109
-110
-111
-112
-113
-114
 115
 116
 117
@@ -1075,10 +1137,18 @@ a customizable set of options
 122
 123
 124
-125</pre>
+125
+126
+127
+128
+129
+130
+131
+132
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id json_create'>json_create</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
   <span class='id data'>data</span> <span class='op'>=</span> <span class='id data'>data</span><span class='period'>.</span><span class='id dup'>dup</span>
@@ -1130,17 +1200,17 @@ a customizable set of options
       <pre class="lines">
 
 
-94
-95
-96
-97
-98
-99
-100
-101</pre>
+102
+103
+104
+105
+106
+107
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id opera'>opera</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -1191,13 +1261,13 @@ a customizable set of options
       <pre class="lines">
 
 
-212
-213
-214
-215</pre>
+220
+221
+222
+223</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 220</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id other'>other</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='kw'>self</span><span class='period'>.</span><span class='id class'>class</span>
@@ -1234,12 +1304,12 @@ a customizable set of options
       <pre class="lines">
 
 
-157
-158
-159</pre>
+165
+166
+167</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 165</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span>
@@ -1278,12 +1348,12 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-153
-154
-155</pre>
+161
+162
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 153</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 161</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id key'>key</span><span class='comma'>,</span> <span class='id value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id key'>key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
@@ -1319,14 +1389,6 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-185
-186
-187
-188
-189
-190
-191
-192
 193
 194
 195
@@ -1340,10 +1402,18 @@ Allows setting arbitrary capabilities.
 203
 204
 205
-206</pre>
+206
+207
+208
+209
+210
+211
+212
+213
+214</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 185</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='id as_json'>as_json</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -1398,18 +1468,18 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-161
-162
-163
-164
-165
-166
-167
-168
-169</pre>
+169
+170
+171
+172
+173
+174
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 161</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 169</span>
 
 <span class='kw'>def</span> <span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='id other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id other'>other</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id other'>other</span><span class='period'>.</span><span class='id capabilities'>capabilities</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
@@ -1451,19 +1521,19 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-171
-172
-173
-174
-175
-176
-177
-178
 179
-180</pre>
+180
+181
+182
+183
+184
+185
+186
+187
+188</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 179</span>
 
 <span class='kw'>def</span> <span class='id proxy='>proxy=</span><span class='lparen'>(</span><span class='id proxy'>proxy</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id proxy'>proxy</span>
@@ -1506,15 +1576,15 @@ Allows setting arbitrary capabilities.
       <pre class="lines">
 
 
-208
-209
-210</pre>
+216
+217
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 208</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 216</span>
 
 <span class='kw'>def</span> <span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='id as_json'>as_json</span><span class='period'>.</span><span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='const'>MultiJson</span><span class='period'>.</span><span class='id encode'>encode</span> <span class='id as_json'>as_json</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1526,7 +1596,7 @@ Allows setting arbitrary capabilities.
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:40 2011 by 
+  Generated on Tue Nov 29 01:07:04 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

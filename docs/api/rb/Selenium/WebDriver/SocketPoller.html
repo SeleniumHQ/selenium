@@ -458,7 +458,8 @@ href="http://jira.codehaus.org/browse/JRUBY-5165">jira.codehaus.org/browse/JRUBY
 69
 70
 71
-72</pre>
+72
+73</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 50</span>
@@ -483,6 +484,7 @@ href="http://jira.codehaus.org/browse/JRUBY-5165">jira.codehaus.org/browse/JRUBY
   <span class='id sock'>sock</span><span class='period'>.</span><span class='id close'>close</span>
   <span class='kw'>true</span>
 <span class='kw'>rescue</span> <span class='op'>*</span><span class='const'>NOT_CONNECTED_ERRORS</span>
+  <span class='id sock'>sock</span><span class='period'>.</span><span class='id close'>close</span> <span class='kw'>if</span> <span class='id sock'>sock</span>
   <span class='gvar'>$stderr</span><span class='period'>.</span><span class='id puts'>puts</span> <span class='lbracket'>[</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id inspect'>inspect</span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
   <span class='kw'>false</span>
 <span class='kw'>end</span></pre>
@@ -496,7 +498,7 @@ href="http://jira.codehaus.org/browse/JRUBY-5165">jira.codehaus.org/browse/JRUBY
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:40 2011 by 
+  Generated on Tue Nov 29 01:07:04 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

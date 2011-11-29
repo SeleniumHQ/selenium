@@ -59,7 +59,7 @@
     <div id="content"><h1>Class: Selenium::WebDriver::Android::Bridge
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 
 <dl class="box">
@@ -94,13 +94,39 @@
 </dl>
 <div class="clear"></div>
 
+<div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong> 
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   <h2>Constant Summary</h2>
   
     <dl class="constants">
       
         <dt id="DEFAULT_URL-constant" class="">DEFAULT_URL =
-          
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong> 
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
         </dt>
         <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id localhost'>localhost</span><span class='rbrace'>}</span><span class='tstring_content'>:8080/wd/hub/</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
@@ -154,7 +180,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -175,7 +201,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -196,7 +222,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -217,7 +243,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -240,7 +266,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -264,7 +290,7 @@ A new instance of Bridge.
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -307,7 +333,11 @@ A new instance of Bridge.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 A new instance of Bridge
 </p>
 
@@ -323,19 +353,19 @@ A new instance of Bridge
       <pre class="lines">
 
 
-8
-9
-10
-11
-12
 13
 14
 15
 16
-17</pre>
+17
+18
+19
+20
+21
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id remote_opts'>remote_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span>
@@ -366,18 +396,31 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-19
-20
-21</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id browser'>browser</span>
   <span class='symbol'>:android</span>
@@ -394,18 +437,31 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-39
-40
-41</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id capabilities'>capabilities</span>
   <span class='ivar'>@capabilities</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id android'>android</span>
@@ -422,22 +478,35 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-23
-24
-25
-26
-27
 28
-29</pre>
+29
+30
+31
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id driver_extensions'>driver_extensions</span>
   <span class='lbracket'>[</span>
@@ -458,18 +527,31 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-35
-36
-37</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id getScreenOrientation'>getScreenOrientation</span>
   <span class='id execute'>execute</span> <span class='symbol'>:getScreenOrientation</span>
@@ -486,18 +568,31 @@ A new instance of Bridge
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-31
-32
-33</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/android/bridge.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id setScreenOrientation'>setScreenOrientation</span><span class='lparen'>(</span><span class='id orientation'>orientation</span><span class='rparen'>)</span>
   <span class='id execute'>execute</span> <span class='symbol'>:setScreenOrientation</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:orientation</span> <span class='op'>=&gt;</span> <span class='id orientation'>orientation</span>
@@ -512,7 +607,7 @@ A new instance of Bridge
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:39 2011 by 
+  Generated on Tue Nov 29 01:07:03 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

@@ -1680,7 +1680,7 @@ Convert to a WebElement JSON Object for transmission over the wire.
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 226</span>
 
 <span class='kw'>def</span> <span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='id as_json'>as_json</span><span class='period'>.</span><span class='id to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
+  <span class='const'>MultiJson</span><span class='period'>.</span><span class='id encode'>encode</span> <span class='id as_json'>as_json</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1692,7 +1692,7 @@ Convert to a WebElement JSON Object for transmission over the wire.
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:39 2011 by 
+  Generated on Tue Nov 29 01:07:03 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

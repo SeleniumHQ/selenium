@@ -116,7 +116,7 @@
   
   
   
-  <span class="private note title">Private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -145,11 +145,7 @@ Set the file detector to pass local files to a remote WebDriver.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong> 
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
+    <p>
 Set the file detector to pass local files to a remote WebDriver.
 </p>
 <p>
@@ -186,16 +182,16 @@ By default, no file detection is performed.
       <pre class="lines">
 
 
-32
-33
 34
 35
 36
 37
-38</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/uploads_files.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/uploads_files.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id file_detector='>file_detector=</span><span class='lparen'>(</span><span class='id detector'>detector</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id detector'>detector</span><span class='period'>.</span><span class='id nil?'>nil?</span> <span class='kw'>or</span> <span class='id detector'>detector</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span> <span class='symbol'>:call</span>
@@ -214,7 +210,7 @@ By default, no file detection is performed.
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:40 2011 by 
+  Generated on Tue Nov 29 01:07:05 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

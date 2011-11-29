@@ -59,7 +59,7 @@
     <div id="content"><h1>Module: Selenium::WebDriver::ProfileHelper::ClassMethods
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 
 <dl class="box">
@@ -77,7 +77,20 @@
 </dl>
 <div class="clear"></div>
 
+<div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This module is part of a private API.</strong> 
+  You should avoid using this module if possible, as it may be removed or be changed in the future.
+</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -103,7 +116,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -127,7 +140,20 @@
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -153,7 +179,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/profile_helper.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id from_json'>from_json</span><span class='lparen'>(</span><span class='id json'>json</span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='id json'>json</span><span class='rparen'>)</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>zip</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='id data'>data</span> <span class='op'>=</span> <span class='const'>MultiJson</span><span class='period'>.</span><span class='id decode'>decode</span><span class='lparen'>(</span><span class='id json'>json</span><span class='rparen'>)</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>zip</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
 
   <span class='comment'># can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
 </span>  <span class='comment'># can't use Dir.mktmpdir(&amp;blk) because of http://jira.codehaus.org/browse/JRUBY-4082
@@ -177,7 +203,7 @@
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:40 2011 by 
+  Generated on Tue Nov 29 01:07:04 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

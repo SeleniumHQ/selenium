@@ -1187,7 +1187,7 @@ Set a preference for this particular profile.
       <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>preference values must be plain strings: </span><span class='embexpr_beg'>#{</span><span class='id key'>key</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'> =&gt; </span><span class='embexpr_beg'>#{</span><span class='id value'>value</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>end</span>
 
-    <span class='id value'>value</span> <span class='op'>=</span> <span class='id value'>value</span><span class='period'>.</span><span class='id to_json'>to_json</span>
+    <span class='id value'>value</span> <span class='op'>=</span> <span class='const'>MultiJson</span><span class='period'>.</span><span class='id encode'>encode</span><span class='lparen'>(</span><span class='id value'>value</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span>
     <span class='id value'>value</span> <span class='op'>=</span> <span class='id value'>value</span><span class='period'>.</span><span class='id to_s'>to_s</span>
   <span class='kw'>else</span>
@@ -1659,7 +1659,7 @@ profile.
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:39 2011 by 
+  Generated on Tue Nov 29 01:07:03 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>

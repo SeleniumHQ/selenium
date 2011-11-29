@@ -532,7 +532,7 @@ if :name or :value is not specified
   <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:path</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span>
   <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:secure</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='kw'>false</span>
 
-  <span class='kw'>if</span> <span class='id obj'>obj</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expires</span><span class='rbracket'>]</span>
+  <span class='kw'>if</span> <span class='id obj'>obj</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:expires</span><span class='rparen'>)</span>
     <span class='id opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expiry</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id seconds_from'>seconds_from</span><span class='lparen'>(</span><span class='id obj'>obj</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
@@ -872,7 +872,7 @@ the name of the cookie to delete
 </div>
     
     <div id="footer">
-  Generated on Thu Nov 10 15:57:39 2011 by 
+  Generated on Tue Nov 29 01:07:03 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.3 (ruby-1.9.2).
 </div>
