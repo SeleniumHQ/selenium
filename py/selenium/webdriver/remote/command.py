@@ -99,3 +99,7 @@ class Command(object):
     MOUSE_DOWN = "mouseButtonDown";
     MOUSE_UP = "mouseButtonUp";
     MOVE_TO = "mouseMoveTo";
+
+    # Screen Orientation
+    SET_SCREEN_ORIENTATION = "setScreenOrientation"
+    GET_SCREEN_ORIENTATION = "getScreenOrientation"

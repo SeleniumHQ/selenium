@@ -733,3 +733,32 @@ class WebDriver(object):
         """
         return self.execute(Command.GET_WINDOW_POSITION,
             {'windowHandle': windowHandle})['value']
+
+    @property
+    def orientation(self):
+        """
+        Gets the current orientation of the device
+
+        :Usage:
+            orientation = driver.orienation
+        """
+        return self.execute(Command.GET_SCREEN_ORIENTATION)['value']
+
+    @orientation.setter
+    def orientation(self, value):
+        """
+        Sets the current orientation of the device
+
+        :Args:
+         - value: orientation to set it to.
+
+        :Usage:
+            orientation = driver.orienation
+        """
+        allowed_values = ['LANDSCAPE', 'PORTRAIT']
+        if value.upper() in allowed_values:
+            self.execute(Command.GET_SCREEN_ORIENTATION, {'orientation': value})['value']
+        else:
+            raise WebDriverException("You can only set the orienation to 'LANDSCAPE' and 'PORTRAIT'")
+
+

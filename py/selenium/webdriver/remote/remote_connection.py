@@ -253,7 +253,11 @@ class RemoteConnection(object):
             Command.GET_WINDOW_POSITION:
                 ('GET', '/session/$sessionId/window/$windowHandle/position'),
             Command.SET_WINDOW_POSITION:
-                ('POST', '/session/$sessionId/window/$windowHandle/position')
+                ('POST', '/session/$sessionId/window/$windowHandle/position'),
+            Command.SET_SCREEN_ORIENTATION:
+                ('POST', '/session/$sessionId/orientation'),
+            Command.GET_SCREEN_ORIENTATION:
+                ('GET', '/session/$sessionId/orientation'),
             }
 
     def execute(self, command, params):
