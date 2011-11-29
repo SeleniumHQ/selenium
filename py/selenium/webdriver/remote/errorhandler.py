@@ -133,7 +133,11 @@ class ErrorHandler(object):
 
         stacktrace = None
         if 'stackTrace' in value:
-            zeroeth = value['stackTrace'][0]
+            zeroeth = ''
+            try:
+                zeroeth = value['stackTrace'][0]
+            except:
+                pass
             if zeroeth.has_key('methodName'):
                 stacktrace = "Method %s threw an error in %s" % \
                     (zeroeth['methodName'],
