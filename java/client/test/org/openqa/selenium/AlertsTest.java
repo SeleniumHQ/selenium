@@ -98,6 +98,26 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @NeedsLocalEnvironment(reason = "Carefully timing based")
+  public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
+    if (cannotTestAlerts()) {
+      System.out.println("Ignoring IE alerts tests on Sauce");
+      return;
+    }
+    driver.findElement(By.id("slow-alert")).click();
+    
+    // DO NOT WAIT OR SLEEP HERE.
+    // This is a regression test for a bug where only the first switchTo call would throw,
+    // and only if it happens before the alert actually loads.
+    Alert alert = driver.switchTo().alert();
+    try {
+      assertEquals("Slow", alert.getText());
+    } finally {
+      alert.accept();
+    }
+  }
+
+  @JavascriptEnabled
   public void testShouldAllowUsersToDismissAnAlertManually() {
     if (cannotTestAlerts()) {
       System.out.println("Ignoring IE alerts tests on Sauce");

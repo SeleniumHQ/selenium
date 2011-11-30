@@ -19,6 +19,12 @@
           setInnerText('text1', prompt('First'));
           setInnerText('text2', prompt('Second'));
         }
+
+        function slowAlert() {
+          window.setTimeout(function() {
+            alert('Slow');
+          }, 200);
+        }
     </script>
 </head>
 <body>
@@ -34,6 +40,8 @@
 <p>Let's make the <a href="#" id="prompt-with-default" onclick="displayPromptWithDefault();">prompt with default happen</a></p>
 
 <p>Let's make TWO <a href="#" id="double-prompt" onclick="displayTwoPrompts();">prompts happen</a></p>
+
+<p>A <a href="#" id="slow-alert" onclick="slowAlert();">SLOW</a> alert</p>
 
 <p>This is a test of a confirm:
     <a href="simpleTest.html" id="confirm" onclick="return confirm('Are you sure?');">test confirm</a></p>

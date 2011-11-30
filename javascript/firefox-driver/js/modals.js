@@ -155,9 +155,7 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
   if (driver && driver.response_) {
     fxdriver.modals.setFlag(driver, text);
     var res = driver.response_;
-    res.value = {
-      text: text
-    };
+    res.value = text;
     res.statusCode = bot.ErrorCode.MODAL_DIALOG_OPENED;
     res.send();
   }
