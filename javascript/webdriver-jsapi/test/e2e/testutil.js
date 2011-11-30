@@ -13,6 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+goog.provide('webdriver.test.e2e.testutil');
+
+
 (function() {
 
   var MAIN_WINDOW_NAME = 'main_window';

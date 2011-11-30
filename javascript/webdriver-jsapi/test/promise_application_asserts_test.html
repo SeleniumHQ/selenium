@@ -16,15 +16,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <title>promise_application_asserts_test.html</title>
-<script src="../../../third_party/closure/goog/base.js"></script>
-<script src="../../deps.js"></script>
-<script src="testutil.js"></script>
+<script src="test_bootstrap.js"></script>
 <script>
   goog.require('goog.array');
   goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
-  goog.require('webdriver.testing.asserts');
   goog.require('webdriver.promise.Application');
+  goog.require('webdriver.test.testutil');
+  goog.require('webdriver.testing.asserts');
 </script>
 <script>
   var app, callbacks,

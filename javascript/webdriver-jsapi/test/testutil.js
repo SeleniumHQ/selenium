@@ -1,3 +1,5 @@
+goog.provide('webdriver.test.testutil');
+
 goog.require('goog.array');
 goog.require('goog.testing.MockClock');
 

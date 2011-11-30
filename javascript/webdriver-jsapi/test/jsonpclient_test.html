@@ -18,9 +18,7 @@ limitations under the License.
 <html>
 <head>
   <title>jsonpclient_test.html</title>
-  <script src="../../../third_party/closure/goog/base.js"></script>
-  <script src="../../deps.js"></script>
-  <script src="testutil.js"></script>
+  <script src="test_bootstrap.js"></script>
   <script>
     goog.require('goog.dom.DomHelper');
     goog.require('goog.testing.mockmatchers.ArgumentMatcher');
@@ -31,6 +29,7 @@ limitations under the License.
     goog.require('webdriver.http.Request');
     goog.require('webdriver.http.Response');
     goog.require('webdriver.promise');
+    goog.require('webdriver.test.testutil');
   </script>
   <script>
     var URL = 'http://localhost:4444/wd/hub';
