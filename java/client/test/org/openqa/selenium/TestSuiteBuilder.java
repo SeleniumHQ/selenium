@@ -292,6 +292,7 @@ public class TestSuiteBuilder {
         method.getDeclaringClass().getName(),
         method.getName(),
         reason == null ? "" : ": " + reason);
+      return false;
     }
 
     if (!includeJavascript
