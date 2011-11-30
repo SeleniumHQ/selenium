@@ -72,6 +72,7 @@ public class SauceDriver extends RemoteWebDriver {
     DesiredCapabilities mungedCapabilities = new DesiredCapabilities(desiredCapabilities);
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     mungedCapabilities.setCapability("idle-timeout", 180);
+    mungedCapabilities.setCapability("disable-popup-handler", true);
     if (!Strings.isNullOrEmpty(browserVersion)) {
       mungedCapabilities.setVersion(browserVersion);
     }
