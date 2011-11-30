@@ -62,20 +62,24 @@
       assertNotEquals(0, findElement({id: 'scrollable-container'}).scrollLeft);
     }
 
-    // This test checks that an element is not scrolled into view if its
-    // container has no scrollbars (overflow hidden). However, we currently
-    // allow this behaviour to get around cases where an element can be
-    // brought into view via other means.
-    // Once we verify that there are other means (like moving inside a
-    // scrollable container by holding down the mouse button and moving)
-    // we should re-renable this test.
-    /*
+
     function testReturnsFalseIfElementHiddenByOverflow() {
       var element = findElement({id: 'hidden-by-overflow'});
-      assertFalse(bot.action.scrollIntoViewIfNecessary(element));
-      assertEquals(0, findElement({id: 'hidden-by-overflow-container'}).scrollLeft);
-      }
-      */
+      expectedFailures.expectFailureFor(
+        true, // All browsers
+        'This test checks that an element is not scrolled into view if its ' +
+        'container has no scrollbars (overflow hidden). However, we ' +
+        'currently allow this behaviour to get around cases where an ' +
+        'element can be brought into view via other means.\n' +
+        'Once we verify that there are other means (like moving inside a ' +
+        'scrollable container by holding down the mouse button and moving) ' +
+        'we should re-renable this test.');
+      expectedFailures.run(function() {
+        assertFalse(bot.action.scrollIntoViewIfNecessary(element));
+        assertEquals(0, findElement({id: 'hidden-by-overflow-container'}).scrollLeft);
+      });
+    }
+
 
     function testScrollsNestedScrollContainers() {
       var top = findElement({id: 'nested-top-container'});
