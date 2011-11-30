@@ -486,18 +486,20 @@ class WebDriver(object):
         """
         self.execute(Command.SWITCH_TO_WINDOW, {'name': window_name})
 
-    def switch_to_frame(self, index_or_name):
+    def switch_to_frame(self, frame_reference):
         """
-        Switches focus to the specified frame, by index or name.
+        Switches focus to the specified frame, by index, name, or webelement.
         
         :Args:
-         - index_or_name: The name of the window to switch to, or an integer representing the index to switch to.
+         - frame_reference: The name of the window to switch to, an integer representing the index,
+                            or a webelement that is an (i)frame to switch to.
 
         :Usage:
             driver.switch_to_frame('frame_name')
             driver.switch_to_frame(1)
+            driver.switch_to_frame(driver.find_elements_by_tag_name("iframe")[0])
         """
-        self.execute(Command.SWITCH_TO_FRAME, {'id': index_or_name})
+        self.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 
     def switch_to_default_content(self):
         """
