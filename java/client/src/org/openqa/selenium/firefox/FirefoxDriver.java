@@ -86,7 +86,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
   }
 
   private static FirefoxProfile extractProfile(Capabilities capabilities) {
-    FirefoxProfile profile = new FirefoxProfile();
+    FirefoxProfile profile = null;
 
     if (capabilities.getCapability(PROFILE) != null) {
       Object raw = capabilities.getCapability(PROFILE);
@@ -100,6 +100,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
         }
       }
     }
+
+    profile = getProfile(profile);
 
     if (capabilities.getCapability(PROXY) != null) {
       Proxy proxy = Proxies.extractProxy(capabilities);
@@ -150,7 +152,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     }
   }
 
-  private FirefoxProfile getProfile(FirefoxProfile profile) {
+  private static FirefoxProfile getProfile(FirefoxProfile profile) {
     FirefoxProfile profileToUse = profile;
     String suggestedProfile = System.getProperty("webdriver.firefox.profile");
     if (profileToUse == null && suggestedProfile != null) {
