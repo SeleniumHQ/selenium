@@ -103,13 +103,18 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       return;
     }
 
-    driver.get(pages.javascriptPage);
-
-    WebElement element = driver.findElement(By.id("menu1"));
     if (!supportsNativeEvents()) {
       System.out.println("Skipping hover test: needs native events");
       return;
     }
+
+    if (!supportsHover()) {
+      System.out.println("Skipping hover test: Hover is very short-lived on Windows. Issue 2067.");
+    }
+
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
     assertEquals("", item.getText());
@@ -123,6 +128,46 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
         return !item.getText().equals("");
       }
     });
+
+    assertEquals("Item 1", item.getText());
+  }
+
+  @JavascriptEnabled
+  @Ignore(
+      value = {HTMLUNIT, IPHONE, SELENESE, OPERA},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  public void testHoverPersists() throws Exception {
+    if (!hasInputDevices()) {
+      return;
+    }
+
+    if (!supportsNativeEvents()) {
+      System.out.println("Skipping hover test: needs native events");
+      return;
+    }
+
+    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
+      System.out.println("Skipping hover test: Hover is very short-lived on Windows. Issue 2067.");
+    }
+
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.id("menu1"));
+
+    final WebElement item = driver.findElement(By.id("item1"));
+    assertEquals("", item.getText());
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
+    new Actions(driver).moveToElement(element).build().perform();
+
+    waitFor(new Callable<Boolean>() {
+
+      public Boolean call() throws Exception {
+        return !item.getText().equals("");
+      }
+    });
+
+    Thread.sleep(1000);
 
     assertEquals("Item 1", item.getText());
   }
@@ -261,6 +306,10 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     }
 
     return false;
+  }
+
+  private boolean supportsHover() {
+    return !(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().equals(Platform.WINDOWS));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {
