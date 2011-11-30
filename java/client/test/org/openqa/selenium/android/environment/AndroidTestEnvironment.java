@@ -24,9 +24,17 @@ import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 
 public class AndroidTestEnvironment implements TestEnvironment {
   private AppServer appServer;
+  // In order to run the tests on a real device, the device and the host
+  // running the tests must be on the same network. This variable should
+  // contain the externally-visible IP of the host.
+  private static String ANDROID_HOST_IP = "ANDROID_HTTP_HOST";
 
   public AndroidTestEnvironment() {
-    appServer = new Jetty7AppServer("10.0.2.2");
+    String servingHost = System.getenv(ANDROID_HOST_IP);
+    if (servingHost == null) {
+      servingHost = "10.0.2.2";
+    }
+    appServer = new Jetty7AppServer(servingHost);
     appServer.start();
   }
 
