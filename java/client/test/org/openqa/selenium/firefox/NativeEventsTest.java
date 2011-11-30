@@ -11,7 +11,7 @@ import org.openqa.selenium.remote.CapabilityType;
  * 
  * @author eran.mes@gmail.com (Eran Mes)
  */
-@NeedsLocalEnvironment
+@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class NativeEventsTest extends AbstractDriverTestCase {
   private boolean testNativeEvents = false;
   private FirefoxDriver driver2;

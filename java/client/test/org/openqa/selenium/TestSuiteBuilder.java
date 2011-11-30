@@ -217,6 +217,11 @@ public class TestSuiteBuilder {
     }
 
     if (clazz.isAnnotationPresent(NeedsLocalEnvironment.class) && !isUsingLocalTestEnvironment()) {
+      String reason = clazz.getAnnotation(NeedsLocalEnvironment.class).reason();
+      System.err.printf(
+        "Ignoring %s (Needs local environment%s)%n",
+        clazz.getName(),
+        reason == null ? "" : ": " + reason);
       return;
     }
 
@@ -281,7 +286,12 @@ public class TestSuiteBuilder {
     }
     
     if (method.isAnnotationPresent(NeedsLocalEnvironment.class) && !isUsingLocalTestEnvironment()) {
-      return false;
+      String reason = method.getAnnotation(NeedsLocalEnvironment.class).reason();
+      System.err.printf(
+        "Ignoring %s.%s (Needs local environment%s)%n",
+        method.getDeclaringClass().getName(),
+        method.getName(),
+        reason == null ? "" : ": " + reason);
     }
 
     if (!includeJavascript

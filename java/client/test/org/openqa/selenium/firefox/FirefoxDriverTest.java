@@ -60,7 +60,7 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-@NeedsLocalEnvironment
+@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class FirefoxDriverTest extends AbstractDriverTestCase {
   public void testShouldContinueToWorkIfUnableToFindElementById() {
     driver.get(pages.formPage);
