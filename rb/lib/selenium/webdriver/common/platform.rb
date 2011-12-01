@@ -44,8 +44,8 @@ module Selenium
 
       def bitsize
         @bitsize ||= (
-          if defined?(FFI::BITSIZE)
-            FFI::BITSIZE
+          if defined?(FFI::Platform::ADDRESS_SIZE)
+            FFI::Platform::ADDRESS_SIZE
           elsif defined?(FFI)
             FFI.type_size(:pointer) == 4 ? 32 : 64
           elsif jruby?
