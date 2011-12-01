@@ -357,11 +357,12 @@ int IECommandExecutor::GetManagedBrowser(const std::string& browser_id,
 }
 
 void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::string>* managed_browser_handles) const {
-  // TODO: Enumerate windows looking for browser windows
-  // created by showModalDialog().
   BrowserMap::const_iterator it = this->managed_browsers_.begin();
   for (; it != this->managed_browsers_.end(); ++it) {
     managed_browser_handles->push_back(it->first);
+
+    // Look for browser windows created by showModalDialog().
+    it->second->GetActiveDialogWindowHandle();
   }
 }
 
