@@ -41,11 +41,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
     HasInputDevices, HasCapabilities {
+
+  private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
 
   private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -371,6 +375,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return converter;
   }
 
+  /**
+   * Sets the RemoteWebDriver's client log level. Logs at a level lower than the
+   * given level will be discarded.
+   * 
+   * @param level 
+   */
+  public static void setLogLevel(Level level) {
+    logger.setLevel(level);
+  }
+
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
     Command command = new Command(sessionId, driverCommand, parameters);
     Response response;
@@ -378,7 +392,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     long start = System.currentTimeMillis();
     try {
       log(sessionId, command.getName(), command);
-      //logger.info("Executing: " + command);
+
+      logger.info("Executing: " + command);
       response = executor.execute(command);
 
       if (response == null) {

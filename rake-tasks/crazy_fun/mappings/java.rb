@@ -469,6 +469,16 @@ module CrazyFunJava
                 ant.sysproperty :key => 'method', :value => only_run_method
               end
 
+              # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
+              levels = Array.[]("INFO", "DEBUG", "WARNING", "ERROR")
+              if log_level
+                if levels.include? log_level.upcase
+                  ant.sysproperty :key => 'log_level', :value => log_level
+                else
+                  raise FailedPrecondition, "log_level should be any of #{levels.inspect}"
+                end
+              end
+
               if leave_running?
                 ant.sysproperty :key => 'webdriver.singletestsuite.leaverunning', :value => 'true'
               end
@@ -512,6 +522,10 @@ module CrazyFunJava
 
     def only_run_method
       return ENV['method']
+    end
+
+    def log_level
+      return ENV['log_level']
     end
 
     def leave_running?
