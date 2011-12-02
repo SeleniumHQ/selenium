@@ -16,7 +16,7 @@
 var fs = require('fs'),
     url = require('url');
 
-var webdriver = require('../../../build/javascript/webdriver-jsapi/webdriver'),
+var webdriver = require('../../../build/javascript/webdriver/webdriver'),
     optparse = require('./optparse');
 
 

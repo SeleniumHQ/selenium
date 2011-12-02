@@ -16,7 +16,7 @@ js_test(name = "test_firefox",
     "test/*.js",
     "test/*_test.html"
   ],
-  path = "/javascript/webdriver-jsapi/test",
+  path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
   ],
@@ -32,7 +32,7 @@ js_test(name = "test_chrome",
     "test/*.js",
     "test/*_test.html"
   ],
-  path = "/javascript/webdriver-jsapi/test",
+  path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
   ],
@@ -48,7 +48,7 @@ js_test(name = "test_opera",
     "test/*.js",
     "test/*_test.html"
   ],
-  path = "/javascript/webdriver-jsapi/test",
+  path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "com.opera.core.systems.OperaDriver" },
   ],
@@ -65,7 +65,7 @@ js_test(name = "test_ie",
     "test/*.js",
     "test/*_test.html"
   ],
-  path = "/javascript/webdriver-jsapi/test",
+  path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },
   ],
@@ -83,12 +83,12 @@ webdriverjs_test(name = "test_firefox_e2e",
     "test/e2e/*_test.html"
   ],
   test_dir = "test/e2e",
-  path = "/javascript/webdriver-jsapi/test/e2e",
+  path = "/javascript/webdriver/test/e2e",
   sysproperties = [
     { "selenium.browser" : "firefox" },
   ],
   deps = [
-    "//javascript/webdriver-jsapi:deps",
+    "//javascript/webdriver:deps",
     "//java/client/test/org/openqa/selenium/javascript:jsapi",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
@@ -99,12 +99,12 @@ webdriverjs_test(name = "test_chrome_e2e",
     "test/e2e/*_test.html"
   ],
   test_dir = "test/e2e",
-  path = "/javascript/webdriver-jsapi/test/e2e",
+  path = "/javascript/webdriver/test/e2e",
   sysproperties = [
     { "selenium.browser" : "chrome" },
   ],
   deps = [
-    "//javascript/webdriver-jsapi:deps",
+    "//javascript/webdriver:deps",
     "//java/client/test/org/openqa/selenium/javascript:jsapi",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
@@ -115,12 +115,12 @@ webdriverjs_test(name = "test_opera_e2e",
     "test/e2e/*_test.html"
   ],
   test_dir = "test/e2e",
-  path = "/javascript/webdriver-jsapi/test/e2e",
+  path = "/javascript/webdriver/test/e2e",
   sysproperties = [
     { "selenium.browser" : "opera" },
   ],
   deps = [
-    "//javascript/webdriver-jsapi:deps",
+    "//javascript/webdriver:deps",
     "//java/client/test/org/openqa/selenium/javascript:jsapi",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     "//third_party/java/opera-driver",
@@ -132,12 +132,12 @@ webdriverjs_test(name = "test_ie_e2e",
     "test/e2e/*_test.html"
   ],
   test_dir = "test/e2e",
-  path = "/javascript/webdriver-jsapi/test/e2e",
+  path = "/javascript/webdriver/test/e2e",
   sysproperties = [
     { "selenium.browser" : "internet explorer" },
   ],
   deps = [
-    "//javascript/webdriver-jsapi:deps",
+    "//javascript/webdriver:deps",
     "//java/client/test/org/openqa/selenium/javascript:jsapi",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])

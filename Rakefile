@@ -622,19 +622,19 @@ desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "javascript/deps.js"
 
 task :test_webdriverjs => [
-  "//javascript/webdriver-jsapi:test_firefox:run",
-  "//javascript/webdriver-jsapi:test_chrome:run",
-  "//javascript/webdriver-jsapi:test_firefox_e2e:run",
-  "//javascript/webdriver-jsapi:test_chrome_e2e:run"
+  "//javascript/webdriver:test_firefox:run",
+  "//javascript/webdriver:test_chrome:run",
+  "//javascript/webdriver:test_firefox_e2e:run",
+  "//javascript/webdriver:test_chrome_e2e:run"
 ]
 
 # TODO(jleyba): Integrate cleanly with build.desc files.
 desc "Generate a single file with WebDriverJS' public API"
 task :webdriverjs do
   files = FileList[
-    "javascript/webdriver-jsapi/*.js",
-    "javascript/webdriver-jsapi/http/*.js",
-    "javascript/webdriver-jsapi/node/node.js" ]
+    "javascript/webdriver/*.js",
+    "javascript/webdriver/http/*.js",
+    "javascript/webdriver/node/node.js" ]
 
   files = files.to_a.collect do |f|
     "-i #{f}"
@@ -661,7 +661,7 @@ task :webdriverjs do
             "typeof exports !== 'undefined' && exports == this ? " +
             "exports : this.webdriver = this.webdriver || {})"
 
-  output_file = "build/javascript/webdriver-jsapi/webdriver.js"
+  output_file = "build/javascript/webdriver/webdriver.js"
 
   # TODO(jleyba): Write a Java app that compiles webdriver.js with custom
   # settings for us. We want SIMPLE_OPTIMIZATIONS (what's used here), but we
