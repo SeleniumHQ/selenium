@@ -17,15 +17,14 @@
  */
 
 
+goog.require('fxdriver.moz');
+
 
 /**
  * An active FirefoxDriver session.
  * @constructor
  */
 function wdSession() {
-  // Load the Utils
-  Components.utils.import('resource://fxdriver/modules/atoms.js');
-
   /**
    * A wrapped self-reference for XPConnect.
    * @type {wdSession}
@@ -110,7 +109,7 @@ wdSession.prototype.mousePosition_ = {
   y: 0,
   initialized: false,
   pressed: false
-}
+};
 
 
 /**
@@ -252,7 +251,7 @@ wdSession.prototype.getScriptTimeout = function() {
 /**
  * Sets the amount of time, in milliseconds, that asynchronous scripts are
  *     allowed to run before timing out.
- * @param {number} The new timeout.
+ * @param {number} timeout The new timeout.
  */
 wdSession.prototype.setScriptTimeout = function(timeout) {
   this.scriptTimeout_ = Math.max(timeout, 0);
@@ -267,22 +266,24 @@ wdSession.prototype.getMousePosition = function() {
 
 /**
  * Sets the current mouse position.
- * @param {number} X coordinates.
- * @param {number} Y coordinates.
+ * @param {number} x coordinates.
+ * @param {number} y coordinates.
  */
 wdSession.prototype.setMousePosition = function(x, y) {
   this.mousePosition_.x = x;
   this.mousePosition_.y = y;
   this.mousePosition_.initialized = true;
-}
+};
+
 
 wdSession.prototype.isMousePressed = function() {
   return this.mousePosition_.pressed;
-}
+};
+
 
 wdSession.prototype.setMousePressed = function(isPressed) {
   this.mousePosition_.pressed = isPressed;
-}
+};
 
 ///////////////////////////////////////////////////////////////////
 //
@@ -370,8 +371,8 @@ function NSGetModule() {
 }
 
 wdSession.prototype.classID = wdSession.CLASS_ID
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
 if (XPCOMUtils.generateNSGetFactory) {
-  const NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSession]);
+  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSession]);
 }
 

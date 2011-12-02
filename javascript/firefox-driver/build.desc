@@ -33,8 +33,6 @@ mozilla_extension(name = "webdriver",
     "extension/components/request.js",
     "extension/components/response.js",
     "extension/components/screenshooter.js",
-    "extension/components/session.js",
-    "extension/components/sessionstore.js",
     "extension/components/socketListener.js",
     "extension/components/webLoadingListener.js",
     "extension/components/webdriverserver.js",
@@ -46,6 +44,8 @@ mozilla_extension(name = "webdriver",
     ":mouse_xpt",
     ":prompt_service",
     ":response_handler_xpt",
+    ":session",
+    ":session_store",
     ":status_xpt",
     ":synthetic_mouse",
     "//cpp:native_events_xpt",
@@ -140,6 +140,33 @@ js_binary(name = "prompt_service",
     "js/moz.js",
     "js/logging.js",
     "js/promptService.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [ "//javascript/webdriver-atoms:deps" ])
+
+js_binary(name = "session",
+  srcs = [
+    "js/moz.js",
+    "js/session.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [ "//javascript/webdriver-atoms:deps" ])
+
+js_binary(name = "session_store",
+  srcs = [
+    "js/logging.js",
+    "js/moz.js",
+    "js/sessionstore.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",

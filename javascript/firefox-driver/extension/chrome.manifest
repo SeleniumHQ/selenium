@@ -34,7 +34,7 @@ contract @mozilla.org/embedcomp/prompt-service;1 {e26dbdcd-d3ba-4ded-88c3-6cb07e
 component {e193dc71-5b1d-4fea-b4c2-ec71f4557f0f} components/session.js
 contract @googlecode.com/webdriver/wdsession;1 {e193dc71-5b1d-4fea-b4c2-ec71f4557f0f}
 
-component {b54195d3-841e-47df-b709-edf1bc4c7166} components/sessionstore.js
+component {b54195d3-841e-47df-b709-edf1bc4c7166} components/session_store.js
 contract @googlecode.com/webdriver/wdsessionstoreservice;1 {b54195d3-841e-47df-b709-edf1bc4c7166}
 
 component {E8F9FEFE-C513-4097-98BE-BE00A41D3645} components/synthetic_mouse.js

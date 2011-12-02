@@ -16,13 +16,15 @@
  limitations under the License.
  */
 
+
+goog.require('fxdriver.Logger');
+goog.require('fxdriver.moz');
+
 /**
  * Logs a message to the console service.
  * @param {string} message The message to log.
  */
 function log(message) {
-  Components.utils.import('resource://fxdriver/modules/atoms.js');
-
   fxdriver.Logger.dumpn(message);
 }
 
@@ -225,8 +227,8 @@ function NSGetModule() {
 }
 
 wdSessionStoreService.prototype.classID = wdSessionStoreService.CLASS_ID;
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
 if (XPCOMUtils.generateNSGetFactory) {
-  const NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSessionStoreService]);
+  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSessionStoreService]);
 }
 
