@@ -39,6 +39,8 @@ public interface CapabilityType {
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";
 
+  String LOGGING_PREFS = "loggingPrefs";
+
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";
     String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";

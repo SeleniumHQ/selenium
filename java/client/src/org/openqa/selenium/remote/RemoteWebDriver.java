@@ -30,6 +30,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
@@ -61,21 +62,18 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   private JsonToWebElementConverter converter;
 
-  private final RemoteKeyboard keyboard;
-  private final RemoteMouse mouse;
+  private RemoteKeyboard keyboard;
+  private RemoteMouse mouse;
+  private Logs logs;
 
   // For cglib
   protected RemoteWebDriver() {
     init();
-    keyboard = new RemoteKeyboard(executeMethod);
-    mouse = new RemoteMouse(executeMethod);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
     init();
-    keyboard = new RemoteKeyboard(executeMethod);
-    mouse = new RemoteMouse(executeMethod);
     startClient();
     startSession(desiredCapabilities);
   }
@@ -91,17 +89,23 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   private void init() {
     converter = new JsonToWebElementConverter(this);
     executeMethod = new ExecuteMethod(this);
+    keyboard = new RemoteKeyboard(executeMethod);
+    mouse = new RemoteMouse(executeMethod);
+    logs = new RemoteLogs(executeMethod);
+  }
+
+  public Logs logs() {
+    return logs;
   }
 
   /**
-   * Set the file detector to be used when sending keyboard input. By default,
-   * this is set to a file detector that does nothing.
+   * Set the file detector to be used when sending keyboard input. By default, this is set to a file
+   * detector that does nothing.
    *
+   * @param detector The detector to use. Must not be null.
    * @see FileDetector
    * @see LocalFileDetector
    * @see UselessFileDetector
-   *
-   * @param detector The detector to use. Must not be null.
    */
   public void setFileDetector(FileDetector detector) {
     if (detector == null) {
@@ -366,7 +370,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   public Options manage() {
     return new RemoteWebDriverOptions();
   }
-  
+
+  /**
+   * Creates a new {@link RemoteWebElement} that is a child of this instance. Subtypes should
+   * override this method to customize the type of RemoteWebElement returned.
+   *
+   * @return A new RemoteWebElement that is a child of this instance.
+   */
+  @Deprecated
+  protected RemoteWebElement newRemoteWebElement() {
+    RemoteWebElement toReturn = new RemoteWebElement();
+    toReturn.setParent(this);
+    return toReturn;
+  }
+
   protected void setElementConverter(JsonToWebElementConverter converter) {
     this.converter = converter;
   }
@@ -567,12 +584,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       public void setSize(Dimension targetSize) {
         execute(DriverCommand.SET_WINDOW_SIZE,
-            ImmutableMap.of("windowHandle", "current", "width", targetSize.width, "height", targetSize.height));
+            ImmutableMap.of("windowHandle", "current",
+                "width", targetSize.width, "height", targetSize.height));
       }
 
       public void setPosition(Point targetPosition) {
         execute(DriverCommand.SET_WINDOW_POSITION,
-            ImmutableMap.of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
+            ImmutableMap
+                .of("windowHandle", "current", "x", targetPosition.x, "y", targetPosition.y));
       }
 
       @SuppressWarnings({"unchecked"})

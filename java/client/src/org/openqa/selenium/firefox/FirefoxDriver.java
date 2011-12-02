@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import org.openqa.selenium.Capabilities;
@@ -32,6 +33,7 @@ import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -111,6 +113,13 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     if (capabilities.getCapability(ACCEPT_SSL_CERTS) != null) {
       Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
       profile.setAcceptUntrustedCertificates(acceptCerts);
+    }
+
+    if (capabilities.getCapability(LOGGING_PREFS) != null) {
+      LoggingPreferences logsPrefs = (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
+      for (String logtype : logsPrefs.getEnabledLogTypes()) {
+        profile.setPreference("webdriver.log." + logtype, logsPrefs.getLevel(logtype).intValue());
+      }
     }
 
     return profile;
