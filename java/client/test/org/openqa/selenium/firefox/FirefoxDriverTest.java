@@ -90,8 +90,9 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   }
 
   public void testShouldGetMeaningfulExceptionOnBrowserDeath() {
-    if (TestUtilities.isFirefox35(driver)){
-        // This test does not work on firefox 3.5.19 on linux. Seems to be related to 3.5.19 forking child process
+    if (TestUtilities.getEffectivePlatform().is(Platform.LINUX) && 
+        (TestUtilities.isFirefox30(driver) || TestUtilities.isFirefox35(driver))) {
+        // This test does not work on firefox 3.0, 3.5 on linux.
         return;
     }
     ConnectionCapturingDriver driver2 = new ConnectionCapturingDriver();
