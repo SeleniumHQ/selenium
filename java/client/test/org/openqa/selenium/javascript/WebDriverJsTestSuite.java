@@ -23,6 +23,8 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
@@ -59,8 +61,13 @@ public class WebDriverJsTestSuite {
   }
 
   private static AppServer createAppServer(ResultsServlet resultsServlet) {
+    ServletContextHandler context = new ServletContextHandler(
+        ServletContextHandler.SESSIONS|ServletContextHandler.SECURITY);
+    context.setContextPath("/");
+    context.addServlet(new ServletHolder(resultsServlet), "/testResults");
+
     Jetty7AppServer appServer = new Jetty7AppServer();
-    appServer.addServlet("/testResults", resultsServlet);
+    appServer.addHandler(context);
     return appServer;
   }
 

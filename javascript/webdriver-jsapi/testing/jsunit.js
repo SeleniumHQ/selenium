@@ -66,8 +66,8 @@ webdriver.testing.jsunit.TestRunner.prototype.reportResults_ = function() {
   };
 
   var xhr = new XMLHttpRequest;
-  // TODO(jleyba): /common/testReport should be configurable.
-  xhr.open('POST', '/common/testResults', true);
+  // TODO(jleyba): /testResults should be configurable.
+  xhr.open('POST', '/testResults', true);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify(report));
 };

@@ -19,6 +19,7 @@ package org.openqa.selenium.environment.webserver;
 
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
+import org.eclipse.jetty.server.Handler;
 import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.net.NetworkUtils;
 
@@ -259,6 +260,10 @@ public class Jetty7AppServer implements AppServer {
 
   public void addAdditionalWebApplication(String context, String absolutePath) {
     addWebApplication(context, absolutePath);
+  }
+
+  public void addHandler(Handler handler) {
+    handlers.addHandler(handler);
   }
 
   public static void main(String[] args) {
