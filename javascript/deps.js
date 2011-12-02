@@ -161,7 +161,6 @@ goog.addDependency("../../../javascript/webdriver/http/http.js", ['webdriver.htt
 goog.addDependency("../../../javascript/webdriver/http/jsonpclient.js", ['webdriver.http.JsonpClient'], ['goog.dom', 'webdriver.http.Response']);
 goog.addDependency("../../../javascript/iphone-driver/script.js", ['webdriver.iphone'], ['bot.inject']);
 goog.addDependency("../../../javascript/chrome-driver/atoms.js", ['webdriver.chrome'], ['goog.dom', 'goog.math.Coordinate', 'goog.math.Rect', 'goog.math.Size', 'goog.style']);
-goog.addDependency("../../../javascript/webdriver-atoms/interactions.js", ['webdriver.interactions'], ['bot.action']);
 goog.addDependency("../../../javascript/webdriver-atoms/web_element.js", ['webdriver.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/webdriver-atoms/html5/session_storage.js", ['webdriver.storage.session'], ['bot.storage']);
 goog.addDependency("../../../javascript/webdriver-atoms/html5/local_storage.js", ['webdriver.storage.local'], ['bot.storage']);
