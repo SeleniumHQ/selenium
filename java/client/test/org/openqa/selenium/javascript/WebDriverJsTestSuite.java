@@ -25,6 +25,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
@@ -42,14 +44,15 @@ import java.util.concurrent.TimeUnit;
 public class WebDriverJsTestSuite {
 
   public static Test suite() {
-    final ResultsServlet resultsServlet = new ResultsServlet();
-    final AppServer appServer = createAppServer(resultsServlet);
+    final TestEventServlet testEventServlet = new TestEventServlet();
+    final AppServer appServer = createAppServer(testEventServlet);
 
     Test test = new JsTestSuiteBuilder()
         .withDriverClazz(RemoteWebDriverForTest.class)
         .withTestFactory(new Function<String, Test>() {
           public Test apply(String testPath) {
-            return new WebDriverJsTestCase(testPath, appServer, resultsServlet);
+            return new WebDriverJsTestCase(testPath, appServer,
+                testEventServlet);
           }
         })
         .build();
@@ -60,11 +63,11 @@ public class WebDriverJsTestSuite {
     return test;
   }
 
-  private static AppServer createAppServer(ResultsServlet resultsServlet) {
+  private static AppServer createAppServer(TestEventServlet resultsServlet) {
     ServletContextHandler context = new ServletContextHandler(
         ServletContextHandler.SESSIONS|ServletContextHandler.SECURITY);
     context.setContextPath("/");
-    context.addServlet(new ServletHolder(resultsServlet), "/testResults");
+    context.addServlet(new ServletHolder(resultsServlet), "/testevent");
 
     Jetty7AppServer appServer = new Jetty7AppServer();
     appServer.addHandler(context);
@@ -94,42 +97,78 @@ public class WebDriverJsTestSuite {
 
     private final String relativeUrl;
     private final AppServer appServer;
-    private final ResultsServlet resultsServlet;
-    private RemoteWebDriverForTest driver;
+    private final TestEventServlet testEventServlet;
+    private RemoteWebDriver driver;
 
     private WebDriverJsTestCase(String relativeUrl, AppServer appServer,
-        ResultsServlet resultsServlet) {
+        TestEventServlet testEventServlet) {
       this.relativeUrl = relativeUrl;
       this.appServer = appServer;
-      this.resultsServlet = resultsServlet;
+      this.testEventServlet = testEventServlet;
       this.setName(relativeUrl);
     }
 
-    @Override
-    protected void runTest() throws MalformedURLException {
+    protected void runTest() throws MalformedURLException, InterruptedException, JSONException {
       String testUrl = appServer.whereIs(relativeUrl)
           + "?wdsid=" + driver.getSessionId()
           + "&wdurl=" + RemoteServer.INSTANCE.whereIs("/wd/hub");
       driver.get(testUrl);
       long start = System.nanoTime();
 
-      try {
-        ResultSet resultSet = resultsServlet.getResultSet(2, TimeUnit.MINUTES); // Note, MINUTES is jdk6
-        if (resultSet == null) {
-          long now = System.nanoTime();
-          fail(String.format("TIMEOUT after %d ms",
-              TimeUnit.MILLISECONDS.convert(now - start, TimeUnit.NANOSECONDS)));
+      while (true) {
+        TestEvent testEvent = testEventServlet.getTestEvent(1, TimeUnit.SECONDS);
+
+        if (isRelevantEvent(relativeUrl, testEvent)) {
+          if ("RESULTS".equals(testEvent.getType())) {
+            handleResultsEvent(testEvent);
+            return;
+          }
+
+          if ("SCREENSHOT".equals(testEvent.getType())) {
+            handleScreenshotEvent(testEvent);
+          }
         }
-        assertTrue(resultSet.getReport(), resultSet.isSuccess());
-      } catch (InterruptedException e) {
-        long now = System.nanoTime();
-        fail(String.format("Test thread was interrupted after %d ms",
-            TimeUnit.MILLISECONDS.convert(now - start, TimeUnit.NANOSECONDS)));
+
+        long elapsed = System.nanoTime() - start;
+        if (elapsed > TimeUnit.NANOSECONDS.convert(120, TimeUnit.SECONDS)) {
+          fail(String.format("TIMEOUT after %d ms",
+              TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS)));
+        }
+       }
+     }
+
+    public void setDriver(WebDriver driver) {
+      this.driver = (RemoteWebDriver) driver;
+    }
+
+    private void handleScreenshotEvent(TestEvent testEvent) throws JSONException {
+      JSONObject data = testEvent.getData();
+      System.out.printf("Screenshot(%s, %s):\n\tdata:image/png;base64,%s\n",
+          relativeUrl, data.getString("name"), data.getString("data"));
+    }
+
+    private void handleResultsEvent(TestEvent testEvent) throws JSONException {
+      JSONObject data = testEvent.getData();
+      if (!data.getBoolean("isSuccess")) {
+        fail(data.getString("report"));
       }
     }
 
-    public void setDriver(WebDriver driver) {
-      this.driver = (RemoteWebDriverForTest) driver;
+    private boolean isRelevantEvent(String id, TestEvent testEvent) throws JSONException {
+      if (testEvent == null)
+        return false;
+
+      if (!id.equals(testEvent.getId())) {
+        System.out.printf("While running %s, received a test event for %s\n",
+            id, testEvent.getId());
+        // Still log screenshots.
+        if ("SCREENSHOT".equals(testEvent.getType())) {
+          handleScreenshotEvent(testEvent);
+        }
+        return false;
+      }
+
+      return true;
     }
   }
 

@@ -92,14 +92,11 @@ goog.addDependency("../../../javascript/atoms/locators/css.js", ['bot.locators.c
 goog.addDependency("../../../javascript/atoms/locators/locators.js", ['bot.locators'], ['bot', 'bot.locators.className', 'bot.locators.css', 'bot.locators.id', 'bot.locators.linkText', 'bot.locators.name', 'bot.locators.partialLinkText', 'bot.locators.tagName', 'bot.locators.xpath', 'goog.array', 'goog.object']);
 goog.addDependency("../../../javascript/atoms/locators/id.js", ['bot.locators.id'], ['bot.dom', 'goog.array', 'goog.dom']);
 goog.addDependency("../../../javascript/firefox-driver/extension/content/server.js", [], []);
-goog.addDependency("../../../javascript/firefox-driver/extension/components/promptService.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/dispatcher.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/socketListener.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/driver-component.js", [], []);
-goog.addDependency("../../../javascript/firefox-driver/extension/components/session.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/badCertListener.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/response.js", [], []);
-goog.addDependency("../../../javascript/firefox-driver/extension/components/sessionstore.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/screenshooter.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/httpd.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/webdriverserver.js", [], []);
@@ -108,10 +105,11 @@ goog.addDependency("../../../javascript/firefox-driver/extension/components/wrap
 goog.addDependency("../../../javascript/firefox-driver/extension/components/firefoxDriver.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/request.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/extension/components/webLoadingListener.js", [], []);
-goog.addDependency("../../../javascript/firefox-driver/extension/components/nsCommandProcessor.js", [], []);
+goog.addDependency("../../../javascript/firefox-driver/js/promptService.js", [], ['fxdriver.Logger', 'fxdriver.modals', 'fxdriver.moz', 'goog.array']);
 goog.addDependency("../../../javascript/firefox-driver/js/externs.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/js/timer.js", ['fxdriver.Timer'], []);
-goog.addDependency("../../../javascript/firefox-driver/js/utils_exports.js", [], []);
+goog.addDependency("../../../javascript/firefox-driver/js/session.js", [], ['fxdriver.moz']);
+goog.addDependency("../../../javascript/firefox-driver/js/sessionstore.js", [], ['fxdriver.Logger', 'fxdriver.moz']);
 goog.addDependency("../../../javascript/firefox-driver/js/events.js", ['fxdriver.events'], ['Utils', 'fxdriver.Logger', 'fxdriver.moz', 'goog.style']);
 goog.addDependency("../../../javascript/firefox-driver/js/errorcode.js", ['fxdriver.error'], []);
 goog.addDependency("../../../javascript/firefox-driver/js/syntheticMouse.js", ['SyntheticMouse'], ['Utils', 'bot.ErrorCode', 'bot.Mouse', 'bot.action', 'bot.dom', 'bot.events', 'bot.window', 'fxdriver.moz', 'fxdriver.utils', 'fxdriver.Logger', 'goog.events.EventType', 'goog.math.Coordinate']);
@@ -121,6 +119,7 @@ goog.addDependency("../../../javascript/firefox-driver/js/utils.js", ['Utils'], 
 goog.addDependency("../../../javascript/firefox-driver/js/modals.js", ['fxdriver.modals'], ['bot.ErrorCode', 'fxdriver.Logger', 'fxdriver.Timer', 'fxdriver.moz', 'fxdriver.utils']);
 goog.addDependency("../../../javascript/firefox-driver/js/moz.js", ['fxdriver.moz'], []);
 goog.addDependency("../../../javascript/firefox-driver/js/exported_symbols.js", [], ['fxdriver.events']);
+goog.addDependency("../../../javascript/firefox-driver/js/nsCommandProcessor.js", [], ['Utils', 'bot.ErrorCode', 'fxdriver.Logger', 'fxdriver.Timer', 'fxdriver.error', 'fxdriver.moz']);
 goog.addDependency("../../../javascript/firefox-driver/js/evaluate.js", [], []);
 goog.addDependency("../../../javascript/firefox-driver/js/locators.js", ['webdriver.firefox.locators'], ['bot.locators', 'bot.userAgent', 'fxdriver.moz', 'goog.dom']);
 goog.addDependency("../../../javascript/firefox-driver/js/preconditions.js", ['fxdriver.preconditions'], ['bot.dom', 'Utils']);
@@ -149,7 +148,8 @@ goog.addDependency("../../../javascript/webdriver-jsapi/process.js", ['webdriver
 goog.addDependency("../../../javascript/webdriver-jsapi/locators.js", ['webdriver.Locator', 'webdriver.Locator.Strategy'], ['goog.object', 'goog.string']);
 goog.addDependency("../../../javascript/webdriver-jsapi/testing/testcase.js", ['webdriver.testing.TestCase'], ['goog.array', 'goog.testing.TestCase', 'webdriver.promise.Application', 'webdriver.testing.asserts']);
 goog.addDependency("../../../javascript/webdriver-jsapi/testing/asserts.js", ['webdriver.testing.asserts', 'webdriver.testing.asserts.Matcher'], ['goog.array', 'webdriver.promise']);
-goog.addDependency("../../../javascript/webdriver-jsapi/testing/jsunit.js", ['webdriver.testing.jsunit', 'webdriver.testing.jsunit.TestRunner'], ['goog.testing.TestRunner', 'webdriver.testing.TestCase']);
+goog.addDependency("../../../javascript/webdriver-jsapi/testing/client.js", ['webdriver.testing.Client'], ['goog.net.XmlHttp', 'goog.json']);
+goog.addDependency("../../../javascript/webdriver-jsapi/testing/jsunit.js", ['webdriver.testing.jsunit', 'webdriver.testing.jsunit.TestRunner'], ['goog.testing.TestRunner', 'webdriver.testing.Client', 'webdriver.testing.TestCase']);
 goog.addDependency("../../../javascript/webdriver-jsapi/node/demo.js", [], []);
 goog.addDependency("../../../javascript/webdriver-jsapi/node/optparse.js", [], []);
 goog.addDependency("../../../javascript/webdriver-jsapi/node/node.js", ['webdriver.node', 'webdriver.node.HttpClient'], ['webdriver.http.Response', 'webdriver.process']);

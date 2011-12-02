@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<title>client_test.html</title>
+<script src="test_bootstrap.js"></script>
+<script>
+  goog.require('goog.testing.MockControl');
+  goog.require('goog.testing.PropertyReplacer');
+  goog.require('goog.testing.jsunit');
+  goog.require('webdriver.testing.Client');
+</script>
+<script>
+
+  var FAKE_WINDOW = {
+    location: {
+      pathname: '/foo/bar/baz'
+    }
+  };
+
+  function FakeXhr() {}
+  FakeXhr.prototype.open = goog.nullFunction;
+  FakeXhr.prototype.send = goog.nullFunction;
+
+  var stubs = new goog.testing.PropertyReplacer;
+  var control = new goog.testing.MockControl;
+  var mockXhr;
+  var client;
+
+  function setUp() {
+    client = new webdriver.testing.Client(FAKE_WINDOW);
+    mockXhr = control.createStrictMock(FakeXhr);
+    stubs.set(goog.net, 'XmlHttp', function() {
+      return mockXhr;
+    });
+  }
+
+  function tearDown() {
+    stubs.reset();
+    control.$tearDown();
+  }
+
+  function expectToSendEvent(type, data) {
+    mockXhr.open('POST', '/testevent', true);
+    mockXhr.send(goog.json.serialize({
+      'id': '/foo/bar/baz',
+      'type': type,
+      'data': data
+    }));
+    control.$replayAll();
+  }
+
+  function testSendInitEvent() {
+    expectToSendEvent('INIT', {});
+    client.sendInitEvent();
+    control.$verifyAll();
+  }
+
+  function testSendResultsEvent() {
+    expectToSendEvent('RESULTS', {
+      'isSuccess': false,
+      'report': 'boom'
+    });
+    client.sendResultsEvent(false, 'boom');
+    control.$verifyAll();
+  }
+
+  function testSendScreenshotEvent() {
+    expectToSendEvent('SCREENSHOT', {
+      'name': 'ss01',
+      'data': '12412412asdfasf'
+    });
+    client.sendScreenshotEvent('12412412asdfasf', 'ss01');
+    control.$verifyAll();
+  }
+</script>

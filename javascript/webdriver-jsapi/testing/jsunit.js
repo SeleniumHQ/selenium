@@ -23,6 +23,7 @@ goog.provide('webdriver.testing.jsunit');
 goog.provide('webdriver.testing.jsunit.TestRunner');
 
 goog.require('goog.testing.TestRunner');
+goog.require('webdriver.testing.Client');
 goog.require('webdriver.testing.TestCase');
 
 
@@ -33,8 +34,26 @@ goog.require('webdriver.testing.TestCase');
  */
 webdriver.testing.jsunit.TestRunner = function() {
   goog.base(this);
+
+  /**
+   * @type {!webdriver.testing.Client}
+   * @private
+   */
+  this.client_ = new webdriver.testing.Client();
 };
 goog.inherits(webdriver.testing.jsunit.TestRunner, goog.testing.TestRunner);
+
+
+/** @override */
+webdriver.testing.jsunit.TestRunner.prototype.execute = function() {
+  if (!this.testCase) {
+    throw Error('The test runner must be initialized with a test case before ' +
+                'execute can be called.');
+  }
+  this.client_.sendInitEvent();
+  this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
+  this.testCase.runTests();
+};
 
 
 /**
@@ -55,21 +74,7 @@ webdriver.testing.jsunit.TestRunner.prototype.onComplete_ = function() {
   }
 
   this.writeLog(log);
-  this.reportResults_();
-};
-
-
-webdriver.testing.jsunit.TestRunner.prototype.reportResults_ = function() {
-  var report = {
-    'isSuccess': this.isSuccess(),
-    'report': this.getReport()
-  };
-
-  var xhr = new XMLHttpRequest;
-  // TODO(jleyba): /testResults should be configurable.
-  xhr.open('POST', '/testResults', true);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.send(JSON.stringify(report));
+  this.client_.sendResultsEvent(this.isSuccess(), this.getReport());
 };
 
 
@@ -97,6 +102,28 @@ webdriver.testing.jsunit.TestRunner.prototype.reportResults_ = function() {
   if (!goog.global['debug']) {
     goog.exportSymbol('debug', goog.bind(tr.log, tr));
   }
+
+  // Add an error handler to report errors that may occur during
+  // initialization of the page.
+  var onerror = window.onerror;
+  window.onerror = function(error, url, line) {
+    // Call any existing onerror handlers.
+    if (onerror) {
+      onerror(error, url, line);
+    }
+    if (typeof error == 'object') {
+      // Webkit started passing an event object as the only argument to
+      // window.onerror.  It doesn't contain an error message, url or line
+      // number.  We therefore log as much info as we can.
+      if (error.target && error.target.tagName == 'SCRIPT') {
+        tr.logError('UNKNOWN ERROR: Script ' + error.target.src);
+      } else {
+        tr.logError('UNKNOWN ERROR: No error information available.');
+      }
+    } else {
+      tr.logError('JS ERROR: ' + error + '\nURL: ' + url + '\nLine: ' + line);
+    }
+  };
 
   var onload = window.onload;
   window.onload = function() {
