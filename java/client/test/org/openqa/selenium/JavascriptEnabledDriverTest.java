@@ -288,7 +288,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   private Callable<Boolean> openAndSwitchToWindow(final String name, final WebDriver driver) {
     return new Callable<Boolean>() {
       public Boolean call() throws Exception {
-        driver.switchTo().window("close_me");
+        driver.switchTo().window(name);
         return Boolean.TRUE;
       }
     };
