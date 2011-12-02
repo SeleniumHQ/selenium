@@ -18,6 +18,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -135,7 +136,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, SELENESE, OPERA},
+      value = {FIREFOX, HTMLUNIT, IPHONE, SELENESE, OPERA},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   public void testHoverPersists() throws Exception {
     if (!hasInputDevices()) {
@@ -144,11 +145,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
     if (!supportsNativeEvents()) {
       System.out.println("Skipping hover test: needs native events");
-      return;
-    }
-
-    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
-      System.out.println("Skipping hover test: Hover is very short-lived on Windows. Issue 2067.");
       return;
     }
 
