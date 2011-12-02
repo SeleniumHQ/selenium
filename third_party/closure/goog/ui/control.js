@@ -1283,12 +1283,11 @@ goog.ui.Control.prototype.performActionInternal = function(e) {
   var actionEvent = new goog.events.Event(goog.ui.Component.EventType.ACTION,
       this);
   if (e) {
-    var properties = [
-      'altKey', 'ctrlKey', 'metaKey', 'shiftKey', 'platformModifierKey'
-    ];
-    for (var property, i = 0; property = properties[i]; i++) {
-      actionEvent[property] = e[property];
-    }
+    actionEvent.altKey = e.altKey;
+    actionEvent.ctrlKey = e.ctrlKey;
+    actionEvent.metaKey = e.metaKey;
+    actionEvent.shiftKey = e.shiftKey;
+    actionEvent.platformModifierKey = e.platformModifierKey;
   }
   return this.dispatchEvent(actionEvent);
 };

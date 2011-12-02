@@ -144,7 +144,7 @@ goog.style.getCascadedStyle = function(element, style) {
 goog.style.getStyle_ = function(element, style) {
   return goog.style.getComputedStyle(element, style) ||
          goog.style.getCascadedStyle(element, style) ||
-         element.style[style];
+         (element.style && element.style[style]);
 };
 
 
@@ -349,10 +349,10 @@ goog.style.getBoundingClientRect_ = function(el) {
  * @return {Element} The first offset parent or null if one cannot be found.
  */
 goog.style.getOffsetParent = function(element) {
-  // element.offsetParent does the right thing in IE, in other browser it
-  // only includes elements with position absolute, relative or fixed, not
-  // elements with overflow set to auto or scroll.
-  if (goog.userAgent.IE) {
+  // element.offsetParent does the right thing in IE7 and below.  In other
+  // browsers it only includes elements with position absolute, relative or
+  // fixed, not elements with overflow set to auto or scroll.
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(8)) {
     return element.offsetParent;
   }
 

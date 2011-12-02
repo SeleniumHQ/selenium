@@ -139,6 +139,14 @@ goog.ui.Prompt.prototype.cols_ = 0;
 
 
 /**
+ * The input decorator function.
+ * @type {function(Element)?}
+ * @private
+ */
+goog.ui.Prompt.prototype.inputDecoratorFn_ = null;
+
+
+/**
  * A validation function that takes a string and returns true if the string is
  * accepted, false otherwise.
  * @type {function(string):boolean}
@@ -160,6 +168,9 @@ goog.ui.Prompt.prototype.setValidationFunction = function(fn) {
 
 /** @override */
 goog.ui.Prompt.prototype.enterDocument = function() {
+  if (this.inputDecoratorFn_) {
+    this.inputDecoratorFn_(this.userInputEl_);
+  }
   goog.ui.Prompt.superClass_.enterDocument.call(this);
   this.getHandler().listen(this,
       goog.ui.Dialog.EventType.SELECT, this.onPromptExit_);
@@ -167,6 +178,19 @@ goog.ui.Prompt.prototype.enterDocument = function() {
   this.getHandler().listen(this.userInputEl_,
       [goog.events.EventType.KEYUP, goog.events.EventType.CHANGE],
       this.handleInputChanged_);
+};
+
+
+/**
+ * Sets an input decorator function.  This function will be called in
+ * #enterDocument and will be passed the input element.  This is useful for
+ * attaching handlers to the input element for specific change events,
+ * for example.
+ * @param {function(Element)} inputDecoratorFn A function to call on the input
+ *     element on #enterDocument.
+ */
+goog.ui.Prompt.prototype.setInputDecoratorFn = function(inputDecoratorFn) {
+  this.inputDecoratorFn_ = inputDecoratorFn;
 };
 
 

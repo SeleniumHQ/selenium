@@ -535,6 +535,14 @@ goog.ui.LabelInput.prototype.setEnabled = function(enabled) {
 
 
 /**
+ * @return {boolean} True if the label input is enabled, false otherwise.
+ */
+goog.ui.LabelInput.prototype.isEnabled = function() {
+  return !this.getElement().disabled;
+};
+
+
+/**
  * @private
  */
 goog.ui.LabelInput.prototype.focusAndSelect_ = function() {

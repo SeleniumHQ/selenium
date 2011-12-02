@@ -44,5 +44,26 @@ goog.events.BrowserFeature = {
    * keyCode to -1.
    */
   SET_KEY_CODE_TO_PREVENT_DEFAULT: goog.userAgent.IE &&
-      !goog.userAgent.isVersion('8')
+      !goog.userAgent.isVersion('8'),
+
+  /**
+   * Whether the {@code navigator.onLine} property is supported.
+   */
+  HAS_NAVIGATOR_ONLINE_PROPERTY: !goog.userAgent.WEBKIT ||
+      goog.userAgent.isVersion('528'),
+
+  /**
+   * Whether HTML5 network online/offline events are supported.
+   */
+  HAS_HTML5_NETWORK_EVENT_SUPPORT:
+      goog.userAgent.GECKO && goog.userAgent.isVersion('1.9b') ||
+      goog.userAgent.IE && goog.userAgent.isVersion('8') ||
+      goog.userAgent.OPERA && goog.userAgent.isVersion('9.5') ||
+      goog.userAgent.WEBKIT && goog.userAgent.isVersion('528'),
+
+  /**
+   * Whether HTML5 network events fire on the window or otherwise document.body.
+   */
+  HTML5_NETWORK_EVENTS_FIRE_ON_WINDOW: !goog.userAgent.GECKO ||
+      goog.userAgent.isVersion('8')
 };

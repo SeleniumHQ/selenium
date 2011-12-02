@@ -911,6 +911,18 @@ goog.string.contains = function(s, ss) {
 
 
 /**
+ * Returns the non-overlapping occurrences of ss in s.
+ * If either s or ss evalutes to false, then returns zero.
+ * @param {string} s The string to look in.
+ * @param {string} ss The string to look for.
+ * @return {number} Number of occurrences of ss in s.
+ */
+goog.string.countOf = function(s, ss) {
+  return s && ss ? s.split(ss).length - 1 : 0;
+};
+
+
+/**
  * Removes a substring of a specified length at a specific
  * index in a string.
  * @param {string} s The base string from which to remove.

@@ -34,6 +34,7 @@ goog.provide('goog.events.OnlineHandler');
 goog.provide('goog.events.OnlineHandler.EventType');
 
 goog.require('goog.Timer');
+goog.require('goog.events.BrowserFeature');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.userAgent');
@@ -50,19 +51,23 @@ goog.events.OnlineHandler = function() {
 
   this.eventHandler_ = new goog.events.EventHandler(this);
 
-  // Earlier WebKit versions do not support navigator.onLine and therefore we
-  // don't bother setting up events or timers.
-  if (!goog.userAgent.WEBKIT ||
-      goog.userAgent.WEBKIT && goog.userAgent.isVersion('528')) {
-    if (goog.events.OnlineHandler.supportsHtml5Events_()) {
-      this.eventHandler_.listen(document.body, ['online', 'offline'],
-                                this.handleChange_);
-    } else {
-      this.online_ = this.isOnline();
-      this.timer_ = new goog.Timer(goog.events.OnlineHandler.POLL_INTERVAL_);
-      this.eventHandler_.listen(this.timer_, goog.Timer.TICK, this.handleTick_);
-      this.timer_.start();
-    }
+  // Some browsers do not support navigator.onLine and therefore we don't
+  // bother setting up events or timers.
+  if (!goog.events.BrowserFeature.HAS_NAVIGATOR_ONLINE_PROPERTY) {
+    return;
+  }
+
+  if (goog.events.BrowserFeature.HAS_HTML5_NETWORK_EVENT_SUPPORT) {
+    var target =
+        goog.events.BrowserFeature.HTML5_NETWORK_EVENTS_FIRE_ON_WINDOW ?
+        window : document.body;
+    this.eventHandler_.listen(target, ['online', 'offline'],
+                              this.handleChange_);
+  } else {
+    this.online_ = this.isOnline();
+    this.timer_ = new goog.Timer(goog.events.OnlineHandler.POLL_INTERVAL_);
+    this.eventHandler_.listen(this.timer_, goog.Timer.TICK, this.handleTick_);
+    this.timer_.start();
   }
 };
 goog.inherits(goog.events.OnlineHandler, goog.events.EventTarget);
@@ -84,18 +89,6 @@ goog.events.OnlineHandler.EventType = {
  * @private
  */
 goog.events.OnlineHandler.POLL_INTERVAL_ = 250;
-
-
-/**
- * @private
- * @return {boolean} Whether the browser supports the HTML5 offline events.
- */
-goog.events.OnlineHandler.supportsHtml5Events_ = function() {
-  return goog.userAgent.GECKO && goog.userAgent.isVersion('1.9b') ||
-      goog.userAgent.IE && goog.userAgent.isVersion('8') ||
-      goog.userAgent.OPERA && goog.userAgent.isVersion('9.5') ||
-      goog.userAgent.WEBKIT && goog.userAgent.isVersion('528');
-};
 
 
 /**
@@ -129,7 +122,8 @@ goog.events.OnlineHandler.prototype.eventHandler_;
  * @return {boolean} Whether the browser is currently thinking it is online.
  */
 goog.events.OnlineHandler.prototype.isOnline = function() {
-  return 'onLine' in navigator ? navigator.onLine : true;
+  return goog.events.BrowserFeature.HAS_NAVIGATOR_ONLINE_PROPERTY ?
+      navigator.onLine : true;
 };
 
 

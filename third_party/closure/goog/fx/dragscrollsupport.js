@@ -142,6 +142,14 @@ goog.fx.DragScrollSupport.prototype.constrainScroll_ = false;
 
 
 /**
+ * Whether horizontal scrolling is allowed.
+ * @type {boolean}
+ * @private
+ */
+goog.fx.DragScrollSupport.prototype.horizontalScrolling_ = true;
+
+
+/**
  * Sets whether scrolling should be constrained to happen only when the cursor
  * is inside the container node.
  * NOTE: If a margin is not set, then it does not make sense to
@@ -151,6 +159,16 @@ goog.fx.DragScrollSupport.prototype.constrainScroll_ = false;
  */
 goog.fx.DragScrollSupport.prototype.setConstrainScroll = function(constrain) {
   this.constrainScroll_ = !!this.margin_ && constrain;
+};
+
+
+/**
+ * Sets whether horizontal scrolling is allowed.
+ * @param {boolean} scrolling Whether horizontal scrolling is allowed.
+ */
+goog.fx.DragScrollSupport.prototype.setHorizontalScrolling =
+    function(scrolling) {
+  this.horizontalScrolling_ = scrolling;
 };
 
 
@@ -215,8 +233,8 @@ goog.fx.DragScrollSupport.prototype.onTick_ = function(event) {
  * @param {goog.events.Event} event Mouse move event.
  */
 goog.fx.DragScrollSupport.prototype.onMouseMove = function(event) {
-  var deltaX = this.calculateScrollDelta(event.clientX,
-      this.scrollBounds_.left, this.scrollBounds_.width);
+  var deltaX = this.horizontalScrolling_ ? this.calculateScrollDelta(
+      event.clientX, this.scrollBounds_.left, this.scrollBounds_.width) : 0;
   var deltaY = this.calculateScrollDelta(event.clientY,
       this.scrollBounds_.top, this.scrollBounds_.height);
   this.scrollDelta_.x = deltaX;

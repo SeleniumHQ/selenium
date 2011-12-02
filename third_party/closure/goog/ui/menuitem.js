@@ -16,6 +16,7 @@
  * @fileoverview A class for representing items in menus.
  * @see goog.ui.Menu
  *
+ * @see ../demos/menuitem.html
  */
 
 goog.provide('goog.ui.MenuItem');
@@ -23,6 +24,7 @@ goog.provide('goog.ui.MenuItem');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
+goog.require('goog.events.KeyCodes');
 goog.require('goog.math.Coordinate');
 goog.require('goog.string');
 goog.require('goog.ui.Component.State');
@@ -53,6 +55,17 @@ goog.ui.MenuItem = function(content, opt_model, opt_domHelper, opt_renderer) {
 };
 goog.inherits(goog.ui.MenuItem, goog.ui.Control);
 
+
+/**
+ * The access key for this menu item. This key allows the user to quickly
+ * trigger this item's action with they keyboard. For example, setting the
+ * mnenomic key to 70 (F), when the user opens the menu and hits "F," the
+ * menu item is triggered.
+ *
+ * @type {goog.events.KeyCodes}
+ * @private
+ */
+goog.ui.MenuItem.mnemonicKey_;
 
 // goog.ui.Component and goog.ui.Control implementation.
 
@@ -152,6 +165,36 @@ goog.ui.MenuItem.prototype.handleMouseUp = function(e) {
   }
 
   goog.base(this, 'handleMouseUp', e);
+};
+
+
+/** @override */
+goog.ui.MenuItem.prototype.handleKeyEventInternal = function(e) {
+  if (e.keyCode == this.getMnemonic() && this.performActionInternal(e)) {
+    return true;
+  } else {
+    return goog.base(this, 'handleKeyEventInternal', e);
+  }
+};
+
+
+/**
+ * Sets the mnemonic key code. The mnemonic is the key associated with this
+ * action.
+ * @param {goog.events.KeyCodes} key The key code.
+ */
+goog.ui.MenuItem.prototype.setMnemonic = function(key) {
+  this.mnemonicKey_ = key;
+};
+
+
+/**
+ * Gets the mnemonic key code. The mnemonic is the key associated with this
+ * action.
+ * @return {goog.events.KeyCodes} The key code of the mnemonic key.
+ */
+goog.ui.MenuItem.prototype.getMnemonic = function() {
+  return this.mnemonicKey_;
 };
 
 

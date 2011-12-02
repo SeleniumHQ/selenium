@@ -811,21 +811,10 @@ goog.net.XhrIo.prototype.isComplete = function() {
  * @return {boolean} Whether the request completed with a success.
  */
 goog.net.XhrIo.prototype.isSuccess = function() {
-  switch (this.getStatus()) {
-    case 0:         // Used for local XHR requests
-      return !this.isLastUriEffectiveSchemeHttp_();
-
-    case goog.net.HttpStatus.OK:
-    case goog.net.HttpStatus.CREATED:
-    case goog.net.HttpStatus.ACCEPTED:
-    case goog.net.HttpStatus.NO_CONTENT:
-    case goog.net.HttpStatus.NOT_MODIFIED:
-    case goog.net.HttpStatus.QUIRK_IE_NO_CONTENT:
-      return true;
-
-    default:
-      return false;
-  }
+  var status = this.getStatus();
+  // A zero status code is considered successful for local files.
+  return goog.net.HttpStatus.isSuccess(status) ||
+      status === 0 && !this.isLastUriEffectiveSchemeHttp_();
 };
 
 
