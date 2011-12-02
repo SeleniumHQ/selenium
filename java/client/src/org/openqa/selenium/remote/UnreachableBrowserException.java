@@ -31,8 +31,8 @@ import org.openqa.selenium.WebDriverException;
  * </ul>
  * 1)
  */
-public class BrowserConnectivityException extends WebDriverException {
-  public BrowserConnectivityException(String message, Throwable cause) {
+public class UnreachableBrowserException extends WebDriverException {
+  public UnreachableBrowserException(String message, Throwable cause) {
     super(message, cause);
   }
 }

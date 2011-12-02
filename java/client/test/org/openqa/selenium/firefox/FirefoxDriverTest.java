@@ -56,8 +56,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.BrowserConnectivityException;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -103,7 +102,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       driver2.keptConnection.quit();
       driver2.get(pages.formPage);
       fail("Should have thrown.");
-    } catch (BrowserConnectivityException e) {
+    } catch (UnreachableBrowserException e) {
       assertThat("Must contain descriptive error", e.getMessage(),
           containsString("Error communicating with the remote browser"));
     }

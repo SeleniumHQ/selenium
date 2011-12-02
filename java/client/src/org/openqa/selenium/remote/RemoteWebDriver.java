@@ -429,9 +429,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
           "It may have died.";
       if (driverCommand.equals(DriverCommand.NEW_SESSION)) {
         errorMessage = "Could not start a new session. Possible causes are " +
-            "invalid address of the remote server of browser start-up failure.";
+            "invalid address of the remote server or browser start-up failure.";
       }
-      throw new BrowserConnectivityException(errorMessage, e);
+      throw new UnreachableBrowserException(errorMessage, e);
     }
 
     return errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
