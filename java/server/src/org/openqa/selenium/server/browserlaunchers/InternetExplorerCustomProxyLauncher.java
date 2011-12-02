@@ -39,7 +39,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   private static final Logger log = Logger.getLogger(InternetExplorerCustomProxyLauncher.class
       .getName());
 
-  private File customProxyPACDir;
   private String[] cmdarray;
   private BrowserInstallation browserInstallation;
   private CommandLine process;
@@ -72,27 +71,21 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   public void launch(String url) {
     try {
       setupSystem(url);
-      log.info("Launching Internet Explorer...");
-      process = new CommandLine(cmdarray);
-      process.destroy();
     } catch (IOException e) {
       throw Throwables.propagate(e);
     }
+    log.info("Launching Internet Explorer...");
+    process = new CommandLine(cmdarray);
+    process.executeAsync();
   }
 
   private void setupSystem(String url) throws IOException {
     if (WindowsUtils.thisIsWindows()) {
-      final File killableProcessWrapper;
 
       if (!browserConfigurationOptions.is("honorSystemProxy")) {
         setupSystemProxy();
       }
-      customProxyPACDir = wpm.getCustomProxyPACDir();
-      killableProcessWrapper = new File(customProxyPACDir, "killableprocess.exe");
-      ResourceExtractor.extractResourcePath(InternetExplorerCustomProxyLauncher.class,
-          "/killableprocess/killableprocess.exe", killableProcessWrapper);
       cmdarray = new String[] {
-          killableProcessWrapper.getAbsolutePath(),
           browserInstallation.launcherFilePath(),
           "-new",
           url
@@ -119,9 +112,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
       WindowsUtils.tryToKillByName("iexplore.exe");
     }
     process.destroy();
-    if (customPACappropriate) {
-      LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
-    }
   }
 
   private void restoreSystemProxy() {
