@@ -425,8 +425,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       log(sessionId, command.getName(), command);
     } catch (Exception e) {
       log(sessionId, command.getName(), command);
-      throw new WebDriverException("Error communicating with the remote browser. " +
-          "It may have died.", e);
+      String errorMessage = "Error communicating with the remote browser. " +
+          "It may have died.";
+      if (driverCommand.equals(DriverCommand.NEW_SESSION)) {
+        errorMessage = "Could not start a new session. Possible causes are " +
+            "invalid address of the remote server of browser start-up failure.";
+      }
+      throw new BrowserConnectivityException(errorMessage, e);
     }
 
     return errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
