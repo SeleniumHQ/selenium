@@ -24,7 +24,7 @@
  */
 function wdSession() {
   // Load the Utils
-  Components.utils.import('resource://fxdriver/modules/utils.js');
+  Components.utils.import('resource://fxdriver/modules/atoms.js');
 
   /**
    * A wrapped self-reference for XPConnect.

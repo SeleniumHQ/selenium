@@ -37,7 +37,7 @@ function addInterfaces(to, delegate, interfaces) {
 
 // Implementation of nsIPrompt
 function ObservingAlert(parentWindow, delegate) {
-  Components.utils.import('resource://fxdriver/modules/utils.js');
+  Components.utils.import('resource://fxdriver/modules/atoms.js');
 
   this.parentWindow_ = parentWindow;
 
@@ -103,7 +103,7 @@ ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList,
 
 // Spoof implementation
 function DrivenPromptService() {
-  Components.utils.import('resource://fxdriver/modules/utils.js');
+  Components.utils.import('resource://fxdriver/modules/atoms.js');
 
   fxdriver.Logger.dumpn("Spoofing prompt service");
 

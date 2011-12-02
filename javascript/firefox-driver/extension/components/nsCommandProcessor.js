@@ -338,7 +338,6 @@ DelayedCommand.prototype.executeInternal_ = function() {
  */
 var nsCommandProcessor = function() {
   Components.utils.import('resource://fxdriver/modules/atoms.js');
-  Components.utils.import('resource://fxdriver/modules/utils.js');
 
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].

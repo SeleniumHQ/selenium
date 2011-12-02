@@ -20,7 +20,7 @@
 function WebDriverServer() {
   // We do this here to work around an issue in the import function:
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
-  Components.utils.import('resource://fxdriver/modules/utils.js');
+  Components.utils.import('resource://fxdriver/modules/atoms.js');
 
   this.wrappedJSObject = this;
   this.serverSocket =

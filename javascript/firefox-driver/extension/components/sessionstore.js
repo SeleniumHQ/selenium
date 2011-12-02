@@ -21,7 +21,7 @@
  * @param {string} message The message to log.
  */
 function log(message) {
-  Components.utils.import('resource://fxdriver/modules/utils.js');
+  Components.utils.import('resource://fxdriver/modules/atoms.js');
 
   fxdriver.Logger.dumpn(message);
 }

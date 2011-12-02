@@ -45,9 +45,6 @@ function FirefoxDriver(server, enableNativeEvents, win) {
       [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
 
 
-  var utils = {};
-  Components.utils.import('resource://fxdriver/modules/utils.js', utils);
-
   goog.userAgent.GECKO = true;
 
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
