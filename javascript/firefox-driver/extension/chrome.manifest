@@ -22,7 +22,7 @@ contract @googlecode.com/webdriver/fxdriver;1 {1C0E8D86-B661-40d0-AE3D-CA012FADF
 component {54ef6f81-30af-4b1d-ac55-8ba811293e41} components/httpd.js
 contract @mozilla.org/server/jshttp;1 {54ef6f81-30af-4b1d-ac55-8ba811293e41}
 
-component {692e5117-a4a2-4b00-99f7-0685285b4db5} components/nsCommandProcessor.js
+component {692e5117-a4a2-4b00-99f7-0685285b4db5} components/command_processor.js
 contract @googlecode.com/webdriver/command-processor;1 {692e5117-a4a2-4b00-99f7-0685285b4db5}
 
 component {e26dbdcd-d3ba-4ded-88c3-6cb07ee3e9e0} components/prompt_service.js

@@ -24,6 +24,13 @@
  */
 
 
+goog.require('Utils');
+goog.require('bot.ErrorCode');
+goog.require('fxdriver.Logger');
+goog.require('fxdriver.Timer');
+goog.require('fxdriver.error');
+goog.require('fxdriver.moz');
+
 /**
  * When this component is loaded, load the necessary subscripts.
  */
@@ -337,8 +344,6 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
-  Components.utils.import('resource://fxdriver/modules/atoms.js');
-
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].
       getService(Components.interfaces.nsIWindowMediator);
@@ -806,7 +811,7 @@ function NSGetModule() {
 }
 
 nsCommandProcessor.prototype.classID = nsCommandProcessor.CLASS_ID;
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
 if (XPCOMUtils.generateNSGetFactory) {
-  const NSGetFactory = XPCOMUtils.generateNSGetFactory([nsCommandProcessor]);
+  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([nsCommandProcessor]);
 }

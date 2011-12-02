@@ -30,7 +30,6 @@ mozilla_extension(name = "webdriver",
     "extension/components/firefoxDriver.js",
     "extension/components/httpd.js",
     "extension/components/json2.js",
-    "extension/components/nsCommandProcessor.js",
     "extension/components/request.js",
     "extension/components/response.js",
     "extension/components/screenshooter.js",
@@ -40,6 +39,7 @@ mozilla_extension(name = "webdriver",
     "extension/components/webLoadingListener.js",
     "extension/components/webdriverserver.js",
     "extension/components/wrappedElement.js",
+    ":command_processor",
     ":command_processor_xpt",
     ":coordinates_xpt",
     ":httpd_xpt",
@@ -108,6 +108,26 @@ js_binary(name = "atoms",
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [ "//javascript/webdriver-atoms:deps" ])
+
+js_binary(name = "command_processor",
+  srcs = [
+    "js/errorcode.js",
+    "js/logging.js",
+    "js/moz.js",
+    "js/nsCommandProcessor.js",
+    "js/timer.js",
+    "js/utils.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  flags = [
+      "--language_in=ECMASCRIPT5",
   ],
   externs = [
     "js/externs.js",
