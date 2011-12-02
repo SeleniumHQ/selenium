@@ -1,12 +1,16 @@
 // Spoof the prompt service. Interesting thread on mozillazine:
 // http://www.mail-archive.com/dev-tech-xpcom@lists.mozilla.org/msg00193.html
 
-const CC = Components.classes;
-const CI = Components.interfaces;
-const CR = Components.results;
-const CU = Components.utils;
+goog.require('fxdriver.Logger');
+goog.require('fxdriver.modals');
+goog.require('fxdriver.moz');
+goog.require('goog.array');
 
-CU.import("resource://gre/modules/XPCOMUtils.jsm");
+
+/** @const */ var CC = Components.classes;
+/** @const */ var CI = Components.interfaces;
+/** @const */ var CR = Components.results;
+/** @const */ var CU = Components.utils;
 
 var EXCLUDED_NAMES = [
   'QueryInterface',
@@ -37,8 +41,6 @@ function addInterfaces(to, delegate, interfaces) {
 
 // Implementation of nsIPrompt
 function ObservingAlert(parentWindow, delegate) {
-  Components.utils.import('resource://fxdriver/modules/atoms.js');
-
   this.parentWindow_ = parentWindow;
 
   var interfaces = [CI.nsIPrompt, CI.nsIAuthPrompt, CI.nsIAuthPrompt2, CI.nsIWritablePropertyBag2];
@@ -103,8 +105,6 @@ ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList,
 
 // Spoof implementation
 function DrivenPromptService() {
-  Components.utils.import('resource://fxdriver/modules/atoms.js');
-
   fxdriver.Logger.dumpn("Spoofing prompt service");
 
   // @mozilla.org/prompter;1
@@ -292,11 +292,11 @@ DrivenPromptService.prototype.observe = function(aSubject, aTopic, aData) {
 };
 
 
-const PROMPT_SERVICE_CONTRACT_ID = "@mozilla.org/embedcomp/prompt-service;1";
-const PROMPTER_CONTRACT_ID = "@mozilla.org/prompter;1";
+/** @const */ var PROMPT_SERVICE_CONTRACT_ID = "@mozilla.org/embedcomp/prompt-service;1";
+/** @const */ var PROMPTER_CONTRACT_ID = "@mozilla.org/prompter;1";
 
 // This is defined by us
-const DRIVEN_PROMPT_SERVICE_CLASS_ID = Components.ID('{e26dbdcd-d3ba-4ded-88c3-6cb07ee3e9e0}');
+/** @const */ var DRIVEN_PROMPT_SERVICE_CLASS_ID = Components.ID('{e26dbdcd-d3ba-4ded-88c3-6cb07ee3e9e0}');
 
 var service = undefined;
 
@@ -329,7 +329,6 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {
   fxdriver.Logger.dumpn("Unregistering\n");
-  aCompMgr =
   aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DRIVEN_PROMPT_SERVICE_CLASS_ID, aLocation);
 };
@@ -353,7 +352,7 @@ function NSGetModule(comMgr, fileSpec) {
 }
 
 DrivenPromptService.prototype.classID = DRIVEN_PROMPT_SERVICE_CLASS_ID;
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+fxdriver.moz.load('resource://gre/modules/XPCOMUtils.jsm');
 if (XPCOMUtils.generateNSGetFactory) {
-  const NSGetFactory = XPCOMUtils.generateNSGetFactory([DrivenPromptService]);
+  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([DrivenPromptService]);
 }
