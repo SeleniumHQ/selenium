@@ -158,15 +158,21 @@ task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backe
 
 task :'test-selenium-backed-webdriver' => ['//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test:run']
 task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
-task :'test-rc' => [ '//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run' ]
+task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run',
+                    '//java/client/test/com/thoughtworks/selenium:firefox-proxy-rc-test:run',
+                    '//java/client/test/com/thoughtworks/selenium:firefox-singlewindow-rc-test:run']
 task :'test-core' => [:'test-core-firefox']
 
 if (windows?)
   task :'test-v1-emulation' => ['//java/client/test/com/thoughtworks/selenium:ie-emulation-test:run']
-  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run']
+  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run',
+                      '//java/client/test/com/thoughtworks/selenium:ie-proxy-rc-test:run',
+                      '//java/client/test/com/thoughtworks/selenium:ie-singlewindow-rc-test:run']
   task :'test-core' => [:'test-core-ie']
+# TODO(santi): why are these disabled?
 #elsif (mac?)
-#  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:safari-rc-test:run']
+#  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:safari-rc-test:run',
+#                       '//java/client/test/com/thoughtworks/selenium:safari-proxy-rc-test:run']
 #  task :'test-core' => [:'test-core-safari']
 end
 

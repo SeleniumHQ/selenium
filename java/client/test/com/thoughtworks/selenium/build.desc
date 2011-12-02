@@ -96,6 +96,15 @@ java_test(name = "firefox-rc-test",
     ":rc-tests",
   ])
 
+java_test(name = "firefox-proxy-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
+  sysproperties = [
+    { "selenium.browser" : "*firefoxproxy" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
 java_test(name = "firefox-singlewindow-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
@@ -114,6 +123,15 @@ java_test(name = "ie-rc-test",
     ":rc-tests",
   ])
 
+java_test(name = "ie-proxy-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
+  sysproperties = [
+    { "selenium.browser" : "*iexploreproxy" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
 java_test(name = "ie-singlewindow-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
@@ -127,6 +145,15 @@ java_test(name = "safari-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
     { "selenium.browser" : "*safari" },
+  ],
+  deps = [
+    ":rc-tests",
+  ])
+
+java_test(name = "safari-proxy-rc-test",
+  test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
+  sysproperties = [
+    { "selenium.browser" : "*safariproxy" },
   ],
   deps = [
     ":rc-tests",
