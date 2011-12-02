@@ -20,27 +20,21 @@ package org.openqa.selenium.javascript;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.openqa.selenium.DefaultDriverSupplierSupplier;
-import org.openqa.selenium.DriverTestDecorator;
-import org.openqa.selenium.EnvironmentStarter;
-import org.openqa.selenium.NeedsDriver;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.InProcessTestEnvironment;
-import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty7AppServer;
-import org.openqa.selenium.internal.InProject;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.openqa.selenium.DefaultDriverSupplierSupplier;
+import org.openqa.selenium.DriverTestDecorator;
+import org.openqa.selenium.NeedsDriver;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.Jetty7AppServer;
+import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -65,13 +59,8 @@ public class WebDriverJsTestSuite {
       urlPath += "/";
     }
 
-    InProcessTestEnvironment testEnvironment = new InProcessTestEnvironment();
-    GlobalTestEnvironment.set(testEnvironment);
-
     ResultsServlet resultsServlet = new ResultsServlet();
-    Jetty7AppServer appServer =
-        (Jetty7AppServer) testEnvironment.getAppServer();
-    appServer.addServlet("/testResults", resultsServlet);
+    AppServer appServer = createAppServer(resultsServlet);
 
     for (File file : testDir.listFiles(new TestFilenameFilter())) {
       String path = file.getAbsolutePath()
@@ -84,7 +73,16 @@ public class WebDriverJsTestSuite {
           /* refreshDriver= */false));
     }
 
-    return new WebDriverServerStarter(new EnvironmentStarter(suite));
+    Test test = new DriverQuitter(suite);
+    test = new WebDriverServerStarter(test, appServer);
+    test = new WebDriverServerStarter(test, RemoteServer.INSTANCE);
+    return test;
+  }
+
+  private static AppServer createAppServer(ResultsServlet resultsServlet) {
+    Jetty7AppServer appServer = new Jetty7AppServer();
+    appServer.addServlet("/testResults", resultsServlet);
+    return appServer;
   }
 
   private static DesiredCapabilities getCapabilities() {
@@ -101,7 +99,8 @@ public class WebDriverJsTestSuite {
 
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
     public RemoteWebDriverForTest() throws MalformedURLException {
-      super(RemoteServer.INSTANCE.getUrl(), WebDriverJsTestSuite.getCapabilities());
+      super(new URL(RemoteServer.INSTANCE.whereIs("/wd/hub")),
+          WebDriverJsTestSuite.getCapabilities());
     }
   }
 
@@ -124,7 +123,7 @@ public class WebDriverJsTestSuite {
     protected void runTest() throws MalformedURLException {
       String testUrl = appServer.whereIs(relativeUrl)
           + "?wdsid=" + driver.getSessionId()
-          + "&wdurl=" + RemoteServer.INSTANCE.getUrl();
+          + "&wdurl=" + RemoteServer.INSTANCE.whereIs("/wd/hub");
       driver.get(testUrl);
       long start = System.nanoTime();
 
@@ -148,46 +147,37 @@ public class WebDriverJsTestSuite {
     }
   }
 
-  private static enum RemoteServer {
-    INSTANCE;
+  private static class DriverQuitter extends TestSetup {
 
-    private int port;
-    private SeleniumServer server;
-
-    void start() throws Exception {
-      port = PortProber.findFreePort();
-      RemoteControlConfiguration config = new RemoteControlConfiguration();
-      config.setPort(port);
-
-      server = new SeleniumServer(config);
-      server.boot();
-
-      PortProber.pollPort(port);
-    }
-
-    void stop() {
-      server.stop();
-    }
-
-    URL getUrl() throws MalformedURLException {
-      return new URL("http://localhost:" + port + "/wd/hub");
-    }
-  }
-
-  private static class WebDriverServerStarter extends TestSetup {
-    public WebDriverServerStarter(Test test) {
+    public DriverQuitter(Test test) {
       super(test);
     }
 
     @Override
+    protected void tearDown() {
+      DriverTestDecorator.getDriver().quit();
+    }
+  }
+
+  private static class WebDriverServerStarter extends TestSetup {
+    private final AppServer appServer;
+
+    public WebDriverServerStarter(Test test, AppServer appServer) {
+      super(test);
+      this.appServer = appServer;
+    }
+
+    @Override
     protected void setUp() throws Exception {
-      RemoteServer.INSTANCE.start();
+      System.out.println("Starting " + appServer.whereIs("/"));
+      appServer.start();
       super.setUp();
     }
 
     @Override
     protected void tearDown() throws Exception {
-      RemoteServer.INSTANCE.stop();
+      System.out.println("Stopping " + appServer.whereIs("/"));
+      appServer.stop();
       super.tearDown();
     }
   }
