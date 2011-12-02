@@ -146,22 +146,6 @@ public class ChromeDriverService {
     }
   }
 
-  // http://stackoverflow.com/questions/60302
-  private static void pipe(final InputStream src, final PrintStream dest) {
-    new Thread(new Runnable() { // Thread safety reviewed
-      public void run() {
-        try {
-          byte[] buffer = new byte[1024];
-          for (int n = 0; n != -1; n = src.read(buffer)) {
-            dest.write(buffer, 0, n);
-          }
-        } catch (IOException e) {
-          // Do nothing.
-        }
-      }
-    }).start();
-  }
-
   /**
    * Stops this service is it is currently running. This method will attempt to block until the
    * server has been fully shutdown.
