@@ -18,8 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import com.google.common.collect.ImmutableList;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -31,27 +30,27 @@ public class LogEntries {
   List<LogEntry> entries;
 
   public LogEntries(List<LogEntry> entries) {
-    this.entries = ImmutableList.copyOf(entries);
+    this.entries = new ArrayList<LogEntry>(entries);
   }
 
   /**
    * @return an immutable list of all {@link LogEntry} fetched.
    */
-  public ImmutableList<LogEntry> getAll() {
-    return ImmutableList.copyOf(entries);
+  public List<LogEntry> getAll() {
+    return new ArrayList<LogEntry>(entries);
   }
 
   /**
    * @param level {@link Level} The level to filter the log entries.
    * @return all log entries for that level and above.
    */
-  public ImmutableList<LogEntry> filter(Level level) {
-    ImmutableList.Builder<LogEntry> builder = ImmutableList.builder();
+  public List<LogEntry> filter(Level level) {
+    List<LogEntry> toReturn = new ArrayList<LogEntry>();
     for (LogEntry entry : entries) {
       if (entry.getLevel() >= level.intValue()) {
-        builder.add(entry);
+        toReturn.add(entry);
       }
     }
-    return builder.build();
+    return toReturn;
   }
 }

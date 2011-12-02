@@ -18,10 +18,10 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -37,7 +37,7 @@ import java.util.logging.Level;
  */
 public class LoggingPreferences {
   // Mapping the {@link LogType} to {@link Level}
-  private final Map<String, Level> prefs = Maps.newHashMap();
+  private final Map<String, Level> prefs = new HashMap<String, Level>();
 
   /**
    * Enables logging for the given log type at the specified level and above.
@@ -51,12 +51,12 @@ public class LoggingPreferences {
   /**
    * @return the set of log types for which logging has been enabled.
    */
-  public ImmutableSet<String> getEnabledLogTypes() {
-    return ImmutableSet.copyOf(prefs.keySet());
+  public Set<String> getEnabledLogTypes() {
+    return new HashSet<String>(prefs.keySet());
   }
 
   /**
-   * @param logType String the {@Link LogType}.
+   * @param logType String the {@link LogType}.
    * @return the {@link Level} for the given {@link LogType} if enabled.
    *     Otherwise returns NULL.
    */
