@@ -19,7 +19,12 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
   public WebDriver get() {
     try {
       Class[] args = {Level.class};
-      Method setLogLevel = driverClass.getMethod("setLogLevel", args);
+      Method setLogLevel = null;
+      try {
+        setLogLevel = driverClass.getMethod("setLogLevel", args);
+      } catch (NoSuchMethodException e) {
+        // This is handled by the setLogLevel == null case
+      }
       if (setLogLevel != null) {
         String value = System.getProperty("log_level", "");
         // Leave logging off by default.
