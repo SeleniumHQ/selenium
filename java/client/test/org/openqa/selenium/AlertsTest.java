@@ -30,6 +30,8 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
+import junit.framework.Test;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -365,6 +367,12 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE}, reason = "IE crashes")
   public void testShouldHandleAlertOnWindowClose() {
+    if (TestUtilities.isFirefox(driver) &&
+        TestUtilities.isNativeEventsEnabled(driver) &&
+        TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
+      System.err.println("x_ignore_nofocus can cause a firefox crash here. Ignoring test. See issue 2987.");
+      return;
+    }
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();
