@@ -17,26 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.javascript;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.google.common.base.Function;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import org.openqa.selenium.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
-import org.openqa.selenium.internal.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -45,35 +40,19 @@ import java.util.concurrent.TimeUnit;
 public class WebDriverJsTestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite();
+    final ResultsServlet resultsServlet = new ResultsServlet();
+    final AppServer appServer = createAppServer(resultsServlet);
 
-    String testDirName = System.getProperty("js.test.dir");
-    assertNotNull("You must set the test directory name", testDirName);
+    Test test = new JsTestSuiteBuilder()
+        .withDriverClazz(RemoteWebDriverForTest.class)
+        .withTestFactory(new Function<String, Test>() {
+          public Test apply(String testPath) {
+            return new WebDriverJsTestCase(testPath, appServer, resultsServlet);
+          }
+        })
+        .build();
 
-    File testDir = InProject.locate(testDirName);
-    assertTrue("Test directory does not exist: " + testDirName, testDir.exists());
-
-    String urlPath = System.getProperty("js.test.url.path");
-    assertNotNull("You must set the url path to use", urlPath);
-    if (!urlPath.endsWith("/")) {
-      urlPath += "/";
-    }
-
-    ResultsServlet resultsServlet = new ResultsServlet();
-    AppServer appServer = createAppServer(resultsServlet);
-
-    for (File file : testDir.listFiles(new TestFilenameFilter())) {
-      String path = file.getAbsolutePath()
-          .replace(testDir.getAbsolutePath() + File.separator, "")
-          .replace(File.separator, "/");
-      TestCase test = new WebDriverJsTestCase(urlPath + path, appServer,
-          resultsServlet);
-      suite.addTest(new DriverTestDecorator(test, new DefaultDriverSupplierSupplier(RemoteWebDriverForTest.class).get(),
-          /* keepDriver= */true, /* freshDriver= */false,
-          /* refreshDriver= */false));
-    }
-
-    Test test = new DriverQuitter(suite);
+    test = new DriverQuitter(test);
     test = new WebDriverServerStarter(test, appServer);
     test = new WebDriverServerStarter(test, RemoteServer.INSTANCE);
     return test;

@@ -17,57 +17,32 @@ limitations under the License.
 
 package org.openqa.selenium.javascript;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
+import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 
-import org.openqa.selenium.DefaultDriverSupplierSupplier;
-import org.openqa.selenium.DriverTestDecorator;
+import junit.framework.Test;
+
 import org.openqa.selenium.EnvironmentStarter;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.InProject;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.io.File;
 
 public class ClosureTestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite();
-
-    String testDirName = System.getProperty("js.test.dir");
-    assertNotNull("You must set the test directory name", testDirName);
-
-    File testDir = InProject.locate(testDirName);
-    assertTrue("Test directory does not exist: " + testDirName, testDir.exists());
-
-    String urlPath = System.getProperty("js.test.url.path");
-    assertNotNull("You must set the url path to use", urlPath);
-    if (!urlPath.endsWith("/")) {
-      urlPath += "/";
-    }
-
-    String className =
-        System.getProperty("selenium.browser", "org.openqa.selenium.firefox.FirefoxDriver");
-    Class<? extends WebDriver> driverClazz = getDriverClass(className);
-
-    for (File file : testDir.listFiles(new TestFilenameFilter())) {
-      String path = file.getAbsolutePath()
-          .replace(testDir.getAbsolutePath() + File.separator, "")
-          .replace(File.separator, "/");
-      TestCase test = new ClosureTestCase(urlPath + path);
-      suite.addTest(new DriverTestDecorator(test, new DefaultDriverSupplierSupplier(driverClazz).get(),
-          /* keepDriver= */true, /* freshDriver= */false, /* refreshDriver= */false));
-    }
-
+    Test suite = new JsTestSuiteBuilder()
+        .withDriverClazz(getDriverClass())
+        .withTestFactory(new Function<String, Test>() {
+          public Test apply(String input) {
+            return new ClosureTestCase(input);
+          }
+        })
+        .build();
     return new EnvironmentStarter(suite);
   }
 
-  private static Class<? extends WebDriver> getDriverClass(String name) {
+  private static Class<? extends WebDriver> getDriverClass() {
+    String name = System.getProperty("selenium.browser",
+        "org.openqa.selenium.firefox.FirefoxDriver");
+
     try {
       return Class.forName(name).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException e) {
