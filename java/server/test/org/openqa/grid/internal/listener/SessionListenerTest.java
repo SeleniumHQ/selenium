@@ -65,7 +65,7 @@ public class SessionListenerTest {
     app1.put(APP, "app1");
     Map<String, Object> config = new HashMap<String, Object>();
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
   }
@@ -260,7 +260,7 @@ public class SessionListenerTest {
     config.put(CLEAN_UP_CYCLE, 1);
     config.put(MAX_SESSION, 2);
 
-    req.addDesiredCapabilitiy(cap);
+    req.addDesiredCapability(cap);
     req.setConfiguration(config);
 
     Registry registry = Registry.newInstance();

@@ -42,7 +42,7 @@ public class RemoteProxyFactory {
 
     DesiredCapabilities capability = new DesiredCapabilities();
     capability.setBrowserName(browser);
-    req.addDesiredCapabilitiy(capability);
+    req.addDesiredCapability(capability);
 
     Map<String, Object> config = new HashMap<String, Object>();
     config.put(RegistrationRequest.REMOTE_HOST, url);
@@ -64,7 +64,7 @@ public class RemoteProxyFactory {
       Registry registry) {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver");
     req.getCapabilities().clear();
-    req.addDesiredCapabilitiy(cap);
+    req.addDesiredCapability(cap);
     req.getConfiguration().put(RegistrationRequest.REMOTE_HOST, url);
     return createProxy(registry, req);
 
@@ -85,7 +85,7 @@ public class RemoteProxyFactory {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver");
     req.getCapabilities().clear();
     for (Map<String, Object> c : caps) {
-      req.addDesiredCapabilitiy(c);
+      req.addDesiredCapability(c);
     }
 
     req.getConfiguration().put(RegistrationRequest.REMOTE_HOST, url);

@@ -47,7 +47,7 @@ public class RemoteProxyInheritanceTest {
     app1.put(APP, "app1");
 
 
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
     // requires Custom1 & Custom1 set in config to work.
@@ -68,7 +68,7 @@ public class RemoteProxyInheritanceTest {
     config.put("Custom2", "B");
 
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
     RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
@@ -91,7 +91,7 @@ public class RemoteProxyInheritanceTest {
     config.put(PROXY_CLASS, "I Don't exist");
 
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
     RemoteProxy.getNewInstance(req, registry);
@@ -107,7 +107,7 @@ public class RemoteProxyInheritanceTest {
 
 
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
     RemoteProxy.getNewInstance(req, registry);
@@ -123,7 +123,7 @@ public class RemoteProxyInheritanceTest {
     config.put(PROXY_CLASS, "I Don't exist");
 
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
     // requires Custom1 & Custom1 set in config to work.

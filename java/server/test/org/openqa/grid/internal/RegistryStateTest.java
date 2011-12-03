@@ -58,8 +58,8 @@ public class RegistryStateTest {
     config.put(MAX_SESSION, 5);
 
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
-    req.addDesiredCapabilitiy(app2);
+    req.addDesiredCapability(app1);
+    req.addDesiredCapability(app2);
     req.setConfiguration(config);
   }
 

@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.grid.common;
 
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.REGISTER_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import java.util.HashMap;
@@ -70,7 +69,7 @@ public class RegistrationRequestTest {
 
     for (int i = 0; i < 5; i++) {
       DesiredCapabilities cap = new DesiredCapabilities("firefox", "" + i, Platform.LINUX);
-      req.addDesiredCapabilitiy(cap);
+      req.addDesiredCapability(cap);
     }
 
     String json = req.toJSON();

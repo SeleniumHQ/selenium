@@ -131,11 +131,11 @@ public class RegistrationRequest {
     return capabilities;
   }
 
-  public void addDesiredCapabilitiy(DesiredCapabilities c) {
+  public void addDesiredCapability(DesiredCapabilities c) {
     this.capabilities.add(c);
   }
 
-  public void addDesiredCapabilitiy(Map<String, Object> c) {
+  public void addDesiredCapability(Map<String, Object> c) {
     this.capabilities.add(new DesiredCapabilities(c));
   }
 

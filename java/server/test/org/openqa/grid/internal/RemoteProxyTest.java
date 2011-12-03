@@ -78,7 +78,7 @@ public class RemoteProxyTest {
     config.put(REMOTE_HOST, "ebay.com");
 
     RegistrationRequest request = new RegistrationRequest();
-    request.addDesiredCapabilitiy(cap);
+    request.addDesiredCapability(cap);
     request.setConfiguration(config);
 
     new RemoteProxy(request, registry);

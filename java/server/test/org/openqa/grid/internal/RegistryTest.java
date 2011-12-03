@@ -100,7 +100,7 @@ public class RegistryTest {
     config.put(REMOTE_HOST, "http://machine1:4444");
     config.put(MAX_SESSION, 5);
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
   }
 

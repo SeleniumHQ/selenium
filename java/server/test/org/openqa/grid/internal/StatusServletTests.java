@@ -84,7 +84,7 @@ public class StatusServletTests {
     RegistrationRequest req = new RegistrationRequest();
     Map<String, Object> capability = new HashMap<String, Object>();
     capability.put(CapabilityType.BROWSER_NAME, "custom app");
-    req.addDesiredCapabilitiy(capability);
+    req.addDesiredCapability(capability);
 
     Map<String, Object> config = new HashMap<String, Object>();
     config.put(RegistrationRequest.REMOTE_HOST, "http://machine5:4444");

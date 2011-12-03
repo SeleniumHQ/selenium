@@ -64,7 +64,7 @@ public class RegistrationListenerTest {
     app1.put(APP, "app1");
     config.put(REMOTE_HOST, "http://machine1:4444");
     req = new RegistrationRequest();
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
     req.setConfiguration(config);
   }
 

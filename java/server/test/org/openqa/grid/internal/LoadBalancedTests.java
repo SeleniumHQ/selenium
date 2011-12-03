@@ -47,7 +47,7 @@ public class LoadBalancedTests {
     Map<String, Object> config = new HashMap<String, Object>();
     ff.put(APP, "firefox");
     ff.put(MAX_INSTANCES, 5);
-    request.addDesiredCapabilitiy(ff);
+    request.addDesiredCapability(ff);
 
     config.put(MAX_SESSION, 5);
 

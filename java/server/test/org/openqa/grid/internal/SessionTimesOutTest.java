@@ -43,7 +43,7 @@ public class SessionTimesOutTest {
   public static void setup() {
 
     app1.put(APP, "app1");
-    req.addDesiredCapabilitiy(app1);
+    req.addDesiredCapability(app1);
 
     Map<String, Object> config = new HashMap<String, Object>();
     // a test is timed out is inactive for more than 0.5 sec.
@@ -227,7 +227,7 @@ public class SessionTimesOutTest {
         RegistrationRequest req = new RegistrationRequest();
         Map<String, Object> app1 = new HashMap<String, Object>();
         app1.put(APP, "app1");
-        req.addDesiredCapabilitiy(app1);
+        req.addDesiredCapability(app1);
         Map<String, Object> config = new HashMap<String, Object>();
 
         config.put(TIME_OUT, timeout);
