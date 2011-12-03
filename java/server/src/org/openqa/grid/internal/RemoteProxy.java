@@ -39,6 +39,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -171,17 +172,19 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
-    String type = (String) capability.getCapability(SELENIUM_PROTOCOL);
+    // Older grid nodes will return a value from the SeleniumProtocol enum, newer nodes will return a String.
+    // Ultimately we can treat both as Strings or enum values, so stick with Object as a variant type.
+    Object type = capability.getCapability(SELENIUM_PROTOCOL);
 
     SeleniumProtocol protocol;
     if (type == null) {
       protocol = SeleniumProtocol.WebDriver;
     } else {
       try {
-        protocol = SeleniumProtocol.valueOf(type);
+        protocol = SeleniumProtocol.valueOf(type.toString());
       } catch (IllegalArgumentException e) {
         throw new GridException(type
-            + " isn't a valid protocol type for grid. See SeleniumProtocol enim.", e);
+            + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);
       }
     }
     return protocol;
@@ -421,11 +424,14 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         ((RemoteProxy) proxy).setupTimeoutListener();
         return (T) proxy;
       } else {
-        throw new InvalidParameterException("Error:" + proxy.getClass() + " isn't a remote proxy");
+        throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
       }
+    } catch (InvocationTargetException e) {
+      e.getTargetException().printStackTrace();
+      throw new InvalidParameterException("Error: " + e.getTargetException().getMessage());
     } catch (Exception e) {
       e.printStackTrace();
-      throw new InvalidParameterException("Error:" + e.getMessage());
+      throw new InvalidParameterException("Error: " + e.getMessage());
     }
   }
 
