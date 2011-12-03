@@ -79,21 +79,24 @@ public class DefaultRemoteProxy extends RemoteProxy
       if (p != null) {
         pollingInterval = p.intValue();
       }
+    } catch (ClassCastException e) {
+      throw new IllegalArgumentException(String.format("The '%s' argument must be a positive integer.",
+          RegistrationRequest.NODE_POLLING));
+    }
 
-      Integer unregister =
-          (Integer) request.getConfiguration().get(
-              RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER);
+    try {
+      Integer unregister = (Integer) request.getConfiguration().get(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER);
       if (unregister != null) {
         unregisterDelay = unregister.intValue();
       }
-    } catch (NumberFormatException e) {
-      // TODO freynaud log config error.
-
+    } catch (ClassCastException e) {
+      throw new IllegalArgumentException(String.format("The '%s' argument must be a positive integer.",
+          RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER));
     }
   }
 
   public void beforeRelease(TestSession session) {
-    // release the resources remotly.
+    // release the resources remotely.
     if (session.getExternalKey() == null) {
       throw new IllegalStateException(
           "cannot release the resources, they haven't been reserved properly.");
