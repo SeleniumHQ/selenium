@@ -172,16 +172,14 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
-    // Older grid nodes will return a value from the SeleniumProtocol enum, newer nodes will return a String.
-    // Ultimately we can treat both as Strings or enum values, so stick with Object as a variant type.
-    Object type = capability.getCapability(SELENIUM_PROTOCOL);
+    String type = (String) capability.getCapability(SELENIUM_PROTOCOL);
 
     SeleniumProtocol protocol;
     if (type == null) {
       protocol = SeleniumProtocol.WebDriver;
     } else {
       try {
-        protocol = SeleniumProtocol.valueOf(type.toString());
+        protocol = SeleniumProtocol.valueOf(type);
       } catch (IllegalArgumentException e) {
         throw new GridException(type
             + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);

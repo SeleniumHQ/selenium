@@ -215,7 +215,7 @@ public class RegistrationRequest {
   * generate the "remoteHost" out of it.
   */
 
-  // TODO freynaud : remove that when 2.9- nodes are history.
+  // TODO freynaud : remove that when <= v2.9 nodes are history.
 
   private void ensureBackwardCompatibility() {
     // new param after 2.9
@@ -232,7 +232,7 @@ public class RegistrationRequest {
         // was a legacy RC node. Needs to set that on the capabilities, as webdriver is the default.
         if (url.contains("selenium-server/driver")) {
           for (DesiredCapabilities capability : capabilities) {
-            capability.setCapability(SELENIUM_PROTOCOL, SeleniumProtocol.Selenium);
+            capability.setCapability(SELENIUM_PROTOCOL, SeleniumProtocol.Selenium.toString());
           }
         }
         URL tmp;
