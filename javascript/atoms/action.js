@@ -614,24 +614,36 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
 };
 
 
-
 /**
  * Scrolls the element in to the current viewport. Aims to do the minimum
- * scrolling necessary
+ * scrolling necessary, but prefers too much scrolling to too little.
  * @param {!Element} element The element to scroll in to view.
  * @param {!goog.math.Coordinate=} opt_coords Offset relative to the top-left
  *     corner of the element, to ensure is scrolled in to view.
  * @return {boolean} Whether the element is in view after scrolling.
  */
-bot.action.scrollIntoViewIfNecessary = function(element, opt_coords) {
-  var coords = opt_coords;
-  if (!coords) {
-    var size = goog.style.getSize(element);
-    coords = new goog.math.Coordinate(size.width / 2, size.height /2);
-  }
-
-  if (!bot.dom.isCurrentlyScrolledIntoView(element, coords)) {
+bot.action.scrollIntoView = function(element, opt_coords) {
+  if (!bot.dom.isScrolledIntoView(element, opt_coords)) {
     element.scrollIntoView();
   }
-  return bot.dom.isCurrentlyScrolledIntoView(element, coords);
+  var isInView = bot.dom.isScrolledIntoView(element, opt_coords);
+  if (!isInView && opt_coords) {
+    // It's possible that the element has been scrolled in to view, but the
+    // coords passed aren't in view; if this is the case, scroll those
+    // coordinates into view.
+    var elementCoordsInViewport = goog.style.getClientPosition(element);
+    var desiredPointInViewport =
+        goog.math.Coordinate.sum(elementCoordsInViewport, opt_coords);
+    try {
+      bot.dom.getInViewLocation(
+          desiredPointInViewport,
+          goog.dom.getWindow(goog.dom.getOwnerDocument(element)));
+      isInView = true;
+    } catch (ex) {
+      // Point couldn't be scrolled into view.
+      isInView = false;
+    }
+  }
+
+  return isInView;
 };

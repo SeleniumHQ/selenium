@@ -40,6 +40,14 @@ SyntheticMouse = function() {
   // Declare the state we'll be using
   this.buttonDown = null;
   this.lastElement = null;
+  this.isButtonPressed = false;
+
+  // When the mouse has been pressed, firefox locks to using the viewport, as
+  // it was at the time of mouseDown, until the mouse is released. We keep
+  // track of the viewport scroll offset in this variable, when we mouseDown,
+  // until we mouseUp, so that we can account for any scrolling which may have
+  // happened, when we fire events.
+  this.viewPortOffset = new goog.math.Coordinate(0,0);
 };
 
 
@@ -84,30 +92,37 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   bot.setWindow(goog.dom.getWindow(doc));
   var mouse = new bot.Mouse();
 
-  if (goog.isFunction(element.scrollIntoView)) {
-     goog.style.scrollIntoContainerView(element, doc.documentElement);
-  }
+  var unwrapped = fxdriver.moz.unwrap(element);
 
+  var inViewAfterScroll = bot.action.scrollIntoView(
+      unwrapped,
+      new goog.math.Coordinate(xOffset, yOffset));
   // Check to see if the given positions and offsets are outside of the window
   // Are we about to be dragged out of the window?
-  var windowSize = bot.window.getInteractableSize(win);
 
   var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
-  var pos = Utils.getElementLocation(element);
 
-  var targetX = pos.x + xOffset;
-  var targetY = pos.y + yOffset;
-
-  if (!isOption &&
-      (targetX > windowSize.width || targetY > windowSize.height)) {
+  if (!isOption && !inViewAfterScroll) {
     return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'Requested location (' + targetX + ', ' + targetY +
-        ') is outside the bounds of the document (' + windowSize.width + ', ' +
-        windowSize.height + ')');
+        'Element cannot be scrolled into view:' + unwrapped);
   }
 
-  var coords = new goog.math.Coordinate(xOffset, yOffset);
-  mouse.move(element, coords);
+
+
+  var xCompensate = 0;
+  var yCompensate = 0;
+  if (this.isButtonPressed) {
+    // See the comment on the viewPortOffset field for why this is necessary.
+    var doc = goog.dom.getOwnerDocument(element);
+    var scrollOffset = goog.dom.getDomHelper(doc).getDocumentScroll();
+    xCompensate = (scrollOffset.x - this.viewPortOffset.x) * 2;
+    yCompensate = (scrollOffset.y - this.viewPortOffset.y) * 2;
+  }
+
+  var coords =
+      new goog.math.Coordinate(xOffset + xCompensate, yOffset + yCompensate);
+
+  mouse.move(unwrapped, coords);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
@@ -181,6 +196,12 @@ SyntheticMouse.prototype.down = function(coordinates) {
 
   var pos = goog.style.getClientPosition(element);
 
+  this.isButtonPressed = true;
+  var doc = goog.dom.getOwnerDocument(element);
+  var scrollOffset =
+      goog.dom.getDomHelper(doc).getDocumentScroll();
+  this.viewPortOffset = scrollOffset;
+
   // TODO(simon): This implementation isn't good enough. Again
   // Defaults to left mouse button, which is right.
   this.buttonDown = bot.Mouse.Button.LEFT;
@@ -212,6 +233,9 @@ SyntheticMouse.prototype.up = function(coordinates) {
   bot.events.fire(element, goog.events.EventType.MOUSEUP, botCoords);
 
   this.buttonDown = null;
+  this.isButtonPressed = false;
+  this.viewPortOffset.x = 0;
+  this.viewPortOffset.y = 0;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };

@@ -65,9 +65,25 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
 
   if (!isOption && this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
     fxdriver.Logger.dumpn("Using native events for click");
-    var loc = Utils.getLocationOnceScrolledIntoView(unwrapped, unwrapped.tagName == "A");
-    var x = loc.x + (loc.width ? loc.width / 2 : 0);
-    var y = loc.y + (loc.height ? loc.height / 2 : 0);
+
+    var loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+    var elementXMiddle = (loc.width ? loc.width / 2 : 0);
+    var elementYMiddle = (loc.height ? loc.height / 2 : 0);
+
+    var inViewAfterScroll = bot.action.scrollIntoView(
+        unwrapped,
+        new goog.math.Coordinate(elementXMiddle, elementYMiddle));
+
+    if (!inViewAfterScroll) {
+        respond.sendError(
+            new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+                'Element cannot be scrolled into view:' + element));
+        return;
+    }
+
+    loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+    var x = loc.x + elementXMiddle;
+    var y = loc.y + elementYMiddle;
 
     // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
     // to add to the x and y locations.

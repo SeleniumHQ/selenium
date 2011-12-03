@@ -222,17 +222,4 @@ public class ClickTest extends AbstractDriverTestCase {
       fail("Should not be out of bounds: " + e.getMessage());
     }
   }
-
-  @Ignore(value = Ignore.Driver.ALL, issues = {2700})
-  public void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
-    String url = appServer.whereIs("click_out_of_bounds_overflow.html");
-    driver.get(url);
-
-    WebElement link = driver.findElement(By.id("link"));
-    try {
-      link.click();
-    } catch (MoveTargetOutOfBoundsException e) {
-      fail("Should not be out of bounds: " + e.getMessage());
-    }
-  }
 }

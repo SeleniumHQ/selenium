@@ -1,5 +1,7 @@
 package org.openqa.selenium;
 
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
+
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 
@@ -8,10 +10,9 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
-@Ignore(value = ANDROID, reason = "Android: Race condition when click returns, "
-    + "the UI did not finish scrolling..")
+@Ignore(value = {ANDROID, HTMLUNIT}, reason = "Android: Race condition when click returns, "
+    + "the UI did not finish scrolling..\nHtmlUnit: Scrolling requires rendering")
 public class ClickScrollingTest extends AbstractDriverTestCase {
-  @Ignore(value = HTMLUNIT, reason = "Page scrolling requires rendering")
   @JavascriptEnabled
   public void testClickingOnAnchorScrollsPage() {
     String scrollScript = "var pageY;";
@@ -35,7 +36,37 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
 
   }
 
-  @Ignore //TODO(danielwh): Unignore
+  public void testShouldScrollToClickOnAnElementHiddenByOverflow() {
+    String url = appServer.whereIs("click_out_of_bounds_overflow.html");
+    driver.get(url);
+
+    WebElement link = driver.findElement(By.id("link"));
+    try {
+      link.click();
+    } catch (MoveTargetOutOfBoundsException e) {
+      fail("Should not be out of bounds: " + e.getMessage());
+    }
+  }
+
+  public void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
+    driver.get(appServer.whereIs("scroll.html"));
+
+    WebElement link = driver.findElement(By.id("line8"));
+    // This used to throw a MoveTargetOutOfBoundsException - we don't expect it to
+    link.click();
+    assertEquals("line8", driver.findElement(By.id("clicked")).getText());
+  }
+
+  public void testShouldNotScrollOverflowElementsWhichAreVisible() {
+    driver.get(appServer.whereIs("scroll2.html"));
+    WebElement list = driver.findElement(By.tagName("ul"));
+    WebElement item = list.findElement(By.id("desired"));
+    item.click();
+    long yOffset =
+        (Long)((JavascriptExecutor)driver).executeScript("return arguments[0].scrollTop;", list);
+    assertEquals("Should not have scrolled", 0, yOffset);
+  }
+
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
     driver.findElement(By.id("button1")).click();

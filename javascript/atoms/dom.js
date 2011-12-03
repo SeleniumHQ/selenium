@@ -1116,18 +1116,43 @@ bot.dom.getLocationInView = function(elem, opt_elemRegion) {
 
 /**
  * Checks whether the element is currently scrolled in to view, such that the
- * offset given, relative to the top-left corner of the element, is displayed.
+ * offset given, relative to the top-left corner of the element, is currently
+ * displayed in the viewport.
  *
  * @param {!Element} element The element to check.
- * @param {!goog.math.Coordinate} offset Coordinate in the element, relative to
- *     the top-left corner of the element, to check.
+ * @param {!goog.math.Coordinate} opt_coords Coordinate in the element,
+ *     relative to the top-left corner of the element, to check. If none are
+ *     specified, checks that any part of the element is in view.
  * @return {boolean} Whether the coordinates specified, relative to the element,
  *     are scrolled in to view.
  */
-bot.dom.isCurrentlyScrolledIntoView = function(element, offset) {
-  var coords = goog.style.getClientPosition(element);
-  coords.x += offset.x;
-  coords.y += offset.y;
-  var visibleRect = goog.style.getVisibleRectForElement(element);
-  return !!visibleRect && (visibleRect.contains(coords));
+bot.dom.isScrolledIntoView = function(element, opt_coords) {
+  var ownerWindow = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
+  var topWindow = ownerWindow.top;
+  for (var win = ownerWindow; ; win = win.parent) {
+    var scroll = goog.dom.getDomHelper(win.document).getDocumentScroll();
+    var size = goog.dom.getViewportSize(win);
+    var viewportRect = new goog.math.Rect(scroll.x, scroll.y, size.width, size.height);
+
+    var elCoords = goog.style.getFramedPageOffset(element, win);
+    var elSize = goog.style.getSize(element);
+    var elementRect = new goog.math.Rect(elCoords.x, elCoords.y, elSize.width, elSize.height);
+    if (!goog.math.Rect.intersects(viewportRect, elementRect)) {
+      return false;
+    }
+    if (win == topWindow) {
+      break;
+    }
+  }
+
+  var visibleBox = goog.style.getVisibleRectForElement(element);
+  if (!visibleBox) {
+    return false;
+  } else if (opt_coords) {
+    var elementOffset = goog.style.getPageOffset(element);
+    return visibleBox.contains(goog.math.Coordinate.sum(elementOffset, opt_coords));
+  } else {
+    var elementBox = goog.style.getBounds(element).toBox();
+    return goog.math.Box.intersects(visibleBox, elementBox);
+  }
 };
