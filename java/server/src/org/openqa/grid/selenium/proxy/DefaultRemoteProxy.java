@@ -108,15 +108,12 @@ public class DefaultRemoteProxy extends RemoteProxy
   }
 
 
-  public void afterCommand(TestSession session, HttpServletRequest request,
-      HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo()
-        + " executing ...");
+  public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
   }
 
 
-  public void beforeCommand(TestSession session, HttpServletRequest request,
-      HttpServletResponse response) {
+  public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
   }
 
@@ -132,11 +129,11 @@ public class DefaultRemoteProxy extends RemoteProxy
    */
   private volatile boolean down = false;
   private volatile boolean poll = true;
+
   // TODO freynaud
   private List<RemoteException> errors = new CopyOnWriteArrayList<RemoteException>();
   private Thread pollingThread = null;
 
-  
 
   // TODO freynaud replace with getstatus.
   public boolean isAlive() {
@@ -157,9 +154,6 @@ public class DefaultRemoteProxy extends RemoteProxy
     // webdriver returns a 200 on /status. selenium RC returns a 404
     return code == 200 || code == 404;
   }
-
-
- 
 
   public void startPolling() {
     pollingThread = new Thread(new Runnable() { // Thread safety reviewed
@@ -265,8 +259,6 @@ public class DefaultRemoteProxy extends RemoteProxy
         }
       }
     }
-
-
   }
 
   public void afterSession(TestSession session) {
@@ -279,5 +271,4 @@ public class DefaultRemoteProxy extends RemoteProxy
     super.teardown();
     stopPolling();
   };
-
 }
