@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.grid.common;
 
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
+import static org.openqa.grid.common.RegistrationRequest.REGISTER_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import java.util.HashMap;
@@ -158,5 +159,14 @@ public class RegistrationRequestTest {
 
   }
 
+  @Test
+  public void ensurePre2_9HubCompatibility() {
+    RegistrationRequest req = RegistrationRequest.build("-role", "rc", "-host", "example.com", "-port", "5555");
 
+    // This is the configuration value for >= v2.9 hubs.
+    Assert.assertEquals("http://example.com:5555", req.getConfigAsString(RegistrationRequest.REMOTE_HOST));
+
+    // This is the configuration value for < v2.9 hubs.
+    Assert.assertEquals("http://example.com:5555", req.getConfigAsString("url"));
+  }
 }

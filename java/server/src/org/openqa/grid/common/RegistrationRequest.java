@@ -206,17 +206,14 @@ public class RegistrationRequest {
   * node changed for 2 type of nodes to single node answering both sel1 and webdriver protocol.
   * <p>
   * That means the hub now need to handle registration request containing
-  * "url":"http://ip:port/selenium-server/driver" ( 2.9- , RC ),"url":"http://ip:port/wd/hub"
-  * (2.9-, wb)
+  * "url":"http://ip:port/selenium-server/driver" ( < v2.9 , RC ),"url":"http://ip:port/wd/hub"
+  * (< v2.9, wb)
   * <p>
-  * and "remoteHost":"http://ip:port" ( 2.9+ ).
+  * and "remoteHost":"http://ip:port" ( > v2.9 ).
   *
   * The pre 2.9 registration requests need to be updated and take the "url" config param and
   * generate the "remoteHost" out of it.
   */
-
-  // TODO freynaud : remove that when <= v2.9 nodes are history.
-
   private void ensureBackwardCompatibility() {
     // new param after 2.9
     String url = (String) configuration.get(REMOTE_HOST);
@@ -408,6 +405,13 @@ public class RegistrationRequest {
       String url = "http://" + res.configuration.get(HOST) + ":" + res.configuration.get(PORT);
       res.configuration.put(REMOTE_HOST, url);
     }
+
+    // The hub in < v2.9 expects a "url" param, not "remoteHost".  While the configuration option was updated to
+    // reflect its new intent, they're logically equivalent for the purposes of setting the proxy ID.  I.e., the old hub
+    // used the "url" value for the proxy ID, while the new one uses "remoteHost".  So, just set "url" to be "remoteHost"
+    // to make things work fine with older hubs.
+    res.configuration.put("url", res.configuration.get(REMOTE_HOST));
+
     String u = (String) res.configuration.get("hub");
     if (u != null) {
       try {
