@@ -121,8 +121,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   public RemoteProxy(RegistrationRequest request, Registry registry) {
     this.request = request;
     this.registry = registry;
-    this.config =
-        mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
+    this.config = mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
+
     String url = (String) config.get(REMOTE_HOST);
     if (url == null) {
       // no URL isn't always a problem.
@@ -159,6 +159,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         log.warning("Max instance not specified. Using default = 1 instance");
         maxInstance = "1";
       }
+
       int value = Integer.parseInt(maxInstance.toString());
       for (int i = 0; i < value; i++) {
         Map<String, Object> c = new HashMap<String, Object>();
@@ -168,6 +169,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         slots.add(new TestSlot(this, protocol, path, c));
       }
     }
+
     this.testSlots = Collections.unmodifiableList(slots);
   }
 
@@ -181,8 +183,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       try {
         protocol = SeleniumProtocol.valueOf(type);
       } catch (IllegalArgumentException e) {
-        throw new GridException(type
-            + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);
+        throw new GridException(type + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);
       }
     }
     return protocol;
@@ -224,9 +225,11 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       Map<String, Object> configuration2) {
     Map<String, Object> res = new HashMap<String, Object>();
     res.putAll(configuration1);
+
     for (String key : configuration2.keySet()) {
       res.put(key, configuration2.get(key));
     }
+
     return res;
   }
 
@@ -240,9 +243,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     if (id == null) {
       throw new RuntimeException("Bug. Trying to use the id on a proxy but it hasn't been set.");
     }
+
     return id;
   }
-
 
   public void teardown() {
     stop = true;
@@ -340,13 +343,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       return null;
     }
     // any slot left at all?
-    int totalUsed = getTotalUsed();
-    if (totalUsed >= maxConcurrentSession) {
+    if (getTotalUsed() >= maxConcurrentSession) {
       return null;
     }
     // any slot left for the given app ?
     for (TestSlot testslot : testSlots) {
       TestSession session = testslot.getNewSession(requestedCapability);
+
       if (session != null) {
         return session;
       }
@@ -361,11 +364,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    */
   public int getTotalUsed() {
     int totalUsed = 0;
+
     for (TestSlot slot : testSlots) {
       if (slot.getSession() != null) {
         totalUsed++;
       }
     }
+
     return totalUsed;
   }
 
@@ -384,6 +389,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         return true;
       }
     }
+
     return false;
   }
 
@@ -404,8 +410,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")
-  public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
-      Registry registry) {
+  public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request, Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
       if (proxyClass == null) {
@@ -424,9 +429,11 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       } else {
         throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
       }
+
     } catch (InvocationTargetException e) {
       e.getTargetException().printStackTrace();
       throw new InvalidParameterException("Error: " + e.getTargetException().getMessage());
+
     } catch (Exception e) {
       e.printStackTrace();
       throw new InvalidParameterException("Error: " + e.getMessage());
@@ -446,12 +453,15 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     if (this == obj) {
       return true;
     }
+
     if (obj == null) {
       return false;
     }
+
     if (getClass() != obj.getClass()) {
       return false;
     }
+
     RemoteProxy other = (RemoteProxy) obj;
     if (getId() == null) {
       if (other.getId() != null) {
@@ -460,6 +470,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     } else if (!getId().equals(other.getId())) {
       return false;
     }
+
     return true;
   }
 
@@ -468,6 +479,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     if (o == null) {
       return -1;
     }
+
     return getTotalUsed() - o.getTotalUsed();
   }
 
@@ -499,7 +511,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   /**
    * the status of the node.
    * @return
-   * @throws GridException. If the node if down or doesn't recognize the /wd/hub/status request. 
+   * @throws GridException If the node if down or doesn't recognize the /wd/hub/status request.
    */
   public JSONObject getStatus() throws GridException {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
@@ -527,10 +539,12 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
     StringBuilder s = new StringBuilder();
     String line;
+
     while ((line = rd.readLine()) != null) {
       s.append(line);
     }
     rd.close();
+
     return new JSONObject(s.toString());
   }
 
