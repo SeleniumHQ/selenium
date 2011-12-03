@@ -270,5 +270,5 @@ public class DefaultRemoteProxy extends RemoteProxy
   public void teardown() {
     super.teardown();
     stopPolling();
-  };
+  }
 }
