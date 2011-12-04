@@ -368,6 +368,10 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   @Ignore(value = {SELENESE, ANDROID},
       reason = "Not implemented")
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
+    if (SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver)) {
+      System.err.println("Skipping test which fails in IE on Sauce");
+      return;
+    }
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));

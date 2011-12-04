@@ -148,6 +148,11 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
       return;
     }
 
+    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
+      System.out.println("Skipping hover test: Hover is very short-lived on Windows. Issue 2067.");
+      return;
+    }
+
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("menu1"));
