@@ -307,7 +307,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   private boolean supportsHover() {
-    return !(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().equals(Platform.WINDOWS));
+    return !(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {

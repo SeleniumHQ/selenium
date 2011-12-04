@@ -3,6 +3,7 @@ package org.openqa.selenium;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -67,6 +68,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     assertEquals("Should not have scrolled", 0, yOffset);
   }
 
+  @Ignore(CHROME)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
     driver.findElement(By.id("button1")).click();
