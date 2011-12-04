@@ -48,20 +48,30 @@ public class JSONConfigurationUtils {
         // ignore
       }
     }
+
     if (in == null) {
       throw new RuntimeException(resource + " is not a valid resource.");
     }
+
     StringBuilder b = new StringBuilder();
     InputStreamReader inputreader = new InputStreamReader(in);
     BufferedReader buffreader = new BufferedReader(inputreader);
     String line;
+
     try {
       while ((line = buffreader.readLine()) != null) {
         b.append(line);
       }
     } catch (IOException e) {
-      throw new GridConfigurationException("Cannot read file " + resource + " , " + e.getMessage(),
-          e);
+      throw new GridConfigurationException("Cannot read file " + resource + " , " + e.getMessage(), e);
+    } finally {
+      try {
+        buffreader.close();
+        inputreader.close();
+        in.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
 
     String json = b.toString();
@@ -71,8 +81,7 @@ public class JSONConfigurationUtils {
     } catch (JSONException e) {
       throw new GridConfigurationException("Wrong format for the JSON input : " + e.getMessage(), e);
     }
+
     return o;
   }
-
-
 }
