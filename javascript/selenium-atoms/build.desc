@@ -10,8 +10,10 @@ js_binary(name = "selenium-atoms",
   deps = [
     ":deps",
   ],
-  out = "build/javascript/selenium-atoms/selenium-atoms.js"
-  )
+  out = "build/javascript/selenium-atoms/selenium-atoms.js",
+  flags = [
+    "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
+  ])
 
 js_test(name = "test",
   srcs = [
