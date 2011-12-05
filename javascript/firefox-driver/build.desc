@@ -152,7 +152,7 @@ js_binary(name = "prompt_service",
 js_binary(name = "session",
   srcs = [
     "js/moz.js",
-    "js/session.js",
+    "js/wdsession.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",
