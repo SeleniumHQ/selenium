@@ -22,9 +22,6 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   this.enableNativeEvents = enableNativeEvents;
   this.window = win;
 
-  // Default to a two second timeout.
-  this.alertTimeout = 2000;
-
   this.currentX = 0;
   this.currentY = 0;
 
@@ -810,18 +807,6 @@ FirefoxDriver.prototype.screenshot = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getAlert = function(respond) {
-  fxdriver.modals.isModalPresent(
-      function(present) {
-        if (!present) {
-          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
-          respond.value = { message: 'No alert is present' };
-        }
-        respond.send();
-      }, this.alertTimeout);
-};
-
-
 FirefoxDriver.prototype.dismissAlert = function(respond) {
   fxdriver.modals.dismissAlert(this);
   respond.send();
@@ -835,6 +820,7 @@ FirefoxDriver.prototype.acceptAlert = function(respond) {
 
 FirefoxDriver.prototype.getAlertText = function(respond) {
   var driver = this;
+  var wait = respond.session.getImplicitWait() || 1;
   fxdriver.modals.isModalPresent(
     function(present) {
       if (present) {
@@ -844,7 +830,7 @@ FirefoxDriver.prototype.getAlertText = function(respond) {
         respond.value = { message: 'No alert is present' };
       }
       respond.send();
-    }, this.alertTimeout);
+    }, wait);
 };
 
 
