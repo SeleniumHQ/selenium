@@ -132,7 +132,7 @@ public class ErrorHandler {
   }
 
   private String duration(long duration) {
-    String prefix = "; duration or timeout: ";
+    String prefix = "\nCommand duration or timeout: ";
     if (duration < 1000) {
       return prefix + duration + " milliseconds";
     }

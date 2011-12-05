@@ -144,7 +144,7 @@ public class ErrorHandlerTest extends TestCase {
               "class", NullPointerException.class.getName())), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("boom; duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("boom\nCommand duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -162,7 +162,7 @@ public class ErrorHandlerTest extends TestCase {
               "class", NullPointerException.class.getName())), 1234);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("boom; duration or timeout: 1.23 seconds").getMessage(),
+      assertEquals(new WebDriverException("boom\nCommand duration or timeout: 1.23 seconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -175,7 +175,7 @@ public class ErrorHandlerTest extends TestCase {
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   public void testShouldBeAbleToRebuildASerializedException() throws Exception {
-    RuntimeException serverError = new RuntimeException("foo bar baz!; duration or timeout: 123 milliseconds");
+    RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
 
     try {
       handler.throwIfResponseFailed(
@@ -206,7 +206,7 @@ public class ErrorHandlerTest extends TestCase {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage() + "; duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -233,7 +233,7 @@ public class ErrorHandlerTest extends TestCase {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage() + "; duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -259,7 +259,7 @@ public class ErrorHandlerTest extends TestCase {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message; duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
