@@ -745,4 +745,3 @@ at_exit do
     sh "sh .git-fixfiles"
   end
 end
-
