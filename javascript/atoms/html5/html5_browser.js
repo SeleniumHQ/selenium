@@ -79,6 +79,18 @@ bot.html5.IS_SAFARI4_ = goog.userAgent.SAFARI &&
 
 
 /**
+ * True if the current browser is Safari 5 on Windows.
+ *
+ * @private
+ * @type {boolean}
+ * @const
+ */
+bot.html5.IS_SAFARI5_WINDOWS_ = goog.userAgent.WINDOWS &&
+    goog.userAgent.SAFARI && bot.userAgent.isVersion(5) &&
+    !bot.userAgent.isVersion(6);
+
+
+/**
  * Checks if the browser supports an HTML5 feature.
  *
  * @param {bot.html5.API} api HTML5 API identifier.
@@ -115,7 +127,9 @@ bot.html5.isSupported = function(api, opt_window) {
       // FF3 and FF4 needs geo location to be explicitely set in
       // the user preds. Uncomment this when the FirefoxProfile
       // supports this.
-      if (bot.html5.IS_FF_3_OR_4_) {
+      // Geolocation doesn't respond on Safari5 on Windows, see:
+      // https://discussions.apple.com/thread/3547900
+      if (bot.html5.IS_FF_3_OR_4_ || bot.html5.IS_SAFARI5_WINDOWS_) {
         return false;
       }
       return goog.isDefAndNotNull(win.navigator) &&
