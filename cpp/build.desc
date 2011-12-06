@@ -117,10 +117,12 @@ mozilla_lib(name = "webdriver_firefox_ff8_64",
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],
+  args = "-I/usr/include",
   arch = "i386")
 
 gcc_library(name = "noblur64",
   srcs = [ "linux-specific/*.c" ],
+  args = "-I/usr/include",
   arch = "amd64")
 
 gcc_library(name = "imehandler",
