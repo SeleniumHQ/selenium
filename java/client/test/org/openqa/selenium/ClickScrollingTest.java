@@ -10,17 +10,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 @Ignore(value = {ANDROID, HTMLUNIT}, reason = "Android: Race condition when click returns, "
     + "the UI did not finish scrolling..\nHtmlUnit: Scrolling requires rendering")
 public class ClickScrollingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   public void testClickingOnAnchorScrollsPage() {
-    String scrollScript = "var pageY;";
+    String scrollScript = "";
+    scrollScript += "var pageY;";
     scrollScript += "if (typeof(window.pageYOffset) == 'number') {";
-    scrollScript += "pageY = window.pageYOffset;";
+    scrollScript += "  pageY = window.pageYOffset;";
     scrollScript += "} else {";
-    scrollScript += "pageY = document.documentElement.scrollTop;";
+    scrollScript += "  pageY = document.documentElement.scrollTop;";
     scrollScript += "}";
     scrollScript += "return pageY;";
 
@@ -58,6 +60,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     assertEquals("line8", driver.findElement(By.id("clicked")).getText());
   }
 
+  @Ignore(SELENESE)
   public void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
     WebElement list = driver.findElement(By.tagName("ul"));
