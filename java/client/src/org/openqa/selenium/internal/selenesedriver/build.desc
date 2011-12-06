@@ -7,6 +7,7 @@ java_library(name = "selenesedriver",
     "//java/client/src/com/thoughtworks/selenium",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/remote:base",
+    "//java/client/src/org/openqa/selenium/remote:common",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])

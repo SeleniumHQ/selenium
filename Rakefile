@@ -156,7 +156,10 @@ task :android_server => ['//android/app:android-server']
 # TODO(simon): test-core should go first, but it's changing the least for now.
 task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backed-webdriver', :'test-core']
 
-task :'test-selenium-backed-webdriver' => ['//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test:run']
+task :'test-selenium-backed-webdriver' => [
+  '//javascript/selenium-atoms:test:run',
+  '//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test:run'
+]
 task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
 task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run',
                     '//java/client/test/com/thoughtworks/selenium:firefox-proxy-rc-test:run',

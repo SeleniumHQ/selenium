@@ -21,7 +21,6 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -70,7 +69,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -102,7 +100,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({IPHONE})
   public void testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -121,7 +119,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({IPHONE})
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -144,7 +142,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, IPHONE})
+  @Ignore({IE, IPHONE})
   public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -172,7 +170,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, IPHONE})
+  @Ignore({IE, IPHONE})
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -275,7 +273,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -330,7 +327,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldBeAbleToPassAWebElementAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -347,7 +343,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testPassingArrayAsOnlyArgumentFlattensArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -373,7 +368,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, REMOTE, SELENESE})
+  @Ignore({IE, REMOTE})
   public void testShouldBeAbleToPassACollectionAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -423,7 +418,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = {SELENESE, IPHONE},
+  @Ignore(value = {IPHONE},
       reason = "iPhone: Frame switching not yet implemented.")
   @JavascriptEnabled
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
@@ -448,7 +443,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testJavascriptStringHandlingShouldWorkAsExpected() {
     driver.get(pages.javascriptPage);
 
@@ -482,7 +476,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({SELENESE, REMOTE, IPHONE})
+  @Ignore({REMOTE, IPHONE})
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
     String scriptToExec = "return document.getElementsByName('snack');";
@@ -521,7 +515,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testCanHandleAnArrayOfElementsAsAnObjectArray() {
     driver.get(pages.formPage);
 
