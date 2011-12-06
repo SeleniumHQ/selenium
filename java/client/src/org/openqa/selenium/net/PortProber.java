@@ -98,6 +98,9 @@ public class PortProber {
       if (FIRST_PORT == LAST_PORT) {
         return FIRST_PORT;
       }
+      if (FIRST_PORT > LAST_PORT) {
+        throw new UnsupportedOperationException("Could not find ephemeral port to use");
+      }
       final int randomInt = random.nextInt();
       final int portWithoutOffset = Math.abs(randomInt % (LAST_PORT - FIRST_PORT + 1));
       return portWithoutOffset + FIRST_PORT;
