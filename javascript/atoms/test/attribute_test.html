@@ -24,18 +24,9 @@ limitations under the License.
     goog.require('bot.locators');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.testing.ExpectedFailures');
   </script>
 
   <script type="text/javascript">
-    function setUp() {
-      expectedFailures = new goog.testing.ExpectedFailures();
-    }
-
-    function tearDown() {
-      expectedFailures.handleTearDown();
-    }
-
     function testCanFindNamedAttributes() {
       var e = bot.locators.findElement({id: 'cheddar'});
 
@@ -74,37 +65,14 @@ limitations under the License.
     }
 
     function testReturnsTrueWhenBooleanAttributesPresent() {
-      expectedFailures.expectFailureFor(
-          goog.userAgent.IE || goog.userAgent.OPERA,
-          'There is an issue for an attribute that has false value; need to rework atom');
       var e1 = bot.locators.findElement({id: 'peas'});
       var e2 = bot.locators.findElement({name: 'checky'});
       var e3 = bot.locators.findElement({id: 'checked'});
-      var e4 = bot.locators.findElement({id: 'unwrappable'});
-      var e5 = bot.locators.findElement({name: 'firstname'});
-      var e6 = bot.locators.findElement({name: 'secondname'});
-      var e7 = bot.locators.findElement({name: 'thirdname'});
-      var e8 = bot.locators.findElement({name: 'fourthname'});
 
       assertEquals('true', bot.dom.getAttribute(e1, 'selected'));
       assertEquals('true', bot.dom.getAttribute(e2, 'checked'));
       assertEquals('true', bot.dom.getAttribute(e2, 'readonly'));
       assertEquals('true', bot.dom.getAttribute(e3, 'checked'));
-      assertEquals('true', bot.dom.getAttribute(e4, 'nowrap'));
-      assertEquals('true', bot.dom.getAttribute(e5, 'required'));
-      assertEquals('true', bot.dom.getAttribute(e6, 'required'));
-      assertEquals('true', bot.dom.getAttribute(e7, 'required'));
-      expectedFailures.run(function() {
-        assertEquals('true', bot.dom.getAttribute(e8, 'required'));
-      });
-    }
-
-    function testReturnsNullWhenBooleanAttributesNotPresent() {
-      var e1 = bot.locators.findElement({id: 'cheddar'});
-      var e2 = bot.locators.findElement({name: 'checky'});
-
-      assertNull(bot.dom.getAttribute(e1, 'nowrap'));
-      assertNull(bot.dom.getAttribute(e2, 'required'));
     }
 
     function testAttributeMatchesAreCaseInsensitive() {
@@ -138,14 +106,5 @@ limitations under the License.
            checked="checked">Myself
     <input name="radio" type="radio" value="i">And I
   </form>
-
-  <form action="#" method="get" name="myform2">
-    <input name="firstname" type="text" value="First" required />
-    <input name="secondname" type="text" value="Second" required="" />
-    <input name="thirdname" type="text" value="Third" required="required" />
-    <input name="fourthname" type="text" value="Fourth" required="false" />
-  </form>
-
-  <div id="unwrappable" nowrap>Unwrappable text</div>
 </body>
 </html>

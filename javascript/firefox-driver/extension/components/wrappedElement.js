@@ -273,6 +273,7 @@ FirefoxDriver.prototype.sendKeysToElement.preconditions =
 FirefoxDriver.prototype.clearElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
+  bot.setWindow(respond.session.getWindow());
   bot.action.clear(element);
   respond.send();
 };

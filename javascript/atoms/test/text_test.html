@@ -47,6 +47,20 @@ limitations under the License.
       assertEquals("Some text that contains script tags", text)
     }
 
+    function testGetVisibleTextShouldIgnoreTitleElements() {
+      var titleElement = bot.locators.findElement({tagName: 'title'});
+      var text = bot.dom.getVisibleText(titleElement);
+
+      assertEquals('', text)
+    }
+
+    function testGetVisibleTextShouldRecursivelyIgnoreTitleElements() {
+      var headElement = bot.locators.findElement({tagName: 'head'});
+      var text = bot.dom.getVisibleText(headElement);
+
+      assertEquals('', text)
+    }
+
     function testGetVisibleTextShouldRepresentABlockLevelElementAsANewline() {
       var text = getVisibleTextByElementId('multiline');
 
@@ -209,7 +223,7 @@ limitations under the License.
 
       assertEquals("Some text", text);
     }
-    
+
     function testShouldRetainTheFormatingOfTextWithinAPreElement() {
       var text = getVisibleTextByElementId("preformatted");
 

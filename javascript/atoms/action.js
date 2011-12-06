@@ -23,18 +23,19 @@
 goog.provide('bot.action');
 
 goog.require('bot');
+goog.require('bot.Device');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.Keyboard');
 goog.require('bot.Mouse');
 goog.require('bot.dom');
 goog.require('bot.events');
+goog.require('bot.events.EventType');
 goog.require('bot.locators');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.events.EventType');
 goog.require('goog.math.Coordinate');
 goog.require('goog.userAgent');
 
@@ -50,7 +51,6 @@ goog.require('goog.userAgent');
  */
 bot.action.checkShown_ = function(element) {
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
-
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and may not be manipulated');
   }
@@ -74,178 +74,10 @@ bot.action.checkInteractable_ = function(element) {
 
 
 /**
- * @param {Node} node The node to test.
- * @return {boolean} Whether the node is a SELECT element.
- * @private
- */
-bot.action.isSelectElement_ = function(node) {
-  return bot.dom.isElement(node, goog.dom.TagName.SELECT);
-};
-
-
-/**
- * Sets the selected state of an INPUT element.
- * @param {!Element} element The element to manipulate.
- * @param {boolean} selected Whether the final state of the element should be
- *     what a user would consider "selected".
- * @see bot.action.setSelected
- * @private
- */
-bot.action.selectInputElement_ = function(element, selected) {
-  var type = element.type.toLowerCase();
-  if (type == 'checkbox' || type == 'radio') {
-    if (element.checked != selected) {
-      if (element.type == 'radio' && !selected) {
-        throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-            'You may not deselect a radio button');
-      }
-
-      if (selected == bot.dom.isSelected(element)) {
-        return;  // Already in the desired state.
-      }
-
-      element.checked = selected;
-      bot.events.fire(element, goog.events.EventType.CHANGE);
-    }
-  } else {
-    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-        'You may not select an unselectable input element: ' +
-            element.type);
-  }
-};
-
-
-/**
- * Sets the selected state of an OPTION element.
- * @param {!Element} element The element to manipulate.
- * @param {boolean} selected Whether the final state of the element should be
- *     what a user would consider "selected".
- * @see bot.action.setSelected
- * @private
- */
-bot.action.selectOptionElement_ = function(element, selected) {
-  var select = (/** @type {!Element} */
-      goog.dom.getAncestor(element, bot.action.isSelectElement_));
-
-  if (!select.multiple && !selected) {
-    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-        'You may not deselect an option within a select that ' +
-        'does not support multiple selections.');
-  }
-
-  if (selected == bot.dom.isSelected(element)) {
-    return;  // Already in the desired state.
-  }
-
-  if (goog.userAgent.IE) {
-    select.focus();
-  }
-
-  element.selected = selected;
-  bot.events.fire(select, goog.events.EventType.CHANGE);
-
-  if (goog.userAgent.IE) {
-    select.blur();
-  }
-};
-
-
-/**
- * Sets an element's selected element to the specified state. Only elements that
- * support the "checked" or "selected" attribute may be selected.
- * <p/>
- * This function has no effect if the element is already in the desired state.
- * Otherwise, the element's state is toggled and a "change" event is fired.
- *
- * @param {!Element} element The element to manipulate.
- * @param {boolean} selected Whether the final state of the element should be
- *     what a user would consider "selected".
- */
-bot.action.setSelected = function(element, selected) {
-  // TODO(user): Fire more than just change events: mousemove, keydown, etc?
-  bot.action.checkInteractable_(element);
-
-  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
-    bot.action.selectInputElement_(element, selected);
-  } else if (bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
-    bot.action.selectOptionElement_(element, selected);
-  } else {
-    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-        'You may not select an unselectable element: ' + element.tagName);
-  }
-};
-
-
-/**
- * Toggles the selected state of the given element.
- *
- * @param {!Element} element The element to toggle.
- * @return {boolean} The new selected state of the element.
- * @see bot.action.setSelected
- * @see bot.dom.isSelected
- */
-bot.action.toggle = function(element) {
-  bot.action.checkShown_(element);
-  if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
-      'radio' == element.type) {
-    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        'You may not toggle a radio button');
-  }
-  bot.action.setSelected(element, !bot.dom.isSelected(element));
-  return bot.dom.isSelected(element);
-};
-
-
-/**
- * Focuses on the given element if it is not already the active element. If
- * a focus change is required, the active element will be blurred before
- * focusing on the given element.
- * @param {!Element} element The element to focus on.
- * @param {Element=} opt_activeElement The currently active element. If
- *     provided, and different from {@code element}, the active element will
- *     be blurred before focusing on the element.
- */
-
-bot.action.focusOnElement = function(element, opt_activeElement) {
-  bot.action.checkInteractable_(element);
-  var activeElement = opt_activeElement || bot.dom.getActiveElement(element);
-
-  if (element != activeElement) {
-    // NOTE(user): This check is for browsers that do not support the
-    // document.activeElement property, like Safari 3. Interestingly,
-    // Safari 3 implicitly blurs the activeElement when we call focus()
-    // below, so the blur event still fires on the activeElement.
-    if (activeElement) {
-      if (goog.isFunction(activeElement.blur) ||
-          // IE seems to report native functions as being objects.
-          goog.userAgent.IE && goog.isObject(activeElement.blur)) {
-        activeElement.blur();
-      }
-
-      // Apparently, in certain situations, IE6 and IE7 will not fire an onblur
-      // event after blur() is called, unless window.focus() is called
-      // immediately afterward.
-      // Note that IE8 will hit this branch unless the page is forced into
-      // IE8-strict mode. This shouldn't hurt anything, we just use the
-      // useragent sniff so we can compile this out for proper browsers.
-      if (goog.userAgent.IE && !goog.userAgent.isVersion(8)) {
-        goog.dom.getWindow(goog.dom.getOwnerDocument(element)).focus();
-      }
-    }
-    // In IE, blur and focus events fire asynchronously.
-    // TODO(user): Does this mean we've entered callback territory?
-    if (goog.isFunction(element.focus) ||
-        goog.userAgent.IE && goog.isObject(element.focus)) {
-      element.focus();
-    }
-  }
-};
-
-
-/**
  * Clears a textual form field.
  *
- * <p/>Throws an exception if the element is not shown, disabled, or not editable.
+ * <p/>Throws an exception if the element is not shown, disabled, or not
+ * editable.
  *
  * @param {!Element} element The element to clear.
  */
@@ -256,20 +88,29 @@ bot.action.clear = function(element) {
         'Element must be user-editable in order to clear it.');
   }
 
-  bot.action.focusOnElement(element);
+  bot.action.LegacyDevice_.focusOnElement(element);
   if (element.value) {
     element.value = '';
-    bot.events.fire(element, goog.events.EventType.CHANGE);
-    return;
+    bot.events.fire(element, bot.events.EventType.CHANGE);
   }
-  
+
   if (bot.dom.isContentEditable(element)) {
-    // A single space is required, if you put empty string here you'll not be able
-    // to interact with this element anymore in Firefox
+    // A single space is required, if you put empty string here you'll not be
+    // able to interact with this element anymore in Firefox.
     element.innerHTML = ' ';
-    // contentEditable does not generate onchange event
-    return;
+    // contentEditable does not generate onchange event.
   }
+};
+
+
+/**
+ * Focuses on the given element if it is not already the active element.
+ * Delegates to {@link bot.Device.focusOnElement}
+ * @param {!Element} element The element to focus on.
+ */
+bot.action.focusOnElement = function(element) {
+  bot.action.checkInteractable_(element);
+  bot.action.LegacyDevice_.focusOnElement(element);
 };
 
 
@@ -290,8 +131,9 @@ bot.action.clear = function(element) {
  */
 bot.action.type = function(element, var_args) {
   bot.action.checkShown_(element);
-  bot.action.focusOnElement(element);
-  var keyboard = new bot.Keyboard(element);
+  bot.action.checkInteractable_(element);
+  var keyboard = new bot.Keyboard();
+  keyboard.moveCursor(element);
 
   var values = goog.array.slice(arguments, 1);
   goog.array.forEach(values, function(value) {
@@ -370,7 +212,7 @@ bot.action.submitForm_ = function(form) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'Element was not in a form, so could not submit.');
   }
-  if (bot.events.fire(form, goog.events.EventType.SUBMIT)) {
+  if (bot.events.fire(form, bot.events.EventType.SUBMIT)) {
     // When a form has an element with an id or name exactly equal to "submit"
     // (not uncommon) it masks the form.submit function. We  can avoid this by
     // calling the prototype's submit function, except in IE < 8, where DOM id
@@ -499,10 +341,9 @@ bot.action.doubleClick = function(element, opt_coords) {
 
   bot.action.pressAndReleaseButton_(
       mouse, element, bot.Mouse.Button.LEFT);
-  // In the second click of a double click we don't have to focus on the element
-  // again.
+
   bot.action.pressAndReleaseButton_(
-      mouse, element, bot.Mouse.Button.LEFT, true);
+      mouse, element, bot.Mouse.Button.LEFT);
 };
 
 
@@ -519,10 +360,7 @@ bot.action.doubleClick = function(element, opt_coords) {
  * @private
  */
 bot.action.prepareMouseForClick_ = function(element, opt_coords) {
-  if (!bot.dom.isShown(element, true)) {
-    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
-        'Element is not currently visible and may not be manipulated');
-  }
+  bot.action.checkShown_(element);
 
   // Unlike element.scrollIntoView(), this scrolls the minimal amount
   // necessary, not scrolling at all if the element is already in view.
@@ -557,22 +395,11 @@ bot.action.prepareMouseForClick_ = function(element, opt_coords) {
  * events.
  * @param {!Element} element The element to click.
  * @param {!bot.Mouse.Button} button The mouse button.
- * @param {boolean=} opt_doNotFocusOnElement Whether to focus on the
  * {@code element}.
  * @private
  */
-bot.action.pressAndReleaseButton_ =
-    function(mouse, element, button, opt_doNotFocusOnElement) {
-  var performFocus = mouse.pressButton(button);
-
-  // focus on the element
-  if (!opt_doNotFocusOnElement &&
-      performFocus &&
-      bot.dom.isInteractable(element)) {
-    var activeElement = bot.dom.getActiveElement(element);
-    bot.action.focusOnElement(element, activeElement);
-  }
-
+bot.action.pressAndReleaseButton_ = function(mouse, element, button) {
+  mouse.pressButton(button);
   mouse.releaseButton();
 };
 
@@ -611,6 +438,34 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
   mouse.move(element, finalXY);
 
   mouse.releaseButton();
+};
+
+
+
+/**
+ * A Device that is intended to allows access to protected members of the
+ * Device superclass. A singleton.
+ *
+ * @constructor
+ * @extends {bot.Device}
+ * @private
+ */
+bot.action.LegacyDevice_ = function() {
+  goog.base(this);
+};
+goog.inherits(bot.action.LegacyDevice_, bot.Device);
+goog.addSingletonGetter(bot.action.LegacyDevice_);
+
+
+/**
+ * Focuses on the given element.  See {@link bot.device.focusOnElement}.
+ * @param {!Element} element The element to focus on.
+ * @return {boolean} True if element.focus() was called on the element.
+ */
+bot.action.LegacyDevice_.focusOnElement = function(element) {
+  var instance = bot.action.LegacyDevice_.getInstance();
+  instance.setElement(element);
+  return instance.focusOnElement();
 };
 
 

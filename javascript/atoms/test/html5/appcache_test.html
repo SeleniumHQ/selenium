@@ -15,6 +15,12 @@
         return;
       }
 
+      // Android does support the application cache, but disabling because
+      // WebDriver cannot currently enable it, b/5478400.
+      if (goog.userAgent.product.ANDROID) {
+        return;
+      }
+
       var win = bot.getWindow();
       assertEquals(win.applicationCache.IDLE, bot.appcache.getStatus());
     }
@@ -25,4 +31,3 @@ Test
 <img id="red" src="testdata/ps_logo2.png">
 </body>
 </html>
-

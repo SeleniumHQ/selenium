@@ -20,85 +20,195 @@
 
 
 goog.provide('bot.events');
+goog.provide('bot.events.EventType');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.userAgent');
+goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 
 /**
- * @typedef {{clientX: (number|undefined),
- *            clientY: (number|undefined),
- *            button: (number|undefined),
- *            bubble: (boolean|undefined),
- *            alt: (boolean|undefined),
- *            control: (boolean|undefined),
- *            shift: (boolean|undefined),
- *            meta: (boolean|undefined),
- *            related: (Element|undefined)}}
+ * Whether the browser supports a native touch api.
+ *
+ * @const
+ * @type {boolean}
+ * @private
+ */
+bot.events.BROKEN_TOUCH_API_ = (function() {
+  if (goog.userAgent.product.ANDROID) {
+    // Native touch api supported starting in version 4.0 (Ice Cream Sandwich).
+    return bot.userAgent.ANDROID_VERSION < 4;
+  }
+  return !bot.userAgent.IOS;
+})();
+
+
+/**
+ * Arguments to initialize an event.
+ *
+ * @typedef {bot.events.MouseArgs|bot.events.KeyboardArgs|bot.events.TouchArgs}
+ */
+bot.events.EventArgs;
+
+
+/**
+ * Arguments to initialize a mouse event.
+ *
+ * @typedef {{clientX: number,
+ *            clientY: number,
+ *            button: number,
+ *            altKey: boolean,
+ *            ctrlKey: boolean,
+ *            shiftKey: boolean,
+ *            metaKey: boolean,
+ *            relatedTarget: Element}}
  */
 bot.events.MouseArgs;
 
 
 /**
- * Initialize a new mouse event. The opt_args can be used to pass in extra
- * parameters that might be needed, though the function attempts to guess some
- * valid default values. Extra arguments are specified as properties of the
- * object passed in as "opt_args" and can be:
+ * Arguments to initialize a keyboard event.
  *
- * <dl>
- * <dt>clientX</dt>
- * <dd>The clientX value relative to the client viewport.</dd>
- * <dt>clientY</dt>
- * <dd>The clientY value relative to the client viewport.</dd>
- * <dt>button</dt>
- * <dd>The mouse button (from {@code bot.events.button}). Defaults to LEFT</dd>
- * <dt>bubble</dt>
- * <dd>Can the event bubble? Defaults to true</dd>
- * <dt>alt</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * <dt>control</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * <dt>shift</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * <dt>meta</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * <dt>related</dt>
- * <dd>The related target. Defaults to null</dd>
- * </dl>
+ * @typedef {{keyCode: number,
+ *            charCode: number,
+ *            altKey: boolean,
+ *            ctrlKey: boolean,
+ *            shiftKey: boolean,
+ *            metaKey: boolean,
+ *            preventDefault: boolean}}
+ */
+bot.events.KeyboardArgs;
+
+
+/**
+ * Argument to initialize a touch event.
  *
- * @param {!Element} element The element on which the event will be fired.
- * @param {string} type Event type.
- * @param {!bot.events.MouseArgs=} opt_args See above.
- * @return {!Event} An initialized mouse event, with fields populated from
- *   opt_args.
+ * @typedef {{touches: !Array.<bot.events.Touch>,
+ *            targetTouches: !Array.<bot.events.Touch>,
+ *            changedTouches: !Array.<bot.events.Touch>,
+ *            altKey: boolean,
+ *            ctrlKey: boolean,
+ *            shiftKey: boolean,
+ *            metaKey: boolean,
+ *            relatedTarget: Element,
+ *            scale: number,
+ *            rotation: number}}
+ */
+bot.events.TouchArgs;
+
+
+/**
+ * @typedef {{identifier: number,
+ *            screenX: number,
+ *            screenY: number,
+ *            clientX: number,
+ *            clientY: number,
+ *            pageX: number,
+ *            pageY: number}}
+ */
+bot.events.Touch;
+
+
+
+/**
+ * Factory for event objects of a specific type.
+ *
+ * @constructor
+ * @param {string} type Type of the created events.
+ * @param {boolean} bubbles Whether the created events bubble.
+ * @param {boolean} cancelable Whether the created events are cancelable.
  * @private
  */
-bot.events.newMouseEvent_ = function(element, type, opt_args) {
-  var doc = goog.dom.getOwnerDocument(element);
-  var win = goog.dom.getWindow(doc);
+bot.events.EventFactory_ = function(type, bubbles, cancelable) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.type_ = type;
 
-  var args = opt_args || {};
-  // Use string indexes so we can be compiled aggressively
-  var clientX = args['clientX'] || 0;
-  var clientY = args['clientY'] || 0;
-  var button = args['button'] || 0;
-  var canBubble = args['bubble'] || true;
-  var relatedTarget = args['related'] || null;
-  var alt = !!args['alt'];
-  var control = !!args['control'];
-  var shift = !!args['shift'];
-  var meta = !!args['meta'];
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.bubbles_ = bubbles;
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.cancelable_ = cancelable;
+};
+
+
+/**
+ * Creates an event.
+ *
+ * @param {!Element} target Target element of the event.
+ * @param {bot.events.EventArgs=} opt_args Event arguments.
+ * @return {!Event} Newly created event.
+ */
+bot.events.EventFactory_.prototype.create = function(target, opt_args) {
+  var doc = goog.dom.getOwnerDocument(target);
   var event;
-  if (goog.userAgent.IE && !doc['createEvent']) {
+
+  if (bot.events.IE_NO_W3C_EVENTS_) {
     event = doc.createEventObject();
-    event.altKey = alt;
-    event.controlKey = control;
-    event.metaKey = meta;
-    event.shiftKey = shift;
+  } else {
+    event = doc.createEvent('HTMLEvents');
+    event.initEvent(this.type_, this.bubbles_, this.cancelable_);
+  }
+
+  return event;
+};
+
+
+/**
+ * Overriding toString to return the unique type string improves debugging,
+ * and it allows event types to be mapped in JS objects without collisions.
+ *
+ * @return {string} String representation of the event type.
+ */
+bot.events.EventFactory_.prototype.toString = function() {
+  return this.type_;
+};
+
+
+
+/**
+ * Factory for mouse event objects of a specific type.
+ *
+ * @constructor
+ * @param {string} type Type of the created events.
+ * @param {boolean} bubbles Whether the created events bubble.
+ * @param {boolean} cancelable Whether the created events are cancelable.
+ * @extends {bot.events.EventFactory_}
+ * @private
+ */
+bot.events.MouseEventFactory_ = function(type, bubbles, cancelable) {
+  goog.base(this, type, bubbles, cancelable);
+};
+goog.inherits(bot.events.MouseEventFactory_, bot.events.EventFactory_);
+
+
+/**
+ * @inheritDoc
+ */
+bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
+  var args = (/** @type {!bot.events.MouseArgs} */ opt_args);
+  var doc = goog.dom.getOwnerDocument(target);
+  var event;
+
+  if (bot.events.IE_NO_W3C_EVENTS_) {
+    event = doc.createEventObject();
+    event.altKey = args.altKey;
+    event.ctrlKey = args.ctrlKey;
+    event.metaKey = args.metaKey;
+    event.shiftKey = args.shiftKey;
+    event.button = args.button;
 
     // NOTE: ie8 does a strange thing with the coordinates passed in the event:
     // - if offset{X,Y} coordinates are specified, they are also used for
@@ -106,96 +216,84 @@ bot.events.newMouseEvent_ = function(element, type, opt_args) {
     // - if only client{X,Y} are specified, they are also used for offset{x,y}
     // Thus, for ie8, it is impossible to set both offset and client
     // and have them be correct when they come out on the other side.
-    event.clientX = clientX;
-    event.clientY = clientY;
-    event.button = button;
-    if (type == goog.events.EventType.MOUSEOUT) {
-      event.fromElement = element;
-      event.toElement = args['related'] || null;
-    } else if (type == goog.events.EventType.MOUSEOVER) {
-      event.fromElement = args['related'] || null;
-      event.toElement = element;
+    event.clientX = args.clientX;
+    event.clientY = args.clientY;
+
+    // IE has fromElement and toElement properties, no relatedTarget property.
+    if (this == bot.events.EventType.MOUSEOUT) {
+      event.fromElement = target;
+      event.toElement = args.relatedTarget;
+    } else if (this == bot.events.EventType.MOUSEOVER) {
+      event.fromElement = args.relatedTarget;
+      event.toElement = target;
     } else {
       event.fromElement = null;
       event.toElement = null;
     }
   } else {
+    var view = goog.dom.getWindow(doc);
     event = doc.createEvent('MouseEvents');
-    // screenX=0 and screenY=0 are ignored
-    event.initMouseEvent(type, canBubble, true, win, 1, 0, 0, clientX, clientY,
-        control, alt, shift, meta, button, relatedTarget);
+    event.initMouseEvent(this.type_, this.bubbles_, this.cancelable_, view,
+        /*detail*/ 1, /*screenX*/ 0, /*screenY*/ 0, args.clientX, args.clientY,
+        args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, args.button,
+        args.relatedTarget);
   }
 
   return event;
 };
 
 
-/**
- * Data structure representing keyboard event arguments that may be
- * passed to the fire function.
- *
- * @typedef {{keyCode: (number|undefined),
- *            charCode: (number|undefined),
- *            alt: (boolean|undefined),
- *            ctrl: (boolean|undefined),
- *            shift: (boolean|undefined),
- *            meta: (boolean|undefined)}}
- */
-bot.events.KeyboardArgs;
-
 
 /**
- * Initialize a new keyboard event.
+ * Factory for keyboard event objects of a specific type.
  *
- * @param {!Element} element The element on which the event will be fired.
- * @param {string} type Event type.
- * @param {!bot.events.KeyboardArgs=} opt_args See above.
- * @return {!Event} An initialized keyboard event, with fields populated from
- *   opt_args.
+ * @constructor
+ * @param {string} type Type of the created events.
+ * @param {boolean} bubbles Whether the created events bubble.
+ * @param {boolean} cancelable Whether the created events are cancelable.
+ * @extends {bot.events.EventFactory_}
  * @private
  */
-bot.events.newKeyEvent_ = function(element, type, opt_args) {
-  var doc = goog.dom.getOwnerDocument(element);
-  var win = goog.dom.getWindow(doc);
+bot.events.KeyboardEventFactory_ = function(type, bubbles, cancelable) {
+  goog.base(this, type, bubbles, cancelable);
+};
+goog.inherits(bot.events.KeyboardEventFactory_, bot.events.EventFactory_);
 
-  var args = opt_args || {};
-  var keyCode = args['keyCode'] || 0;
-  var charCode = args['charCode'] || 0;
-  var alt = !!args['alt'];
-  var control = !!args['ctrl'];
-  var shift = !!args['shift'];
-  var meta = !!args['meta'];
 
+/**
+ * @inheritDoc
+ */
+bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
+  var args = (/** @type {!bot.events.KeyboardArgs} */ opt_args);
+  var doc = goog.dom.getOwnerDocument(target);
   var event;
+
   if (goog.userAgent.GECKO) {
+    var view = goog.dom.getWindow(doc);
+    var keyCode = args.charCode ? 0 : args.keyCode;
     event = doc.createEvent('KeyboardEvent');
-    event.initKeyEvent(type,
-                       /* bubbles= */ true,
-                       /* cancelable= */true,
-                       /* view= */ win,
-                       control,
-                       alt,
-                       shift,
-                       meta,
-                       keyCode,
-                       charCode);
-  } else if (goog.userAgent.IE && !doc['createEvent']) {
-    event = doc.createEventObject();
-    event.keyCode = keyCode;
-    event.altKey = alt;
-    event.ctrlKey = control;
-    event.metaKey = meta;
-    event.shiftKey = shift;
-  } else { // For both WebKit and Opera.
-    event = doc.createEvent('Events');
-    event.initEvent(type, true, true);
-    event.keyCode = keyCode;
-    event.altKey = alt;
-    event.ctrlKey = control;
-    event.metaKey = meta;
-    event.shiftKey = shift;
+    event.initKeyEvent(this.type_, this.bubbles_, this.cancelable_, view,
+        args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, keyCode,
+        args.charCode);
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=501496
+    if (this.type_ == bot.events.EventType.KEYPRESS && args.preventDefault) {
+      event.preventDefault();
+    }
+  } else {
+    if (bot.events.IE_NO_W3C_EVENTS_) {
+      event = doc.createEventObject();
+    } else {  // WebKit, Opera, and IE 9+ in Standards mode.
+      event = doc.createEvent('Events');
+      event.initEvent(this.type_, this.bubbles_, this.cancelable_);
+    }
+    event.altKey = args.altKey;
+    event.ctrlKey = args.ctrlKey;
+    event.metaKey = args.metaKey;
+    event.shiftKey = args.shiftKey;
+    event.keyCode = args.charCode || args.keyCode;
     if (goog.userAgent.WEBKIT) {
-      event.charCode = charCode;
+      event.charCode = (this == bot.events.EventType.KEYPRESS) ?
+          event.keyCode : 0;
     }
   }
 
@@ -203,70 +301,109 @@ bot.events.newKeyEvent_ = function(element, type, opt_args) {
 };
 
 
-/**
- * Data structure representing arguments that may be passed to the fire
- * function.
- *
- * @typedef {{bubble: (boolean|undefined),
- *            alt: (boolean|undefined),
- *            control: (boolean|undefined),
- *            shift: (boolean|undefined),
- *            meta: (boolean|undefined)}}
- */
-bot.events.HtmlArgs;
-
 
 /**
- * Initialize a new HTML event. The opt_args can be used to pass in extra
- * parameters that might be needed, though the function attempts to guess some
- * valid default values. Extra arguments are specified as properties of the
- * object passed in as "opt_args" and can be:
+ * Factory for touch event objects of a specific type.
  *
- * <dl>
- * <dt>bubble</dt>
- * <dd>Can the event bubble? Defaults to true</dd>
- * <dt>alt</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * <dt>control</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * <dt>shift</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * <dt>meta</dt>
- * <dd>Is the "Alt" key pressed. Defaults to false</dd>
- * </dl>
- *
- * @param {!Element} element The element on which the event will be fired.
- * @param {string} type Event type.
- * @param {!bot.events.HtmlArgs=} opt_args See above.
- * @return {!Event} An initialized event object, with fields populated from
- *   opt_args.
+ * @constructor
+ * @param {string} type Type of the created events.
+ * @param {boolean} bubbles Whether the created events bubble.
+ * @param {boolean} cancelable Whether the created events are cancelable.
+ * @extends {bot.events.EventFactory_}
  * @private
  */
-bot.events.newHtmlEvent_ = function(element, type, opt_args) {
-  var doc = goog.dom.getOwnerDocument(element);
-  var win = goog.dom.getWindow(doc);
+bot.events.TouchEventFactory_ = function(type, bubbles, cancelable) {
+  goog.base(this, type, bubbles, cancelable);
+};
+goog.inherits(bot.events.TouchEventFactory_, bot.events.EventFactory_);
 
-  var args = opt_args || {};
-  var canBubble = args['bubble'] !== false;
-  var alt = !!args['alt'];
-  var control = !!args['control'];
-  var shift = !!args['shift'];
-  var meta = !!args['meta'];
+
+/**
+ * @inheritDoc
+ */
+bot.events.TouchEventFactory_.prototype.create = function(target, opt_args) {
+  if (goog.userAgent.IE) {
+    throw new bot.Error(bot.ErrorCode.UNSUPPORTED_OPERATION,
+        'IE does not support firing touch events.');
+  }
+
+  var args = (/** @type {!bot.events.TouchArgs} */ opt_args);
+  var doc = goog.dom.getOwnerDocument(target);
+  var view = goog.dom.getWindow(doc);
+
+  // Creates a TouchList, using native touch Api, for touch events.
+  /** @suppress {missingProperties} */
+  function createNativeTouchList(touchListArgs) {
+    var touches = goog.array.map(touchListArgs, function(touchArg) {
+      return doc.createTouch(view, target, touchArg.identifier,
+          touchArg.pageX, touchArg.pageY, touchArg.screenX, touchArg.screenY);
+    });
+
+    return doc.createTouchList.apply(doc, touches);
+  }
+
+  // Creates a TouchList, using simulated touch Api, for touch events.
+  function createGenericTouchList(touchListArgs) {
+    var touches = goog.array.map(touchListArgs, function(touchArg) {
+      // The target field is not part of the W3C spec, but both android and iOS
+      // add the target field to each touch.
+      return {
+        identifier: touchArg.identifier,
+        screenX: touchArg.screenX,
+        screenY: touchArg.screenY,
+        clientX: touchArg.clientX,
+        clientY: touchArg.clientY,
+        pageX: touchArg.pageX,
+        pageY: touchArg.pageY,
+        target: target
+      };
+    });
+    touches.item = function(i) {
+      return touches[i];
+    };
+    return touches;
+  }
+
+  function createTouchList(touches) {
+    return bot.events.BROKEN_TOUCH_API_ ?
+        createGenericTouchList(touches) :
+        createNativeTouchList(touches);
+  }
+
+  // As a performance optimization, reuse the created touchlist when the lists
+  // are the same, which is often the case in practice.
+  var changedTouches = createTouchList(args.changedTouches);
+  var touches = (args.touches == args.changedTouches) ?
+      changedTouches : createTouchList(args.touches);
+  var targetTouches = (args.targetTouches == args.changedTouches) ?
+      changedTouches : createTouchList(args.targetTouches);
 
   var event;
-  if (element['fireEvent'] && doc && doc['createEventObject'] && !doc['createEvent']) {
-    event = doc.createEventObject();
-    event.altKey = alt;
-    event.ctrl = control;
-    event.metaKey = meta;
-    event.shiftKey = shift;
+  if (bot.events.BROKEN_TOUCH_API_) {
+    event = doc.createEvent('MouseEvents');
+    event.initMouseEvent(this.type_, this.bubbles_, this.cancelable_, view,
+        /*detail*/ 1, /*screenX*/ 0, /*screenY*/ 0, args.clientX, args.clientY,
+        args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, /*button*/ 0,
+        args.relatedTarget);
+    event.touches = touches;
+    event.targetTouches = targetTouches;
+    event.changedTouches = changedTouches;
+    event.scale = args.scale;
+    event.rotation = args.rotation;
   } else {
-    event = doc.createEvent('HTMLEvents');
-    event.initEvent(type, canBubble, true);
-    event.shiftKey = shift;
-    event.metaKey = meta;
-    event.altKey = alt;
-    event.ctrlKey = control;
+    event = doc.createEvent('TouchEvent');
+    if (goog.userAgent.product.ANDROID) {
+      // Android's initTouchEvent method is not compliant with the W3C spec.
+      event.initTouchEvent(touches, targetTouches, changedTouches,
+          this.type_, view, /*screenX*/ 0, /*screenY*/ 0, args.clientX,
+          args.clientY, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey);
+    } else {
+      event.initTouchEvent(this.type_, this.bubbles_, this.cancelable_, view,
+          /*detail*/ 1, /*screenX*/ 0, /*screenY*/ 0, args.clientX,
+          args.clientY, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey,
+          touches, targetTouches, changedTouches, args.scale, args.rotation);
+    }
+    event.relatedTarget = args.relatedTarget;
   }
 
   return event;
@@ -274,46 +411,56 @@ bot.events.newHtmlEvent_ = function(element, type, opt_args) {
 
 
 /**
- * Maps symbolic names to functions used to initialize the event.
+ * The types of events this modules supports firing.
  *
- * @type {!Object.<string, function(!Element, string, ...): !Event>}
- * @private
- * @const
+ * <p>To see which events bubble and are cancelable, see:
+ * http://en.wikipedia.org/wiki/DOM_events
+ *
+ * @enum {!Object}
  */
-bot.events.INIT_FUNCTIONS_ = {};
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.CLICK] =
-    bot.events.newMouseEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYDOWN] =
-    bot.events.newKeyEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYPRESS] =
-    bot.events.newKeyEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.KEYUP] =
-    bot.events.newKeyEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEDOWN] =
-    bot.events.newMouseEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEMOVE] =
-    bot.events.newMouseEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEOUT] =
-    bot.events.newMouseEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEOVER] =
-    bot.events.newMouseEvent_;
-bot.events.INIT_FUNCTIONS_[goog.events.EventType.MOUSEUP] =
-    bot.events.newMouseEvent_;
+bot.events.EventType = {
+  BLUR: new bot.events.EventFactory_('blur', false, false),
+  CHANGE: new bot.events.EventFactory_('change', true, false),
+  FOCUS: new bot.events.EventFactory_('focus', false, false),
+  INPUT: new bot.events.EventFactory_('input', false, false),
+  PROPERTYCHANGE: new bot.events.EventFactory_('propertychange', false, false),
+  SELECT: new bot.events.EventFactory_('select', true, false),
+  SUBMIT: new bot.events.EventFactory_('submit', true, true),
+  TEXTINPUT: new bot.events.EventFactory_('textInput', true, true),
+
+  // Mouse events.
+  CLICK: new bot.events.MouseEventFactory_('click', true, true),
+  CONTEXTMENU: new bot.events.MouseEventFactory_('contextmenu', true, true),
+  DBLCLICK: new bot.events.MouseEventFactory_('dblclick', true, true),
+  MOUSEDOWN: new bot.events.MouseEventFactory_('mousedown', true, true),
+  MOUSEMOVE: new bot.events.MouseEventFactory_('mousemove', true, false),
+  MOUSEOUT: new bot.events.MouseEventFactory_('mouseout', true, true),
+  MOUSEOVER: new bot.events.MouseEventFactory_('mouseover', true, true),
+  MOUSEUP: new bot.events.MouseEventFactory_('mouseup', true, true),
+
+  // Keyboard events.
+  KEYDOWN: new bot.events.KeyboardEventFactory_('keydown', true, true),
+  KEYPRESS: new bot.events.KeyboardEventFactory_('keypress', true, true),
+  KEYUP: new bot.events.KeyboardEventFactory_('keyup', true, true),
+
+  // Touch events.
+  TOUCHEND: new bot.events.TouchEventFactory_('touchend', true, true),
+  TOUCHMOVE: new bot.events.TouchEventFactory_('touchmove', true, true),
+  TOUCHSTART: new bot.events.TouchEventFactory_('touchstart', true, true)
+};
 
 
 /**
  * Fire a named event on a particular element.
  *
  * @param {!Element} target The element on which to fire the event.
- * @param {string} type Event type.
- * @param {!(bot.events.MouseArgs|bot.events.HtmlArgs|
- *           bot.events.KeyboardArgs)=} opt_args Arguments, used to initialize
- *     the event.
+ * @param {!bot.events.EventType} type Event type.
+ * @param {bot.events.EventArgs=} opt_args Arguments to initialize the event.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  */
 bot.events.fire = function(target, type, opt_args) {
-  var init = bot.events.INIT_FUNCTIONS_[type] || bot.events.newHtmlEvent_;
-  var event = init(target, type, opt_args);
+  var factory = /** @type {!bot.events.EventFactory_} */ type;
+  var event = factory.create(target, opt_args);
 
   // Ensure the event's isTrusted property is set to false, so that
   // bot.events.isSynthetic() can identify synthetic events from native ones.
@@ -321,8 +468,8 @@ bot.events.fire = function(target, type, opt_args) {
     event.isTrusted = false;
   }
 
-  if (goog.userAgent.IE && !target['dispatchEvent']) {
-    return target.fireEvent('on' + type, event);
+  if (bot.events.IE_NO_W3C_EVENTS_) {
+    return target.fireEvent('on' + factory.type_, event);
   } else {
     return target.dispatchEvent(event);
   }
@@ -340,3 +487,15 @@ bot.events.isSynthetic = function(event) {
   var e = event.getBrowserEvent ? event.getBrowserEvent() : event;
   return 'isTrusted' in e ? !e.isTrusted : false;
 };
+
+
+/**
+ * True if this browser is IE and does not support firing events using the W3C
+ * DOM Level 2 dispatchEvent function. dispatchEvent is available only in
+ * Standards mode on IE 9+.
+ *
+ * @type {boolean}
+ * @private
+ */
+bot.events.IE_NO_W3C_EVENTS_ = goog.userAgent.IE &&
+    (!goog.userAgent.isVersion(9) || !document.dispatchEvent);

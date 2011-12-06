@@ -15,11 +15,12 @@
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
-
   <script type="text/javascript">
+    // Skip this test on IE and Android until SVG is natively supported.
+    var SUPPORTS_SVG = !goog.userAgent.IE && !goog.userAgent.product.ANDROID;
+
     function testSvgElementsShouldBeVisible() {
-      if (goog.userAgent.IE) {
-        // Skip this test on IE until it supports SVG natively
+      if (!SUPPORTS_SVG) {
         return;
       }
       var doc = window.frames['chart'].document.documentElement;
@@ -28,8 +29,7 @@
     }
 
     function testFocusingOnSvgElementDoesNotThrow() {
-      if (goog.userAgent.IE) {
-        // Skip this test on IE until it supports SVG natively
+      if (!SUPPORTS_SVG) {
         return;
       }
       var doc = window.frames['chart'].document.documentElement;
@@ -41,8 +41,7 @@
     }
 
     function testCanFindElementsWithinFramedSvg() {
-      if (goog.userAgent.IE) {
-        // Skip this test on IE until it supports SVG natively
+      if (!SUPPORTS_SVG) {
         return;
       }
       var doc = window.frames['chart'].document.documentElement;
@@ -51,8 +50,7 @@
     }
 
     function testLocatingSvgElementsByTagNameIsCaseSensitive() {
-      if (goog.userAgent.IE) {
-        // Skip this test on IE until it supports SVG natively
+      if (!SUPPORTS_SVG) {
         return;
       }
       // Just documenting this for posterity...
@@ -60,7 +58,6 @@
       assertNull(bot.locators.findElement({tagName: 'TEXT'}, doc));
       assertNotNull(bot.locators.findElement({tagName: 'text'}, doc));
     }
-
   </script>
 </head>
 <body>
@@ -70,7 +67,7 @@
   <div id="result">Nothing.</div>
   <div id="chart_container" style="width: 400px; height: 220px; border: 1px solid #808080;">
     <script type="text/javascript">
-      if (!goog.userAgent.IE) {
+      if (SUPPORTS_SVG) {
         document.write('<iframe name="chart" src="testdata/chart.svg" ' +
                        'width="400" height="220" ' +
                        'type="image/svg+xml"></iframe>');

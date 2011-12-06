@@ -6,13 +6,14 @@
 <script type="text/javascript">
   goog.require('bot.Keyboard');
   goog.require('bot.Keyboard.Key');
+  goog.require('bot.action');
   goog.require('goog.events');
   goog.require('goog.testing.AsyncTestCase');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
 </script>
 <body>
-<div id="target">key target</div>
+  <input id="target">
 <script type="text/javascript">
   var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
   var browser, target, keyboard;
@@ -30,7 +31,8 @@
       fail('unknown browser');
     }
     target = document.getElementById('target');
-    keyboard = new bot.Keyboard(target, false);
+    keyboard = new bot.Keyboard();
+    keyboard.moveCursor(target);
   }
 
   function assertKeyEvents(key, shift, browser2Codes) {
@@ -195,7 +197,7 @@
     };
     var cancelKeydownId = goog.events.listen(target, 'keydown', cancelEvent);
     assertKeyEvents(bot.Keyboard.Keys.E, false, {
-      GECKO:  {downUp: {key: 69, char: 0}, press: U},
+      GECKO:  {downUp: {key: 69, char: 0}, press: {key: 0, char: 101}},
       IE:     {downUp: {key: 69, char: U}, press: U},
       OPERA:  {downUp: {key: 69, char: U}, press: U},
       WEBKIT: {downUp: {key: 69, char: 0}, press: U}

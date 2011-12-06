@@ -16,7 +16,6 @@
 /**
  * @fileoverview Element locator functions.
  *
- *
  */
 
 
@@ -46,6 +45,10 @@ bot.locators.strategy;
  * Known element location strategies. The returned objects have two
  * methods on them, "single" and "many", for locating a single element
  * or multiple elements, respectively.
+ *
+ * Note that the versions with spaces are synonyms for those without spaces,
+ * and are specified at:
+ * https://code.google.com/p/selenium/wiki/JsonWireProtocol
  *
  * @private
  * @const

@@ -12,6 +12,7 @@
     goog.require('goog.events.EventType');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent.product');
   </script>
 </head>
 <body>
@@ -26,6 +27,11 @@
 
     var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
     var findElement = bot.locators.findElement;
+
+    // Set longer timeout due to android emulator slowness.
+    if (goog.userAgent.product.ANDROID) {
+      asyncTestCase.stepTimeout = 5000;
+    }
 
     function setUp() {
       var iframe = findElement({id: 'iframe'});

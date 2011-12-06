@@ -20,7 +20,7 @@ limitations under the License.
   <title>bot.dom.getVisibleText Table Test</title>
   <script src="test_bootstrap.js"></script>
   <script src="text_util.js"></script>
-  <script>
+  <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('goog.array');
     goog.require('goog.dom');
@@ -37,96 +37,96 @@ limitations under the License.
 <body>
 <script type="text/javascript">
   // Aliases for helping with creating tables.
-  var table = goog.partial(goog.dom.createDom, goog.dom.TagName.TABLE, null);
-  var caption = goog.partial(
+  var TABLE = goog.partial(goog.dom.createDom, goog.dom.TagName.TABLE, null);
+  var CAPTION = goog.partial(
       goog.dom.createDom, goog.dom.TagName.CAPTION, null);
-  var tbody = goog.partial(goog.dom.createDom, goog.dom.TagName.TBODY, null);
-  var th = goog.partial(goog.dom.createDom, goog.dom.TagName.TH, null);
-  var tr = goog.partial(goog.dom.createDom, goog.dom.TagName.TR, null);
-  var td = goog.partial(goog.dom.createDom, goog.dom.TagName.TD, null);
-  var p = goog.partial(goog.dom.createDom, goog.dom.TagName.P, null);
+  var TBODY = goog.partial(goog.dom.createDom, goog.dom.TagName.TBODY, null);
+  var TH = goog.partial(goog.dom.createDom, goog.dom.TagName.TH, null);
+  var TR = goog.partial(goog.dom.createDom, goog.dom.TagName.TR, null);
+  var TD = goog.partial(goog.dom.createDom, goog.dom.TagName.TD, null);
+  var P = goog.partial(goog.dom.createDom, goog.dom.TagName.P, null);
 
 
   function testEmptyTable() {
-    assertTextIs(table(), '');
+    assertTextIs(TABLE(), '');
   }
 
 
   function testEmptyTableBody() {
-    assertTextIs(table(tbody()), '');
+    assertTextIs(TABLE(TBODY()), '');
   }
 
 
   function testEmptyRow() {
-    assertTextIs(table(tr(), ''));
+    assertTextIs(TABLE(TR(), ''));
   }
 
 
   function testOneEmptyCell() {
-    assertTextIs(table(tr(td()), ''));
+    assertTextIs(TABLE(TR(TD()), ''));
   }
 
 
   function testTwoEmptyCells() {
-    assertTextIs(table(tr(td(), td()), ''));
+    assertTextIs(TABLE(TR(TD(), TD()), ''));
   }
 
   function testOneLineTable() {
-    var t = table(tbody(tr(td('a'), td('b'))));
+    var t = TABLE(TBODY(TR(TD('a'), TD('b'))));
     var x = bot.dom.getVisibleText(t);
     assertEquals(x, 'a b');
   }
 
   function testSimpleTable() {
     assertTextIs(
-        table(tbody(
-            tr(td('a'), td('b')),
-            tr(td('c'), td('d')))),
+        TABLE(TBODY(
+            TR(TD('a'), TD('b')),
+            TR(TD('c'), TD('d')))),
         'a b',
         'c d');
   }
 
   function testSimpleTable_withEmptyRow() {
     assertTextIs(
-        table(tbody(
-            tr(td('a'), td('b')),
-            tr(td(), td()))),
+        TABLE(TBODY(
+            TR(TD('a'), TD('b')),
+            TR(TD(), TD()))),
         'a b');
   }
 
   function testSimpleTable_withNewlinesBetweenCells() {
     assertTextIs(
-        table(tbody(
-            tr(td('a'), '\n', td('b')),
-            tr(td('c'), '\n', td('d')))),
+        TABLE(TBODY(
+            TR(TD('a'), '\n', TD('b')),
+            TR(TD('c'), '\n', TD('d')))),
         'a b',
         'c d');
   }
 
   function testSimpleTable_cellsEndWithNewlines() {
     assertTextIs(
-        table(tbody(
-            tr(td('a\n'), td('b\n')),
-            tr(td('c\n'), td('d\n')))),
+        TABLE(TBODY(
+            TR(TD('a\n'), TD('b\n')),
+            TR(TD('c\n'), TD('d\n')))),
         'a b',
         'c d');
   }
 
   function testSimpleTable_withNewlinesBetweenRows() {
     assertTextIs(
-        table(tbody(
-            tr(td('a'), td('b'), '\n\n'),
-            tr(td('c'), td('d')))),
+        TABLE(TBODY(
+            TR(TD('a'), TD('b'), '\n\n'),
+            TR(TD('c'), TD('d')))),
         'a b',
         'c d');
   }
 
   function testATableWithACaption() {
     assertTextIs(
-        table(
-            caption('This is a caption'),
-            tr(td('a'), td('b')),
-            tr(td('c'), td('d'))),
+        TABLE(
+            CAPTION('This is a caption'),
+            TR(TD('a'), TD('b')),
+            TR(TD('c'), TD('d'))),
         'This is a caption',
         'a b',
         'c d');
@@ -134,18 +134,18 @@ limitations under the License.
 
   function testATableWithEmptyCells() {
     assertTextIs(
-        table(
-            tr(td('a'), td('b'), td('c')),
-            tr(td(), td(), td('Previous two cells were empty'))),
+        TABLE(
+            TR(TD('a'), TD('b'), TD('c')),
+            TR(TD(), TD(), TD('Previous two cells were empty'))),
         'a b c',
         'Previous two cells were empty');
   }
 
   function testATableWithParagraphs() {
     assertTextIs(
-        table(tr(
-            td(p('table cell '), p('with '), p('paragraphs')),
-            td('Cell #2'))),
+        TABLE(TR(
+            TD(P('table cell '), P('with '), P('paragraphs')),
+            TD('Cell #2'))),
         'table cell',
         'with',
         'paragraphs',
@@ -154,13 +154,13 @@ limitations under the License.
 
   function testNestedTables() {
     assertTextIs(
-        table(
-            tr(td("Table 1, Row 1, Cell 1"), td("Table 1, Row 1, Cell 2")),
-            tr(td("Table 1, Row 2, Cell 1"),
-               td("Table 1, Row 2, Cell 2",
-                  table(
-                      tr(td("Table 2, Row 1, Cell 1"),
-                         td("Table 2, Row 1, Cell 2")))))),
+        TABLE(
+            TR(TD("Table 1, Row 1, Cell 1"), TD("Table 1, Row 1, Cell 2")),
+            TR(TD("Table 1, Row 2, Cell 1"),
+               TD("Table 1, Row 2, Cell 2",
+                  TABLE(
+                      TR(TD("Table 2, Row 1, Cell 1"),
+                         TD("Table 2, Row 1, Cell 2")))))),
         "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
         "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
         "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2");
@@ -169,14 +169,14 @@ limitations under the License.
 
   function testNestedTables_rowsInOuterTableAfterInnerTable() {
     assertTextIs(
-        table(
-            tr(td("Table 1, Row 1, Cell 1"), td("Table 1, Row 1, Cell 2")),
-            tr(td("Table 1, Row 2, Cell 1"),
-               td("Table 1, Row 2, Cell 2",
-                  table(
-                      tr(td("Table 2, Row 1, Cell 1"),
-                         td("Table 2, Row 1, Cell 2"))))),
-            tr(td("Table 1, Row 3, Cell 1"), td("Table 1, Row 3, Cell 2"))),
+        TABLE(
+            TR(TD("Table 1, Row 1, Cell 1"), TD("Table 1, Row 1, Cell 2")),
+            TR(TD("Table 1, Row 2, Cell 1"),
+               TD("Table 1, Row 2, Cell 2",
+                  TABLE(
+                      TR(TD("Table 2, Row 1, Cell 1"),
+                         TD("Table 2, Row 1, Cell 2"))))),
+            TR(TD("Table 1, Row 3, Cell 1"), TD("Table 1, Row 3, Cell 2"))),
         "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
         "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
         "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2",

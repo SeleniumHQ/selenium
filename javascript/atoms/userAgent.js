@@ -66,8 +66,35 @@ bot.userAgent.isFirefox4 = function() {
 
 
 /**
- * @return {boolean} Whether this is iOS.
+ * Whether we are on IOS.
+ *
+ * @const
+ * @type {boolean}
  */
-bot.userAgent.isIOS = function() {
-  return goog.userAgent.product.IPAD || goog.userAgent.product.IPHONE;
-};
+bot.userAgent.IOS = goog.userAgent.product.IPAD ||
+                    goog.userAgent.product.IPHONE;
+
+
+/**
+ * Whether we are on a mobile browser.
+ *
+ * @const
+ * @type {boolean}
+ */
+bot.userAgent.MOBILE = bot.userAgent.IOS || goog.userAgent.product.ANDROID;
+
+
+/**
+ * Android Operating System Version.
+ *
+ * @const
+ * @type {number}
+ */
+bot.userAgent.ANDROID_VERSION = (function() {
+  if (goog.userAgent.product.ANDROID) {
+    var match = /Android\s+([0-9]+)/.exec(goog.userAgent.getUserAgentString());
+    return match ? match[1] : 0;
+  } else {
+    return 0;
+  }
+})();

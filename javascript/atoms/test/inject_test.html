@@ -24,6 +24,7 @@ limitations under the License.
     goog.require('bot.ErrorCode');
     goog.require('bot.inject');
     goog.require('bot.inject.cache');
+    goog.require('bot.userAgent');
     goog.require('goog.dom');
     goog.require('goog.dom.TagName');
     goog.require('goog.json');
@@ -423,7 +424,10 @@ limitations under the License.
     }
 
     function testShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow() {
-      if (goog.userAgent.IE || goog.userAgent.product.SAFARI) {
+      if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
+          (goog.userAgent.product.ANDROID &&
+           bot.userAgent.ANDROID_VERSION < 4)) {
+        // Android prior to Ice Cream Sandwich has a known issue.
         // TODO(user): Don't skip this.
         return;
       }
@@ -459,7 +463,10 @@ limitations under the License.
     }
 
     function testShouldExecuteScriptsInTheContextOfTheSpecifiedWindow() {
-      if (goog.userAgent.IE || goog.userAgent.product.SAFARI) {
+      if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
+          (goog.userAgent.product.ANDROID &&
+           bot.userAgent.ANDROID_VERSION < 4)) {
+        // Android prior to Ice Cream Sandwich has a known issue.
         // TODO(user): Don't skip this.
         return;
       }

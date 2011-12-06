@@ -20,6 +20,7 @@ goog.provide('SyntheticMouse');
 goog.require('Utils');
 goog.require('bot.ErrorCode');
 goog.require('bot.Mouse');
+goog.require('bot.events.EventType');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.events');
@@ -210,7 +211,7 @@ SyntheticMouse.prototype.down = function(coordinates) {
     'clientY': coordinates['y'] + pos.y,
     'button': bot.Mouse.Button.LEFT
   };
-  bot.events.fire(element, goog.events.EventType.MOUSEDOWN, botCoords);
+  bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
@@ -229,8 +230,8 @@ SyntheticMouse.prototype.up = function(coordinates) {
     'clientY': coordinates['y'] + pos.y,
     'button': button
   };
-  bot.events.fire(element, goog.events.EventType.MOUSEMOVE, botCoords);
-  bot.events.fire(element, goog.events.EventType.MOUSEUP, botCoords);
+  bot.events.fire(element, bot.events.EventType.MOUSEMOVE, botCoords);
+  bot.events.fire(element, bot.events.EventType.MOUSEUP, botCoords);
 
   this.buttonDown = null;
   this.isButtonPressed = false;

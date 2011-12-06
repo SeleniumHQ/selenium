@@ -7,6 +7,7 @@
     goog.require('bot.dom');
     goog.require('bot.storage');
     goog.require('bot.html5');
+    goog.require('goog.array');
     goog.require('goog.testing.jsunit');
   </script>
 
@@ -156,9 +157,10 @@
 
       // keySet
       var keys = storage.keySet();
-      assertNotEquals(-1, keys.indexOf('first'));
-      assertNotEquals(-1, keys.indexOf('second'));
-      assertEquals(-1, keys.indexOf('five'));
+      // Use goog.array.indexOf because IE9 doesn't have Array.indexOf
+      assertNotEquals(-1, goog.array.indexOf(keys, 'first'));
+      assertNotEquals(-1, goog.array.indexOf(keys, 'second'));
+      assertEquals(-1, goog.array.indexOf(keys, 'five'));
       var sortedKeys = keys.sort();
       assertArrayEquals(['first', 'second', 'third'], sortedKeys);
     }

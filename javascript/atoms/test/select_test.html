@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Expire" content="0"/>
+  <title>select_test.html</title>
+  <script type="text/javascript" src="test_bootstrap.js"></script>
+  <script type="text/javascript" src="jquery.min.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('goog.array');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+  <script type="text/javascript">
+    var singleSelect, multiSelect, radioButtons, checkboxes, changeCount;
+
+    function setUpPage() {
+      singleSelect = bot.locators.findElement({id: 'singleSelect'});
+      multiSelect = bot.locators.findElement({id: 'multiSelect'});
+      checkboxes = bot.locators.findElements({name: 'checkbox'});
+      radioButtons = bot.locators.findElements({name: 'radio'});
+    }
+
+    function setUp() {
+      goog.events.removeAll();
+      singleSelect.selectedIndex = 0;
+      goog.array.forEach(multiSelect.options, function(e) {
+        e.selected = false;
+      });
+      goog.array.forEach(checkboxes, function(e) {
+        e.checked = false;
+      });
+      goog.array.forEach(radioButtons, function(e) {
+        e.checked = false;
+      });
+    }
+
+    function expectChanges(target) {
+      changeCount = 0;
+      goog.events.listen(target, 'change', function(e) {
+        changeCount++;
+      });
+    }
+
+    function assertChanges(expectedCount) {
+      assertEquals('Unexpected number of changes', expectedCount, changeCount);
+    }
+
+    function testCanSelectAnOptionFromASingleSelect() {
+      assertFalse(bot.dom.isSelected(singleSelect.options[1]));
+      expectChanges(singleSelect);
+
+      bot.action.click(singleSelect.options[1]);
+
+      assertChanges(1);
+      assertTrue(bot.dom.isSelected(singleSelect.options[1]));
+    }
+
+    function testCannotDeselectAnOptionFromASingleSelect() {
+      assertTrue(bot.dom.isSelected(singleSelect.options[0]));
+      expectChanges(singleSelect);
+
+      bot.action.click(singleSelect.options[0]);
+
+      assertChanges(0);
+      assertTrue(bot.dom.isSelected(singleSelect.options[0]));
+    }
+
+    function testCannotSelectAnOptionFromADisabledSelect() {
+      singleSelect.disabled = true;
+      assertFalse(bot.dom.isSelected(singleSelect.options[1]));
+      expectChanges(singleSelect);
+
+      bot.action.click(singleSelect.options[1]);
+
+      assertChanges(0);
+      assertFalse(bot.dom.isSelected(singleSelect.options[1]));
+      singleSelect.disabled = false;
+    }
+
+    function testCanSelectAnEnabledOptionFromASelectWithADisabledOption() {
+      singleSelect.options[1].disabled = true;
+      assertFalse(bot.dom.isSelected(singleSelect.options[2]));
+      expectChanges(singleSelect);
+
+      bot.action.click(singleSelect.options[2]);
+
+      assertChanges(1);
+      assertTrue(bot.dom.isSelected(singleSelect.options[2]));
+      singleSelect.options[1].disabled = false;
+    }
+
+    function testCanToggleOptionsInAMultiSelect() {
+      multiSelect.options[0].selected = true;
+      expectChanges(multiSelect);
+
+      bot.action.click(multiSelect.options[0]);
+      bot.action.click(multiSelect.options[1]);
+      bot.action.click(multiSelect.options[2]);
+
+      assertChanges(3);
+      assertFalse(bot.dom.isSelected(multiSelect.options[0]));
+      assertTrue(bot.dom.isSelected(multiSelect.options[1]));
+      assertTrue(bot.dom.isSelected(multiSelect.options[2]));
+    }
+
+    function testCanToggleCheckboxes() {
+      // IE fires a change event on the next click after the change.
+      checkboxes[0].checked = true;
+      expectChanges(checkboxes[0]);
+      bot.action.click(checkboxes[0]);
+      assertChanges(goog.userAgent.IE ? 0 : 1);
+
+      if (!goog.userAgent.IE) {
+        expectChanges(checkboxes[1]);
+      }
+      bot.action.click(checkboxes[1]);
+      assertChanges(1);
+
+      expectChanges(checkboxes[goog.userAgent.IE ? 1 : 2]);
+      bot.action.click(checkboxes[2]);
+      assertChanges(1);
+
+      assertFalse(bot.dom.isSelected(checkboxes[0]));
+      assertTrue(bot.dom.isSelected(checkboxes[1]));
+      assertTrue(bot.dom.isSelected(checkboxes[2]));
+    }
+
+    function testCanSelectRadioButtons() {
+      // IE fires a change event on the next click after the change.
+      expectChanges(radioButtons[0]);
+      bot.action.click(radioButtons[0]);
+      assertChanges(goog.userAgent.IE ? 0 : 1);
+      assertTrue(bot.dom.isSelected(radioButtons[0]));
+
+      if (!goog.userAgent.IE) {
+        expectChanges(radioButtons[1]);
+      }
+      bot.action.click(radioButtons[1]);
+      assertChanges(1);
+      assertTrue(bot.dom.isSelected(radioButtons[1]));
+
+      expectChanges(radioButtons[goog.userAgent.IE ? 1 : 2]);
+      bot.action.click(radioButtons[2]);
+      assertChanges(1);
+      assertTrue(bot.dom.isSelected(radioButtons[2]));
+    }
+
+    function testCannotDeselectRadioButtons() {
+      radioButtons[0].checked = true;
+      expectChanges(radioButtons[0]);
+
+      bot.action.click(radioButtons[0]);
+
+      assertChanges(0);
+      assertTrue(bot.dom.isSelected(radioButtons[0]));
+    }
+
+    function testCannotSelectDisabledElements() {
+      function assertCannotSelectWhenDisabled(elem, isOption) {
+        elem.disabled = true;
+        expectChanges(isOption ? elem.parentNode : elem);
+
+        bot.action.click(elem);
+
+        assertChanges(0);
+        assertFalse(bot.dom.isSelected(elem));
+        elem.disabled = false;
+      }
+
+      assertCannotSelectWhenDisabled(singleSelect.options[1], true);
+      assertCannotSelectWhenDisabled(multiSelect.options[0], true);
+      assertCannotSelectWhenDisabled(checkboxes[0], false);
+      assertCannotSelectWhenDisabled(radioButtons[0], false);
+    }
+
+    function testCanSelectOptionWhenDefaultPrevented() {
+      function assertCanSelectWhenDefaultPrevented(elem) {
+        goog.events.listen(elem, 'click', function(e) {
+          e.preventDefault();
+        });
+        expectChanges(elem.parentNode);
+
+        bot.action.click(elem);
+
+        assertChanges(1);
+        assertTrue(bot.dom.isSelected(elem));
+      }
+
+      assertCanSelectWhenDefaultPrevented(singleSelect.options[1]);
+      assertCanSelectWhenDefaultPrevented(multiSelect.options[0]);
+    }
+
+    function testCannotSelectCheckboxWhenDefaultPrevented() {
+      var elem = checkboxes[0];
+      goog.events.listen(elem, 'click', function(e) {
+        e.preventDefault();
+      });
+      expectChanges(elem);
+
+      bot.action.click(elem);
+
+      // WebKit fires a change event even when the checkbox isn't toggled.
+      assertChanges(goog.userAgent.WEBKIT ? 1 : 0);
+      assertFalse(bot.dom.isSelected(elem));
+    }
+
+    function testMaybeSelectRadioButtonWhenDefaultPrevented() {
+      var elem = radioButtons[0];
+      goog.events.listen(elem, 'click', function(e) {
+        e.preventDefault();
+      });
+      expectChanges(elem);
+
+      bot.action.click(elem);
+
+      // WebKit and Firefox select a radio button even when the handler
+      // prevents the default; IE and Opera do not.
+      if (goog.userAgent.WEBKIT || goog.userAgent.GECKO) {
+        // Gecko does toggle the radio button, but doesn't fire a change event.
+        assertChanges(goog.userAgent.GECKO ? 0 : 1);
+        assertTrue(bot.dom.isSelected(elem));
+      } else {
+        assertChanges(0);
+        assertFalse(bot.dom.isSelected(elem));
+      }
+    }
+
+    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
+    function testCanSelectOptionFromTransparentSelect() {
+      var style = singleSelect.style;
+      style['opacity'] = '0';
+      style['filter'] = 'alpha(opacity=0)';
+      assertEquals(0, bot.dom.getOpacity(singleSelect));
+      assertFalse(bot.dom.isSelected(singleSelect.options[1]));
+      expectChanges(singleSelect);
+
+      bot.action.click(singleSelect.options[1]);
+
+      assertChanges(1);
+      assertTrue(bot.dom.isSelected(singleSelect.options[1]));
+      style['opacity'] = '';
+      style['filter'] = '';
+      assertEquals(1, bot.dom.getOpacity(singleSelect));
+    }
+
+    function testNoErrorAfterSelectWhenOnChangePreventsDefault() {
+      goog.events.listen(radioButtons[1], 'change', function(e) {
+        e.preventDefault();
+      });
+      bot.action.click(radioButtons[1]);
+      assertTrue(bot.dom.isSelected(radioButtons[1]));
+
+      // In IE, this second click used to throw an "Unspecified error".
+      bot.action.click(radioButtons[2]);
+    }
+
+    function testSelectOptionTriggersJQueryChangeHandler() {
+      var changes = 0;
+      $('#singleSelect').change(function() {
+        changes++;
+      });
+
+      bot.action.click(singleSelect.options[1]);
+
+      assertEquals(1, changes);
+      $('#singleSelect').unbind();
+    }
+  </script>
+</head>
+<body>
+  <form action="#" method="get">
+    <select id="singleSelect">
+      <option id="singleOption1" value="foo">foo</option>
+      <option id="singleOption2" value="bar">bar</option>
+      <option id="singleOption3" value="baz">baz</option>
+    </select>
+    <br>
+    <select id="multiSelect" multiple>
+      <option id="multiOption1" value="apples">apples</option>
+      <option id="multiOption2" value="oranges">oranges</option>
+      <option id="multiOption3" value="cherries">cherries</option>
+    </select>
+    <br>
+    <input type="checkbox" name="checkbox" value="peas">peas
+    <input type="checkbox" name="checkbox" value="spinach">spinach
+    <input type="checkbox" name="checkbox" value="broccoli">broccoli
+    <br>
+    <input type="radio" name="radio" value="cheese">cheese
+    <input type="radio" name="radio" value="water">water
+    <input type="radio" name="radio" value="bread">bread
+  </form>
+</body>
+</html>

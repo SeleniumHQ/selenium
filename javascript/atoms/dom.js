@@ -369,6 +369,7 @@ bot.dom.isEnabled = function(el) {
   return true;
 };
 
+
 /**
  * List of input types that create text fields.
  * @type {!Array.<String>}
@@ -377,17 +378,18 @@ bot.dom.isEnabled = function(el) {
  * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#attr-input-type
  */
 bot.dom.TEXTUAL_INPUT_TYPES_ = [
- 'text',
- 'search',
- 'tel',
- 'url',
- 'email',
- 'password',
- 'number'
+  'text',
+  'search',
+  'tel',
+  'url',
+  'email',
+  'password',
+  'number'
 ];
 
+
 /**
- * TODO(user): Add support for contentEditable and designMode elements.
+ * TODO(user): Add support for designMode elements.
  *
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element accepts user-typed text.
@@ -411,14 +413,32 @@ bot.dom.isTextual = function(element) {
 
 
 /**
- * Whether the element is contentEditable.
- *
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element is contentEditable.
  */
 bot.dom.isContentEditable = function(element) {
-  return bot.dom.getProperty(element, 'contentEditable') == 'true' ||
-      bot.dom.getAttribute(element, 'contentEditable') != null;
+  // Check if browser supports contentEditable.
+  if (!goog.isDef(element['contentEditable'])) {
+    return false;
+  }
+
+  // Checking the element's isContentEditable property is preferred except for
+  // IE where that property is not reliable on IE versions 7, 8, and 9.
+  if (!goog.userAgent.IE && goog.isDef(element['isContentEditable'])) {
+    return element.isContentEditable;
+  }
+
+  // For IE and for browsers where contentEditable is supported but
+  // isContentEditable is not, traverse up the ancestors:
+  function legacyIsContentEditable(e) {
+    if (e.contentEditable == 'inherit') {
+      var parent = bot.dom.getParentElement(e);
+      return parent ? legacyIsContentEditable(parent) : false;
+    } else {
+      return e.contentEditable == 'true';
+    }
+  }
+  return legacyIsContentEditable(element);
 };
 
 
@@ -504,9 +524,10 @@ bot.dom.getEffectiveStyle = function(elem, styleName) {
 bot.dom.getCascadedStyle_ = function(elem, styleName) {
   var style = elem.currentStyle || elem.style;
   var value = style[styleName];
-  if (!goog.isDef(value) && style['getPropertyValue']) {
-    value = style.getPropertyValue(styleName);
+  if (!goog.isDef(value) && goog.isFunction(style['getPropertyValue'])) {
+    value = style['getPropertyValue'](styleName);
   }
+
   if (value != 'inherit') {
     return goog.isDef(value) ? value : null;
   }
@@ -530,25 +551,20 @@ bot.dom.getElementSize_ = function(element) {
 
 /**
  * Determines whether an element is what a user would call "shown". This means
- * that the element not only has height and width greater than 0px, but also
- * that its visibility is not "hidden" and its display property is not "none".
+ * that the element is shown in the viewport of the browser, and only has
+ * height and width greater than 0px, and that its visibility is not "hidden"
+ * and its display property is not "none".
  * Options and Optgroup elements are treated as special cases: they are
  * considered shown iff they have a enclosing select element that is shown.
  *
  * @param {!Element} elem The element to consider.
  * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
  *     when determining whether it is shown; defaults to false.
- * @return {boolean} Whether or not the element would be visible.
+ * @return {boolean} Whether or not the element is visible.
  */
 bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   if (!bot.dom.isElement(elem)) {
     throw new Error('Argument to isShown must be of type Element');
-  }
-
-  // Title elements are shown if and only if they belong to the bot window.
-  if (bot.dom.isElement(elem, goog.dom.TagName.TITLE)) {
-    var titleWindow = goog.dom.getWindow(goog.dom.getOwnerDocument(elem));
-    return titleWindow == bot.getWindow();
   }
 
   // Option or optgroup is shown iff enclosing select is shown (ignoring the
@@ -558,7 +574,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var select = /**@type {Element}*/ (goog.dom.getAncestor(elem, function(e) {
       return bot.dom.isElement(e, goog.dom.TagName.SELECT);
     }));
-    return !!select && bot.dom.isShown(select, true);
+    return !!select && bot.dom.isShown(select, /*ignoreOpacity=*/true);
   }
 
   // Map is shown iff image that uses it is shown.
@@ -674,10 +690,9 @@ bot.dom.getVisibleText = function(elem) {
       bot.dom.trimExcludingNonBreakingSpaceCharacters_);
   var joined = lines.join('\n');
   var trimmed = bot.dom.trimExcludingNonBreakingSpaceCharacters_(joined);
-  
-  // Replace non-breakable spaces with regular ones and remove zero-width
-  // spaces used to mark borders of preformatted text fragments.
-  return trimmed.replace(/\xa0/g, ' ').replace(/\u2063/g, '');
+
+  // Replace non-breakable spaces with regular ones.
+  return trimmed.replace(/\xa0/g, ' ');
 };
 
 
@@ -694,10 +709,6 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
   // TODO(user): Add case here for textual form elements.
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
-  } else if (bot.dom.isElement(elem, goog.dom.TagName.TITLE) &&
-      bot.dom.isElement(
-          bot.dom.getParentElement(elem), goog.dom.TagName.HEAD)) {
-    // Don't consider head > title as a visible text in the document.
   } else {
     // TODO: properly handle display:run-in
     var isTD = bot.dom.isElement(elem, goog.dom.TagName.TD);
@@ -794,10 +805,11 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
     text = text.replace(/\n/g, ' ');
   }
 
-  // For pre and pre-wrap whitespace styles, normalize all spaces.
-  // Otherwise, collapse everything but nbsp, then convert nbsp to space.
+  // For pre and pre-wrap whitespace styles, convert all breaking spaces to be
+  // non-breaking, otherwise, collapse all breaking spaces. Breaking spaces are
+  // converted to regular spaces by getVisibleText().
   if (whitespace == 'pre' || whitespace == 'pre-wrap') {
-    text = text.replace(/\f\t\v\u2028\u2029/, ' ');
+    text = text.replace(/[ \f\t\v\u2028\u2029]/g, '\xa0');
   } else {
     text = text.replace(/[\ \f\t\v\u2028\u2029]+/g, ' ');
   }
@@ -817,15 +829,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
       goog.string.startsWith(text, ' ')) {
     text = text.substr(1);
   }
-  
-  if (whitespace == 'pre' || whitespace == 'pre-wrap') {
-    // The trick is to use zero-width spaces to mark borders of preformatted
-    //  text fragments to protect them from trimming.
-    // They should be removed later (see bot.dom.getVisibleText)
-    lines.push('\u2063' + currLine + text + '\u2063');
-  } else {
-    lines.push(currLine + text);
-  }
+  lines.push(currLine + text);
 };
 
 
@@ -1129,14 +1133,21 @@ bot.dom.getLocationInView = function(elem, opt_elemRegion) {
 bot.dom.isScrolledIntoView = function(element, opt_coords) {
   var ownerWindow = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
   var topWindow = ownerWindow.top;
+  var elSize = goog.style.getSize(element);
+
   for (var win = ownerWindow; ; win = win.parent) {
     var scroll = goog.dom.getDomHelper(win.document).getDocumentScroll();
     var size = goog.dom.getViewportSize(win);
-    var viewportRect = new goog.math.Rect(scroll.x, scroll.y, size.width, size.height);
+    var viewportRect = new goog.math.Rect(scroll.x,
+                                          scroll.y,
+                                          size.width,
+                                          size.height);
 
     var elCoords = goog.style.getFramedPageOffset(element, win);
-    var elSize = goog.style.getSize(element);
-    var elementRect = new goog.math.Rect(elCoords.x, elCoords.y, elSize.width, elSize.height);
+    var elementRect = new goog.math.Rect(elCoords.x,
+                                         elCoords.y,
+                                         elSize.width,
+                                         elSize.height);
     if (!goog.math.Rect.intersects(viewportRect, elementRect)) {
       return false;
     }
@@ -1148,9 +1159,11 @@ bot.dom.isScrolledIntoView = function(element, opt_coords) {
   var visibleBox = goog.style.getVisibleRectForElement(element);
   if (!visibleBox) {
     return false;
-  } else if (opt_coords) {
+  }
+  if (opt_coords) {
     var elementOffset = goog.style.getPageOffset(element);
-    return visibleBox.contains(goog.math.Coordinate.sum(elementOffset, opt_coords));
+    var desiredPoint = goog.math.Coordinate.sum(elementOffset, opt_coords);
+    return visibleBox.contains(desiredPoint);
   } else {
     var elementBox = goog.style.getBounds(element).toBox();
     return goog.math.Box.intersects(visibleBox, elementBox);

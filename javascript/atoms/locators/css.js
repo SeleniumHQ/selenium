@@ -88,12 +88,13 @@ bot.locators.css.many = function(target, root) {
   return root.querySelectorAll(target);
 };
 
+
 /**
- * Check if the string contains a comma outside a quoted string
- *
- * @param {string} string to check for commas outside a quoted blcok
- * @return {boolean}
+ * @param {string} str String to check for commas outside a quoted block.
+ * @return {boolean} Whether a comma is present outside a quoted string.
+ * @private
  */
 bot.locators.css.containsUnquotedComma_ = function(str) {
-  return str.split(/(,)(?=(?:[^']|'[^']*')*$)/).length > 1 && str.split(/(,)(?=(?:[^"]|"[^"]*")*$)/).length > 1
-}
+  return str.split(/(,)(?=(?:[^']|'[^']*')*$)/).length > 1 &&
+         str.split(/(,)(?=(?:[^"]|"[^"]*")*$)/).length > 1;
+};

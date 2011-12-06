@@ -27,7 +27,9 @@
 
       // TODO(user): Use expected failures for this
       // Chrome does support location, but disabling due to b/5416356.
-      if (goog.userAgent.product.CHROME) {
+      // Android does support location, but these tests are run under an
+      // emulator which does not by default.
+      if (goog.userAgent.product.CHROME || goog.userAgent.product.ANDROID) {
         return;
       }
 

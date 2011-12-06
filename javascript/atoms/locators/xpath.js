@@ -81,6 +81,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   return doc.evaluate(path, node, resolver, resultType, null);
 };
 
+
 /**
  * @param {!Error} ex The error that needs to be checked.
  * @return {boolean} Whether the error was caused by an invalid xpath.

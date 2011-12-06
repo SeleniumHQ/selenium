@@ -21,12 +21,13 @@ limitations under the License.
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
   goog.require('bot.events');
+  goog.require('bot.events.EventType');
   goog.require('bot.locators');
   goog.require('goog.array');
   goog.require('goog.events');
-  goog.require('goog.events.EventType');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
+  goog.require('goog.userAgent.product');
   </script>
 
   <script type="text/javascript">
@@ -38,28 +39,71 @@ limitations under the License.
   </script>
 
   <script type="text/javascript">
-  function testCanFireMoveEvent() {
-    var e = bot.locators.findElement({id: 'move'});
 
-    bot.events.fire(e, goog.events.EventType.MOUSEMOVE);
-
-    assertTrue(goog.array.indexOf(MESSAGES, 'move') != -1);
-  }
-
-  function testCanFireFocusEvent() {
-    var e = bot.locators.findElement({id: 'focus'});
-
-    bot.events.fire(e, goog.events.EventType.FOCUS);
-
+  function testCanFireEvent() {
+    var e = bot.locators.findElement({id: 'target'});
+    bot.events.fire(e, bot.events.EventType.FOCUS);
     assertTrue(goog.array.indexOf(MESSAGES, 'focus') != -1);
   }
 
-  function testCanFireBlurEvent() {
-    var e = bot.locators.findElement({id: 'blur'});
+  function testCanFireMouseEvent() {
+    var e = bot.locators.findElement({id: 'target'});
+    bot.events.fire(e, bot.events.EventType.MOUSEMOVE, {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      ctrlKey: false,
+      relatedTarget: null
+    });
+    assertTrue(goog.array.indexOf(MESSAGES, 'mousemove') != -1);
+  }
 
-    bot.events.fire(e, goog.events.EventType.BLUR);
+  function testCanFireKeyboardEvent() {
+    var e = bot.locators.findElement({id: 'target'});
+    bot.events.fire(e, bot.events.EventType.KEYDOWN, {
+      keyCode: 0,
+      charCode: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      ctrlKey: false
+    });
+    assertTrue(goog.array.indexOf(MESSAGES, 'keydown') != -1);
+  }
 
-    assertTrue(goog.array.indexOf(MESSAGES, 'blur') != -1);
+  function testCanFireTouchEvent() {
+    if (!goog.userAgent.product.CHROME && !goog.userAgent.Mobile) {
+      return;
+    }
+
+    var e = bot.locators.findElement({id: 'target'});
+    var touch = {
+      identifier: 0,
+      clientX: 0,
+      clientY: 0,
+      screenX: 0,
+      screenY: 0,
+      pageX: 0,
+      pageY: 0
+    };
+    bot.events.fire(e, bot.events.EventType.TOUCHSTART, {
+      touches: [touch],
+      targetTouches: [touch],
+      changedTouches: [touch],
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      ctrlKey: false,
+      relatedTarget: null,
+      clientX: 0,
+      clientY: 0,
+      scale: 0,
+      rotation: 0
+    });
+    assertTrue(goog.array.indexOf(MESSAGES, 'touchstart') != -1);
   }
 
   function testCanAccessEventProperties_NonIE() {
@@ -68,14 +112,14 @@ limitations under the License.
     }
 
     var type, target;
-    var elem = bot.locators.findElement({id: 'props'});
-    elem.onfocus = function(e) {
+    var elem = bot.locators.findElement({id: 'target'});
+    elem.onchange = function(e) {
       type = e.type;
       target = e.target;
     };
-    bot.events.fire(elem, goog.events.EventType.FOCUS);
+    bot.events.fire(elem, bot.events.EventType.CHANGE);
 
-    assertEquals('focus', type);
+    assertEquals('change', type);
     assertEquals(elem, target);
   }
 
@@ -85,42 +129,52 @@ limitations under the License.
     }
 
     var type, target;
-    var elem = bot.locators.findElement({id: 'props'});
-    elem.onfocus = function() {
+    var elem = bot.locators.findElement({id: 'target'});
+    elem.onchange = function() {
       type = window.event.type;
       target = window.event.srcElement;
     };
-    bot.events.fire(elem, goog.events.EventType.FOCUS);
+    bot.events.fire(elem, bot.events.EventType.CHANGE);
 
-    assertEquals('focus', type);
+    assertEquals('change', type);
     assertEquals(elem, target);
   }
 
-  function testIsSythentic() {
-    var propertyListenerCalled = false;
+  function testIsSynthentic() {
+    var nativeListenerCalled = false;
     var closureListenerCalled = false;
-    var elem = bot.locators.findElement({id: 'move'});
-    elem.onmousemove = function(event) {
-      propertyListenerCalled = true;
-      assertTrue(bot.events.isSynthetic(event));
-    };
-    goog.events.listen(elem, 'mousemove', function(event) {
+    var elem = bot.locators.findElement({id: 'target'});
+    if (elem.addEventListener) {
+      elem.addEventListener('change', function(event) {
+        nativeListenerCalled = true;
+        assertTrue(bot.events.isSynthetic(event));
+      }, false);
+    } else {
+      elem.attachEvent('onchange', function(event) {
+        nativeListenerCalled = true;
+        assertTrue(bot.events.isSynthetic(event));
+      });
+    }
+    goog.events.listen(elem, 'change', function(event) {
       closureListenerCalled = true;
       assertTrue(bot.events.isSynthetic(event));
     });
-    bot.events.fire(elem, 'mousemove');
+    bot.events.fire(elem, bot.events.EventType.CHANGE);
 
     // Make sure the assertions were actually checked.
-    assertTrue(propertyListenerCalled);
+    assertTrue(nativeListenerCalled);
     assertTrue(closureListenerCalled);
   }
   </script>
 
 </head>
 <body>
-  <p id="move" onmousemove="log('move');">Move</p>
-  <p id="focus" onfocus="log('focus');">Focus</p>
-  <p id="blur" onblur="log('blur');">Blur</p>
-  <p id="props">Properties</p>
+  <form>
+  <input id="target" value="target"
+      onfocus="log('focus');"
+      onmousemove="log('mousemove');"
+      onkeydown="log('keydown');"
+      ontouchstart="log('touchstart');">
+  </form>
 </body>
 </html>

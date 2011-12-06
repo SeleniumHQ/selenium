@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>mouse_test</title>
+<title>dom_test</title>
 <script src="test_bootstrap.js"></script>
 <script type="text/javascript">
   goog.require('bot.dom');
+  goog.require('bot.userAgent');
   goog.require('goog.dom');
   goog.require('goog.math.Coordinate');
   goog.require('goog.testing.jsunit');
 </script>
 <body>
 <script type="text/javascript">
-
   function setUp() {
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }
 
   function testGetInViewLocationWithPositiveOffset() {
+    if (bot.userAgent.MOBILE) {
+      // Scroll offsets are not reliable on mobile viewports.
+      return;
+    }
     // Scroll with positive offsets.
     var inViewLocation = bot.dom.getInViewLocation(
         new goog.math.Coordinate(2000, 1000),
@@ -36,6 +40,10 @@
   }
 
   function testGetInViewLocationwithNegativeOffsetX() {
+    if (bot.userAgent.MOBILE) {
+      // Scroll offsets are not reliable on mobile viewports.
+      return;
+    }
     // Scroll down so that we can scroll up afterwards.
     bot.dom.getInViewLocation(new goog.math.Coordinate(2000, 0), window);
     var oldPageXOffset = goog.dom.getDocumentScroll().x;
@@ -53,6 +61,10 @@
   }
 
   function testGetInViewLocationwithNegativeOffsetY() {
+    if (bot.userAgent.MOBILE) {
+      // Scroll offsets are not reliable on mobile viewports.
+      return;
+    }
     // Scroll down so that we can scroll up afterwards.
     bot.dom.getInViewLocation(new goog.math.Coordinate(0, 2000), window);
     var oldPageYOffset = goog.dom.getDocumentScroll().y;
@@ -70,6 +82,11 @@
   }
 
   function testShouldThrowAnErrorIfScrollingTooFar() {
+    if (bot.userAgent.MOBILE) {
+      // Scroll offsets are not reliable on mobile viewports.
+      return;
+    }
+
     try {
       bot.dom.getInViewLocation(new goog.math.Coordinate(20000, 0),
           window);

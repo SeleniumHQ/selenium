@@ -11,6 +11,7 @@
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
   </script>
 </head>
 <body>
@@ -37,31 +38,45 @@
     }
 
     function testScrollsElementInToViewIfRequired() {
-      bot.action.scrollIntoViewIfNecessary(findElement({id: 'offscreen'}));
-      assertNotEquals(0, getTopLevelParent().scrollLeft);
+      bot.action.scrollIntoView(findElement({id: 'offscreen'}));
+
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
+        'Android doesn\'t currently provide scrolling information');
+      expectedFailures.run(function() {
+        assertNotEquals(0, getTopLevelParent().scrollLeft);
+      });
     }
 
     function testDoesNotScrollElementInToViewIfAlreadyVisible() {
-      bot.action.scrollIntoViewIfNecessary(findElement({id: 'onscreen'}));
+      bot.action.scrollIntoView(findElement({id: 'onscreen'}));
       assertEquals(0, getTopLevelParent().scrollLeft);
     }
 
     function testScrollsElementIfHiddenByScrollableOverflow() {
       var element = findElement({id: 'scrollable'});
-      bot.action.scrollIntoViewIfNecessary(element);
+      bot.action.scrollIntoView(element);
       assertNotEquals(0, findElement({id: 'scrollable-container'}).scrollLeft);
     }
 
-    function testScrollsContainerIfNotHiddenByOverflow() {
-      bot.action.scrollIntoViewIfNecessary(findElement({id: 'scrollable-in-view'}));
-      assertEquals(0, findElement({id: 'scrollable-in-view-container'}).scrollLeft);
+    function testDoesNotScrollContainerIfNotHiddenByOverflow() {
+      var element = findElement({id: 'scrollable-in-view'});
+      bot.action.scrollIntoView(element);
+      var container = findElement({id: 'scrollable-in-view-container'})
+      assertEquals(0, container.scrollLeft);
+    }
+
+    function testDoesNotScrollContainerIfNotHiddenByOverflowWithOffset() {
+      var element = findElement({id: 'scrollable-in-view2'});
+      bot.action.scrollIntoView(element, new goog.math.Coordinate(0, 0));
+      var container = findElement({id: 'scrollable-in-view-container2'})
+      assertEquals(0, container.scrollLeft);
+      assertEquals(0, getTopLevelParent().scrollTop);
     }
 
     function testScrollsContainerIfHiddenByOverflow() {
-      bot.action.scrollIntoViewIfNecessary(findElement({id: 'scrollable'}));
+      bot.action.scrollIntoView(findElement({id: 'scrollable'}));
       assertNotEquals(0, findElement({id: 'scrollable-container'}).scrollLeft);
     }
-
 
     function testReturnsFalseIfElementHiddenByOverflow() {
       var element = findElement({id: 'hidden-by-overflow'});
@@ -75,11 +90,11 @@
         'scrollable container by holding down the mouse button and moving) ' +
         'we should re-renable this test.');
       expectedFailures.run(function() {
-        assertFalse(bot.action.scrollIntoViewIfNecessary(element));
-        assertEquals(0, findElement({id: 'hidden-by-overflow-container'}).scrollLeft);
+        assertFalse(bot.action.scrollIntoView(element));
+        var container = findElement({id: 'hidden-by-overflow-container'})
+        assertEquals(0, container.scrollLeft);
       });
     }
-
 
     function testScrollsNestedScrollContainers() {
       var top = findElement({id: 'nested-top-container'});
@@ -87,7 +102,7 @@
       var element = findElement({id: 'nested'});
       var nestedOriginalPosition = goog.style.getClientPosition(element);
 
-      bot.action.scrollIntoViewIfNecessary(element);
+      bot.action.scrollIntoView(element);
 
       var nestedNewPosition = goog.style.getClientPosition(element);
       assertNotEquals(0, top.scrollLeft);
@@ -95,12 +110,11 @@
       assertNotEquals(nestedOriginalPosition, nestedNewPosition);
     }
 
-
     function testOnlyScrollsContainersThatNeedScrolling() {
       var element = findElement({id: 'scrollable-but-unscrolled-not-hidden'});
       var origX = goog.style.getClientPosition(element).x;
 
-      bot.action.scrollIntoViewIfNecessary(element);
+      bot.action.scrollIntoView(element);
 
       var middleContainer = findElement({id:
           'scrollable-but-unscrolled-middle-container'});
@@ -121,30 +135,42 @@
     function testScrollsNestedScrollContainersInIframes() {
       var iframe = findElement({id: 'scrollable-iframe'});
       var frameDocument = iframe.contentWindow.document;
-      var top = findElement({id: 'iframe-scrollable-top-container'}, frameDocument);
-      var middle = findElement({id: 'iframe-scrollable-nested-container'}, frameDocument);
+      var top =
+        findElement({id: 'iframe-scrollable-top-container'}, frameDocument);
+      var middle =
+        findElement({id: 'iframe-scrollable-nested-container'}, frameDocument);
       var element = findElement({id: 'iframe-scrollable'}, frameDocument);
 
-      bot.action.scrollIntoViewIfNecessary(element);
+      bot.action.scrollIntoView(element);
 
-      assertNotEquals(0, frameDocument.body.scrollLeft);
-      assertNotEquals(0, top.scrollLeft);
-      assertNotEquals(0, middle.scrollLeft);
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
+        'Android doesn\'t currently provide scrolling information');
+      expectedFailures.run(function() {
+        assertNotEquals(0, frameDocument.body.scrollLeft);
+        assertNotEquals(0, top.scrollLeft);
+        assertNotEquals(0, middle.scrollLeft);
+      });
     }
 
     function testDocumentForIframe() {
       var iframe = findElement({id: 'offscreen-scrollable-iframe'});
       var frameDocument = iframe.contentWindow.document;
-      var top = findElement({id: 'iframe-scrollable-top-container'}, frameDocument);
-      var middle = findElement({id: 'iframe-scrollable-nested-container'}, frameDocument);
+      var top =
+        findElement({id: 'iframe-scrollable-top-container'}, frameDocument);
+      var middle =
+        findElement({id: 'iframe-scrollable-nested-container'}, frameDocument);
       var element = findElement({id: 'iframe-scrollable'}, frameDocument);
 
-      bot.action.scrollIntoViewIfNecessary(element);
+      bot.action.scrollIntoView(element);
 
-      assertNotEquals(0, getTopLevelParent().scrollLeft);
-      assertNotEquals(0, frameDocument.body.scrollLeft);
-      assertNotEquals(0, top.scrollLeft);
-      assertNotEquals(0, middle.scrollLeft);
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
+        'Android doesn\'t currently provide scrolling information');
+      expectedFailures.run(function() {
+        assertNotEquals(0, getTopLevelParent().scrollLeft);
+        assertNotEquals(0, frameDocument.body.scrollLeft);
+        assertNotEquals(0, top.scrollLeft);
+        assertNotEquals(0, middle.scrollLeft);
+      });
     }
   </script>
   <div style="position: absolute; left: 150px; top: 100px; border: 2px yellow solid;"><a id="onscreen">Onscreen</a></div>
@@ -157,7 +183,12 @@
   </div>
   <div id="scrollable-in-view-container" style="overflow: scroll; width: 200px;
     height: 50px; border: 2px grey solid;">&nbsp;&nbsp;&nbsp;<a
-      id="scrollable-in-view">Scrollable&nbsp;in&nbsp;view</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+      id="scrollable-in-view">Scrollable&nbsp;in&nbsp;view</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+  <div id="scrollable-in-view-container2" style="overflow: scroll; width: 200px;
+    height: 50px; border: 2px grey solid;">&nbsp;&nbsp;&nbsp;<a
+      id="scrollable-in-view2">Scrollable&nbsp;in&nbsp;view</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
   <div style="overflow: hidden; width: 100px; height: 30px; border: 2px black solid;" id="not-hidden-by-hidden-overflow-container">&nbsp;&nbsp;&nbsp;<a id="not-hidden-by-hidden-overflow">Not hidden</a></div>
   <div style="overflow: scroll; width: 100px; height: 100px;" id="nested-top-container">
     <div style="overflow: scroll; width: 150px; left: 150px; margin-left:

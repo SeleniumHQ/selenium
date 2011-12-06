@@ -19,16 +19,16 @@ limitations under the License.
 <head>
   <title>locator_test.html</title>
   <script src="test_bootstrap.js"></script>
-  <script>
-    goog.require('goog.testing.jsunit');
-    goog.require('goog.events.EventType');
-    goog.require('goog.testing.PropertyReplacer');
+  <script type="text/javascript">
     goog.require('bot');
     goog.require('bot.ErrorCode');
     goog.require('bot.locators');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.PropertyReplacer');
+    goog.require('goog.testing.jsunit');
   </script>
 
-  <script>
+  <script type="text/javascript">
     var CAN_SELECT_SINGLE_NODE =
         document.documentElement['selectSingleNode'] || document['evaluate'];
     var CAN_SELECT_MANY_NODES =
@@ -130,7 +130,7 @@ limitations under the License.
         return;  // Skip this until we get selectors working on all browsers
       }
 
-      assertNull(bot.locators.findElement({css: '#uglyfish'}))
+      assertNull(bot.locators.findElement({css: '#uglyfish'}));
     }
 
     function testWillRejectShouldRejectMultipleSelectors() {
@@ -158,8 +158,8 @@ limitations under the License.
       if (!CAN_SELECT_SINGLE_NODE) {
         return;  // Skip this until we get xpath working on all browsers
       }
- 
-      assertNull(bot.locators.findElement({xpath: "//fish"}));
+
+      assertNull(bot.locators.findElement({xpath: '//fish'}));
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInSingle() {
@@ -169,9 +169,9 @@ limitations under the License.
 
       try {
         bot.locators.findElement({xpath: 'this][isnot][valid'});
-        fail('Should not have succeeded because the xpath expression is '
-                    + 'syntactically not correct');
-      } catch(ex) {
+        fail('Should not have succeeded because the xpath expression is ' +
+                    'syntactically not correct');
+      } catch (ex) {
         //We expect an InvalidSelectorException because the xpath expression is
         //syntactically invalid.
         assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
@@ -185,9 +185,9 @@ limitations under the License.
 
       try {
         bot.locators.findElement({xpath: 'count(//fish)'});
-        fail('Should not have succeeded because the xpath expression does '
-                    + 'not select an element.');
-      } catch(ex) {
+        fail('Should not have succeeded because the xpath expression does ' +
+                    'not select an element.');
+      } catch (ex) {
         // We expect an exception because the XPath expression
         // results in a number, not in an element.
         assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
@@ -238,10 +238,10 @@ limitations under the License.
       }
 
       try {
-        bot.locators.findElements({xpath: "this][isnot][valid"});
-        fail('Should not have succeeded because the xpath expression is '
-            + 'syntactically not correct.');
-      } catch(ex) {
+        bot.locators.findElements({xpath: 'this][isnot][valid'});
+        fail('Should not have succeeded because the xpath expression is ' +
+            'syntactically not correct.');
+      } catch (ex) {
         // We expect an InvalidSelectorException because the xpath expression is
         // syntactically invalid.
         assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
@@ -254,10 +254,10 @@ limitations under the License.
       }
 
       try {
-        bot.locators.findElements({xpath: "count(//fish)"});
-        fail("Should not have succeeded because the xpath expression does not "
-            + "select an element.");
-      } catch(ex) {
+        bot.locators.findElements({xpath: 'count(//fish)'});
+        fail('Should not have succeeded because the xpath expression does ' +
+            'not select an element.');
+      } catch (ex) {
         // We expect an exception because the XPath expression
         // results in a number, not in an element.
         assertEquals(bot.ErrorCode.INVALID_SELECTOR_ERROR, ex.code);
@@ -367,6 +367,7 @@ limitations under the License.
         stubs.reset();
       }
     }
+
 </script>
 </head>
 <body>

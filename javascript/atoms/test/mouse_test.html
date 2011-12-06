@@ -4,12 +4,14 @@
 <title>mouse_test</title>
 <script src="test_bootstrap.js"></script>
 <script type="text/javascript">
+  goog.require('bot.Mouse');
   goog.require('bot.action');
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.EventType');
   goog.require('goog.math.Coordinate');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.userAgent');
 </script>
 <body>
 <script type="text/javascript">
@@ -23,107 +25,139 @@
     goog.events.EventType.MOUSEUP,
     goog.events.EventType.CLICK,
     goog.events.EventType.CONTEXTMENU,
-    goog.events.EventType.DBLCLICK];
+    goog.events.EventType.DBLCLICK
+  ];
 
   function setUpPage() {
     greenDiv = bot.locators.findElement({id: 'green'});
     redDiv = bot.locators.findElement({id: 'red'});
+  }
+
+  function setUp() {
+    bot.getDocument().documentElement.focus();
+    events = [];
+    goog.events.removeAll();
 
     goog.events.listen(greenDiv, MOUSE_EVENTS, function(e) {
-      var id = e.target ? (e.target.id ? e.target.id : 'NO ID') : 'NO TARGET';
       events.push(e.type);
-      events.push(id);
+      events.push(e.target);
+      events.push(e.button);
     });
   }
 
-  function assertEvents(expectedEvents){
+  /**
+   * Returns the button value in the object depending on the current useragent.
+   * Returns the 'ie' property of the given object for IE, the 'wk' property
+   * for WebKit, and the 'ff' property for Firefox and Opera.
+   */
+  function b(button) {
+    return goog.userAgent.IE ? button['ie'] :
+        (goog.userAgent.WEBKIT ? button['wk'] :
+            button['ff']);  // Firefox or Opera
+  }
+
+  function assertEvents(expectedEvents) {
     assertArrayEquals(expectedEvents, events);
     events = [];
   }
 
-  // Tests on changing mouse internal states
-  function testClickOnHiddenElementWontBreakMouseStates() {
+  function testNoClickWhenPressHiddenElement() {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
     goog.style.showElement(greenDiv, false);
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
-    assertEvents([goog.events.EventType.MOUSEOVER, greenDiv.id,
-                  goog.events.EventType.MOUSEMOVE, greenDiv.id]);
+
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, greenDiv, 0,
+      goog.events.EventType.MOUSEMOVE, greenDiv, 0
+    ]);
     goog.style.showElement(greenDiv, true);
   }
 
-  // Tests on the event sequences
   function testLeftClick() {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
-    // No click if we released on another element.
+    mouse.move(redDiv, coords);
+    mouse.pressButton(bot.Mouse.Button.LEFT);
+    mouse.releaseButton();
+
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, redDiv, 0,
+      goog.events.EventType.MOUSEMOVE, redDiv, 0,
+      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.CLICK, redDiv, 0
+    ]);
+  }
+
+  function testNoLeftClickWhenReleasedOverOtherElement() {
+    var coords = new goog.math.Coordinate(5, 5);
+    var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.move(redDiv, coords);
     mouse.releaseButton();
-    assertEvents([goog.events.EventType.MOUSEOVER, greenDiv.id,
-                  goog.events.EventType.MOUSEMOVE, greenDiv.id,
-                  goog.events.EventType.MOUSEDOWN, greenDiv.id,
-                  goog.events.EventType.MOUSEOUT, greenDiv.id,
-                  goog.events.EventType.MOUSEOVER, redDiv.id,
-                  goog.events.EventType.MOUSEMOVE, redDiv.id,
-                  goog.events.EventType.MOUSEUP, redDiv.id]);
-    // Press/release button on the same element will get a click.
-    mouse.move(redDiv, coords);
-    mouse.pressButton(bot.Mouse.Button.LEFT);
-    mouse.releaseButton();
-    assertEvents([goog.events.EventType.MOUSEMOVE, redDiv.id,
-                  goog.events.EventType.MOUSEDOWN, redDiv.id,
-                  goog.events.EventType.MOUSEUP, redDiv.id,
-                  goog.events.EventType.CLICK, redDiv.id]);
+
+    // No click if we released on another element.
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, greenDiv, 0,
+      goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+      goog.events.EventType.MOUSEDOWN, greenDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.MOUSEOUT, greenDiv, 0,
+      goog.events.EventType.MOUSEOVER, redDiv, 0,
+      goog.events.EventType.MOUSEMOVE, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0})
+    ]);
   }
 
   function testRightClick() {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
-    // Right click will trigger contextmenu even moved to another
     mouse.move(greenDiv, coords);
     mouse.pressButton(bot.Mouse.Button.RIGHT);
     mouse.move(redDiv, coords);
     mouse.releaseButton();
-    assertEvents([goog.events.EventType.MOUSEOVER, greenDiv.id,
-                  goog.events.EventType.MOUSEMOVE, greenDiv.id,
-                  goog.events.EventType.MOUSEDOWN, greenDiv.id,
-                  goog.events.EventType.MOUSEOUT, greenDiv.id,
-                  goog.events.EventType.MOUSEOVER, redDiv.id,
-                  goog.events.EventType.MOUSEMOVE, redDiv.id,
-                  goog.events.EventType.MOUSEUP, redDiv.id,
-                  goog.events.EventType.CONTEXTMENU, redDiv.id]);
+
+    // Right click triggers contextmenu even when released over another element.
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, greenDiv, 0,
+      goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+      goog.events.EventType.MOUSEDOWN, greenDiv, 2,
+      goog.events.EventType.MOUSEOUT, greenDiv, b({ie: 0, wk: 2, ff: 0}),
+      goog.events.EventType.MOUSEOVER, redDiv, b({ie: 0, wk: 2, ff: 0}),
+      goog.events.EventType.MOUSEMOVE, redDiv, b({ie: 2, wk: 2, ff: 0}),
+      goog.events.EventType.MOUSEUP, redDiv, 2,
+      goog.events.EventType.CONTEXTMENU, redDiv, b({ie: 0, wk: 2, ff: 2})
+    ]);
   }
 
   function testDoubleClick() {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
-    // Press/release button on the same element twice will get a double click.
     mouse.move(redDiv, coords);
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
 
-    assertEvents([goog.events.EventType.MOUSEOVER, redDiv.id,
-                  goog.events.EventType.MOUSEMOVE, redDiv.id,
-                  goog.events.EventType.MOUSEDOWN, redDiv.id,
-                  goog.events.EventType.MOUSEUP, redDiv.id,
-                  goog.events.EventType.CLICK, redDiv.id,
-                  goog.events.EventType.MOUSEDOWN, redDiv.id,
-                  goog.events.EventType.MOUSEUP, redDiv.id,
-                  goog.events.EventType.CLICK, redDiv.id,
-                  goog.events.EventType.DBLCLICK, redDiv.id]);
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, redDiv, 0,
+      goog.events.EventType.MOUSEMOVE, redDiv, 0,
+      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.CLICK, redDiv, 0,
+      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.CLICK, redDiv, 0,
+      goog.events.EventType.DBLCLICK, redDiv, 0
+    ]);
   }
 
   function testNoDoubleClickWhenTheMouseMovesBetweenClicks() {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
-    // With a mouse move event in between the two clicks should avert the double
-    // click.
     mouse.move(greenDiv, coords);
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
@@ -131,17 +165,19 @@
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
 
-    assertEvents([goog.events.EventType.MOUSEOVER, greenDiv.id,
-                  goog.events.EventType.MOUSEMOVE, greenDiv.id,
-                  goog.events.EventType.MOUSEDOWN, greenDiv.id,
-                  goog.events.EventType.MOUSEUP, greenDiv.id,
-                  goog.events.EventType.CLICK, greenDiv.id,
-                  goog.events.EventType.MOUSEOUT, greenDiv.id,
-                  goog.events.EventType.MOUSEOVER, redDiv.id,
-                  goog.events.EventType.MOUSEMOVE, redDiv.id,
-                  goog.events.EventType.MOUSEDOWN, redDiv.id,
-                  goog.events.EventType.MOUSEUP, redDiv.id,
-                  goog.events.EventType.CLICK, redDiv.id]);
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, greenDiv, 0,
+      goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+      goog.events.EventType.MOUSEDOWN, greenDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.MOUSEUP, greenDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.CLICK, greenDiv, 0,
+      goog.events.EventType.MOUSEOUT, greenDiv, 0,
+      goog.events.EventType.MOUSEOVER, redDiv, 0,
+      goog.events.EventType.MOUSEMOVE, redDiv, 0,
+      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      goog.events.EventType.CLICK, redDiv, 0
+    ]);
   }
 
   function testMoveOnSameElement() {
@@ -150,10 +186,12 @@
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords1);
     mouse.move(greenDiv, coords2);
-    assertEvents([goog.events.EventType.MOUSEOVER, greenDiv.id,
-                  goog.events.EventType.MOUSEMOVE, greenDiv.id,
-                  goog.events.EventType.MOUSEMOVE, greenDiv.id]
-    );
+
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, greenDiv, 0,
+      goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+      goog.events.EventType.MOUSEMOVE, greenDiv, 0
+    ]);
   }
 
   function testMoveToAnotherElement() {
@@ -161,28 +199,52 @@
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
     mouse.move(redDiv, coords);
-    assertEvents([goog.events.EventType.MOUSEOVER, greenDiv.id,
-                  goog.events.EventType.MOUSEMOVE, greenDiv.id,
-                  goog.events.EventType.MOUSEOUT, greenDiv.id,
-                  goog.events.EventType.MOUSEOVER, redDiv.id,
-                  goog.events.EventType.MOUSEMOVE, redDiv.id]
-    );
+
+    assertEvents([
+      goog.events.EventType.MOUSEOVER, greenDiv, 0,
+      goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+      goog.events.EventType.MOUSEOUT, greenDiv, 0,
+      goog.events.EventType.MOUSEOVER, redDiv, 0,
+      goog.events.EventType.MOUSEMOVE, redDiv, 0
+    ]);
   }
 
-  // Tests on incorrect mouse behaviors
-  function testReportErrorWhenPressTwoButtonsAtTheSameTime() {
+  function testFirstMoveHasNullRelated() {
     var mouse = new bot.Mouse();
-    mouse.pressButton(bot.Mouse.Button.LEFT);
-    assertThrows('Pressed two buttons without error', function() {
-      mouse.pressButton(bot.Mouse.Button.RIGHT);
+
+    var fired = 0;
+
+    goog.events.listenOnce(greenDiv, goog.events.EventType.MOUSEOVER,
+        function(e) {
+          var relatedTarget =
+            (goog.userAgent.IE) ? window.event.fromElement : e.relatedTarget;
+          fired++;
+          assertNull(relatedTarget);
     });
+
+    mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
+
+    assertEquals(1, fired);
   }
 
-  function testReportErrorWhenReleaseButtonWhenNoButtonPressed() {
+
+  function testSecondMoveHasRelatedSet() {
     var mouse = new bot.Mouse();
-    assertThrows('Released null button without error', function() {
-      mouse.releaseButton();
+    mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
+
+    var fired = 0;
+
+    goog.events.listenOnce(redDiv, goog.events.EventType.MOUSEOVER,
+        function(e) {
+          var relatedTarget =
+            (goog.userAgent.IE) ? window.event.fromElement : e.relatedTarget;
+          fired++;
+          assertNotNull(relatedTarget);
+          assertFalse(redDiv == relatedTarget);
     });
+
+    mouse.move(redDiv, new goog.math.Coordinate(5, 5));
+    assertEquals(1, fired);
   }
 </script>
 <div id="green" style="background-color:green; width:100px; height:50px">

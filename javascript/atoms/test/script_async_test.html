@@ -4,8 +4,8 @@
   <title>script_async_test.html</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot.script');
     goog.require('bot.locators');
+    goog.require('bot.script');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -46,6 +46,10 @@
       return;
     }
 
+    if (goog.userAgent.product.ANDROID) {
+      return;
+    }
+
     var script = 'var callback = arguments[arguments.length - 1];' +
                  'var count = 0;' +
                  'window.setTimeout(function() {count += 1;}, 250);' +
@@ -63,9 +67,11 @@
 
 
   function testShouldExecuteInTheContextOfTheProvidedWindow() {
-    if (goog.userAgent.IE || goog.userAgent.product.SAFARI) {
+    if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
+        goog.userAgent.product.ANDROID) {
       // IE has trouble communicating with testWindow.
       // Safari cannot execute script in testWindow's context.
+      // Android does not execute in the window context properly.
       return;
     }
 
@@ -85,9 +91,11 @@
   }
 
   function testCanDetectPageUnloadEventsAndFailsTheScriptWhenTheyOccur() {
-    if (goog.userAgent.IE || goog.userAgent.product.SAFARI) {
+    if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
+        goog.userAgent.product.ANDROID) {
       // IE has trouble communicating with testWindow.
       // Safari cannot execute script in testWindow's context.
+      // Android does not execute in the window context properly.
       return;
     }
 

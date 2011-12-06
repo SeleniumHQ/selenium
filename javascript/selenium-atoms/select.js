@@ -23,6 +23,7 @@ goog.provide('core.select');
 goog.provide('core.select.option');
 
 goog.require('bot.action');
+goog.require('bot.dom');
 goog.require('core.Error');
 goog.require('core.locators');
 goog.require('core.patternMatcher');
@@ -269,5 +270,7 @@ core.select.setSelected = function(locator, optionLocator) {
   var foo = core.select.option.getOptionLocator_(optionLocator);
   var option = foo.findOption(select);
 
-  bot.action.setSelected(option, true);
+  if (!bot.dom.isSelected(option)) {
+    bot.action.click(option);
+  }
 };

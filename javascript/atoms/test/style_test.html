@@ -92,7 +92,7 @@
         var color = bot.dom.getEffectiveStyle(green, 'background-color');
 
         // Depending on the browser, we get different values back.
-        // TODO(simonstewart): Make the return value of colors consistent.
+        // TODO(user): Make the return value of colors consistent.
         var expected = ['green', 'rgb(0, 128, 0)'];
         assert(goog.array.contains(expected, color));
       }

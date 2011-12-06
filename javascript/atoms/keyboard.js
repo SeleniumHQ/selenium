@@ -23,13 +23,13 @@ goog.provide('bot.Keyboard');
 goog.provide('bot.Keyboard.Key');
 goog.provide('bot.Keyboard.Keys');
 
+goog.require('bot.Device');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
-goog.require('bot.events');
+goog.require('bot.events.EventType');
 goog.require('goog.array');
 goog.require('goog.dom.selection');
-goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.structs.Set');
 goog.require('goog.userAgent');
@@ -39,34 +39,25 @@ goog.require('goog.userAgent');
 /**
  * A keyboard that provides atomic typing actions.
  *
- * @param {!Element} element Element to type on.
  * @constructor
+ * @extends {bot.Device}
  */
-bot.Keyboard = function(element) {
-  /**
-   * @type {!Element}
-   * @private
-   */
-  this.element_ = element;
+bot.Keyboard = function() {
+  goog.base(this);
 
   /**
    * @type {boolean}
    * @private
    */
-  this.editable_ = bot.dom.isEditable(element);
+  this.editable_ = bot.dom.isEditable(this.getElement());
 
   /**
    * @type {!goog.structs.Set.<!bot.Keyboard.Key>}
    * @private
    */
   this.pressed_ = new goog.structs.Set();
-
-  // Start the cursor from the end of the element.
-  // TODO(user): Support other starting cursor points?
-  if (this.editable_) {
-    goog.dom.selection.setCursorPosition(element, element.value.length);
-  }
 };
+goog.inherits(bot.Keyboard, bot.Device);
 
 
 /**
@@ -357,13 +348,19 @@ bot.Keyboard.prototype.pressKey = function(key) {
         'Cannot press a modifier key that is already pressed.');
   }
 
+  // Note that GECKO is special-cased below because of
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=501496. "preventDefault on
+  // keydown does not cancel following keypress"
+  var performDefault = !goog.isNull(key.code) &&
+      this.fireKeyEvent_(bot.events.EventType.KEYDOWN, key);
+
   // Fires keydown and stops if unsuccessful.
-  if (!goog.isNull(key.code) &&
-      this.fireKeyEvent_(goog.events.EventType.KEYDOWN, key)) {
+  if (performDefault || goog.userAgent.GECKO) {
     // Fires keypress if required and stops if unsuccessful.
     if (!this.requiresKeyPress_(key) ||
-        this.fireKeyEvent_(goog.events.EventType.KEYPRESS, key)) {
-      if (this.editable_) {
+        this.fireKeyEvent_(
+            bot.events.EventType.KEYPRESS, key, !performDefault)) {
+      if (this.editable_ && performDefault) {
         if (key.character) {
           this.updateOnCharacter_(key);
         } else {
@@ -433,7 +430,7 @@ bot.Keyboard.prototype.releaseKey = function(key) {;
         'Cannot release a key that is not pressed.');
   }
   if (!goog.isNull(key.code)) {
-    this.fireKeyEvent_(goog.events.EventType.KEYUP, key);
+    this.fireKeyEvent_(bot.events.EventType.KEYUP, key);
   }
   this.pressed_.remove(key);
 };
@@ -467,14 +464,14 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
   }
 
   var character = this.getChar_(key);
-  goog.dom.selection.setText(this.element_, character);
-  goog.dom.selection.setStart(this.element_,
-                              goog.dom.selection.getStart(this.element_) + 1);
+  goog.dom.selection.setText(this.getElement(), character);
+  goog.dom.selection.setStart(this.getElement(),
+      goog.dom.selection.getStart(this.getElement()) + 1);
   if (goog.userAgent.WEBKIT) {
-    bot.events.fire(this.element_, 'textInput');
+    this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
   if (!goog.userAgent.IE) {
-    bot.events.fire(this.element_, goog.events.EventType.INPUT);
+    this.fireHtmlEvent(bot.events.EventType.INPUT);
   }
 };
 
@@ -491,15 +488,15 @@ bot.Keyboard.prototype.updateOnEnter_ = function() {
   // WebKit fires text input regardless of whether a new line is added, see:
   // https://bugs.webkit.org/show_bug.cgi?id=54152
   if (goog.userAgent.WEBKIT) {
-    bot.events.fire(this.element_, 'textInput');
+    this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
-  if (bot.dom.isElement(this.element_, goog.dom.TagName.TEXTAREA)) {
-    goog.dom.selection.setText(this.element_, bot.Keyboard.NEW_LINE_);
-    goog.dom.selection.setStart(this.element_,
-        goog.dom.selection.getStart(this.element_) +
+  if (bot.dom.isElement(this.getElement(), goog.dom.TagName.TEXTAREA)) {
+    goog.dom.selection.setText(this.getElement(), bot.Keyboard.NEW_LINE_);
+    goog.dom.selection.setStart(this.getElement(),
+        goog.dom.selection.getStart(this.getElement()) +
         bot.Keyboard.NEW_LINE_.length);
     if (!goog.userAgent.IE) {
-      bot.events.fire(this.element_, goog.events.EventType.INPUT);
+      this.fireHtmlEvent(bot.events.EventType.INPUT);
     }
   }
 };
@@ -517,21 +514,21 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
 
   // Determine what should be deleted.  If text is already selected, that
   // text is deleted, else we move left/right from the current cursor.
-  var endpoints = goog.dom.selection.getEndPoints(this.element_);
+  var endpoints = goog.dom.selection.getEndPoints(this.getElement());
   if (key == bot.Keyboard.Keys.BACKSPACE && endpoints[0] == endpoints[1]) {
-    goog.dom.selection.setStart(this.element_, endpoints[1] - 1);
+    goog.dom.selection.setStart(this.getElement(), endpoints[1] - 1);
     // On IE, changing goog.dom.selection.setStart also changes the end.
-    goog.dom.selection.setEnd(this.element_, endpoints[1]);
+    goog.dom.selection.setEnd(this.getElement(), endpoints[1]);
   } else {
-    goog.dom.selection.setEnd(this.element_, endpoints[1] + 1);
+    goog.dom.selection.setEnd(this.getElement(), endpoints[1] + 1);
   }
 
   // If the endpoints are equal (e.g., the cursor was at the beginning/end
   // of the input), the text field won't be changed.
-  endpoints = goog.dom.selection.getEndPoints(this.element_);
-  var textChanged = !(endpoints[0] == this.element_.value.length ||
+  endpoints = goog.dom.selection.getEndPoints(this.getElement());
+  var textChanged = !(endpoints[0] == this.getElement().value.length ||
                       endpoints[1] == 0);
-  goog.dom.selection.setText(this.element_, '');
+  goog.dom.selection.setText(this.getElement(), '');
 
   // Except for IE and GECKO, we need to fire the input event manually, but
   // only if the text was actually changed.
@@ -542,7 +539,7 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
   //  the box has no text.  Delete behaves the same way in Firefox 3.0, but
   //  in later versions it only fires an input event if no text changes.
   if (!goog.userAgent.IE && textChanged) {
-    bot.events.fire(this.element_, goog.events.EventType.INPUT);
+    this.fireHtmlEvent(bot.events.EventType.INPUT);
   }
 };
 
@@ -552,43 +549,56 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
  * @private
  */
 bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
-  var start = goog.dom.selection.getStart(this.element_);
+  var start = goog.dom.selection.getStart(this.getElement());
   if (key == bot.Keyboard.Keys.LEFT) {
-    goog.dom.selection.setCursorPosition(this.element_, start - 1);
+    goog.dom.selection.setCursorPosition(this.getElement(), start - 1);
   } else {  // (key == bot.Keyboard.Keys.RIGHT)
-    goog.dom.selection.setCursorPosition(this.element_, start + 1);
+    goog.dom.selection.setCursorPosition(this.getElement(), start + 1);
   }
 };
 
 
 /**
- * @param {string} type Event type.
+ * @param {bot.events.EventType} type Event type.
  * @param {!bot.Keyboard.Key} key Key.
+ * @param {boolean=} opt_preventDefault Whether the default event should be
+ *     prevented. Defaults to false.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
  */
-bot.Keyboard.prototype.fireKeyEvent_ = function(type, key) {
-  var args = {
-    alt: this.isPressed(bot.Keyboard.Keys.ALT),
-    ctrl: this.isPressed(bot.Keyboard.Keys.CONTROL),
-    meta: this.isPressed(bot.Keyboard.Keys.META),
-    shift: this.isPressed(bot.Keyboard.Keys.SHIFT)
-  };
-
-  var isKeyPress = (type == goog.events.EventType.KEYPRESS);
-  var isKeyPressChar = isKeyPress && key.character;
-  var code = isKeyPressChar ? this.getChar_(key).charCodeAt(0) : key.code;
-
-  if (goog.userAgent.GECKO) {
-    args.keyCode = isKeyPressChar ? 0 : code;
-    args.charCode = isKeyPressChar ? code : 0;
-  } else if (goog.userAgent.WEBKIT) {
-    args.keyCode = code;
-    args.charCode = isKeyPress ? code : 0;
-  } else { // IE and Opera
-    args.keyCode = code;
+bot.Keyboard.prototype.fireKeyEvent_ = function(type, key, opt_preventDefault) {
+  if (goog.isNull(key.code)) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'Key must have a keycode to be fired.');
   }
 
-  args = /** @type {bot.events.KeyboardArgs} */ args;
-  return bot.events.fire(this.element_, type, args);
+  var args = {
+    altKey: this.isPressed(bot.Keyboard.Keys.ALT),
+    ctrlKey: this.isPressed(bot.Keyboard.Keys.CONTROL),
+    metaKey: this.isPressed(bot.Keyboard.Keys.META),
+    shiftKey: this.isPressed(bot.Keyboard.Keys.SHIFT),
+    keyCode: key.code,
+    charCode: (key.character && type == bot.events.EventType.KEYPRESS) ?
+        this.getChar_(key).charCodeAt(0) : 0,
+    preventDefault: !!opt_preventDefault
+  };
+
+  return this.fireKeyboardEvent(type, args);
+};
+
+
+/**
+ * Sets focus to the element. If the element does not have focus, place cursor
+ * at the end of the text in the element.
+ *
+ * @param {!Element} element Element that is moved to.
+ */
+bot.Keyboard.prototype.moveCursor = function(element) {
+  this.setElement(element);
+  this.editable_ = bot.dom.isEditable(element);
+
+  var focusChanged = this.focusOnElement();
+  if (this.editable_ && focusChanged) {
+    goog.dom.selection.setCursorPosition(element, element.value.length);
+  }
 };

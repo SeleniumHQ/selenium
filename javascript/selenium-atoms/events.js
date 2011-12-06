@@ -23,8 +23,10 @@ goog.provide('core.events');
 
 goog.require('bot.dom');
 goog.require('bot.events');
+goog.require('bot.events.EventType');
 goog.require('core.Error');
 goog.require('core.locators');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 
 
@@ -32,6 +34,31 @@ core.events.controlKeyDown_ = false;
 core.events.altKeyDown_ = false;
 core.events.metaKeyDown_ = false;
 core.events.shiftKeyDown_ = false;
+
+
+core.events.getEventFactory_ = function(eventName) {
+  var type = bot.events.EventType[eventName.toUpperCase()];
+  if (type) {
+    return type;
+  }
+
+  return {
+    'create': function(target, opt_args) {
+      var doc = goog.dom.getOwnerDocument(target);
+      var event;
+
+      if (bot.events.IE_NO_W3C_EVENTS_) {
+        event = doc.createEventObject();
+      } else {
+        event = doc.createEvent('HTMLEvents');
+        event.initEvent(eventName, true, true);
+      }
+
+      return event;
+    }
+  };
+};
+
 
 /**
  * Fire a named a event on a particular element;
@@ -41,7 +68,8 @@ core.events.shiftKeyDown_ = false;
  */
 core.events.fire = function(locator, eventName) {
   var element = core.locators.findElement(locator);
-  bot.events.fire(element, eventName);
+  var type = core.events.getEventFactory_(eventName);
+  bot.events.fire(element, type);
 };
 
 
@@ -81,7 +109,8 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
   var element = core.locators.findElement(locator);
   var coords = core.events.parseCoordinates_(opt_coordString || "0,0");
 
-  bot.events.fire(element, eventName, coords);
+  var type = core.events.getEventFactory_(eventName);
+  bot.events.fire(element, type, coords);
 };
 
 
@@ -90,8 +119,8 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
  * @param {string} value The value to use.
  */
 core.events.replaceText_ = function(element, value) {
-  bot.events.fire(element, 'focus', {bubble: false});
-  bot.events.fire(element, 'select');
+  bot.events.fire(element, bot.events.EventType.FOCUS, {bubble: false});
+  bot.events.fire(element, bot.events.EventType.SELECT);
 
   var maxLengthAttr = bot.dom.getAttribute(element, 'maxlength');
   var actualValue = value;
@@ -115,7 +144,7 @@ core.events.replaceText_ = function(element, value) {
   }
   // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
   try {
-    bot.events.fire(element, 'change');
+    bot.events.fire(element, bot.events.EventType.CHANGE);
   } catch (e) {
   }
 };

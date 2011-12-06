@@ -26,8 +26,8 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.math.Size');
 goog.require('goog.math.Coordinate');
+goog.require('goog.math.Size');
 goog.require('goog.userAgent');
 
 
@@ -124,22 +124,22 @@ bot.window.getInteractableSize = function(opt_win) {
   var doc = win.document;
   var elem = doc.documentElement;
   var body = doc.body;
+  if (!body) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'No BODY element present');
+  }
 
   var widths = [
-      elem.clientWidth, elem.scrollWidth, elem.offsetWidth,
-      body.scrollWidth, body.offsetWidth
+    elem.clientWidth, elem.scrollWidth, elem.offsetWidth,
+    body.scrollWidth, body.offsetWidth
   ];
   var heights = [
-      elem.clientHeight, elem.scrollHeight, elem.offsetHeight,
-      body.scrollHeight, body.offsetHeight
+    elem.clientHeight, elem.scrollHeight, elem.offsetHeight,
+    body.scrollHeight, body.offsetHeight
   ];
 
-  var sortFunc = function(a, b) {
-    return a - b;
-  };
-
-  var width = /**@type {number}*/goog.array.peek(widths.sort(sortFunc)) || 0;
-  var height = /**@type {number}*/goog.array.peek(heights.sort(sortFunc)) || 0;
+  var width = Math.max.apply(null, widths);
+  var height = Math.max.apply(null, heights);
 
   return new goog.math.Size(width, height);
 };
@@ -162,7 +162,8 @@ bot.window.getSize = function(opt_win) {
 };
 
 
-/** Set the outer size of the window.
+/**
+ * Set the outer size of the window.
  *
  * @param {!goog.math.Size} size The new window size.
  * @param {!Window=} opt_win Window to determine the size of. Defaults to
@@ -175,7 +176,8 @@ bot.window.setSize = function(size, opt_win) {
 };
 
 
-/** Get the position of the window.
+/**
+ * Get the position of the window.
  *
  * @param {!Window=} opt_win Window to determine the position of. Defaults to
  *   bot.getWindow().
@@ -183,15 +185,22 @@ bot.window.setSize = function(size, opt_win) {
  */
 bot.window.getPosition = function(opt_win) {
   var win = opt_win || bot.getWindow();
+  var x, y;
 
-  var x = win.screenX;
-  var y = win.screenY;
+  if (goog.userAgent.IE) {
+    x = win.screenLeft;
+    y = win.screenTop;
+  } else {
+    x = win.screenX;
+    y = win.screenY;
+  }
 
   return new goog.math.Coordinate(x, y);
 };
 
 
-/** Set the position of the window.
+/**
+ * Set the position of the window.
  *
  * @param {!goog.math.Coordinate} targetPosition The target position.
  * @param {!Window=} opt_win Window to set the position of. Defaults to

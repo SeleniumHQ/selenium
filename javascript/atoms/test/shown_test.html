@@ -187,18 +187,9 @@
       assertFalse(isShown(transparent));
     }
 
-    function testTitleOfTopWindowShown() {
+    function testTitleIsNotShown() {
       var title = findElement({tagName: 'title'});
-      assertTrue(isShown(title));
-
-      // Try as we might, the title is still shown.
-      title.style.visibility = 'hidden';
-      title.style.display = 'none';
-      title.style.opacity = '0';
-      title.style.filter = 'alpha(opacity=0)';
-      title.width = 0;
-      title.height = 0;
-      assertTrue(isShown(title));
+      assertFalse(isShown(title));
     }
 
     function testTitleOfFrameWindowNotShown() {
@@ -206,18 +197,6 @@
       var iframeDoc = goog.dom.getFrameContentDocument(iframe);
       var iframeTitle = findElement({tagName: 'title'}, iframeDoc);
       assertFalse(isShown(iframeTitle));
-    }
-
-    function testTitleOfFrameWindowShownWhenItIsBotWindow() {
-      var iframe = findElement({id: 'iframe'});
-      var iframeWin = goog.dom.getFrameContentWindow(iframe);
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var iframeTitle = findElement({tagName: 'title'}, iframeDoc);
-
-      var originalWindow = bot.getWindow();
-      bot.setWindow(iframeWin);
-      assertTrue(isShown(iframeTitle));
-      bot.setWindow(originalWindow);
     }
 
     function testTwoEmptyDivsAreZeroSizedAndNotShown() {
@@ -231,7 +210,7 @@
     }
 
     function testZeroSizedDivIsShownIfDescendantHasSize() {
-      var element = goog.dom.createDom('div', {style:'width:0;height:0'},
+      var element = goog.dom.createDom('div', {style: 'width:0;height:0'},
           goog.dom.createDom('div', null,
               goog.dom.createDom('img', {
                 src: 'testdata/map.png'
@@ -282,20 +261,9 @@
       var select = goog.dom.$('invisiSelect');
       assertEquals(0, bot.dom.getOpacity(select));
       assertFalse(bot.dom.isShown(select));
-      assertTrue(bot.dom.isShown(select.firstChild));
-    }
-
-    /** @see http://code.google.com/p/selenium/issues/detail?id=2922 */
-    function testOptionsInInvisibleSelectAlwaysIgnoreParentSelectOpacity() {
-      var select = goog.dom.$('invisiSelect');
-      assertEquals(0, bot.dom.getOpacity(select));
-      assertFalse(bot.dom.isShown(select));
       assertTrue('Select should be visible when ignoring opacity',
           bot.dom.isShown(select, true));
-      assertTrue('Option should be visible when ignoring opacity',
-          bot.dom.isShown(select.firstChild, true));
-      assertTrue('Option should be visible when not ignoring opacity',
-          bot.dom.isShown(select.firstChild, false));
+      assertTrue(bot.dom.isShown(select.firstChild));
     }
 
     /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
