@@ -59,14 +59,14 @@ public class CommandLine {
 
   public CommandLine(String executable, String... args) {
     cl = new org.apache.commons.exec.CommandLine(findExecutable(executable));
-    cl.addArguments(args);
+    cl.addArguments(args, false);
   }
 
   public CommandLine(String[] cmdarray) {
     String executable = findExecutable(cmdarray[0]);
     cl = new org.apache.commons.exec.CommandLine(executable);
     for (int i = 1; i < cmdarray.length; i++) {
-      cl.addArgument(cmdarray[i]);
+      cl.addArgument(cmdarray[i], false);
     }
   }
 
@@ -300,7 +300,7 @@ public class CommandLine {
 
   @Override
   public String toString() {
-    return executor.toString();
+    return cl.toString();
   }
 
   public void copyOutputTo(OutputStream out) {
