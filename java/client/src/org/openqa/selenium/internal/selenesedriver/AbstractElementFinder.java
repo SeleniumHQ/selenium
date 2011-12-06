@@ -31,14 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractElementFinder<T> implements SeleneseFunction<T> {
-  private final static Map<String, String> name2strategy =
-      ImmutableMap.of(
-          "class name", "className",
-          "css selector", "css",
-          "link text", "linkText",
-          "partial link text", "partialLinkText",
-          "tag name", "tagName");
-
   private long implicitlyWait = 0;
 
   protected abstract T executeFind(Selenium selenium, String how, String using, String parentLocator);
@@ -51,7 +43,7 @@ public abstract class AbstractElementFinder<T> implements SeleneseFunction<T> {
   }
 
   public T apply(Selenium selenium, Map<String, ?> args) {
-    String how = convertToStrategyName((String) args.get("using"));
+    String how = (String) args.get("using");
     String using = (String) args.get("value");
     String parentLocator = (String) args.get("id");
 
@@ -104,10 +96,5 @@ public abstract class AbstractElementFinder<T> implements SeleneseFunction<T> {
       AbstractElementFinder.this.implicitlyWait = ((Number) args.get("ms")).longValue();
       return null;
     }
-  }
-
-  protected String convertToStrategyName(String using) {
-    String strategy = name2strategy.get(using);
-    return strategy != null ? strategy : using;
   }
 }
