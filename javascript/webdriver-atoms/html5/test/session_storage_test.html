@@ -6,7 +6,7 @@
   <script type="text/javascript">
     goog.require('bot.html5');
     goog.require('goog.testing.jsunit');
-    goog.require('webdriver.storage.session');
+    goog.require('webdriver.atoms.storage.session');
   </script>
 
   <script type="text/javascript">
@@ -15,32 +15,32 @@
         return;
       }
 
-      webdriver.storage.session.clear();
-      assertEquals(0, webdriver.storage.session.size());
+      webdriver.atoms.storage.session.clear();
+      assertEquals(0, webdriver.atoms.storage.session.size());
 
-      webdriver.storage.session.setItem('first', 'one');
-      webdriver.storage.session.setItem('second', 'two');
-      webdriver.storage.session.setItem('third', 'two');
-      webdriver.storage.session.clear();
-      assertEquals(0, webdriver.storage.session.size());
-      assertNull(webdriver.storage.session.getItem('first'));
-      assertNull(webdriver.storage.session.getItem('second'));
-      assertNull(webdriver.storage.session.getItem('third'));
+      webdriver.atoms.storage.session.setItem('first', 'one');
+      webdriver.atoms.storage.session.setItem('second', 'two');
+      webdriver.atoms.storage.session.setItem('third', 'two');
+      webdriver.atoms.storage.session.clear();
+      assertEquals(0, webdriver.atoms.storage.session.size());
+      assertNull(webdriver.atoms.storage.session.getItem('first'));
+      assertNull(webdriver.atoms.storage.session.getItem('second'));
+      assertNull(webdriver.atoms.storage.session.getItem('third'));
     }
 
     function testSetAndGetSimpleItem() {
       if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE)) {
         return;
       }
-      webdriver.storage.session.clear();
+      webdriver.atoms.storage.session.clear();
 
       // set-get
-      webdriver.storage.session.setItem('first', 'one');
-      assertEquals('one', webdriver.storage.session.getItem('first'));
+      webdriver.atoms.storage.session.setItem('first', 'one');
+      assertEquals('one', webdriver.atoms.storage.session.getItem('first'));
 
       // resetItem
-      webdriver.storage.session.setItem('first', '1');
-      assertEquals('1', webdriver.storage.session.getItem('first'));
+      webdriver.atoms.storage.session.setItem('first', '1');
+      assertEquals('1', webdriver.atoms.storage.session.getItem('first'));
 
     }
 
@@ -49,13 +49,13 @@
         return;
       }
 
-      webdriver.storage.session.clear();
+      webdriver.atoms.storage.session.clear();
 
-      webdriver.storage.session.setItem('first', 'one');
-      assertEquals('one', webdriver.storage.session.removeItem('first'));
+      webdriver.atoms.storage.session.setItem('first', 'one');
+      assertEquals('one', webdriver.atoms.storage.session.removeItem('first'));
 
-      assertEquals(null, webdriver.storage.session.removeItem('first'));
-      assertEquals(null, webdriver.storage.session.removeItem('foo'));
+      assertEquals(null, webdriver.atoms.storage.session.removeItem('first'));
+      assertEquals(null, webdriver.atoms.storage.session.removeItem('foo'));
     }
 
     function testSize() {
@@ -63,12 +63,12 @@
         return;
       }
 
-      webdriver.storage.session.clear();
+      webdriver.atoms.storage.session.clear();
 
-      webdriver.storage.session.setItem('first', 'one');
-      webdriver.storage.session.setItem('second', 'two');
-      webdriver.storage.session.setItem('third', 'three');
-      assertEquals(3, webdriver.storage.session.size());
+      webdriver.atoms.storage.session.setItem('first', 'one');
+      webdriver.atoms.storage.session.setItem('second', 'two');
+      webdriver.atoms.storage.session.setItem('third', 'three');
+      assertEquals(3, webdriver.atoms.storage.session.size());
     }
 
     function testKeySet() {
@@ -76,14 +76,14 @@
         return;
       }
 
-      webdriver.storage.session.clear();
+      webdriver.atoms.storage.session.clear();
 
-      webdriver.storage.session.setItem('third', 'three');
-      webdriver.storage.session.setItem('first', 'one');
-      webdriver.storage.session.setItem('second', 'two');
+      webdriver.atoms.storage.session.setItem('third', 'three');
+      webdriver.atoms.storage.session.setItem('first', 'one');
+      webdriver.atoms.storage.session.setItem('second', 'two');
 
       // keySet
-      var keys = webdriver.storage.session.keySet();
+      var keys = webdriver.atoms.storage.session.keySet();
       var sortedKeys = keys.sort();
       assertArrayEquals(['first', 'second', 'third'], sortedKeys);
     }

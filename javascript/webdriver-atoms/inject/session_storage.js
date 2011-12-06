@@ -17,10 +17,10 @@
  *@fileOverview Ready to inject atoms for handling session storage.
  */
 
-goog.provide('webdriver.inject.storage.session');
+goog.provide('webdriver.atoms.inject.storage.session');
 
 goog.require('bot.inject');
-goog.require('webdriver.storage.session');
+goog.require('webdriver.atoms.storage.session');
 
 
 /**
@@ -31,8 +31,8 @@ goog.require('webdriver.storage.session');
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.session.setItem = function(key, value) {
-  return bot.inject.executeScript(webdriver.storage.session.setItem,
+webdriver.atoms.inject.storage.session.setItem = function(key, value) {
+  return bot.inject.executeScript(webdriver.atoms.storage.session.setItem,
       [key, value], true);
 };
 
@@ -44,8 +44,8 @@ webdriver.inject.storage.session.setItem = function(key, value) {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.session.getItem = function(key) {
-  return bot.inject.executeScript(webdriver.storage.session.getItem,
+webdriver.atoms.inject.storage.session.getItem = function(key) {
+  return bot.inject.executeScript(webdriver.atoms.storage.session.getItem,
       [key], true);
 };
 
@@ -56,8 +56,8 @@ webdriver.inject.storage.session.getItem = function(key) {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.session.keySet = function() {
-  return bot.inject.executeScript(webdriver.storage.session.keySet,
+webdriver.atoms.inject.storage.session.keySet = function() {
+  return bot.inject.executeScript(webdriver.atoms.storage.session.keySet,
       [], true);
 };
 
@@ -69,8 +69,8 @@ webdriver.inject.storage.session.keySet = function() {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.session.removeItem = function(key) {
-  return bot.inject.executeScript(webdriver.storage.session.removeItem,
+webdriver.atoms.inject.storage.session.removeItem = function(key) {
+  return bot.inject.executeScript(webdriver.atoms.storage.session.removeItem,
       [key], true);
 };
 
@@ -81,8 +81,8 @@ webdriver.inject.storage.session.removeItem = function(key) {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.session.clear = function() {
-  return bot.inject.executeScript(webdriver.storage.session.clear,
+webdriver.atoms.inject.storage.session.clear = function() {
+  return bot.inject.executeScript(webdriver.atoms.storage.session.clear,
       [], true);
 };
 
@@ -93,7 +93,7 @@ webdriver.inject.storage.session.clear = function() {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.session.size = function() {
-  return bot.inject.executeScript(webdriver.storage.session.size,
+webdriver.atoms.inject.storage.session.size = function() {
+  return bot.inject.executeScript(webdriver.atoms.storage.session.size,
       [], true);
 };

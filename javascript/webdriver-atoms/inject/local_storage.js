@@ -17,10 +17,10 @@
  *@fileOverview Ready to inject atoms for handling local storage.
  */
 
-goog.provide('webdriver.inject.storage.local');
+goog.provide('webdriver.atoms.inject.storage.local');
 
 goog.require('bot.inject');
-goog.require('webdriver.storage.local');
+goog.require('webdriver.atoms.storage.local');
 
 
 /**
@@ -31,8 +31,8 @@ goog.require('webdriver.storage.local');
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.local.setItem = function(key, value) {
-  return bot.inject.executeScript(webdriver.storage.local.setItem,
+webdriver.atoms.inject.storage.local.setItem = function(key, value) {
+  return bot.inject.executeScript(webdriver.atoms.storage.local.setItem,
       [key, value], true);
 };
 
@@ -44,8 +44,8 @@ webdriver.inject.storage.local.setItem = function(key, value) {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.local.getItem = function(key) {
-  return bot.inject.executeScript(webdriver.storage.local.getItem,
+webdriver.atoms.inject.storage.local.getItem = function(key) {
+  return bot.inject.executeScript(webdriver.atoms.storage.local.getItem,
       [key], true);
 };
 
@@ -56,8 +56,8 @@ webdriver.inject.storage.local.getItem = function(key) {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.local.keySet = function() {
-  return bot.inject.executeScript(webdriver.storage.local.keySet,
+webdriver.atoms.inject.storage.local.keySet = function() {
+  return bot.inject.executeScript(webdriver.atoms.storage.local.keySet,
       [], true);
 };
 
@@ -69,8 +69,8 @@ webdriver.inject.storage.local.keySet = function() {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.local.removeItem = function(key) {
-  return bot.inject.executeScript(webdriver.storage.local.removeItem,
+webdriver.atoms.inject.storage.local.removeItem = function(key) {
+  return bot.inject.executeScript(webdriver.atoms.storage.local.removeItem,
       [key], true);
 };
 
@@ -81,8 +81,8 @@ webdriver.inject.storage.local.removeItem = function(key) {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.local.clear = function() {
-  return bot.inject.executeScript(webdriver.storage.local.clear,
+webdriver.atoms.inject.storage.local.clear = function() {
+  return bot.inject.executeScript(webdriver.atoms.storage.local.clear,
       [], true);
 };
 
@@ -93,7 +93,7 @@ webdriver.inject.storage.local.clear = function() {
  * @return {!bot.inject.Response} The result wrapped according
  *     to the wire protocol.
  */
-webdriver.inject.storage.local.size = function() {
-  return bot.inject.executeScript(webdriver.storage.local.size,
+webdriver.atoms.inject.storage.local.size = function() {
+  return bot.inject.executeScript(webdriver.atoms.storage.local.size,
       [], true);
 };

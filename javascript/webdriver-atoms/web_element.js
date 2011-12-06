@@ -18,7 +18,7 @@
  * @fileoverview Atoms-based implementation of the webelement interface.
  */
 
-goog.provide('webdriver.element');
+goog.provide('webdriver.atoms.element');
 
 goog.require('bot.dom');
 goog.require('goog.dom');
@@ -32,7 +32,7 @@ goog.require('goog.style');
  * @param {!Element} element The element to use.
  * @return {boolean} Whether the element is checked or selected.
  */
-webdriver.element.isSelected = function(element) {
+webdriver.atoms.element.isSelected = function(element) {
   // Although this method looks unloved, its compiled form is used by 
   //
   if (!bot.dom.isSelectable(element)) {
@@ -53,7 +53,7 @@ webdriver.element.isSelected = function(element) {
  * @param {!string} attribute The name of the attribute to look up.
  * @return {string} The string value of the attribute or property, or null.
  */
-webdriver.element.getAttribute = function(element, attribute) {
+webdriver.atoms.element.getAttribute = function(element, attribute) {
   var value = null;
   var name = attribute.toLowerCase();
 
@@ -123,7 +123,7 @@ webdriver.element.getAttribute = function(element, attribute) {
  * @param {!Element} element The element to get the location for.
  * @return {goog.math.Rect} The bounding rectangle of the element.
  */
-webdriver.element.getLocation = function(element) {
+webdriver.atoms.element.getLocation = function(element) {
   if (!bot.dom.isShown(element)) {
     return null;
   }
@@ -136,7 +136,7 @@ webdriver.element.getLocation = function(element) {
  * @return {boolean} Whether the element is in the HEAD tag.
  * @private
  */
-webdriver.element.isInHead_ = function(element) {
+webdriver.atoms.element.isInHead_ = function(element) {
   while (element) {
     if (element.tagName && element.tagName.toLowerCase() == 'head') {
       return true;
@@ -157,8 +157,8 @@ webdriver.element.isInHead_ = function(element) {
  * @param {Element} element The element to get the text from.
  * @return {string} The visible text or an empty string.
  */
-webdriver.element.getText = function(element) {
-  if (webdriver.element.isInHead_(element)) {
+webdriver.atoms.element.getText = function(element) {
+  if (webdriver.atoms.element.isInHead_(element)) {
     var doc = goog.dom.getOwnerDocument(element);
     if (element.tagName.toUpperCase() == goog.dom.TagName.TITLE &&
         goog.dom.getWindow(doc) == bot.window_.top) {

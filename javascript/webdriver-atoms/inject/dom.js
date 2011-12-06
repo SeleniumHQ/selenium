@@ -17,12 +17,12 @@
  *@fileoverview Ready to inject atoms for querying the DOM.
  */
 
-goog.provide('webdriver.inject.dom');
+goog.provide('webdriver.atoms.inject.dom');
 
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.inject');
-goog.require('webdriver.element');
+goog.require('webdriver.atoms.element');
 
 
 /**
@@ -31,7 +31,7 @@ goog.require('webdriver.element');
  * @return {string} The visible text wrapped in a JSON string as defined by the
  *     WebDriver wire protocol.
  */
-webdriver.inject.dom.getText = function(element) {
+webdriver.atoms.inject.dom.getText = function(element) {
   return bot.inject.executeScript(bot.dom.getVisibleText, [element], true);
 };
 
@@ -42,7 +42,7 @@ webdriver.inject.dom.getText = function(element) {
  *     checked or selected wrapped in a JSON string as defined by
  *     the wire protocol.
  */
-webdriver.inject.dom.isSelected = function(element) {
+webdriver.atoms.inject.dom.isSelected = function(element) {
   return bot.inject.executeScript(bot.dom.isSelected, [element], true);
 };
 
@@ -52,7 +52,7 @@ webdriver.inject.dom.isSelected = function(element) {
  * @return {string} The coordinates of the top left corner in a JSON
  *     string as defined by the wire protocol.
  */
-webdriver.inject.dom.getTopLeftCoordinates = function(element) {
+webdriver.atoms.inject.dom.getTopLeftCoordinates = function(element) {
   return bot.inject.executeScript(bot.dom.getLocationInView, [element], true);
 };
 
@@ -63,9 +63,9 @@ webdriver.inject.dom.getTopLeftCoordinates = function(element) {
  * @return {string} The requested attribute value in a JSON string
  *     as defined by the wire protocol.
  */
-webdriver.inject.dom.getAttributeValue = function(element, attribute) {
+webdriver.atoms.inject.dom.getAttributeValue = function(element, attribute) {
   return bot.inject.executeScript(
-      webdriver.element.getAttribute, [element, attribute], true);
+      webdriver.atoms.element.getAttribute, [element, attribute], true);
 };
 
 
@@ -74,7 +74,7 @@ webdriver.inject.dom.getAttributeValue = function(element, attribute) {
  * @return {string} The element size in a JSON string as
  *     defined by the wire protocol.
  */
-webdriver.inject.dom.getSize = function(element) {
+webdriver.atoms.inject.dom.getSize = function(element) {
   return bot.inject.executeScript(bot.dom.getElementSize_, [element], true);
 };
 
@@ -85,7 +85,7 @@ webdriver.inject.dom.getSize = function(element) {
  * @return {string} The value of the requested CSS property in a JSON
  *     string as defined by the wire protocol.
  */
-webdriver.inject.dom.getValueOfCssProperty = function(element, property) {
+webdriver.atoms.inject.dom.getValueOfCssProperty = function(element, property) {
   return bot.inject.executeScript(bot.dom.getEffectiveStyle,
       [element, property], true);
 };
@@ -96,7 +96,7 @@ webdriver.inject.dom.getValueOfCssProperty = function(element, property) {
  * @return {string} A boolean describing whether the element is enabled
  *     in a JSON string as defined by the wire protocol.
  */
-webdriver.inject.dom.isEnabled = function(element) {
+webdriver.atoms.inject.dom.isEnabled = function(element) {
   return bot.inject.executeScript(bot.dom.isEnabled, [element], true);
 };
 
@@ -107,7 +107,7 @@ webdriver.inject.dom.isEnabled = function(element) {
  *     The result is wrapped in a JSON string as defined by the wire
  *     protocol.
  */
-webdriver.inject.dom.isDisplayed = function(element) {
+webdriver.atoms.inject.dom.isDisplayed = function(element) {
   return bot.inject.executeScript(
       bot.dom.isShown, [element, /*ignoreOpacity=*/true], true);
 };

@@ -8,7 +8,7 @@
     goog.require('goog.json');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
-    goog.require('webdriver.inject.storage.database');
+    goog.require('webdriver.atoms.inject.storage.database');
   </script>
 
   <script type='text/javascript'>
@@ -66,7 +66,7 @@
       }
 
       // WITH is errorneously used instead of WHERE
-      webdriver.inject.storage.database.executeSql(
+      webdriver.atoms.inject.storage.database.executeSql(
           'testDB',
           'SELECT * from docids WITH id = 1',
            [], onDone);
@@ -85,7 +85,7 @@
         asyncTestCase.continueTesting();
       }
 
-      webdriver.inject.storage.database.executeSql(
+      webdriver.atoms.inject.storage.database.executeSql(
           'testDB',
           'SELECT * from docids WHERE id = 1',
            [], onDone);

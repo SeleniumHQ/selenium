@@ -25,7 +25,7 @@ limitations under the License.
         goog.require('goog.testing.jsunit');
         goog.require('goog.userAgent');
         goog.require('bot.inject.cache');
-        goog.require('webdriver.inject.frame');
+        goog.require('webdriver.atoms.inject.frame');
     </script>
 
     <script type="text/javascript">
@@ -34,7 +34,7 @@ limitations under the License.
             return;
           }
 
-          var res = webdriver.inject.frame.findFrameByIdOrName("first");
+          var res = webdriver.atoms.inject.frame.findFrameByIdOrName("first");
           assertEquals(window.frames[0], getWindowFromCache(res));
         }
 
@@ -45,7 +45,7 @@ limitations under the License.
 
           var wrappedWindow =
               {"WINDOW": bot.inject.cache.addElement(window.frames[1])}
-          var res2 = webdriver.inject.frame.findFrameByIdOrName("iframe1", wrappedWindow);
+          var res2 = webdriver.atoms.inject.frame.findFrameByIdOrName("iframe1", wrappedWindow);
           assertEquals(window.frames[1].frames[0], getWindowFromCache(res2));
         }
 
@@ -54,7 +54,7 @@ limitations under the License.
             return;
           }
 
-          var win = webdriver.inject.frame.findFrameByIndex(1);
+          var win = webdriver.atoms.inject.frame.findFrameByIndex(1);
           assertEquals(window.frames[1], getWindowFromCache(win));
         }
 
@@ -64,7 +64,7 @@ limitations under the License.
           }
 
           var wrappedWindow = {"ELEMENT": bot.inject.cache.addElement(window.frames[1])}
-          var win = webdriver.inject.frame.findFrameByIndex(0, wrappedWindow);
+          var win = webdriver.atoms.inject.frame.findFrameByIndex(0, wrappedWindow);
           assertEquals(window.frames[1].frames[0], getWindowFromCache(win));
         }
 
@@ -73,7 +73,7 @@ limitations under the License.
             return;
           }
 
-          var win = webdriver.inject.frame.defaultContent();
+          var win = webdriver.atoms.inject.frame.defaultContent();
           assertEquals(window, getWindowFromCache(win));
         }
 
@@ -84,7 +84,7 @@ limitations under the License.
 
           var wrappedElement = {"ELEMENT": bot.inject.cache.addElement(
               window.document.getElementById("first"))};
-          var win = webdriver.inject.frame.getFrameWindow(wrappedElement);
+          var win = webdriver.atoms.inject.frame.getFrameWindow(wrappedElement);
           assertEquals(window.frames[0], getWindowFromCache(win));
         }
 

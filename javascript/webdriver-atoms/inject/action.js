@@ -17,7 +17,7 @@
  * @fileoverview Ready to inject atoms for manipulating the DOM.
  */
 
-goog.provide('webdriver.inject.action');
+goog.provide('webdriver.atoms.inject.action');
 
 goog.require('bot.action');
 goog.require('bot.inject');
@@ -29,7 +29,7 @@ goog.require('goog.dom.selection');
  *
  * @param {bot.inject.ELEMENT_KEY:string} element The element to submit.
  */
-webdriver.inject.action.submit = function(element) {
+webdriver.atoms.inject.action.submit = function(element) {
   bot.inject.executeScript(bot.action.submit, [element], true);
 };
 
@@ -40,7 +40,7 @@ webdriver.inject.action.submit = function(element) {
  * @param {bot.inject.ELEMENT_KEY:string} element The element to clear.
  * @see bot.action.clear
  */
-webdriver.inject.action.clear = function(element) {
+webdriver.atoms.inject.action.clear = function(element) {
   bot.inject.executeScript(bot.action.clear, [element], true);
 };
 

@@ -22,153 +22,153 @@ js_test(name = "test",
 
 # Those fragments are used by 3rd party browsers
 js_fragment(name = "find_element",
-  module = "webdriver.inject.locators",
-  function = "webdriver.inject.locators.findElement",
+  module = "webdriver.atoms.inject.locators",
+  function = "webdriver.atoms.inject.locators.findElement",
   deps = [":deps"])
 
 js_fragment(name = "find_elements",
-  module = "webdriver.inject.locators",
-  function = "webdriver.inject.locators.findElements",
+  module = "webdriver.atoms.inject.locators",
+  function = "webdriver.atoms.inject.locators.findElements",
   deps = [":deps"])
 
 js_fragment(name = "get_text",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.getText",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.getText",
   deps = [":deps"])
 
 js_fragment(name = "is_selected",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.isSelected",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.isSelected",
   deps = [":deps"])
 
 js_fragment(name = "get_top_left_coordinates",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.getTopLeftCoordinates",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.getTopLeftCoordinates",
   deps = [":deps"])
 
 js_fragment(name = "get_attribute_value",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.getAttributeValue",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.getAttributeValue",
   deps = [":deps"])
 
 js_fragment(name = "get_size",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.getSize",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.getSize",
   deps = [":deps"])
 
 js_fragment(name = "get_value_of_css_property",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.getValueOfCssProperty",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.getValueOfCssProperty",
   deps = [":deps"])
 
 js_fragment(name = "is_enabled",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.isEnabled",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.isEnabled",
   deps = [":deps"])
 
 js_fragment(name = "clear",
-  module = "webdriver.inject.action",
-  function = "webdriver.inject.action.clear",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.clear",
   deps = [":deps"])
 
 js_fragment(name = "is_displayed",
-  module = "webdriver.inject.dom",
-  function = "webdriver.inject.dom.isDisplayed",
+  module = "webdriver.atoms.inject.dom",
+  function = "webdriver.atoms.inject.dom.isDisplayed",
   deps = [":deps"])
 
 js_fragment(name = "submit",
-  module = "webdriver.inject.action",
-  function = "webdriver.inject.action.submit",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.submit",
   deps = [":deps"])
 
 js_fragment(name = "frame_by_id_or_name",
-  module = "webdriver.inject.frame",
-  function = "webdriver.inject.frame.findFrameByIdOrName",
+  module = "webdriver.atoms.inject.frame",
+  function = "webdriver.atoms.inject.frame.findFrameByIdOrName",
   deps = [":deps"])
 
 js_fragment(name = "frame_by_index",
-  module = "webdriver.inject.frame",
-  function = "webdriver.inject.frame.findFrameByIndex",
+  module = "webdriver.atoms.inject.frame",
+  function = "webdriver.atoms.inject.frame.findFrameByIndex",
   deps = [":deps"])
 
 js_fragment(name = "default_content",
-  module = "webdriver.inject.frame",
-  function = "webdriver.inject.frame.defaultContent",
+  module = "webdriver.atoms.inject.frame",
+  function = "webdriver.atoms.inject.frame.defaultContent",
   deps = [":deps"])
 
 js_fragment(name = "get_frame_window",
-  module = "webdriver.inject.frame",
-  function = "webdriver.inject.frame.getFrameWindow",
+  module = "webdriver.atoms.inject.frame",
+  function = "webdriver.atoms.inject.frame.getFrameWindow",
   deps = [":deps"])
 
 js_fragment(name = "active_element",
-  module = "webdriver.inject.frame",
-  function = "webdriver.inject.frame.activeElement",
+  module = "webdriver.atoms.inject.frame",
+  function = "webdriver.atoms.inject.frame.activeElement",
   deps = [":deps"])
 
 # Local Storage
 js_fragment(name = "set_local_storage_item",
-  module = "webdriver.inject.storage.local",
-  function = "webdriver.inject.storage.local.setItem",
+  module = "webdriver.atoms.inject.storage.local",
+  function = "webdriver.atoms.inject.storage.local.setItem",
   deps = [":deps"])
 
 js_fragment(name = "get_local_storage_item",
-  module = "webdriver.inject.storage.local",
-  function = "webdriver.inject.storage.local.getItem",
+  module = "webdriver.atoms.inject.storage.local",
+  function = "webdriver.atoms.inject.storage.local.getItem",
   deps = [":deps"])
 
 js_fragment(name = "get_local_storage_keys",
-  module = "webdriver.inject.storage.local",
-  function = "webdriver.inject.storage.local.keySet",
+  module = "webdriver.atoms.inject.storage.local",
+  function = "webdriver.atoms.inject.storage.local.keySet",
   deps = [":deps"])
 
 js_fragment(name = "remove_local_storage_item",
-  module = "webdriver.inject.storage.local",
-  function = "webdriver.inject.storage.local.removeItem",
+  module = "webdriver.atoms.inject.storage.local",
+  function = "webdriver.atoms.inject.storage.local.removeItem",
   deps = [":deps"])
 
 js_fragment(name = "clear_local_storage",
-  module = "webdriver.inject.storage.local",
-  function = "webdriver.inject.storage.local.clear",
+  module = "webdriver.atoms.inject.storage.local",
+  function = "webdriver.atoms.inject.storage.local.clear",
   deps = [":deps"])
 
 js_fragment(name = "get_local_storage_size",
-  module = "webdriver.inject.storage.local",
-  function = "webdriver.inject.storage.local.size",
+  module = "webdriver.atoms.inject.storage.local",
+  function = "webdriver.atoms.inject.storage.local.size",
   deps = [":deps"])
 
 # Session Storage
 js_fragment(name = "set_session_storage_item",
-  module = "webdriver.inject.storage.session",
-  function = "webdriver.inject.storage.session.setItem",
+  module = "webdriver.atoms.inject.storage.session",
+  function = "webdriver.atoms.inject.storage.session.setItem",
   deps = [":deps"])
 
 js_fragment(name = "get_session_storage_item",
-  module = "webdriver.inject.storage.session",
-  function = "webdriver.inject.storage.session.getItem",
+  module = "webdriver.atoms.inject.storage.session",
+  function = "webdriver.atoms.inject.storage.session.getItem",
   deps = [":deps"])
 
 js_fragment(name = "get_session_storage_keys",
-  module = "webdriver.inject.storage.session",
-  function = "webdriver.inject.storage.session.keySet",
+  module = "webdriver.atoms.inject.storage.session",
+  function = "webdriver.atoms.inject.storage.session.keySet",
   deps = [":deps"])
 
 js_fragment(name = "remove_session_storage_item",
-  module = "webdriver.inject.storage.session",
-  function = "webdriver.inject.storage.session.removeItem",
+  module = "webdriver.atoms.inject.storage.session",
+  function = "webdriver.atoms.inject.storage.session.removeItem",
   deps = [":deps"])
 
 js_fragment(name = "clear_session_storage",
-  module = "webdriver.inject.storage.session",
-  function = "webdriver.inject.storage.session.clear",
+  module = "webdriver.atoms.inject.storage.session",
+  function = "webdriver.atoms.inject.storage.session.clear",
   deps = [":deps"])
 
 js_fragment(name = "get_session_storage_size",
-  module = "webdriver.inject.storage.session",
-  function = "webdriver.inject.storage.session.size",
+  module = "webdriver.atoms.inject.storage.session",
+  function = "webdriver.atoms.inject.storage.session.size",
   deps = [":deps"])
 
 js_fragment(name = "execute_sql",
-  module = "webdriver.inject.storage.database",
-  function = "webdriver.inject.storage.database.executeSql",
+  module = "webdriver.atoms.inject.storage.database",
+  function = "webdriver.atoms.inject.storage.database.executeSql",
   deps = [":deps"])

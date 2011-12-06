@@ -23,52 +23,52 @@ limitations under the License.
   <script type="text/javascript">
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
-    goog.require('webdriver.element');
+    goog.require('webdriver.atoms.element');
   </script>
 
   <script type="text/javascript">
     function testShouldReturnTheValueOfAnAttribute() {
       var element = bot.locators.findElement({id: 'has_id'});
 
-      assertEquals('cheese', webdriver.element.getAttribute(element, 'title'));
+      assertEquals('cheese', webdriver.atoms.element.getAttribute(element, 'title'));
     }
 
     function testShouldReturnNullIfAValueDoesNotExistAsAnAttributeOrAProperty() {
       var element = bot.locators.findElement({id: 'has_id'});
 
-      assertNull(webdriver.element.getAttribute(element, 'this_does_not_exist'));
+      assertNull(webdriver.atoms.element.getAttribute(element, 'this_does_not_exist'));
     }
 
     function testShouldReturnTheValueOfAProperty() {
       var element = bot.locators.findElement({id: 'has_property'});
 
-      assertEquals("This is an example", webdriver.element.getAttribute(element, 'value'));
+      assertEquals("This is an example", webdriver.atoms.element.getAttribute(element, 'value'));
     }
 
     function testShouldReturnValuesAsStrings() {
       var element = bot.locators.findElement({id: 'has_property'});
 
-      assertEquals('2', webdriver.element.getAttribute(element, 'rows'));
+      assertEquals('2', webdriver.atoms.element.getAttribute(element, 'rows'));
     }
 
     function testShouldReturnBooleanPropertiesAsStrings() {
       var readOnlyElement = bot.locators.findElement({id: 'ro'}),
             normalElement = bot.locators.findElement({id: 'normal'});
 
-      assertEquals("true", webdriver.element.getAttribute(readOnlyElement, 'readonly'));
-      assertEquals("false", webdriver.element.getAttribute(normalElement, 'readonly'));
+      assertEquals("true", webdriver.atoms.element.getAttribute(readOnlyElement, 'readonly'));
+      assertEquals("false", webdriver.atoms.element.getAttribute(normalElement, 'readonly'));
     }
 
     function testSettingAnyValueForABooleanAttributeSetsItToTrue() {
       var element = bot.locators.findElement({id: 'bad-ro'});
 
-      assertEquals("true", webdriver.element.getAttribute(element, 'readonly'));
+      assertEquals("true", webdriver.atoms.element.getAttribute(element, 'readonly'));
     }
 
     function testShouldAttemptToStringifyTheStyleProperty() {
       var element = bot.locators.findElement({id: 'green'});
 
-      var style = webdriver.element.getAttribute(element, 'style').toLowerCase();
+      var style = webdriver.atoms.element.getAttribute(element, 'style').toLowerCase();
       assertTrue(style.indexOf('background-color') != -1);
     }
 
@@ -76,8 +76,8 @@ limitations under the License.
       var selected = bot.locators.findElement({id: 'selected-radio'});
       var unselected = bot.locators.findElement({id: 'unselected-radio'});
 
-      assertEquals("true", webdriver.element.getAttribute(selected, 'checked'));
-      assertNull(webdriver.element.getAttribute(unselected, 'checked'));
+      assertEquals("true", webdriver.atoms.element.getAttribute(selected, 'checked'));
+      assertNull(webdriver.atoms.element.getAttribute(unselected, 'checked'));
     }
 
     function testShouldIndicateWhetherAnElementIsSelected() {
@@ -87,82 +87,82 @@ limitations under the License.
       var unselectedOption = bot.locators.findElement({id: 'unselected-option'});
       var selectedOption = bot.locators.findElement({id: 'selected-option'});
 
-      assertTrue(webdriver.element.isSelected(selectedRadio));
-      assertTrue(webdriver.element.isSelected(selectedOption));
-      assertFalse(webdriver.element.isSelected(unselectedRadio));
-      assertFalse(webdriver.element.isSelected(unselectedOption));
-      assertFalse(webdriver.element.isSelected(input));
+      assertTrue(webdriver.atoms.element.isSelected(selectedRadio));
+      assertTrue(webdriver.atoms.element.isSelected(selectedOption));
+      assertFalse(webdriver.atoms.element.isSelected(unselectedRadio));
+      assertFalse(webdriver.atoms.element.isSelected(unselectedOption));
+      assertFalse(webdriver.atoms.element.isSelected(input));
     }
 
     function testShouldCorrectlyReportTheValueOfSelectedForRadioButtons() {
       var selected = bot.locators.findElement({id: 'selected-radio'});
       var unselected = bot.locators.findElement({id: 'unselected-radio'});
 
-      assertEquals("true", webdriver.element.getAttribute(selected, 'selected'));
-      assertNull(webdriver.element.getAttribute(unselected, 'selected'));
+      assertEquals("true", webdriver.atoms.element.getAttribute(selected, 'selected'));
+      assertNull(webdriver.atoms.element.getAttribute(unselected, 'selected'));
     }
 
     function testMultiplePropertyOfSelectsIsABoolean() {
       var element = bot.locators.findElement({name: 'multi'});
 
-      assertEquals('true', webdriver.element.getAttribute(element, 'multiple'));
+      assertEquals('true', webdriver.atoms.element.getAttribute(element, 'multiple'));
     }
 
     function testShouldReturnAnEmptyStringIfAnAttributeIsSetButEmpty() {
       var element = bot.locators.findElement({id: 'body'});
 
-      assertEquals('', webdriver.element.getAttribute(element, 'style'));
+      assertEquals('', webdriver.atoms.element.getAttribute(element, 'style'));
     }
 
     function testShouldFallBackToUsingAttributeIfPropertyAvailableButNotSet() {
       var element = bot.locators.findElement({id: 'body'});
 
-      assertEquals('body', webdriver.element.getAttribute(element, 'name'));
+      assertEquals('body', webdriver.atoms.element.getAttribute(element, 'name'));
     }
 
     function testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet() {
       var notInput = bot.locators.findElement({id: 'has_id'});
-      assertEquals("false", webdriver.element.getAttribute(notInput, 'disabled'));
+      assertEquals("false", webdriver.atoms.element.getAttribute(notInput, 'disabled'));
 
       var enabled =  bot.locators.findElement({id: 'normal'});
-      assertEquals("false", webdriver.element.getAttribute(enabled, 'disabled'));
+      assertEquals("false", webdriver.atoms.element.getAttribute(enabled, 'disabled'));
 
       var broken =  bot.locators.findElement({id: 'disabled'});
-      assertEquals("true", webdriver.element.getAttribute(broken, 'disabled'));
+      assertEquals("true", webdriver.atoms.element.getAttribute(broken, 'disabled'));
     }
 
     function testTheTopWindowsTitleShouldBeConsideredVisibleText() {
       var title = bot.locators.findElement({tagName: 'title'});
-      assertEquals('web_element_test.html', webdriver.element.getText(title));
+      assertEquals('web_element_test.html', webdriver.atoms.element.getText(title));
     }
 
     function testAFrameDocumentsTitleShouldNotBeConsideredVisibleText() {
       var frameDoc = bot.locators.findElement({id: 'frame_page_frame'}).contentWindow.document;
       var title = bot.locators.findElement({tagName: 'title'}, frameDoc);
       assertEquals('frame page', frameDoc.title);
-      assertEquals('', webdriver.element.getText(title));
+      assertEquals('', webdriver.atoms.element.getText(title));
     }
 
     function testCanGetVisibleText() {
       var para = bot.locators.findElement({id: 'has_id'});
-      assertEquals('This has an ID', webdriver.element.getText(para));
+      assertEquals('This has an ID', webdriver.atoms.element.getText(para));
     }
 
     function testWillReturnValueOfIndexForAnOptionEvenIfNotDeclared() {
       var select = bot.locators.findElement({id: 'multi'});
       var options = bot.locators.findElements({tagName: 'option'});
-      assertEquals("1", webdriver.element.getAttribute(options[1], 'index'));
+      assertEquals("1", webdriver.atoms.element.getAttribute(options[1], 'index'));
     }
 
     function testShouldReturnTheProtocolOfAnImage() {
       var image = bot.locators.findElement({id: 'image'});
-      var url = webdriver.element.getAttribute(image, 'src');
+      var url = webdriver.atoms.element.getAttribute(image, 'src');
       assertTrue(url, url.indexOf('http') == 0);
     }
 
     function testShouldReturnNullWhenGettingSrcAttributeOfInvalidImageTag() {
       var image = bot.locators.findElement({id: 'invalidImgTag'});
-      var url = webdriver.element.getAttribute(image, 'src');
+      var url = webdriver.atoms.element.getAttribute(image, 'src');
       assertNull(url);
     }
   </script>

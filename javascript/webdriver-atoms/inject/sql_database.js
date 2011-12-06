@@ -17,7 +17,7 @@
  *@fileOverview Ready to inject atoms for handling web SQL database.
  */
 
-goog.provide('webdriver.inject.storage.database');
+goog.provide('webdriver.atoms.inject.storage.database');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
@@ -34,7 +34,7 @@ goog.require('bot.storage.database');
  * @param {!function(string)} onDone The callback to invoke when done. The
  *     result, according to the wire protocol, will be passed to this callback.
  */
-webdriver.inject.storage.database.executeSql =
+webdriver.atoms.inject.storage.database.executeSql =
     function(databaseName, query, args, onDone) {
   var onSuccessCallback = function(tx, result) {
     onDone(bot.inject.executeScript(function(res) {

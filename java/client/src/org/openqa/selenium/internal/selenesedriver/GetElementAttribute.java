@@ -30,7 +30,7 @@ public class GetElementAttribute extends ElementFunction<String> {
 
     String script = String.format(
         "var e = selenium.browserbot.findElement('%s');" +
-            "webdriver.element.getAttribute(e, '%s');",
+            "webdriver.atoms.element.getAttribute(e, '%s');",
         locator, escape(name));
 
     String result = selenium.getEval(script);

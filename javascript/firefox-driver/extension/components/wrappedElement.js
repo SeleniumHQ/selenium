@@ -175,7 +175,7 @@ FirefoxDriver.prototype.getElementText = function(respond, parameters) {
   if (element.tagName == "TITLE") {
     respond.value = respond.session.getBrowser().contentTitle;
   } else {
-    respond.value = webdriver.element.getText(element);
+    respond.value = webdriver.atoms.element.getText(element);
   }
 
   respond.send();
@@ -295,7 +295,7 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, parameters) {
                                   respond.session.getDocument());
   var attributeName = parameters.name;
   
-  respond.value = webdriver.element.getAttribute(element, attributeName);
+  respond.value = webdriver.atoms.element.getAttribute(element, attributeName);
   respond.send();
 };
 

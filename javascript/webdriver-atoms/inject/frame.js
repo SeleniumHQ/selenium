@@ -17,7 +17,7 @@
  *@fileOverview Ready to inject atoms for handling frames.
  */
 
-goog.provide('webdriver.inject.frame');
+goog.provide('webdriver.atoms.inject.frame');
 
 goog.require('bot.frame');
 goog.require('bot.inject');
@@ -33,7 +33,7 @@ goog.require('bot.inject.cache');
  * @return {string} A frame element wrapped in a JSON string as defined by
  *     the wire protocol.
  */
-webdriver.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
+webdriver.atoms.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
   return bot.inject.executeScript(bot.frame.findFrameByNameOrId,
       [idOrName, opt_root], true);
 };
@@ -42,7 +42,7 @@ webdriver.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
 /**
  * @return {string} A string representing the currently active element.
  */
-webdriver.inject.frame.activeElement = function() {
+webdriver.atoms.inject.frame.activeElement = function() {
   return bot.inject.executeScript(bot.frame.activeElement, [], true);
 };
 
@@ -56,7 +56,7 @@ webdriver.inject.frame.activeElement = function() {
  * @return {string} A frame element wrapped in a JSON string as defined by
  *     the wire protocol.
  */
-webdriver.inject.frame.findFrameByIndex = function(index, opt_root) {
+webdriver.atoms.inject.frame.findFrameByIndex = function(index, opt_root) {
   return bot.inject.executeScript(bot.frame.findFrameByIndex,
       [index, opt_root], true);
 };
@@ -66,7 +66,7 @@ webdriver.inject.frame.findFrameByIndex = function(index, opt_root) {
  * @return {string} The default content of the current page,
  * which is the top window.
  */
-webdriver.inject.frame.defaultContent = function() {
+webdriver.atoms.inject.frame.defaultContent = function() {
   return bot.inject.executeScript(bot.frame.defaultContent,
       [], true);
 };
@@ -77,7 +77,7 @@ webdriver.inject.frame.defaultContent = function() {
  * @return {string} The window corresponding to the frame element
  * wrapped in a JSON string as defined by the wire protocol.
  */
-webdriver.inject.frame.getFrameWindow = function(element) {
+webdriver.atoms.inject.frame.getFrameWindow = function(element) {
   return bot.inject.executeScript(bot.frame.getFrameWindow,
       [element], true);
 };

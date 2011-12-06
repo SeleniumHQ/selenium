@@ -25,25 +25,25 @@ limitations under the License.
     goog.require('goog.dom');
     goog.require('goog.style');
     goog.require('goog.testing.jsunit');
-    goog.require('webdriver.inject.dom');
-    goog.require('webdriver.inject.locators');
+    goog.require('webdriver.atoms.inject.dom');
+    goog.require('webdriver.atoms.inject.locators');
   </script>
 
   <script type="text/javascript">
     function testGetText() {
-      var e = webdriver.inject.locators.findElement("id", "x");
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
       var actual = getValueFromJSONObject(
-              webdriver.inject.dom.getText(getValueFromJSONObject(e)));
+              webdriver.atoms.inject.dom.getText(getValueFromJSONObject(e)));
       assertEquals("Para", actual);
     }
 
     function testGetIsSelected() {
-      var apples = webdriver.inject.locators.findElement('id', 'apples');
-      var oranges = webdriver.inject.locators.findElement('id', 'oranges');
+      var apples = webdriver.atoms.inject.locators.findElement('id', 'apples');
+      var oranges = webdriver.atoms.inject.locators.findElement('id', 'oranges');
 
-      assertFalse(getValueFromJSONObject(webdriver.inject.dom.isSelected(
+      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
               getValueFromJSONObject(oranges))));
-      assertTrue(getValueFromJSONObject(webdriver.inject.dom.isSelected(
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
               getValueFromJSONObject(apples))));
     }
 
@@ -51,16 +51,16 @@ limitations under the License.
       var elementX = goog.dom.$('x');
       var expectedX = bot.dom.getLocationInView(elementX).x;
 
-      var e = webdriver.inject.locators.findElement("id", "x");
-      var coords = webdriver.inject.dom.getTopLeftCoordinates(
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
+      var coords = webdriver.atoms.inject.dom.getTopLeftCoordinates(
               getValueFromJSONObject(e));
       assertEquals(expectedX, getValueFromJSONObject(coords).x);
     }
 
     function testGetAttributeValue() {
-      var e = webdriver.inject.locators.findElement("id", "x");
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
       assertEquals("para", getValueFromJSONObject(
-          webdriver.inject.dom.getAttributeValue(
+          webdriver.atoms.inject.dom.getAttributeValue(
               getValueFromJSONObject(e), "name")));
     }
 
@@ -68,17 +68,17 @@ limitations under the License.
       var elementX = goog.dom.$('x');
       var expectedHeight = goog.style.getSize(elementX).height;
 
-      var e = webdriver.inject.locators.findElement("id", "x");
+      var e = webdriver.atoms.inject.locators.findElement("id", "x");
       var size = getValueFromJSONObject(
-              webdriver.inject.dom.getSize(getValueFromJSONObject(e)));
+              webdriver.atoms.inject.dom.getSize(getValueFromJSONObject(e)));
 
       assertEquals(expectedHeight, size.height);
     }
 
     function testGetValueOfCssProperty() {
-        var e = webdriver.inject.locators.findElement('id', 'after');
+        var e = webdriver.atoms.inject.locators.findElement('id', 'after');
         var prop = getValueFromJSONObject(
-                webdriver.inject.dom.getValueOfCssProperty(
+                webdriver.atoms.inject.dom.getValueOfCssProperty(
                         getValueFromJSONObject(e), "background-color"));
 
         var expected = ['green', 'rgb(0, 128, 0)'];
@@ -86,29 +86,29 @@ limitations under the License.
     }
 
     function testIsEnabled() {
-      var working = webdriver.inject.locators.findElement("id", "working");
-      var notWorking = webdriver.inject.locators.findElement("id",
+      var working = webdriver.atoms.inject.locators.findElement("id", "working");
+      var notWorking = webdriver.atoms.inject.locators.findElement("id",
                                                              "notWorking");
-      assertTrue(getValueFromJSONObject(webdriver.inject.dom.isEnabled(
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
               getValueFromJSONObject(working))));
-      assertFalse(getValueFromJSONObject(webdriver.inject.dom.isEnabled(
+      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
               getValueFromJSONObject(notWorking))));
 
     }
 
     function testIsDisplayed() {
-      var working = webdriver.inject.locators.findElement("id", "working");
-      assertTrue(getValueFromJSONObject(webdriver.inject.dom.isDisplayed(
+      var working = webdriver.atoms.inject.locators.findElement("id", "working");
+      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
               getValueFromJSONObject(working))));
-      var hidden = webdriver.inject.locators.findElement("id", "hidden");
-      assertFalse(getValueFromJSONObject(webdriver.inject.dom.isDisplayed(
+      var hidden = webdriver.atoms.inject.locators.findElement("id", "hidden");
+      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
               getValueFromJSONObject(hidden))));
     }
 
     function testGetAttributeWithProperty() {
-      var working = webdriver.inject.locators.findElement("id", "after");
+      var working = webdriver.atoms.inject.locators.findElement("id", "after");
       assertEquals("DIV",
-          getValueFromJSONObject(webdriver.inject.dom.getAttributeValue(
+          getValueFromJSONObject(webdriver.atoms.inject.dom.getAttributeValue(
               getValueFromJSONObject(working), "tagName")))
     }
 

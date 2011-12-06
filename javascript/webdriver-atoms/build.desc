@@ -67,8 +67,8 @@ js_fragment(name = "find_elements",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_attribute",
-  module = "webdriver.element",
-  function = "webdriver.element.getAttribute",
+  module = "webdriver.atoms.element",
+  function = "webdriver.atoms.element.getAttribute",
   deps = [ ":deps" ])
 
 js_fragment(name = "get_effective_style",
@@ -98,8 +98,8 @@ js_fragment(name = "get_size",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_text",
-  module = "webdriver.element",
-  function = "webdriver.element.getText",
+  module = "webdriver.atoms.element",
+  function = "webdriver.atoms.element.getText",
   deps = [ ":deps" ])
 
 js_fragment(name = "is_displayed",
@@ -113,8 +113,8 @@ js_fragment(name = "is_enabled",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "is_selected",
-  module = "webdriver.element",
-  function = "webdriver.element.isSelected",
+  module = "webdriver.atoms.element",
+  function = "webdriver.atoms.element.isSelected",
   deps = [ ":deps" ])
 
 js_fragment(name = "set_selected",
@@ -182,73 +182,73 @@ js_fragment(name = "execute_sql",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "set_local_storage_item",
-  module = "webdriver.storage.local",
-  function = "webdriver.storage.local.setItem",
+  module = "webdriver.atoms.storage.local",
+  function = "webdriver.atoms.storage.local.setItem",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_local_storage_item",
-  module = "webdriver.storage.local",
-  function = "webdriver.storage.local.getItem",
+  module = "webdriver.atoms.storage.local",
+  function = "webdriver.atoms.storage.local.getItem",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_local_storage_keys",
-  module = "webdriver.storage.local",
-  function = "webdriver.storage.local.keySet",
+  module = "webdriver.atoms.storage.local",
+  function = "webdriver.atoms.storage.local.keySet",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "remove_local_storage_item",
-  module = "webdriver.storage.local",
-  function = "webdriver.storage.local.removeItem",
+  module = "webdriver.atoms.storage.local",
+  function = "webdriver.atoms.storage.local.removeItem",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "clear_local_storage",
-  module = "webdriver.storage.local",
-  function = "webdriver.storage.local.clear",
+  module = "webdriver.atoms.storage.local",
+  function = "webdriver.atoms.storage.local.clear",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_local_storage_size",
-  module = "webdriver.storage.local",
-  function = "webdriver.storage.local.size",
+  module = "webdriver.atoms.storage.local",
+  function = "webdriver.atoms.storage.local.size",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_local_storage_key",
-  module = "webdriver.storage.local",
-  function = "webdriver.storage.local.key",
+  module = "webdriver.atoms.storage.local",
+  function = "webdriver.atoms.storage.local.key",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "set_session_storage_item",
-  module = "webdriver.storage.session",
-  function = "webdriver.storage.session.setItem",
+  module = "webdriver.atoms.storage.session",
+  function = "webdriver.atoms.storage.session.setItem",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_session_storage_item",
-  module = "webdriver.storage.session",
-  function = "webdriver.storage.session.getItem",
+  module = "webdriver.atoms.storage.session",
+  function = "webdriver.atoms.storage.session.getItem",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_session_storage_keys",
-  module = "webdriver.storage.session",
-  function = "webdriver.storage.session.keySet",
+  module = "webdriver.atoms.storage.session",
+  function = "webdriver.atoms.storage.session.keySet",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "remove_session_storage_item",
-  module = "webdriver.storage.session",
-  function = "webdriver.storage.session.removeItem",
+  module = "webdriver.atoms.storage.session",
+  function = "webdriver.atoms.storage.session.removeItem",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "clear_session_storage",
-  module = "webdriver.storage.session",
-  function = "webdriver.storage.session.clear",
+  module = "webdriver.atoms.storage.session",
+  function = "webdriver.atoms.storage.session.clear",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_session_storage_size",
-  module = "webdriver.storage.session",
-  function = "webdriver.storage.session.size",
+  module = "webdriver.atoms.storage.session",
+  function = "webdriver.atoms.storage.session.size",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_session_storage_key",
-  module = "webdriver.storage.session",
-  function = "webdriver.storage.session.key",
+  module = "webdriver.atoms.storage.session",
+  function = "webdriver.atoms.storage.session.key",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_appcache_status",

@@ -18,7 +18,7 @@
  *
  */
 
-goog.provide('webdriver.inject');
+goog.provide('webdriver.atoms.inject');
 
 goog.require('bot.inject');
 goog.require('bot.inject.cache');
@@ -35,9 +35,9 @@ goog.require('bot.inject.cache');
  *     opt_stringify is true, the result will be serialized and returned in
  *     string format.
  */
-webdriver.inject.executeScript = function(fn, args, opt_window) {
+webdriver.atoms.inject.executeScript = function(fn, args, opt_window) {
   return bot.inject.executeScript(
-      fn, args, true, webdriver.inject.getWindow_(opt_window));
+      fn, args, true, webdriver.atoms.inject.getWindow_(opt_window));
 };
 
 
@@ -52,10 +52,10 @@ webdriver.inject.executeScript = function(fn, args, opt_window) {
  *     opt_stringify is true, the result will be serialized and returned in
  *     string format.
  */
-webdriver.inject.executeAsyncScript =
+webdriver.atoms.inject.executeAsyncScript =
     function(fn, args, timeout, onDone, opt_window) {
   return bot.inject.executeScript(fn, args, timeout, onDone, true,
-      webdriver.inject.getWindow_(opt_window));
+      webdriver.atoms.inject.getWindow_(opt_window));
 };
 
 
@@ -66,7 +66,7 @@ webdriver.inject.executeAsyncScript =
  * @return {!Window} A reference to a window.
  * @private
  */
-webdriver.inject.getWindow_ = function(opt_window) {
+webdriver.atoms.inject.getWindow_ = function(opt_window) {
   var win;
   if (opt_window) {
     win = bot.inject.cache.getElement(opt_window['WINDOW']);

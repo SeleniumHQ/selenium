@@ -26,7 +26,7 @@ limitations under the License.
     goog.require('goog.dom');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
-    goog.require('webdriver.inject.locators');
+    goog.require('webdriver.atoms.inject.locators');
   </script>
 
   <script type="text/javascript">
@@ -42,7 +42,7 @@ limitations under the License.
     }
 
     function testInjectFindElementById() {
-      var e = webdriver.inject.locators.findElement("id", "x", wrappedDocument);
+      var e = webdriver.atoms.inject.locators.findElement("id", "x", wrappedDocument);
       assertEquals(document.getElementById("x"),
                    getElementFromCache(goog.json.parse(e)));
     }
@@ -53,14 +53,14 @@ limitations under the License.
         return;
       }
 
-      var e = webdriver.inject.locators.findElement("css",
+      var e = webdriver.atoms.inject.locators.findElement("css",
                                                     "#wrong", wrappedDocument);
       assertEquals(document.querySelector("#wrong"),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByClassName() {
-      var e = webdriver.inject.locators.findElement("className", "dogs",
+      var e = webdriver.atoms.inject.locators.findElement("className", "dogs",
                                            wrappedDocument);
       var expected = bot.locators.findElements({className: 'dogs'})[0];
 
@@ -69,28 +69,28 @@ limitations under the License.
     }
 
     function testInjectFindElementByName() {
-      var e = webdriver.inject.locators.findElement("name", "after",
+      var e = webdriver.atoms.inject.locators.findElement("name", "after",
                                                     wrappedDocument);
       assertEquals(bot.locators.findElements({name: 'after'})[0],
                    getElementFromCache(goog.json.parse(e)));
     }
 
       function testInjectFindElementByLinkText() {
-      var e = webdriver.inject.locators.findElement("linkText",
+      var e = webdriver.atoms.inject.locators.findElement("linkText",
                                            "this is a link", wrappedDocument);
       assertEquals(goog.dom.$('link'),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByPartialLinkText() {
-      var e = webdriver.inject.locators.findElement("partialLinkText",
+      var e = webdriver.atoms.inject.locators.findElement("partialLinkText",
                                            "is", wrappedDocument);
       assertEquals(document.getElementById("link"),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementByTagName() {
-      var e = webdriver.inject.locators.findElement("tagName", "form",
+      var e = webdriver.atoms.inject.locators.findElement("tagName", "form",
                                                     wrappedDocument);
       assertEquals(document.getElementsByTagName("form")[0],
                    getElementFromCache(goog.json.parse(e)));
@@ -101,14 +101,14 @@ limitations under the License.
         return;
       }
 
-      var e = webdriver.inject.locators.findElement("xpath",
+      var e = webdriver.atoms.inject.locators.findElement("xpath",
           ".//*[@id='after']", wrappedDocument);
       assertEquals(document.getElementById("after"),
                    getElementFromCache(goog.json.parse(e)));
     }
 
     function testInjectFindElementsByTagName() {
-      var e = webdriver.inject.locators.findElements("tagName", "div");
+      var e = webdriver.atoms.inject.locators.findElements("tagName", "div");
       assertEquals(5, goog.json.parse(e)["value"].length);
     }
 
@@ -117,7 +117,7 @@ limitations under the License.
         return;
       }
 
-      var e = webdriver.inject.locators.findElements("xpath", ".//a");
+      var e = webdriver.atoms.inject.locators.findElements("xpath", ".//a");
       assertEquals(7, goog.json.parse(e)["value"].length);
     }
 
