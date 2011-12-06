@@ -28,9 +28,11 @@ class FirefoxBinary(object):
 
     def __init__(self, firefox_path=None):
         self._start_cmd = firefox_path
-        self.existing_ld_preload = None
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
+        # Rather than modifying the environment of the calling Python process
+        # copy it and modify as needed.
+        self._firefox_env = os.environ.copy()
 
     def launch_browser(self, profile):
         """Launches the browser for the given profile name.
@@ -49,23 +51,21 @@ class FirefoxBinary(object):
         if self.process:
             self.process.kill()
             self.process.wait()
-        if self.existing_ld_preload:
-            os.environ["LD_PRELOAD"] = self.existing_ld_preload
-        else:
-            os.environ["LD_PRELOAD"] = ""
 
     def _start_from_profile_path(self, path):
-        os.environ["XRE_PROFILE_PATH"] = path
-        os.environ["MOZ_CRASHREPORTER_DISABLE"] = "1"
-        os.environ["MOZ_NO_REMOTE"] = "1"
-        os.environ["NO_EM_RESTART"] = "1"
+        self._firefox_env["XRE_PROFILE_PATH"] = path
+        self._firefox_env["MOZ_CRASHREPORTER_DISABLE"] = "1"
+        self._firefox_env["MOZ_NO_REMOTE"] = "1"
+        self._firefox_env["NO_EM_RESTART"] = "1"
         
         if platform.system().lower() == 'linux':
             self._modify_link_library_path()
         
-        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=STDOUT).wait()
+        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=STDOUT,
+              env=self._firefox_env).wait()
         self.process = Popen(
-            [self._start_cmd, "-foreground"], stdout=PIPE, stderr=STDOUT)
+            [self._start_cmd, "-foreground"], stdout=PIPE, stderr=STDOUT,
+            env=self._firefox_env)
 
     def _get_firefox_output(self):
       return self.process.communicate()[0]
@@ -129,43 +129,30 @@ class FirefoxBinary(object):
         return os.path.join(program_files, "Mozilla Firefox\\firefox.exe")
 
     def _modify_link_library_path(self):
-        existing_ld_lib_path = None
-        try:
-            existing_ld_lib_path = os.environ['LD_LIBRARY_PATH']
-            self.existing_ld_preload = os.environ['LD_PRELOAD']
-        except:
-            pass
+        existing_ld_lib_path = os.environ.get('LD_LIBRARY_PATH', '')
 
-        new_ld_lib_path, preload_paths = self._extract_and_check(
+        new_ld_lib_path = self._extract_and_check(
             self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
 
-        if existing_ld_lib_path:
-            new_ld_lib_path += existing_ld_lib_path
-        
-        if platform.architecture()[0] == '32bit':
-            preload = preload_paths[0]
-        else:
-            preload = preload_paths[1]
+        new_ld_lib_path += existing_ld_lib_path
 
-        os.environ["LD_LIBRARY_PATH"] = new_ld_lib_path
-        os.environ['LD_PRELOAD'] = preload 
+        self._firefox_env["LD_LIBRARY_PATH"] = new_ld_lib_path
+        self._firefox_env['LD_PRELOAD'] = self.NO_FOCUS_LIBRARY_NAME
 
     def _extract_and_check(self, profile, no_focus_so_name, x86, amd64):
-        
+
         paths = [x86, amd64]
         built_path = ""
-        preload_paths = []
         for path in paths:
             library_path = os.path.join(profile.path, path)
             os.makedirs(library_path)
             import shutil
             shutil.copy(os.path.join(os.path.dirname(__file__), path,
-              self.NO_FOCUS_LIBRARY_NAME), 
+              self.NO_FOCUS_LIBRARY_NAME),
               library_path)
             built_path += library_path + ":"
-            preload_paths.append(os.path.join(library_path, self.NO_FOCUS_LIBRARY_NAME))
 
-        return built_path, preload_paths
+        return built_path
 
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given 
