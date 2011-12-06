@@ -248,22 +248,55 @@ module Android
         if !([nil, 'false'].include? ENV['headless'])
           emulator_options += "-no-window"
         end
-        Thread.new{ sh "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"}
 
-        puts "Waiting for emulator to get started"
-        sh "#{$adb} -e wait-for-device"
-        sleep 10
+        started = false
+        load_attempts = 1
+        load_attempts_limit = 3
+        while !started && load_attempts <= load_attempts_limit do
+          puts "Attempt to start android emulator #{load_attempts}/#{load_attempts_limit}"
+          begin
+            emulator_process = ChildProcess.build($emulator, "-avd", avdname, "-data", "build/android/#{emulator_image}", "-no-audio", "#{emulator_options}")
+            emulator_process.start
 
-        puts "Loading package into emulator: #{apk}"
-        theoutput = `#{$adb} -e install -r #{apk}`
-        count = 0
-        while (not theoutput.to_s.match(/Success/)) and count < 20 do
-          puts "Failed to load (emulator not ready?), retrying..."
-          sleep 5
-          count += 1
-          theoutput = `#{$adb} -e install -r "#{apk}"`
+            sleep 5 # Wait for emulator process, just in case
+
+            thread = Thread.new {
+              puts "Waiting for emulator to get started"
+              sh "#{$adb} -e wait-for-device"
+              sleep 10
+
+              puts "Loading package into emulator: #{apk}"
+              theoutput = `#{$adb} -e install -r #{apk}`
+              while (not theoutput.to_s.match(/Success/)) do
+                puts "Failed to load (emulator not ready?), retrying..."
+                sleep 5
+                theoutput = `#{$adb} -e install -r "#{apk}"`
+              end
+            }
+
+            end_time = Time.now + (5 * 60)
+            while thread.alive? && Time.now < end_time do
+              sleep(15)
+            end
+
+            if thread.alive?
+              thread.terminate
+              emulator_process.stop
+              load_attempts += 1
+            else
+              started = true
+            end
+          ensure
+            if !started
+              begin
+                sh "#{$adb} emu kill"
+              rescue
+              end
+            end
+          end
         end
-        puts "Loading complete."
+
+        raise LoadError.new("Emulator didn't respond properly - infrastructure failure") unless started
 
         sh "#{$adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity"
         sleep 5
