@@ -112,7 +112,6 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is("@"));
   }
 
-  @Ignore(SELENESE)
   public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -144,7 +143,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore(ANDROID)
   public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -184,7 +183,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore(ANDROID)
   public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -311,7 +310,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA},
+  @Ignore(value = {HTMLUNIT, ANDROID, OPERA},
       reason = "untested user agent")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
@@ -327,7 +326,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, ANDROID}, reason = "untested user agent")
+  @Ignore(value = ANDROID, reason = "untested user agent")
   public void testLowerCaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -340,7 +339,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
+  @Ignore(value = {HTMLUNIT, ANDROID},
       reason = "untested user agents")
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
@@ -584,7 +583,6 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   public void testShouldTypeIntoInputElementsThatHaveNoTypeAttribute() {
     driver.get(pages.formPage);
 
@@ -595,7 +593,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE}, reason = "untested user agents")
+  @Ignore(value = IPHONE, reason = "untested user agents")
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -618,7 +616,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID})
+  @Ignore(value = {IPHONE, OPERA, ANDROID})
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 

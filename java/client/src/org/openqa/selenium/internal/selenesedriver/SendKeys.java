@@ -42,7 +42,11 @@ public class SendKeys extends ElementFunction<Void> {
 
       selenium.attachFile(locator, toType);
     } else {
-      selenium.typeKeys(locator, builder.toString());
+      String script = String.format(
+          "(function() { var e = selenium.browserbot.findElement('%s'); bot.action.type(e, '%s');})();",
+          locator, builder.toString().replaceAll("'", "\\'")
+      );
+      selenium.getEval(script);
     }
 
     return null;
