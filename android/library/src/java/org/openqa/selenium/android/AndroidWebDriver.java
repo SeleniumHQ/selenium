@@ -362,6 +362,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       throw new WebDriverException("No open windows.");
     }
 
+    // Dispose of existing alerts (if any) for this view.
+    ChromeClient.removeAlertForView(webview);
+
     done = false;
     long end = System.currentTimeMillis() + RESPONSE_TIMEOUT;
     activity.runOnUiThread(new Runnable() {
@@ -379,6 +382,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public void quit() {
+    ChromeClient.removeAllAlerts();
     activity.runOnUiThread(new Runnable() {
       public void run() {
         viewManager.closeAll();
@@ -610,10 +614,20 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
 
     public Alert alert() {
-      if (ChromeClient.unhandledAlerts.isEmpty()) {
-        throw new NoAlertPresentException();
+      if (webview == null) {
+        // An alert may have popped up when the window was closed.
+        // If there is an alert, just return it.
+        throw new WebDriverException("Asked for an alert without a window context. " +
+            "switchTo().window(...) first.");
       }
-      return ChromeClient.unhandledAlerts.peek();
+
+      Alert foundAlert = ChromeClient.getAlertForView(webview);
+
+      if (foundAlert == null) {
+        throw new NoAlertPresentException("No alert in current view.");
+      }
+
+      return foundAlert;
     }
   }
 

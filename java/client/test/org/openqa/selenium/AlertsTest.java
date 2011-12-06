@@ -30,6 +30,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
+import java.util.Set;
 import junit.framework.Test;
 
 import java.util.concurrent.Callable;
@@ -281,12 +282,17 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, ANDROID, IE}, reason = "FF waits too long, may be hangs out." +
+  @Ignore(value = {FIREFOX, IE}, reason = "FF waits too long, may be hangs out." +
       "Android currently does not store the source of the alert. IE8: Not confirmed working.")
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
+    String onloadWindow = null;
     try {
       driver.findElement(By.id("open-window-with-onload-alert")).click();
+      Set<String> allWindows = driver.getWindowHandles();
+      allWindows.remove(mainWindow);
+      assertEquals(1, allWindows.size());
+      onloadWindow = allWindows.iterator().next();
   
       try {
         waitFor(alertToBePresent(driver), 5, TimeUnit.SECONDS);
@@ -296,7 +302,7 @@ public class AlertsTest extends AbstractDriverTestCase {
       }
 
     } finally {
-      driver.switchTo().window("onload");
+      driver.switchTo().window(onloadWindow);
       waitFor(alertToBePresent(driver)).dismiss();
       driver.close();
       driver.switchTo().window(mainWindow);
@@ -319,7 +325,8 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE}, reason = "IE crashes")
+  @Ignore(value = {IE, ANDROID}, reason = "IE crashes. On Android, alerts do not pop up" +
+      " when a window is closed.")
   public void testShouldHandleAlertOnWindowClose() {
     if (TestUtilities.isFirefox(driver) &&
         TestUtilities.isNativeEventsEnabled(driver) &&

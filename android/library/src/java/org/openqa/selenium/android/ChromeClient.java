@@ -21,15 +21,14 @@ import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.ElementNotVisibleException;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 class ChromeClient extends WebChromeClient {
   private final AndroidWebDriver driver;
-  public static ConcurrentLinkedQueue<Alert> unhandledAlerts = new ConcurrentLinkedQueue<Alert>();
-
+  private static BiMap<WebView, Alert> unhandledAlerts = HashBiMap.create();
 
   public ChromeClient(AndroidWebDriver driver) {
     this.driver = driver;
@@ -37,6 +36,8 @@ class ChromeClient extends WebChromeClient {
 
   @Override
   public void onCloseWindow(WebView window) {
+    // Dispose of unhandled alerts, if any.
+    unhandledAlerts.remove(window);
     driver.getViewManager().removeView(window);
     super.onCloseWindow(window);
   }
@@ -62,21 +63,37 @@ class ChromeClient extends WebChromeClient {
 
   @Override
   public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-    unhandledAlerts.add(new AndroidAlert(message, result));
+    unhandledAlerts.put(view, new AndroidAlert(message, result));
     return true;
   }
 
   @Override
   public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
-    unhandledAlerts.add(new AndroidAlert(message, result));
+    unhandledAlerts.put(view, new AndroidAlert(message, result));
     return true;
   }
 
   @Override
   public boolean onJsPrompt(WebView view, String url, String message, String defaultValue,
       JsPromptResult result) {
-    unhandledAlerts.add(new AndroidAlert(message, result, defaultValue));
+    unhandledAlerts.put(view, new AndroidAlert(message, result, defaultValue));
     return true;
+  }
+
+  public static Alert getAlertForView(WebView view) {
+    return unhandledAlerts.get(view);
+  }
+
+  public static void removeAllAlerts() {
+    unhandledAlerts.clear();
+  }
+
+  public static void removeAlertForView(WebView view) {
+    unhandledAlerts.remove(view);
+  }
+
+  private static void removeAlert(Alert alert) {
+    unhandledAlerts.inverse().remove(alert);
   }
 
   private class AndroidAlert implements Alert {
@@ -97,7 +114,7 @@ class ChromeClient extends WebChromeClient {
     }
 
     public void accept() {
-      unhandledAlerts.remove(this);
+      ChromeClient.removeAlert(this);
       if (isPrompt()) {
         JsPromptResult promptResult = (JsPromptResult) result;
         String result = textToSend == null ? defaultValue : textToSend;
@@ -112,7 +129,7 @@ class ChromeClient extends WebChromeClient {
     }
 
     public void dismiss() {
-      unhandledAlerts.remove(this);
+      ChromeClient.removeAlert(this);
       result.cancel();
     }
 
