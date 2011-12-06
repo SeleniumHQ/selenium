@@ -371,19 +371,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return new RemoteWebDriverOptions();
   }
 
-  /**
-   * Creates a new {@link RemoteWebElement} that is a child of this instance. Subtypes should
-   * override this method to customize the type of RemoteWebElement returned.
-   *
-   * @return A new RemoteWebElement that is a child of this instance.
-   */
-  @Deprecated
-  protected RemoteWebElement newRemoteWebElement() {
-    RemoteWebElement toReturn = new RemoteWebElement();
-    toReturn.setParent(this);
-    return toReturn;
-  }
-
   protected void setElementConverter(JsonToWebElementConverter converter) {
     this.converter = converter;
   }
