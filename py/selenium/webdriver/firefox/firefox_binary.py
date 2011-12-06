@@ -16,7 +16,7 @@
 
 import os
 import platform
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, STDOUT
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 import time
@@ -63,9 +63,12 @@ class FirefoxBinary(object):
         if platform.system().lower() == 'linux':
             self._modify_link_library_path()
         
-        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=PIPE).wait()
+        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=STDOUT).wait()
         self.process = Popen(
-            [self._start_cmd, "-foreground"], stdout=PIPE, stderr=PIPE)
+            [self._start_cmd, "-foreground"], stdout=PIPE, stderr=STDOUT)
+
+    def _get_firefox_output(self):
+      return self.process.communicate()[0]
 
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
@@ -74,11 +77,13 @@ class FirefoxBinary(object):
             if self.process.poll() is not None:
                 # Browser has exited
                 raise WebDriverException("The browser appears to have exited "
-                    "before we could connect")
+                      "before we could connect. The output was: %s" %
+                      self._get_firefox_output())
             if count == 30:
                 self.kill()
                 raise WebDriverException("Can't load the profile. Profile "
-                    "Dir: %s" % self.profile.path)
+                      "Dir: %s Firefox output: %s" % (
+                          self.profile.path, self._get_firefox_output()))
             count += 1
             time.sleep(1)
         return True
