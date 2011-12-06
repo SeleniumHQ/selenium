@@ -38,6 +38,7 @@ class AndroidMappings
     fun.add_mapping("android_test", CrazyFunJava::TidyTempDir.new)
     fun.add_mapping("android_test", Android::RunEmulator.new)
     fun.add_mapping("android_test", CrazyFunJava::RunTests.new)
+    fun.add_mapping("android_test", Android::KillEmulator.new)
   end
 end
 
@@ -244,8 +245,9 @@ module Android
         if !linux?
           emulator_options += "-no-boot-anim"
         end
-        command = "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"
-        puts "COMMAND: #{command}"
+        if !([nil, 'false'].include? ENV['headless'])
+          emulator_options += "-no-window"
+        end
         Thread.new{ sh "#{$emulator} -avd #{avdname} -data build/android/#{emulator_image} -no-audio #{emulator_options}"}
 
         puts "Waiting for emulator to get started"
@@ -267,6 +269,15 @@ module Android
         sleep 5
 
         sh "#{$adb} forward tcp:8080 tcp:8080"
+      end
+    end
+  end
+
+  class KillEmulator < BaseAndroid
+    def handle(fun, dir, args)
+      name = task_name(dir, args[:name]) + ":run"
+      task name do
+        sh "#{$adb} emu kill" unless !([nil, 'false'].include? ENV['leaverunning'])
       end
     end
   end
