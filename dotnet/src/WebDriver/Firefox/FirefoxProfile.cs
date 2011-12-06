@@ -470,7 +470,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "signon.rememberSignons", "false");
             AddDefaultPreference(prefs, "startup.homepage_welcome_url", "\"about:blank\"");
             AddDefaultPreference(prefs, "toolkit.networkmanager.disable", "true");
-            AddDefaultPreference(prefs, "toolkit.telemetry.prompted", "true");
+            AddDefaultPreference(prefs, "toolkit.telemetry.prompted", "2");
 
             // Which port should we listen on?
             AddDefaultPreference(prefs, "webdriver_firefox_port", this.profilePort.ToString(CultureInfo.InvariantCulture));

@@ -300,7 +300,7 @@ module Selenium
           "security.warn_viewing_mixed.show_once"     => 'false',
           "signon.rememberSignons"                    => 'false',
           "toolkit.networkmanager.disable"            => 'true',
-          "toolkit.telemetry.prompted"                => 'true',
+          "toolkit.telemetry.prompted"                => '2',
           "javascript.options.showInConsole"          => 'true',
           "browser.dom.window.dump.enabled"           => 'true',
           "dom.report_all_js_exceptions"              => "true"

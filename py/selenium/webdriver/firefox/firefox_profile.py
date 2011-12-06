@@ -71,7 +71,7 @@ class FirefoxProfile(object):
         "security.warn_viewing_mixed.show_once": "false",
         "signon.rememberSignons": "false",
         "toolkit.networkmanager.disable": "true",
-        "toolkit.telemetry.prompted": "true",
+        "toolkit.telemetry.prompted": "2",        
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
