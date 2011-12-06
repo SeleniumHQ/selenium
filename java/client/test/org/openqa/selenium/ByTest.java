@@ -79,7 +79,6 @@ public class ByTest extends MockTestBase {
     By locator = new By() {
       @Override
       public List<WebElement> findElements(SearchContext context) {
-        // TODO Auto-generated method stub
         return null;
       }
     };
