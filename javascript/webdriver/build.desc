@@ -13,8 +13,8 @@ js_deps(name = "test_deps",
 # TODO(jleyba): Make a js_test_suite that farms out to multiple browsers.
 js_test(name = "test_firefox",
   srcs = [
-    "test/*.js",
-    "test/*_test.html"
+    "test/**/*.js",
+    "test/**/*_test.html",
   ],
   exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
@@ -30,8 +30,8 @@ js_test(name = "test_firefox",
 
 js_test(name = "test_chrome",
   srcs = [
-    "test/*.js",
-    "test/*_test.html"
+    "test/**/*.js",
+    "test/**/*_test.html",
   ],
   exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
@@ -47,8 +47,8 @@ js_test(name = "test_chrome",
 
 js_test(name = "test_opera",
   srcs = [
-    "test/*.js",
-    "test/*_test.html"
+    "test/**/*.js",
+    "test/**/*_test.html",
   ],
   exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
@@ -65,8 +65,8 @@ js_test(name = "test_opera",
 
 js_test(name = "test_ie",
   srcs = [
-    "test/*.js",
-    "test/*_test.html"
+    "test/**/*.js",
+    "test/**/*_test.html",
   ],
   exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
