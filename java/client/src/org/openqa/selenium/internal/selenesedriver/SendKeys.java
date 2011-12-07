@@ -43,7 +43,13 @@ public class SendKeys extends ElementFunction<Void> {
       selenium.attachFile(locator, toType);
     } else {
       String script = String.format(
-          "(function() { var e = selenium.browserbot.findElement('%s'); bot.action.type(e, '%s');})();",
+          "(function() { "
+          + "var e = selenium.browserbot.findElement('%s');"
+          // Do a check to see if we're in an extension
+          + "if (Components && Components['classes'] && XPCNativeWrapper) {"
+          + "  e = core.firefox.unwrap(e);"
+          + "}"
+          + "bot.action.type(e, '%s');})();",
           locator, builder.toString().replaceAll("'", "\\'")
       );
       selenium.getEval(script);
