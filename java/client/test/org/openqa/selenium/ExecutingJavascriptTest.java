@@ -427,8 +427,10 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     driver.switchTo().frame("editFrame");
     WebElement body =
         (WebElement) ((JavascriptExecutor) driver).executeScript("return document.body");
+    String text = body.getText();
+    driver.switchTo().defaultContent();
 
-    assertEquals("", body.getText());
+    assertEquals("", text);
   }
 
   @JavascriptEnabled
