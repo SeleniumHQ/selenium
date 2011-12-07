@@ -1,3 +1,35 @@
+v2.15.0
+=======
+Project:
+  * Code donation from Google.
+
+WebDriver: 
+  * Now supports up to Firefox 11.
+  * Changed order of FirefoxProfile initialization attempts on a
+    remote host: 1) try to load from capabilities, 2) try to load
+    locally if webdriver.firefox.profile is specified, 3) create an
+    empty profile.
+  * Added the beginning of infrastructure for gathering logs from
+    webdriver tests.
+  * Added an UnreachableBrowserException.
+  * Additional work on the WebDriver JS console.
+  * Implicit waits now change how long we wait for alerts. This
+    functionality will change in 2.16
+  * FIXED: 2700: The infamous scrolling issue.
+  * FIXED: 2816: ClassCastException when calling switchTo().alert().
+
+Grid:
+  * Grid now distinguishs between CLIENT_GONE and
+    FORWARDING_TO_NODE_FAILED.
+  * FIXED: issue where older RCs could not connect to a newer hub.
+
+RC:
+  * Selenium-backed WebDriver now uses atoms for typing.
+
+Automation Atoms:
+  * Significantly reworked input device abstractions.
+
+
 v2.14.0
 =======
 WebDriver:
@@ -323,9 +355,6 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-
-
-
 
 
 
