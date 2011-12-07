@@ -132,7 +132,7 @@ class ErrorHandler(object):
             screen = value['screen']
 
         stacktrace = None
-        if 'stackTrace' in value:
+        if 'stackTrace' in value and value['stackTrace']:
             zeroeth = ''
             try:
                 zeroeth = value['stackTrace'][0]
