@@ -534,6 +534,14 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#logs()">logs</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage()">manage</A></B>()</CODE>
 
@@ -580,6 +588,14 @@ java.lang.Object
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set the file detector to be used when sending keyboard input.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</A></B>(java.util.logging.Level&nbsp;level)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the RemoteWebDriver's client log level.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -679,13 +695,27 @@ public <B>RemoteWebDriver</B>(java.net.URL&nbsp;remoteAddress,
 </TR>
 </TABLE>
 
+<A NAME="logs()"><!-- --></A><H3>
+logs</H3>
+<PRE>
+public <A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A> <B>logs</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="setFileDetector(org.openqa.selenium.remote.FileDetector)"><!-- --></A><H3>
 setFileDetector</H3>
 <PRE>
 public void <B>setFileDetector</B>(<A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A>&nbsp;detector)</PRE>
 <DL>
-<DD>Set the file detector to be used when sending keyboard input. By default,
- this is set to a file detector that does nothing.
+<DD>Set the file detector to be used when sending keyboard input. By default, this is set to a file
+ detector that does nothing.
 <P>
 <DD><DL>
 </DL>
@@ -1470,6 +1500,23 @@ protected org.openqa.selenium.remote.internal.JsonToWebElementConverter <B>getEl
 </DD>
 <DD><DL>
 </DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setLogLevel(java.util.logging.Level)"><!-- --></A><H3>
+setLogLevel</H3>
+<PRE>
+public static void <B>setLogLevel</B>(java.util.logging.Level&nbsp;level)</PRE>
+<DL>
+<DD>Sets the RemoteWebDriver's client log level. Logs at a level lower than the
+ given level will be discarded.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>level</CODE> - </DL>
 </DD>
 </DL>
 <HR>

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-UselessFileDetector
+Logs
 </TITLE>
 
 
@@ -13,7 +13,7 @@ UselessFileDetector
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="UselessFileDetector";
+        parent.document.title="Logs";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/Logs.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Logs.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -85,23 +85,19 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.remote</FONT>
+org.openqa.selenium.logging</FONT>
 <BR>
-Class UselessFileDetector</H2>
-<PRE>
-java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.UselessFileDetector</B>
-</PRE>
+Interface Logs</H2>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DD>
+<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote">RemoteLogs</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>UselessFileDetector</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DL>
+<DT><PRE>public interface <B>Logs</B></DL>
 </PRE>
 
 <P>
-A file detector that never finds anything.
+Logs's interface.
 <P>
 
 <P>
@@ -109,22 +105,6 @@ A file detector that never finds anything.
 
 <P>
 
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#UselessFileDetector()">UselessFileDetector</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
 <!-- ========== METHOD SUMMARY =========== -->
 
 <A NAME="method_summary"><!-- --></A>
@@ -135,41 +115,15 @@ A file detector that never finds anything.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></B>(java.lang.CharSequence...&nbsp;keys)</CODE>
+<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">get</A></B>(java.lang.String&nbsp;logType)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetches the logs for the givem log type.</TD>
 </TR>
 </TABLE>
 &nbsp;
 <P>
-
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="UselessFileDetector()"><!-- --></A><H3>
-UselessFileDetector</H3>
-<PRE>
-public <B>UselessFileDetector</B>()</PRE>
-<DL>
-</DL>
 
 <!-- ============ METHOD DETAIL ========== -->
 
@@ -181,16 +135,19 @@ public <B>UselessFileDetector</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="getLocalFile(java.lang.CharSequence...)"><!-- --></A><H3>
-getLocalFile</H3>
+<A NAME="get(java.lang.String)"><!-- --></A><H3>
+get</H3>
 <PRE>
-public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PRE>
+<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A> <B>get</B>(java.lang.String&nbsp;logType)</PRE>
 <DL>
+<DD>Fetches the logs for the givem log type.
+ 
+ For more info on enabling logging, look at <A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><CODE>LoggingPreferences</CODE></A>.
+<P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></CODE></DL>
-</DD>
-<DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>logType</CODE> - String. Can be any of the values in <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A>.
+<DT><B>Returns:</B><DD>all log entries for the specified logtype if enabled. Returns null
+     if the log type is unknown by the dtiver.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -223,11 +180,11 @@ public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PR
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/Logs.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="Logs.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -244,9 +201,9 @@ public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PR
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

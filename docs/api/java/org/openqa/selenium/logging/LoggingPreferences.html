@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-UselessFileDetector
+LoggingPreferences
 </TITLE>
 
 
@@ -13,7 +13,7 @@ UselessFileDetector
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="UselessFileDetector";
+        parent.document.title="LoggingPreferences";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LoggingPreferences.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LoggingPreferences.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -85,23 +85,28 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.remote</FONT>
+org.openqa.selenium.logging</FONT>
 <BR>
-Class UselessFileDetector</H2>
+Class LoggingPreferences</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.UselessFileDetector</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LoggingPreferences</B>
 </PRE>
-<DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DD>
-</DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>UselessFileDetector</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DL>
+<DT><PRE>public class <B>LoggingPreferences</B><DT>extends java.lang.Object</DL>
 </PRE>
 
 <P>
-A file detector that never finds anything.
+Represents the logging preferences.
+
+ Sample usage:
+  DesiredCapabilities caps = DesiredCapabilities.firefox();
+  LoggingPreferences logs = new LoggingPreferences();
+  logs.enable(LogType.DRIVER, Level.INFO);
+  caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
+
+  WebDriver driver = new FirefoxDriver(caps);
 <P>
 
 <P>
@@ -118,7 +123,7 @@ A file detector that never finds anything.
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#UselessFileDetector()">UselessFileDetector</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#LoggingPreferences()">LoggingPreferences</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -135,8 +140,25 @@ A file detector that never finds anything.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></B>(java.lang.CharSequence...&nbsp;keys)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#enable(java.lang.String, java.util.logging.Level)">enable</A></B>(java.lang.String&nbsp;logType,
+       java.util.logging.Level&nbsp;level)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enables logging for the given log type at the specified level and above.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.Set&lt;java.lang.String&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#getEnabledLogTypes()">getEnabledLogTypes</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.logging.Level</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#getLevel(java.lang.String)">getLevel</A></B>(java.lang.String&nbsp;logType)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -164,10 +186,10 @@ A file detector that never finds anything.
 </TR>
 </TABLE>
 
-<A NAME="UselessFileDetector()"><!-- --></A><H3>
-UselessFileDetector</H3>
+<A NAME="LoggingPreferences()"><!-- --></A><H3>
+LoggingPreferences</H3>
 <PRE>
-public <B>UselessFileDetector</B>()</PRE>
+public <B>LoggingPreferences</B>()</PRE>
 <DL>
 </DL>
 
@@ -181,16 +203,41 @@ public <B>UselessFileDetector</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="getLocalFile(java.lang.CharSequence...)"><!-- --></A><H3>
-getLocalFile</H3>
+<A NAME="enable(java.lang.String, java.util.logging.Level)"><!-- --></A><H3>
+enable</H3>
 <PRE>
-public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PRE>
+public void <B>enable</B>(java.lang.String&nbsp;logType,
+                   java.util.logging.Level&nbsp;level)</PRE>
+<DL>
+<DD>Enables logging for the given log type at the specified level and above.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>logType</CODE> - String the logType. Can be any of <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A>.<DD><CODE>level</CODE> - <CODE>Level</CODE> the level.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getEnabledLogTypes()"><!-- --></A><H3>
+getEnabledLogTypes</H3>
+<PRE>
+public java.util.Set&lt;java.lang.String&gt; <B>getEnabledLogTypes</B>()</PRE>
 <DL>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></CODE></DL>
+
+<DT><B>Returns:</B><DD>the set of log types for which logging has been enabled.</DL>
 </DD>
-<DD><DL>
 </DL>
+<HR>
+
+<A NAME="getLevel(java.lang.String)"><!-- --></A><H3>
+getLevel</H3>
+<PRE>
+public java.util.logging.Level <B>getLevel</B>(java.lang.String&nbsp;logType)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>logType</CODE> - String the <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A>.
+<DT><B>Returns:</B><DD>the <CODE>Level</CODE> for the given <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A> if enabled.
+     Otherwise returns NULL.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -223,11 +270,11 @@ public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PR
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LoggingPreferences.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LoggingPreferences.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

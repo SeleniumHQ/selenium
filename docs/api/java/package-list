@@ -19,6 +19,7 @@ org.openqa.selenium.iphone
 org.openqa.selenium.lift
 org.openqa.selenium.lift.find
 org.openqa.selenium.lift.match
+org.openqa.selenium.logging
 org.openqa.selenium.net
 org.openqa.selenium.os
 org.openqa.selenium.remote

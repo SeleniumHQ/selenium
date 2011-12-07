@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-UselessFileDetector
+LogEntries
 </TITLE>
 
 
@@ -13,7 +13,7 @@ UselessFileDetector
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="UselessFileDetector";
+        parent.document.title="LogEntries";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LogEntries.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LogEntries.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -85,23 +85,21 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.remote</FONT>
+org.openqa.selenium.logging</FONT>
 <BR>
-Class UselessFileDetector</H2>
+Class LogEntries</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.UselessFileDetector</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LogEntries</B>
 </PRE>
-<DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DD>
-</DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>UselessFileDetector</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DL>
+<DT><PRE>public class <B>LogEntries</B><DT>extends java.lang.Object</DL>
 </PRE>
 
 <P>
-A file detector that never finds anything.
+Represent a pool of . This class also provides filtering
+ mechanisms based on levels.
 <P>
 
 <P>
@@ -118,7 +116,7 @@ A file detector that never finds anything.
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#UselessFileDetector()">UselessFileDetector</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntries.html#LogEntries(java.util.List)">LogEntries</A></B>(java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;&nbsp;entries)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -135,8 +133,16 @@ A file detector that never finds anything.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></B>(java.lang.CharSequence...&nbsp;keys)</CODE>
+<CODE>&nbsp;java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntries.html#filter(java.util.logging.Level)">filter</A></B>(java.util.logging.Level&nbsp;level)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntries.html#getAll()">getAll</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -164,10 +170,10 @@ A file detector that never finds anything.
 </TR>
 </TABLE>
 
-<A NAME="UselessFileDetector()"><!-- --></A><H3>
-UselessFileDetector</H3>
+<A NAME="LogEntries(java.util.List)"><!-- --></A><H3>
+LogEntries</H3>
 <PRE>
-public <B>UselessFileDetector</B>()</PRE>
+public <B>LogEntries</B>(java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;&nbsp;entries)</PRE>
 <DL>
 </DL>
 
@@ -181,16 +187,26 @@ public <B>UselessFileDetector</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="getLocalFile(java.lang.CharSequence...)"><!-- --></A><H3>
-getLocalFile</H3>
+<A NAME="getAll()"><!-- --></A><H3>
+getAll</H3>
 <PRE>
-public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PRE>
+public java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt; <B>getAll</B>()</PRE>
 <DL>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></CODE></DL>
+
+<DT><B>Returns:</B><DD>an immutable list of all <A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><CODE>LogEntry</CODE></A> fetched.</DL>
 </DD>
-<DD><DL>
 </DL>
+<HR>
+
+<A NAME="filter(java.util.logging.Level)"><!-- --></A><H3>
+filter</H3>
+<PRE>
+public java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt; <B>filter</B>(java.util.logging.Level&nbsp;level)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>level</CODE> - <CODE>Level</CODE> The level to filter the log entries.
+<DT><B>Returns:</B><DD>all log entries for that level and above.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -223,11 +239,11 @@ public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PR
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LogEntries.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LogEntries.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

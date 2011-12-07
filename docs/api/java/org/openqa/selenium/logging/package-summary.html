@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-org.openqa.selenium.net
+org.openqa.selenium.logging
 </TITLE>
 
 
@@ -13,7 +13,7 @@ org.openqa.selenium.net
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="org.openqa.selenium.net";
+        parent.document.title="org.openqa.selenium.logging";
     }
 }
 </SCRIPT>
@@ -52,10 +52,10 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/os/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/lift/match/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/net/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/net/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
@@ -77,7 +77,7 @@ function windowTitle()
 
 <HR>
 <H2>
-Package org.openqa.selenium.net
+Package org.openqa.selenium.logging
 </H2>
 
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
@@ -86,12 +86,8 @@ Package org.openqa.selenium.net
 <B>Interface Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/EphemeralPortRangeDetector.html" title="interface in org.openqa.selenium.net">EphemeralPortRangeDetector</A></B></TD>
-<TD>Identifies the ephemeral port range for a given environment.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/NetworkInterfaceProvider.html" title="interface in org.openqa.selenium.net">NetworkInterfaceProvider</A></B></TD>
-<TD>Provides information about the local network interfaces.</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></B></TD>
+<TD>Logs's interface.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -104,58 +100,20 @@ Package org.openqa.selenium.net
 <B>Class Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/DefaultNetworkInterfaceProvider.html" title="class in org.openqa.selenium.net">DefaultNetworkInterfaceProvider</A></B></TD>
-<TD>&nbsp;</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A></B></TD>
+<TD>Represent a pool of .</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/FixedIANAPortRange.html" title="class in org.openqa.selenium.net">FixedIANAPortRange</A></B></TD>
-<TD>&nbsp;</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A></B></TD>
+<TD>Represents a single log statement.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</A></B></TD>
-<TD>&nbsp;</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</A></B></TD>
+<TD>Represents the logging preferences.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/LinuxEphemeralPortRangeDetector.html" title="class in org.openqa.selenium.net">LinuxEphemeralPortRangeDetector</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/NetworkInterface.html" title="class in org.openqa.selenium.net">NetworkInterface</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/NetworkUtils.html" title="class in org.openqa.selenium.net">NetworkUtils</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/OlderWindowsVersionEphemeralPortDetector.html" title="class in org.openqa.selenium.net">OlderWindowsVersionEphemeralPortDetector</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/PortProber.html" title="class in org.openqa.selenium.net">PortProber</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/UrlChecker.html" title="class in org.openqa.selenium.net">UrlChecker</A></B></TD>
-<TD>Polls a URL until a HTTP 200 response is received.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/Urls.html" title="class in org.openqa.selenium.net">Urls</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
-
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Exception Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/net/UrlChecker.TimeoutException.html" title="class in org.openqa.selenium.net">UrlChecker.TimeoutException</A></B></TD>
-<TD>&nbsp;</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging">LogType</A></B></TD>
+<TD>Supported log types.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -192,10 +150,10 @@ Package org.openqa.selenium.net
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/os/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/lift/match/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/net/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/net/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--

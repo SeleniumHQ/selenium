@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-UselessFileDetector
+UnreachableBrowserException
 </TITLE>
 
 
@@ -13,7 +13,7 @@ UselessFileDetector
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="UselessFileDetector";
+        parent.document.title="UnreachableBrowserException";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/UnreachableBrowserException.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="UnreachableBrowserException.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -87,24 +87,40 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <FONT SIZE="-1">
 org.openqa.selenium.remote</FONT>
 <BR>
-Class UselessFileDetector</H2>
+Class UnreachableBrowserException</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.UselessFileDetector</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.lang.Throwable
+      <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.lang.Exception
+          <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.lang.RuntimeException
+              <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">org.openqa.selenium.WebDriverException</A>
+                  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.UnreachableBrowserException</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD>java.io.Serializable</DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>UselessFileDetector</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></DL>
+<DT><PRE>public class <B>UnreachableBrowserException</B><DT>extends <A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></DL>
 </PRE>
 
 <P>
-A file detector that never finds anything.
+Indicates there was a problem communicating with the browser being
+ controlled or the Selenium server.
+
+ The most common causes for this exception are:
+ <ul>
+   <li> The provided server address to RemoteWebDriver is invalid, so the
+    connection could not be established.
+   </li>
+   <li> The browser has died mid-test. </li>
+ </ul>
+ 1)
 <P>
 
 <P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../serialized-form.html#org.openqa.selenium.remote.UnreachableBrowserException">Serialized Form</A></DL>
 <HR>
 
 <P>
@@ -118,7 +134,8 @@ A file detector that never finds anything.
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#UselessFileDetector()">UselessFileDetector</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html#UnreachableBrowserException(java.lang.String, java.lang.Throwable)">UnreachableBrowserException</A></B>(java.lang.String&nbsp;message,
+                            java.lang.Throwable&nbsp;cause)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -133,13 +150,23 @@ A file detector that never finds anything.
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Method Summary</B></FONT></TH>
 </TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_org.openqa.selenium.WebDriverException"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class org.openqa.selenium.<A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></B></TH>
+</TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></B>(java.lang.CharSequence...&nbsp;keys)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+<TD><CODE><A HREF="../../../../org/openqa/selenium/WebDriverException.html#getBuildInformation()">getBuildInformation</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getDriverInformation()">getDriverInformation</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getDriverName(java.lang.StackTraceElement[])">getDriverName</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getMessage()">getMessage</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getSupportUrl()">getSupportUrl</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getSystemInformation()">getSystemInformation</A></CODE></TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Throwable"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Throwable</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>fillInStackTrace, getCause, getLocalizedMessage, getStackTrace, initCause, printStackTrace, printStackTrace, printStackTrace, setStackTrace, toString</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -148,7 +175,7 @@ A file detector that never finds anything.
 <TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -164,34 +191,12 @@ A file detector that never finds anything.
 </TR>
 </TABLE>
 
-<A NAME="UselessFileDetector()"><!-- --></A><H3>
-UselessFileDetector</H3>
+<A NAME="UnreachableBrowserException(java.lang.String, java.lang.Throwable)"><!-- --></A><H3>
+UnreachableBrowserException</H3>
 <PRE>
-public <B>UselessFileDetector</B>()</PRE>
+public <B>UnreachableBrowserException</B>(java.lang.String&nbsp;message,
+                                   java.lang.Throwable&nbsp;cause)</PRE>
 <DL>
-</DL>
-
-<!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="getLocalFile(java.lang.CharSequence...)"><!-- --></A><H3>
-getLocalFile</H3>
-<PRE>
-public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PRE>
-<DL>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html#getLocalFile(java.lang.CharSequence...)">getLocalFile</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</A></CODE></DL>
-</DD>
-<DD><DL>
-</DL>
-</DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
@@ -223,11 +228,11 @@ public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PR
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/UselessFileDetector.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/UselessFileDetector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UselessFileDetector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/UnreachableBrowserException.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="UnreachableBrowserException.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -244,9 +249,9 @@ public java.io.File <B>getLocalFile</B>(java.lang.CharSequence...&nbsp;keys)</PR
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

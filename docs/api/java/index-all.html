@@ -1592,6 +1592,9 @@ Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/seleni
 <DT><A HREF="./org/openqa/selenium/firefox/internal/Streams.html#drainStream(java.io.OutputStream)"><B>drainStream(OutputStream)</B></A> - 
 Static method in class org.openqa.selenium.firefox.internal.<A HREF="./org/openqa/selenium/firefox/internal/Streams.html" title="class in org.openqa.selenium.firefox.internal">Streams</A>
 <DD>Drains the contents of a stream without blocking on further input from that stream.
+<DT><A HREF="./org/openqa/selenium/logging/LogType.html#DRIVER"><B>DRIVER</B></A> - 
+Static variable in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging">LogType</A>
+<DD>This log type pertains to logs from the driver.
 <DT><A HREF="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote"><B>DriverCommand</B></A> - Interface in <A HREF="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</A><DD>An empty interface defining constants for the standard commands defined in the WebDriver JSON
  wire protocol.<DT><A HREF="./org/openqa/selenium/support/ui/Duration.html" title="class in org.openqa.selenium.support.ui"><B>Duration</B></A> - Class in <A HREF="./org/openqa/selenium/support/ui/package-summary.html">org.openqa.selenium.support.ui</A><DD>Represents an immutable duration of time.<DT><A HREF="./org/openqa/selenium/support/ui/Duration.html#Duration(long, java.util.concurrent.TimeUnit)"><B>Duration(long, TimeUnit)</B></A> - 
 Constructor for class org.openqa.selenium.support.ui.<A HREF="./org/openqa/selenium/support/ui/Duration.html" title="class in org.openqa.selenium.support.ui">Duration</A>
@@ -1627,13 +1630,28 @@ Constructor for exception org.openqa.selenium.<A HREF="./org/openqa/selenium/Ele
 <DT><A HREF="./org/openqa/selenium/ElementNotVisibleException.html#ElementNotVisibleException(java.lang.String, java.lang.Throwable)"><B>ElementNotVisibleException(String, Throwable)</B></A> - 
 Constructor for exception org.openqa.selenium.<A HREF="./org/openqa/selenium/ElementNotVisibleException.html" title="class in org.openqa.selenium">ElementNotVisibleException</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html#elementSelectionStateToBe(org.openqa.selenium.WebElement, boolean)"><B>elementSelectionStateToBe(WebElement, boolean)</B></A> - 
+Static method in class org.openqa.selenium.support.ui.<A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</A>
+<DD>An expectation for checking if the given element is selected.
+<DT><A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html#elementSelectionStateToBe(org.openqa.selenium.By, boolean)"><B>elementSelectionStateToBe(By, boolean)</B></A> - 
+Static method in class org.openqa.selenium.support.ui.<A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeClickable(org.openqa.selenium.By)"><B>elementToBeClickable(By)</B></A> - 
 Static method in class org.openqa.selenium.support.ui.<A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</A>
 <DD>An Expectation for checking an element is visible and enabled such that you
  can click it.
+<DT><A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeSelected(org.openqa.selenium.WebElement)"><B>elementToBeSelected(WebElement)</B></A> - 
+Static method in class org.openqa.selenium.support.ui.<A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</A>
+<DD>An expectation for checking if the given element is selected.
+<DT><A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeSelected(org.openqa.selenium.By)"><B>elementToBeSelected(By)</B></A> - 
+Static method in class org.openqa.selenium.support.ui.<A HREF="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/ie/IeReturnTypes.html#EMPTY"><B>EMPTY</B></A> - 
 Static variable in class org.openqa.selenium.ie.<A HREF="./org/openqa/selenium/ie/IeReturnTypes.html" title="class in org.openqa.selenium.ie">IeReturnTypes</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LoggingPreferences.html#enable(java.lang.String, java.util.logging.Level)"><B>enable(String, Level)</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</A>
+<DD>Enables logging for the given log type at the specified level and above.
 <DT><A HREF="./org/openqa/selenium/internal/Base64Encoder.html#encode(byte[])"><B>encode(byte[])</B></A> - 
 Method in class org.openqa.selenium.internal.<A HREF="./org/openqa/selenium/internal/Base64Encoder.html" title="class in org.openqa.selenium.internal">Base64Encoder</A>
 <DD>&nbsp;
@@ -1769,6 +1787,9 @@ Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/H
  <A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html#executeScript(java.lang.String, java.lang.Object...)"><CODE>RemoteWebDriver.executeScript(String, Object...)</CODE></A>.<DT><A HREF="./org/openqa/selenium/remote/ExecuteMethod.html#ExecuteMethod(org.openqa.selenium.remote.RemoteWebDriver)"><B>ExecuteMethod(RemoteWebDriver)</B></A> - 
 Constructor for class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/RemoteLogs.html#executeMethod"><B>executeMethod</B></A> - 
+Variable in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote">RemoteLogs</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#executeScript(java.lang.String, java.lang.Object...)"><B>executeScript(String, Object...)</B></A> - 
 Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</A>
 <DD>&nbsp;
@@ -1841,7 +1862,10 @@ Constructor for class org.openqa.selenium.firefox.internal.<A HREF="./org/openqa
 <DT><A HREF="./org/openqa/selenium/io/FileHandler.html" title="class in org.openqa.selenium.io"><B>FileHandler</B></A> - Class in <A HREF="./org/openqa/selenium/io/package-summary.html">org.openqa.selenium.io</A><DD>Utility methods for common filesystem activities<DT><A HREF="./org/openqa/selenium/io/FileHandler.html#FileHandler()"><B>FileHandler()</B></A> - 
 Constructor for class org.openqa.selenium.io.<A HREF="./org/openqa/selenium/io/FileHandler.html" title="class in org.openqa.selenium.io">FileHandler</A>
 <DD>&nbsp;
-<DT><A HREF="./org/openqa/selenium/io/FileHandler.Filter.html" title="interface in org.openqa.selenium.io"><B>FileHandler.Filter</B></A> - Interface in <A HREF="./org/openqa/selenium/io/package-summary.html">org.openqa.selenium.io</A><DD>Used by file operations to determine whether or not to make use of a file.<DT><A HREF="./org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENT"><B>FIND_CHILD_ELEMENT</B></A> - 
+<DT><A HREF="./org/openqa/selenium/io/FileHandler.Filter.html" title="interface in org.openqa.selenium.io"><B>FileHandler.Filter</B></A> - Interface in <A HREF="./org/openqa/selenium/io/package-summary.html">org.openqa.selenium.io</A><DD>Used by file operations to determine whether or not to make use of a file.<DT><A HREF="./org/openqa/selenium/logging/LogEntries.html#filter(java.util.logging.Level)"><B>filter(Level)</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENT"><B>FIND_CHILD_ELEMENT</B></A> - 
 Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/DriverCommand.html#FIND_CHILD_ELEMENTS"><B>FIND_CHILD_ELEMENTS</B></A> - 
@@ -2458,11 +2482,17 @@ Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/html
 Method in class org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</A>
 <DD>Allows HtmlUnit's about:blank to be loaded in the constructor, and may be useful for other
  tests?
+<DT><A HREF="./org/openqa/selenium/logging/Logs.html#get(java.lang.String)"><B>get(String)</B></A> - 
+Method in interface org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A>
+<DD>Fetches the logs for the givem log type.
 <DT><A HREF="./org/openqa/selenium/remote/DriverCommand.html#GET"><B>GET</B></A> - 
 Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/PropertyMunger.html#get(java.lang.String, java.lang.Object)"><B>get(String, Object)</B></A> - 
 Static method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/PropertyMunger.html" title="class in org.openqa.selenium.remote">PropertyMunger</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/RemoteLogs.html#get(java.lang.String)"><B>get(String)</B></A> - 
+Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote">RemoteLogs</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html#get(java.lang.String)"><B>get(String)</B></A> - 
 Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</A>
@@ -2594,6 +2624,9 @@ Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/D
 Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</A>
 <DD>Retrieves the message of a JavaScript alert generated during the previous action, or fail if
  there were no alerts.
+<DT><A HREF="./org/openqa/selenium/logging/LogEntries.html#getAll()"><B>getAll()</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A>
+<DD>&nbsp;
 <DT><A HREF="./com/thoughtworks/selenium/DefaultSelenium.html#getAllButtons()"><B>getAllButtons()</B></A> - 
 Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</A>
 <DD>&nbsp;
@@ -2935,6 +2968,9 @@ Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/D
 <DT><A HREF="./com/thoughtworks/selenium/Selenium.html#getElementWidth(java.lang.String)"><B>getElementWidth(String)</B></A> - 
 Method in interface com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</A>
 <DD>Retrieves the width of an element
+<DT><A HREF="./org/openqa/selenium/logging/LoggingPreferences.html#getEnabledLogTypes()"><B>getEnabledLogTypes()</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/html5/AppCacheStatus.html#getEnum(int)"><B>getEnum(int)</B></A> - 
 Static method in enum org.openqa.selenium.html5.<A HREF="./org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5">AppCacheStatus</A>
 <DD>Gets the AppCacheStatus for the given int value.
@@ -3116,6 +3152,12 @@ Method in class org.openqa.selenium.html5.<A HREF="./org/openqa/selenium/html5/L
 <DT><A HREF="./org/openqa/selenium/htmlunit/HtmlUnitDriver.JavaScriptResultsCollection.html#getLength()"><B>getLength()</B></A> - 
 Method in interface org.openqa.selenium.htmlunit.<A HREF="./org/openqa/selenium/htmlunit/HtmlUnitDriver.JavaScriptResultsCollection.html" title="interface in org.openqa.selenium.htmlunit">HtmlUnitDriver.JavaScriptResultsCollection</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LogEntry.html#getLevel()"><B>getLevel()</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LoggingPreferences.html#getLevel(java.lang.String)"><B>getLevel(String)</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/os/CommandLine.html#getLibraryPathPropertyName()"><B>getLibraryPathPropertyName()</B></A> - 
 Static method in class org.openqa.selenium.os.<A HREF="./org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</A>
 <DD>&nbsp;
@@ -3202,6 +3244,9 @@ Method in enum org.openqa.selenium.<A HREF="./org/openqa/selenium/Platform.html"
 <DD>Returns the major version of this platform.
 <DT><A HREF="./com/thoughtworks/selenium/condition/Condition.html#getMessage()"><B>getMessage()</B></A> - 
 Method in class com.thoughtworks.selenium.condition.<A HREF="./com/thoughtworks/selenium/condition/Condition.html" title="class in com.thoughtworks.selenium.condition">Condition</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LogEntry.html#getMessage()"><B>getMessage()</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/WebDriverException.html#getMessage()"><B>getMessage()</B></A> - 
 Method in exception org.openqa.selenium.<A HREF="./org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A>
@@ -3623,6 +3668,9 @@ Method in class org.openqa.selenium.firefox.<A HREF="./org/openqa/selenium/firef
 <DD>&nbsp;
 <DT><A HREF="./com/thoughtworks/selenium/BrowserConfigurationOptions.html#getTimeoutInSeconds()"><B>getTimeoutInSeconds()</B></A> - 
 Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/BrowserConfigurationOptions.html" title="class in com.thoughtworks.selenium">BrowserConfigurationOptions</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LogEntry.html#getTimestamp()"><B>getTimestamp()</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>
 <DD>&nbsp;
 <DT><A HREF="./com/thoughtworks/selenium/DefaultSelenium.html#getTitle()"><B>getTitle()</B></A> - 
 Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</A>
@@ -4783,7 +4831,25 @@ Method in class com.thoughtworks.selenium.condition.<A HREF="./com/thoughtworks/
 <DT><A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId, java.lang.String, java.lang.Object)"><B>log(SessionId, String, Object)</B></A> - 
 Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</A>
 <DD>Override this to be notified at key points in the execution of a command.
-<DT><A HREF="./org/openqa/selenium/ie/IeReturnTypes.html#LONG"><B>LONG</B></A> - 
+<DT><A HREF="./org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging"><B>LogEntries</B></A> - Class in <A HREF="./org/openqa/selenium/logging/package-summary.html">org.openqa.selenium.logging</A><DD>Represent a pool of .<DT><A HREF="./org/openqa/selenium/logging/LogEntries.html#LogEntries(java.util.List)"><B>LogEntries(List&lt;LogEntry&gt;)</B></A> - 
+Constructor for class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>LogEntry</B></A> - Class in <A HREF="./org/openqa/selenium/logging/package-summary.html">org.openqa.selenium.logging</A><DD>Represents a single log statement.<DT><A HREF="./org/openqa/selenium/logging/LogEntry.html#LogEntry(int, long, java.lang.String)"><B>LogEntry(int, long, String)</B></A> - 
+Constructor for class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/CapabilityType.html#LOGGING_PREFS"><B>LOGGING_PREFS</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote">CapabilityType</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><B>LoggingPreferences</B></A> - Class in <A HREF="./org/openqa/selenium/logging/package-summary.html">org.openqa.selenium.logging</A><DD>Represents the logging preferences.<DT><A HREF="./org/openqa/selenium/logging/LoggingPreferences.html#LoggingPreferences()"><B>LoggingPreferences()</B></A> - 
+Constructor for class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging"><B>Logs</B></A> - Interface in <A HREF="./org/openqa/selenium/logging/package-summary.html">org.openqa.selenium.logging</A><DD>Logs's interface.<DT><A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html#logs()"><B>logs()</B></A> - 
+Method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/DriverCommand.html#LOGS_DRIVER"><B>LOGS_DRIVER</B></A> - 
+Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/DriverCommand.html" title="interface in org.openqa.selenium.remote">DriverCommand</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><B>LogType</B></A> - Class in <A HREF="./org/openqa/selenium/logging/package-summary.html">org.openqa.selenium.logging</A><DD>Supported log types.<DT><A HREF="./org/openqa/selenium/ie/IeReturnTypes.html#LONG"><B>LONG</B></A> - 
 Static variable in class org.openqa.selenium.ie.<A HREF="./org/openqa/selenium/ie/IeReturnTypes.html" title="class in org.openqa.selenium.ie">IeReturnTypes</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/interactions/touch/TouchActions.html#longPress(org.openqa.selenium.WebElement)"><B>longPress(WebElement)</B></A> - 
@@ -5276,7 +5342,7 @@ Static variable in interface org.openqa.selenium.remote.<A HREF="./org/openqa/se
 <DT><A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html#opera()"><B>opera()</B></A> - 
 Static method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</A>
 <DD>&nbsp;
-<DT><A HREF="./org/openqa/selenium/package-summary.html"><B>org.openqa.selenium</B></A> - package org.openqa.selenium<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/android/package-summary.html"><B>org.openqa.selenium.android</B></A> - package org.openqa.selenium.android<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/browserlaunchers/package-summary.html"><B>org.openqa.selenium.browserlaunchers</B></A> - package org.openqa.selenium.browserlaunchers<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/package-summary.html"><B>org.openqa.selenium.browserlaunchers.locators</B></A> - package org.openqa.selenium.browserlaunchers.locators<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/chrome/package-summary.html"><B>org.openqa.selenium.chrome</B></A> - package org.openqa.selenium.chrome<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/firefox/package-summary.html"><B>org.openqa.selenium.firefox</B></A> - package org.openqa.selenium.firefox<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/firefox/internal/package-summary.html"><B>org.openqa.selenium.firefox.internal</B></A> - package org.openqa.selenium.firefox.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/html5/package-summary.html"><B>org.openqa.selenium.html5</B></A> - package org.openqa.selenium.html5<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/htmlunit/package-summary.html"><B>org.openqa.selenium.htmlunit</B></A> - package org.openqa.selenium.htmlunit<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/ie/package-summary.html"><B>org.openqa.selenium.ie</B></A> - package org.openqa.selenium.ie<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/interactions/package-summary.html"><B>org.openqa.selenium.interactions</B></A> - package org.openqa.selenium.interactions<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/interactions/internal/package-summary.html"><B>org.openqa.selenium.interactions.internal</B></A> - package org.openqa.selenium.interactions.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/interactions/touch/package-summary.html"><B>org.openqa.selenium.interactions.touch</B></A> - package org.openqa.selenium.interactions.touch<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/internal/package-summary.html"><B>org.openqa.selenium.internal</B></A> - package org.openqa.selenium.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/io/package-summary.html"><B>org.openqa.selenium.io</B></A> - package org.openqa.selenium.io<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/iphone/package-summary.html"><B>org.openqa.selenium.iphone</B></A> - package org.openqa.selenium.iphone<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/lift/package-summary.html"><B>org.openqa.selenium.lift</B></A> - package org.openqa.selenium.lift<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/lift/find/package-summary.html"><B>org.openqa.selenium.lift.find</B></A> - package org.openqa.selenium.lift.find<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/lift/match/package-summary.html"><B>org.openqa.selenium.lift.match</B></A> - package org.openqa.selenium.lift.match<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/net/package-summary.html"><B>org.openqa.selenium.net</B></A> - package org.openqa.selenium.net<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/os/package-summary.html"><B>org.openqa.selenium.os</B></A> - package org.openqa.selenium.os<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/remote/package-summary.html"><B>org.openqa.selenium.remote</B></A> - package org.openqa.selenium.remote<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/remote/html5/package-summary.html"><B>org.openqa.selenium.remote.html5</B></A> - package org.openqa.selenium.remote.html5<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/package-summary.html"><B>org.openqa.selenium.support</B></A> - package org.openqa.selenium.support<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/events/package-summary.html"><B>org.openqa.selenium.support.events</B></A> - package org.openqa.selenium.support.events<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/events/internal/package-summary.html"><B>org.openqa.selenium.support.events.internal</B></A> - package org.openqa.selenium.support.events.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/pagefactory/package-summary.html"><B>org.openqa.selenium.support.pagefactory</B></A> - package org.openqa.selenium.support.pagefactory<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/pagefactory/internal/package-summary.html"><B>org.openqa.selenium.support.pagefactory.internal</B></A> - package org.openqa.selenium.support.pagefactory.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/ui/package-summary.html"><B>org.openqa.selenium.support.ui</B></A> - package org.openqa.selenium.support.ui<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.html#outputTo(java.io.Writer)"><B>outputTo(Writer)</B></A> - 
+<DT><A HREF="./org/openqa/selenium/package-summary.html"><B>org.openqa.selenium</B></A> - package org.openqa.selenium<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/android/package-summary.html"><B>org.openqa.selenium.android</B></A> - package org.openqa.selenium.android<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/browserlaunchers/package-summary.html"><B>org.openqa.selenium.browserlaunchers</B></A> - package org.openqa.selenium.browserlaunchers<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/browserlaunchers/locators/package-summary.html"><B>org.openqa.selenium.browserlaunchers.locators</B></A> - package org.openqa.selenium.browserlaunchers.locators<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/chrome/package-summary.html"><B>org.openqa.selenium.chrome</B></A> - package org.openqa.selenium.chrome<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/firefox/package-summary.html"><B>org.openqa.selenium.firefox</B></A> - package org.openqa.selenium.firefox<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/firefox/internal/package-summary.html"><B>org.openqa.selenium.firefox.internal</B></A> - package org.openqa.selenium.firefox.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/html5/package-summary.html"><B>org.openqa.selenium.html5</B></A> - package org.openqa.selenium.html5<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/htmlunit/package-summary.html"><B>org.openqa.selenium.htmlunit</B></A> - package org.openqa.selenium.htmlunit<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/ie/package-summary.html"><B>org.openqa.selenium.ie</B></A> - package org.openqa.selenium.ie<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/interactions/package-summary.html"><B>org.openqa.selenium.interactions</B></A> - package org.openqa.selenium.interactions<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/interactions/internal/package-summary.html"><B>org.openqa.selenium.interactions.internal</B></A> - package org.openqa.selenium.interactions.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/interactions/touch/package-summary.html"><B>org.openqa.selenium.interactions.touch</B></A> - package org.openqa.selenium.interactions.touch<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/internal/package-summary.html"><B>org.openqa.selenium.internal</B></A> - package org.openqa.selenium.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/io/package-summary.html"><B>org.openqa.selenium.io</B></A> - package org.openqa.selenium.io<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/iphone/package-summary.html"><B>org.openqa.selenium.iphone</B></A> - package org.openqa.selenium.iphone<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/lift/package-summary.html"><B>org.openqa.selenium.lift</B></A> - package org.openqa.selenium.lift<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/lift/find/package-summary.html"><B>org.openqa.selenium.lift.find</B></A> - package org.openqa.selenium.lift.find<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/lift/match/package-summary.html"><B>org.openqa.selenium.lift.match</B></A> - package org.openqa.selenium.lift.match<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/logging/package-summary.html"><B>org.openqa.selenium.logging</B></A> - package org.openqa.selenium.logging<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/net/package-summary.html"><B>org.openqa.selenium.net</B></A> - package org.openqa.selenium.net<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/os/package-summary.html"><B>org.openqa.selenium.os</B></A> - package org.openqa.selenium.os<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/remote/package-summary.html"><B>org.openqa.selenium.remote</B></A> - package org.openqa.selenium.remote<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/remote/html5/package-summary.html"><B>org.openqa.selenium.remote.html5</B></A> - package org.openqa.selenium.remote.html5<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/package-summary.html"><B>org.openqa.selenium.support</B></A> - package org.openqa.selenium.support<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/events/package-summary.html"><B>org.openqa.selenium.support.events</B></A> - package org.openqa.selenium.support.events<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/events/internal/package-summary.html"><B>org.openqa.selenium.support.events.internal</B></A> - package org.openqa.selenium.support.events.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/pagefactory/package-summary.html"><B>org.openqa.selenium.support.pagefactory</B></A> - package org.openqa.selenium.support.pagefactory<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/pagefactory/internal/package-summary.html"><B>org.openqa.selenium.support.pagefactory.internal</B></A> - package org.openqa.selenium.support.pagefactory.internal<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/support/ui/package-summary.html"><B>org.openqa.selenium.support.ui</B></A> - package org.openqa.selenium.support.ui<DD>&nbsp;<DT><A HREF="./org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.html#outputTo(java.io.Writer)"><B>outputTo(Writer)</B></A> - 
 Method in class org.openqa.selenium.browserlaunchers.<A HREF="./org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.html" title="class in org.openqa.selenium.browserlaunchers">DoNotUseProxyPac</A>
 <DD>Output the PAC file to the given writer.
 <DT><A HREF="./org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium"><B>OutputType</B></A>&lt;<A HREF="./org/openqa/selenium/OutputType.html" title="type parameter in OutputType">T</A>&gt; - Interface in <A HREF="./org/openqa/selenium/package-summary.html">org.openqa.selenium</A><DD>Defines the output type for a screenshot.</DL>
@@ -5596,6 +5662,9 @@ Constructor for class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5"><B>RemoteLocalStorage</B></A> - Class in <A HREF="./org/openqa/selenium/remote/html5/package-summary.html">org.openqa.selenium.remote.html5</A><DD>Executes the commands to access HTML5 localStorage on the remote webdriver server.<DT><A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html#RemoteLocalStorage(org.openqa.selenium.remote.ExecuteMethod)"><B>RemoteLocalStorage(ExecuteMethod)</B></A> - 
 Constructor for class org.openqa.selenium.remote.html5.<A HREF="./org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteLocalStorage</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote"><B>RemoteLogs</B></A> - Class in <A HREF="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</A><DD>&nbsp;<DT><A HREF="./org/openqa/selenium/remote/RemoteLogs.html#RemoteLogs(org.openqa.selenium.remote.ExecuteMethod)"><B>RemoteLogs(ExecuteMethod)</B></A> - 
+Constructor for class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote">RemoteLogs</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5"><B>RemoteSessionStorage</B></A> - Class in <A HREF="./org/openqa/selenium/remote/html5/package-summary.html">org.openqa.selenium.remote.html5</A><DD>Executes the commands to access HTML5 sessionStorage on the remote webdriver server.<DT><A HREF="./org/openqa/selenium/remote/html5/RemoteSessionStorage.html#RemoteSessionStorage(org.openqa.selenium.remote.ExecuteMethod)"><B>RemoteSessionStorage(ExecuteMethod)</B></A> - 
 Constructor for class org.openqa.selenium.remote.html5.<A HREF="./org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteSessionStorage</A>
@@ -6206,6 +6275,9 @@ Method in class org.openqa.selenium.firefox.internal.<A HREF="./org/openqa/selen
 <DT><A HREF="./org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)"><B>setLocation(Location)</B></A> - 
 Method in interface org.openqa.selenium.html5.<A HREF="./org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>
 <DD>Sets the physical location.
+<DT><A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)"><B>setLogLevel(Level)</B></A> - 
+Static method in class org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</A>
+<DD>Sets the RemoteWebDriver's client log level.
 <DT><A HREF="./com/thoughtworks/selenium/DefaultSelenium.html#setMouseSpeed(java.lang.String)"><B>setMouseSpeed(String)</B></A> - 
 Method in class com.thoughtworks.selenium.<A HREF="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</A>
 <DD>&nbsp;
@@ -7034,6 +7106,9 @@ Method in class org.openqa.selenium.internal.<A HREF="./org/openqa/selenium/inte
 <DT><A HREF="./org/openqa/selenium/Keys.html#toString()"><B>toString()</B></A> - 
 Method in enum org.openqa.selenium.<A HREF="./org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>
 <DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/logging/LogEntry.html#toString()"><B>toString()</B></A> - 
+Method in class org.openqa.selenium.logging.<A HREF="./org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>
+<DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/os/CommandLine.html#toString()"><B>toString()</B></A> - 
 Method in class org.openqa.selenium.os.<A HREF="./org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</A>
 <DD>&nbsp;
@@ -7186,6 +7261,10 @@ Method in interface org.openqa.selenium.internal.<A HREF="./org/openqa/selenium/
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/internal/SocketLock.html#unlock()"><B>unlock()</B></A> - 
 Method in class org.openqa.selenium.internal.<A HREF="./org/openqa/selenium/internal/SocketLock.html" title="class in org.openqa.selenium.internal">SocketLock</A>
+<DD>&nbsp;
+<DT><A HREF="./org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><B>UnreachableBrowserException</B></A> - Exception in <A HREF="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</A><DD>Indicates there was a problem communicating with the browser being
+ controlled or the Selenium server.<DT><A HREF="./org/openqa/selenium/remote/UnreachableBrowserException.html#UnreachableBrowserException(java.lang.String, java.lang.Throwable)"><B>UnreachableBrowserException(String, Throwable)</B></A> - 
+Constructor for exception org.openqa.selenium.remote.<A HREF="./org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote">UnreachableBrowserException</A>
 <DD>&nbsp;
 <DT><A HREF="./org/openqa/selenium/support/events/EventFiringWebDriver.html#unregister(org.openqa.selenium.support.events.WebDriverEventListener)"><B>unregister(WebDriverEventListener)</B></A> - 
 Method in class org.openqa.selenium.support.events.<A HREF="./org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</A>

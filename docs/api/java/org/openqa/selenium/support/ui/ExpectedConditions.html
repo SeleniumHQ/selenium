@@ -117,12 +117,46 @@ Canned <A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#elementSelectionStateToBe(org.openqa.selenium.By, boolean)">elementSelectionStateToBe</A></B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;locator,
+                          boolean&nbsp;selected)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#elementSelectionStateToBe(org.openqa.selenium.WebElement, boolean)">elementSelectionStateToBe</A></B>(<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;element,
+                          boolean&nbsp;selected)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An expectation for checking if the given element is selected.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&gt;</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeClickable(org.openqa.selenium.By)">elementToBeClickable</A></B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;locator)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An Expectation for checking an element is visible and enabled such that you
  can click it.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeSelected(org.openqa.selenium.By)">elementToBeSelected</A></B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;locator)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeSelected(org.openqa.selenium.WebElement)">elementToBeSelected</A></B>(<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;element)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An expectation for checking if the given element is selected.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -421,6 +455,56 @@ public static <A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCon
 <DT><B>Parameters:</B><DD><CODE>element</CODE> - The element to wait for.
 <DT><B>Returns:</B><DD>false is the element is still attached to the DOM, true
          otherwise.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="elementToBeSelected(org.openqa.selenium.WebElement)"><!-- --></A><H3>
+elementToBeSelected</H3>
+<PRE>
+public static <A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt; <B>elementToBeSelected</B>(<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;element)</PRE>
+<DL>
+<DD>An expectation for checking if the given element is selected.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="elementSelectionStateToBe(org.openqa.selenium.WebElement, boolean)"><!-- --></A><H3>
+elementSelectionStateToBe</H3>
+<PRE>
+public static <A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt; <B>elementSelectionStateToBe</B>(<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&nbsp;element,
+                                                                             boolean&nbsp;selected)</PRE>
+<DL>
+<DD>An expectation for checking if the given element is selected.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="elementToBeSelected(org.openqa.selenium.By)"><!-- --></A><H3>
+elementToBeSelected</H3>
+<PRE>
+public static <A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt; <B>elementToBeSelected</B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;locator)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="elementSelectionStateToBe(org.openqa.selenium.By, boolean)"><!-- --></A><H3>
+elementSelectionStateToBe</H3>
+<PRE>
+public static <A HREF="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</A>&lt;java.lang.Boolean&gt; <B>elementSelectionStateToBe</B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;locator,
+                                                                             boolean&nbsp;selected)</PRE>
+<DL>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
