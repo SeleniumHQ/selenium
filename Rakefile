@@ -333,7 +333,7 @@ GeckoSDKs.new do |sdks|
            '1117d461036e6f6f6ea7d2f7ee1a42c8'
 
   sdks.add 'third_party/gecko-8/win32',
-           'http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk/xulrunner-8.0.en-US.win32.sdk.zip',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0.1/sdk/xulrunner-8.0.1.en-US.win32.sdk.zip',
            'd9c366d3dd54e020e372841053806f5d'
 end
 
