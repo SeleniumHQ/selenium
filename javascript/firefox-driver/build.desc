@@ -88,7 +88,7 @@ js_binary(name = "synthetic_mouse",
   externs = [
     "js/externs.js",
   ],
-  deps = [ "//javascript/webdriver-atoms:deps" ])
+  deps = [ "//javascript/webdriver/atoms:deps" ])
 
 # Needed because the closure library doesn't have the EXPORTED_SYMBOLS variable
 # required by the loader in firefox
@@ -112,7 +112,7 @@ js_binary(name = "atoms",
   externs = [
     "js/externs.js",
   ],
-  deps = [ "//javascript/webdriver-atoms:deps" ])
+  deps = [ "//javascript/webdriver/atoms:deps" ])
 
 js_binary(name = "command_processor",
   srcs = [
@@ -132,7 +132,7 @@ js_binary(name = "command_processor",
   externs = [
     "js/externs.js",
   ],
-  deps = [ "//javascript/webdriver-atoms:deps" ])
+  deps = [ "//javascript/webdriver/atoms:deps" ])
 
 js_binary(name = "prompt_service",
   srcs = [
@@ -147,7 +147,7 @@ js_binary(name = "prompt_service",
   externs = [
     "js/externs.js",
   ],
-  deps = [ "//javascript/webdriver-atoms:deps" ])
+  deps = [ "//javascript/webdriver/atoms:deps" ])
 
 js_binary(name = "session",
   srcs = [
@@ -160,7 +160,7 @@ js_binary(name = "session",
   externs = [
     "js/externs.js",
   ],
-  deps = [ "//javascript/webdriver-atoms:deps" ])
+  deps = [ "//javascript/webdriver/atoms:deps" ])
 
 js_binary(name = "session_store",
   srcs = [
@@ -174,4 +174,4 @@ js_binary(name = "session_store",
   externs = [
     "js/externs.js",
   ],
-  deps = [ "//javascript/webdriver-atoms:deps" ])
+  deps = [ "//javascript/webdriver/atoms:deps" ])

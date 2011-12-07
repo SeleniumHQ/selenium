@@ -119,7 +119,7 @@ task :ide_bamboo => ["se_ide:assemble_ide_in_bamboo"]
 
 task :test_javascript => [
   '//javascript/atoms:test:run',
-  '//javascript/webdriver-atoms:test:run',
+  '//javascript/webdriver:test:run',
   '//javascript/selenium-atoms:test:run',
   '//javascript/selenium-core:test:run']
 task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
@@ -127,7 +127,7 @@ task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" 
 task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
   '//javascript/chrome-driver:test:run',
-  '//javascript/webdriver-atoms:test_chrome:run']
+  '//javascript/webdriver:test_chrome:run']
 task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
 task :test_grid => [
   "//java/server/test/org/openqa/grid/common:test:run",
@@ -625,7 +625,7 @@ desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "javascript/deps.js"
 
 task :test_webdriverjs => [
-  "//javascript/webdriver:test_firefox:run",
+  "//javascript/webdriver:test:run",
   "//javascript/webdriver:test_chrome:run",
   "//javascript/webdriver:test_firefox_e2e:run",
   "//javascript/webdriver:test_chrome_e2e:run"

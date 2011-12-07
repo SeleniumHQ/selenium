@@ -17,9 +17,8 @@ limitations under the License.
 -->
 <html>
 <head>
-  <title>web_element_test.html</title>
-  <script type="text/javascript" src="../../webdriver-bootstrap.js">
-  </script>
+  <title>element_test.html</title>
+  <script src="../test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
@@ -133,7 +132,7 @@ limitations under the License.
 
     function testTheTopWindowsTitleShouldBeConsideredVisibleText() {
       var title = bot.locators.findElement({tagName: 'title'});
-      assertEquals('web_element_test.html', webdriver.atoms.element.getText(title));
+      assertEquals('element_test.html', webdriver.atoms.element.getText(title));
     }
 
     function testAFrameDocumentsTitleShouldNotBeConsideredVisibleText() {

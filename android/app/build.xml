@@ -60,8 +60,8 @@
     <property name="third_party.location" value="${root.dir}/third_party"/>
     <property name="build.location" value="${root.dir}/build" />
     <property name="javascript.atoms" value="javascript/atoms"/>
-    <property name="webdriver.atoms.inject" value="javascript/webdriver-atoms/inject"/>
-    <property name="webdriver.atoms" value="javascript/webdriver-atoms"/>
+    <property name="webdriver.atoms.inject" value="javascript/webdriver/atoms/inject"/>
+    <property name="webdriver.atoms" value="javascript/webdriver/atoms"/>
     <property name="go" value="./go"/>
     <property name="res.raw" value="res/raw"/>
 

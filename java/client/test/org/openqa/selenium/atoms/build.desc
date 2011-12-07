@@ -1,7 +1,7 @@
 java_test(name = "test",
   srcs = [ "*.java" ],
   resources = [
-    { "//javascript/webdriver-atoms:execute_script" : "scripts/executeScript.js" }
+    { "//javascript/webdriver/atoms:execute_script" : "scripts/executeScript.js" }
   ],
   test_suite = "org.openqa.selenium.atoms.CompiledAtomsNotLeakingTest",
   deps = [

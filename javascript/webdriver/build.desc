@@ -1,3 +1,4 @@
+# Deps for WebDriverJS; does not include any atoms code.
 js_deps(name = "deps",
   srcs = [
     "*.js",
@@ -11,7 +12,7 @@ js_deps(name = "test_deps",
   ])
 
 # TODO(jleyba): Make a js_test_suite that farms out to multiple browsers.
-js_test(name = "test_firefox",
+js_test(name = "test",
   srcs = [
     "test/**/*.js",
     "test/**/*_test.html",

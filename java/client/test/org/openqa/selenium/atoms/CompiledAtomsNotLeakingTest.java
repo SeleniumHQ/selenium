@@ -48,7 +48,7 @@ public class CompiledAtomsNotLeakingTest {
         global.defineProperty("_", 1234, ScriptableObject.EMPTY);
         assertEquals(1234, eval(context, "_"));
 
-        // We're using the //javascript/webdriver-atoms:execute_script atom,
+        // We're using the //javascript/webdriver/atoms:execute_script atom,
         // which assumes it is used in the context of a browser window, so make
         // sure the "window" free variable is defined and refers to the global
         // context.

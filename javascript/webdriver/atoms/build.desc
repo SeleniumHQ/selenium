@@ -1,43 +1,6 @@
-
-js_binary(name = "webdriver-atoms",
-  deps = [
-    ":deps"
-  ])
-
 js_deps(name = "deps",
-  srcs = [
-    "*.js",
-    "html5/*.js",
-  ],
+  srcs = [ "./**/*.js" ],
   deps = "//javascript/atoms:deps")
-
-js_test(name = "test",
-  srcs = [
-    "test/**/*_test.html",
-  ],
-  path = "/javascript/webdriver-atoms/test",
-  deps = [
-    ":deps",
-    "//javascript/webdriver-atoms/inject:deps",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])
-
-js_test(name = "test_chrome",
-  srcs = [
-    "test/**/*_test.html",
-  ],
-  path = "/javascript/webdriver-atoms/test",
-  sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
-  ],
-  deps = [
-    ":deps",
-    "//javascript/webdriver-atoms/inject:deps",
-    "//java/client/src/org/openqa/selenium/chrome",
-    "//java/client/test/org/openqa/selenium/javascript",
-  ])
-
 
 js_fragment(name = "clear",
   module = "bot.action",
