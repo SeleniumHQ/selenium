@@ -19,7 +19,6 @@ package org.openqa.grid.e2e.node;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Time;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 

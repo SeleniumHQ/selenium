@@ -18,9 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import java.util.Date;
-import java.util.logging.Level;
-
 /**
  * Represents a single log statement.
  */

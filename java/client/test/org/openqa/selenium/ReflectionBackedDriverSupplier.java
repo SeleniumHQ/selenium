@@ -3,7 +3,6 @@ package org.openqa.selenium;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.lang.reflect.Method;
 import java.util.logging.Level;

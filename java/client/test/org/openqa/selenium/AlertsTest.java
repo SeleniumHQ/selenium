@@ -31,7 +31,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
 import java.util.Set;
-import junit.framework.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;

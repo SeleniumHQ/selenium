@@ -27,7 +27,6 @@ import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.util.Map;
 
