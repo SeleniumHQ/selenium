@@ -83,6 +83,9 @@
     <Compile Include="PageObjects\WebElementProxyComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\DefaultWait.cs" />
+    <Compile Include="UI\ExpectedConditions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UI\IClock.cs" />
     <Compile Include="UI\IWait.cs" />
     <Compile Include="UI\PopupWindowFinder.cs" />
