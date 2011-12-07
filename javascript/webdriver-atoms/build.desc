@@ -13,24 +13,27 @@ js_deps(name = "deps",
 
 js_test(name = "test",
   srcs = [
-    "test/*_test.html",
-    "html5/test/*_test.html",
+    "test/**/*_test.html",
   ],
   path = "/javascript/webdriver-atoms/test",
   deps = [
     ":deps",
+    "//javascript/webdriver-atoms/inject:deps",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
 
 js_test(name = "test_chrome",
-  srcs = [ "test/*_test.html" ],
+  srcs = [
+    "test/**/*_test.html",
+  ],
   path = "/javascript/webdriver-atoms/test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
   ],
   deps = [
     ":deps",
+    "//javascript/webdriver-atoms/inject:deps",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/test/org/openqa/selenium/javascript",
   ])

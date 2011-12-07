@@ -9,17 +9,6 @@ js_deps(name = "deps",
   deps = ["//javascript/atoms:deps",
           "//javascript/webdriver-atoms:deps"])
 
-js_test(name = "test",
-  srcs = [
-    "test/*_test.html",
-  ],
-  path = "/javascript/webdriver-atoms/inject/test",
-  deps = [
-    ":deps",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])
-
 # Those fragments are used by 3rd party browsers
 js_fragment(name = "find_element",
   module = "webdriver.atoms.inject.locators",
