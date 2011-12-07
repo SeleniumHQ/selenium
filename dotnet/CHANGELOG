@@ -1,3 +1,13 @@
+v2.15.0
+=======
+ * Added support for window positioning and sizing API to IE.
+ * Introduced DefaultWait class to WebDriver.Support assembly, to allow fully
+   configurable waits.
+ * Added IRotatable interface for driving client browsers supporting rotation.
+ * Introduced experimental ExpectedConditions class to WebDriver.Support
+   assembly, providing methods to use to wait for commonly-experienced
+   conditions.
+
 v2.14.0
 =======
  * Implemented iPad desired capability.
