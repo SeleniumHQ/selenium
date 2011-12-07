@@ -37,11 +37,6 @@ public class DummyBrowserLauncher implements BrowserLauncher {
   }
 
   /** noop */
-  public Process getProcess() {
-    return null;
-  }
-
-  /** noop */
   public void launchHTMLSuite(String startURL, String suiteUrl) {
 
   }

@@ -26,10 +26,6 @@ public class AbstractBrowserLauncherUnitTest extends TestCase {
           public void close() {
             throw new UnsupportedOperationException("Should never be called");
           }
-
-          public Process getProcess() {
-            throw new UnsupportedOperationException("Should never be called");
-          }
         };
     assertEquals(theConfiguration, launcher.getConfiguration());
   }

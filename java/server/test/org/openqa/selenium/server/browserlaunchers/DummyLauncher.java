@@ -25,13 +25,6 @@ public class DummyLauncher implements BrowserLauncher {
   /**
    * noop
    */
-  public Process getProcess() {
-    return null;
-  }
-
-  /**
-   * noop
-   */
   public void launchHTMLSuite(String startURL, String suiteUrl) {
     closed = false;
   }
