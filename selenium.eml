@@ -22,6 +22,7 @@
 		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-5"/>
 		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-6"/>
 		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-7"/>
+		<excludeFolder url="file://$MODULE_DIR$/third_party/gecko-8"/>
 		<excludeFolder url="file://$MODULE_DIR$/third_party/json-cpp"/>
 		<excludeFolder url="file://$MODULE_DIR$/third_party/mongoose"/>
 		<excludeFolder url="file://$MODULE_DIR$/third_party/nmock"/>
