@@ -27,6 +27,16 @@ namespace OpenQA.Selenium.Support.UI
     /// Provides a mechanism by which the window handle of an invoked
     /// popup browser window may be determined.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// // Store the current window handle so you can switch back to the
+    /// // original window when you close the popup.
+    /// string current = driver.CurrentWindowHandle;
+    /// PopupWindowFinder finder = new PopupWindowFinder(driver);
+    /// string newHandle = finder.Click(driver.FindElement(By.LinkText("Open new window")));
+    /// driver.SwitchTo.Window(newHandle);
+    /// </code>
+    /// </example>
     public class PopupWindowFinder
     {
         private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);

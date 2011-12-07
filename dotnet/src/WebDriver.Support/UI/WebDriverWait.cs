@@ -26,8 +26,10 @@ namespace OpenQA.Selenium.Support.UI
     /// Provides the ability to wait for an arbitrary condition during test execution.
     /// </summary>
     /// <example>
+    /// <code>
     /// IWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3))
-    /// IWebElement element = wait.until(driver => driver.FindElement(By.Name("q")));
+    /// IWebElement element = wait.Until(driver => driver.FindElement(By.Name("q")));
+    /// </code>
     /// </example>
     public class WebDriverWait : DefaultWait<IWebDriver>
     {
