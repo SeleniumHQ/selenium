@@ -47,10 +47,6 @@ public class CustomBrowserLauncher extends AbstractBrowserLauncher {
     process.destroy();
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   @Override
   protected void launch(String url) {
     exec(commandPath + " " + url);

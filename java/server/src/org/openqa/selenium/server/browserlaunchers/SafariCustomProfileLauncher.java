@@ -217,10 +217,6 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     return f.getAbsolutePath();
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   private void setupSystemProxy() {
     if (WindowsUtils.thisIsWindows()) {
       wpm.backupRegistrySettings();

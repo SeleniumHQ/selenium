@@ -77,10 +77,6 @@ public class SafariLauncher implements BrowserLauncher {
     realLauncher.close();
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   public void launchHTMLSuite(String suiteUrl, String baseUrl) {
     realLauncher.launchHTMLSuite(suiteUrl, baseUrl);
   }

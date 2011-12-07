@@ -117,10 +117,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION));
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   public static void main(String[] args) {
     InternetExplorerCustomProxyLauncher l =
         new InternetExplorerCustomProxyLauncher(BrowserOptions.newBrowserOptions(),

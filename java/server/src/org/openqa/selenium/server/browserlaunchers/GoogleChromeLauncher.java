@@ -105,10 +105,6 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
     }
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   private String getUntrustedCertificatesFlag() {
     if (browserConfigurationOptions.is("trustAllSSLCertificates"))
       return "--ignore-certificate-errors";

@@ -53,10 +53,6 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   public void run() {
     try {
       String startURL =

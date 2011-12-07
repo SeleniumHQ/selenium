@@ -142,10 +142,6 @@ public class HTABrowserLauncher implements BrowserLauncher {
     LauncherUtils.recursivelyDeleteDir(dir);
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   public void launchHTMLSuite(String suiteUrl, String browserURL) {
     launch(
         LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl,

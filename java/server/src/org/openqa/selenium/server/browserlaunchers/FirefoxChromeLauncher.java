@@ -297,10 +297,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     waitForFileLockToGoAway(0, 500);
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   /**
    * Firefox knows it's running by using a "parent.lock" file in the profile directory. Wait for
    * this file to go away (and stay gone)

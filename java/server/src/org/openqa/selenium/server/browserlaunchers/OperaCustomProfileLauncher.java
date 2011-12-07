@@ -289,10 +289,6 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     closed = true;
   }
 
-  public Process getProcess() {
-    return null;
-  }
-
   /**
    * Opera knows it's running by using a "parent.lock" file in the profile directory. Wait for this
    * file to go away (and stay gone)
