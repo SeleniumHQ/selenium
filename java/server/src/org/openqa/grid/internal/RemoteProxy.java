@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
@@ -276,13 +277,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
               long inactivity = session.getInactivityTime();
               boolean hasTimedOut = inactivity > timeOut;
               if (hasTimedOut) {
-                log.warning("session " + session + " has TIMED OUT and will be released");
+                log.logp( Level.WARNING, "SessionCleanup", null, "session " + session + " has TIMED OUT and will be released" );
                 ((TimeoutListener) proxy).beforeRelease(session);
                 registry.terminate(session, SessionTerminationReason.TIMEOUT);
               }
 
               if (session.isOrphaned()) {
-                log.warning("session " + session + " has been ORPHANED and will be released");
+                  log.logp( Level.WARNING, "SessionCleanup", null, "session " + session + " has been ORPHANED and will be released");
                 ((TimeoutListener) proxy).beforeRelease(session);
                 registry.terminate(session, SessionTerminationReason.ORPHAN);
               }

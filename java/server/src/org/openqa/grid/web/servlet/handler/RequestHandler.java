@@ -17,6 +17,18 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
+import org.openqa.grid.common.exception.ClientGoneException;
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.SessionTerminationReason;
+import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.grid.internal.utils.ForwardConfiguration;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,17 +43,6 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.SessionTerminationReason;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.listeners.TestSessionListener;
-import org.openqa.grid.internal.utils.ForwardConfiguration;
 
 
 /**
@@ -165,8 +166,11 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
         try {
           forwardRequest(session, this);
         } catch (Throwable t) {
+          SessionTerminationReason reason = t instanceof ClientGoneException ?
+                                         SessionTerminationReason.CLIENT_GONE :
+                                         SessionTerminationReason.FORWARDING_TO_NODE_FAILED;
           log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);
-          registry.terminate(session, SessionTerminationReason.FORWARDINGFAILED);
+          registry.terminate(session, reason);
           throw new GridException("cannot forward the request " + t.getMessage(), t);
         }
 

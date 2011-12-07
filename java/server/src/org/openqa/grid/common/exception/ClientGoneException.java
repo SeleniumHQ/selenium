@@ -1,4 +1,3 @@
-package org.openqa.grid.internal;
 /*
 Copyright 2011 WebDriver committers
 Copyright 2011 Software Freedom Conservancy
@@ -15,14 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+package org.openqa.grid.common.exception;
 
+import java.io.IOException;
 
-public enum SessionTerminationReason {
-  TIMEOUT,
-  ORPHAN,
-  CLIENT_STOPPED_SESSION,
-  CLIENT_GONE,
-  FORWARDING_TO_NODE_FAILED,
-  CREATIONFAILED,
-  PROXY_REREGISTRATION
+public class ClientGoneException extends IOException {
+
+  public ClientGoneException(Throwable cause) {
+    super(cause);
+  }
 }
