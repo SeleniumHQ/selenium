@@ -700,7 +700,8 @@ module Javascript
 
       desc "Run the tests for #{task_name}"
       task "#{task_name}:run" => [task_name] do
-        puts "Testing: #{task_name}"
+        puts "Testing: #{task_name}. " +
+            (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + task_name.gsub(/\/+/, '-') : '')
 
         cp = CrazyFunJava::ClassPath.new(task_name)
         mkdir_p 'build/test_logs'
