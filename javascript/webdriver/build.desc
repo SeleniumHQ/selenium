@@ -16,6 +16,7 @@ js_test(name = "test_firefox",
     "test/*.js",
     "test/*_test.html"
   ],
+  exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
@@ -32,6 +33,7 @@ js_test(name = "test_chrome",
     "test/*.js",
     "test/*_test.html"
   ],
+  exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
@@ -48,6 +50,7 @@ js_test(name = "test_opera",
     "test/*.js",
     "test/*_test.html"
   ],
+  exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "com.opera.core.systems.OperaDriver" },
@@ -65,6 +68,7 @@ js_test(name = "test_ie",
     "test/*.js",
     "test/*_test.html"
   ],
+  exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
   sysproperties = [
     { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },

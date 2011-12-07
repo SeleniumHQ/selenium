@@ -721,8 +721,18 @@ module Javascript
               ant.sysproperty :key => key, :value => value
             end
           end
-          ant.sysproperty :key => 'js.test.dir', :value => File.join(dir, 'test')
+
+          test_dir = File.join(dir, 'test')
+          ant.sysproperty :key => 'js.test.dir', :value => test_dir
           ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
+
+          if !args[:exclude].nil?
+            excludes = File.join(dir, args[:exclude])
+            excludes = FileList[excludes].to_a.collect do |f|
+              f[test_dir.length + 1..-1]
+            end
+            ant.sysproperty :key => 'js.test.excludes', :value => excludes.join(',')
+          end
 
           ant.formatter(:type => 'plain')
           ant.formatter(:type => 'xml')

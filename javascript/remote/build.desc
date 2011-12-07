@@ -19,3 +19,14 @@ export_file(name = "hub",
 
 export_file(name = "style",
   srcs = [ "style.css" ])
+
+js_test(name = "test",
+  srcs = [ "test/**/*_test.html" ],
+  path = "/javascript/remote/test",
+  deps = [
+    "./**/*.js",
+    "//javascript/atoms:deps",
+    "//javascript/webdriver:deps",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ])
