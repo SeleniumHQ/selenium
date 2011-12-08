@@ -93,10 +93,8 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   bot.setWindow(goog.dom.getWindow(doc));
   var mouse = new bot.Mouse();
 
-  var unwrapped = fxdriver.moz.unwrap(element);
-
   var inViewAfterScroll = bot.action.scrollIntoView(
-      unwrapped,
+      element,
       new goog.math.Coordinate(xOffset, yOffset));
   // Check to see if the given positions and offsets are outside of the window
   // Are we about to be dragged out of the window?
@@ -105,10 +103,8 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
   if (!isOption && !inViewAfterScroll) {
     return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'Element cannot be scrolled into view:' + unwrapped);
+        'Element cannot be scrolled into view:' + element);
   }
-
-
 
   var xCompensate = 0;
   var yCompensate = 0;
@@ -123,7 +119,7 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   var coords =
       new goog.math.Coordinate(xOffset + xCompensate, yOffset + yCompensate);
 
-  mouse.move(unwrapped, coords);
+  mouse.move(element, coords);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
