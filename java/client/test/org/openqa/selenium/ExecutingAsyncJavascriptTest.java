@@ -248,6 +248,7 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Test
+  @NeedsLocalEnvironment(reason = "Relies on timing")
   public void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
     String script =
         "var url = arguments[0];" +
