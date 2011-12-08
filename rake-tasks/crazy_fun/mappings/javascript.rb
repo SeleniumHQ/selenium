@@ -9,7 +9,7 @@ class JavascriptMappings
     fun.add_mapping("js_deps", Javascript::AddDependencies.new)
     fun.add_mapping("js_deps", Javascript::WriteOutput.new)
     fun.add_mapping("js_deps", Javascript::CreateHeader.new)
-    
+
     fun.add_mapping("js_binary", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_binary", Javascript::CreateTask.new)
     fun.add_mapping("js_binary", Javascript::CreateTaskShortName.new)
@@ -71,7 +71,7 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_java", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_fragment_java", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_java", Javascript::ConcatenateJava.new)
-    
+
     fun.add_mapping("js_test", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_test", Javascript::CreateTask.new)
     fun.add_mapping("js_test", Javascript::CreateTaskShortName.new)
@@ -98,7 +98,7 @@ module Javascript
 
     def initialize()
       py = "java -jar third_party/py/jython.jar"
-      if (python?) 
+      if (python?)
         py = "python"
       end
       @calcdeps = "#{py} third_party/closure/bin/calcdeps.py " +
@@ -113,10 +113,10 @@ module Javascript
 
       Platform.path_for js
     end
-    
+
     def build_deps(ignore, task, deps)
       prereqs = task.prerequisites
-      prereqs.each do |p| 
+      prereqs.each do |p|
         if (File.exists?(p) and p.to_s =~ /\.js/)
           deps.push p.to_s unless p.to_s == ignore or p.to_s =~ /^build/
         end
@@ -124,7 +124,7 @@ module Javascript
           build_deps ignore, Rake::Task[p], deps
         end
       end
-      
+
       deps
     end
 
@@ -146,7 +146,7 @@ module Javascript
       raise StandardError, ":srcs must be set" if args[:srcs].nil? and args[:deps].nil?
     end
   end
-  
+
   class CheckFragmentPreconditions
     def handle(fun, dir, args)
       CheckPreconditions.new.handle(fun, dir, args)
@@ -185,11 +185,11 @@ module Javascript
 
       desc "Compile and optimize #{name}"
       task task_name => name
-      
+
       Rake::Task[task_name].out = name
     end
   end
-    
+
   class AddDependencies < BaseJs
     def handle(fun, dir, args)
       task = Rake::Task[js_name(dir, args[:name])]
@@ -197,7 +197,7 @@ module Javascript
       add_dependencies(task, dir, args[:srcs])
     end
   end
- 
+
   class AddTestDependencies < BaseJs
     def handle(fun, dir, args) 
       task = Rake::Task[js_name(dir, args[:name])]
@@ -211,10 +211,10 @@ module Javascript
   class WriteOutput < BaseJs
     def handle(fun, dir, args)
       output = js_name(dir, args[:name])
-      
+
       file output do
         t = Rake::Task[task_name(dir, args[:name])]
-        
+
         js_files = build_deps(output, Rake::Task[output], []).uniq
 
         mkdir_p File.dirname(output)
@@ -226,18 +226,18 @@ module Javascript
       end
     end
   end
-  
+
   class Compile < BaseJs
     def handle(fun, dir, args)
       output = js_name(dir, args[:name])
-      
+
       file output do
         puts "Compiling: #{task_name(dir, args[:name])} as #{output}"
-        
+
         t = Rake::Task[task_name(dir, args[:name])]
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
-        
+
         dirs = {} 
         js_files.each do |js|
           dirs[File.dirname(js)] = 1 
