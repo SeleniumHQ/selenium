@@ -29,6 +29,9 @@ RC:
 Automation Atoms:
   * Significantly reworked input device abstractions.
 
+Known Issues:
+  * HTA mode for Selenium RC (*iexplore) leaves a browser window open.
+
 
 v2.14.0
 =======
