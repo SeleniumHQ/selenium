@@ -112,6 +112,7 @@ webdriver.node.HttpClient = function(url) {
 /** @override */
 webdriver.node.HttpClient.prototype.send = function(httpRequest, callback) {
   var data;
+  httpRequest.headers['Content-Length'] = 0;
   if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
      data = JSON.stringify(httpRequest.data);
      httpRequest.headers['Content-Length'] = data.length;
