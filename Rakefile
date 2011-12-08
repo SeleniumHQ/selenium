@@ -604,6 +604,15 @@ task :release_ide  => [:ide] do
   cp 'build/ide/selenium-ide.xpi', "build/ide/selenium-ide-#{ide_version}.xpi"
 end
 
+# TODO: do this properly
+namespace :docs do
+  task :mime_types do
+    sh "svn propset svn:mime-type text/html #{Dir['docs/api/**/*.html'].join ' '}"
+    sh "svn propset svn:mime-type application/javascript #{Dir['docs/api/**/*.js'].join ' '}"
+    sh "svn propset svn:mime-type text/css #{Dir['docs/api/**/*.css'].join ' '}"
+  end
+end
+
 at_exit do
   if File.exist?(".git") && !Platform.windows?
     sh "sh .git-fixfiles"
