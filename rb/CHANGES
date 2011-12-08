@@ -1,3 +1,20 @@
+2.15.0 (2011-12-08)
+===================
+
+* Firefox:
+  * Now supports up to Firefox 11 (for syntesized events)
+  * Implicit waits now change how long we wait for alerts. This
+    functionality will change in 2.16
+  * Fix scrolling issue (#2700)
+* IE:
+  * Fix issue with getWindowHandles() and showModalDialog() (#1828)
+  * Add support for the window sizing and positioning API
+* Make Platform.bitsize use the correct constant from FFI
+* WebDriver internals:
+  * Atoms code contribution from Google
+  * Closure updated
+
+
 2.14.0 (2011-11-29)
 ===================
 
