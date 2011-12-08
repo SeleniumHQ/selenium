@@ -708,7 +708,7 @@ module Javascript
 
         CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
         CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
-                               :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+                               :printsummary => 'on', :haltonerror => halt_on_error?, :haltonfailure => halt_on_failure?) do |ant|
           ant.classpath do |ant_cp|
             cp.all.each do |jar|
               ant_cp.pathelement(:location => jar)

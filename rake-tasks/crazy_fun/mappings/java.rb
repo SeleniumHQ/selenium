@@ -508,14 +508,6 @@ module CrazyFunJava
       ENV['debug'] == 'true'
     end
 
-    def halt_on_error?
-      [nil, 'true'].include? ENV['haltonerror']
-    end
-
-    def halt_on_failure?
-      [nil, 'true'].include? ENV['haltonfailure']
-    end
-
     def only_run_class
       return ENV['onlyrun']
     end

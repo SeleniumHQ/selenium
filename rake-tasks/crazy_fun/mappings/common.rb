@@ -276,4 +276,12 @@ class Tasks
 
     throw "Unmatched dependency type: #{dep.class}"
   end
+
+  def halt_on_error?
+    [nil, 'true'].include? ENV['haltonerror']
+  end
+
+  def halt_on_failure?
+    [nil, 'true'].include? ENV['haltonfailure']
+  end
 end
