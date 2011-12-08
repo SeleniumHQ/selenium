@@ -1,0 +1,56 @@
+# py_test targets implicitly get the following extra targets added:
+# for each browser in browsers:
+#   :name_B to gather the sources of the tests for browser B
+#   :name_B:run to run the tests for browser B
+# Also, if only one browser, B, is listed in browsers:
+#   :name:run is created as a synonym for :name_B:run
+#
+# Currently, pulling in other tests through deps is limited to deps declared in the same build.desc file
+
+py_test(
+  name = "firefox_test",
+  ff_specific_tests = [ "test/selenium/webdriver/firefox/*_tests.py" ],
+  deps = [ ":test_ff" ],
+  resources = [
+    { "//javascript/firefox-driver:webdriver" : "lib/selenium/webdriver/firefox" }
+  ],
+  browsers = [ "ff" ])
+
+py_test(
+  name = "ie_test",
+  deps = [ ":test_ie" ],
+  resources = [
+    {"//cpp:ie_win32_dll" : "lib\\selenium\\webdriver\\ie\\win32\\IEDriver.dll"},
+    {"//cpp:ie_x64_dll" : "lib\\selenium\\webdriver\\ie\\x64\\IEDriver.dll"}
+  ],
+
+  browsers = [ "ie" ])
+
+py_test(
+  name = "remote_firefox_test",
+  remote_firefox_specific_tests = [ "test/selenium/webdriver/remote/*_tests.py" ],
+  deps = [ ":test_remote" ],
+  browsers = [ "remote_firefox" ])
+
+py_env(
+  name = "test_env",
+  packages = [
+    "third_party/py/simplejson-2.2.1.tar.gz",
+    "third_party/py/py-1.4.5.zip",
+    "third_party/py/pytest-2.0.3.zip",
+    " third_party/py/rdflib-3.1.0.tar.gz"
+  ],
+  dest = "build/python")
+
+py_test(
+  name = "test",
+  common_tests = [
+    "test/selenium/webdriver/common/*_tests.py",
+    "test/selenium/webdriver/support/*_tests.py"
+  ],
+  browsers = [
+    "chrome",
+    "ff",
+    "ie",
+    "remote_firefox"
+  ])

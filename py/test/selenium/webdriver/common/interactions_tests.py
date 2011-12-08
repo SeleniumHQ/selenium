@@ -27,6 +27,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+@pytest.mark.skipif('sys.platform == "darwin"')
 class AdvancedUserInteractionTest(unittest.TestCase):
     def performDragAndDropWithMouse(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
@@ -136,6 +137,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         click.perform()
         self.assertEqual("Clicked", toClick.get_attribute('value'))
 
+    @pytest.mark.ignore_chrome
     def testCannotMoveToANullLocator(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
         self._loadPage("javascriptPage")
@@ -169,6 +171,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         resultElement = self.driver.find_element_by_id("result")
         self.assertEqual("roquefort parmigiano cheddar", resultElement.text)
 
+    @pytest.mark.ignore_chrome 
     def testSelectingMultipleItems(self):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
         self._loadPage("selectableItems")
@@ -191,6 +194,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
         actionsBuilder.click(listItems[6]).perform()
         self.assertEqual("#item7", reportingElement.text)
 
+    @pytest.mark.ignore_chrome
     def testMovingMouseBackAndForthPastViewPort(self):
         self._loadPage("veryLargeCanvas")
 

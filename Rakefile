@@ -17,6 +17,7 @@ require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
+require 'rake-tasks/crazy_fun/mappings/python'
 require 'rake-tasks/crazy_fun/mappings/rake'
 require 'rake-tasks/crazy_fun/mappings/ruby'
 require 'rake-tasks/crazy_fun/mappings/visualstudio'
@@ -63,6 +64,7 @@ GccMappings.new.add_all(crazy_fun)
 JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
+PythonMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
 RubyMappings.new.add_all(crazy_fun)
 VisualStudioMappings.new.add_all(crazy_fun)
@@ -215,9 +217,7 @@ task :test_rb => [
   "//rb:chrome-test"
 ].compact
 
-task :test_py => [
-  "test_firefox_py"
-]
+task :test_py => [ "//py:test_firefox:run" ]
 
 task :test_dotnet => [
   "//dotnet/test:firefox:run"
@@ -377,145 +377,6 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
    sh cmd
-end
-
-# Installs the webdriver python bindings using virtualenv for testing.
-task :webdriver_py do
-  if python? then
-    pip_pkg = "pip install third_party/py/simplejson-2.2.1.tar.gz third_party/py/py-1.4.5.zip third_party/py/pytest-2.0.3.zip third_party/py/rdflib-3.1.0.tar.gz"
-    virtualenv = "virtualenv --no-site-packages build/python"
-    pip_install = 'build/python/bin/' + pip_pkg
-    if (windows?) then
-       virtualenv = "virtualenv build\\python"
-       pip_install = "build\\python\\Scripts\\" + pip_pkg
-    end
-
-    sh virtualenv, :verbose => true do |ok, res|
-        if ! ok
-            puts ""
-            puts "PYTHON DEPENDENCY ERROR: Virtualenv not found."
-            puts "Please run '[sudo] pip install virtualenv'"
-            puts ""
-        end
-    end
-
-    sh pip_install, :verbose => true
-  end
-end
-
-task :test_ie_py => :webdriver_py do
-  win = windows?
-  if win != nil then
-    if python? then
-      win32 = "py\\selenium\\webdriver\\ie\\win32\\"
-      x64 = "py\\selenium\\webdriver\\ie\\x64\\"
-      mkdir_p win32 unless File.exists?(win32)
-      mkdir_p x64 unless File.exists?(x64)
-      cp 'cpp\\prebuilt\\Win32\\Release\\IEDriver.dll', win32, :verbose => true
-      cp 'cpp\\prebuilt\\x64\\Release\\IEDriver.dll', x64, :verbose => true
-
-      sh "build\\python\\Scripts\\python setup.py build", :verbose => true
-
-      if File.exists?('build\\python\\Scripts\\py.test.exe')
-          py_test = 'build\\python\\Scripts\\py.test.exe'
-      else
-          py_test = 'py.test.exe'
-      end
-
-      test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/ie').first
-      sh py_test, test_dir, :verbose => true
-      rm_rf win32
-      rm_rf x64
-    end
-  end
-end
-
-task :test_chrome_py => [:webdriver_py, :chrome] do
-  if python? then
-    py_test_path = 'build/python/bin/py.test'
-    py_setup = "build/python/bin/python " + 'setup.py build'
-    if (windows?) then
-      py_test_path = 'build\\python\\Scripts\\py.test.exe'
-      py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
-    end
-
-    sh py_setup , :verbose => true
-
-    if File.exists?(py_test_path)
-        py_test = py_test_path
-    else
-        py_test = 'py.test'
-    end
-    test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/chrome').first
-    sh py_test, test_dir, "-k -ignore_chrome", :verbose => true
-  end
-end
-
-task :test_firefox_py => [:webdriver_py, :firefox, "//javascript/firefox-driver:webdriver"] do
-  if python? then
-    xpi_zip_build = 'build/javascript/firefox-driver/webdriver.xpi'
-    firefox_py_home = "py/selenium/webdriver/firefox/"
-    x86 = firefox_py_home + "x86/"
-    amd64 = firefox_py_home + "amd64/"
-    py_test_path = 'build/python/bin/py.test'
-    py_setup = "build/python/bin/python " + 'setup.py build'
-    if (windows?) then
-      xpi_zip_build = xpi_zip_build.gsub(/\//, "\\")
-      firefox_py_home = firefox_py_home .gsub(/\//, "\\")
-      py_test_path = 'build\\python\\Scripts\\py.test.exe'
-      py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
-      x86 = x86.gsub(/\//,"\\")
-      amd64 = amd64.gsub(/\//,"\\")
-    end
-
-    mkdir_p x86 unless File.exists?(x86)
-    mkdir_p amd64 unless File.exists?(amd64)
-    
-    cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
-    cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
-
-    cp xpi_zip_build , firefox_py_home, :verbose => true
-
-    sh py_setup , :verbose => true
-
-
-    if File.exists?(py_test_path)
-        py_test = py_test_path
-    else
-        py_test = 'py.test'
-    end
-    
-
-    test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/firefox').first
-    sh py_test, test_dir, :verbose => true
-    webdriver_zip = firefox_py_home + 'webdriver.xpi'
-    rm webdriver_zip , :verbose => true
-    rm_rf x86 , :verbose => true
-    rm_rf amd64 , :verbose => true
-  end
-end
-
-task :test_remote_py => [:webdriver_py, :remote_client, :'selenium-server-standalone',
-                         '//java/server/test/org/openqa/selenium/remote/server/auth:server:uber'] do
-  if python? then
-    py_setup = "build/python/bin/python " + 'setup.py build'
-    py_test_path = 'build/python/bin/py.test'
-
-    if (windows?) then
-      py_test_path = 'build\\python\\Scripts\\py.test.exe'
-      py_setup = 'build\\python\\Scripts\\python ' + 'setup.py build'
-    end
-
-    sh py_setup , :verbose => true
-
-    if File.exists?(py_test_path)
-        py_test = py_test_path
-    else
-        py_test = 'py.test'
-    end
-    test_dir = Dir.glob('build/lib**/selenium/test/selenium/webdriver/remote').first
-    sh py_test, test_dir, :verbose => true
-  end
 end
 
 task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :chrome] do
@@ -748,3 +609,4 @@ at_exit do
     sh "sh .git-fixfiles"
   end
 end
+

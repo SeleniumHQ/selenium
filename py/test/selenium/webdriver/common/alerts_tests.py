@@ -12,6 +12,8 @@
 #WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #See the License for the specific language governing permissions and
 #limitations under the License.
+
+import pytest
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import NoAlertPresentException
@@ -43,7 +45,8 @@ class AlertsTest(unittest.TestCase):
 
         #  If we can perform any action, we're good to go
         self.assertEqual("Testing Alerts", self.driver.title)
-    
+
+    @pytest.mark.ignore_chrome
     def testShouldAllowUsersToDismissAnAlertManually(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
@@ -80,6 +83,7 @@ class AlertsTest(unittest.TestCase):
         result = self.driver.find_element(by=By.ID, value="text").text
         self.assertEqual("cheese", result)
 
+    @pytest.mark.ignore_chrome
     def testSettingTheValueOfAnAlertThrows(self):
         self._loadPage("alerts")
         self.driver.find_element(By.ID,"alert").click();
@@ -93,6 +97,7 @@ class AlertsTest(unittest.TestCase):
         finally:
             alert.accept()
 
+    @pytest.mark.ignore_chrome
     def testAlertShouldNotAllowAdditionalCommandsIfDimissed(self):
         self._loadPage("alerts");
         self.driver.find_element(By.ID, "alert").click()
