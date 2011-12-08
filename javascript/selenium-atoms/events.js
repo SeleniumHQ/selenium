@@ -144,7 +144,11 @@ core.events.replaceText_ = function(element, value) {
   }
   // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
   try {
-    bot.events.fire(element, bot.events.EventType.CHANGE);
+    var elem = element;
+    if (Components && Components['classes'] && XPCNativeWrapper) {
+      elem = new XPCNativeWrapper(element);
+    }
+    bot.events.fire(elem, bot.events.EventType.CHANGE);
   } catch (e) {
   }
 };
