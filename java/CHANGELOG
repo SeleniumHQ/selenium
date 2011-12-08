@@ -4,7 +4,7 @@ Project:
   * Code donation from Google.
 
 WebDriver: 
-  * Now supports up to Firefox 11.
+  * Now supports up to and including Firefox 11.
   * Changed order of FirefoxProfile initialization attempts on a
     remote host: 1) try to load from capabilities, 2) try to load
     locally if webdriver.firefox.profile is specified, 3) create an
