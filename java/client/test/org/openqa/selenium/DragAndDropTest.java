@@ -100,12 +100,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @NoDriverAfterTest
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
-    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS) && TestUtilities.isFirefox(driver)) {
-      System.err.println("Test fails - let's not run it for now");
-      return;
-    }
     driver.get(pages.dragAndDropPage);
 
     JavascriptExecutor js = (JavascriptExecutor) driver;

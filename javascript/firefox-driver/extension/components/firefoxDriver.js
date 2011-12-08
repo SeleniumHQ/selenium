@@ -22,9 +22,6 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   this.enableNativeEvents = enableNativeEvents;
   this.window = win;
 
-  this.currentX = 0;
-  this.currentY = 0;
-
   // We do this here to work around an issue in the import function:
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   var atoms = {};
@@ -991,7 +988,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     return;
   }
   
-  var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer, isMousePressed) {
+  var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer) {
     var elementForNode = null;
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
@@ -1034,8 +1031,11 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     var storeX = to.x;
     var storeY = to.y;
-    if (isMousePressed) {
-      fxdriver.Logger.dumpn("Mouse button is pressed: using original coordinates.");
+
+    var isMouseButtonPressed = respond.session.isMousePressed();
+    if (isMouseButtonPressed) {
+      fxdriver.Logger.dumpn("Mouse button is pressed: using original coordinates: " +
+        toX + ", " + toY);
       to.x = toX;
       to.y = toY;
     }
@@ -1058,6 +1058,9 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, jsTimer);
 
       respond.session.setMousePosition(storeX, storeY);
+      if (isMouseButtonPressed) {
+        respond.session.setMouseViewportOffset(toX, toY);
+      }
     } else {
       throw generateErrorForNativeEvents(nativeEventsEnabled, events, node);
     }
@@ -1065,8 +1068,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   };
 
   var coords = fxdriver.events.buildCoordinates(parameters, doc);
-  var isMouseButtonPressed = respond.session.isMousePressed();
-  mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer, isMouseButtonPressed);
+  mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer);
 
   respond.send();
 };
@@ -1099,6 +1101,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
 
     Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
     respond.session.setMousePressed(true);
+    respond.session.setMouseViewportOffset(currentPosition.x, currentPosition.y);
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }
@@ -1123,10 +1126,19 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
 
   if (this.enableNativeEvents && events && node) {
     var currentPosition = respond.session.getMousePosition();
+    var upX = currentPosition.x;
+    var upY = currentPosition.y;
+    var isMouseButtonPressed = respond.session.isMousePressed();
+    if (isMouseButtonPressed) {
+      upX = currentPosition.viewPortXOffset;
+      upY = currentPosition.viewPortYOffset;
+      fxdriver.Logger.dumpn("Button pressed. Using coordiantes with viewport offset: "
+          + upX + ", " + upY);
+    }
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
-    events.mouseRelease(node, currentPosition.x + browserOffset.x,
-        currentPosition.y + browserOffset.y, 1);
+    events.mouseRelease(node, upX + browserOffset.x,
+        upY + browserOffset.y, 1);
 
     var dummyIndicator = {
       wasUnloaded: false
@@ -1134,6 +1146,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
 
     Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
     respond.session.setMousePressed(false);
+    respond.session.setMouseViewportOffset(0, 0);
   } else {
     throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }

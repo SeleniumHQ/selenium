@@ -107,6 +107,10 @@ wdSession.prototype.implicitWait_ = 0;
 wdSession.prototype.mousePosition_ = {
   x: 0,
   y: 0,
+  // When the mouse button is pressed (pressed == true), use these
+  // coordinates rather than x,y
+  viewPortXOffset: 0,
+  viewPortYOffset: 0,
   initialized: false,
   pressed: false
 };
@@ -284,6 +288,11 @@ wdSession.prototype.isMousePressed = function() {
 wdSession.prototype.setMousePressed = function(isPressed) {
   this.mousePosition_.pressed = isPressed;
 };
+
+wdSession.prototype.setMouseViewportOffset = function(x, y) {
+  this.mousePosition_.viewPortXOffset = x;
+  this.mousePosition_.viewPortYOffset = y;
+}
 
 ///////////////////////////////////////////////////////////////////
 //
