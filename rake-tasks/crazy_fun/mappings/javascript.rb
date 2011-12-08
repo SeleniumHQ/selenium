@@ -199,7 +199,7 @@ module Javascript
   end
 
   class AddTestDependencies < BaseJs
-    def handle(fun, dir, args) 
+    def handle(fun, dir, args)
       task = Rake::Task[js_name(dir, args[:name])]
       add_dependencies(task, dir, args[:deps])
       add_dependencies(task, dir, args[:srcs])
@@ -238,9 +238,9 @@ module Javascript
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
 
-        dirs = {} 
+        dirs = {}
         js_files.each do |js|
-          dirs[File.dirname(js)] = 1 
+          dirs[File.dirname(js)] = 1
         end
         dirs = dirs.keys
 
@@ -276,7 +276,7 @@ module Javascript
 
         execute cmd
       end
-    end    
+    end
   end
 
   class BaseCompileFragment < BaseJs
