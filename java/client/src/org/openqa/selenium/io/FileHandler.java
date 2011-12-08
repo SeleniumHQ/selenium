@@ -166,7 +166,7 @@ public class FileHandler {
     return false;
   }
 
-  private static Boolean canExecute(File file) {
+  public static Boolean canExecute(File file) {
     if (JDK6_CANEXECUTE != null) {
       try {
         return (Boolean) JDK6_CANEXECUTE.invoke(file);
