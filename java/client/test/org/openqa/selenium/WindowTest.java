@@ -24,12 +24,11 @@ import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-@Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+@Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE},
         reason = "Not yet implemented.")
 public class WindowTest extends AbstractDriverTestCase {
 
