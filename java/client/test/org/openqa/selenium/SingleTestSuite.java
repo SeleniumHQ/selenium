@@ -37,7 +37,7 @@ public class SingleTestSuite extends TestCase {
   private static final String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private static final String HTML_UNIT_JS =
       "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
-  private static final String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
+  private static final String IE = "org.openqa.selenium.ie.InternetExplorerDriverTestSuite$TestInternetExplorerDriver";
   private static final String IPHONE = "org.openqa.selenium.iphone.IPhoneDriver";
 
   private static final String OPERA = "com.opera.core.systems.OperaDriver";
