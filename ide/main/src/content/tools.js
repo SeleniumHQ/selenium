@@ -191,6 +191,9 @@ var ExtensionsLoader = {
           if (!path.match(/^(file|chrome):/)) {
             path = FileUtils.fileURI(FileUtils.getFile(path));
           }
+          // force a reload of the extensions by adding the timestamp as parameter
+          var timestamp = new Date().getTime();
+          path = path + '?' + timestamp;
           urls.push(path);
         });
     }
