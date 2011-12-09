@@ -19,6 +19,7 @@ limitations under the License.
   <title>locators_test.html</title>
   <script src="test_bootstrap.js"></script>
   <script>
+    goog.require('goog.json');
     goog.require('goog.testing.jsunit');
     goog.require('webdriver.Locator');
     goog.require('webdriver.Locator.Strategy');
@@ -80,7 +81,8 @@ limitations under the License.
       function assertThrows(locator) {
         try {
           webdriver.Locator.checkLocator(locator);
-          fail('Should have thrown for locator: ' + JSON.stringify(locator));
+          fail('Should have thrown for locator: ' +
+              goog.json.serialize(locator));
         } catch (expected) {
           assertContains(
               'Compound class names are not allowed for searches: ',

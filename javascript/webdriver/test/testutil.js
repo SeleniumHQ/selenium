@@ -15,6 +15,7 @@
 goog.provide('webdriver.test.testutil');
 
 goog.require('goog.array');
+goog.require('goog.json');
 goog.require('goog.testing.MockClock');
 
 
@@ -179,7 +180,7 @@ function callbackHelper(opt_fn, opt_expectError) {
     if (error) throw error;
     var message = 'Callback called';
     if (opt_message) message += ': ' + opt_message;
-    if (args != null) message += '; args: ' + JSON.stringify(args);
+    if (args != null) message += '; args: ' + goog.json.serialize(args);
     assertFalse(message, callback.wasCalled());
   };
 
@@ -204,11 +205,11 @@ function callbackPair(opt_callback, opt_errback) {
     var message = [];
     if (pair.callback.wasCalled()) {
       message.push('Did not expect callback to be called; args: ' +
-          JSON.stringify(pair.callback.getArgs()));
+          goog.json.serialize(pair.callback.getArgs()));
     }
     if (pair.errback.wasCalled()) {
       message.push('Did not expect errback to be called; args: ' +
-          JSON.stringify(pair.errback.getArgs()));
+          goog.json.serialize(pair.errback.getArgs()));
     }
     if (message.length) {
       if (opt_message) goog.array.insertAt(message, opt_message);
@@ -243,7 +244,7 @@ function callbackPair(opt_callback, opt_errback) {
     if (unexpectedFn.wasCalled()) {
       message.push('Did not expect ' + unexpectedName +
           ' to be called; args: ' +
-          JSON.stringify(unexpectedFn.getArgs()));
+          goog.json.serialize(unexpectedFn.getArgs()));
     }
 
     if (message.length > 1) {
@@ -255,15 +256,15 @@ function callbackPair(opt_callback, opt_errback) {
 
 function _assertObjectEquals(expected, actual) {
   assertObjectEquals(
-      'Expected: ' + JSON.stringify(expected) + '\n' +
-      'Actual:   ' + JSON.stringify(actual),
+      'Expected: ' + goog.json.serialize(expected) + '\n' +
+      'Actual:   ' + goog.json.serialize(actual),
       expected, actual);
 }
 
 
 function _assertArrayEquals(expected, actual) {
   assertArrayEquals(
-      'Expected: ' + JSON.stringify(expected) + '\n' +
-      'Actual:   ' + JSON.stringify(actual),
+      'Expected: ' + goog.json.serialize(expected) + '\n' +
+      'Actual:   ' + goog.json.serialize(actual),
       expected, actual);
 }

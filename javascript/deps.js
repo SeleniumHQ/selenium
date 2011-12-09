@@ -146,7 +146,7 @@ goog.addDependency("../../../javascript/webdriver/builder.js", ['webdriver.Build
 goog.addDependency("../../../javascript/webdriver/command.js", ['webdriver.Command', 'webdriver.CommandExecutor', 'webdriver.CommandName', 'webdriver.CommandResponse'], []);
 goog.addDependency("../../../javascript/webdriver/promise.js", ['webdriver.promise', 'webdriver.promise.Application', 'webdriver.promise.Application.Frame_', 'webdriver.promise.Application.Task_', 'webdriver.promise.Deferred', 'webdriver.promise.Promise'], ['goog.array', 'goog.object', 'webdriver.EventEmitter']);
 goog.addDependency("../../../javascript/webdriver/webdriver.js", ['webdriver.Key', 'webdriver.WebDriver', 'webdriver.WebDriver.Navigation', 'webdriver.WebDriver.Options', 'webdriver.WebDriver.TargetLocator', 'webdriver.WebDriver.Timeouts', 'webdriver.WebElement'], ['bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.object', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.Locator', 'webdriver.Session', 'webdriver.error', 'webdriver.promise', 'webdriver.promise.Application', 'webdriver.promise.Deferred', 'webdriver.promise.Promise']);
-goog.addDependency("../../../javascript/webdriver/process.js", ['webdriver.process'], ['goog.Uri', 'goog.array']);
+goog.addDependency("../../../javascript/webdriver/process.js", ['webdriver.process'], ['goog.Uri', 'goog.array', 'goog.json']);
 goog.addDependency("../../../javascript/webdriver/locators.js", ['webdriver.Locator', 'webdriver.Locator.Strategy'], ['goog.object', 'goog.string']);
 goog.addDependency("../../../javascript/webdriver/testing/testcase.js", ['webdriver.testing.TestCase'], ['goog.array', 'goog.testing.TestCase', 'webdriver.promise.Application', 'webdriver.testing.asserts']);
 goog.addDependency("../../../javascript/webdriver/testing/asserts.js", ['webdriver.testing.asserts', 'webdriver.testing.asserts.Matcher'], ['goog.array', 'webdriver.promise']);
@@ -155,7 +155,7 @@ goog.addDependency("../../../javascript/webdriver/testing/jsunit.js", ['webdrive
 goog.addDependency("../../../javascript/webdriver/node/demo.js", [], []);
 goog.addDependency("../../../javascript/webdriver/node/optparse.js", [], []);
 goog.addDependency("../../../javascript/webdriver/node/node.js", ['webdriver.node', 'webdriver.node.HttpClient'], ['webdriver.http.Response', 'webdriver.process']);
-goog.addDependency("../../../javascript/webdriver/test/testutil.js", ['webdriver.test.testutil'], ['goog.array', 'goog.testing.MockClock']);
+goog.addDependency("../../../javascript/webdriver/test/testutil.js", ['webdriver.test.testutil'], ['goog.array', 'goog.json', 'goog.testing.MockClock']);
 goog.addDependency("../../../javascript/webdriver/test/test_bootstrap.js", [], []);
 goog.addDependency("../../../javascript/webdriver/atoms/element.js", ['webdriver.atoms.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/webdriver/atoms/storage/session_storage.js", ['webdriver.atoms.storage.session'], ['bot.storage']);
@@ -170,9 +170,9 @@ goog.addDependency("../../../javascript/webdriver/atoms/inject/local_storage.js"
 goog.addDependency("../../../javascript/webdriver/atoms/inject/frame.js", ['webdriver.atoms.inject.frame'], ['bot.frame', 'bot.inject', 'bot.inject.cache']);
 goog.addDependency("../../../javascript/webdriver/test_e2e/testutil.js", ['webdriver.test_e2e.testutil'], []);
 goog.addDependency("../../../javascript/webdriver/test_e2e/test_bootstrap.js", [], []);
-goog.addDependency("../../../javascript/webdriver/http/xhrclient.js", ['webdriver.http.XhrClient'], ['webdriver.http.Response']);
-goog.addDependency("../../../javascript/webdriver/http/http.js", ['webdriver.http.Client', 'webdriver.http.Executor', 'webdriver.http.Request', 'webdriver.http.Response'], ['bot.ErrorCode', 'webdriver.CommandName', 'webdriver.promise.Deferred']);
-goog.addDependency("../../../javascript/webdriver/http/jsonpclient.js", ['webdriver.http.JsonpClient'], ['goog.dom', 'webdriver.http.Response']);
+goog.addDependency("../../../javascript/webdriver/http/xhrclient.js", ['webdriver.http.XhrClient'], ['goog.json', 'webdriver.http.Response']);
+goog.addDependency("../../../javascript/webdriver/http/http.js", ['webdriver.http.Client', 'webdriver.http.Executor', 'webdriver.http.Request', 'webdriver.http.Response'], ['bot.ErrorCode', 'goog.json', 'webdriver.CommandName', 'webdriver.promise.Deferred']);
+goog.addDependency("../../../javascript/webdriver/http/jsonpclient.js", ['webdriver.http.JsonpClient'], ['goog.dom', 'goog.json', 'webdriver.http.Response']);
 goog.addDependency("../../../javascript/iphone-driver/script.js", ['webdriver.iphone'], ['bot.inject']);
 goog.addDependency("../../../javascript/chrome-driver/atoms.js", ['webdriver.chrome'], ['goog.dom', 'goog.math.Coordinate', 'goog.math.Rect', 'goog.math.Size', 'goog.style']);
 goog.addDependency("../../../javascript/remote/client.js", [], ['remote.ui.Client']);

@@ -645,8 +645,7 @@ webdriver.WebDriver.prototype.findDomElement_ = function(element) {
   element[id] = id;
 
   function cleanUp() {
-    delete doc[id];
-    delete element[id];
+    delete store[id];
   }
 
   function lookupElement(id) {

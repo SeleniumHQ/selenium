@@ -19,6 +19,7 @@ limitations under the License.
   <title>xhrclient_test.html</title>
   <script src="../test_bootstrap.js"></script>
   <script>
+    goog.require('goog.json');
     goog.require('goog.testing.MockControl');
     goog.require('goog.testing.PropertyReplacer');
     goog.require('goog.testing.jsunit');
@@ -65,7 +66,7 @@ limitations under the License.
     for (var header in REQUEST.headers) {
       mockXhr.setRequestHeader(header, REQUEST.headers[header]);
     }
-    return mockXhr.send(JSON.stringify(REQUEST.data));
+    return mockXhr.send(goog.json.serialize(REQUEST.data));
   }
 
   function testDetectsWhenCorsIsAvailable() {

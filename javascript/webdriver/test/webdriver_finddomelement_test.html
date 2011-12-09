@@ -23,6 +23,8 @@ limitations under the License.
   goog.require('bot.inject');
   goog.require('goog.array');
   goog.require('goog.dom');
+  goog.require('goog.userAgent');
+  goog.require('goog.userAgent.product');
   goog.require('webdriver.Command');
   goog.require('webdriver.CommandExecutor');
   goog.require('webdriver.CommandName');
@@ -75,15 +77,22 @@ limitations under the License.
     document.body.appendChild(iframeElement);
 
     iframeDoc = goog.dom.getFrameContentDocument(iframeElement);
-
-    daffyDuckElement = iframeDoc.createElement('div');
-    daffyDuckElement.innerHTML = 'duck';
-    iframeDoc.body.appendChild(daffyDuckElement);
+    iframeDoc.open();
+    iframeDoc.write('<body><div>duck</div></body>');
+    iframeDoc.close();
   }
 
   function setUp() {
-    delete document[bot.inject.cache.CACHE_KEY_];
-    delete iframeDoc[bot.inject.cache.CACHE_KEY_];
+    // In IE, we need to initialize the JScript engine in our frame before
+    // continuing with the test.
+    if (goog.userAgent.IE) {
+      goog.dom.getFrameContentWindow(iframeElement).
+          execScript('1', 'JavaScript');
+    }
+    daffyDuckElement = iframeDoc.body.firstChild;
+
+    document[bot.inject.cache.CACHE_KEY_] = null;
+    iframeDoc[bot.inject.cache.CACHE_KEY_] = null;
 
     bot.setWindow(window);
   }
@@ -119,6 +128,12 @@ limitations under the License.
   }
 
   function testCanFindFramedElementsWhenFrameIsSelected() {
+    // Test fails in Safari4; bot.inject.executeScript does not properly
+    // recompile the script for the selected window.
+    if (goog.userAgent.product.SAFARI &&
+        goog.userAgent.product.isVersion(4)) {
+      return;
+    }
     bot.setWindow(goog.dom.getFrameContentWindow(iframeElement));
     var webElement = DRIVER.findElement(daffyDuckElement);
     assertThat(webElement.getInnerHtml(), equals('duck'));

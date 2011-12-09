@@ -487,9 +487,7 @@ task :calcdeps => "javascript/deps.js"
 
 task :test_webdriverjs => [
   "//javascript/webdriver:test:run",
-  "//javascript/webdriver:test_chrome:run",
-  "//javascript/webdriver:test_firefox_e2e:run",
-  "//javascript/webdriver:test_chrome_e2e:run"
+  "//javascript/webdriver:test_e2e:run"
 ]
 
 # TODO(jleyba): Integrate cleanly with build.desc files.

@@ -16,6 +16,7 @@
 
 goog.provide('webdriver.http.XhrClient');
 
+goog.require('goog.json');
 goog.require('webdriver.http.Response');
 
 
@@ -91,7 +92,7 @@ webdriver.http.XhrClient.prototype.send = function(request, callback) {
       xhr.setRequestHeader(header, request.headers[header]);
     }
 
-    xhr.send(JSON.stringify(request.data));
+    xhr.send(goog.json.serialize(request.data));
   } catch (ex) {
     callback(ex);
   }

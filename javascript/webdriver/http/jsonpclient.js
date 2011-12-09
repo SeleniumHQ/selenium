@@ -21,6 +21,7 @@
 goog.provide('webdriver.http.JsonpClient');
 
 goog.require('goog.dom');
+goog.require('goog.json');
 goog.require('webdriver.http.Response');
 
 
@@ -96,7 +97,7 @@ webdriver.http.JsonpClient.prototype.send = function(request, callback) {
           this.url_,
           '?method=', request.method,
           '&path=', encodeURIComponent(request.path),
-          '&body=', encodeURIComponent(JSON.stringify(request.data)),
+          '&body=', encodeURIComponent(goog.json.serialize(request.data)),
           '&callback=', callbackName,
           '&cacheBuster=', goog.now()
       ].join('')
