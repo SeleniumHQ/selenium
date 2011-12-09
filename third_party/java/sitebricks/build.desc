@@ -1,0 +1,10 @@
+
+java_library(name = "sitebricks",
+  deps = [
+    "*.jar",
+    "//third_party/java/commons-io",
+    "//third_party/java/commons-lang",
+    "//third_party/java/guice:all",
+    "//third_party/java/jackson",
+    "//third_party/java/mvel",
+  ])

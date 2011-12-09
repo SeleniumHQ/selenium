@@ -1,0 +1,3 @@
+
+java_library(name = "aopalliance",
+  deps = [ "aopalliance-1.0.jar" ])

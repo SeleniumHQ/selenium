@@ -1,0 +1,3 @@
+
+java_library(name = "mvel",
+  deps = [ "*.jar" ])
