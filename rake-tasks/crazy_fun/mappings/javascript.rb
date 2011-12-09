@@ -772,43 +772,57 @@ module Javascript
     def handle(fun, dir, args)
       task_name = task_name(dir, args[:name])
 
-      desc "Run the tests for #{task_name}"
-      task "#{task_name}:run" => [task_name] do
-        puts "Testing: #{task_name}"
+      browsers = BROWSERS.find_all { |k,v| v.has_key?(:browser_name) && [nil, true].include?(v[:available]) }
 
-        cp = CrazyFunJava::ClassPath.new(task_name)
-        mkdir_p 'build/test_logs'
+      subtasks = []
 
-        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
-        CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
-                               :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
-          ant.classpath do |ant_cp|
-            cp.all.each do |jar|
-              ant_cp.pathelement(:location => jar)
+      browsers.each do |browser, all_browser_data|
+        browser_task_name = "#{task_name}_#{browser}"
+
+        desc "Run the tests for #{browser_task_name}"
+        task "#{browser_task_name}:run" => [task_name] do
+          puts "Testing: #{browser_task_name} " +
+              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/\/+/, '-') : '')
+
+          cp = CrazyFunJava::ClassPath.new(task_name)
+          mkdir_p 'build/test_logs'
+
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
+          CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
+                                 :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
+            ant.classpath do |ant_cp|
+              cp.all.each do |jar|
+                ant_cp.pathelement(:location => jar)
+              end
             end
-          end
 
-          sysprops = args[:sysproperties] || []
+            sysprops = args[:sysproperties] || []
 
-          sysprops.each do |map|
-            map.each do |key, value|
-              ant.sysproperty :key => key, :value => value
+            sysprops.each do |map|
+              map.each do |key, value|
+                ant.sysproperty :key => key, :value => value
+              end
             end
+
+            test_dir = args[:test_dir].nil? ? 'test' : args[:test_dir]
+            ant.sysproperty :key => 'js.test.dir', :value => File.join(dir, test_dir)
+            ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
+            ant.sysproperty :key => 'selenium.browser', :value => all_browser_data[:browser_name]
+
+            ant.formatter(:type => 'plain')
+            ant.formatter(:type => 'xml')
+
+            ant.test(:name => "org.openqa.selenium.javascript.WebDriverJsTestSuite",
+                     :outfile => "TEST-" + task_name.gsub(/\/+/, "-"),
+                     :todir => 'build/test_logs')
           end
-
-          test_dir = args[:test_dir].nil? ? 'test' : args[:test_dir]
-          ant.sysproperty :key => 'js.test.dir', :value => File.join(dir, test_dir)
-          ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
-
-          ant.formatter(:type => 'plain')
-          ant.formatter(:type => 'xml')
-
-          ant.test(:name => "org.openqa.selenium.javascript.WebDriverJsTestSuite",
-                   :outfile => "TEST-" + task_name.gsub(/\/+/, "-"),
-                   :todir => 'build/test_logs')
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
         end
-        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+
+        subtasks << "#{browser_task_name}:run" unless browser == "opera" && !opera?
       end
+
+      task "#{task_name}:run" => subtasks
     end
   end
 end

@@ -15,6 +15,7 @@ BROWSERS = {
       :class => "org.openqa.selenium.firefox.SynthesizedFirefoxDriver",
       :deps => [ "//java/client/test/org/openqa/selenium/firefox:drivers" ]
     },
+    :browser_name => "firefox",
   },
   "ie" => {
     :python => {
@@ -31,6 +32,7 @@ BROWSERS = {
       :class => "org.openqa.selenium.ie.InternetExplorerDriver",
       :deps => [ "//java/client/src/org/openqa/selenium/ie:ie" ]
     },
+    :browser_name => "internet explorer",
     :available => windows?
   },
   "chrome" => {
@@ -44,6 +46,7 @@ BROWSERS = {
       :class => "org.openqa.selenium.chrome.ChromeDriver",
       :deps => [ "//java/client/src/org/openqa/selenium/chrome:chrome" ]
     },
+    :browser_name => "chrome",
     :available => chrome?
   },
   "opera" => {
@@ -51,6 +54,7 @@ BROWSERS = {
       :class => "com.opera.core.systems.OperaDriver",
       :deps => [ "//third_party/java/opera-driver" ]
     },
+    :browser_name => "opera",
     :available => opera?
   },
   "remote_firefox" => {

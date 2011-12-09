@@ -24,66 +24,13 @@ js_test(name = "test",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
 
-# TODO(jleyba): Make a webdriverjs_test_suite that farms out to multiple browsers.
-webdriverjs_test(name = "test_firefox_e2e",
+webdriverjs_test(name = "test_e2e",
   srcs = [
     "test_e2e/*.js",
     "test_e2e/*_test.html"
   ],
   test_dir = "test_e2e",
   path = "/javascript/webdriver/test_e2e",
-  sysproperties = [
-    { "selenium.browser" : "firefox" },
-  ],
-  deps = [
-    "//javascript/webdriver:deps",
-    "//java/client/test/org/openqa/selenium/javascript:jsapi",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])
-
-webdriverjs_test(name = "test_chrome_e2e",
-  srcs = [
-    "test_e2e/*.js",
-    "test_e2e/*_test.html"
-  ],
-  test_dir = "test_e2e",
-  path = "/javascript/webdriver/test_e2e",
-  sysproperties = [
-    { "selenium.browser" : "chrome" },
-  ],
-  deps = [
-    "//javascript/webdriver:deps",
-    "//java/client/test/org/openqa/selenium/javascript:jsapi",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])
-
-webdriverjs_test(name = "test_opera_e2e",
-  srcs = [
-    "test_e2e/*.js",
-    "test_e2e/*_test.html"
-  ],
-  test_dir = "test_e2e",
-  path = "/javascript/webdriver/test_e2e",
-  sysproperties = [
-    { "selenium.browser" : "opera" },
-  ],
-  deps = [
-    "//javascript/webdriver:deps",
-    "//java/client/test/org/openqa/selenium/javascript:jsapi",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    "//third_party/java/opera-driver",
-  ])
-
-webdriverjs_test(name = "test_ie_e2e",
-  srcs = [
-    "test_e2e/*.js",
-    "test_e2e/*_test.html"
-  ],
-  test_dir = "test_e2e",
-  path = "/javascript/webdriver/test_e2e",
-  sysproperties = [
-    { "selenium.browser" : "internet explorer" },
-  ],
   deps = [
     "//javascript/webdriver:deps",
     "//java/client/test/org/openqa/selenium/javascript:jsapi",
