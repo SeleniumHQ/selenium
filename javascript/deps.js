@@ -157,7 +157,6 @@ goog.addDependency("../../../javascript/webdriver/node/optparse.js", [], []);
 goog.addDependency("../../../javascript/webdriver/node/node.js", ['webdriver.node', 'webdriver.node.HttpClient'], ['webdriver.http.Response', 'webdriver.process']);
 goog.addDependency("../../../javascript/webdriver/test/testutil.js", ['webdriver.test.testutil'], ['goog.array', 'goog.testing.MockClock']);
 goog.addDependency("../../../javascript/webdriver/test/test_bootstrap.js", [], []);
-goog.addDependency("../../../javascript/webdriver/test/e2e/testutil.js", ['webdriver.test.e2e.testutil'], []);
 goog.addDependency("../../../javascript/webdriver/atoms/element.js", ['webdriver.atoms.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/webdriver/atoms/storage/session_storage.js", ['webdriver.atoms.storage.session'], ['bot.storage']);
 goog.addDependency("../../../javascript/webdriver/atoms/storage/local_storage.js", ['webdriver.atoms.storage.local'], ['bot.storage']);
@@ -169,6 +168,8 @@ goog.addDependency("../../../javascript/webdriver/atoms/inject/execute_script.js
 goog.addDependency("../../../javascript/webdriver/atoms/inject/find_element.js", ['webdriver.atoms.inject.locators'], ['bot.inject', 'bot.locators']);
 goog.addDependency("../../../javascript/webdriver/atoms/inject/local_storage.js", ['webdriver.atoms.inject.storage.local'], ['bot.inject', 'webdriver.atoms.storage.local']);
 goog.addDependency("../../../javascript/webdriver/atoms/inject/frame.js", ['webdriver.atoms.inject.frame'], ['bot.frame', 'bot.inject', 'bot.inject.cache']);
+goog.addDependency("../../../javascript/webdriver/test_e2e/testutil.js", ['webdriver.test_e2e.testutil'], []);
+goog.addDependency("../../../javascript/webdriver/test_e2e/test_bootstrap.js", [], []);
 goog.addDependency("../../../javascript/webdriver/http/xhrclient.js", ['webdriver.http.XhrClient'], ['webdriver.http.Response']);
 goog.addDependency("../../../javascript/webdriver/http/http.js", ['webdriver.http.Client', 'webdriver.http.Executor', 'webdriver.http.Request', 'webdriver.http.Response'], ['bot.ErrorCode', 'webdriver.CommandName', 'webdriver.promise.Deferred']);
 goog.addDependency("../../../javascript/webdriver/http/jsonpclient.js", ['webdriver.http.JsonpClient'], ['goog.dom', 'webdriver.http.Response']);

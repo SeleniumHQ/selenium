@@ -180,7 +180,10 @@ public class WebDriverJsTestSuite {
 
     @Override
     protected void tearDown() {
-      DriverTestDecorator.getDriver().quit();
+      WebDriver driver = DriverTestDecorator.getDriver();
+      if (driver != null) {
+        driver.quit();
+      }
     }
   }
 

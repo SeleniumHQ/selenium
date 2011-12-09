@@ -16,7 +16,6 @@ js_test(name = "test",
     "test/**/*.js",
     "test/**/*_test.html",
   ],
-  exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
   deps = [
     ":deps",
@@ -28,11 +27,11 @@ js_test(name = "test",
 # TODO(jleyba): Make a webdriverjs_test_suite that farms out to multiple browsers.
 webdriverjs_test(name = "test_firefox_e2e",
   srcs = [
-    "test/e2e/*.js",
-    "test/e2e/*_test.html"
+    "test_e2e/*.js",
+    "test_e2e/*_test.html"
   ],
-  test_dir = "test/e2e",
-  path = "/javascript/webdriver/test/e2e",
+  test_dir = "test_e2e",
+  path = "/javascript/webdriver/test_e2e",
   sysproperties = [
     { "selenium.browser" : "firefox" },
   ],
@@ -44,11 +43,11 @@ webdriverjs_test(name = "test_firefox_e2e",
 
 webdriverjs_test(name = "test_chrome_e2e",
   srcs = [
-    "test/e2e/*.js",
-    "test/e2e/*_test.html"
+    "test_e2e/*.js",
+    "test_e2e/*_test.html"
   ],
-  test_dir = "test/e2e",
-  path = "/javascript/webdriver/test/e2e",
+  test_dir = "test_e2e",
+  path = "/javascript/webdriver/test_e2e",
   sysproperties = [
     { "selenium.browser" : "chrome" },
   ],
@@ -60,11 +59,11 @@ webdriverjs_test(name = "test_chrome_e2e",
 
 webdriverjs_test(name = "test_opera_e2e",
   srcs = [
-    "test/e2e/*.js",
-    "test/e2e/*_test.html"
+    "test_e2e/*.js",
+    "test_e2e/*_test.html"
   ],
-  test_dir = "test/e2e",
-  path = "/javascript/webdriver/test/e2e",
+  test_dir = "test_e2e",
+  path = "/javascript/webdriver/test_e2e",
   sysproperties = [
     { "selenium.browser" : "opera" },
   ],
@@ -77,11 +76,11 @@ webdriverjs_test(name = "test_opera_e2e",
 
 webdriverjs_test(name = "test_ie_e2e",
   srcs = [
-    "test/e2e/*.js",
-    "test/e2e/*_test.html"
+    "test_e2e/*.js",
+    "test_e2e/*_test.html"
   ],
-  test_dir = "test/e2e",
-  path = "/javascript/webdriver/test/e2e",
+  test_dir = "test_e2e",
+  path = "/javascript/webdriver/test_e2e",
   sysproperties = [
     { "selenium.browser" : "internet explorer" },
   ],
