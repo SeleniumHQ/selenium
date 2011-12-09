@@ -27,14 +27,12 @@ js_fragment(name = "get_page_zoom",
 js_test(name = "test",
   srcs = [ "test/*_test.html" ],
   path = "/javascript/chrome-driver/test",
-  sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
-  ],
   deps = [
     ":deps",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/test/org/openqa/selenium/javascript",
-  ])
+  ],
+  browsers = [ "chrome" ])
 
 js_fragment_cpp(name = "atoms",
   deps = [

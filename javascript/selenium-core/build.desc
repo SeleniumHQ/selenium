@@ -27,7 +27,6 @@ js_test(name = "test",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
 
-
 rake_file(
   name = "test_runner_html",
   src = "TestRunner.html")

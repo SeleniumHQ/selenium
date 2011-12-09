@@ -1,5 +1,6 @@
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
+require 'set'
 
 class JavascriptMappings
   def add_all(fun)
@@ -698,52 +699,72 @@ module Javascript
     def handle(fun, dir, args)
       task_name = task_name(dir, args[:name])
 
-      desc "Run the tests for #{task_name}"
-      task "#{task_name}:run" => [task_name] do
-        puts "Testing: #{task_name}. " +
-            (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + task_name.gsub(/\/+/, '-') : '')
+      available_browsers = BROWSERS.find_all { |k,v| v.has_key?(:java) && [nil, true].include?(v[:available]) }
+      listed_browsers = args[:browsers] || available_browsers
 
-        cp = CrazyFunJava::ClassPath.new(task_name)
-        mkdir_p 'build/test_logs'
+      browsers = listed_browsers & available_browsers
 
-        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
-        CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
-                               :printsummary => 'on', :haltonerror => halt_on_error?, :haltonfailure => halt_on_failure?) do |ant|
-          ant.classpath do |ant_cp|
-            cp.all.each do |jar|
-              ant_cp.pathelement(:location => jar)
+      subtasks = []
+
+      browsers.each do |browser, all_browser_data|
+        browser_data = all_browser_data[:java]
+        browser_task_name = "#{task_name}_#{browser}"
+        deps = [task_name]
+        deps.concat(browser_data[:deps]) if browser_data[:deps]
+
+        desc "Run the tests for #{browser_task_name}"
+        task "#{browser_task_name}:run" => deps do
+          puts "Testing: #{browser_task_name} " +
+              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/\/+/, '-') : '')
+
+          cp = CrazyFunJava::ClassPath.new("#{browser_task_name}:run")
+          mkdir_p 'build/test_logs'
+
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
+          CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
+                                 :printsummary => 'on', :haltonerror => halt_on_error?, :haltonfailure => halt_on_failure?) do |ant|
+            ant.classpath do |ant_cp|
+              cp.all.each do |jar|
+                ant_cp.pathelement(:location => jar)
+              end
             end
-          end
 
-          sysprops = args[:sysproperties] || []
+            sysprops = args[:sysproperties] || []
 
-          sysprops.each do |map|
-            map.each do |key, value|
-              ant.sysproperty :key => key, :value => value
+            ant.sysproperty :key => "selenium.browser", :value => browser_data[:class]
+
+            sysprops.each do |map|
+              map.each do |key, value|
+                ant.sysproperty :key => key, :value => value
+              end
             end
-          end
 
-          test_dir = File.join(dir, 'test')
-          ant.sysproperty :key => 'js.test.dir', :value => test_dir
-          ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
+            test_dir = File.join(dir, 'test')
+            ant.sysproperty :key => 'js.test.dir', :value => test_dir
+            ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
 
-          if !args[:exclude].nil?
-            excludes = File.join(dir, args[:exclude])
-            excludes = FileList[excludes].to_a.collect do |f|
-              f[test_dir.length + 1..-1]
+            if !args[:exclude].nil?
+              excludes = File.join(dir, args[:exclude])
+              excludes = FileList[excludes].to_a.collect do |f|
+                f[test_dir.length + 1..-1]
+              end
+              ant.sysproperty :key => 'js.test.excludes', :value => excludes.join(',')
             end
-            ant.sysproperty :key => 'js.test.excludes', :value => excludes.join(',')
+
+            ant.formatter(:type => 'plain')
+            ant.formatter(:type => 'xml')
+
+            ant.test(:name => "org.openqa.selenium.javascript.ClosureTestSuite",
+                     :outfile => "TEST-" + browser_task_name.gsub(/\/+/, "-"),
+                     :todir => 'build/test_logs')
           end
-
-          ant.formatter(:type => 'plain')
-          ant.formatter(:type => 'xml')
-
-          ant.test(:name => "org.openqa.selenium.javascript.ClosureTestSuite",
-                   :outfile => "TEST-" + task_name.gsub(/\/+/, "-"),
-                   :todir => 'build/test_logs')
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
         end
-        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+
+        subtasks << "#{browser_task_name}:run" unless browser == "opera" && !opera?
       end
+
+      task "#{task_name}:run" => subtasks
     end
   end
 

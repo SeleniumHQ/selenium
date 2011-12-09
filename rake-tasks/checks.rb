@@ -57,6 +57,10 @@ def present?(arg)
   bool
 end
 
+def chrome?
+  present?("chromedriver") || present?("chromedriver.exe")
+end
+
 def opera?
   present?("opera") || present?("Opera")
 end
@@ -75,7 +79,7 @@ end
 
 # Think of the confusion if we called this "g++"
 def gcc?
-  linux? && present?("g++") 
+  linux? && present?("g++")
 end
 
 def python?

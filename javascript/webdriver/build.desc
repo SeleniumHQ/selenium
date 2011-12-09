@@ -11,7 +11,6 @@ js_deps(name = "test_deps",
     "testing/*.js",
   ])
 
-# TODO(jleyba): Make a js_test_suite that farms out to multiple browsers.
 js_test(name = "test",
   srcs = [
     "test/**/*.js",
@@ -19,61 +18,6 @@ js_test(name = "test",
   ],
   exclude = [ "test/e2e/*_test.html" ],
   path = "/javascript/webdriver/test",
-  sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
-  ],
-  deps = [
-    ":deps",
-    ":test_deps",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])
-
-js_test(name = "test_chrome",
-  srcs = [
-    "test/**/*.js",
-    "test/**/*_test.html",
-  ],
-  exclude = [ "test/e2e/*_test.html" ],
-  path = "/javascript/webdriver/test",
-  sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
-  ],
-  deps = [
-    ":deps",
-    ":test_deps",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])
-
-js_test(name = "test_opera",
-  srcs = [
-    "test/**/*.js",
-    "test/**/*_test.html",
-  ],
-  exclude = [ "test/e2e/*_test.html" ],
-  path = "/javascript/webdriver/test",
-  sysproperties = [
-    { "selenium.browser" : "com.opera.core.systems.OperaDriver" },
-  ],
-  deps = [
-    ":deps",
-    ":test_deps",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    "//third_party/java/opera-driver",
-  ])
-
-js_test(name = "test_ie",
-  srcs = [
-    "test/**/*.js",
-    "test/**/*_test.html",
-  ],
-  exclude = [ "test/e2e/*_test.html" ],
-  path = "/javascript/webdriver/test",
-  sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },
-  ],
   deps = [
     ":deps",
     ":test_deps",

@@ -22,27 +22,3 @@ js_test(name = "test",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
-
-js_test(name = "test_chrome",
-  srcs = [ "test/*_test.html" ],
-  path = "/javascript/atoms/test",
-  sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
-  ],
-  deps = [
-    ":deps",
-    "//java/client/src/org/openqa/selenium/chrome",
-    "//java/client/test/org/openqa/selenium/javascript",
-  ])
-
-js_test(name = "test_opera",
-  srcs = [ "test/*_test.html" ],
-  path = "/javascript/atoms/test",
-  sysproperties = [
-    { "selenium.browser" : "com.opera.core.systems.OperaDriver" },
-  ],
-  deps = [
-    ":deps",
-    "//third_party/java/opera-driver",
-    "//java/client/test/org/openqa/selenium/javascript",
-  ])
