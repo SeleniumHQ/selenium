@@ -22,6 +22,7 @@ public class TestType extends InternalSelenseTestBase {
     verifyEquals(selenium.getValue("password"), "testUserPasswordIsVe");
     selenium.type("password", "testUserPassword");
     verifyEquals(selenium.getValue("password"), "testUserPassword");
+    selenium.type("file", "/test/file");
     selenium.click("submitButton");
     selenium.waitForPageToLoad("30000");
     verifyTrue(selenium.isTextPresent("Welcome, TestUser!"));

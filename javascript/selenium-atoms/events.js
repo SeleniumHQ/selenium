@@ -139,6 +139,9 @@ core.events.replaceText_ = function(element, value) {
         element.innerHTML = actualValue;
       }
     }
+  } else if (goog.userAgent.GECKO && bot.userAgent.isVersion(8)) {
+    // Firefox 8+ fails with a security error if typing into (XPCNativeWrapper) unwrapped objects
+    XPCNativeWrapper(element).value = actualValue;
   } else {
     element.value = actualValue;
   }
