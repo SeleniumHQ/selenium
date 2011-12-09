@@ -761,7 +761,7 @@ module Javascript
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
         end
 
-        subtasks << "#{browser_task_name}:run" unless browser == "opera" && !opera?
+        subtasks << "#{browser_task_name}:run"
       end
 
       task "#{task_name}:run" => subtasks
@@ -819,7 +819,7 @@ module Javascript
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
         end
 
-        subtasks << "#{browser_task_name}:run" unless browser == "opera" && !opera?
+        subtasks << "#{browser_task_name}:run"
       end
 
       task "#{task_name}:run" => subtasks
