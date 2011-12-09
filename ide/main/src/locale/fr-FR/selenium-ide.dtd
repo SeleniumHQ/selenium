@@ -58,7 +58,7 @@
 <!ENTITY contextMenu.insertCommand.label "Ins&#233;rer une nouvelle commande">
 <!ENTITY contextMenu.insertComment.label "Ins&#233;rer un nouveau commentaire">
 <!ENTITY contextMenu.clear.label "Tout vider">
-<!ENTITY contextMenu.breakpoint.label "Ins&#233;rer / Retirer un point d'arr#234;t">
+<!ENTITY contextMenu.breakpoint.label "Ins&#233;rer / Retirer un point d'arr&#234;t">
 <!ENTITY contextMenu.startpoint.label "D&#233;finir / Retirer le point de d&#233;part">
 <!ENTITY contextMenu.execCommand.label "Ex&#233;cuter cette commande">
 
