@@ -80,6 +80,12 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     assertEquals(scrollTop, getScrollTop());
   }
 
+  public void testShouldBeAbleToClickRadioButtonScrolledIntoView() {
+    driver.get(appServer.whereIs("scroll4.html"));
+    driver.findElement(By.id("radio")).click();
+    // If we don't throw, we're good
+  }
+
   private long getScrollTop() {
     return (Long)((JavascriptExecutor)driver).executeScript("return document.body.scrollTop;");
   }

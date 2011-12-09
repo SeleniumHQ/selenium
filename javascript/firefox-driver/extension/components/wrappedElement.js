@@ -63,16 +63,16 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   // For now, we need to bypass native events for option elements
   var isOption = "option" == unwrapped.tagName.toLowerCase();
 
+  var loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+  var elementHalfWidth = (loc.width ? loc.width / 2 : 0);
+  var elementHalfHeight = (loc.height ? loc.height / 2 : 0);
+
   if (!isOption && this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
     fxdriver.Logger.dumpn("Using native events for click");
 
-    var loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
-    var elementXMiddle = (loc.width ? loc.width / 2 : 0);
-    var elementYMiddle = (loc.height ? loc.height / 2 : 0);
-
     var inViewAfterScroll = bot.action.scrollIntoView(
         unwrapped,
-        new goog.math.Coordinate(elementXMiddle, elementYMiddle));
+        new goog.math.Coordinate(elementHalfWidth, elementHalfHeight));
 
     if (!inViewAfterScroll) {
         respond.sendError(
@@ -82,8 +82,8 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
     }
 
     loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
-    var x = loc.x + elementXMiddle;
-    var y = loc.y + elementYMiddle;
+    var x = loc.x + elementHalfWidth;
+    var y = loc.y + elementHalfHeight;
 
     // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
     // to add to the x and y locations.
@@ -152,7 +152,7 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   Utils.installWindowCloseListener(respond);
   Utils.installClickListener(respond, WebLoadingListener);
 
-  var res = this.mouse.move(element, null, null);
+  var res = this.mouse.move(element, elementHalfWidth, elementHalfHeight);
   if (res.status != bot.ErrorCode.SUCCESS) {
     respond.status = res.status;
     respond.value = res.message;
