@@ -100,23 +100,18 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @NoDriverAfterTest
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
     JavascriptExecutor js = (JavascriptExecutor) driver;
-    Long height = (Long) js.executeScript("return window.outerHeight;");
-    Long width = (Long) js.executeScript("return window.outerWidth;");
     js.executeScript("window.resizeTo(300, 300);");
 
-    try {
-      driver.get(pages.dragAndDropPage);
-      WebElement img = driver.findElement(By.id("test3"));
-      Point expectedLocation = img.getLocation();
-      drag(img, expectedLocation, 100, 100);
-      assertEquals(expectedLocation, img.getLocation());
-    } finally {
-      js.executeScript("window.resizeTo(arguments[0], arguments[1]);", width, height);
-    }
+    driver.get(pages.dragAndDropPage);
+    WebElement img = driver.findElement(By.id("test3"));
+    Point expectedLocation = img.getLocation();
+    drag(img, expectedLocation, 100, 100);
+    assertEquals(expectedLocation, img.getLocation());
   }
 
   private void drag(WebElement elem, Point expectedLocation,
