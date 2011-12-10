@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.OPERA;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -52,6 +53,7 @@ public class WindowTest extends AbstractDriverTestCase {
     assertEquals(targetSize.height, newSize.height);
   }
 
+  @Ignore(IE)
   public void testGetsThePositionOfTheCurrentWindow() {
     Point position = driver.manage().window().getPosition();
 
