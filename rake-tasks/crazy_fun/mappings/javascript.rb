@@ -699,14 +699,11 @@ module Javascript
     def handle(fun, dir, args)
       task_name = task_name(dir, args[:name])
 
-      available_browsers = BROWSERS.find_all { |k,v| v.has_key?(:java) && [nil, true].include?(v[:available]) }
-      listed_browsers = args[:browsers] || available_browsers
+      java_browsers = BROWSERS.find_all { |k,v| v.has_key?(:java) }
+      available_browsers = java_browsers.find_all { |k,v| [nil, true].include?(v[:available]) }
+      listed_browsers = args[:browsers] ? Hash[*(args[:browsers]).collect { |b| [b, BROWSERS[b]]}.flatten].find_all { |k,v| !v.nil? } : java_browsers
 
-      browsers = listed_browsers & available_browsers
-
-      subtasks = []
-
-      browsers.each do |browser, all_browser_data|
+      listed_browsers.each do |browser, all_browser_data|
         browser_data = all_browser_data[:java]
         browser_task_name = "#{task_name}_#{browser}"
         deps = [task_name]
@@ -760,11 +757,9 @@ module Javascript
           end
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
         end
-
-        subtasks << "#{browser_task_name}:run"
       end
 
-      task "#{task_name}:run" => subtasks
+      task "#{task_name}:run" => (listed_browsers & available_browsers).map { |browser,_| "#{task_name}_#{browser}:run" }
     end
   end
 
