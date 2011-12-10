@@ -1,5 +1,7 @@
 package org.openqa.selenium;
 
+import javax.management.modelmbean.RequiredModelMBean;
+
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -17,21 +19,24 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
 
   public WebDriver get() {
     DesiredCapabilities capabilities;
-    if (driverClass.getName() == "org.openqa.selenium.firefox.FirefoxDriver") {
+    String requestedDriver = driverClass.getName();
+    if (requestedDriver == "org.openqa.selenium.firefox.FirefoxDriver") {
       capabilities = DesiredCapabilities.firefox();
-    } else if (driverClass.getName() == "org.openqa.selenium.firefox.SynthesizedFirefoxDriver") {
+    } else if (requestedDriver == "org.openqa.selenium.firefox.SynthesizedFirefoxDriver") {
       capabilities = DesiredCapabilities.firefox();
       capabilities.setCapability(CapabilityType.HAS_NATIVE_EVENTS, false);
-    } else if (driverClass.getName() == "org.openqa.selenium.firefox.NativeEventsFirefoxDriver") {
+    } else if (requestedDriver == "org.openqa.selenium.firefox.NativeEventsFirefoxDriver") {
       capabilities = DesiredCapabilities.firefox();
       capabilities.setCapability(CapabilityType.HAS_NATIVE_EVENTS, true);
-    } else if (driverClass.getName() ==
-        "org.openqa.selenium.ie.InternetExplorerDriverTestSuite$TestInternetExplorerDriver") {
+    } else if (requestedDriver ==
+        "org.openqa.selenium.ie.InternetExplorerDriverTestSuite$TestInternetExplorerDriver" ||
+        requestedDriver == "org.openqa.selenium.ie.InternetExplorerDriver") {
       capabilities = DesiredCapabilities.internetExplorer();
-    } else if (driverClass.getName() ==
-        "org.openqa.selenium.chrome.ChromeDriverTestSuite$DriverForTest") {
+    } else if (requestedDriver ==
+        "org.openqa.selenium.chrome.ChromeDriverTestSuite$DriverForTest" || 
+        requestedDriver == "org.openqa.selenium.chrome.ChromeDriver") {
       capabilities = DesiredCapabilities.chrome();
-    } else if (driverClass.getName() == "com.opera.core.systems.OperaDriver") {
+    } else if (requestedDriver == "com.opera.core.systems.OperaDriver") {
       capabilities = DesiredCapabilities.opera();
     } else {
       throw new UnsupportedOperationException(
