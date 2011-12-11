@@ -183,9 +183,16 @@ public interface WebElement extends SearchContext {
   /**
    * Get the value of a given CSS property. This is probably not going to return what you expect it
    * to unless you've already had a look at the element using something like firebug. Seriously,
-   * even then you'll be lucky for this to work cross-browser. Colour values should be returned as
+   * even then you'll be lucky for this to work cross-browser. Color values should be returned as
    * hex strings, so, for example if the "background-color" property is set as "green" in the HTML
-   * source, the returned value will be "#008000"
+   * source, the returned value will be "#008000".
+   * 
+   * Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
+   * margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
+   * in accordance with the
+   * <a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration">DOM CSS2 specification</a>
+   * - you should directly access the longhand properties (e.g. background-color) to access the
+   * desired values.
    * 
    * @return The current, computed value of the property.
    */
