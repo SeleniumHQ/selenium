@@ -497,7 +497,7 @@ FirefoxDriver.prototype.getElementValueOfCssProperty = function(respond,
                                                                 parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-  respond.value = Utils.getStyleProperty(element, parameters.propertyName); // Coeerce to a string
+  respond.value = bot.dom.getEffectiveStyle(element, parameters.propertyName);
   respond.send();
 };
 
