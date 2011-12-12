@@ -33,8 +33,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 /**
- * Default decorator for use with PageFactory. Will decorate all of the WebElement and 
- * List<WebElement> fields with a proxy that locates the elements using the passed
+ * Default decorator for use with PageFactory. Will decorate 1) all of the
+ * WebElement fields and 2) List<WebElement> fields that have @FindBy or
+ * @FindBys annotation with a proxy that locates the elements using the passed
  * in ElementLocatorFactory.
  */
 public class DefaultFieldDecorator implements FieldDecorator {
@@ -70,11 +71,6 @@ public class DefaultFieldDecorator implements FieldDecorator {
       return false;
     }
 
-    if (field.getAnnotation(FindBy.class) != null ||
-        field.getAnnotation(FindBys.class) != null) {
-      return true;
-    }
-
     // Type erasure in Java isn't complete. Attempt to discover the generic
     // type of the list.
     Type genericType = field.getGenericType();
@@ -84,7 +80,16 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     Type listType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 
-    return WebElement.class.equals(listType);
+    if (!WebElement.class.equals(listType)) {
+      return false;
+    }
+
+    if (field.getAnnotation(FindBy.class) == null &&
+        field.getAnnotation(FindBys.class) == null) {
+      return false;
+    }
+
+    return true;
   }
 
   protected WebElement proxyForLocator(ClassLoader loader, ElementLocator locator) {

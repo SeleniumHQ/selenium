@@ -65,6 +65,10 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   @FindBys({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
   private List<WebElement> list4;
 
+  @SuppressWarnings("unused")
+  @FindBy(tagName = "div")
+  private List<Object> list5;
+
   private FieldDecorator createDecoratorWithNullLocator() {
     return new DefaultFieldDecorator(new ElementLocatorFactory() {
       public ElementLocator createLocator(Field field) {
@@ -101,11 +105,11 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   }
 
   @Test
-  public void doesDecorateNonAnnotatedWebElementList() throws Exception {
+  public void doesNotDecorateNonAnnotatedWebElementList() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list1")),
-        is(notNullValue()));
+        is(nullValue()));
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list2")),
         is(nullValue()));
@@ -116,6 +120,14 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("num")),
+        is(nullValue()));
+  }
+
+  @Test
+  public void doesNotDecorateListOfSomethingElse() throws Exception {
+    FieldDecorator decorator = createDecoratorWithDefaultLocator();
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list5")),
         is(nullValue()));
   }
 
