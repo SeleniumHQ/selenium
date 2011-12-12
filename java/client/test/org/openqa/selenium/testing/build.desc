@@ -23,3 +23,14 @@ java_library(name = "junit",
     ":util",
     "//third_party/java/guava-libraries",
   ])
+
+java_library(name = "junit_4",
+  srcs = [
+    "JUnit4TestBase.java",
+    "LateRejectingRunner.java",
+  ],
+  deps = [
+    ":junit",
+    "//java/client/test/org/openqa/selenium:base",
+    "//third_party/java/junit",
+  ])
