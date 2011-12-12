@@ -180,13 +180,18 @@ function formatSuite(testSuite, filename) {
   return formattedSuite;
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 this.options = {
   receiver: "driver",
   environment: "*chrome",
   packageName: "com.example.tests",
   indent:    'tab',
   initialIndents:    '2',
-  showSelenese: 'false'
+  showSelenese: 'false',
+  defaultExtension: "java"
 };
 
 options.header =

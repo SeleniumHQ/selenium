@@ -192,6 +192,10 @@ function formatComment(comment) {
   });
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 this.options = {
   receiver: "driver",
   showSelenese: 'false',
@@ -228,7 +232,8 @@ this.options = {
           'if __name__ == "__main__":\n' +
           '    unittest.main()\n',
   indent:  '4',
-  initialIndents: '2'
+  initialIndents: '2',
+  defaultExtension: "java"
 };
 
 this.configForm =

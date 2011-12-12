@@ -155,6 +155,10 @@ function formatComment(comment) {
   });
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 this.options = {
   receiver: "driver",
   showSelenese: 'false',
@@ -220,7 +224,8 @@ this.options = {
           "            }\n" +
           "        }\n" +
           '    }\n' +
-          '}\n'
+          '}\n',
+  defaultExtension: "cs"
 };
 this.configForm = '<description>Variable for Selenium instance</description>' +
     '<textbox id="options_receiver" />' +

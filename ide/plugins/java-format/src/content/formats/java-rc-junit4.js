@@ -184,13 +184,18 @@ function formatSuite(testSuite, filename) {
     return formattedSuite;
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 this.options = {
 	receiver: "selenium",
 	environment: "*chrome",
 	packageName: "com.example.tests",
 	superClass: "SeleneseTestCase",
     indent:	'tab',
-    initialIndents:	'2'
+    initialIndents:	'2',
+    defaultExtension: "java"
 };
 
 options.header =

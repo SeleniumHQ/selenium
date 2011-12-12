@@ -146,6 +146,10 @@ function formatComment(comment) {
 		});
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 this.options = {
 	receiver: "@selenium",
 	rcHost: "localhost",
@@ -181,7 +185,8 @@ this.options = {
 		"  end\n" +
 		"end\n",
 	indent: "2",
-	initialIndents: "2"
+	initialIndents: "2",
+	defaultExtension: "rb"
 };
 
 this.configForm = 

@@ -162,6 +162,10 @@ function formatComment(comment) {
 		});
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 this.options = {
 	receiver: "sel",
 	rcHost: "localhost",
@@ -188,7 +192,8 @@ this.options = {
 	'if __name__ == "__main__":\n' +
 	'    unittest.main()\n',
     indent:	'4',
-	initialIndents: '2'
+	initialIndents: '2',
+	defaultExtension: "py"
 };
 
 this.configForm = 

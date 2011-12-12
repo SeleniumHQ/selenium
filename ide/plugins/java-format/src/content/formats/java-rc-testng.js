@@ -18,6 +18,10 @@ Equals.prototype.verify = function() {
 
 options.superClass = "SeleneseTestNgHelper";
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 options.header =
 	"package ${packageName};\n" +
 	"\n" +

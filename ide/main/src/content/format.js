@@ -249,13 +249,20 @@ Format.prototype.saveAsNew = function(testCase, exportTest) {
 Format.prototype.saveAs = function(testCase, filename, exportTest) {
     //log.debug("saveAs: filename=" + filename);
     try {
+        var defaultExtension = null;
+        try {
+          defaultExtension = this.getFormatter().getDefaultExtension();
+        } catch (err) {}
+
         var file = null;
         if (filename == null) {
             //Samit: Enh: Show the name of the test case in the save dialog title
-            file = showFilePicker(window, Editor.getFormattedString("saveTestCaseAs", [testCase.getTitle()]),
+            file = showFilePicker(window,
+                                  Editor.getFormattedString("saveTestCaseAs", [testCase.getTitle()]),
                                   Components.interfaces.nsIFilePicker.modeSave,
                                   exportTest ? Format.TEST_CASE_EXPORT_DIRECTORY_PREF : Format.TEST_CASE_DIRECTORY_PREF,
-                                  function(fp) {return fp.file;});
+                                  function(fp) {return fp.file;},
+                                  defaultExtension);
         } else {
             file = FileUtils.getFile(filename);
         }

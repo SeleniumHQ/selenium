@@ -90,10 +90,13 @@ Log.prototype = {
     }
 }
 
-function showFilePicker(window, title, mode, defaultDirPrefName, handler) {
+function showFilePicker(window, title, mode, defaultDirPrefName, handler, defaultExtension) {
 	var nsIFilePicker = Components.interfaces.nsIFilePicker;
 	var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
 	fp.init(window, title, mode);
+	if (defaultExtension) {
+	  fp.defaultExtension = defaultExtension;
+	}
     var defaultDir = Preferences.getString(defaultDirPrefName);
     if (defaultDir) {
         fp.displayDirectory = FileUtils.getFile(defaultDir);

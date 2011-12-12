@@ -152,6 +152,10 @@ function formatComment(comment) {
 		});
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 this.options = {
     receiver: "selenium",
 	rcHost: "localhost",
@@ -215,5 +219,6 @@ this.options = {
     	'<description>Environment</description>' +
     	'<textbox id="options_environment" />' +
     	'<description>Namespace</description>' +
-    	'<textbox id="options_namespace" />'
+    	'<textbox id="options_namespace" />',
+    defaultExtension: "cs"
 };

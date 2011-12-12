@@ -303,6 +303,10 @@ function format(testCase, name) {
 	return testText;
 }
 
+function getDefaultExtension() {
+  return this.options.defaultExtension;
+}
+
 /*
  * Optional: The customizable option that can be used in format/parse functions.
  */
@@ -356,7 +360,9 @@ this.options = {
 	"<!--${comment.comment}-->\n",
 	
 	escapeDollar:
-	"false"
+	"false",
+	
+	defaultExtension: "html"
 };
 
 /*
