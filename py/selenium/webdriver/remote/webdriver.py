@@ -608,7 +608,9 @@ class WebDriver(object):
     def implicitly_wait(self, time_to_wait):
         """
         Sets a sticky timeout to implicitly wait for an element to be found,
-           or a command to complete. This method only needs to be called one time per session.
+           or a command to complete. This method only needs to be called one
+           time per session. To set the timeout for calls to
+           execute_async_script, see set_script_timeout.
         
         :Args:
          - time_to_wait: Amount of time to wait (in seconds)
@@ -620,8 +622,8 @@ class WebDriver(object):
 
     def set_script_timeout(self, time_to_wait):
         """
-        Set the amount of time that the script should wait before throwing an
-           error.
+        Set the amount of time that the script should wait during an
+           execute_async_script call before throwing an error.
         
         :Args:
          - time_to_wait: The amount of time to wait
