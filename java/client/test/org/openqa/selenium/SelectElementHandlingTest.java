@@ -99,4 +99,11 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(two.isSelected(), is(true));
   }
 
+  @Ignore({SELENESE, CHROME})
+  public void testCanSelectElementsInOptGroups() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("two-in-group"));
+    element.click();
+    assertTrue("Expected to be selected", element.isSelected());
+  }
 }
