@@ -17,16 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import junit.framework.Test;
+import junit.framework.TestCase;
 
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.android.environment.AndroidTestEnvironment;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 /**
  * Unit tests suite for Android driver.

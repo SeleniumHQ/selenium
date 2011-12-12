@@ -2,7 +2,7 @@ package org.openqa.selenium.io;
 
 import com.google.common.io.Closeables;
 
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 
 import junit.framework.TestCase;
 

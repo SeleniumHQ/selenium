@@ -20,7 +20,7 @@ package org.openqa.selenium.environment.webserver;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
 import org.eclipse.jetty.server.Handler;
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.net.NetworkUtils;
 
 import org.eclipse.jetty.server.Connector;

@@ -18,7 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package org.openqa.selenium.server;
 
-import org.openqa.selenium.Ignore;
+import org.openqa.selenium.testing.Ignore;
 
 
 @Ignore

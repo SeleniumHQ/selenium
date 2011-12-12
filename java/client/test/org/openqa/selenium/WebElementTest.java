@@ -17,9 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.testing.Ignore;
 
 /**
  * Tests for generic WebElement.

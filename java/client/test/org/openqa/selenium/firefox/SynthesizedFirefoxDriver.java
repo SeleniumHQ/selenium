@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;

@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 import com.google.common.collect.Maps;
 
@@ -26,7 +26,7 @@ import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.remote.LocalFileDetector;

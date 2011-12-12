@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import org.openqa.selenium.testing.Ignore;
+
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 /**
  * Bug 126 identified an instance where the HtmlUnitDriver threw a NullPointerException, {@see <a

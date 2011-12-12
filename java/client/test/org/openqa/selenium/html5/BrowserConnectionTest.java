@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 
 import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.Ignore;
+import org.openqa.selenium.testing.Ignore;
 
 public class BrowserConnectionTest extends AbstractDriverTestCase {
 

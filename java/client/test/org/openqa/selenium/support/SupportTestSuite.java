@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.firefox.FirefoxDriver;

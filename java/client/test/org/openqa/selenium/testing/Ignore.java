@@ -15,7 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
+
+import org.openqa.selenium.Platform;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

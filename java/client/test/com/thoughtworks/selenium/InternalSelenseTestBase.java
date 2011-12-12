@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
 

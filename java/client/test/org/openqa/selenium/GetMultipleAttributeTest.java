@@ -1,6 +1,8 @@
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.OPERA;
+import org.openqa.selenium.testing.Ignore;
+
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 @Ignore(OPERA)
 public class GetMultipleAttributeTest extends AbstractDriverTestCase {

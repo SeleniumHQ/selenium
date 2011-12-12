@@ -32,7 +32,7 @@ import junit.framework.TestSuite;
 import org.openqa.selenium.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.FilenameFilter;

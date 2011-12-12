@@ -1,9 +1,11 @@
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
 
 import java.util.Set;
 
-import org.openqa.selenium.Ignore.Driver;
-import org.openqa.selenium.Ignore.NativeEventsEnabledState;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.Ignore.Driver;
+import org.openqa.selenium.testing.Ignore.NativeEventsEnabledState;
+import org.openqa.selenium.testing.Ignore;
 
 import com.google.common.collect.Sets;
 

@@ -2,8 +2,8 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,9 @@ import java.util.Set;
 import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Ignore.Driver;
+import org.openqa.selenium.testing.Ignore.Driver;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.IgnoreComparator;
 
 import com.google.common.collect.Sets;
 

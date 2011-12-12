@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 import org.openqa.selenium.Capabilities;

@@ -2,8 +2,9 @@ package org.openqa.selenium.internal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.openqa.selenium.Ignore;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.testing.IgnoredTestCallback;
 
 import java.lang.reflect.Method;
 import java.util.*;

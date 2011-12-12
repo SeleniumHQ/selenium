@@ -1,12 +1,12 @@
 package org.openqa.selenium.rc;
 
-import static org.openqa.selenium.Ignore.Driver.ALL;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.net.PortProber.pollPort;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
 
-import org.openqa.selenium.Ignore;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.Proxy;

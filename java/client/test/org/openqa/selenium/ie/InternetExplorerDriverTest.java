@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 
-import org.openqa.selenium.Ignore;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.WebDriver;
 
 import junit.framework.TestCase;

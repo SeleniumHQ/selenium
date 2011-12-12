@@ -6,7 +6,7 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.InProject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

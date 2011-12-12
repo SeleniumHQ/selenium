@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.Platform;

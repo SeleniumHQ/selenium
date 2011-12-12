@@ -1,0 +1,25 @@
+
+java_library(name = "testing",
+  deps = [
+    ":junit",
+    ":util",
+  ])
+
+java_library(name = "util",
+  srcs = [
+    "InProject.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:base",
+  ])
+
+java_library(name = "junit",
+  srcs = [
+    "Ignore.java",
+    "IgnoreComparator.java",
+    "IgnoredTestCallback.java",
+  ],
+  deps = [
+    ":util",
+    "//third_party/java/guava-libraries",
+  ])

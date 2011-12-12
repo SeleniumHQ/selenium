@@ -3,7 +3,7 @@ package org.openqa.selenium.rc;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
-import org.openqa.selenium.Ignore;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SeleniumServerInstance;

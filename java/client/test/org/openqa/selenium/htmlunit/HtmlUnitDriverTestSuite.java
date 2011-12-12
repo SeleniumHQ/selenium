@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
-
-import org.openqa.selenium.TestSuiteBuilder;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
+
+import org.openqa.selenium.TestSuiteBuilder;
 
 public class HtmlUnitDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {

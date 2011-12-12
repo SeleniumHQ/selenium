@@ -10,7 +10,6 @@ java_library(name = "drivers",
   deps = [
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/test/org/openqa/selenium:base",
-    "//java/client/test/org/openqa/selenium/internal:utils",
   ])
 
 java_library(name = "tests_common",

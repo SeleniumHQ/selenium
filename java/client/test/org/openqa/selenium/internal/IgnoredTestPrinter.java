@@ -1,9 +1,10 @@
 package org.openqa.selenium.internal;
 
 import com.google.common.io.Files;
-import org.openqa.selenium.Ignore;
+
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.testing.Ignore;
 
 import java.io.File;
 

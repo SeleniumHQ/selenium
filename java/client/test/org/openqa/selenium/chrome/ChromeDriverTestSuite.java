@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 
 import org.openqa.selenium.SauceDriver;
 import org.openqa.selenium.TestSuiteBuilder;

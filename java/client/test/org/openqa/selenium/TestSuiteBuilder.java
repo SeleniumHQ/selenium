@@ -24,9 +24,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.Ignore.NativeEventsEnabledState;
-import org.openqa.selenium.internal.IgnoredTestCallback;
-import org.openqa.selenium.internal.InProject;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.IgnoreComparator;
+import org.openqa.selenium.testing.IgnoredTestCallback;
+import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.lang.reflect.AnnotatedElement;
@@ -438,7 +439,7 @@ public class TestSuiteBuilder {
     }
   }
 
-  public TestSuiteBuilder exclude(NativeEventsEnabledState value) {
+  public TestSuiteBuilder exclude(Ignore.NativeEventsEnabledState value) {
     ignoreComparator.setNativeEventsIgnoreState(value);
     return this;
   }

@@ -17,11 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.ALL;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
+
+import org.openqa.selenium.testing.Ignore;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,7 @@
 package org.openqa.selenium;
 
+import org.openqa.selenium.testing.Ignore;
+
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
  */
