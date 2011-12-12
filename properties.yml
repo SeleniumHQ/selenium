@@ -1,4 +1,7 @@
-default: 
+# Be warned, spaces in paths in this file will cause Bad Things to happen to
+# your build.
+
+default:
   android:
     # Path to the android sdk
     androidsdkpath : "../android_sdk/"
