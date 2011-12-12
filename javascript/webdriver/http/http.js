@@ -109,7 +109,6 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
  */
 webdriver.http.Executor.buildPath_ = function(path, parameters) {
   var pathParameters = path.match(/\/:(\w+)\b/g);
-  console.log(path, pathParameters);
   if (pathParameters) {
     for (var i = 0; i < pathParameters.length; ++i) {
       var key = pathParameters[i].substring(2);  // Trim the /:
