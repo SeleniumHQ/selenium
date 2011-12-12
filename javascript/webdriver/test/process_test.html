@@ -63,6 +63,23 @@ limitations under the License.
     webdriver.process.setEnv('bar', 123);
     assertEquals('123', webdriver.process.getEnv('bar'));
   }
+
+  function testCanUnsetEnvironmentVariables() {
+    initProcess({});
+    assertUndefined(webdriver.process.getEnv('foo'));
+
+    webdriver.process.setEnv('foo', 'one');
+    assertEquals('one', webdriver.process.getEnv('foo'));
+
+    webdriver.process.setEnv('foo');
+    assertUndefined(webdriver.process.getEnv('foo'));
+
+    webdriver.process.setEnv('foo', 'two');
+    assertEquals('two', webdriver.process.getEnv('foo'));
+
+    webdriver.process.setEnv('foo', null);
+    assertUndefined(webdriver.process.getEnv('foo'));
+  }
 </script>
 </body>
 </html>

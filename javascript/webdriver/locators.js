@@ -109,16 +109,6 @@ webdriver.Locator.checkLocator = function(locator) {
   if (!locator.using || !locator.value) {
     locator = webdriver.Locator.createFromObj(locator);
   }
-
-  if (locator.using == 'class name') {
-    var normalized = goog.string.normalizeWhitespace(locator.value);
-    locator.value = goog.string.trim(normalized);
-    if (locator.value.search(/\s/) >= 0) {
-      throw Error('Compound class names are not allowed for searches: ' +
-                  goog.string.quote(locator.target));
-    }
-  }
-
   return (/**@type {!webdriver.Locator} */locator);
 };
 

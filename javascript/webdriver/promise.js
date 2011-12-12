@@ -155,9 +155,9 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
 
 
 /**
- * An alias for {@code webdriver.promise.Promise.prototype.then} that permits the
- * scope of the invoked function to be specified. This function is provided for
- * backwards compatibility with the Dojo Deferred API.
+ * An alias for {@code webdriver.promise.Promise.prototype.then} that permits
+ * the scope of the invoked function to be specified. This function is provided
+ * for backwards compatibility with the Dojo Deferred API.
  *
  * @param {?function(*)} callback The function to call if this promise is
  *     successfully resolved. The function should expect a single argument: the

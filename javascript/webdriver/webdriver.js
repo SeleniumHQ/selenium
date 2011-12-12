@@ -419,9 +419,10 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
  * will be allowed to propagate.
  * @param {function():boolean} fn The function to evaluate as a wait condition.
  * @param {number} timeout How long to wait for the condition to be true.
- * @param {Object} opt_scope The object in whose scope to evaluate the wait.
- * @param {string} opt_message An optional message to use if the wait times out.
- * @param {boolean} opt_waitNot Whether to wait for the inverse of the
+ * @param {Object=} opt_scope The object in whose scope to evaluate the wait.
+ * @param {string=} opt_message An optional message to use if the wait times
+ *     out.
+ * @param {boolean=} opt_waitNot Whether to wait for the inverse of the
  *     condition.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     wait condition has been satisfied.
@@ -441,8 +442,9 @@ webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_scope,
  * Schedules a command to wait for the inverse of a user specified condition.
  * @param {function():boolean} fn The function to evaluate as a wait condition.
  * @param {number} timeout How long to wait for the condition to be true.
- * @param {Object} opt_scope The object in whose scope to evaluate the wait.
- * @param {string} opt_message An optional message to use if the wait times out.
+ * @param {Object=} opt_scope The object in whose scope to evaluate the wait.
+ * @param {string=} opt_message An optional message to use if the wait times
+ *     out.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     wait condition has been satisfied.
  * @export
@@ -864,9 +866,9 @@ webdriver.WebDriver.Options = function(driver) {
  * Schedules a command to add a cookie.
  * @param {string} name The cookie name.
  * @param {string} value The cookie value.
- * @param {string} opt_path The cookie path.
- * @param {string} opt_domain The cookie domain.
- * @param {boolean} opt_isSecure Whether the cookie is secure.
+ * @param {string=} opt_path The cookie path.
+ * @param {string=} opt_domain The cookie domain.
+ * @param {boolean=} opt_isSecure Whether the cookie is secure.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     cookie has been added to the page.
  * @export
@@ -1023,8 +1025,8 @@ webdriver.WebDriver.Timeouts.prototype.implicitlyWait = function(ms) {
 
 /**
  * Sets the amount of time to wait, in milliseconds, for an asynchronous script
- * to finish execution before returning an error. If the timeout is negative,
- * the script will be allowed to run indefinitely.
+ * to finish execution before returning an error. If the timeout is less than or
+ * equal to 0, the script will be allowed to run indefinitely.
  *
  * @param {number} ms The amount of time to wait, in milliseconds.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
@@ -1216,13 +1218,14 @@ webdriver.Key = {
 
 /**
  * Simulate pressing many keys at once in a "chord". Takes a sequence of
- * Keys.XXXX or strings; appends each of the values to a string, and adds the
- * chord termination key (Keys.NULL) and returns the resultant string.
+ * {@link webdriver.Key}s or strings, appends each of the values to a string,
+ * and adds the chord termination key ({@link webdriver.Key.NULL}) and returns
+ * the resultant string.
  *
  * Note: when the low-level webdriver key handlers see Keys.NULL, active
  * modifier keys (CTRL/ALT/SHIFT/etc) release via a keyup event.
  *
- * @param {string|webdriver.Key} var_args The key sequence to concatenate.
+ * @param {...string} var_args The key sequence to concatenate.
  * @see http://code.google.com/p/webdriver/issues/detail?id=79
  * @export
  */
@@ -1502,7 +1505,7 @@ webdriver.WebElement.prototype.click = function() {
  * </ul>
  * <strong>Note:</strong> On browsers where native keyboard events are not yet
  * supported (e.g. Firefox on OS X), key events will be synthesized. Special
- * punctionation keys will be synthesized according to a standard QWERTY English
+ * punctionation keys will be synthesized according to a standard QWERTY en-us
  * keyboard layout.
  *
  * @param {...string} var_args The sequence of keys to

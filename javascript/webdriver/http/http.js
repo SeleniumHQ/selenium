@@ -108,10 +108,11 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
  * @private
  */
 webdriver.http.Executor.buildPath_ = function(path, parameters) {
-  var pathParameters = path.match(/:(\w+)\b/g);
+  var pathParameters = path.match(/\/:(\w+)\b/g);
+  console.log(path, pathParameters);
   if (pathParameters) {
     for (var i = 0; i < pathParameters.length; ++i) {
-      var key = pathParameters[i].substring(1);  // Trim the :
+      var key = pathParameters[i].substring(2);  // Trim the /:
       if (key in parameters) {
         var value = parameters[key];
         // TODO(jleyba): move webdriver.WebElement.ELEMENT definition to a
@@ -122,7 +123,7 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
           // not the full JSON.
           value = value['ELEMENT'];
         }
-        path = path.replace(pathParameters[i], value);
+        path = path.replace(pathParameters[i], '/' + value);
         delete parameters[key];
       } else {
         throw new Error('Missing required parameter: ' + key);
@@ -277,6 +278,21 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
 
 
 /**
+ * Converts a headers object to a HTTP header block string.
+ * @param {!Object.<string>} headers The headers object to convert.
+ * @return {string} The headers as a string.
+ * @private
+ */
+webdriver.http.headersToString_ = function(headers) {
+  var ret = [];
+  for (var key in headers) {
+    ret.push(key + ': ' + headers[key]);
+  }
+  return ret.join('\n');
+};
+
+
+/**
  * Describes a partial HTTP request. This class is a "partial" request and only
  * defines the path on the server to send a request to. It is each
  * {@code webdriver.http.Client}'s responsibility to build the full URL for the
@@ -317,12 +333,16 @@ webdriver.http.Request = function(method, path, opt_data) {
 
 /** @override */
 webdriver.http.Request.prototype.toString = function() {
-  var ret = [this.method + ' ' + this.path];
-  for (var key in this.headers) {
-    ret.push(key + ': ' + this.headers[key]);
+  var ret = [
+    this.method + ' ' + this.path + ' HTTP/1.1',
+    webdriver.http.headersToString_(this.headers),
+    ''
+  ];
+
+  if (this.data) {
+    ret.push(this.data);
   }
-  ret.push('');
-  ret.push(this.data);
+
   return ret.join('\n');
 };
 
@@ -387,12 +407,17 @@ webdriver.http.Response.fromXmlHttpRequest = function(xhr) {
 
 /** @override */
 webdriver.http.Response.prototype.toString = function() {
-  var ret = ['HTTP/1.1 ' + this.status];
-  for (var key in this.headers) {
-    ret.push(key + ': ' + this.headers[key]);
+  var headers = webdriver.http.headersToString_(this.headers);
+  var ret = ['HTTP/1.1 ' + this.status, headers];
+
+  if (headers) {
+    ret.push('');
   }
-  ret.push('');
-  ret.push(this.body);
+
+  if (this.body) {
+    ret.push(this.body);
+  }
+
   return ret.join('\n');
 };
 

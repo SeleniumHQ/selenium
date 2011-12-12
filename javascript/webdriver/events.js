@@ -104,7 +104,7 @@ webdriver.EventEmitter.prototype.addListener = function(type, listener,
 
 /**
  * Registers a one-time listener which will be called only the first time an
- * event is emitted, afterwhich it will be removed.
+ * event is emitted, after which it will be removed.
  * @param {string} type The type of event to listen for.
  * @param {!Function} listener The function to invoke when the event is fired.
  * @return {!webdriver.EventEmitter} A self reference.

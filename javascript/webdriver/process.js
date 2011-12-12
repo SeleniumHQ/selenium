@@ -52,18 +52,19 @@ webdriver.process.isNative = function() {
  */
 webdriver.process.getEnv = function(name, opt_default) {
   var value = webdriver.process.PROCESS_.env[name];
-  return goog.isDef(value) ? value : opt_default;
+  return goog.isDefAndNotNull(value) ? value : opt_default;
 };
 
 
 /**
- * Sets an environment value.
+ * Sets an environment value. If the new value is either null or undefined, the
  * @param {string} name The value to set.
  * @param {*} value The new value; will be coerced to a string.
  * @export
  */
 webdriver.process.setEnv = function(name, value) {
-  webdriver.process.PROCESS_.env[name] = value + '';
+  webdriver.process.PROCESS_.env[name] =
+      goog.isDefAndNotNull(value) ? value + '' : null;
 };
 
 

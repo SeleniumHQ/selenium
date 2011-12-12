@@ -124,6 +124,11 @@ limitations under the License.
         '/session/:sessionId/element/:id', {'sessionId': 'foo'}));
   }
 
+  function testBuildPath_doesNotMatchOnSegmentsThatDoNotStartWithColon() {
+    assertEquals('/session/foo:bar/baz',
+        webdriver.http.Executor.buildPath_('/session/foo:bar/baz', {}));
+  }
+
   function testExecute_rejectsUnrecognisedCommands() {
     assertThrows(goog.bind(executor.execute, executor,
         new webdriver.Command('fake-command-name'), goog.nullFunction));

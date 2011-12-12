@@ -75,51 +75,6 @@ limitations under the License.
             webdriver.Locator.checkLocator(By[prop](TARGET)));
       }
     }
-
-
-    function testCheckLocatorRejectsCompoundClassNames() {
-      function assertThrows(locator) {
-        try {
-          webdriver.Locator.checkLocator(locator);
-          fail('Should have thrown for locator: ' +
-              goog.json.serialize(locator));
-        } catch (expected) {
-          assertContains(
-              'Compound class names are not allowed for searches: ',
-              expected.message);
-        }
-      }
-
-      assertThrows({className: 'a b'});
-      assertThrows({className: '  a b'});
-      assertThrows({className: '  a b  '});
-      assertThrows({className: 'a b  '});
-      assertThrows({className: 'a  b'});
-      assertThrows({className: 'a   b'});
-      assertThrows({className: 'a b c'});
-      assertThrows({'class name': 'a b'});
-      assertThrows({'class name': '  a b'});
-      assertThrows({'class name': '  a b  '});
-      assertThrows({'class name': 'a b  '});
-      assertThrows({'class name': 'a  b'});
-      assertThrows({'class name': 'a   b'});
-      assertThrows({'class name': 'a b c'});
-      assertThrows(By.className('a b'));
-      assertThrows(By.className(' a b'));
-      assertThrows(By.className('a b '));
-      assertThrows(By.className(' a b '));
-      assertThrows(By.className('a   b'));
-      assertThrows(By.className('a b c'));
-
-      // These should not throw.
-      webdriver.Locator.checkLocator({className: '  a  '});
-      webdriver.Locator.checkLocator({className: '  a'});
-      webdriver.Locator.checkLocator({className: 'a  '});
-      webdriver.Locator.checkLocator(By.className('  a  '));
-      webdriver.Locator.checkLocator(By.className('  a'));
-      webdriver.Locator.checkLocator(By.className('a  '));
-    }
-
   </script>
 </head>
 <body>
