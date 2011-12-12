@@ -66,6 +66,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     HasInputDevices, HasCapabilities {
 
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
+  private static Level level = Level.FINE;
 
   private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -401,7 +402,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * @param level 
    */
   public static void setLogLevel(Level level) {
-    logger.setLevel(level);
+    RemoteWebDriver.level = level;
   }
 
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
@@ -410,13 +411,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     long start = System.currentTimeMillis();
     try {
-      log(sessionId, command.getName(), command);
+      log(sessionId, command.getName(), command, When.BEFORE);
 
-      logger.fine("Executing: " + command);
       response = executor.execute(command);
 
       if (response == null) {
-        log(sessionId, command.getName(), command);
+        log(sessionId, command.getName(), command, When.AFTER);
         return null;
       }
 
@@ -424,9 +424,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
-      log(sessionId, command.getName(), command);
+      log(sessionId, command.getName(), command, When.AFTER);
     } catch (Exception e) {
-      log(sessionId, command.getName(), command);
+      log(sessionId, command.getName(), command, When.EXCEPTION);
       String errorMessage = "Error communicating with the remote browser. " +
           "It may have died.";
       if (driverCommand.equals(DriverCommand.NEW_SESSION)) {
@@ -462,8 +462,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * @param commandName the command that is being executed.
    * @param toLog       any data that might be interesting.
    */
-  protected void log(SessionId sessionId, String commandName, Object toLog) {
-    // By default do nothing
+  protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
+    if (when == When.BEFORE) {
+      logger.log(RemoteWebDriver.level, "Executing: " + commandName);
+    }
   }
 
   public FileDetector getFileDetector() {
@@ -714,4 +716,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
   }
+
+  public enum When {
+    BEFORE,
+    AFTER,
+    EXCEPTION
+  }
+
 }
