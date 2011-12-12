@@ -1,14 +1,14 @@
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertEquals;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JUnit4TestBase;
-import org.openqa.selenium.WebElement;
-
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
 
 /**
  * Test for issue r759.

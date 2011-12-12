@@ -18,22 +18,20 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
-import org.openqa.selenium.JUnit4TestBase;
+import org.junit.Test;
 import org.openqa.selenium.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
-import org.junit.Test;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 
 public class UsingPageFactoryTest extends JUnit4TestBase {
 
