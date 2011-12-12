@@ -1471,8 +1471,8 @@ limitations under the License.
 
   function testIsElementPresent_elementNotFound() {
     var testHelper = TestHelper.expectingSuccess().
-        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
-        andReturnError(ECode.NO_SUCH_ELEMENT, {'message':'Element not found'}).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([]).
         replayAll();
 
     var driver = testHelper.createDriver();
@@ -1488,25 +1488,23 @@ limitations under the License.
 
   function testIsElementPresent_elementFound() {
     var testHelper = TestHelper.expectingSuccess().
-        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
-        andReturnSuccess({'ELEMENT':'bar'}).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([{'ELEMENT':'bar'}]).
         replayAll();
 
     var driver = testHelper.createDriver();
     var callback;
     driver.isElementPresent(By.id('foo')).
-        then(callback = callbackHelper(function(result) {
-          assertTrue(result);
-        }));
+        then(callback = callbackHelper(assertTrue));
     testHelper.execute();
     callback.assertCalled();
   }
 
 
-  function testIsElementPresent_letsNonNoSuchElementErrorsPropagate() {
+  function testIsElementPresent_letsErrorsPropagate() {
     var testHelper = TestHelper.
         expectingFailure(expectedError(ECode.UNKNOWN_ERROR, 'There is no spoon')).
-        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
         andReturnError(ECode.UNKNOWN_ERROR, {'message':'There is no spoon'}).
         replayAll();
 
@@ -1519,7 +1517,7 @@ limitations under the License.
   function testIsElementPresent_byJs() {
     var testHelper = TestHelper.expectingSuccess().
         expect(CName.EXECUTE_SCRIPT, {'script': 'return 123', 'args': []}).
-        andReturnSuccess({'ELEMENT':'bar'}).
+        andReturnSuccess([{'ELEMENT':'bar'}]).
         replayAll();
 
     var driver = testHelper.createDriver();

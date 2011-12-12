@@ -596,29 +596,36 @@ webdriver.WebDriver.prototype.getTitle = function() {
  */
 webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
                                                      var_args) {
-  if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
-    return this.findDomElement_(/** @typedef {!Element} */locatorOrElement);
-  }
-
-  var locator = webdriver.Locator.checkLocator(locatorOrElement);
-
   var id;
-  if (locator.using == 'js') {
-    var args = goog.array.slice(arguments, 1);
-    goog.array.splice(args, 0, 0, locator.value);
-
-    id = this.executeScript.apply(this, args).
-        then(function(value) {
-          if (!(value instanceof webdriver.WebElement)) {
-            throw new Error('JS locator script result was not a WebElement');
+  if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
+    id = this.findDomElement_(/** @typedef {!Element} */locatorOrElement).
+        then(function(elements) {
+          if (!elements.length) {
+            throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
+                'Unable to locate element. Is WebDriver focused on its ' +
+                    'ownerDocument\'s frame?');
           }
-          return value;
+          return elements[0];
         });
   } else {
-    var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENT).
-        setParameter('using', locator.using).
-        setParameter('value', locator.value);
-    id = this.schedule(command, 'WebDriver.findElement(' + locator + ')');
+    var locator = webdriver.Locator.checkLocator(locatorOrElement);
+    if (locator.using == 'js') {
+      var args = goog.array.slice(arguments, 1);
+      goog.array.splice(args, 0, 0, locator.value);
+
+      id = this.executeScript.apply(this, args).
+          then(function(value) {
+            if (!(value instanceof webdriver.WebElement)) {
+              throw new Error('JS locator script result was not a WebElement');
+            }
+            return value;
+          });
+    } else {
+      var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENT).
+          setParameter('using', locator.using).
+          setParameter('value', locator.value);
+      id = this.schedule(command, 'WebDriver.findElement(' + locator + ')');
+    }
   }
   return new webdriver.WebElement(this, id);
 };
@@ -656,56 +663,47 @@ webdriver.WebDriver.prototype.findDomElement_ = function(element) {
 
     var element = store[id];
     if (!element || element[id] !== id) {
-      return null;
+      return [];
     }
-    return element;
+    return [element];
   }
 
-  id = this.executeScript(lookupElement, id).
+  return this.executeScript(lookupElement, id).
       then(function(value) {
         cleanUp();
-        if (!value) {
-          throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
-              'Unable to locate element. Is WebDriver focused on its ' +
-                  'ownerDocument\'s frame?');
-        }
-        if (!(value instanceof webdriver.WebElement)) {
+        if (value.length && !(value[0] instanceof webdriver.WebElement)) {
           throw new Error('JS locator script result was not a WebElement');
         }
         return value;
       }, cleanUp);
-
-  return new webdriver.WebElement(this, id);
 };
 
 
 /**
  * Schedules a command to test if an element is present on the page.
- * <p/>
- * This test is performed by executing a
- * {@code webdriver.CommandName.FIND_ELEMENT} command. If the server returns
- * the element, then this command will return with a {@code true} value. If the
- * server returns a {@code bot.ErrorCode.NO_SUCH_ELEMENT} error, then
- * the command will return {@code false}. Any other error returned by the server
- * is returned as is.
  *
- * @param {webdriver.Locator|Object.<string>} locator The locator
- *     strategy to use when searching for the element.
+ * <p>If given a DOM element, this function will check if it belongs to the
+ * document the driver is currently focused on. Otherwise, the function will
+ * test if at least one element can be found with the given search criteria.
+ *
+ * @param {!(webdriver.Locator|Object.<string>|Element)} locatorOrElement The
+ *     locator strategy to use when searching for the element, or the actual
+ *     DOM element to be located by the server.
  * @param {...} var_args Arguments to pass to {@code #executeScript} if using a
  *     JavaScript locator.  Otherwise ignored.
  * @return {!webdriver.promise.Promise} A promise that will resolve to whether
  *     the element is present on the page.
  * @export
  */
-webdriver.WebDriver.prototype.isElementPresent = function(locator, var_args) {
-  return this.findElement.apply(this, arguments).
-      then(function() { return true; },
-           function(e) {
-             if (e.code == bot.ErrorCode.NO_SUCH_ELEMENT) {
-               return false;
-             }
-             throw e;
-           });
+webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
+                                                          var_args) {
+  var findElement =
+      locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument ?
+          this.findDomElement_(/** @typedef {!Element} */locatorOrElement) :
+          this.findElements.apply(this, arguments);
+  return findElement.then(function(result) {
+    return !!result.length;
+  });
 };
 
 
@@ -722,8 +720,6 @@ webdriver.WebDriver.prototype.isElementPresent = function(locator, var_args) {
  */
 webdriver.WebDriver.prototype.findElements = function(locator, var_args) {
   locator = webdriver.Locator.checkLocator(locator);
-
-  var id;
   if (locator.using == 'js') {
     var args = goog.array.slice(arguments, 1);
     goog.array.splice(args, 0, 0, locator.value);
@@ -1410,18 +1406,11 @@ webdriver.WebElement.prototype.findElement = function(locator, var_args) {
 
 
 /**
- * Schedules a command to test if there is a descendant of this element that
- * matches the given search criteria.
- * <p/>
- * This test is performed by executing a
- * {@code webdriver.CommandName.FIND_CHILD_ELEMENT} command. If the server
- * returns the element, then this command will return {@code true}. If the
- * server returns a {@code bot.ErrorCode.NO_SUCH_ELEMENT} error, then the
- * command will return {@code false}. Any other error returned by the server is
- * propagated as is.
- * <p/>
- * Note that JS locator searches cannot be restricted to a subtree. All such
- * searches are delegated to this instance's parent WebDriver.
+ * Schedules a command to test if there is at least one descendant of this
+ * element that matches the given search criteria.
+ *
+ * <p>Note that JS locator searches cannot be restricted to a subtree of the
+ * DOM. All such searches are delegated to this instance's parent WebDriver.
  *
  * @param {webdriver.Locator|Object.<string>} locator The locator
  *     strategy to use when searching for the element.
@@ -1436,14 +1425,9 @@ webdriver.WebElement.prototype.isElementPresent = function(locator, var_args) {
   if (locator.using == 'js') {
     return this.driver_.isElementPresent.apply(this.driver_, arguments);
   }
-  return this.findElement.apply(this, arguments).
-      then(function() { return true; },
-           function(e) {
-             if (e.name == bot.ErrorCode.NO_SUCH_ELEMENT) {
-               return false;
-             }
-             throw e;
-           });
+  return this.findElements.apply(this, arguments).then(function(result) {
+    return !!result.length;
+  });
 };
 
 
