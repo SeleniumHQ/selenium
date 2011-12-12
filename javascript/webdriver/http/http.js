@@ -118,7 +118,7 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
         // common file so we can reference it here without pulling in all of
         // webdriver.WebElement's dependencies.
         if (value && value['ELEMENT']) {
-          // When inserting a WebElement into the URL, only use it's ID value,
+          // When inserting a WebElement into the URL, only use its ID value,
           // not the full JSON.
           value = value['ELEMENT'];
         }

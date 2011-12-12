@@ -48,7 +48,7 @@ webdriver.atoms.inject.frame.activeElement = function() {
 
 
 /**
- *Finds a frame by index.
+ * Finds a frame by index.
  *
  * @param {number} index The index of the frame to search for.
  * @param {!Window=} opt_root The window to perform the search under.
@@ -64,7 +64,7 @@ webdriver.atoms.inject.frame.findFrameByIndex = function(index, opt_root) {
 
 /**
  * @return {string} The default content of the current page,
- * which is the top window.
+ *     which is the top window.
  */
 webdriver.atoms.inject.frame.defaultContent = function() {
   return bot.inject.executeScript(bot.frame.defaultContent,

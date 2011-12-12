@@ -315,7 +315,7 @@ webdriver.promise.Deferred = function() {
   /**
    * Resolves this promise with the given value. If the value is itself a
    * promise and not a reference to this deferred, this instance will wait for
-   * it before before resolving.
+   * it before resolving.
    * @param {*} value The resolved value.
    */
   function resolve(value) {
@@ -401,7 +401,7 @@ webdriver.promise.isPromise = function(value) {
 /**
  * Creates a promise that will be resolved at a set time in the future.
  * @param {number} ms The amount of time, in milliseconds, to wait before
- *     resolvin the promise.
+ *     resolving the promise.
  * @return {!webdriver.promise.Promise} The promise.
  * @export
  */
@@ -440,7 +440,7 @@ webdriver.promise.rejected = function(reason) {
 
 
 /**
- * Wraps a function that is assumed to a node-style callback as its final
+ * Wraps a function that is assumed to be a node-style callback as its final
  * argument. This callback takes two arguments: an error value (which will be
  * null if the call succeeded), and the success value as the second argument.
  * If the call fails, the returned promise will be rejected, otherwise it will
@@ -933,7 +933,7 @@ webdriver.promise.Application.prototype.cancelNext_ = function() {
  * Executes the next task for the current frame. If the current frame has no
  * more tasks, the frame's result will be resolved, returning control to the
  * frame's creator. This will terminate the application if the completed
- * frame were at the top of the stack.
+ * frame was at the top of the stack.
  * @private
  */
 webdriver.promise.Application.prototype.executeNext_ = function() {

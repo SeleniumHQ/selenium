@@ -86,7 +86,7 @@ webdriver.atoms.storage.session.size = function() {
  * Returns the key item of the key/value pairs in the sessionStorage object
  * of a given index.
  * @param {number} index The index of the key/value pair list.
- * @return {string} The key item of a given index.
+ * @return {?string} The key item of a given index.
  */
 webdriver.atoms.storage.session.key = function(index) {
   return bot.storage.getSessionStorage().key(index);

@@ -29,7 +29,7 @@ goog.require('bot.inject.cache');
  *
  * @param {!(string|function)} fn The function to execute.
  * @param {Array.<*>} args Array of arguments to pass to fn.
- * @param {!{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
+ * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
  *     object to be read from the cache.
  * @return {!(string|bot.inject.Response)} The response object. If
  *     opt_stringify is true, the result will be serialized and returned in
@@ -46,8 +46,8 @@ webdriver.atoms.inject.executeScript = function(fn, args, opt_window) {
  * @param {!(string|function)} fn The function to execute.
  * @param {Array.<*>} args Array of arguments to pass to fn.
  * @param {int} timeout The timeout to wait up to in millis.
- * @param {!{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
- * object to be read from the cache.
+ * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
+ *     object to be read from the cache.
  * @return {!(string|bot.inject.Response)} The response object. If
  *     opt_stringify is true, the result will be serialized and returned in
  *     string format.
@@ -62,7 +62,8 @@ webdriver.atoms.inject.executeAsyncScript =
 /**
  * Get the window to use.
  *
- * @param {!Window=} opt_window An optional window to use.
+ * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
+ *     object to be read from the cache.
  * @return {!Window} A reference to a window.
  * @private
  */

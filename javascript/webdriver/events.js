@@ -151,11 +151,11 @@ webdriver.EventEmitter.prototype.removeListener = function(type, listener) {
 /**
  * Removes all listeners for a specific type of event. If no event is
  * specified, all listeners across all types will be removed.
- * @param {string=} type The type of event to remove listeners from.
+ * @param {string=} opt_type The type of event to remove listeners from.
  * @return {!webdriver.EventEmitter} A self reference.
  * @export
  */
-webdriver.EventEmitter.prototype.removeAllListeners = function(type) {
-  goog.isDef(type) ? delete this.events_[type] : this.events_ = {};
+webdriver.EventEmitter.prototype.removeAllListeners = function(opt_type) {
+  goog.isDef(opt_type) ? delete this.events_[opt_type] : this.events_ = {};
   return this;
 };

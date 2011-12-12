@@ -34,7 +34,7 @@ goog.require('goog.style');
  */
 webdriver.atoms.element.isSelected = function(element) {
   // Although this method looks unloved, its compiled form is used by 
-  //
+  // the Chrome and OperaDrivers.
   if (!bot.dom.isSelectable(element)) {
     return false;
   }
@@ -50,7 +50,7 @@ webdriver.atoms.element.isSelected = function(element) {
  * is done.
  *
  * @param {!Element} element The element to use.
- * @param {!string} attribute The name of the attribute to look up.
+ * @param {string} attribute The name of the attribute to look up.
  * @return {string} The string value of the attribute or property, or null.
  */
 webdriver.atoms.element.getAttribute = function(element, attribute) {
@@ -118,7 +118,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
 
 
 /**
- * Get the location of the element, if it's displayed.
+ * Get the location of the element in page space, if it's displayed.
  *
  * @param {!Element} element The element to get the location for.
  * @return {goog.math.Rect} The bounding rectangle of the element.
