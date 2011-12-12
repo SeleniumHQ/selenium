@@ -27,7 +27,7 @@ java_library(name = "junit",
 java_library(name = "junit_4",
   srcs = [
     "JUnit4TestBase.java",
-    "LateRejectingRunner.java",
+    "SeleniumTestRunner.java",
   ],
   deps = [
     ":junit",
