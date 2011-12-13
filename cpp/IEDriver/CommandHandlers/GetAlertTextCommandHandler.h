@@ -36,7 +36,7 @@ class GetAlertTextCommandHandler : public IECommandHandler {
     BrowserHandle browser_wrapper;
     executor.GetCurrentBrowser(&browser_wrapper);
 
-	int timeout = executor.implicit_wait_timeout();
+	int timeout = executor.implicit_wait_for_alerts_timeout();
     clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
     if (timeout > 0 && timeout < 1000) {
       end += 1 * CLOCKS_PER_SEC;

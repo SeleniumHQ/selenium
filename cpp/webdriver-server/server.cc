@@ -467,6 +467,7 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/element"]["POST"] = FindElement;
   this->commands_["/session/:sessionid/elements"]["POST"] = FindElements;
   this->commands_["/session/:sessionid/timeouts/implicit_wait"]["POST"] = ImplicitlyWait;
+  this->commands_["/session/:sessionid/timeouts/implicit_wait_for_alerts"]["POST"] = ImplicitlyWaitForAlerts;
   this->commands_["/session/:sessionid/timeouts/async_script"]["POST"] = SetAsyncScriptTimeout;
   this->commands_["/session/:sessionid/element/active"]["POST"] = GetActiveElement;
   this->commands_["/session/:sessionid/element/:id/element"]["POST"] = FindChildElement;

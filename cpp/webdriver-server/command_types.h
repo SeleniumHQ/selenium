@@ -66,6 +66,7 @@ enum CommandType {
   ElementEquals,
   Screenshot, 
   ImplicitlyWait,
+  ImplicitlyWaitForAlerts,
   SetAsyncScriptTimeout,
   GetOrientation,
   SetOrientation,

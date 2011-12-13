@@ -125,6 +125,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->implicit_wait_timeout_ = timeout; 
   }
 
+  int implicit_wait_for_alerts_timeout(void) const { 
+    return this->implicit_wait_for_alerts_timeout_; 
+  }
+  void set_implicit_wait_for_alerts_timeout(const int timeout) { 
+    this->implicit_wait_for_alerts_timeout_ = timeout; 
+  }
+
   int async_script_timeout(void) const {
     return this->async_script_timeout_;
   }
@@ -188,6 +195,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   int speed_;
   int implicit_wait_timeout_;
+  int implicit_wait_for_alerts_timeout_;
   int async_script_timeout_;
 
   std::string session_id_;

@@ -65,6 +65,7 @@
 #include "CommandHandlers/SendKeysToAlertCommandHandler.h"
 #include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
 #include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
+#include "CommandHandlers/SetImplicitWaitForAlertsTimeoutCommandHandler.h"
 #include "CommandHandlers/SetWindowPositionCommandHandler.h"
 #include "CommandHandlers/SetWindowSizeCommandHandler.h"
 #include "CommandHandlers/SubmitElementCommandHandler.h"
@@ -113,6 +114,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->ignore_protected_mode_settings_ = false;
   this->speed_ = 0;
   this->implicit_wait_timeout_ = 0;
+  this->implicit_wait_for_alerts_timeout_ = 2000;
   this->last_known_mouse_x_ = 0;
   this->last_known_mouse_y_ = 0;
   return 0;
@@ -516,6 +518,7 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[GoBack] = CommandHandlerHandle(new GoBackCommandHandler);
   this->command_handlers_[Refresh] = CommandHandlerHandle(new RefreshCommandHandler);
   this->command_handlers_[ImplicitlyWait] = CommandHandlerHandle(new SetImplicitWaitTimeoutCommandHandler);
+  this->command_handlers_[ImplicitlyWaitForAlerts] = CommandHandlerHandle(new SetImplicitWaitForAlertsTimeoutCommandHandler);
   this->command_handlers_[SetAsyncScriptTimeout] = CommandHandlerHandle(new SetAsyncScriptTimeoutCommandHandler);
   this->command_handlers_[NewSession] = CommandHandlerHandle(new NewSessionCommandHandler);
   this->command_handlers_[GetSessionCapabilities] = CommandHandlerHandle(new GetSessionCapabilitiesCommandHandler);

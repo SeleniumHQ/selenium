@@ -37,6 +37,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT_FOR_ALERTS;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
@@ -178,6 +179,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     addCommand(FIND_ELEMENT, findElement);
     addCommand(FIND_ELEMENTS, findElements);
     addCommand(IMPLICITLY_WAIT, timeouts);
+    addCommand(IMPLICITLY_WAIT_FOR_ALERTS, timeouts);
     addCommand(GET, new GetUrl());
     addCommand(GET_ACTIVE_ELEMENT, new GetActiveElement());
     addCommand(GET_ELEMENT_ATTRIBUTE, new GetElementAttribute());

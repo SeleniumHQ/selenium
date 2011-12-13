@@ -246,6 +246,7 @@
     <ClInclude Include="CommandHandlers\GetWindowPositionCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetWindowSizeCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendKeysToActiveElementCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\SetImplicitWaitForAlertsTimeoutCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetWindowPositionCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetWindowSizeCommandHandler.h" />
     <ClInclude Include="DocumentHost.h" />

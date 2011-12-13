@@ -146,6 +146,8 @@ Dispatcher.prototype.init_ = function() {
 
   this.bind_('/session/:sessionId/timeouts/implicit_wait').
       on(Request.Method.POST, Dispatcher.executeAs('implicitlyWait'));
+  this.bind_('/session/:sessionId/timeouts/implicit_wait_for_alerts').
+      on(Request.Method.POST, Dispatcher.executeAs('implicitlyWaitForAlerts'));
   this.bind_('/session/:sessionId/timeouts/async_script').
       on(Request.Method.POST, Dispatcher.executeAs('setScriptTimeout'));
 

@@ -295,6 +295,9 @@
     <ClInclude Include="CommandHandlers\SetWindowSizeCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="CommandHandlers\SetImplicitWaitForAlertsTimeoutCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="IEDriver.def">

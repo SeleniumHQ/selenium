@@ -581,6 +581,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         return this;
       }
 
+      public Timeouts implicitlyWaitForAlerts(long time, TimeUnit unit) {
+        execute(DriverCommand.IMPLICITLY_WAIT_FOR_ALERTS, ImmutableMap.of("ms",
+            TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit)));
+        return this;
+      }
+
       public Timeouts setScriptTimeout(long time, TimeUnit unit) {
         execute(DriverCommand.SET_SCRIPT_TIMEOUT,
             ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));

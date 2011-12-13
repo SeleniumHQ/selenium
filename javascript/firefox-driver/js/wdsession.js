@@ -101,6 +101,16 @@ wdSession.prototype.inputSpeed_ = 1;
  */
 wdSession.prototype.implicitWait_ = 0;
 
+
+/**
+ * The amount of time, in milliseconds, this session should wait for an alert
+ * to appear.
+ * @type {number}
+ * @private
+ */
+wdSession.prototype.implicitWaitForAlerts_ = 2000;
+
+
 /**
  * Current position of the mouse cursor, in X,Y coordinates.
  */
@@ -240,6 +250,25 @@ wdSession.prototype.getImplicitWait = function() {
  */
 wdSession.prototype.setImplicitWait = function(wait) {
   this.implicitWait_ = Math.max(wait, 0);
+};
+
+
+/**
+ * @return {number} The amount of time, in milliseconds, this session should
+ *     wait for an alert to appear.
+ */
+wdSession.prototype.getImplicitWaitForAlerts = function() {
+  return this.implicitWaitForAlerts_;
+};
+
+
+/**
+ * Sets the amount of time, in milliseconds, this session should wait for an
+ * alert to appear.
+ * @param {number} wait The amount of time to wait.
+ */
+wdSession.prototype.setImplicitWaitForAlerts = function(wait) {
+  this.implicitWaitForAlerts_ = Math.max(wait, 0);
 };
 
 

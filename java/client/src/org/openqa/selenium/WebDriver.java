@@ -266,6 +266,18 @@ public interface WebDriver extends SearchContext {
     Timeouts implicitlyWait(long time, TimeUnit unit);
 
     /**
+     * Specifies the amount of time the driver should wait for the alert to appear. Default value is 2000ms.
+     * <p/>
+     * Increasing the implicit wait timeout should be used judiciously as it will have an adverse
+     * effect on test run time, especially when used to wait for a missing alert.
+     * 
+     * @param time The amount of time to wait.
+     * @param unit The unit of measure for {@code time}.
+     * @return A self reference.
+     */
+    Timeouts implicitlyWaitForAlerts(long time, TimeUnit unit);
+
+    /**
      * Sets the amount of time to wait for an asynchronous script to finish execution before
      * throwing an error. If the timeout is negative, then the script will be allowed to run
      * indefinitely.

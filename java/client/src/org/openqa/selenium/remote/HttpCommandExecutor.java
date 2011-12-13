@@ -117,6 +117,7 @@ import static org.openqa.selenium.remote.DriverCommand.IME_GET_ACTIVE_ENGINE;
 import static org.openqa.selenium.remote.DriverCommand.IME_GET_AVAILABLE_ENGINES;
 import static org.openqa.selenium.remote.DriverCommand.IME_IS_ACTIVATED;
 import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT_FOR_ALERTS;
 import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_ONLINE;
 import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_VISIBLE;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
@@ -291,6 +292,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
              get("/session/:sessionId/element/:id/css/:propertyName"))
         .put(IMPLICITLY_WAIT, post("/session/:sessionId/timeouts/implicit_wait"))
+        .put(IMPLICITLY_WAIT_FOR_ALERTS, post("/session/:sessionId/timeouts/implicit_wait_for_alerts"))
         .put(SET_SCRIPT_TIMEOUT, post("/session/:sessionId/timeouts/async_script"))
         .put(EXECUTE_SQL, post("/session/:sessionId/execute_sql"))
         .put(GET_LOCATION, get("/session/:sessionId/location"))
