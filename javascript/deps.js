@@ -61,7 +61,7 @@ goog.addDependency("../../../javascript/jsunit/app/jsUnitTestManager.js", [], []
 goog.addDependency("../../../javascript/jsunit/app/jsUnitCore.js", [], []);
 goog.addDependency("../../../javascript/jsunit/app/jsUnitMockTimeout.js", [], []);
 goog.addDependency("../../../javascript/atoms/bot.js", ['bot'], ['goog.userAgent']);
-goog.addDependency("../../../javascript/atoms/error.js", ['bot.Error', 'bot.ErrorCode'], ['goog.debug.Error', 'goog.object']);
+goog.addDependency("../../../javascript/atoms/error.js", ['bot.Error', 'bot.ErrorCode'], ['goog.object']);
 goog.addDependency("../../../javascript/atoms/action.js", ['bot.action'], ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.Keyboard', 'bot.Mouse', 'bot.dom', 'bot.events', 'bot.events.EventType', 'bot.locators', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.math.Coordinate', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/userAgent.js", ['bot.userAgent'], ['goog.userAgent', 'goog.userAgent.product', 'goog.userAgent.product.isVersion']);
 goog.addDependency("../../../javascript/atoms/dom.js", ['bot.dom'], ['bot', 'bot.locators.xpath', 'goog.array', 'goog.dom', 'goog.dom.NodeIterator', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.math.Coordinate', 'goog.math.Rect', 'goog.math.Size', 'goog.string', 'goog.style']);
@@ -142,8 +142,9 @@ goog.addDependency("../../../javascript/shared-extension/src/dommessenger.js", [
 goog.addDependency("../../../javascript/webdriver/error.js", ['webdriver.error'], ['bot.Error', 'bot.ErrorCode']);
 goog.addDependency("../../../javascript/webdriver/session.js", ['webdriver.Session'], []);
 goog.addDependency("../../../javascript/webdriver/events.js", ['webdriver.EventEmitter'], []);
-goog.addDependency("../../../javascript/webdriver/builder.js", ['webdriver.Builder'], ['goog.string', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.Session', 'webdriver.WebDriver', 'webdriver.error', 'webdriver.http.Executor', 'webdriver.http.Response', 'webdriver.http.XhrClient', 'webdriver.http.JsonpClient', 'webdriver.node.HttpClient', 'webdriver.process', 'webdriver.promise.Deferred']);
+goog.addDependency("../../../javascript/webdriver/builder.js", ['webdriver.Builder'], ['goog.string', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.FirefoxDomExecutor', 'webdriver.Session', 'webdriver.WebDriver', 'webdriver.error', 'webdriver.http.Executor', 'webdriver.http.Response', 'webdriver.http.XhrClient', 'webdriver.http.JsonpClient', 'webdriver.node.HttpClient', 'webdriver.process', 'webdriver.promise.Deferred']);
 goog.addDependency("../../../javascript/webdriver/command.js", ['webdriver.Command', 'webdriver.CommandExecutor', 'webdriver.CommandName', 'webdriver.CommandResponse'], []);
+goog.addDependency("../../../javascript/webdriver/firefoxdomexecutor.js", ['webdriver.FirefoxDomExecutor'], ['goog.json', 'goog.userAgent.product', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.error']);
 goog.addDependency("../../../javascript/webdriver/promise.js", ['webdriver.promise', 'webdriver.promise.Application', 'webdriver.promise.Application.Frame_', 'webdriver.promise.Application.Task_', 'webdriver.promise.Deferred', 'webdriver.promise.Promise'], ['goog.array', 'goog.object', 'webdriver.EventEmitter']);
 goog.addDependency("../../../javascript/webdriver/webdriver.js", ['webdriver.Key', 'webdriver.WebDriver', 'webdriver.WebDriver.Navigation', 'webdriver.WebDriver.Options', 'webdriver.WebDriver.TargetLocator', 'webdriver.WebDriver.Timeouts', 'webdriver.WebElement'], ['bot.Error', 'bot.ErrorCode', 'goog.array', 'goog.object', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.Locator', 'webdriver.Session', 'webdriver.error', 'webdriver.promise', 'webdriver.promise.Application', 'webdriver.promise.Deferred', 'webdriver.promise.Promise']);
 goog.addDependency("../../../javascript/webdriver/process.js", ['webdriver.process'], ['goog.Uri', 'goog.array', 'goog.json']);

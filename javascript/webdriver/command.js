@@ -107,7 +107,7 @@ webdriver.CommandName = {
 
   'NEW_SESSION': 'newSession',
   'GET_SESSIONS': 'getSessions',
-  'DESCRIBE_SESSION': 'describeSession',
+  'DESCRIBE_SESSION': 'getSessionCapabilities',
 
   'CLOSE': 'close',
   'QUIT': 'quit',
@@ -124,7 +124,7 @@ webdriver.CommandName = {
   'DELETE_COOKIE': 'deleteCookie',
   'DELETE_ALL_COOKIES': 'deleteAllCookies',
 
-  'GET_ACTIVE_ELEMENT': 'activeElement',
+  'GET_ACTIVE_ELEMENT': 'getActiveElement',
   'FIND_ELEMENT': 'findElement',
   'FIND_ELEMENTS': 'findElements',
   'FIND_CHILD_ELEMENT': 'findChildElement',

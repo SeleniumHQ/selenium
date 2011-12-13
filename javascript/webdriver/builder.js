@@ -17,6 +17,7 @@ goog.provide('webdriver.Builder');
 goog.require('goog.string');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
+goog.require('webdriver.FirefoxDomExecutor');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.error');
@@ -218,28 +219,33 @@ webdriver.Builder.prototype.withCapabilities = function(capabilities) {
  * @export
  */
 webdriver.Builder.prototype.build = function() {
-  if (!this.serverUrl_) {
-    throw new Error('The remote WebDriver server URL has not been specified.');
-  }
-
-  var clientCtor = webdriver.process.isNative() ?
-      webdriver.node.HttpClient :
-      (webdriver.process.getEnv(webdriver.Builder.USE_JSONP_ENV) ||
-       !webdriver.http.XhrClient.isCorsAvailable()) ?
-          webdriver.http.JsonpClient :
-          webdriver.http.XhrClient;
-
-  var client = new clientCtor(this.serverUrl_);
-  var executor = new webdriver.http.Executor(client);
-
-  var session;
-  if (this.sessionId_) {
-    session = webdriver.Builder.getSession_(this.sessionId_, executor);
-  } else if (webdriver.process.isNative()) {
+  var executor, session;
+  if (webdriver.FirefoxDomExecutor.isAvailable()) {
+    executor = new webdriver.FirefoxDomExecutor();
     session = webdriver.Builder.createSession_(executor, this.capabilities_);
   } else {
-    throw new Error('Unable to create a new client for this browser. The ' +
-        'WebDriver session ID has not been defined.');
+    if (!this.serverUrl_) {
+      throw new Error('The remote WebDriver server URL has not been specified.');
+    }
+
+    var clientCtor = webdriver.process.isNative() ?
+        webdriver.node.HttpClient :
+        (webdriver.process.getEnv(webdriver.Builder.USE_JSONP_ENV) ||
+         !webdriver.http.XhrClient.isCorsAvailable()) ?
+            webdriver.http.JsonpClient :
+            webdriver.http.XhrClient;
+
+    var client = new clientCtor(this.serverUrl_);
+    executor = new webdriver.http.Executor(client);
+
+    if (this.sessionId_) {
+      session = webdriver.Builder.getSession_(this.sessionId_, executor);
+    } else if (webdriver.process.isNative() || useFirefoxDomExecutor) {
+      session = webdriver.Builder.createSession_(executor, this.capabilities_);
+    } else {
+      throw new Error('Unable to create a new client for this browser. The ' +
+          'WebDriver session ID has not been defined.');
+    }
   }
 
   return new webdriver.WebDriver(session, executor);
