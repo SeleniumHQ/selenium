@@ -65,6 +65,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
 
   var self = this;
   var hadError = false;
+  var app = webdriver.promise.Application.getInstance();
 
   this.runSingleTest_(test, onError, onExpectationFailures).then(function() {
     hadError || self.doSuccess(test);
@@ -75,9 +76,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
 
   function onError(e) {
     hadError = true;
-    // TODO(jleyba): Should we annotate the error with information about all
-    // tasks that have been executed by the application?
-    self.doError(test, e);
+    self.doError(test, webdriver.testing.TestCase.annotateError_(app, e));
   }
 
   function onExpectationFailures(description, errors) {
@@ -85,16 +84,31 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
       // Patch the error to ensure it is not double logged by
       // goog.testing.TestCase.prototype.logError.
       error['isJsUnitException'] = error['loggedJsUnitException'] = true;
-      return self.logError(description, e);
+      return self.logError(description, error);
     });
 
     errors.unshift(description + ': FAILED EXPECTATIONS');
-    errors = errors.join('\n').spit('\n').join('\n  ');
+    errors = errors.join('\n').split('\n').join('\n  ');
     self.saveMessage(errors);
 
     hadError = true;
     self.result_.errors.push(errors);
   }
+};
+
+
+webdriver.testing.TestCase.annotateError_ = function(app, e) {
+  var history = [
+    '\n+---------- Task History ------------------',
+    '\n|', app.getHistory().split('\n').join('\n|'),
+    '\n+------------------------------------------'
+  ].join('');
+  if (e && goog.isString(e.message)) {
+    e.message += history;
+  } else {
+    e = e + history;
+  }
+  return e;
 };
 
 
@@ -128,6 +142,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
 webdriver.testing.TestCase.prototype.runSingleTest_ = function(
     test, onError, onExpectationFailures) {
   var app = webdriver.promise.Application.getInstance();
+  app.clearHistory();
 
   var expectationFailures = [];
 
@@ -153,7 +168,8 @@ webdriver.testing.TestCase.prototype.runSingleTest_ = function(
   }
 
   function recordExpectationFailure(e) {
-    expectationFailures.push(e);
+    expectationFailures.push(
+        webdriver.testing.TestCase.annotateError_(app, e));
   }
 
   function removeRecordExpectationFailure() {

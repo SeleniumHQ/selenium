@@ -649,6 +649,13 @@ webdriver.promise.Application = function() {
    * @private
    */
   this.frames_ = [];
+
+  /**
+   * A history of commands executed by this Application.
+   * @type {!Array.<string>}
+   * @private
+   */
+  this.history_ = [];
 };
 goog.inherits(webdriver.promise.Application, webdriver.EventEmitter);
 goog.addSingletonGetter(webdriver.promise.Application);
@@ -722,6 +729,22 @@ webdriver.promise.Application.prototype.reset = function() {
   this.removeAllListeners();
   this.cancelShutdown_();
   this.cancelNext_();
+};
+
+
+/**
+ * Returns this instance's current task history, with each task listed on a
+ * separate line.
+ * @return {string} The task history.
+ */
+webdriver.promise.Application.prototype.getHistory = function(e) {
+  return this.history_.join('\n');
+};
+
+
+/** Clears this instance's task history. */
+webdriver.promise.Application.prototype.clearHistory = function() {
+  this.history_ = [];
 };
 
 
@@ -949,6 +972,9 @@ webdriver.promise.Application.prototype.executeNext_ = function() {
     currentFrame.resolve();
     return;
   }
+
+  var padding = new Array(this.frames_.length).join('.');
+  this.history_.push(padding + (task.description || '(anonymous task)'));
 
   currentFrame.isActive = true;
   var result = this.executeAsap_(task.execute);

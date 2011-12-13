@@ -1011,6 +1011,38 @@ limitations under the License.
 
     consumeTimeouts();
   }
+
+
+  function testHistoryRecording() {
+    setAppExpectations();
+    app.schedule('one', goog.nullFunction).then(function() {
+      app.schedule('one.a', goog.nullFunction).then(function() {
+        app.schedule('one.a.i', goog.nullFunction);
+        app.schedule('one.a.ii', goog.nullFunction);
+      });
+      app.schedule('one.b', goog.nullFunction);
+    });
+    app.schedule('two', goog.nullFunction);
+    app.schedule('', goog.nullFunction);
+    app.schedule('three', goog.nullFunction);
+
+    consumeTimeouts();
+    callbacks.assertCallback();
+
+    assertEquals([
+        'one',
+        '.one.a',
+        '..one.a.i',
+        '..one.a.ii',
+        '.one.b',
+        'two',
+        '(anonymous task)',
+        'three'
+    ].join('\n'), app.getHistory());
+
+    app.clearHistory();
+    assertEquals('', app.getHistory());
+  }
 </script>
 </body>
 </html>
