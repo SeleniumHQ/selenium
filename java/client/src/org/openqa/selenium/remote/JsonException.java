@@ -25,4 +25,7 @@ public class JsonException extends WebDriverException {
   public JsonException(JSONException e) {
     super(e);
   }
+  public JsonException(JSONException e, Object text) {
+    super("JSON command: " + text, e);
+  }
 }

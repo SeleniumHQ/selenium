@@ -42,7 +42,7 @@ public class JsonToBeanConverter {
     try {
       return convert(clazz, text, 0);
     } catch (JSONException e) {
-      throw new JsonException(e);
+      throw new JsonException(e, text);
     }
   }
 
