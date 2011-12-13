@@ -1,7 +1,5 @@
 package org.openqa.selenium;
 
-import javax.management.modelmbean.RequiredModelMBean;
-
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
