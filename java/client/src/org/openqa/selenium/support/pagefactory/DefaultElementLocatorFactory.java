@@ -17,18 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.SearchContext;
 
 import java.lang.reflect.Field;
 
 public final class DefaultElementLocatorFactory implements ElementLocatorFactory {
-  private final WebDriver driverRef;
+  private final SearchContext searchContext;
 
-  public DefaultElementLocatorFactory(WebDriver driverRef) {
-    this.driverRef = driverRef;
+  public DefaultElementLocatorFactory(SearchContext searchContext) {
+    this.searchContext = searchContext;
   }
 
   public ElementLocator createLocator(Field field) {
-    return new DefaultElementLocator(driverRef, field);
+    return new DefaultElementLocator(searchContext, field);
   }
 }

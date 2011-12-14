@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Field;
@@ -30,7 +30,7 @@ import java.util.List;
  * annotations {@link org.openqa.selenium.support.FindBy} and {@link org.openqa.selenium.support.CacheLookup}.
  */
 public class DefaultElementLocator implements ElementLocator {
-  private final WebDriver driver;
+  private final SearchContext searchContext;
   private final boolean shouldCache;
   private final By by;
   private WebElement cachedElement;
@@ -39,11 +39,11 @@ public class DefaultElementLocator implements ElementLocator {
   /**
    * Creates a new element locator.
    * 
-   * @param driver The driver to use when finding the element
+   * @param searchContext The context to use when finding the element
    * @param field The field on the Page Object that will hold the located value
    */
-  public DefaultElementLocator(WebDriver driver, Field field) {
-    this.driver = driver;
+  public DefaultElementLocator(SearchContext searchContext, Field field) {
+    this.searchContext = searchContext;
     Annotations annotations = new Annotations(field);
     shouldCache = annotations.isLookupCached();
     by = annotations.buildBy();
@@ -57,7 +57,7 @@ public class DefaultElementLocator implements ElementLocator {
       return cachedElement;
     }
 
-    WebElement element = driver.findElement(by);
+    WebElement element = searchContext.findElement(by);
     if (shouldCache) {
       cachedElement = element;
     }
@@ -73,7 +73,7 @@ public class DefaultElementLocator implements ElementLocator {
       return cachedElementList;
     }
 
-    List<WebElement> elements = driver.findElements(by);
+    List<WebElement> elements = searchContext.findElements(by);
     if (shouldCache) {
       cachedElementList = elements;
     }
