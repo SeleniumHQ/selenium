@@ -42,7 +42,7 @@ module Selenium
 
       def assert_modifier(key)
         unless MODIFIERS.include? key
-          raise Error::UnsupportedOperationError,
+          raise ArgumentError,
             "#{key.inspect} is not a modifier key, expected one of #{MODIFIERS.inspect}"
         end
       end
