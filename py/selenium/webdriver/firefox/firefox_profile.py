@@ -71,7 +71,7 @@ class FirefoxProfile(object):
         "security.warn_viewing_mixed.show_once": "false",
         "signon.rememberSignons": "false",
         "toolkit.networkmanager.disable": "true",
-        "toolkit.telemetry.prompted": "2",        
+        "toolkit.telemetry.prompted": "2",
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
@@ -84,7 +84,7 @@ class FirefoxProfile(object):
         Initialises a new instance of a Firefox Profile
 
         :args:
-         - profile_directory: Directory of profile that you want to use. 
+         - profile_directory: Directory of profile that you want to use.
            This defaults to None and will create a new
            directory when object is created.
         """

@@ -103,7 +103,7 @@ class InvalidSelectiorException(NoSuchElementException):
     expression is used which is either syntactically invalid (i.e. it is not a
     xpath expression) or the expression does not select WebElements
     (e.g. "count(//input)").
-    """ 
+    """
     pass
 
 class ImeNotAvailableException(WebDriverException):
