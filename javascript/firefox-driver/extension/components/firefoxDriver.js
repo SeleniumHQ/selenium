@@ -767,12 +767,6 @@ FirefoxDriver.prototype.implicitlyWait = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.implicitlyWaitForAlerts = function(respond, parameters) {
-  respond.session.setImplicitWaitForAlerts(parameters.ms);
-  respond.send();
-};
-
-
 FirefoxDriver.prototype.setScriptTimeout = function(respond, parameters) {
   respond.session.setScriptTimeout(parameters.ms);
   respond.send();
@@ -823,7 +817,7 @@ FirefoxDriver.prototype.acceptAlert = function(respond) {
 
 FirefoxDriver.prototype.getAlertText = function(respond) {
   var driver = this;
-  var wait = respond.session.getImplicitWaitForAlerts() || 1;
+  var wait = respond.session.getImplicitWait() || 1;
   fxdriver.modals.isModalPresent(
     function(present) {
       if (present) {

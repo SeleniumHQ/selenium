@@ -95,7 +95,6 @@ public interface DriverCommand {
   String SET_ALERT_VALUE = "setAlertValue";
 
   String IMPLICITLY_WAIT = "implicitlyWait";
-  String IMPLICITLY_WAIT_FOR_ALERTS = "implicitlyWaitForAlerts";
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
 
   String EXECUTE_SQL = "executeSQL";

@@ -539,11 +539,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return this;
     }
 
-    public Timeouts implicitlyWaitForAlerts(long time, TimeUnit unit) {
-      timeouts.implicitlyWaitForAlerts(time, unit);
-      return this;
-    }
-
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
       timeouts.setScriptTimeout(time, unit);
       return this;

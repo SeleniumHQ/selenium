@@ -97,8 +97,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private final AndroidWebElement element;
   private DomWindow currentWindowOrFrame;
   private long implicitWait = 0;
-  private long implicitWaitForAlerts = 2000;
-
+  ;
   // Maps the element ID to the AndroidWebElement
   private Map<String, AndroidWebElement> store;
   private final AndroidTouchScreen touchScreen;
@@ -1002,11 +1001,6 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
 
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
       implicitWait = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
-      return this;
-    }
-
-    public Timeouts implicitlyWaitForAlerts(long time, TimeUnit unit) {
-      implicitWaitForAlerts = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
       return this;
     }
 

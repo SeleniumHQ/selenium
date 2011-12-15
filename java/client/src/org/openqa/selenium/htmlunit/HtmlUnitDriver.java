@@ -116,7 +116,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private boolean enableJavascript;
   private ProxyConfig proxyConfig;
   private long implicitWait = 0;
-  private long implicitWaitForAlerts = 2000;
   private long scriptTimeout = 0;
   private HtmlUnitKeyboard keyboard;
   private HtmlUnitMouse mouse;
@@ -1188,12 +1187,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   class HtmlUnitTimeouts implements Timeouts {
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
       HtmlUnitDriver.this.implicitWait =
-          TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
-      return this;
-    }
-
-    public Timeouts implicitlyWaitForAlerts(long time, TimeUnit unit) {
-      HtmlUnitDriver.this.implicitWaitForAlerts =
           TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
       return this;
     }
