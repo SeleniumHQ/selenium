@@ -102,6 +102,9 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
+  // We can't reliably resize the window back afterwards, cross-browser, so have to kill the
+  // window, otherwise we are stuck with a small window for the rest of the tests.
+  // TODO(dawagner): Remove @NoDriverAfterTest when we can reliably do window resizing
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
