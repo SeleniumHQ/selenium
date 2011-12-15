@@ -81,10 +81,10 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
    * server configuration.
    *
-   * @see ChromeDriver(ChromeDriverService, Capabilities)
+   * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver() {
-    this(ChromeDriverService.createDefaultService(), DesiredCapabilities.chrome());
+    this(ChromeDriverService.createDefaultService(), new ChromeOptions());
   }
 
   /**
@@ -92,10 +92,10 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    * and shutdown upon calling {@link #quit()}.
    * 
    * @param service The service to use.
-   * @see ChromeDriver(ChromeDriverService, Capabilities)
+   * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver(ChromeDriverService service) {
-    this(service, DesiredCapabilities.chrome());
+    this(service, new ChromeOptions());
   }
 
   /**
@@ -103,10 +103,22 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    * chromedriver service.
    * 
    * @param capabilities The capabilities required from the ChromeDriver.
-   * @see ChromeDriver(ChromeDriverService, Capabilities)
+   * @see #ChromeDriver(ChromeDriverService, Capabilities)
+   * @deprecated Use {@link #ChromeDriver(ChromeOptions)} instead.
    */
+  @Deprecated
   public ChromeDriver(Capabilities capabilities) {
     this(ChromeDriverService.createDefaultService(), capabilities);
+  }
+
+  /**
+   * Creates a new ChromeDriver instance with the specified options.
+   *
+   * @param options The options to use.
+   * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
+   */
+  public ChromeDriver(ChromeOptions options) {
+    this(ChromeDriverService.createDefaultService(), options);
   }
 
   /**
@@ -115,9 +127,22 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
+   * @deprecated Use {@link #ChromeDriver(ChromeDriverService, ChromeOptions)}
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeCommandExecutor(service), capabilities);
+  }
+
+  /**
+   * Creates a new ChromeDriver instance with the specified options. The {@code service} will be
+   * started along with the driver, and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @param options The options to use.
+   */
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
+    super(new ChromeCommandExecutor(service), options.toCapabilities());
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {

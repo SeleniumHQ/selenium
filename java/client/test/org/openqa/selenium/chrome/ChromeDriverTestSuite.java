@@ -50,6 +50,7 @@ public class ChromeDriverTestSuite extends TestCase {
         .includeJavascriptTests()
         .keepDriverInstance()
         .restrictToPackage("org.openqa.selenium")
+        .restrictToPackage("org.openqa.selenium.chrome")
         .create();
 
     TestSuite suite = new TestSuite();
