@@ -16,17 +16,29 @@
 
 package org.openqa.selenium.android;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.AndroidWebDriver;
 import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.html5.BrowserConnection;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
+import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.android.app.MainActivity;
+import org.openqa.selenium.logging.Logs;
+
+import java.util.List;
+import java.util.Set;
 
 public class AndroidDriver implements BrowserConnection, HasTouchScreen, JavascriptExecutor,
     LocationContext, Rotatable, TakesScreenshot, WebDriver, WebStorage{
@@ -49,11 +61,11 @@ public class AndroidDriver implements BrowserConnection, HasTouchScreen, Javascr
     return driver.getTitle();
   }
 
-  public java.util.List<org.openqa.selenium.WebElement> findElements(org.openqa.selenium.By by) {
+  public List<WebElement> findElements(By by) {
     return driver.findElements(by);
   }
 
-  public org.openqa.selenium.WebElement findElement(org.openqa.selenium.By by) {
+  public WebElement findElement(By by) {
     return driver.findElement(by);
   }
 
@@ -69,7 +81,7 @@ public class AndroidDriver implements BrowserConnection, HasTouchScreen, Javascr
     driver.quit();
   }
 
-  public java.util.Set<String> getWindowHandles() {
+  public Set<String> getWindowHandles() {
     return driver.getWindowHandles();
   }
 
@@ -77,15 +89,15 @@ public class AndroidDriver implements BrowserConnection, HasTouchScreen, Javascr
     return driver.getWindowHandle();
   }
 
-  public org.openqa.selenium.WebDriver.TargetLocator switchTo() {
+  public TargetLocator switchTo() {
     return driver.switchTo();
   }
 
-  public org.openqa.selenium.WebDriver.Navigation navigate() {
+  public Navigation navigate() {
     return driver.navigate();
   }
 
-  public org.openqa.selenium.WebDriver.Options manage() {
+  public Options manage() {
     return driver.manage();
   }
 
@@ -101,7 +113,7 @@ public class AndroidDriver implements BrowserConnection, HasTouchScreen, Javascr
     return driver.isOnline();
   }
 
-  public void setOnline(boolean online) throws org.openqa.selenium.WebDriverException {
+  public void setOnline(boolean online) throws WebDriverException {
     driver.setOnline(online);
   }
 
@@ -113,28 +125,28 @@ public class AndroidDriver implements BrowserConnection, HasTouchScreen, Javascr
     return driver.location();
   }
 
-  public void setLocation(org.openqa.selenium.html5.Location location) {
+  public void setLocation(Location location) {
     driver.setLocation(location);
   }
 
-  public void rotate(org.openqa.selenium.ScreenOrientation orientation) {
+  public void rotate(ScreenOrientation orientation) {
     driver.rotate(orientation);
   }
 
-  public org.openqa.selenium.ScreenOrientation getOrientation() {
+  public ScreenOrientation getOrientation() {
     return driver.getOrientation();
   }
 
-  public <X> X getScreenshotAs(org.openqa.selenium.OutputType<X> target)
+  public <X> X getScreenshotAs(OutputType<X> target)
       throws org.openqa.selenium.WebDriverException {
     return driver.getScreenshotAs(target);
   }
 
-  public org.openqa.selenium.html5.LocalStorage getLocalStorage() {
+  public LocalStorage getLocalStorage() {
     return driver.getLocalStorage();
   }
 
-  public org.openqa.selenium.html5.SessionStorage getSessionStorage() {
+  public SessionStorage getSessionStorage() {
     return driver.getSessionStorage();
   }
 }
