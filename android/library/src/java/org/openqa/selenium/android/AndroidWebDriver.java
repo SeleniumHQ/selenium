@@ -70,6 +70,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.ErrorCodes;
 
 import java.io.ByteArrayOutputStream;
@@ -107,6 +108,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private final AndroidSessionStorage sessionStorage;
   private final AndroidTargetLocator targetLocator;
   private final AndroidFindBy findBy;
+  private final AndroidLogs logs;
 
   // Use for control redirect, contains the last url loaded (updated after each redirect)
   private volatile String lastUrlLoaded;
@@ -187,6 +189,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     CookieManager cookieManager = CookieManager.getInstance();
     cookieManager.removeAllCookie();
     networkHandler = new NetworkStateHandler(activity, webview);
+    logs = new AndroidLogs();
   }
 
    String getLastUrlLoaded() {
@@ -939,6 +942,10 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   private class AndroidOptions implements Options {
+
+    public Logs logs() {
+      return logs;
+    }
 
     public void addCookie(Cookie cookie) {
       if (webview == null) {

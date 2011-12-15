@@ -17,27 +17,33 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import android.util.Log;
+import java.util.logging.Level;
 
 public class Logger {
-  // Set to false for release apk, true when debugging.
-  private static boolean debug = false;
+  private static final java.util.logging.Logger logger;
 
-  // Should be left to true in release apk.
-  public static final boolean ERROR = true;
-  public static final boolean INFO = true;
+  static {
+    logger = java.util.logging.Logger.getLogger("AndroidWebDriver");
+    logger.setLevel(Level.WARNING);
+  }
 
-  public static void log(int level, String tag, String message) {
-    if (ERROR && Log.ERROR == level) {
-      Log.e(tag, message);
-    } else if (INFO && Log.INFO == level) {
-      Log.i(tag, message);
-    } else if (debug) {
-     Log.println(level, tag, message);
-    }
+  /**
+   * Sets the logging level for this logger.
+   * @param level
+   */
+  public static void setLevel(Level level) {
+    logger.setLevel(level);
+  }
+
+  public static void log(Level value, String className, String methodName, String message) {
+    logger.logp(value, className, methodName, message);
   }
   
   public static void setDebugMode(boolean enabled) {
-    debug = enabled;
+    setLevel(Level.FINE);
+  }
+
+  public static java.util.logging.Logger getLogger() {
+    return logger;
   }
 }

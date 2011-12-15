@@ -155,5 +155,5 @@ public interface DriverCommand {
   String GET_WINDOW_SIZE = "getWindowSize";
   String GET_WINDOW_POSITION = "getWindowPosition";
 
-  String LOGS_DRIVER = "getLogs";
+  String GET_LOGS = "getLogs";
 }

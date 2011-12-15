@@ -1,6 +1,5 @@
 /*
-
-Copyright 2010 Google Inc.
+Copyright 2011 Software Freedom Conservatory.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,9 +12,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.android.app;
+
+import static java.util.logging.Level.OFF;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -28,8 +31,10 @@ import android.os.IBinder;
 import org.openqa.selenium.android.AndroidWebDriver;
 import org.openqa.selenium.android.Logger;
 import org.openqa.selenium.android.server.JettyService;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.server.LoggingHandler;
 
 /**
  * Main application activity.
@@ -89,6 +94,13 @@ public class MainActivity extends Activity {
 
   public static void setCapabilities(DesiredCapabilities caps) {
     MainActivity.caps = caps;
+    if (caps.getCapability(LOGGING_PREFS) != null) {
+      LoggingPreferences prefs = (LoggingPreferences) caps.getCapability(LOGGING_PREFS);
+      if (prefs.getLevel(DRIVER) != null) {
+        Logger.setLevel(prefs.getLevel(DRIVER));
+        LoggingHandler.getInstance().attachTo(Logger.getLogger(), prefs.getLevel(DRIVER));
+      }
+    }
   }
 
   public static AndroidWebDriver createDriver() {

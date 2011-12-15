@@ -19,6 +19,8 @@ limitations under the License.
 package org.openqa.selenium.logging;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -26,18 +28,18 @@ import java.util.logging.Level;
  * Represent a pool of {@Link LogEntry}. This class also provides filtering
  * mechanisms based on levels.
  */
-public class LogEntries {
-  List<LogEntry> entries;
+public class LogEntries implements Iterable<LogEntry> {
+  private final List<LogEntry> entries;
 
   public LogEntries(List<LogEntry> entries) {
     this.entries = new ArrayList<LogEntry>(entries);
   }
 
   /**
-   * @return an immutable list of all {@link LogEntry} fetched.
+   * @return a view of all {@link LogEntry} fetched.
    */
   public List<LogEntry> getAll() {
-    return new ArrayList<LogEntry>(entries);
+    return entries;
   }
 
   /**
@@ -52,5 +54,9 @@ public class LogEntries {
       }
     }
     return toReturn;
+  }
+
+  public Iterator<LogEntry> iterator() {
+    return entries.iterator();
   }
 }

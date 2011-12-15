@@ -27,6 +27,9 @@ import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -68,7 +71,7 @@ public class BeanToJsonConverter {
       }
 
       return String.valueOf(object);
-    } catch (JSONException e) {
+    } catch (Exception e) {
       throw new WebDriverException("Unable to convert: " + object, e);
     }
   }
@@ -121,7 +124,7 @@ public class BeanToJsonConverter {
   }
 
   @SuppressWarnings({"unchecked"})
-  private Object convertObject(Object toConvert, int maxDepth) throws JSONException {
+  private Object convertObject(Object toConvert, int maxDepth) throws Exception {
     if (toConvert == null)
       return JSONObject.NULL;
 
@@ -133,6 +136,24 @@ public class BeanToJsonConverter {
 
     if (toConvert.getClass().isEnum() || toConvert instanceof Enum) {
       return toConvert.toString();
+    }
+
+    if (toConvert instanceof LoggingPreferences) {
+      LoggingPreferences prefs = (LoggingPreferences) toConvert;
+      JSONObject converted = new JSONObject();
+      for (String logType : prefs.getEnabledLogTypes()) {
+        converted.put(logType, prefs.getLevel(logType));
+      }
+      return converted;
+    }
+
+    if (toConvert instanceof LogEntries) {
+      LogEntries entries = (LogEntries) toConvert;
+      JSONArray converted = new JSONArray();
+      for (LogEntry entry : entries) {
+        converted.put(mapObject(entry, 1, false));
+      }
+      return converted;
     }
 
     if (toConvert instanceof Map) {

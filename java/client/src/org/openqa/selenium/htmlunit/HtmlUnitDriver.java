@@ -52,6 +52,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -1062,6 +1063,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private class HtmlUnitOptions implements Options {
+
+    public Logs logs() {
+      throw new UnsupportedOperationException("Driver does not support this operation.");
+    }
 
     public void addCookie(Cookie cookie) {
       Page page = lastPage();

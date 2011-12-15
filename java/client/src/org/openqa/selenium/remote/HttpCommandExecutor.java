@@ -122,7 +122,7 @@ import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_VISIBLE;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
-import static org.openqa.selenium.remote.DriverCommand.LOGS_DRIVER;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOGS;
 import static org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN;
 import static org.openqa.selenium.remote.DriverCommand.MOUSE_UP;
 import static org.openqa.selenium.remote.DriverCommand.MOVE_TO;
@@ -348,7 +348,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(TOUCH_LONG_PRESS, post("/session/:sessionId/touch/longclick"))
         .put(TOUCH_FLICK, post("/session/:sessionId/touch/flick"))
 
-        .put(LOGS_DRIVER, post("/session/:sessionId/log"))
+        .put(GET_LOGS, post("/session/:sessionId/log"))
 
         .put(STATUS, get("/status"))
 

@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.logging.Logs;
+
 import java.util.List;
 import java.util.Set;
 
@@ -72,6 +74,10 @@ public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
 
   public Options manage() {
     throw new UnsupportedOperationException("manage");
+  }
+
+  public Logs logs() {
+    throw new UnsupportedOperationException("logs");
   }
 
   // TODO(eran): Why does this not throw an exception like everything else?

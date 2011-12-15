@@ -39,6 +39,10 @@ public class NewSession implements Handler, JsonParametersAware {
     this.allSessions = allSession;
   }
 
+  public Capabilities getCapabilities() {
+    return desiredCapabilities;
+  }
+
   @SuppressWarnings({"unchecked"})
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     desiredCapabilities = new DesiredCapabilities(

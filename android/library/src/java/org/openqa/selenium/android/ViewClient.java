@@ -24,6 +24,8 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.logging.Level;
+
 /**
  * This class overrides WebView default behavior when loading new URL. It makes sure that the URL
  * is always loaded by the WebView and updates progress bar according to the page loading
@@ -40,14 +42,14 @@ class ViewClient extends WebViewClient {
   @Override
   public void onReceivedError(WebView view, int errorCode, String description,
       String failingUrl) {
-    Logger.log(Log.DEBUG, LOG_TAG, "onReceiveError: " + description
+    Logger.log(Level.WARNING, LOG_TAG, "onReceiveError", description
         + ", error code: " + errorCode);
   }
 
   @Override
   public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
     boolean shouldAcceptSslCerts = driver.getAcceptSslCerts();
-    Logger.log(Log.DEBUG, LOG_TAG, "onReceivedSslError: " + error.toString()
+    Logger.log(Level.WARNING, LOG_TAG, "onReceivedSslError", error.toString()
         + ", shouldAcceptSslCerts: " + shouldAcceptSslCerts);
 
     if (shouldAcceptSslCerts) {

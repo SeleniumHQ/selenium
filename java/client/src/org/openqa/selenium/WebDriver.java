@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.logging.Logs;
+
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -240,6 +242,16 @@ public interface WebDriver extends SearchContext {
      */
     @Beta
     Window window();
+
+    /**
+     * Gets the {@link Logs} interface used to fetch different types of logs.
+     *
+     * <p>To set the logging preferences {@see LoggingPreferences}.
+     *
+     * @return A Logs interface.
+     */
+    @Beta
+    Logs logs();
   }
 
   /**

@@ -110,10 +110,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     logs = new RemoteLogs(executeMethod);
   }
 
-  public Logs logs() {
-    return logs;
-  }
-
   /**
    * Set the file detector to be used when sending keyboard input. By default, this is set to a file
    * detector that does nothing.
@@ -473,6 +469,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected class RemoteWebDriverOptions implements Options {
+
+    public Logs logs() {
+      return logs;
+    }
 
     public void addCookie(Cookie cookie) {
       execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie));

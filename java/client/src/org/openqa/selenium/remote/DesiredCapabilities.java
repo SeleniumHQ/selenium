@@ -18,17 +18,20 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 @SuppressWarnings("serial")
 public class DesiredCapabilities implements Serializable, Capabilities {
@@ -45,6 +48,17 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public DesiredCapabilities(Map<String, ?> rawMap) {
+    if (rawMap.containsKey(LOGGING_PREFS) && rawMap.get(LOGGING_PREFS) instanceof Map) {
+      LoggingPreferences prefs = new LoggingPreferences();
+      Map<String, String> prefsMap = (Map<String, String>) rawMap.get(LOGGING_PREFS);
+
+      for (String logType : prefsMap.keySet()) {
+        prefs.enable(logType, Level.parse(prefsMap.get(logType)));
+      }
+      capabilities.put(LOGGING_PREFS, prefs);
+      // So it does not get added twice
+      rawMap.remove(LOGGING_PREFS);
+    }
     capabilities.putAll(rawMap);
     Object value = capabilities.get(PLATFORM);
     if (value instanceof String) {

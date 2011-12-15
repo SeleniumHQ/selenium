@@ -36,6 +36,8 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.logging.Level;
+
 public class JettyService extends Service {
   private static final String LOG_TAG = JettyService.class.getName();
   private NotificationManager notificationManager;
@@ -87,19 +89,19 @@ public class JettyService extends Service {
         notificationManager.cancel(R.string.jetty_started);
         // Tell the user we stopped.
         Toast.makeText(this, getText(R.string.jetty_stopped), Toast.LENGTH_SHORT).show();
-        Logger.log(Log.INFO, LOG_TAG, "Jetty stopped");
+        Logger.log(Level.INFO, LOG_TAG, "onDestroy", "Jetty stopped");
       } else {
         Toast.makeText(JettyService.this, R.string.jetty_not_running, Toast.LENGTH_SHORT).show();
       }
     } catch (Exception e) {
-      Logger.log(Log.INFO, LOG_TAG, "Error stopping jetty" + e.getMessage());
+      Logger.log(Level.INFO, LOG_TAG, "onDestroy", "Error stopping jetty" + e.getMessage());
       Toast.makeText(this, getText(R.string.jetty_not_stopped), Toast.LENGTH_SHORT).show();
     }
   }
 
   @Override
   public void onLowMemory() {
-    Logger.log(Log.INFO, LOG_TAG, "Low on memory");
+    Logger.log(Level.INFO, LOG_TAG, "onLowMemory", "Low on memory");
     super.onLowMemory();
   }
 
@@ -121,6 +123,7 @@ public class JettyService extends Service {
       nioConnector.setUseDirectBuffers(false);
       nioConnector.setPort(port);
       nioConnector.setAcceptors(1);
+      nioConnector.setHost(null);
       server.addConnector(nioConnector);
     }
   }
@@ -172,16 +175,16 @@ public class JettyService extends Service {
       notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
       Toast.makeText(JettyService.this, R.string.jetty_started, Toast.LENGTH_SHORT).show();
 
-      Logger.log(Log.INFO, LOG_TAG, "Jetty started");
+      Logger.log(Level.INFO, LOG_TAG, "startServer", "Jetty started");
     } catch (Exception e) {
-      Logger.log(Log.ERROR, LOG_TAG, "Error starting jetty" + e);
+      Logger.log(Level.WARNING, LOG_TAG, "startServer", "Error starting jetty" + e);
       Toast.makeText(this, getText(R.string.jetty_not_started), Toast.LENGTH_SHORT).show();
       throw new RuntimeException("Jetty failed to start!");
     }
   }
 
   protected void stopJetty() throws Exception {
-    Logger.log(Log.DEBUG, LOG_TAG, "Jetty stopping");
+    Logger.log(Level.FINE, LOG_TAG, "stopJetty", "Jetty stopping");
     server.stop();
     server.join();
     server = null;

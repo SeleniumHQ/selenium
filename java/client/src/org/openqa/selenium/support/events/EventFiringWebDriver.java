@@ -38,6 +38,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
 import org.openqa.selenium.support.events.internal.EventFiringTouch;
@@ -486,6 +487,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     private EventFiringOptions(Options options) {
       this.options = options;
+    }
+
+    public Logs logs() {
+      return options.logs();
     }
 
     public void addCookie(Cookie cookie) {

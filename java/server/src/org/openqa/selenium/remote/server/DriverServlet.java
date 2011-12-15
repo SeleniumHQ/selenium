@@ -71,6 +71,7 @@ import org.openqa.selenium.remote.server.handler.ImeGetActiveEngine;
 import org.openqa.selenium.remote.server.handler.ImeGetAvailableEngines;
 import org.openqa.selenium.remote.server.handler.ImeIsActivated;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
+import org.openqa.selenium.remote.server.handler.LogHandler;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.Rotate;
@@ -167,6 +168,9 @@ public class DriverServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
 
+    Logger logger = getLogger();
+    logger.addHandler(LoggingHandler.getInstance());
+
     Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
     if (attribute == null) {
       attribute = new DefaultDriverSessions();
@@ -174,7 +178,6 @@ public class DriverServlet extends HttpServlet {
 
     DriverSessions driverSessions = (DriverSessions) attribute;
 
-    Logger logger = getLogger();
 
     setupMappings(driverSessions, logger);
 
@@ -187,6 +190,7 @@ public class DriverServlet extends HttpServlet {
 
   @Override
   public void destroy() {
+    getLogger().removeHandler(LoggingHandler.getInstance());
     if (sessionCleaner != null) {
       sessionCleaner.stopCleaner();
     }
@@ -466,6 +470,9 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, emptyResponse);
     postMapper.bind("/session/:sessionId/touch/flick", Flick.class)
         .on(ResultType.SUCCESS, emptyResponse);
+
+    postMapper.bind("/session/:sessionId/log", LogHandler.class)
+        .on(ResultType.SUCCESS, jsonResponse);
   }
 
   protected ResultConfig addNewGetMapping(String path, Class<? extends Handler> implementationClass) {

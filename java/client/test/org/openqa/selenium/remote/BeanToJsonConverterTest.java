@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Cookie;
@@ -35,8 +36,13 @@ import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 
 public class BeanToJsonConverterTest extends TestCase {
@@ -325,6 +332,34 @@ public class BeanToJsonConverterTest extends TestCase {
     frameId.put("id", null);
     String payload = new BeanToJsonConverter().convert(frameId);
     assertEquals("{\"id\":null}", payload);
+  }
+
+  public void testConvertLoggingPreferencesToJson() throws JSONException {
+    LoggingPreferences prefs = new LoggingPreferences();
+    prefs.enable(LogType.DRIVER, Level.FINE);
+    String logType = "SomeOtherType";
+    prefs.enable(logType, Level.ALL);
+
+    JSONObject json = new JSONObject(new BeanToJsonConverter().convert(prefs));
+    assertEquals("FINE", json.getString(LogType.DRIVER));
+    assertEquals("ALL", json.getString(logType));
+  }
+
+  public void testConvertLogEntriesToJson() throws JSONException {
+    long timestamp = new Date().getTime();
+    final LogEntry entry1 = new LogEntry(Level.OFF.intValue(), timestamp, "entry1");
+    final LogEntry entry2 = new LogEntry(Level.WARNING.intValue(), timestamp, "entry2");
+    LogEntries entries = new LogEntries(Lists.<LogEntry>newArrayList(entry1, entry2));
+
+    JSONArray json = new JSONArray(new BeanToJsonConverter().convert(entries));
+    JSONObject obj1 = (JSONObject) json.get(0);
+    JSONObject obj2 = (JSONObject) json.get(1);
+    assertEquals(Level.OFF.intValue(), obj1.get("level"));
+    assertEquals(timestamp, obj1.get("timestamp"));
+    assertEquals("entry1", obj1.get("message"));
+    assertEquals(Level.WARNING.intValue(), obj2.get("level"));
+    assertEquals(timestamp, obj2.get("timestamp"));
+    assertEquals("entry2", obj2.get("message"));
   }
 
   @SuppressWarnings("unused")

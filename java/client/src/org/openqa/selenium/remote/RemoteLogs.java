@@ -29,10 +29,15 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.Logs;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RemoteLogs implements Logs {
+  private static final String LEVEL = "level";
+  private static final String TIMESTAMP= "timestamp";
+  private static final String MESSAGE = "message";
+
   protected ExecuteMethod executeMethod;
 
   private static final String TYPE_KEY = "type";
@@ -42,22 +47,35 @@ public class RemoteLogs implements Logs {
   }
 
   public LogEntries get(String logType) {
-    String raw = (String) executeMethod.execute(DriverCommand.LOGS_DRIVER,
+    Object raw = executeMethod.execute(DriverCommand.GET_LOGS,
         ImmutableMap.of(TYPE_KEY, logType));
-    Pattern pattern = Pattern.compile("\\{.*?\"\\}\n");
-    Matcher matcher = pattern.matcher(raw);
+    if (raw instanceof List) {
+      List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
+      List<LogEntry> entries = Lists.newArrayListWithCapacity(rawList.size());
 
-    List<LogEntry> entries = Lists.newArrayList();
-
-    while (matcher.find()) {
-      try {
-        JSONObject jsonObject = new JSONObject(matcher.group());
-        entries.add(new LogEntry((Integer) jsonObject.get("level"),
-            (Long) jsonObject.get("timestamp"), (String) jsonObject.get("message")));
-      } catch (JSONException e) {
-        throw new WebDriverException("Failed to parse logs. Raw result: " + raw, e);
+      for (Map<String, Object> obj : rawList) {
+        entries.add(new LogEntry(((Long) obj.get(LEVEL)).intValue(),
+            (Long) obj.get(TIMESTAMP),
+            (String) obj.get(MESSAGE)));
       }
+      return new LogEntries(entries);
+    } else if (raw instanceof String) {
+      Pattern pattern = Pattern.compile("\\{.*?\"\\}\n");
+      Matcher matcher = pattern.matcher((String) raw);
+
+      List<LogEntry> entries = Lists.newArrayList();
+
+      while (matcher.find()) {
+        try {
+          JSONObject jsonObject = new JSONObject(matcher.group());
+          entries.add(new LogEntry((Integer) jsonObject.get("level"),
+              (Long) jsonObject.get("timestamp"), (String) jsonObject.get("message")));
+        } catch (JSONException e) {
+          throw new WebDriverException("Failed to parse logs. Raw result: " + raw, e);
+        }
+      }
+      return new LogEntries(entries);
     }
-    return new LogEntries(entries);
+    throw new WebDriverException("Don't know how to parse log results: " + raw.toString());
   }
 }
