@@ -30,8 +30,13 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Converts {@link WebElement} objects to their JSON representation. Will recursively convert Lists
- * and Maps to catch nested references.
+ * Converts {@link RemoteWebElement} objects, which may be
+ * {@link WrapsElement wrapped}, into their JSON representation as defined by
+ * the WebDriver wire protocol. This class will recursively convert Lists and
+ * Maps to catch nested references.
+ *
+ * @see <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol#WebElement_JSON_Object">
+ *     WebDriver JSON Wire Protocol</a>
  */
 public class WebElementToJsonConverter implements Function<Object, Object> {
   public Object apply(Object arg) {
