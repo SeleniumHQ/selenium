@@ -35,10 +35,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.TestUtilities.isFirefox;
-import static org.openqa.selenium.TestUtilities.isInternetExplorer;
-import static org.openqa.selenium.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
+import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 

@@ -24,7 +24,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.testing.DefaultDriverSupplierSupplier;
+import org.openqa.selenium.testing.drivers.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.IgnoredTestCallback;

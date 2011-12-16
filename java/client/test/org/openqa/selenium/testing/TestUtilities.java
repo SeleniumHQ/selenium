@@ -15,8 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
 
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 

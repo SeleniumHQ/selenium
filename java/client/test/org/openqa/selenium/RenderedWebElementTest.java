@@ -33,6 +33,7 @@ import static org.hamcrest.Matchers.equalTo;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.util.concurrent.Callable;
@@ -314,7 +315,8 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   private boolean supportsHover() {
-    return !(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+    return !(SauceDriver.shouldUseSauce() && TestUtilities
+        .getEffectivePlatform().is(Platform.WINDOWS));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {

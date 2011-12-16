@@ -32,6 +32,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class PageLoadingTest extends AbstractDriverTestCase {

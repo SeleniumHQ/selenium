@@ -1,13 +1,12 @@
-package org.openqa.selenium.testing;
+package org.openqa.selenium.testing.drivers;
 
-import org.openqa.selenium.testing.drivers.SauceDriver;
+import com.google.common.base.Supplier;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import com.google.common.base.Supplier;
 
 // This is a particularly ugly class.  I will tidy it up, I swear.
 public class SauceBackedDriverSupplier implements Supplier<WebDriver> {

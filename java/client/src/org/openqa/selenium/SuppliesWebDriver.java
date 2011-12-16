@@ -27,6 +27,11 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 // In two minds about whether to make this class part of the public API
+
+/**
+ * @deprecated This is a too simple wrapper of Supplier&lt;WebDriver&gt;
+ */
+@Deprecated
 class SuppliesWebDriver implements Supplier<WebDriver> {
   private final Capabilities capabilities;
 
