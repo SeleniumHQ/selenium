@@ -1,7 +1,7 @@
 // ========================================================================
 // $Id: ProxyHandler.java,v 1.34 2005/10/05 13:32:59 gregwilkins Exp $
 // Copyright 1991-2005 Mort Bay Consulting Pty. Ltd.
-// Portions of this file Copyright 2011 Software Freedom Conservatory.
+// Portions of this file Copyright 2011 Software Freedom Conservancy.
 // ------------------------------------------------------------------------
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
