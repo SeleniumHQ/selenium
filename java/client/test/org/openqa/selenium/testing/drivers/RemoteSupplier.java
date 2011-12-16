@@ -7,6 +7,7 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
@@ -30,7 +31,10 @@ public class RemoteSupplier implements Supplier<WebDriver> {
 
     try {
       // TODO(simon): Find a better way to determine where the server is.
-      return new RemoteWebDriver(new URL("http://localhost:6000/common/hub"), caps);
+      RemoteWebDriver driver = new RemoteWebDriver(
+          new URL("http://localhost:6000/common/hub"), caps);
+      driver.setFileDetector(new LocalFileDetector());
+      return driver;
     } catch (MalformedURLException e) {
       throw Throwables.propagate(e);
     }

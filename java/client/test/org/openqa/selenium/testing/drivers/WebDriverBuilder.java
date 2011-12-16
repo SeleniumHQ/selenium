@@ -9,8 +9,6 @@ import com.google.common.collect.Lists;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.LocalFileDetector;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,20 +25,11 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       WebDriver driver = supplier.get();
       if (driver != null) {
         modifyLogLevel(driver);
-        useLocalFileDetector(driver);
         return driver;
       }
     }
 
     throw new RuntimeException("Cannot instantiate driver instance: " + caps);
-  }
-
-  private void useLocalFileDetector(WebDriver driver) {
-    if (!(driver instanceof RemoteWebDriver)) {
-      return;
-    }
-
-    ((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
   }
 
   private void modifyLogLevel(WebDriver driver) {
