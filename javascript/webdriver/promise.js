@@ -726,6 +726,7 @@ webdriver.promise.Application.prototype.executeNextId_ = null;
  */
 webdriver.promise.Application.prototype.reset = function() {
   this.frames_ = [];
+  this.clearHistory();
   this.removeAllListeners();
   this.cancelShutdown_();
   this.cancelNext_();
