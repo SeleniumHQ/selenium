@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.NeedsLocalEnvironment;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
@@ -35,6 +36,7 @@ public class ChromeOptionsFunctionalTest extends AbstractDriverTestCase {
     super.tearDown();
   }
 
+  @NeedsLocalEnvironment
   public void testCanStartChromeWithCustomOptions() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("user-agent=foo;bar");
