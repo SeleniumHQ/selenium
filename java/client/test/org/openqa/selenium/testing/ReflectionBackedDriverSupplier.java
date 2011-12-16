@@ -1,8 +1,10 @@
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
+
+import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.Method;
 import java.util.logging.Level;

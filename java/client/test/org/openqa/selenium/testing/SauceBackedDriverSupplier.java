@@ -1,5 +1,7 @@
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
 
+import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;

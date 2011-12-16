@@ -29,7 +29,7 @@ import com.google.common.collect.Iterables;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.DefaultDriverSupplierSupplier;
+import org.openqa.selenium.testing.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.InProject;

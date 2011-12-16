@@ -2,6 +2,7 @@
 java_library(name = "testing",
   deps = [
     ":junit",
+    ":suppliers",
     ":util",
   ])
 
@@ -11,6 +12,17 @@ java_library(name = "util",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
+  ])
+
+java_library(name = "suppliers",
+  srcs = [
+    "DefaultDriverSupplierSupplier.java",
+    "ReflectionBackedDriverSupplier.java",
+    "SauceBackedDriverSupplier.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/remote",
+    "//java/client/test/org/openqa/selenium/testing/drivers",
   ])
 
 java_library(name = "junit",

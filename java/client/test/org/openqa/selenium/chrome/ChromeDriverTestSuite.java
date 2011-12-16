@@ -19,7 +19,7 @@ package org.openqa.selenium.chrome;
 
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 
-import org.openqa.selenium.SauceDriver;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;

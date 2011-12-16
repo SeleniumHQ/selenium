@@ -33,6 +33,7 @@ import static org.hamcrest.Matchers.equalTo;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.util.concurrent.Callable;
 

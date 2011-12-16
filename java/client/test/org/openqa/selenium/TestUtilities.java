@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class TestUtilities {
   public static boolean isNativeEventsEnabled(WebDriver driver) {
