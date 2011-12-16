@@ -98,8 +98,8 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, SELENESE, OPERA},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+      value = {FIREFOX, HTMLUNIT, IPHONE, SELENESE, OPERA},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.")
   public void testShouldAllowUsersToHoverOverElements() {
     if (!hasInputDevices()) {
       return;
