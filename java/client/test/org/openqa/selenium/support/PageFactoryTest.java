@@ -127,12 +127,12 @@ public class PageFactoryTest extends MockTestBase {
   }
 
   @Test
-  public void shouldDecorateListsOfWebElementsThatAreNotAnnotated() {
+  public void shouldNotDecorateListsOfWebElementsThatAreNotAnnotated() {
     UnmarkedListPage page = new UnmarkedListPage();
 
     PageFactory.initElements(driver, page);
 
-    assertThat(page.elements, is(notNullValue()));
+    assertThat(page.elements, is(nullValue()));
   }
 
   @Test
