@@ -1047,15 +1047,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
           // Drawing on a canvas
           Canvas cv = new Canvas(raw);
           cv.drawPicture(pic);
-          // Cropping to what's actually displayed on screen
-          Bitmap cropped = Bitmap.createBitmap(raw,
-              webview.getScrollX(),
-              webview.getScrollY(),
-              webview.getWidth() - webview.getVerticalScrollbarWidth(),
-              webview.getHeight());
 
           ByteArrayOutputStream stream = new ByteArrayOutputStream();
-          if (!cropped.compress(Bitmap.CompressFormat.PNG, 100, stream)) {
+          if (!raw.compress(Bitmap.CompressFormat.PNG, 100, stream)) {
             throw new RuntimeException(
                 "Error while compressing screenshot image.");
           }
