@@ -28,6 +28,9 @@ java_test(name = "LargeTests",
   srcs = [
     "LargeTests.java",
   ],
+  sysproperties = [
+    { "selenium.browser" : "ff" },
+  ],
   deps = [
     ":tests",
     "//third_party/java/junit",

@@ -43,7 +43,7 @@ public abstract class JUnit4TestBase {
       return;
     }
 
-    new WebDriverBuilder().get();
+    driver = new WebDriverBuilder().get();
   }
 
   @Before
