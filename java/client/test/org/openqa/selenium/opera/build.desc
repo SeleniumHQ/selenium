@@ -2,6 +2,9 @@ java_test(name = "test",
   srcs = [
     "*.java",
   ],
+  sysproperties = [
+    { "selenium.browser" : "opera" },
+  ],
   deps = [
     "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",

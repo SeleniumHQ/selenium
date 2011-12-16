@@ -9,12 +9,13 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.openqa.selenium.DevMode.isInDevMode;
+import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase {
@@ -42,14 +43,7 @@ public abstract class JUnit4TestBase {
       return;
     }
 
-    String driverClass;
-    if (isInDevMode()) {
-      driverClass = "org.openqa.selenium.firefox.SynthesizedFirefoxDriver";
-    } else {
-      driverClass = "org.openqa.selenium.firefox.FirefoxDriver";
-    }
-
-    driver = Class.forName(driverClass).asSubclass(WebDriver.class).newInstance();
+    new WebDriverBuilder().get();
   }
 
   @Before

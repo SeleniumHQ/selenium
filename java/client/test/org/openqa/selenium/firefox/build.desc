@@ -26,6 +26,9 @@ java_library(name = "tests_common",
 
 java_test(name = "test_synthesized",
   srcs = [ "SynthesizedFirefoxDriverTestSuite.java" ],
+  sysproperties = [
+    { "selenium.browser" : "ff" },
+  ],
   deps = [
     ":drivers",
     ":tests_common",
@@ -33,6 +36,9 @@ java_test(name = "test_synthesized",
 
 java_test(name = "test_native",
   srcs = [ "NativeEventsFirefoxDriverTestSuite.java" ],
+  sysproperties = [
+    { "selenium.browser" : "ff" },
+  ],
   deps = [
     ":drivers",
     ":tests_common",

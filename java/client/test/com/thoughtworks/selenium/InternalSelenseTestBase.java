@@ -5,7 +5,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Build;
-import org.openqa.selenium.DevMode;
+import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;

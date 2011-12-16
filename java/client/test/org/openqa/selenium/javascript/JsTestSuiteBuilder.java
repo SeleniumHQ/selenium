@@ -29,10 +29,10 @@ import com.google.common.collect.Iterables;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.testing.drivers.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -53,7 +53,7 @@ class JsTestSuiteBuilder {
   private static final boolean NO_REFRESH_DRIVER = false;
 
   private Function<String, Test> testFactory = null;
-  private Class<? extends WebDriver> driverClazz = null;
+//  private Class<? extends WebDriver> driverClazz = null;
 
   /**
    * @param driverClazz The type of {@link WebDriver} that should be used to
@@ -62,7 +62,7 @@ class JsTestSuiteBuilder {
    */
   public JsTestSuiteBuilder withDriverClazz(
       Class<? extends WebDriver> driverClazz) {
-    this.driverClazz = checkNotNull(driverClazz);
+//    this.driverClazz = checkNotNull(driverClazz);
     return this;
   }
 
@@ -82,14 +82,13 @@ class JsTestSuiteBuilder {
    */
   public Test build() {
     checkNotNull(testFactory, "No path to test function specified");
-    checkNotNull(driverClazz, "No driver class specified");
+//    checkNotNull(driverClazz, "No driver class specified");
 
     File testDirectory = getTestDirectory();
     ImmutableSet<File> excludedFiles = getExcludedFiles(testDirectory);
     String basePath = getTestUrlPath();
 
-    Supplier<WebDriver> driverSupplier =
-        new DefaultDriverSupplierSupplier(driverClazz).get();
+    Supplier<WebDriver> driverSupplier = new WebDriverBuilder();
 
     TestSuite suite = new TestSuite();
     List<File> testFiles = findTestFiles(testDirectory,

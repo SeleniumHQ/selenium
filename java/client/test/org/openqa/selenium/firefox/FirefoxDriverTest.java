@@ -39,7 +39,7 @@ import com.google.common.base.Throwables;
 import org.junit.Assert;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
-import org.openqa.selenium.DevMode;
+import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NeedsFreshDriver;

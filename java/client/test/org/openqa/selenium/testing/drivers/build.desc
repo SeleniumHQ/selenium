@@ -3,4 +3,7 @@ java_library(name = "drivers",
   srcs = [ "*.java" ],
   deps = [
     "//java/client/src/org/openqa/selenium/remote",
+    "//java/client/test/org/openqa/selenium/testing:dev_mode",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/opera-driver",
   ])

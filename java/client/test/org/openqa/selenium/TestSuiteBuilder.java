@@ -17,19 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
+
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.testing.drivers.DefaultDriverSupplierSupplier;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.IgnoredTestCallback;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
 import java.lang.reflect.AnnotatedElement;
@@ -37,11 +43,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertTrue;
 
 public class TestSuiteBuilder {
   private Set<File> sourceDirs = Sets.newHashSet();
@@ -75,6 +76,7 @@ public class TestSuiteBuilder {
 
   public TestSuiteBuilder usingDriver(Class<? extends WebDriver> ss) {
     this.driverClass = ss;
+    System.setProperty("selenium.browser.class_name", ss.getName());
     return this;
   }
 
@@ -265,7 +267,7 @@ public class TestSuiteBuilder {
           }
 
           if (withDriver && driverClass != null) {
-            Supplier<WebDriver> supplier = new DefaultDriverSupplierSupplier(driverClass).get();
+            Supplier<WebDriver> supplier = new WebDriverBuilder();
             test = new DriverTestDecorator(test, supplier,
                 keepDriver, freshDriver, restartDriver);
           }

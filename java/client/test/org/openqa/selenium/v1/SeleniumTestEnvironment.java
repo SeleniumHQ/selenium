@@ -25,7 +25,7 @@ import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
 import org.openqa.selenium.Build;
-import org.openqa.selenium.DevMode;
+import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.TestEnvironment;

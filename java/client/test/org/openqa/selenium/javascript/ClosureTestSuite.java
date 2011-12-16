@@ -29,7 +29,6 @@ public class ClosureTestSuite {
 
   public static Test suite() {
     Test suite = new JsTestSuiteBuilder()
-        .withDriverClazz(getDriverClass())
         .withTestFactory(new Function<String, Test>() {
           public Test apply(String input) {
             return new ClosureTestCase(input);
@@ -37,16 +36,5 @@ public class ClosureTestSuite {
         })
         .build();
     return new EnvironmentStarter(suite);
-  }
-
-  private static Class<? extends WebDriver> getDriverClass() {
-    String name = System.getProperty("selenium.browser",
-        "org.openqa.selenium.firefox.FirefoxDriver");
-
-    try {
-      return Class.forName(name).asSubclass(WebDriver.class);
-    } catch (ClassNotFoundException e) {
-      throw Throwables.propagate(e);
-    }
   }
 }

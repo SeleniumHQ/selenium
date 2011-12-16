@@ -1,4 +1,5 @@
 require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
 require 'set'
 
@@ -728,7 +729,7 @@ module Javascript
 
             sysprops = args[:sysproperties] || []
 
-            ant.sysproperty :key => "selenium.browser", :value => browser_data[:class]
+            ant.sysproperty :key => "selenium.browser", :value => browser #browser_data[:class]
 
             sysprops.each do |map|
               map.each do |key, value|
@@ -736,6 +737,10 @@ module Javascript
               end
             end
 
+            if (ENV['debug'])
+              ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005")
+            end
+                        
             test_dir = File.join(dir, 'test')
             ant.sysproperty :key => 'js.test.dir', :value => test_dir
             ant.sysproperty :key => 'js.test.url.path', :value => args[:path]

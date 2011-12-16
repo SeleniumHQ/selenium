@@ -44,7 +44,7 @@ public class SauceDriver extends RemoteWebDriver {
   private static final String SAUCE_URL_ENV_NAME = "SAUCE_URL";
   private static final String DEFAULT_SAUCE_URL = "ondemand.saucelabs.com:80";
 
-  public SauceDriver(DesiredCapabilities desiredCapabilities) {
+  public SauceDriver(Capabilities desiredCapabilities) {
     super(getSauceEndpoint(),
       munge(
         desiredCapabilities,
@@ -87,7 +87,7 @@ public class SauceDriver extends RemoteWebDriver {
     throw new IllegalStateException("Should have returned or thrown");
   }
 
-  private static Capabilities munge(DesiredCapabilities desiredCapabilities, String seleniumVersion, String browserVersion, Platform platform) {
+  private static Capabilities munge(Capabilities desiredCapabilities, String seleniumVersion, String browserVersion, Platform platform) {
     DesiredCapabilities mungedCapabilities = new DesiredCapabilities(desiredCapabilities);
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     mungedCapabilities.setCapability("idle-timeout", 180);

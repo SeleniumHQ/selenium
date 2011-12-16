@@ -1,6 +1,6 @@
 package org.openqa.selenium;
 
-import static org.openqa.selenium.DevMode.isInDevMode;
+import static org.openqa.selenium.testing.DevMode.isInDevMode;
 import static org.openqa.selenium.net.PortProber.pollPort;
 
 import com.google.common.collect.Maps;

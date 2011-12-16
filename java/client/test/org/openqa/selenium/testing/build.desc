@@ -5,6 +5,11 @@ java_library(name = "testing",
     ":util",
   ])
 
+java_library(name = "dev_mode",
+  srcs = [
+    "DevMode.java",
+  ])
+
 java_library(name = "util",
   srcs = [
     "InProject.java",

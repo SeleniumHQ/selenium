@@ -1,6 +1,9 @@
 
 java_test(name = "test",
   srcs = [ "*.java" ],
+  sysproperties = [
+    { "selenium.browser" : "ie" },
+  ],
   deps = [
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/test/org/openqa/selenium:tests",
