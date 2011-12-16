@@ -34,7 +34,19 @@ package org.openqa.selenium;
 public interface TakesScreenshot {
   /**
    * Capture the screenshot and store it in the specified location.
-   * 
+   *
+   * <p>For WebDriver extending TakesScreenshot, this makes a best effort
+   * depending on the browser to return the following in order of preference:
+   *   - Entire page
+   *   - Current window
+   *   - Visible portion of the current frame
+   *   - The screenshot of the entire display containing the browser
+   *
+   * <p>For WebElement extending TakesScreenshot, this makes a best effort
+   * depending on the browser to return the following in order of preference:
+   *   - The entire content of the HTML element
+   *   - The visisble portion of the HTML element
+   *
    * @param <X> Return type for getScreenshotAs.
    * @param target target type, @see OutputType
    * @return Object in which is stored information about the screenshot.
