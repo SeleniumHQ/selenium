@@ -19,16 +19,16 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
 
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-
-public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestCase {
+public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestSuite {
 
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()

@@ -21,7 +21,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class ConditionTestSuite extends TestCase {
+public class ConditionTestSuite extends TestSuite {
   public static Test suite() {
     return new TestSuite(ConditionTest.class, JUnit4AndTestNgConditionRunnerTest.class);
   }

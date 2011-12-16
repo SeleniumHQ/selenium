@@ -20,10 +20,9 @@ package com.thoughtworks.selenium;
 import com.thoughtworks.selenium.condition.ConditionTestSuite;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class WaitTestSuite extends TestCase {
+public class WaitTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     TestSuite suite = new TestSuite(WaitTest.class);
     suite.addTest(ConditionTestSuite.suite());

@@ -22,26 +22,25 @@ import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 import com.google.common.collect.Maps;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.net.URL;
 import java.util.Map;
 
-public class RemoteWebDriverTestSuite extends TestCase {
+public class RemoteWebDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     System.setProperty("webdriver.development", "true");
 

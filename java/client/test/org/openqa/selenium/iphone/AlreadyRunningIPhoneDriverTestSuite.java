@@ -1,7 +1,10 @@
 package org.openqa.selenium.iphone;
 
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -10,10 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-
-public class AlreadyRunningIPhoneDriverTestSuite extends TestCase {
+public class AlreadyRunningIPhoneDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")

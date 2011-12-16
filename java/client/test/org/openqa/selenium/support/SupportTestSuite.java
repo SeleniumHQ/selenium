@@ -19,13 +19,13 @@ package org.openqa.selenium.support;
 
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-
-public class SupportTestSuite extends TestCase {
+public class SupportTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")

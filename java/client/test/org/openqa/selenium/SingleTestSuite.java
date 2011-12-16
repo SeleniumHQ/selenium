@@ -17,11 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.testing.Ignore;
 
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class SingleTestSuite extends TestCase {
+public class SingleTestSuite extends TestSuite {
   private static final String CHROME = "org.openqa.selenium.chrome.ChromeDriver";
 
   private static final String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";

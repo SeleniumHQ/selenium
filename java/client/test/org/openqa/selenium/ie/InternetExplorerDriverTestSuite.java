@@ -17,19 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class InternetExplorerDriverTestSuite extends TestCase {
+public class InternetExplorerDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     System.setProperty("webdriver.development", "true");
 

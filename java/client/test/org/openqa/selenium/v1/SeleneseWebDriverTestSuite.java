@@ -17,15 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-
-import org.openqa.selenium.TestSuiteBuilder;
-
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-public class SeleneseWebDriverTestSuite extends TestCase {
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.openqa.selenium.TestSuiteBuilder;
+
+public class SeleneseWebDriverTestSuite extends TestSuite {
 
   public static Test suite() throws Exception {
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));

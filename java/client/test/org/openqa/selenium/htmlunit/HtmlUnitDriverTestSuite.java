@@ -20,11 +20,11 @@ package org.openqa.selenium.htmlunit;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
 
-public class HtmlUnitDriverTestSuite extends TestCase {
+public class HtmlUnitDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")

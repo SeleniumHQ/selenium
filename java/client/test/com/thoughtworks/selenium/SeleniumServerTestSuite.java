@@ -18,10 +18,9 @@ limitations under the License.
 package com.thoughtworks.selenium;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class SeleniumServerTestSuite extends TestCase {
+public class SeleniumServerTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     TestSuite suite = new TestSuite(SeleniumServerProxyTest.class);
     return suite;

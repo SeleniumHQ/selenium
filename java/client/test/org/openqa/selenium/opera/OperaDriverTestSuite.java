@@ -1,15 +1,15 @@
 package org.openqa.selenium.opera;
 
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+
 import com.opera.core.systems.OperaDriver;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
 
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-
-public class OperaDriverTestSuite extends TestCase {
+public class OperaDriverTestSuite extends TestSuite {
 
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()

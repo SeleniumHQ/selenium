@@ -20,15 +20,15 @@ package org.openqa.selenium.iphone;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.testing.InProject;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-
 import java.io.File;
 
-public class IPhoneDriverTestSuite extends TestCase {
+public class IPhoneDriverTestSuite extends TestSuite {
 
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()

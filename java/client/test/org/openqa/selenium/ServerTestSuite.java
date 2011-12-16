@@ -4,16 +4,15 @@
  */
 package org.openqa.selenium;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.LinuxHTMLRunnerFunctionalTest;
 import org.openqa.selenium.server.WindowsHTMLRunnerFunctionalTest;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-
-public class ServerTestSuite extends TestCase {
+public class ServerTestSuite extends TestSuite {
 
   public static Test suite() {
     TestSuite suite = new TestSuite(ServerTestSuite.class.getName());

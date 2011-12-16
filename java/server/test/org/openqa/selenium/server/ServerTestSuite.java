@@ -19,10 +19,12 @@ package org.openqa.selenium.server;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
 
-public class ServerTestSuite extends TestCase {
+public class ServerTestSuite extends TestSuite {
+
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/server/test")
