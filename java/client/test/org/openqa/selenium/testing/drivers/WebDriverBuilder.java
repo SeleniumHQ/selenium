@@ -26,7 +26,6 @@ import com.google.common.collect.Lists;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.DefaultDriverFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
