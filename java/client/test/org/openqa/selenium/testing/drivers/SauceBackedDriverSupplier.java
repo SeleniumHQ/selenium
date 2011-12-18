@@ -4,6 +4,7 @@ import com.google.common.base.Supplier;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.LocalFileDetector;
 
 public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
 
@@ -18,6 +19,8 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    return new SauceDriver(capabilities);
+    SauceDriver driver = new SauceDriver(capabilities);
+    driver.setFileDetector(new LocalFileDetector());
+    return driver;
   }
 }
