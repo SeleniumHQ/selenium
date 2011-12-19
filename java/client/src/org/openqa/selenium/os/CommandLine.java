@@ -171,17 +171,23 @@ public class CommandLine {
     return null;
   }
 
-  public void execute() {
+  public void executeAsync() {
     try {
       final OutputStream outputStream = getOutputStream();
       executeWatchdog.reset();
       executor.setWatchdog(executeWatchdog);
-      executor
-          .setStreamHandler(new PumpStreamHandler(outputStream, outputStream, getInputStream()));
+      executor.setStreamHandler(new PumpStreamHandler(
+          outputStream, outputStream, getInputStream()));
       executor.execute(cl, getMergedEnv(), handler);
-      handler.waitFor();
     } catch (IOException e) {
       throw new WebDriverException(e);
+    }
+  }
+
+  public void execute() {
+    try {
+      executeAsync();
+      handler.waitFor();
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
     }
@@ -195,20 +201,6 @@ public class CommandLine {
     HashMap<String, String> newEnv = Maps.newHashMap(System.getenv());
     newEnv.putAll(env);
     return newEnv;
-  }
-
-
-  public void executeAsync() {
-    try {
-      final OutputStream outputStream = getOutputStream();
-      executeWatchdog.reset();
-      executor.setWatchdog(executeWatchdog);
-      executor.setStreamHandler(new PumpStreamHandler(
-          outputStream, outputStream, getInputStream()));
-      executor.execute(cl, getMergedEnv(), handler);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
   }
 
   private ByteArrayInputStream getInputStream() {
