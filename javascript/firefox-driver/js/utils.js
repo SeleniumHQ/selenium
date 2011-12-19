@@ -1151,10 +1151,16 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
 
   var clickListener = new WebLoadingListener(browser, function(webProgress) {
     fxdriver.Logger.dumpn('New page loading.');
+    // currentWindow.closed is only reliable for top-level windows,
+    // not frames/iframes
+    // (see http://msdn.microsoft.com/en-us/library/ms533574(VS.85).aspx),
+    // because from most javascript contexts, the only way to access window
+    // objects is for a popup, for from a currently open window.
+    // wdsession.getWindow has some fallback logic in case this doesn't work.
     if (currentWindow.closed) {
-      fxdriver.Logger.dumpn('Detected page load in top window; changing session focus from ' +
-                   'frame to new top window.');
-      respond.session.setWindow(browser.contentWindow);
+     fxdriver.Logger.dumpn('Detected page load in top window; changing session focus from ' +
+                           'frame to new top window.');
+     respond.session.setWindow(browser.contentWindow);
     }
     respond.send();
   }, currentWindow);

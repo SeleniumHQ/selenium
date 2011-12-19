@@ -191,7 +191,7 @@ public class I18nTest extends AbstractDriverTestCase {
     // IME is not present. Don't fail because of that. But it should have the Romaji value
     // instead.
     String[] possibleValues = {tokyo, "\uE040" + "toukyou ", "toukyou "};
-    assertTrue("The elemnt's value should either remain in Romaji or be converted properly."
+    assertTrue("The element's value should either remain in Romaji or be converted properly."
         + " It was: -" + elementValue + "-", Arrays.asList(possibleValues).contains(elementValue));
   }
 

@@ -26,6 +26,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -244,7 +245,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     // soon.
 
     waitFor(WaitingConditions.elementTextToEqual(driver, By.xpath("//p"), "Success!"));
-    assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
   }
 
   @Ignore(value = {ANDROID, OPERA}, reason = "Android does not detect that the select frame has disappeared")
@@ -255,12 +255,12 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().frame(0);
     driver.findElement(By.linkText("top")).click();
 
-    // TODO(simon): Avoid going too fast when native events are there.
-    Thread.sleep(1000);
+    String expectedTitle = "XHTML Test Page";
 
-    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-    assertThat(driver.findElement(By.xpath("/html/head/title")).getText(),
-        equalTo("XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, expectedTitle));
+    String javascriptTitle = (String)((JavascriptExecutor)driver).executeScript("return document.title;");
+    assertEquals(expectedTitle, javascriptTitle);
+    waitFor(elementToExist(driver, "only-exists-on-xhtmltest"));
   }
 
   @Ignore(ANDROID)

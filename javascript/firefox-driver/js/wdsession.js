@@ -168,7 +168,10 @@ wdSession.prototype.getChromeWindow = function() {
 
 /** @return {?nsIDOMWindow} This session's current window. */
 wdSession.prototype.getWindow = function() {
-  var win = this.window_.get();
+  var win;
+  if (this.window_) {
+    win = this.window_.get();
+  }
 
   if (!win || !win.document) {
     // Uh-oh, we lost our DOM! Try to recover by changing focus to the
@@ -203,7 +206,29 @@ wdSession.prototype.setChromeWindow = function(win) {
  * @param {nsIDOMWindow} win The new window.
  */
 wdSession.prototype.setWindow = function(win) {
-  this.window_ = Components.utils.getWeakReference(win);
+  var unwrapped = fxdriver.moz.unwrapFor4(win);
+  this.window_ = Components.utils.getWeakReference(unwrapped);
+
+  // Our other means of testing for window unloads rely on window.closed, which
+  // can sometimes not be set for frames/iframes (because in most javascript
+  // contexts, it's not possible to access window after a window has closed
+  // except for top-level windows (e.g. popups).
+  // Fall back to an unload event if we need to.
+
+  var self = this;
+  var handler = function(e) {
+    if (win == win.top) {
+      self.window_ = null;
+    }
+  }
+
+  // Listen in capture mode to force us to be called (can't stop event
+  // propagation in capture mode)
+  // unload can only be called when the window is actually closing;
+  // window closing can only be cancelled in the beforeload event phase.
+  unwrapped.addEventListener('unload',
+                             handler,
+                             /*useCapture=*/true);
 };
 
 
