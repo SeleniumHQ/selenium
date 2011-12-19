@@ -85,7 +85,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
       System.err.println("Skipping remote element equality test - not a remote web driver");
       return null;
     }
-    if (element.getClass().isAssignableFrom(remoteWebElementClass)) {
+    if (remoteWebElementClass.isInstance(element)) {
       try {
         Method getIdMethod = element.getClass().getMethod("getId");
         return (String)getIdMethod.invoke(element);
