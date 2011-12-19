@@ -18,11 +18,31 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 
 public class FirefoxWebElement extends RemoteWebElement {
 
   public FirefoxWebElement(FirefoxDriver parent) {
     setParent(parent);
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof WebElement)) {
+      return false;
+    }
+
+    WebElement other = (WebElement) obj;
+    if (other instanceof WrapsElement) {
+      other = ((WrapsElement) obj).getWrappedElement();
+    }
+
+    if (!(other instanceof FirefoxWebElement)) {
+      return false;
+    }
+    
+    return getId().equals(((FirefoxWebElement)other).getId());
   }
 }

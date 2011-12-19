@@ -165,12 +165,11 @@ Utils.isEnabled = function(element) {
 };
 
 
-Utils.addToKnownElements = function(element, rawDoc) {
+var global_element_cache = {};
+
+
+Utils.addToKnownElements = function(element) {
   var owner = new XPCNativeWrapper(element.ownerDocument);
-  var doc = fxdriver.moz.unwrapFor4(rawDoc);
-  if (owner != new XPCNativeWrapper(rawDoc)) {
-    doc = fxdriver.moz.unwrap(owner);
-  }
 
   // Right. This is ugly. Sorry. The reasoning goes:
   // * Finding elements normally returns a fairly "raw" object
@@ -188,57 +187,67 @@ Utils.addToKnownElements = function(element, rawDoc) {
 
   var toCompareWith = isFrame ? element : new XPCNativeWrapper(element);
 
-  if (!doc.fxdriver_elements) {
-    doc.fxdriver_elements = {};
+  var ownerWindow = fxdriver.moz.unwrap(goog.dom.getWindow(owner));
+  var ownerWindowId = ownerWindow.fxdriver_id;
+  if (!ownerWindowId) {
+    ownerWindow.fxdriver_id = fxdriver.utils.getUniqueId();
+    ownerWindowId = ownerWindow.fxdriver_id;
   }
 
-  for (var e in doc.fxdriver_elements) {
-    if (doc.fxdriver_elements[e] == toCompareWith) {
+  if (!global_element_cache[ownerWindowId]) {
+    global_element_cache[ownerWindowId] = {};
+    ownerWindow.onunload = function() {
+      delete global_element_cache[ownerWindowId];
+    }
+  }
+
+  for (var e in global_element_cache[ownerWindowId]) {
+    if (global_element_cache[ownerWindowId][e] == toCompareWith) {
       return e;
     }
   }
 
   var id = fxdriver.utils.getUniqueId();
-  doc.fxdriver_elements[id] = toCompareWith;
+  global_element_cache[ownerWindowId][id] = toCompareWith;
 
   return id;
 };
 
 
-Utils.getElementAt = function(index, rawDoc) {
-  var doc = fxdriver.moz.unwrapFor4(rawDoc);
+Utils.getElementAt = function(index, currentDoc) {
+  var element;
+  var cache;
 
-  // There's a chance that previous "addToKnownElements" had to use the
-  // unwrapped document in versions of firefox prior to 4. This won't work as
-  // expected and so we need to check for its presence, copy it into the right
-  // place and then remove it. This will break element equality in some cases.
-
-  var unwrapped = fxdriver.moz.unwrap(rawDoc);
-  if (unwrapped.fxdriver_elements) {
-    var existing = doc.fxdriver_elements || {};
-    for (var i in unwrapped.fxdriver_elements) {
-      var existingElement = unwrapped.fxdriver_elements[i];
-      if (bot.dom.isElement(existingElement)) {
-        existing[i] = existingElement;
-      }
+  //TODO(dawagner): Maybe look up the current document's cache entry first
+  for (var ownerWindowId in global_element_cache) {
+    cache = global_element_cache[ownerWindowId] || {};
+    if (cache[index]) {
+      element = cache[index];
+      break;
     }
-    delete(unwrapped.fxdriver_elements);
-    doc.fxdriver_elements = existing;
   }
 
-  var e = doc.fxdriver_elements ? doc.fxdriver_elements[index] : undefined;
-  if (e) {
-    if (!Utils.isAttachedToDom(e)) {
-      delete doc.fxdriver_elements[index];
-      throw new WebDriverError(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
-          'Element is no longer attached to the DOM');
-    }
-  } else {
+  if (!element) {
     throw new WebDriverError(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
-        'Element not found in the cache');
+        'Element not found in the cache - ' +
+        'perhaps the page has changed since it was looked up');
   }
 
-  return e;
+  if (!Utils.isAttachedToDom(element)) {
+    delete cache[index];
+    throw new WebDriverError(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
+        'Element is no longer attached to the DOM');
+  }
+
+  // Unwrap here, because if the element is a frame element, its ownerDocument
+  // will be wrapped, and the equality check will fail.
+  if (fxdriver.moz.unwrap(element.ownerDocument) != fxdriver.moz.unwrap(currentDoc)) {
+    throw new WebDriverError(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
+        'Element belongs to a different frame than the current one - ' +
+        'switch to its containing frame to use it');
+  }
+
+  return element;
 };
 
 
@@ -844,7 +853,7 @@ Utils.findElementsByXPath = function (xpath, contextNode, doc) {
   var indices = [];
   var element = result.iterateNext();
   while (element) {
-    var index = Utils.addToKnownElements(element, doc);
+    var index = Utils.addToKnownElements(element);
     indices.push(index);
     element = result.iterateNext();
   }
@@ -1025,7 +1034,7 @@ Utils.wrapResult = function(result, doc) {
 
       // There's got to be a more intelligent way of detecting this.
       if (result['tagName']) {
-        return {'ELEMENT': Utils.addToKnownElements(result, doc)};
+        return {'ELEMENT': Utils.addToKnownElements(result)};
       }
 
       if (typeof result.length === 'number' &&

@@ -478,6 +478,19 @@ public class ElementFindingTest extends AbstractDriverTestCase {
 
   // TODO(danielwh): Add extensive CSS selector tests
 
+  public void testAnElementFoundInADifferentFrameIsStale() {
+    driver.get(appServer.whereIs("missedJsReference.html"));
+    driver.switchTo().frame("inner");
+    WebElement element = driver.findElement(By.id("oneline"));
+    driver.switchTo().defaultContent();
+    try {
+      element.getText();
+      fail("Expected exception");
+    } catch (StaleElementReferenceException expected) {
+      // Expected
+    }
+  }
+
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {

@@ -367,7 +367,7 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
     var element = bot.locators.findElement(target, rootNode);
 
     if (element) {
-      var id = Utils.addToKnownElements(element, respond.session.getDocument());
+      var id = Utils.addToKnownElements(element);
       respond.value = {'ELEMENT': id};
       return respond.send();
     }
@@ -455,7 +455,7 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
     var elementIds = [];
     for (var j = 0; j < elements.length; j++) {
       var element = elements[j];
-      var elementId = Utils.addToKnownElements(element, theDocument);
+      var elementId = Utils.addToKnownElements(element);
       elementIds.push({'ELEMENT': elementId});
     }
 
@@ -581,7 +581,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 
 FirefoxDriver.prototype.getActiveElement = function(respond) {
   var element = Utils.getActiveElement(respond.session.getDocument());
-  var id = Utils.addToKnownElements(element, respond.session.getDocument());
+  var id = Utils.addToKnownElements(element);
 
   respond.value = {'ELEMENT':id};
   respond.send();
