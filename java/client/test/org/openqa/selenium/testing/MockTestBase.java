@@ -1,4 +1,4 @@
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
 
 import org.jmock.Expectations;
 import org.jmock.Sequence;

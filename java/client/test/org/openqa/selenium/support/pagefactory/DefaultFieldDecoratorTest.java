@@ -24,7 +24,7 @@ import static org.hamcrest.core.IsNull.nullValue;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

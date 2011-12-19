@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.WebDriver;

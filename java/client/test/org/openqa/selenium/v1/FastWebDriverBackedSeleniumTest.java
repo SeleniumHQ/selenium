@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 

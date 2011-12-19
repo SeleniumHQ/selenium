@@ -1,19 +1,17 @@
-package org.openqa.selenium;
+package org.openqa.selenium.testing;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore.Driver;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoreComparator;
 
 import com.google.common.collect.Sets;
 
@@ -21,8 +19,8 @@ public class IgnoreComparitorUnitTest extends MockTestBase {
   private static final Platform CURRENT_PLATFORM = Platform.MAC;
   private static final Platform OTHER_PLATFORM = Platform.WINDOWS;
 
-  private static final HashSet<Platform> CURRENT_PLATFORM_SET = Sets.<Platform>newHashSet(CURRENT_PLATFORM);
-  private static final HashSet<Platform> OTHER_PLATFORM_SET = Sets.<Platform>newHashSet(OTHER_PLATFORM);
+  private static final Set<Platform> CURRENT_PLATFORM_SET = Sets.newHashSet(CURRENT_PLATFORM);
+  private static final Set<Platform> OTHER_PLATFORM_SET = Sets.newHashSet(OTHER_PLATFORM);
 
   IgnoreComparator ignoreComparator = new IgnoreComparator();
   

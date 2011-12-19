@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.support.pagefactory.internal;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;

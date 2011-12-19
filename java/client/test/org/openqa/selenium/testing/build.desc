@@ -2,7 +2,20 @@
 java_library(name = "testing",
   deps = [
     ":junit",
+    ":mock",
     ":util",
+  ])
+
+java_library(name = "tests",
+  srcs = [
+    "IgnoreComparitorUnitTest.java",
+  ],
+  deps = [
+    ":junit",
+    ":mock",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
   ])
 
 java_library(name = "dev_mode",
@@ -40,5 +53,14 @@ java_library(name = "junit_4",
   deps = [
     ":junit",
     "//java/client/test/org/openqa/selenium:base",
+    "//third_party/java/junit",
+  ])
+
+java_library(name = "mock",
+  srcs = [
+    "MockTestBase.java",
+  ],
+  deps = [
+    "//third_party/java/jmock",
     "//third_party/java/junit",
   ])

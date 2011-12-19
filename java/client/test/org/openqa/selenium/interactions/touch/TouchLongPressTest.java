@@ -27,7 +27,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;

@@ -1,19 +1,19 @@
 package org.openqa.selenium.testing;
 
-import java.util.Set;
+import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore.Driver;
 import org.openqa.selenium.testing.Ignore.NativeEventsEnabledState;
-import org.openqa.selenium.testing.Ignore;
 
-import com.google.common.collect.Sets;
+import java.util.Set;
 
 public class IgnoreComparator {
   private NativeEventsEnabledState nativeEventsIgnoreState = NativeEventsEnabledState.ALL;
   private Set<Ignore.Driver> ignored = Sets.newHashSet();
   private Platform currentPlatform = Platform.getCurrent();
 
+  // TODO(simon): reduce visibility
   public void addDriver(Driver driverToIgnore) {
     ignored.add(driverToIgnore);
   }

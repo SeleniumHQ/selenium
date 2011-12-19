@@ -43,15 +43,6 @@ java_library(name = "base",
     "//third_party/java/hamcrest",
   ])
 
-java_library(name = "mock",
-  srcs = [
-    "MockTestBase.java",
-  ],
-  deps = [
-    "//third_party/java/jmock",
-    "//third_party/java/junit",
-  ])
-
 java_library(name = "tests",
   srcs = [
     "SmallTests.java",
@@ -67,13 +58,14 @@ java_library(name = "tests",
   ],
   deps = [
     ":base",
-    ":mock",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/interactions/touch:api",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation:api",
     "//java/client/test/org/openqa/selenium/environment",
     "//java/client/test/org/openqa/selenium/testing:junit_4",
+    "//java/client/test/org/openqa/selenium/testing:mock",
+    "//java/client/test/org/openqa/selenium/testing:tests",
     "//third_party/java/commons-io",
     "//third_party/java/easymock",
     "//third_party/java/jmock",

@@ -19,7 +19,7 @@ package org.openqa.selenium.interactions;
 
 import static org.junit.Assert.assertEquals;
 
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 
 import org.jmock.Expectations;
 import org.junit.Test;

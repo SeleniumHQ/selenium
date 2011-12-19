@@ -23,6 +23,7 @@ import org.openqa.selenium.interactions.IndividualMouseActionsTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

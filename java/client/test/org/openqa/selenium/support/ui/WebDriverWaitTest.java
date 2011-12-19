@@ -20,7 +20,7 @@ package org.openqa.selenium.support.ui;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.MockTestBase;
+import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
