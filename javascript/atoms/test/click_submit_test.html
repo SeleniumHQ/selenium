@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>click_submit_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('goog.Uri');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+    var findElement = bot.locators.findElement;
+    var asyncTestCase = null;
+
+    function checkActionCompatibility(action) {
+      if (action == bot.action.tap) {
+        return bot.events.SUPPORTS_TOUCH_EVENTS;
+      }
+      return true;
+    }
+
+    function setUp() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      goog.events.listen(iframe, 'load', function() {
+        asyncTestCase.continueTesting();
+      });
+
+      iframeWindow.location = buildAbsoluteUrl('/testdata/click_iframe.html');
+      asyncTestCase.waitForAsync('Waiting for the page to load');
+    }
+
+   function doesNotSubmitFormWhenEventDefaultPrevented(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+
+      var previousLocation = iframeWindow.location.href;
+      goog.events.listen(clickTarget, goog.events.EventType.CLICK, function(e) {
+        e.preventDefault();
+      });
+
+      action(clickTarget);
+      assertEquals(previousLocation, iframeWindow.location.href);
+    }
+
+    var testClickDoesNotSubmitFormWhenEventDefaultPrevented =
+        goog.partial(doesNotSubmitFormWhenEventDefaultPrevented,
+                     bot.action.click);
+
+    var testTapDoesNotSubmitFormWhenEventDefaultPrevented =
+        goog.partial(doesNotSubmitFormWhenEventDefaultPrevented,
+                     bot.action.tap);
+
+    function doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget =
+          findElement({'id': 'submitFormWithInlineHandler'}, iframeDoc);
+
+      var previousLocation = iframeWindow.location.href;
+      action(clickTarget);
+      assertEquals(previousLocation, iframeWindow.location.href);
+    }
+
+    var testClickDoNotSubmitFormWhenEventDefaultPreventedWithInlineHandler =
+        goog.partial(doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler,
+                     bot.action.click);
+
+    var testTapDoNotSubmitFormWhenEventDefaultPreventedWithInlineHandler =
+        goog.partial(doNotSubmitFormWhenEventDefaultPreventedWithInlineHandler,
+                     bot.action.tap);
+
+    function submitExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+
+      // As the iframe loads asyncronously we need to wait to check out
+      // if the url matches the expected one.
+      goog.events.listenOnce(iframe, 'load', function() {
+        assertContains(targetHref, iframeWindow.location.href);
+        asyncTestCase.continueTesting();
+      });
+
+      action(clickTarget);
+
+      asyncTestCase.waitForAsync('Waiting for the target frame to load');
+    }
+
+    var testClickSubmitExecutesDefaultHandler =
+        goog.partial(submitExecutesDefaultHandler, bot.action.click);
+
+    var testTapSubmitExecutesDefaultHandler =
+        goog.partial(submitExecutesDefaultHandler, bot.action.tap);
+
+    function submitButtonTag(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'buttonText'}, iframeDoc);
+      var targetHref = buildAbsoluteUrl('/testdata/click_destination.html');
+
+      goog.events.listenOnce(iframe, 'load', function() {
+        assertContains(targetHref, iframeWindow.location.href);
+        asyncTestCase.continueTesting();
+      });
+
+      action(clickTarget);
+
+      asyncTestCase.waitForAsync('Waiting for the target frame to load');
+    }
+
+    var testClickSubmitButtonTag =
+        goog.partial(submitButtonTag, bot.action.click);
+
+    var testTapSubmitButtonTag =
+        goog.partial(submitButtonTag, bot.action.tap);
+
+    function formWithCorrectSubmitButton(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      var clickTarget = findElement({'id': 'submitForm'}, iframeDoc);
+
+      // As the iframe loads asyncronously we need to wait to check out
+      // if the url matches the expected one.
+      goog.events.listenOnce(iframe, 'load', function() {
+        assertContains('submitButton=Submit', iframeWindow.location.href);
+        asyncTestCase.continueTesting();
+      });
+
+      action(clickTarget);
+
+      asyncTestCase.waitForAsync('Waiting for the target frame to load');
+    }
+
+    var testClickFormWithCorrectSubmitButton =
+        goog.partial(formWithCorrectSubmitButton, bot.action.click);
+
+    var testTapFormWithCorrectSubmitButton =
+        goog.partial(formWithCorrectSubmitButton, bot.action.tap);
+
+    function buildAbsoluteUrl(url) {
+      var loc = location.href;
+      return loc.substring(0, loc.lastIndexOf('/')) + url;
+    }
+  </script>
+</head>
+<body>
+  <iframe id="iframe" src="testdata/click_iframe.html">
+  </iframe>
+  <script>
+    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+    // Set longer timeout due to android emulator slowness.
+    if (goog.userAgent.product.ANDROID) {
+      asyncTestCase.stepTimeout = 5000;
+    }
+  </script>
+</body>
+</html>

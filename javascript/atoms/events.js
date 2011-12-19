@@ -32,6 +32,15 @@ goog.require('goog.userAgent.product');
 
 
 /**
+ * Whether the browser supports the construction of touch events.
+ *
+ * @const
+ * @type {boolean}
+ */
+bot.events.SUPPORTS_TOUCH_EVENTS = !goog.userAgent.IE && !goog.userAgent.OPERA;
+
+
+/**
  * Whether the browser supports a native touch api.
  *
  * @const
@@ -322,9 +331,9 @@ goog.inherits(bot.events.TouchEventFactory_, bot.events.EventFactory_);
  * @inheritDoc
  */
 bot.events.TouchEventFactory_.prototype.create = function(target, opt_args) {
-  if (goog.userAgent.IE) {
+  if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
     throw new bot.Error(bot.ErrorCode.UNSUPPORTED_OPERATION,
-        'IE does not support firing touch events.');
+        'Browser does not support firing touch events.');
   }
 
   var args = (/** @type {!bot.events.TouchArgs} */ opt_args);

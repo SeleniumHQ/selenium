@@ -502,7 +502,10 @@ bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasSelected) {
     return;
   }
   this.element_.checked = !wasSelected;
-  // IE and Opera fire the change events themselves.
+  // Only Opera versions < 11 do not fire the change event themselves.
+  if (goog.userAgent.OPERA && !goog.userAgent.isVersion(11)) {
+    bot.events.fire(this.element_, bot.events.EventType.CHANGE);
+  }
 };
 
 

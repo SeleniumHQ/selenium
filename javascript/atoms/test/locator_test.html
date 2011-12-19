@@ -347,7 +347,11 @@ limitations under the License.
       assertEquals('tiger', second.getAttribute('name'));
     }
 
-    function testShouldReturnNullIfXPathResolverThrowsAnException() {
+    function testShouldReturnNullIfXPathResolverThrowsNsError_Gecko() {
+      if (!goog.userAgent.GECKO) {
+        return;
+      }
+
       var stubs = new goog.testing.PropertyReplacer();
       // This simulates what happens in a firefox extension if the page
       // reloads as an xpath query is being run.

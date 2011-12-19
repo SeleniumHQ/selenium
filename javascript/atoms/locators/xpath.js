@@ -13,7 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO(user): Add support for browsers without native xpath
+/**
+ * @fileoverview Functions to locate elements by XPath.
+ *
+ * <p>The locator implementations below differ from the Closure functions
+ * goog.dom.xml.{selectSingleNode,selectNodes} in three important ways:
+ * <ol>
+ * <li>they do not refer to "document" which is undefined in the context of a
+ * Firefox extension;
+ * <li> they use a default NsResolver for browsers that do not provide
+ * document.createNSResolver (e.g. Android); and
+ * <li> they prefer document.evaluate to node.{selectSingleNode,selectNodes}
+ * because the latter silently return nothing when the xpath resolves to a
+ * non-Node type, limiting the error-checking the implementation can provide.
+ * </ol>
+ *
+ * TODO(user): Add support for browsers without native xpath
+ *
+ */
 
 goog.provide('bot.locators.xpath');
 
@@ -23,6 +40,7 @@ goog.require('bot.ErrorCode');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.userAgent');
 
 
 /**
@@ -35,7 +53,7 @@ goog.require('goog.dom.NodeType');
  */
 // TODO(user): Move this enum back to bot.locators.xpath namespace.
 // The problem is that we alias bot.locators.xpath in locators.js, while
-// we set the flag --collapse_properties
+// we set the flag --collapse_properties (http://goo.gl/5W6cP).
 // The compiler should have thrown the error anyways, it's a bug that it fails
 // only when introducing this enum.
 // Solution: remove --collapase_properties from the js_binary rule or
@@ -74,25 +92,36 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   if (!doc.implementation.hasFeature('XPath', '3.0')) {
     return null;
   }
-  // Android 2.2 and earlier do not support createNSResolver
-  var resolver = doc.createNSResolver ?
-      doc.createNSResolver(doc.documentElement) :
-      bot.locators.xpath.DEFAULT_RESOLVER_;
-  return doc.evaluate(path, node, resolver, resultType, null);
+  try {
+    // Android 2.2 and earlier do not support createNSResolver
+    var resolver = doc.createNSResolver ?
+        doc.createNSResolver(doc.documentElement) :
+        bot.locators.xpath.DEFAULT_RESOLVER_;
+    return doc.evaluate(path, node, resolver, resultType, null);
+  } catch (ex) {
+    // The Firefox XPath evaluator can throw an exception if the document is
+    // queried while it's in the midst of reloading, so we ignore it. In all
+    // other cases, we assume an invalid xpath has caused the exception.
+    if (!(goog.userAgent.GECKO && ex.name == 'NS_ERROR_ILLEGAL_VALUE')) {
+      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+          'Unable to locate an element with the xpath expression ' + path +
+          ' because of the following error:\n' + ex);
+    }
+  }
 };
 
 
 /**
- * @param {!Error} ex The error that needs to be checked.
- * @return {boolean} Whether the error was caused by an invalid xpath.
+ * @param {Node|undefined} node Node to check whether it is an Element.
+ * @param {string} path XPath expression to include in the error message.
  * @private
  */
-bot.locators.xpath.isCausedByInvalidXPath_ = function(ex) {
-  // One common cause is that we're attempting to query the document at the
-  // point where it reloads. In a Firefox extension, this will detect that
-  // particular problem. In all other cases, we assume an invalid xpath has
-  // caused the exception.
-  return 'NS_ERROR_ILLEGAL_VALUE' != ex.name;
+bot.locators.xpath.checkElement_ = function(node, path) {
+  if (!node || node.nodeType != goog.dom.NodeType.ELEMENT) {
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+        'The result of the xpath expression "' + path +
+        '" is: ' + node + '. It should be an element.');
+  }
 };
 
 
@@ -105,108 +134,70 @@ bot.locators.xpath.isCausedByInvalidXPath_ = function(ex) {
  *     such element could be found.
  */
 bot.locators.xpath.single = function(target, root) {
-  // Note: This code was copied from Closure (goog.dom.xml.selectSingleNode)
-  // since the current implementation refers 'document' which is not defined
-  // in the context of the Firefox extension
-  // (XPathResult isn't defined as well).
-  function selectSingleNode(node, path) {
-    var doc = goog.dom.getOwnerDocument(node);
 
-    try {
-      if (node.selectSingleNode) {
-        if (doc.setProperty) {
-          doc.setProperty('SelectionLanguage', 'XPath');
-        }
-        return node.selectSingleNode(path);
+  function selectSingleNode() {
+    var result = bot.locators.xpath.evaluate_(root, target,
+        bot.locators.XPathResult_.FIRST_ORDERED_NODE_TYPE);
+    if (result) {
+      var node = result.singleNodeValue;
+      // On Opera, a singleNodeValue of undefined indicates a type error, while
+      // other browsers may use it to indicate something has not been found.
+      return goog.userAgent.OPERA ? node : (node || null);
+    } else if (root.selectSingleNode) {
+      var doc = goog.dom.getOwnerDocument(root);
+      if (doc.setProperty) {
+        doc.setProperty('SelectionLanguage', 'XPath');
       }
-
-      var result = bot.locators.xpath.evaluate_(node, path,
-          bot.locators.XPathResult_.FIRST_ORDERED_NODE_TYPE);
-      return result ? result.singleNodeValue : null;
-    } catch (ex) {
-      if (bot.locators.xpath.isCausedByInvalidXPath_(ex)) {
-        throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-            'Unable to locate an element with the xpath expression ' + target +
-            ' because of the following error:\n' + ex);
-      }
-      return null;
+      return root.selectSingleNode(target);
     }
-  }
-
-  var node = selectSingleNode(root, target);
-
-  if (!node) {
     return null;
   }
 
-  // Ensure that we actually return an element
-  if (node.nodeType != goog.dom.NodeType.ELEMENT) {
-    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'The result of the xpath expression "' + target +
-        '" is: ' + node +
-        '. It should be an element.');
+  var node = selectSingleNode();
+  if (!goog.isNull(node)) {
+    bot.locators.xpath.checkElement_(node, target);
   }
-
-  return (/**@type {Element}*/node);  // Type verified above.
+  return (/** @type {Element} */node);
 };
 
 
 /**
- * Find an element by using an xpath expression
+ * Find elements by using an xpath expression
  * @param {string} target The xpath to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
  * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
  */
 bot.locators.xpath.many = function(target, root) {
-  // Note: This code was copied from Closure (goog.dom.xml.selectNodes)
-  // since the current implement referes to 'document' which is not
-  // defined in the context of the Firefox extension (XPathResult isn't
-  // defined either).
-  function selectNodes(node, path) {
-    var doc = goog.dom.getOwnerDocument(node);
-    var nodes;
 
-    try {
-      if (node.selectNodes) {
-        if (doc.setProperty) {
-          doc.setProperty('SelectionLanguage', 'XPath');
-        }
-        return node.selectNodes(path);
+  function selectNodes() {
+    var result = bot.locators.xpath.evaluate_(root, target,
+        bot.locators.XPathResult_.ORDERED_NODE_SNAPSHOT_TYPE);
+    if (result) {
+      var count = result.snapshotLength;
+      // On Opera, if the XPath evaluates to a non-Node value, snapshotLength
+      // will be undefined and the result empty, so fail immediately.
+      if (goog.userAgent.OPERA && !goog.isDef(count)) {
+        bot.locators.xpath.checkElement_(null, target);
       }
-
-      nodes = bot.locators.xpath.evaluate_(node, path,
-          bot.locators.XPathResult_.ORDERED_NODE_SNAPSHOT_TYPE);
-    } catch (ex) {
-      if (bot.locators.xpath.isCausedByInvalidXPath_(ex)) {
-        throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-            'Unable to locate elements with the xpath expression ' + path +
-            ' because of the following error:\n' + ex);
-      }
-      // Fall through.
-    }
-    var results = [];
-    if (nodes) {
-      var count = nodes.snapshotLength;
+      var results = [];
       for (var i = 0; i < count; ++i) {
-        results.push(nodes.snapshotItem(i));
+        results.push(result.snapshotItem(i));
       }
+      return results;
+    } else if (root.selectNodes) {
+      var doc = goog.dom.getOwnerDocument(root);
+      if (doc.setProperty) {
+        doc.setProperty('SelectionLanguage', 'XPath');
+      }
+      return root.selectNodes(target);
     }
-    return results;
+    return [];
   }
 
-  var nodes = selectNodes(root, target);
-
-  // Only return elements
-  goog.array.forEach(nodes, function(node) {
-    if (node.nodeType != goog.dom.NodeType.ELEMENT) {
-      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-          'The result of the xpath expression "' + target +
-          '" is: ' + node +
-          '. It should be an element.');
-    }
+  var nodes = selectNodes();
+  goog.array.forEach(nodes, function(n) {
+    bot.locators.xpath.checkElement_(n, target);
   });
-
-  // Type-cast to account for an inconsistency in closure type annotations.
-  return (/**@type {!goog.array.ArrayLike}*/nodes);
+  return (/** @type {!goog.array.ArrayLike} */nodes);
 };

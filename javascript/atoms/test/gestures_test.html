@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>gestures_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+  <script type="text/javascript">
+    function assertApproxEquals(x, y) {
+      assertRoughlyEquals(x, y, 0.000000000001);
+    }
+
+    // Setup a touch listenenrs.
+    var ScaleDiv = function(element) {
+      this.element_ = element;
+      this.x1_ = 0;
+      this.y1_ = 0;
+      this.x2_ = 0;
+      this.y2_ = 0;
+      this.startX1_ = 0;
+      this.startY1_ = 0;
+      this.startX2_ = 0;
+      this.startY2_ = 0;
+      // By default, scale actions occurs on the y axis.
+      this.delta = new goog.math.Coordinate(0, 50);
+
+      goog.events.listen(this.element_, goog.events.EventType.TOUCHSTART,
+                         this.startMove, false, this);
+      goog.events.listen(this.element_, goog.events.EventType.TOUCHMOVE,
+                         this.move, false, this);
+      goog.events.listen(this.element_, goog.events.EventType.TOUCHEND,
+                         this.endMove, false, this);
+    };
+    /**
+     * The touchstart listener.
+     *
+     * @param {!Event} event The touchstart event.
+     */
+    ScaleDiv.prototype.startMove = function(event) {
+      var e = event.getBrowserEvent();
+      assertEquals(2, e.touches.length);
+      this.startX1_ = e.touches[0].clientX;
+      this.startY1_ = e.touches[0].clientY;
+      this.startX2_ = e.touches[1].clientX;
+      this.startY2_ = e.touches[1].clientY;
+      this.x1_ = this.startX1_;
+      this.y1_ = this.startY1_;
+      this.x2_ = this.startX2_;
+      this.y2_ = this.startY2_;
+    };
+    /**
+     * The touchmove listener.
+     *
+     * @param {!Event} event The touchstart event.
+     */
+    ScaleDiv.prototype.move = function(event) {
+      var dx1, dy1, dx2, dy2;
+      var e = event.getBrowserEvent();
+
+      assertEquals(2, e.changedTouches.length);
+      assertEquals(2, e.targetTouches.length);
+      assertEquals(2, e.touches.length);
+
+      dx1 = e.touches[0].clientX - this.x1_;
+      dy1 = e.touches[0].clientY - this.y1_;
+      dx2 = e.touches[1].clientX - this.x2_;
+      dy2 = e.touches[1].clientY - this.y2_;
+
+      this.x1_ = e.touches[0].clientX;
+      this.y1_ = e.touches[0].clientY;
+      this.x2_ = e.touches[1].clientX;
+      this.y2_ = e.touches[1].clientY;
+
+      event.preventDefault();
+
+      var elementStyle = this.element_.style;
+      elementStyle.width = parseInt(elementStyle.width) - dx1 + 'px';
+      elementStyle.height = parseInt(elementStyle.height) - dy1 + 'px';
+    };
+    /**
+     * The touchend listener.
+     *
+     * @param {!Event} event The touchstart event.
+     */
+    ScaleDiv.prototype.endMove = function(event) {
+      var e = event.getBrowserEvent();
+
+      assertEquals(2, e.changedTouches.length);
+
+      this.x1_ = e.changedTouches[0].clientX;
+      this.y1_ = e.changedTouches[0].clientY;
+      this.x2_ = e.changedTouches[1].clientX;
+      this.y2_ = e.changedTouches[1].clientY;
+
+      assertApproxEquals(Math.abs(this.startX1_ - this.x1_), this.delta.x);
+      assertApproxEquals(Math.abs(this.startY1_ - this.y1_), this.delta.y);
+      assertApproxEquals(Math.abs(this.startX2_ - this.x2_), this.delta.x);
+      assertApproxEquals(Math.abs(this.startY2_ - this.y2_), this.delta.y);
+    };
+
+    function testPinchAction() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        return;
+      }
+      var e = goog.dom.getElement('pinch');
+      var pinchDiv = new ScaleDiv(e);
+      bot.action.pinch(e);
+    }
+
+    function testZoomAction() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        return;
+      }
+      var e = goog.dom.getElement('zoom');
+      var zoomDiv = new ScaleDiv(e);
+      bot.action.zoom(e);
+    }
+
+    function testRotateAction() {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
+        return;
+      }
+      var e = goog.dom.getElement('rotate');
+      var start1 = new goog.math.Coordinate(0, 50);
+      var start2 = new goog.math.Coordinate(100, 50);
+
+      // Setup a touch listenenrs.
+      var RotateDiv = function(element) {
+        this.element_ = element;
+        this.startX1_ = 0;
+        this.startY1_ = 0;
+        this.startX2_ = 0;
+        this.startY2_ = 0;
+        goog.events.listen(this.element_, goog.events.EventType.TOUCHSTART,
+                           this.startMove, false, this);
+        goog.events.listen(this.element_, goog.events.EventType.TOUCHEND,
+                           this.endMove, false, this);
+      };
+      RotateDiv.prototype.startMove = function(event) {
+        var e = event.getBrowserEvent();
+        assertEquals(2, e.touches.length);
+        this.startX1_ = e.touches[0].clientX;
+        this.startY1_ = e.touches[0].clientY;
+        this.startX2_ = e.touches[1].clientX;
+        this.startY2_ = e.touches[1].clientY;
+      };
+      RotateDiv.prototype.endMove = function(event) {
+        var e = event.getBrowserEvent();
+
+        assertEquals(2, e.changedTouches.length);
+
+        // These verifications are specific to this test case only.
+        // A 180 degree flip means that the start touch of the first finger is
+        // equal to the end touch of the second finger and vice versa.
+        assertApproxEquals(this.startX1_, e.changedTouches[1].clientX);
+        assertApproxEquals(this.startY1_, e.changedTouches[1].clientY);
+        assertApproxEquals(this.startX2_, e.changedTouches[0].clientX);
+        assertApproxEquals(this.startY2_, e.changedTouches[0].clientY);
+      };
+
+      var rotateDiv = new RotateDiv(e);
+      bot.action.rotate(e, 180);
+    }
+    </script>
+</head>
+<body>
+  <div id="rotate" style="background-color:brown; width:100px; height:100px">rotate</div>
+  <div id="pinch" style="background-color:green; width:100px; height:100px">pinch</div>
+  <div id="zoom" style="background-color:red; width:100px; height:100px">zoom</div>
+</body>
+</html>

@@ -26,9 +26,6 @@
       goog.events.EventType.MOUSEUP,
       goog.events.EventType.CLICK
     ];
-    // Note: IE 10's touch support is not compliant with the W3C touch
-    // specificiation and hence not supported.
-    var SUPPORT_TOUCH_EVENTS = !goog.userAgent.IE;
 
     function setUpPage() {
       target = document.getElementById('target');
@@ -62,7 +59,7 @@
     }
 
     function testTouchScreenPress() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
@@ -72,7 +69,7 @@
     }
 
     function testTouchScreen2FingerPress() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target,
@@ -84,7 +81,7 @@
     }
 
     function testTouchScreen2FingerPinch() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target,
@@ -101,7 +98,7 @@
     }
 
     function testTouchScreen2FingerRotate() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target,
@@ -118,7 +115,7 @@
     }
 
     function testTouchScreenRelease() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
@@ -134,7 +131,7 @@
     }
 
     function testTouchScreenReleaseAfterMove() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
@@ -148,7 +145,7 @@
     }
 
     function testTouchScreenReleaseAfterNewElement() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
@@ -163,7 +160,7 @@
     }
 
     function testTouchScreenMoveWithoutPress() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
@@ -171,7 +168,7 @@
     }
 
     function testTouchScreenMoveWithPress() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
@@ -183,7 +180,7 @@
     }
 
     function testExceptionReleasingWhenNotPressed() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       assertThrows('Releasing when not pressed should throw an exception',
@@ -191,7 +188,7 @@
     }
 
     function testExceptionPressedWhenAlreadyPressed() {
-      if (!SUPPORT_TOUCH_EVENTS) {
+      if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));

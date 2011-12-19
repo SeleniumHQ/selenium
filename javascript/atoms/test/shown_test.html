@@ -282,6 +282,10 @@
       assertTrue(bot.dom.isShown(area, true));
      }
 
+    function testNoscriptElementIsNotShown() {
+      var noscript = findElement({id: 'noscript'});
+      assertFalse(isShown(noscript));
+    }
   </script>
 
   <style type="text/css">
@@ -347,6 +351,8 @@
     <p id="outer" style="visibility: hidden">A
       <b id="visibleSubElement" style="visibility: visible">sub-element that is
         explicitly visible</b> using CSS visibility=visible</p>
+
+    <noscript id='noscript'>Noscript subelement that is not visible</noscript>
 </div>
 
 <img id="zeroheight" src="testdata/map.png">

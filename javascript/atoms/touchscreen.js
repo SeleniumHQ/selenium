@@ -149,10 +149,13 @@ bot.Touchscreen.prototype.release = function() {
   // and only one mousemove should fire.
   if (!this.hasMovedAfterPress_) {
     this.fireMouseEvent_(bot.events.EventType.MOUSEMOVE);
-    this.fireMouseEvent_(bot.events.EventType.MOUSEDOWN);
+    var performFocus = this.fireMouseEvent_(bot.events.EventType.MOUSEDOWN);
 
-    // Element gets focus after the MOUSEDOWN event.
-    this.focusOnElement();
+    // Element gets focus after the mousedown event only if the mousedown was
+    // not cancelled.
+    if (performFocus) {
+      this.focusOnElement();
+    }
 
     this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
 

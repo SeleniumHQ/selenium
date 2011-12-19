@@ -21,6 +21,7 @@
 goog.provide('bot.Error');
 goog.provide('bot.ErrorCode');
 
+goog.require('goog.debug.Error');
 goog.require('goog.object');
 
 
@@ -69,9 +70,10 @@ bot.ErrorCode = {
  * @param {!bot.ErrorCode} code The error's status code.
  * @param {string=} opt_message Optional error message.
  * @constructor
- * @extends {Error}
+ * @extends {goog.debug.Error}
  */
 bot.Error = function(code, opt_message) {
+  goog.base(this, opt_message);
 
   /**
    * This error's status code.
@@ -79,27 +81,16 @@ bot.Error = function(code, opt_message) {
    */
   this.code = code;
 
-  /** @override */
-  this.message = opt_message || '';
-
-  /** @override */
+  /** @inheritDoc */
   this.name = (/**@type {string}*/ bot.Error.NAMES_[code] ||
       bot.Error.NAMES_[bot.ErrorCode.UNKNOWN_ERROR]);
-
-  // Generate a stacktrace for our custom error; ensure the error has our
-  // custom name and message so the stack prints correct in all browsers.
-  var template = new Error(this.message);
-  template.name = this.name;
-
-  /** @override */
-  this.stack = template.stack || '';
 };
-goog.inherits(bot.Error, Error);
+goog.inherits(bot.Error, goog.debug.Error);
 
 
 /**
  * A map of error codes to error names.
- * @type {Object.<String>}
+ * @type {Object.<bot.ErrorCode, String>}
  * @const
  * @private
  */

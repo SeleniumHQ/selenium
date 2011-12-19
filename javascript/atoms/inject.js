@@ -464,8 +464,7 @@ bot.inject.cache.getElement = function(key, opt_doc) {
   var el = cache[key];
 
   // If this is a Window check if it's closed
-  if (el.nodeType != goog.dom.NodeType.ELEMENT &&
-      goog.object.containsKey(el, 'document')) {
+  if (goog.object.containsKey(el, 'document')) {
     if (el.closed) {
       delete cache[key];
       throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW,

@@ -283,13 +283,16 @@ bot.dom.getAttribute = function(element, attributeName) {
 
   attributeName = attributeName.toLowerCase();
 
-  // In IE, the style attribute is an object, so we standardize to the
-  // style.cssText property to get a string. The case of this string varies
-  // across browsers, so we standardize to lower-case. Finally, Firefox always
-  // includes a trailing semi-colon and we standardize to that.
+  // The style attribute should be a css text string that includes only what
+  // the HTML element specifies itself (excluding what is inherited from parent
+  // elements or style sheets). We standardize the format of this string by:
+  // (1) converting it to lowercase
+  // (2) ensuring it ends in a trailing semi-colon
+  // (3) removing empty style values (which only appear on Opera).
   if (attributeName == 'style') {
     var css = goog.string.trim(element.style.cssText).toLowerCase();
-    return css.charAt(css.length - 1) == ';' ? css : css + ';';
+    css = css.charAt(css.length - 1) == ';' ? css : css + ';';
+    return goog.userAgent.OPERA ? css.replace(/\w+:;/g, '') : css;
   }
 
   var attr = element.getAttributeNode(attributeName);
@@ -617,6 +620,11 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // Any hidden input is not shown.
   if (bot.dom.isElement(elem, goog.dom.TagName.INPUT) &&
       elem.type.toLowerCase() == 'hidden') {
+    return false;
+  }
+
+  // Any NOSCRIPT element is not shown.
+  if (bot.dom.isElement(elem, goog.dom.TagName.NOSCRIPT)) {
     return false;
   }
 

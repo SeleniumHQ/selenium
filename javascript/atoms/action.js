@@ -28,6 +28,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.Keyboard');
 goog.require('bot.Mouse');
+goog.require('bot.Touchscreen');
 goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.events.EventType');
@@ -37,6 +38,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
+goog.require('goog.math.Vec2');
 goog.require('goog.userAgent');
 
 
@@ -438,6 +440,158 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
   mouse.move(element, finalXY);
 
   mouse.releaseButton();
+};
+
+
+/**
+ * Simulates a tap sequence on the given {@code element}.
+ *
+ * <p/>Throws an exception if the element is not shown or is disabled.
+ *
+ * @param {!Element} element The element to tap.
+ * @param {goog.math.Coordinate=} opt_coords Finger position relative to the
+ *   target.
+ */
+bot.action.tap = function(element, opt_coords) {
+  bot.action.checkShown_(element);
+
+  var touchScreen = new bot.Touchscreen();
+  if (!opt_coords) {
+    var size = goog.style.getSize(element);
+    opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
+  }
+  touchScreen.move(element, opt_coords);
+  touchScreen.press();
+  touchScreen.release();
+};
+
+
+/**
+ * A touch gesture that starts on the element followed by a (dx, dy) touchmove.
+ *
+ * @param {!Element} element The element to swipe.
+ * @param {number} dx Increment in x coordinate.
+ * @param {number} dy Increment in y coordinate.
+ * @param {goog.math.Coordinate=} opt_coords swipe start position relative to
+ *   the element.
+ */
+bot.action.swipe = function(element, dx, dy, opt_coords) {
+  bot.action.checkInteractable_(element);
+
+  var touchScreen = new bot.Touchscreen();
+  if (!opt_coords) {
+    var size = goog.style.getSize(element);
+    opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
+  }
+  touchScreen.move(element, opt_coords);
+  touchScreen.press();
+
+  // Fire two touchmoves (middle and destination) to trigger a drag action.
+  var initPos = goog.style.getClientPosition(element);
+  var midXY = new goog.math.Coordinate(opt_coords.x + Math.floor(dx / 2),
+                                       opt_coords.y + Math.floor(dy / 2));
+  touchScreen.move(element, midXY);
+
+  var midPos = goog.style.getClientPosition(element);
+  var finalXY = new goog.math.Coordinate(
+      initPos.x + opt_coords.x + dx - midPos.x,
+      initPos.y + opt_coords.y + dy - midPos.y);
+  touchScreen.move(element, finalXY);
+
+  touchScreen.release();
+};
+
+
+/**
+ * Helper function that has common logic needing for the pinch and zoom actions.
+ *
+ * @param {!Element} element The element to scale.
+ * @param {boolean} isZoom Whether or not to zoom.
+ * @private
+ */
+bot.action.scale_ = function(element, isZoom) {
+  bot.action.checkInteractable_(element);
+  var size = goog.style.getSize(element);
+  var center = new goog.math.Vec2(size.width / 2, size.height / 2);
+  // To choose the default coordinate, we imagine a circle centered on the
+  // element's center. The first finger coordinate is the top of this circle
+  // i.e. the 12 o'clock mark and the second finger is at 6 o'clock.
+  var outer1 = new goog.math.Coordinate(size.width / 2, 0);
+  var outer2 = new goog.math.Coordinate(size.width / 2, size.height);
+  var mid1 = new goog.math.Coordinate(size.width / 2, size.height);
+  var mid2 = new goog.math.Coordinate(size.width / 2, 3 * size.height / 4);
+
+  // For zoom, start from the center and go outwards and vice versa for pinch.
+  var start1 = isZoom ? center : outer1;
+  var start2 = isZoom ? center : outer2;
+  var end1 = isZoom ? outer1 : center;
+  var end2 = isZoom ? outer2 : center;
+
+  var touchScreen = new bot.Touchscreen();
+  touchScreen.move(element, start1, start2);
+  touchScreen.press(/*Two Finger Press*/ true);
+  touchScreen.move(element, mid1, mid2);
+  touchScreen.move(element, end1, end2);
+  touchScreen.release();
+};
+
+
+/**
+ * A touch gesture that starts on the element followed by a pinching motion to
+ * the center of the element.
+ *
+ * @param {!Element} element The element to pinch.
+ */
+bot.action.pinch = function(element) {
+  bot.action.scale_(element, /* isZoom */ false);
+};
+
+
+/**
+ * A touch gesture that starts on the element followed by a zoom motion away
+ * from the center of the element.
+ *
+ * @param {!Element} element The element to zoom.
+ */
+bot.action.zoom = function(element) {
+  bot.action.scale_(element, /* isZoom */ true);
+};
+
+
+/**
+ * A touch gesture that starts on the element followed by a rotation movement.
+ *
+ * @param {!Element} element The element to rotate.
+ * @param {number} angle The degrees of rotation between -180 and 180.  A
+ *   positve number indicates a clockwise rotation.
+ */
+bot.action.rotate = function(element, angle) {
+  bot.action.checkInteractable_(element);
+  var size = goog.style.getSize(element);
+  var center = new goog.math.Vec2(size.width / 2, size.height / 2);
+  // To choose the default coordinate, we imagine a circle centered on the
+  // element's center. The first finger coordinate is the top of this circle
+  // i.e. the 12 o'clock mark and the second finger is at 6 o'clock.
+  var coords1 = new goog.math.Vec2(size.width / 2, 0);
+  var coords2 = new goog.math.Vec2(size.width / 2, size.height);
+
+  // Convert the degrees to radians.
+  var halfRadians = Math.PI * (angle / 180) / 2;
+
+  var touchScreen = new bot.Touchscreen();
+  touchScreen.move(element, coords1, coords2);
+  touchScreen.press(/*Two Finger Press*/ true);
+
+  // Complete the rotation in two steps.
+  var mid1 = goog.math.Vec2.rotateAroundPoint(coords1, center, halfRadians);
+  var mid2 = goog.math.Vec2.rotateAroundPoint(coords2, center, halfRadians);
+  touchScreen.move(element, mid1, mid2);
+
+  var end1 = goog.math.Vec2.rotateAroundPoint(mid1, center, halfRadians);
+  var end2 = goog.math.Vec2.rotateAroundPoint(mid2, center, halfRadians);
+  touchScreen.move(element, end1, end2);
+
+  touchScreen.release();
 };
 
 
