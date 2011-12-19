@@ -1,6 +1,30 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
+/*
+ Copyright 2011 Software Freedom Conservancy.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 package org.openqa.selenium.chrome;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.os.CommandLine.findExecutable;
+
+import com.google.common.collect.ImmutableMap;
+
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
@@ -10,13 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.os.CommandLine.findExecutable;
 
 /**
  * Manages the life and death of a chromedriver server.
@@ -46,16 +65,21 @@ public class ChromeDriverService {
   private CommandLine process = null;
   private final String executable;
   private final String args;
+  private final ImmutableMap<String, String> environment;
 
   /**
+   *
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
+   * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  private ChromeDriverService(File executable, int port) throws IOException {
+  private ChromeDriverService(File executable, int port,
+      ImmutableMap<String, String> environment) throws IOException {
     this.executable = executable.getCanonicalPath();
     args = String.format("--port=%d", port);
     url = new URL(String.format("http://localhost:%d", port));
+    this.environment = environment;
   }
 
   /**
@@ -131,6 +155,7 @@ public class ChromeDriverService {
         return;
       }
       process = new CommandLine(this.executable, args);
+      process.setEnvironmentVariables(environment);
       process.copyOutputTo(System.err);
       process.executeAsync();
 
@@ -176,6 +201,7 @@ public class ChromeDriverService {
 
     private int port = 0;
     private File exe = null;
+    private ImmutableMap<String, String> environment = ImmutableMap.of();
 
     /**
      * Sets which chromedriver executable the builder will use.
@@ -219,6 +245,21 @@ public class ChromeDriverService {
     }
 
     /**
+     * Defines the environment for the launched chromedriver server. These
+     * settings will be inherited by every browser session launched by the
+     * server.
+     *
+     * @param environment A map of the environment variables to launch the
+     *     server with.
+     * @return A self reference.
+     */
+    @Beta
+    public Builder withEnvironment(Map<String, String> environment) {
+      this.environment = ImmutableMap.copyOf(environment);
+      return this;
+    }
+
+    /**
      * Creates a new binary to manage the chromedriver server. Before creating a new binary, the
      * builder will check that either the user defined the location of the chromedriver executable
      * through {@link #usingChromeDriverExecutable(File) the API} or with the
@@ -234,7 +275,7 @@ public class ChromeDriverService {
       checkState(exe != null, "Path to the chromedriver executable not specified");
 
       try {
-        return new ChromeDriverService(exe, port);
+        return new ChromeDriverService(exe, port, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
