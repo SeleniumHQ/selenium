@@ -196,9 +196,12 @@ Utils.addToKnownElements = function(element) {
 
   if (!global_element_cache[ownerWindowId]) {
     global_element_cache[ownerWindowId] = {};
-    ownerWindow.onunload = function() {
-      delete global_element_cache[ownerWindowId];
-    }
+    ownerWindow.addEventListener(
+        'unload',
+        function() {
+          delete global_element_cache[ownerWindowId];
+        },
+        /*useCapture=*/true);
   }
 
   for (var e in global_element_cache[ownerWindowId]) {
