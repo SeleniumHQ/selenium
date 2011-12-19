@@ -129,7 +129,7 @@ bot.html5.isSupported = function(api, opt_window) {
       // supports this.
       // Geolocation doesn't respond on Safari5 on Windows, see:
       // https://discussions.apple.com/thread/3547900
-      if (bot.html5.IS_FF_3_OR_4_ || bot.html5.IS_SAFARI5_WINDOWS_) {
+      if (goog.userAgent.GECKO || bot.html5.IS_SAFARI5_WINDOWS_) {
         return false;
       }
       return goog.isDefAndNotNull(win.navigator) &&
