@@ -258,8 +258,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     String expectedTitle = "XHTML Test Page";
 
     waitFor(pageTitleToBe(driver, expectedTitle));
-    String javascriptTitle = (String)((JavascriptExecutor)driver).executeScript("return document.title;");
-    assertEquals(expectedTitle, javascriptTitle);
     waitFor(elementToExist(driver, "only-exists-on-xhtmltest"));
   }
 
