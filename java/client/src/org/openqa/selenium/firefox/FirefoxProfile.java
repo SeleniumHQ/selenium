@@ -78,6 +78,7 @@ public class FirefoxProfile {
           .put("network.manage-offline-status", false)
           .put("network.http.max-connections-per-server", 10)
           .put("network.http.phishy-userpass-length", 255)
+          .put("offline-apps.allow_by_default", true)
           .put("prompts.tab_modal.enabled", false)
           .put("security.fileuri.origin_policy", 3)
           .put("security.fileuri.strict_origin_policy", false)

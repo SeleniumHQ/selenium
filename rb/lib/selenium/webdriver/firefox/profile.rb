@@ -287,6 +287,7 @@ module Selenium
           "network.manage-offline-status"             => 'false',
           "network.http.phishy-userpass-length"       => '255',
           "network.http.max-connections-per-server"   => '10',
+          "offline-apps.allow_by_default"             => 'true',
           "prompts.tab_modal.enabled"                 => "false",
           "security.warn_entering_secure"             => 'false',
           "security.warn_submit_insecure"             => 'false',
