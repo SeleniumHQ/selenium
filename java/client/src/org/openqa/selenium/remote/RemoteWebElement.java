@@ -238,16 +238,22 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     }
 
     WebElement other = (WebElement) obj;
-    if (other instanceof WrapsElement) {
-      other = ((WrapsElement) obj).getWrappedElement();
+    while (other instanceof WrapsElement) {
+      other = ((WrapsElement) other).getWrappedElement();
     }
 
     if (!(other instanceof RemoteWebElement)) {
       return false;
     }
+    
+    RemoteWebElement otherRemoteWebElement = (RemoteWebElement) other;
+    if (id.equals(otherRemoteWebElement.id)) {
+      return true;
+    }
 
+    //TODO(dawagner): Remove this fallback (and wire protocol method)
     Response response = execute(DriverCommand.ELEMENT_EQUALS,
-        ImmutableMap.of("id", id, "other", ((RemoteWebElement) other).id));
+        ImmutableMap.of("id", id, "other", otherRemoteWebElement.id));
     Object value = response.getValue();
     return value != null && value instanceof Boolean && (Boolean) value;
   }
