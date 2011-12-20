@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder Utilities" version="1.9.3.0" projectFile="C:\Projects\WebDriver\trunk\dotnet\docgen\docs.shfbproj" started="8/23/2011 2:44:32 PM">
+<shfbBuild product="Sandcastle Help File Builder Utilities" version="1.9.3.0" projectFile="C:\Projects\WebDriver\trunk\dotnet\docgen\docs.shfbproj" started="12/8/2011 8:53:31 AM">
 <buildStep step="Initializing">
 </buildStep>
 <buildStep step="FindingTools">
@@ -10,72 +10,72 @@ Found HTML Help 1 compiler in &#39;C:\Program Files (x86)\HTML Help Workshop\&#3
 </buildStep>
 <buildStep step="ValidatingDocumentationSources">
 Validating and copying documentation source information
-Source: C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.dll
-    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.dll&#39;
-Source: C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.xml
-Source: C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.Support.dll
-    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.Support.dll&#39;
-Source: C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.Support.xml
-Source: C:\Projects\WebDriver\trunk\build\dotnet\ThoughtWorks.Selenium.Core.dll
-    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\ThoughtWorks.Selenium.Core.dll&#39;
-Source: C:\Projects\WebDriver\trunk\build\dotnet\ThoughtWorks.Selenium.Core.xml
-Source: C:\Projects\WebDriver\trunk\build\dotnet\Selenium.WebDriverBackedSelenium.dll
-    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\Selenium.WebDriverBackedSelenium.dll&#39;
-Source: C:\Projects\WebDriver\trunk\build\dotnet\Selenium.WebDriverBackedSelenium.xml
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.dll
+    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.dll&#39;
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.xml
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.Support.dll
+    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.Support.dll&#39;
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.Support.xml
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\ThoughtWorks.Selenium.Core.dll
+    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\net35\ThoughtWorks.Selenium.Core.dll&#39;
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\ThoughtWorks.Selenium.Core.xml
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\Selenium.WebDriverBackedSelenium.dll
+    Found assembly &#39;C:\Projects\WebDriver\trunk\build\dotnet\net35\Selenium.WebDriverBackedSelenium.dll&#39;
+Source: C:\Projects\WebDriver\trunk\build\dotnet\net35\Selenium.WebDriverBackedSelenium.xml
 
 Copying XML comments files
-    C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.xml
-    C:\Projects\WebDriver\trunk\build\dotnet\WebDriver.Support.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.Support.xml
-    C:\Projects\WebDriver\trunk\build\dotnet\ThoughtWorks.Selenium.Core.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\ThoughtWorks.Selenium.Core.xml
-    C:\Projects\WebDriver\trunk\build\dotnet\Selenium.WebDriverBackedSelenium.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Selenium.WebDriverBackedSelenium.xml
+    C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.xml
+    C:\Projects\WebDriver\trunk\build\dotnet\net35\WebDriver.Support.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.Support.xml
+    C:\Projects\WebDriver\trunk\build\dotnet\net35\ThoughtWorks.Selenium.Core.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\ThoughtWorks.Selenium.Core.xml
+    C:\Projects\WebDriver\trunk\build\dotnet\net35\Selenium.WebDriverBackedSelenium.xml -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Selenium.WebDriverBackedSelenium.xml
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
-    Last step completed in 00:00:00.2652
+    Last step completed in 00:00:00.1200
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.0468
+    Last step completed in 00:00:00.0500
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
-[c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
   MrefBuilder (v2.6.10621.1)
   Copyright c Microsoft 2006
   Info: Loaded 4 assemblies for reflection and 0 dependency assemblies.
-  Info: Wrote information on 14 namespaces, 115 types, and 1143 members
+  Info: Wrote information on 14 namespaces, 121 types, and 1180 members
   XslTransform (v2.6.10621.1)
   Copyright c Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\MergeDuplicates.xsl&#39;.
   reflection.all -&gt; reflection.org
-    Last step completed in 00:00:08.2368
+    Last step completed in 00:00:04.9700
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.0312
+    Last step completed in 00:00:00.0400
 </buildStep>
 <buildStep step="ApplyVisibilityProperties">
 Applying visibility properties to reflection information file
     20 attribute nodes removed
     0 explicit interface implementations removed
     8 local and base class EII elements removed
-    8 protected members removed from sealed classes
-    Last step completed in 00:00:00.2496
+    10 protected members removed from sealed classes
+    Last step completed in 00:00:00.2300
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
-[c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
   XslTransform (v2.6.10621.1)
   Copyright c Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ApplyVSDocModel.xsl&#39;.
-  reflection.org -&gt; C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmpD9F0.tmp
+  reflection.org -&gt; C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmpCC49.tmp
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\AddGuidFilenames.xsl&#39;.
-  C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmpD9F0.tmp -&gt; reflection.xml
+  C:\Users\jevans.BOSIDOMAIN\AppData\Local\Temp\tmpCC49.tmp -&gt; reflection.xml
   XslTransform (v2.6.10621.1)
   Copyright c Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ReflectionToManifest.xsl&#39;.
   reflection.xml -&gt; manifest.xml
-    Last step completed in 00:00:02.9038
+    Last step completed in 00:00:03.0000
 </buildStep>
 <buildStep step="ModifyHelpTopicFilenames">
 Modifying help topic filenames in reflection information file
@@ -154,9 +154,12 @@ Modifying help topic filenames in reflection information file
     Unique name M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_3 generated for M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities)
     Unique name M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_4 generated for M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Interactions_Actions_Click_1 generated for M:OpenQA.Selenium.Interactions.Actions.Click(OpenQA.Selenium.IWebElement)
+    Unique name M_OpenQA_Selenium_Interactions_Actions_ClickAndHold_1 generated for M:OpenQA.Selenium.Interactions.Actions.ClickAndHold(OpenQA.Selenium.IWebElement)
+    Unique name M_OpenQA_Selenium_Interactions_Actions_DoubleClick_1 generated for M:OpenQA.Selenium.Interactions.Actions.DoubleClick(OpenQA.Selenium.IWebElement)
     Unique name M_OpenQA_Selenium_Interactions_Actions_KeyDown_1 generated for M:OpenQA.Selenium.Interactions.Actions.KeyDown(System.String)
     Unique name M_OpenQA_Selenium_Interactions_Actions_KeyUp_1 generated for M:OpenQA.Selenium.Interactions.Actions.KeyUp(System.String)
     Unique name M_OpenQA_Selenium_Interactions_Actions_MoveToElement_1 generated for M:OpenQA.Selenium.Interactions.Actions.MoveToElement(OpenQA.Selenium.IWebElement,System.Int32,System.Int32)
+    Unique name M_OpenQA_Selenium_Interactions_Actions_Release_1 generated for M:OpenQA.Selenium.Interactions.Actions.Release(OpenQA.Selenium.IWebElement)
     Unique name M_OpenQA_Selenium_Interactions_Actions_SendKeys_1 generated for M:OpenQA.Selenium.Interactions.Actions.SendKeys(System.String)
     Unique name M_OpenQA_Selenium_Remote_Command__ctor_1 generated for M:OpenQA.Selenium.Remote.Command.#ctor(OpenQA.Selenium.Remote.SessionId,OpenQA.Selenium.Remote.DriverCommand,System.Collections.Generic.Dictionary{System.String,System.Object})
     Unique name M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_1 generated for M:OpenQA.Selenium.Remote.DesiredCapabilities.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
@@ -175,6 +178,9 @@ Modifying help topic filenames in reflection information file
     Unique name M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose_1 generated for M:OpenQA.Selenium.Support.Events.EventFiringWebDriver.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor_1 generated for M:OpenQA.Selenium.Support.Events.FindElementEventArgs.#ctor(OpenQA.Selenium.IWebDriver,OpenQA.Selenium.IWebElement,OpenQA.Selenium.By)
     Unique name M_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs__ctor_1 generated for M:OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.#ctor(OpenQA.Selenium.IWebDriver,System.String)
+    Unique name M_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor_1 generated for M:OpenQA.Selenium.Support.UI.DefaultWait`1.#ctor(`0,OpenQA.Selenium.Support.UI.IClock)
+    Unique name M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor_1 generated for M:OpenQA.Selenium.Support.UI.PopupWindowFinder.#ctor(OpenQA.Selenium.IWebDriver,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor_2 generated for M:OpenQA.Selenium.Support.UI.PopupWindowFinder.#ctor(OpenQA.Selenium.IWebDriver,System.TimeSpan,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_1 generated for M:OpenQA.Selenium.Support.UI.UnexpectedTagNameException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     Unique name M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_2 generated for M:OpenQA.Selenium.Support.UI.UnexpectedTagNameException.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_3 generated for M:OpenQA.Selenium.Support.UI.UnexpectedTagNameException.#ctor(System.String,System.Exception)
@@ -192,7 +198,7 @@ Modifying help topic filenames in reflection information file
     Unique name M_Selenium_WebDriverCommandProcessor__ctor_1 generated for M:Selenium.WebDriverCommandProcessor.#ctor(System.Uri,OpenQA.Selenium.IWebDriver)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_1 generated for M:Selenium.WebDriverCommandProcessor.Start(System.Object)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_2 generated for M:Selenium.WebDriverCommandProcessor.Start(System.String)
-    Last step completed in 00:00:00.1404
+    Last step completed in 00:00:00.1400
 </buildStep>
 <buildStep step="CopyStandardContent">
 Copying standard help content...
@@ -410,12 +416,12 @@ C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\script_manifold.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\SplitScreen.js -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\scripts\SplitScreen.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Presentation.css
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Whidbey\presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Whidbey\presentation.css
-    Last step completed in 00:00:00.7296
+    Last step completed in 00:00:01.0600
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
 No additional content to copy
-    Last step completed in 00:00:00.0156
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="MergeTablesOfContents">
 Merging conceptual and additional tables of contents...
@@ -423,27 +429,27 @@ Merging conceptual and additional tables of contents...
 </buildStep>
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
-[c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
   XslTransform (v2.6.10621.1)
   Copyright c Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\CreateVSToc.xsl&#39;.
   reflection.xml -&gt; toc.xml
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.5772
+    Last step completed in 00:00:00.6200
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.1872
+    Last step completed in 00:00:00.0900
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\sandcastle.config
-    Last step completed in 00:00:00.1248
+    Last step completed in 00:00:00.1200
 </buildStep>
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
-[c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
   BuildAssembler (v2.6.10621.1)
   Copyright c Microsoft 2006
   Info: CopyFromFileComponent: Instantiating component.
@@ -451,7 +457,7 @@ Building reference help topics...
   Info: CopyFromIndexComponent: Instantiating component.
   Info: CopyFromIndexComponent: Searching for files that match &#39;*.xml&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;reflection.xml&#39;.
-  Info: CopyFromIndexComponent: Indexed 204386 elements in 409 files.
+  Info: CopyFromIndexComponent: Indexed 204448 elements in 409 files.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
   Info: CopyFromIndexComponent: Instantiating component.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
@@ -1108,7 +1114,7 @@ Building reference help topics...
   Info: CopyFromIndexComponent: Searching for files that match &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.Support.xml&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\ThoughtWorks.Selenium.Core.xml&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Selenium.WebDriverBackedSelenium.xml&#39;.
-  Info: CopyFromIndexComponent: Indexed 134203 elements in 122 files.
+  Info: CopyFromIndexComponent: Indexed 134256 elements in 122 files.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
   Info: ForEachComponent: Instantiating component.
   Info: ForEachComponent: Loading subcomponents.
@@ -1189,7 +1195,7 @@ Building reference help topics...
   Info: ResolveReferenceLinksComponent2: Creating MSDN URL resolver.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39; for targets files of the form &#39;*.xml&#39;.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working&#39; for targets files of the form &#39;reflection.xml&#39;.
-  Info: ResolveReferenceLinksComponent2: Loaded 204386 reference targets.
+  Info: ResolveReferenceLinksComponent2: Loaded 204448 reference targets.
   Info: SaveComponent: Instantiating component.
   Info: MultiFormatOutputComponent: Loading components for Website format
   Info: SharedContentComponent: Instantiating component.
@@ -1233,7 +1239,7 @@ Building reference help topics...
   Info: ResolveReferenceLinksComponent2: Creating MSDN URL resolver.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39; for targets files of the form &#39;*.xml&#39;.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working&#39; for targets files of the form &#39;reflection.xml&#39;.
-  Info: ResolveReferenceLinksComponent2: Loaded 204386 reference targets.
+  Info: ResolveReferenceLinksComponent2: Loaded 204448 reference targets.
   Info: SaveComponent: Instantiating component.
   Info: BuildAssembler: Building topic N:OpenQA.Selenium
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.By
@@ -1401,6 +1407,11 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Properties.T:OpenQA.Selenium.IOptions
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IOptions.Cookies
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IOptions.Timeouts
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.IOptions.Window
+  Info: BuildAssembler: Building topic T:OpenQA.Selenium.IRotatable
+  Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.IRotatable
+  Info: BuildAssembler: Building topic Properties.T:OpenQA.Selenium.IRotatable
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.IRotatable.Orientation
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.ISearchContext
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.ISearchContext
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.ISearchContext
@@ -1457,6 +1468,11 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IWebElement.Submit
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWebElement.TagName
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWebElement.Text
+  Info: BuildAssembler: Building topic T:OpenQA.Selenium.IWindow
+  Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.IWindow
+  Info: BuildAssembler: Building topic Properties.T:OpenQA.Selenium.IWindow
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWindow.Position
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.IWindow.Size
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Keys
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Keys
   Info: BuildAssembler: Building topic Fields.T:OpenQA.Selenium.Keys
@@ -1594,6 +1610,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Proxy.ProxyAutoConfigUrl
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Proxy.SslProxy
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.ProxyKind
+  Info: BuildAssembler: Building topic T:OpenQA.Selenium.ScreenOrientation
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Screenshot
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Screenshot
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Screenshot
@@ -1662,6 +1679,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Android.AndroidDriver.#ctor(System.String)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Android.AndroidDriver.#ctor(System.Uri)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Android.AndroidDriver.GetScreenshot
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.Android.AndroidDriver.Orientation
   Info: BuildAssembler: Building topic N:OpenQA.Selenium.Chrome
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Chrome.ChromeDriver
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Chrome.ChromeDriver
@@ -1797,6 +1815,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.IE.InternetExplorerDriver
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.IE.InternetExplorerDriver
   Info: BuildAssembler: Building topic Properties.T:OpenQA.Selenium.IE.InternetExplorerDriver
+  Info: BuildAssembler: Building topic Fields.T:OpenQA.Selenium.IE.InternetExplorerDriver
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.IE.InternetExplorerDriver.Dispose
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.IE.InternetExplorerDriver.FindElement
@@ -1807,6 +1826,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.#ctor(System.Int32,OpenQA.Selenium.ICapabilities,System.TimeSpan)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.GetScreenshot
+  Info: BuildAssembler: Building topic F:OpenQA.Selenium.IE.InternetExplorerDriver.IntroduceInstabilityByIgnoringProtectedModeSettings
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.StartClient
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.IE.InternetExplorerDriver.StopClient
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.IE.InternetExplorerWebElement
@@ -1821,16 +1841,22 @@ Building reference help topics...
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Interactions.Actions
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Interactions.Actions
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.Click
+  Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.ClickAndHold
+  Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.DoubleClick
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.KeyDown
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.KeyUp
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.MoveToElement
+  Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.Release
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Interactions.Actions.SendKeys
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.#ctor(OpenQA.Selenium.IWebDriver)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.AddAction(OpenQA.Selenium.Interactions.IAction)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.Build
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.Click
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.Click(OpenQA.Selenium.IWebElement)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.ClickAndHold
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.ClickAndHold(OpenQA.Selenium.IWebElement)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.ContextClick(OpenQA.Selenium.IWebElement)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.DoubleClick
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.DoubleClick(OpenQA.Selenium.IWebElement)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.DragAndDrop(OpenQA.Selenium.IWebElement,OpenQA.Selenium.IWebElement)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.DragAndDropToOffset(OpenQA.Selenium.IWebElement,System.Int32,System.Int32)
@@ -1842,6 +1868,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.MoveToElement(OpenQA.Selenium.IWebElement)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.MoveToElement(OpenQA.Selenium.IWebElement,System.Int32,System.Int32)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.Perform
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.Release
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.Release(OpenQA.Selenium.IWebElement)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.SendKeys(OpenQA.Selenium.IWebElement,System.String)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Interactions.Actions.SendKeys(System.String)
@@ -1989,6 +2016,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.DesiredCapabilities.HtmlUnit
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.DesiredCapabilities.HtmlUnitWithJavaScript
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.DesiredCapabilities.InternetExplorer
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.DesiredCapabilities.IPad
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.DesiredCapabilities.IPhone
   Info: BuildAssembler: Building topic P:OpenQA.Selenium.Remote.DesiredCapabilities.IsJavaScriptEnabled
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Remote.DesiredCapabilities.Opera
@@ -2274,6 +2302,26 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.PageObjects.WebElementProxyComparer.Equals(System.Object)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.PageObjects.WebElementProxyComparer.GetHashCode
   Info: BuildAssembler: Building topic N:OpenQA.Selenium.Support.UI
+  Info: BuildAssembler: Building topic T:OpenQA.Selenium.Support.UI.DefaultWait`1
+  Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Support.UI.DefaultWait`1
+  Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Support.UI.DefaultWait`1
+  Info: BuildAssembler: Building topic Properties.T:OpenQA.Selenium.Support.UI.DefaultWait`1
+  Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Support.UI.DefaultWait`1.#ctor
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.DefaultWait`1.#ctor(`0)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.DefaultWait`1.#ctor(`0,OpenQA.Selenium.Support.UI.IClock)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.DefaultWait`1.IgnoreExceptionTypes(System.Type[])
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.Support.UI.DefaultWait`1.Message
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.Support.UI.DefaultWait`1.PollingInterval
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.DefaultWait`1.ThrowTimeoutException(System.String,System.Exception)
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.Support.UI.DefaultWait`1.Timeout
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.DefaultWait`1.Until``1(System.Func{`0,``0})
+  Info: BuildAssembler: Building topic T:OpenQA.Selenium.Support.UI.ExpectedConditions
+  Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Support.UI.ExpectedConditions
+  Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Support.UI.ExpectedConditions
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.ExpectedConditions.ElementExists(OpenQA.Selenium.By)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.ExpectedConditions.ElementIsVisible(OpenQA.Selenium.By)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.ExpectedConditions.TitleContains(System.String)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.ExpectedConditions.TitleIs(System.String)
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Support.UI.IClock
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Support.UI.IClock
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Support.UI.IClock
@@ -2284,7 +2332,21 @@ Building reference help topics...
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Support.UI.IWait`1
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Support.UI.IWait`1
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Support.UI.IWait`1
+  Info: BuildAssembler: Building topic Properties.T:OpenQA.Selenium.Support.UI.IWait`1
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.IWait`1.IgnoreExceptionTypes(System.Type[])
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.Support.UI.IWait`1.Message
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.Support.UI.IWait`1.PollingInterval
+  Info: BuildAssembler: Building topic P:OpenQA.Selenium.Support.UI.IWait`1.Timeout
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.IWait`1.Until``1(System.Func{`0,``0})
+  Info: BuildAssembler: Building topic T:OpenQA.Selenium.Support.UI.PopupWindowFinder
+  Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Support.UI.PopupWindowFinder
+  Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Support.UI.PopupWindowFinder
+  Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Support.UI.PopupWindowFinder.#ctor
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.PopupWindowFinder.#ctor(OpenQA.Selenium.IWebDriver)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.PopupWindowFinder.#ctor(OpenQA.Selenium.IWebDriver,System.TimeSpan)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.PopupWindowFinder.#ctor(OpenQA.Selenium.IWebDriver,System.TimeSpan,System.TimeSpan)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.PopupWindowFinder.Click(OpenQA.Selenium.IWebElement)
+  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.PopupWindowFinder.Invoke(System.Action)
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Support.UI.SelectElement
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Support.UI.SelectElement
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Support.UI.SelectElement
@@ -2324,11 +2386,10 @@ Building reference help topics...
   Info: BuildAssembler: Building topic T:OpenQA.Selenium.Support.UI.WebDriverWait
   Info: BuildAssembler: Building topic AllMembers.T:OpenQA.Selenium.Support.UI.WebDriverWait
   Info: BuildAssembler: Building topic Methods.T:OpenQA.Selenium.Support.UI.WebDriverWait
+  Info: BuildAssembler: Building topic Properties.T:OpenQA.Selenium.Support.UI.WebDriverWait
   Info: BuildAssembler: Building topic Overload:OpenQA.Selenium.Support.UI.WebDriverWait.#ctor
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.WebDriverWait.#ctor(OpenQA.Selenium.IWebDriver,System.TimeSpan)
   Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.WebDriverWait.#ctor(OpenQA.Selenium.Support.UI.IClock,OpenQA.Selenium.IWebDriver,System.TimeSpan,System.TimeSpan)
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.WebDriverWait.ThrowTimeoutException(System.String,System.Exception)
-  Info: BuildAssembler: Building topic M:OpenQA.Selenium.Support.UI.WebDriverWait.Until``1(System.Func{OpenQA.Selenium.IWebDriver,``0})
   Info: BuildAssembler: Building topic N:Selenium
   Info: BuildAssembler: Building topic T:Selenium.DefaultRemoteCommand
   Info: BuildAssembler: Building topic AllMembers.T:Selenium.DefaultRemoteCommand
@@ -2775,18 +2836,18 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Methods.T:Selenium.Internal.SeleniumEmulation.VariableDeclaration
   Info: BuildAssembler: Building topic M:Selenium.Internal.SeleniumEmulation.VariableDeclaration.#ctor(System.String,System.String)
   Info: BuildAssembler: Building topic M:Selenium.Internal.SeleniumEmulation.VariableDeclaration.Mutate(System.String,System.Text.StringBuilder)
-  Info: Processed 1523 topics
-    Last step completed in 00:02:53.7732
+  Info: Processed 1578 topics
+    Last step completed in 00:02:44.0775
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
 
 Clearing any prior web output
-    Last step completed in 00:00:00.0780
+    Last step completed in 00:00:00.0200
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
-[c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
 Sandcastle Help File Builder HTML Extract, version 1.9.3.0
 Copyright c 2006-2011, Eric Woodruff, All Rights Reserved
 E-Mail: Eric@EWoodruff.us
@@ -2794,17 +2855,17 @@ E-Mail: Eric@EWoodruff.us
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1
-Processed 1523 HTML files
+Processed 1578 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.hhk
 Saving HTML Help 1 table of contents to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.hhc
 
 Processing website files in C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website
-Processed 1523 HTML files
+Processed 1578 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebKI.xml
 Saving website table of contents to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebTOC.xml
-    Last step completed in 00:00:06.7392
+    Last step completed in 00:00:05.4600
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -2816,11 +2877,11 @@ Generating HTML Help 1 index file...
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0468
+    Last step completed in 00:00:00.0400
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
-[c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
   Microsoft HTML Help Compiler 4.74.8702
   
   
@@ -2831,13 +2892,13 @@ Compiling HTML Help 1 file...
   
   
   
-  Compile time: 0 minutes, 20 seconds
+  Compile time: 0 minutes, 21 seconds
   
-  1,525	Topics
+  1,580	Topics
   
-  21,604	Local links
+  22,393	Local links
   
-  7,971	Internet links
+  8,185	Internet links
   
   0	Graphics
   
@@ -2845,11 +2906,11 @@ Compiling HTML Help 1 file...
   
   
   
-  Created c:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,118,770 bytes
+  Created c:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,188,856 bytes
   
-  Compression decreased file by 19,801,149 bytes.
+  Compression decreased file by 20,542,138 bytes.
   
-    Last step completed in 00:00:22.2612
+    Last step completed in 00:00:22.3525
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
@@ -2858,7 +2919,7 @@ Generating website table of contents file...
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
-    Last step completed in 00:00:07.8624
+    Last step completed in 00:00:07.7700
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
@@ -2937,12 +2998,14 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Al
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_InvalidElementStateException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_InvalidElementStateException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_InvalidSelectorException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_InvalidSelectorException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_IOptions.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_IOptions.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_IRotatable.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_IRotatable.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_ISearchContext.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_ISearchContext.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_ITakesScreenshot.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_ITakesScreenshot.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_ITargetLocator.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_ITargetLocator.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_ITimeouts.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_ITimeouts.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_IWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_IWebDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_IWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_IWebElement.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_IWindow.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_IWindow.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Keys.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Keys.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_NoAlertPresentException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_NoAlertPresentException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_NoSuchElementException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_NoSuchElementException.htm
@@ -2975,8 +3038,11 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Al
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_ExpectedConditions.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_ExpectedConditions.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_IClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_IClock.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_IWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_IWait_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_SelectElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_SelectElement.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_SystemClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_SystemClock.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\AllMembers_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\AllMembers_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm
@@ -3019,6 +3085,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\E_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuting.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuting.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Fields_T_OpenQA_Selenium_Chrome_ChromeDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Fields_T_OpenQA_Selenium_Chrome_ChromeDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Fields_T_OpenQA_Selenium_Firefox_FirefoxDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Fields_T_OpenQA_Selenium_Firefox_FirefoxDriver.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Fields_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Fields_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Fields_T_OpenQA_Selenium_Keys.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Fields_T_OpenQA_Selenium_Keys.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Fields_T_OpenQA_Selenium_Remote_CapabilityType.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Fields_T_OpenQA_Selenium_Remote_CapabilityType.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Fields_T_OpenQA_Selenium_Remote_CommandInfo.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Fields_T_OpenQA_Selenium_Remote_CommandInfo.htm
@@ -3030,6 +3097,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultEnableNativeEvents.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultEnableNativeEvents.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultPort.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultPort.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_OpenQA_Selenium_Firefox_FirefoxDriver_ProfileCapabilityName.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_OpenQA_Selenium_Firefox_FirefoxDriver_ProfileCapabilityName.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_OpenQA_Selenium_IE_InternetExplorerDriver_IntroduceInstabilityByIgnoringProtectedModeSettings.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_OpenQA_Selenium_IE_InternetExplorerDriver_IntroduceInstabilityByIgnoringProtectedModeSettings.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_OpenQA_Selenium_Keys_Add.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_OpenQA_Selenium_Keys_Add.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_OpenQA_Selenium_Keys_Alt.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_OpenQA_Selenium_Keys_Alt.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\F_OpenQA_Selenium_Keys_ArrowDown.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\F_OpenQA_Selenium_Keys_ArrowDown.htm
@@ -3184,8 +3252,11 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Me
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_ExpectedConditions.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_ExpectedConditions.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_IClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_IClock.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_IWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_IWait_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_SelectElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_SelectElement.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_SystemClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_SystemClock.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Methods_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Methods_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm
@@ -3333,12 +3404,15 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_INavigation_GoToUrl.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_INavigation_GoToUrl.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_INavigation_GoToUrl_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_INavigation_GoToUrl_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_INavigation_Refresh.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_INavigation_Refresh.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_AddAction.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_AddAction.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_Build.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_Build.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_Click.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_Click.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_ClickAndHold.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_ClickAndHold.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_ClickAndHold_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_ClickAndHold_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_Click_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_Click_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_ContextClick.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_ContextClick.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_DoubleClick.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_DoubleClick.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_DoubleClick_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_DoubleClick_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_DragAndDrop.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_DragAndDrop.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_DragAndDropToOffset.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_DragAndDropToOffset.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_KeyDown.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_KeyDown.htm
@@ -3350,6 +3424,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_MoveToElement_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_MoveToElement_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_Perform.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_Perform.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_Release.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_Release.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_Release_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_Release_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_SendKeys.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_SendKeys.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions_SendKeys_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions_SendKeys_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Interactions_Actions__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Interactions_Actions__ctor.htm
@@ -3451,6 +3526,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnit.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnit.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnitWithJavaScript.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnitWithJavaScript.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_InternetExplorer.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_InternetExplorer.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_IPad.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_IPad.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_IPhone.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_IPhone.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_Opera.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_Opera.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_SetCapability.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Remote_DesiredCapabilities_SetCapability.htm
@@ -3589,9 +3665,24 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_Equals.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_Equals.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_GetHashCode.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_GetHashCode.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer__ctor.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1_IgnoreExceptionTypes.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1_IgnoreExceptionTypes.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1_ThrowTimeoutException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1_ThrowTimeoutException.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1_Until__1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1_Until__1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementExists.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementExists.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementIsVisible.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementIsVisible.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_TitleContains.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_TitleContains.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_TitleIs.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_ExpectedConditions_TitleIs.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_IClock_IsNowBefore.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_IClock_IsNowBefore.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_IClock_LaterBy.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_IClock_LaterBy.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_IWait_1_IgnoreExceptionTypes.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_IWait_1_IgnoreExceptionTypes.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_IWait_1_Until__1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_IWait_1_Until__1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder_Click.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder_Click.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder_Invoke.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder_Invoke.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor_2.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_SelectElement_DeselectAll.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_SelectElement_DeselectAll.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByIndex.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByIndex.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByText.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByText.htm
@@ -3608,8 +3699,6 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_2.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_2.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_3.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_3.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_4.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor_4.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_WebDriverWait_ThrowTimeoutException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_WebDriverWait_ThrowTimeoutException.htm
-C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_WebDriverWait_Until__1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_WebDriverWait_Until__1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_WebDriverWait__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_WebDriverWait__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_Support_UI_WebDriverWait__ctor_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_Support_UI_WebDriverWait__ctor_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\M_OpenQA_Selenium_UnableToSetCookieException__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\M_OpenQA_Selenium_UnableToSetCookieException__ctor.htm
@@ -4035,9 +4124,12 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Ov
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_IMouse_MouseMove.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_IMouse_MouseMove.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_INavigation_GoToUrl.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_INavigation_GoToUrl.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_Click.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_Click.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_ClickAndHold.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_ClickAndHold.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_DoubleClick.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_DoubleClick.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_KeyDown.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_KeyDown.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_KeyUp.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_KeyUp.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_MoveToElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_MoveToElement.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_Release.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_Release.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Interactions_Actions_SendKeys.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Interactions_Actions_SendKeys.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_InvalidCookieDomainException__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_InvalidCookieDomainException__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_InvalidElementStateException__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_InvalidElementStateException__ctor.htm
@@ -4064,6 +4156,8 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Ov
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs__ctor.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Support_UI_UnexpectedTagNameException__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_Support_UI_WebDriverWait__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_Support_UI_WebDriverWait__ctor.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Overload_OpenQA_Selenium_UnableToSetCookieException__ctor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Overload_OpenQA_Selenium_UnableToSetCookieException__ctor.htm
@@ -4110,8 +4204,10 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Pr
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_InvalidElementStateException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_InvalidElementStateException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_InvalidSelectorException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_InvalidSelectorException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_IOptions.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_IOptions.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_IRotatable.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_IRotatable.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_IWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_IWebDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_IWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_IWebElement.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_IWindow.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_IWindow.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_NoAlertPresentException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_NoAlertPresentException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_NoSuchElementException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_NoSuchElementException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_NoSuchFrameException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_NoSuchFrameException.htm
@@ -4138,10 +4234,13 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Pr
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_Events_WebElementEventArgs.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_Events_WebElementEventArgs.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_UI_IClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_UI_IClock.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_UI_IWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_UI_IWait_1.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_UI_SelectElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_UI_SelectElement.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_UI_SystemClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_UI_SystemClock.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_Support_UI_WebDriverWait.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_Support_UI_WebDriverWait.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_UnableToSetCookieException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_UnableToSetCookieException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_UnhandledAlertException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_UnhandledAlertException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_OpenQA_Selenium_WebDriverException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_OpenQA_Selenium_WebDriverException.htm
@@ -4153,6 +4252,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Pr
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_Selenium_SeleniumException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_Selenium_SeleniumException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_Selenium_WebDriverBackedSelenium.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_Selenium_WebDriverBackedSelenium.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\Properties_T_Selenium_WebDriverCommandProcessor.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\Properties_T_Selenium_WebDriverCommandProcessor.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Android_AndroidDriver_Orientation.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Android_AndroidDriver_Orientation.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_By_Description.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_By_Description.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_By_FindElementMethod.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_By_FindElementMethod.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_By_FindElementsMethod.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_By_FindElementsMethod.htm
@@ -4198,6 +4298,8 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Internal_ReturnedCookie_CurrentHost.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Internal_ReturnedCookie_CurrentHost.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Internal_ReturnedCookie_Secure.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Internal_ReturnedCookie_Secure.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IOptions_Cookies.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IOptions_Cookies.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IOptions_Window.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IOptions_Window.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IRotatable_Orientation.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IRotatable_Orientation.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWebDriver_CurrentWindowHandle.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWebDriver_CurrentWindowHandle.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWebDriver_PageSource.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWebDriver_PageSource.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWebDriver_Title.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWebDriver_Title.htm
@@ -4210,6 +4312,8 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWebElement_Size.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWebElement_Size.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWebElement_TagName.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWebElement_TagName.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWebElement_Text.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWebElement_Text.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWindow_Position.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWindow_Position.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_IWindow_Size.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_IWindow_Size.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Platform_CurrentPlatform.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Platform_CurrentPlatform.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Platform_MajorVersion.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Platform_MajorVersion.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Platform_MinorVersion.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Platform_MinorVersion.htm
@@ -4285,7 +4389,13 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_Events_WebElementEventArgs_Element.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_Events_WebElementEventArgs_Element.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_How.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_How.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_Using.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_Using.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_DefaultWait_1_Message.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_DefaultWait_1_Message.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_DefaultWait_1_PollingInterval.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_DefaultWait_1_PollingInterval.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_DefaultWait_1_Timeout.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_DefaultWait_1_Timeout.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_IClock_Now.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_IClock_Now.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_IWait_1_Message.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_IWait_1_Message.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_IWait_1_PollingInterval.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_IWait_1_PollingInterval.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_IWait_1_Timeout.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_IWait_1_Timeout.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_SelectElement_AllSelectedOptions.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_SelectElement_AllSelectedOptions.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_SelectElement_IsMultiple.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_SelectElement_IsMultiple.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\P_OpenQA_Selenium_Support_UI_SelectElement_Options.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\P_OpenQA_Selenium_Support_UI_SelectElement_Options.htm
@@ -4345,12 +4455,14 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_InvalidElementStateException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_InvalidElementStateException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_InvalidSelectorException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_InvalidSelectorException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_IOptions.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_IOptions.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_IRotatable.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_IRotatable.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_ISearchContext.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_ISearchContext.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_ITakesScreenshot.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_ITakesScreenshot.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_ITargetLocator.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_ITargetLocator.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_ITimeouts.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_ITimeouts.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_IWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_IWebDriver.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_IWebElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_IWebElement.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_IWindow.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_IWindow.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Keys.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Keys.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_NoAlertPresentException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_NoAlertPresentException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_NoSuchElementException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_NoSuchElementException.htm
@@ -4374,6 +4486,7 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_Response.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_Response.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_SessionId.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_SessionId.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Remote_StackTraceElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Remote_StackTraceElement.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_ScreenOrientation.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_ScreenOrientation.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Screenshot.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Screenshot.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_StaleElementReferenceException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_StaleElementReferenceException.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm
@@ -4387,8 +4500,11 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_PageObjects_How.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_PageObjects_How.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_DefaultWait_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_ExpectedConditions.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_ExpectedConditions.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_IClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_IClock.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_IWait_1.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_IWait_1.htm
+C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_SelectElement.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_SelectElement.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_SystemClock.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_SystemClock.htm
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\html\T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\html\T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm
@@ -4524,15 +4640,15 @@ C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\scripts
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\highlight.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\styles\highlight.css
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\styles\Presentation.css
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website\styles\Whidbey\presentation.css -&gt; C:\Projects\WebDriver\trunk\build\docs\dotnet\web\styles\Whidbey\presentation.css
-    Last step completed in 00:00:03.6192
+    Last step completed in 00:00:02.4900
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:00.8580
+    Last step completed in 00:00:00.6200
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 08/23/2011 02:48 PM.  Total time: 00:03:49.0738
+Build completed successfully at 12/08/2011 08:57 AM.  Total time: 00:03:33.4800
 
 </buildStep>
 </shfbBuild>
