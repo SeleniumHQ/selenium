@@ -645,7 +645,7 @@ BrowserBot.prototype.openWindow = function(url, windowID) {
     if (browserVersion.isHTA) {
         // in HTA mode, calling .open on the window interprets the url relative to that window
         // we need to absolute-ize the URL to make it consistent
-        var child = this.getCurrentWindow().open(url, windowID);
+        var child = this.getCurrentWindow().open(url, windowID, 'resizable=yes');
         selenium.browserbot.openedWindows[windowID] = child;
     } else {
         this.getCurrentWindow().open(url, windowID);
