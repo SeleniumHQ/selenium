@@ -463,6 +463,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [ExpectedException(typeof(StaleElementReferenceException))]
+        public void AnElementFoundInADifferentFrameIsStale()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
+            driver.SwitchTo().Frame("inner");
+            IWebElement element = driver.FindElement(By.Id("oneline"));
+            driver.SwitchTo().DefaultContent();
+            string text = element.Text;
+        }
+
+        [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.IPhone)]

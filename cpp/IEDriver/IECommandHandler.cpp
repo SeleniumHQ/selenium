@@ -67,6 +67,20 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
     if (status_code != SUCCESS) {
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       mutable_executor.RemoveManagedElement(element_id);
+    } else {
+      // If the element is attached to the DOM, validate that its document
+      // is the currently-focused document (via frames).
+      BrowserHandle current_browser;
+      executor.GetCurrentBrowser(&current_browser);
+      CComPtr<IHTMLDocument2> focused_doc;
+      current_browser->GetDocument(&focused_doc);
+
+      CComPtr<IDispatch> parent_doc_dispatch;
+      parent->get_document(&parent_doc_dispatch);
+
+      if (!focused_doc.IsEqualObject(parent_doc_dispatch)) {
+        status_code = EOBSOLETEELEMENT;
+      }
     }
   }
 
