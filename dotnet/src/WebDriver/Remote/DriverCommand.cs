@@ -124,11 +124,6 @@ namespace OpenQA.Selenium.Remote
         ClickElement,
 
         /// <summary>
-        /// Represents hoverelements command
-        /// </summary>
-        HoverOverElement,
-
-        /// <summary>
         /// Represents SendKeysToElements command
         /// </summary>
         SendKeysToElement,
@@ -137,11 +132,6 @@ namespace OpenQA.Selenium.Remote
         /// Represents SubmitElement command
         /// </summary>
         SubmitElement,
-
-        /// <summary>
-        /// Represents TogleElements command
-        /// </summary>
-        ToggleElement,
 
         /// <summary>
         /// Represents findchildelements command
@@ -194,49 +184,14 @@ namespace OpenQA.Selenium.Remote
         ExecuteAsyncScript,
 
         /// <summary>
-        /// Represents GetSpeed command
-        /// </summary>
-        GetSpeed,
-
-        /// <summary>
-        /// Represents SetSpeed command
-        /// </summary>
-        SetSpeed,
-
-        /// <summary>
-        /// Represents SetBrowserVisible command
-        /// </summary>
-        SetBrowserVisible,
-
-        /// <summary>
-        /// Represents IsBrowserVisible command
-        /// </summary>
-        IsBrowserVisible,
-
-        /// <summary>
         /// Represents GetElementText command
         /// </summary>
         GetElementText,
 
         /// <summary>
-        /// Represents GetElementValue command
-        /// </summary>
-        GetElementValue,
-
-        /// <summary>
         /// Represents GetElementTagName command
         /// </summary>
         GetElementTagName,
-
-        /// <summary>
-        /// Represents SetElementSelected command
-        /// </summary>
-        SetElementSelected,
-
-        /// <summary>
-        /// Represents DragElement command
-        /// </summary>
-        DragElement,
 
         /// <summary>
         /// Represents IsElementSelected command

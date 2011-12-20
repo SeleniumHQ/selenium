@@ -98,8 +98,6 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.GoForward, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/forward"));
             this.commandDictionary.Add(DriverCommand.GoBack, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/back"));
             this.commandDictionary.Add(DriverCommand.Refresh, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/refresh"));
-            this.commandDictionary.Add(DriverCommand.GetSpeed, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/speed"));
-            this.commandDictionary.Add(DriverCommand.SetSpeed, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/speed"));
             this.commandDictionary.Add(DriverCommand.ExecuteScript, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/execute"));
             this.commandDictionary.Add(DriverCommand.ExecuteAsyncScript, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/execute_async"));
             this.commandDictionary.Add(DriverCommand.Screenshot, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/screenshot"));
@@ -120,13 +118,10 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.ClickElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/click"));
             this.commandDictionary.Add(DriverCommand.GetElementText, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/text"));
             this.commandDictionary.Add(DriverCommand.SubmitElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/submit"));
-            this.commandDictionary.Add(DriverCommand.GetElementValue, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/value"));
             this.commandDictionary.Add(DriverCommand.SendKeysToElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/value"));
             this.commandDictionary.Add(DriverCommand.GetElementTagName, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/name"));
             this.commandDictionary.Add(DriverCommand.ClearElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/clear"));
             this.commandDictionary.Add(DriverCommand.IsElementSelected, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/selected"));
-            this.commandDictionary.Add(DriverCommand.SetElementSelected, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/selected"));
-            this.commandDictionary.Add(DriverCommand.ToggleElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/toggle"));
             this.commandDictionary.Add(DriverCommand.IsElementEnabled, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/enabled"));
             this.commandDictionary.Add(DriverCommand.IsElementDisplayed, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/displayed"));
             this.commandDictionary.Add(DriverCommand.GetElementLocation, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/location"));
@@ -135,8 +130,6 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.GetElementValueOfCssProperty, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/css/{propertyName}"));
             this.commandDictionary.Add(DriverCommand.GetElementAttribute, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/attribute/{name}"));
             this.commandDictionary.Add(DriverCommand.ElementEquals, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/equals/{other}"));
-            this.commandDictionary.Add(DriverCommand.HoverOverElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/hover"));
-            this.commandDictionary.Add(DriverCommand.DragElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/drag"));
             this.commandDictionary.Add(DriverCommand.Close, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/window"));
             this.commandDictionary.Add(DriverCommand.GetWindowSize, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/window/{windowHandle}/size"));
             this.commandDictionary.Add(DriverCommand.SetWindowSize, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/{windowHandle}/size"));
@@ -144,8 +137,6 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.SetWindowPosition, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/{windowHandle}/position"));
             this.commandDictionary.Add(DriverCommand.GetOrientation, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/orientation"));
             this.commandDictionary.Add(DriverCommand.SetOrientation, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/orientation"));
-            this.commandDictionary.Add(DriverCommand.SetBrowserVisible, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/visible"));
-            this.commandDictionary.Add(DriverCommand.IsBrowserVisible, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/visible"));
             this.commandDictionary.Add(DriverCommand.DismissAlert, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/dismiss_alert"));
             this.commandDictionary.Add(DriverCommand.AcceptAlert, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/accept_alert"));
             this.commandDictionary.Add(DriverCommand.GetAlertText, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/alert_text"));
