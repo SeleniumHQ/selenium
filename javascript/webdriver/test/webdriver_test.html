@@ -99,10 +99,10 @@ limitations under the License.
         opt_errback(e);
       }
     });
-    helper.application_.addListener(webdriver.promise.Application.IDLE,
-        callbacks.callback);
     helper.application_.addListener(
-        webdriver.promise.Application.UNCAUGHT_EXCEPTION,
+        webdriver.promise.Application.EventType.IDLE, callbacks.callback);
+    helper.application_.addListener(
+        webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
         callbacks.errback);
     helper.execute = function() {
       consumeTimeouts();
@@ -121,10 +121,10 @@ limitations under the License.
       (opt_callback || goog.nullFunction)();
     });
 
-    helper.application_.addListener(webdriver.promise.Application.IDLE,
-        callbacks.callback);
     helper.application_.addListener(
-        webdriver.promise.Application.UNCAUGHT_EXCEPTION,
+        webdriver.promise.Application.EventType.IDLE, callbacks.callback);
+    helper.application_.addListener(
+        webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
         callbacks.errback);
 
     helper.execute = function(opt_notFinished) {

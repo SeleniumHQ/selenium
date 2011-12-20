@@ -36,7 +36,7 @@ function setUp() {
   uncaughtException = callbackHelper();
   webdriver.promise.Application.
       getInstance().
-      on(webdriver.promise.Application.UNCAUGHT_EXCEPTION,
+      on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
          uncaughtException);
 }
 
@@ -291,7 +291,7 @@ function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
   // so tearDown() doesn't throw
   var app = webdriver.promise.Application.getInstance();
   app.reset();
-  app.on(webdriver.promise.Application.UNCAUGHT_EXCEPTION, handler);
+  app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, handler);
   clock.tick();
   handler.assertCalled();
 }

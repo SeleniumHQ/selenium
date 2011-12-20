@@ -48,8 +48,6 @@
 
 goog.provide('webdriver.promise');
 goog.provide('webdriver.promise.Application');
-goog.provide('webdriver.promise.Application.Frame_');
-goog.provide('webdriver.promise.Application.Task_');
 goog.provide('webdriver.promise.Deferred');
 goog.provide('webdriver.promise.Promise');
 
@@ -627,13 +625,12 @@ webdriver.promise.fullyResolved = function(value) {
  * tasks before it in the queue have completed.
  *
  * Each time an application empties its task queue, it will fire an
- * {@code webdriver.promise.Application.IDLE} event. Conversely,
+ * {@link webdriver.promise.Application.EventType.IDLE} event. Conversely,
  * whenever the application terminates due to an unhandled error,
  * it will remove all remaining tasks in its queue and fire an
- * {@code webdriver.promise.Application.UNCAUGHT_EXCEPTION} event. The unhandled
- * error will be passed as the first argument to any listeners. If there are no
- * listeners registered with the application, the error will be rethrown to the
- * global error handler.
+ * {@link webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION} event. If
+ * there are no listeners registered with the application, the error will be
+ * rethrown to the global error handler.
  *
  * @constructor
  * @extends {webdriver.EventEmitter}
@@ -662,43 +659,35 @@ goog.addSingletonGetter(webdriver.promise.Application);
 
 
 /**
- * Event fired when an application has successfully executed all scheduled
- * tasks.
- * @type {string}
- * @const
- * @export
+ * Events that may be emitted by an {@link webdriver.promise.Application}.
+ * @enum {string}
  */
-webdriver.promise.Application.IDLE = 'idle';
+webdriver.promise.Application.EventType = {
 
+  /** Emitted when all tasks have been successfully executed. */
+  IDLE: 'idle',
 
-/**
- * Event fired whenever a new task is scheduled with an application.
- * @type {string}
- * @const
- * @export
- */
-webdriver.promise.Application.SCHEDULE_TASK = 'scheduleTask';
+  /** Emitted whenever a new task has been scheduled. */
+  SCHEDULE_TASK: 'scheduleTask',
 
-
-/**
- * Event fired when an application is aborting due to an uncaught exception.
- * Upon firing this event, the application will empty its task queue and revert
- * to its initial state.
- * @type {string}
- * @const
- * @export
- */
-webdriver.promise.Application.UNCAUGHT_EXCEPTION = 'uncaughtException';
+  /**
+   * Emitted whenever an application is aborting due to an unhandled promise
+   * rejection. This event will be emitted along with the offending rejection
+   * reason. Upon emitting this event, the application will empty its task queue
+   * and revert to its initial state.
+   */
+  UNCAUGHT_EXCEPTION: 'uncaughtException'
+};
 
 
 /**
  * Timeout ID set when the application is about to shutdown without any errors
  * being detected. Upon shutting down, the application will emit an
- * {@code webdriver.promise.Application.IDLE} event. Idle events always follow a
- * brief timeout in order to catch latent errors from the last completed task.
- * If this task had a callback registered, but no errback, and the task fails,
- * the unhandled failure would not be reported by the promise system until the
- * next turn of the event loop:
+ * {@link webdriver.promise.Application.EventType.IDLE} event. Idle events
+ * always follow a brief timeout in order to catch latent errors from the last
+ * completed task. If this task had a callback registered, but no errback, and
+ * the task fails, the unhandled failure would not be reported by the promise
+ * system until the next turn of the event loop:
  *
  *   // Schedule 1 task that fails.
  *   var result = webriver.Application.getInstance().schedule('example',
@@ -775,7 +764,7 @@ webdriver.promise.Application.prototype.schedule = function(description, fn) {
   var task = new webdriver.promise.Application.Task_(fn, description);
   currentFrame.queue.push(task);
 
-  this.emit(webdriver.promise.Application.SCHEDULE_TASK);
+  this.emit(webdriver.promise.Application.EventType.SCHEDULE_TASK);
 
   this.scheduleNext_();
   return task.promise;
@@ -813,8 +802,9 @@ webdriver.promise.Application.prototype.scheduleAndWaitForIdle =
   var idleTimeoutId;
 
   self.schedule(description, fn);
-  self.once(webdriver.promise.Application.IDLE, onIdle);
-  self.once(webdriver.promise.Application.UNCAUGHT_EXCEPTION, onError);
+  self.once(webdriver.promise.Application.EventType.IDLE, onIdle);
+  self.once(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
+      onError);
 
   return deferred.promise;
 
@@ -822,14 +812,15 @@ webdriver.promise.Application.prototype.scheduleAndWaitForIdle =
     // A task may be scheduled later in this event loop after the app has gone
     // idle. Delay resolving the promise for one turn of the event loop.
     idleTimeoutId = setTimeout(function() {
-      self.removeListener(webdriver.promise.Application.SCHEDULE_TASK,
-          onScheduled);
       self.removeListener(
-          webdriver.promise.Application.UNCAUGHT_EXCEPTION, onError);
+          webdriver.promise.Application.EventType.SCHEDULE_TASK, onScheduled);
+      self.removeListener(
+          webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, onError);
       self.waitingForIdle_ = null;
       deferred.resolve();
     }, 0);
-    self.once(webdriver.promise.Application.SCHEDULE_TASK, onScheduled);
+    self.once(
+        webdriver.promise.Application.EventType.SCHEDULE_TASK, onScheduled);
   }
 
   function onScheduled() {
@@ -837,13 +828,13 @@ webdriver.promise.Application.prototype.scheduleAndWaitForIdle =
     // It is safe to re-apply the onIdle listener here because onScheduled is
     // only ever attached by onIdle. Only one of the listeners will ever be
     // active.
-    self.once(webdriver.promise.Application.IDLE, onIdle);
+    self.once(webdriver.promise.Application.EventType.IDLE, onIdle);
   }
 
   function onError(e) {
     clearTimeout(idleTimeoutId);
-    self.removeListener(webdriver.promise.Application.IDLE, onIdle);
-    self.removeListener(webdriver.promise.Application.SCHEDULE_TASK,
+    self.removeListener(webdriver.promise.Application.EventType.IDLE, onIdle);
+    self.removeListener(webdriver.promise.Application.EventType.SCHEDULE_TASK,
         onScheduled);
 
     // Delay rejecting the deferred until the next turn of the event loop. This
@@ -1046,7 +1037,7 @@ webdriver.promise.Application.prototype.commenceShutdown_ = function() {
     var self = this;
     self.shutdownId_ = setTimeout(function() {
       self.shutdownId_ = null;
-      self.emit(webdriver.promise.Application.IDLE);
+      self.emit(webdriver.promise.Application.EventType.IDLE);
     }, 0);
   }
 };
@@ -1079,13 +1070,14 @@ webdriver.promise.Application.prototype.abortNow_ = function(error) {
   this.cancelNext_();
 
   var listeners = this.listeners(
-      webdriver.promise.Application.UNCAUGHT_EXCEPTION);
+      webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION);
   if (!listeners.length) {
     setTimeout(function() {
       throw error;
     }, 0);
   } else {
-    this.emit(webdriver.promise.Application.UNCAUGHT_EXCEPTION, error);
+    this.emit(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
+        error);
   }
 };
 
