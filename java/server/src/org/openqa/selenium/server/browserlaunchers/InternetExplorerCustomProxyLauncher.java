@@ -17,14 +17,13 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.os.win32.WindowsProcessGroup;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -39,7 +38,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
   private String[] cmdarray;
   private BrowserInstallation browserInstallation;
-  private CommandLine process;
+  private WindowsProcessGroup process;
   protected boolean customPACappropriate = true;
   protected WindowsProxyManager wpm;
 
@@ -73,7 +72,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
       throw Throwables.propagate(e);
     }
     log.info("Launching Internet Explorer...");
-    process = new CommandLine(cmdarray);
+
+    process = new WindowsProcessGroup(cmdarray);
     process.executeAsync();
   }
 

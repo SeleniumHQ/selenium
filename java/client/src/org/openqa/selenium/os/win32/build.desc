@@ -1,0 +1,7 @@
+
+java_library(name = "win32",
+  srcs = [ "*.java" ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:base",
+    "//third_party/java/jna",
+  ])

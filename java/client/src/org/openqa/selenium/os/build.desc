@@ -4,6 +4,7 @@ java_library(name = "os",
   deps = [
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium/io",
+    "//java/client/src/org/openqa/selenium/os/win32",
     "//third_party/java/guava-libraries",
     "//third_party/java/commons-exec",
   ])
