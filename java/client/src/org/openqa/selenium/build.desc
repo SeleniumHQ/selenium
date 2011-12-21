@@ -10,7 +10,6 @@ java_library(name = "selenium",
 
 java_library(name = "base",
   srcs = [
-    "Beta.java",
     "Capabilities.java",
     "Platform.java",
     "WebDriverException.java",
@@ -20,6 +19,7 @@ java_library(name = "base",
 java_library(name = "webdriver-api",
   srcs = [
     "Alert.java",
+    "Beta.java",
     "By.java",
     "Cookie.java",
     "Dimension.java",
