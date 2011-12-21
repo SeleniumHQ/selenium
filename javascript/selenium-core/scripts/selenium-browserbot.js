@@ -648,7 +648,7 @@ BrowserBot.prototype.openWindow = function(url, windowID) {
         var child = this.getCurrentWindow().open(url, windowID, 'resizable=yes');
         selenium.browserbot.openedWindows[windowID] = child;
     } else {
-        this.getCurrentWindow().open(url, windowID);
+        this.getCurrentWindow().open(url, windowID, 'resizable=yes');
     }
 };
 
