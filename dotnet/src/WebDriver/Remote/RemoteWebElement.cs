@@ -741,6 +741,14 @@ namespace OpenQA.Selenium.Remote
                 return false;
             }
 
+            if (this.elementId == otherAsElement.Id)
+            {
+                // For drivers that implement ID equality, we can check for equal IDs
+                // here, and expect them to be equal. There is a potential danger here
+                // where two different elements are assigned the same ID.
+                return true;
+            }
+
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
             parameters.Add("other", otherAsElement.Id);
