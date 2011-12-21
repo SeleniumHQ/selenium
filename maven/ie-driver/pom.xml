@@ -16,6 +16,10 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
         </dependency>
+      <dependency>
+          <groupId>net.java.dev.jna</groupId>
+          <artifactId>platform</artifactId>
+      </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-remote-driver</artifactId>
