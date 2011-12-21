@@ -1708,6 +1708,57 @@ limitations under the License.
                      webdriver.promise.resolved('def'));
     testHelper.execute();
   }
+
+  function testElementEquality_isReflexive() {
+    var a = new webdriver.WebElement({}, 'foo');
+    var callback;
+    webdriver.WebElement.equals(a, a).then(
+        callback = callbackHelper(assertTrue));
+    callback.assertCalled();
+    verifyAll();  // for tearDown()
+  }
+
+  function testElementEquals_doesNotSendRpcIfElementsHaveSameId() {
+    var a = new webdriver.WebElement({}, 'foo'),
+        b = new webdriver.WebElement({}, 'foo'),
+        c = new webdriver.WebElement({}, 'foo'),
+        callback;
+
+    webdriver.WebElement.equals(a, b).then(
+        callback = callbackHelper(assertTrue));
+    callback.assertCalled('a should == b!');
+    webdriver.WebElement.equals(b, a).then(
+        callback = callbackHelper(assertTrue));
+    callback.assertCalled('symmetry check failed');
+    webdriver.WebElement.equals(a, c).then(
+        callback = callbackHelper(assertTrue));
+    callback.assertCalled('a should == c!');
+    webdriver.WebElement.equals(b, c).then(
+        callback = callbackHelper(assertTrue));
+    callback.assertCalled('transitive check failed');
+
+    verifyAll();  // for tearDown()
+  }
+
+  function testElementEquals_sendsRpcIfElementsHaveDifferentIds() {
+    var testHelper = TestHelper.
+        expectingSuccess().
+        expect(CName.ELEMENT_EQUALS,
+            {'id':{'ELEMENT':'foo'}, 'other':{'ELEMENT':'bar'}}).
+        andReturnSuccess(true).
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    var a = new webdriver.WebElement(driver, 'foo'),
+        b = new webdriver.WebElement(driver, 'bar'),
+        callback;
+
+    webdriver.WebElement.equals(a, b).then(
+        callback = callbackHelper(assertTrue));
+
+    testHelper.execute();
+    callback.assertCalled();
+  }
   </script>
 </body>
 </html>

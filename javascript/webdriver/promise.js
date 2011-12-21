@@ -636,7 +636,7 @@ webdriver.promise.fullyResolved = function(value) {
  * will be discarded and the failure will be propagated to user through the
  * callback/task's promised result.
  *
- * <p>Each thime an application empties its task queue, it will fire an
+ * <p>Each time an application empties its task queue, it will fire an
  * {@link webdriver.promise.Application.EventType.IDLE} event. Conversely,
  * whenever the application terminates due to an unhandled error,
  * it will remove all remaining tasks in its queue and fire an

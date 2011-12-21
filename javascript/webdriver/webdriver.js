@@ -1329,6 +1329,34 @@ webdriver.WebElement.ELEMENT_KEY = 'ELEMENT';
 
 
 /**
+ * Compares to WebElements for equality.
+ * @param {!webdriver.WebElement} a A WebElement.
+ * @param {!webdriver.WebElement} b A WebElement.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved to
+ *     whether the two WebElements are equal.
+ */
+webdriver.WebElement.equals = function(a, b) {
+  return a == b ?
+      webdriver.promise.resolved(true) :
+      webdriver.promise.fullyResolved([a.id_, b.id_]).then(function(ids) {
+        // If the two element's have the same ID, they should be considered
+        // equal. Otherwise, they may still be equivalent, but we'll need to
+        // ask the server to check for us.
+        debugger;
+        if (ids[0][webdriver.WebElement.ELEMENT_KEY] ==
+            ids[1][webdriver.WebElement.ELEMENT_KEY]) {
+          return true;
+        }
+
+        var command = new webdriver.Command(
+            webdriver.CommandName.ELEMENT_EQUALS);
+        command.setParameter('other', b);
+        return a.schedule_(command, 'webdriver.WebElement.equals()');
+      });
+};
+
+
+/**
  * @return {!webdriver.WebDriver} The parent driver for this instance.
  * @export
  */
