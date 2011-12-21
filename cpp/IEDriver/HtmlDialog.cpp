@@ -46,7 +46,16 @@ void __stdcall HtmlDialog::OnLoad(IHTMLEventObj *pEvtObj) {
 }
 
 void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
-  this->window_->get_document(doc);
+  HRESULT hr = S_OK;
+  if (this->focused_frame_window() == NULL) {
+    hr = this->window_->get_document(doc);
+  } else {
+    hr = this->focused_frame_window()->get_document(doc);
+  }
+
+  if (FAILED(hr)) {
+    LOGHR(DEBUG, hr) << "Unable to get document";
+  }
 }
 
 void HtmlDialog::Close() {
