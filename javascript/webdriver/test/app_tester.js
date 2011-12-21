@@ -85,7 +85,6 @@ webdriver.test.AppTester.prototype.$runApplication = function(
     fail('You may only expect the application to pass or fail, not both!');
   }
 
-  console.warn('running the application now');
   var app = this.app_;
   var isDone = false;
   var callbacks = callbackPair(
@@ -118,28 +117,22 @@ webdriver.test.AppTester.prototype.$runApplication = function(
 
   function assertIsDone() {
     clock.tick();  // Shutdown is done in one extra turn of the event loop.
-    console.warn('asserting that app is done');
     assertTrue('Should be done now', isDone);
   }
 
   function determineIfShouldBeDone() {
     shouldBeDone = app.frames_.length == 0 ||
         (app.frames_.length == 1 && app.frames_[0].queue.length == 0);
-    if (shouldBeDone)
-      console.warn('expecting app to shutdown now');
   }
 };
 
 
 webdriver.test.AppTester.prototype.$runIdleWaitLoopNTimes = function(n) {
   for (var i = 0; i < n; ++i) {
-    console.group('beginning loop ' + i);
     this.watcher_.reset();
     this.$runApplication(null, null, true);
-    console.warn('after loop ' + i + ', consuming timeouts');;
     consumeTimeouts();
     this.$assertAppNotRunning();
-    console.groupEnd();
   }
 };
 

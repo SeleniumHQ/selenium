@@ -942,7 +942,6 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
  */
 webdriver.promise.Application.prototype.scheduleEventLoopStart_ = function() {
   if (!this.eventLoopId_) {
-    console.log('Scheduling start of event loop');
     this.eventLoopId_ = setInterval(goog.bind(this.runEventLoop_, this),
         webdriver.promise.Application.EVENT_LOOP_FREQUENCY);
   }
@@ -955,7 +954,6 @@ webdriver.promise.Application.prototype.scheduleEventLoopStart_ = function() {
  */
 webdriver.promise.Application.prototype.cancelEventLoop_ = function() {
   if (this.eventLoopId_) {
-    console.log('Stopping event loop');
     clearInterval(this.eventLoopId_);
     this.eventLoopId_ = null;
   }
@@ -970,14 +968,11 @@ webdriver.promise.Application.prototype.cancelEventLoop_ = function() {
  * @private
  */
 webdriver.promise.Application.prototype.runEventLoop_ = function() {
-  console.log('Running application event loop');
-
   // If the app aborts due to an unhandled exception after we've scheduled
   // another turn of the execution loop, we can end up in here with no tasks
   // left. This is OK, just quietly return.
   var currentFrame = goog.array.peek(this.frames_);
   if (currentFrame.pendingTask) {
-    console.info('Frame is still working');
     return;
   }
 
@@ -990,16 +985,13 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
 
   this.history_.push(task.description);
 
-  console.info('starting ' + task.description);
   currentFrame.isActive = true;
   currentFrame.pendingTask = task;
   var result = this.executeAsap_(task.execute);
   webdriver.promise.asap(result, function(result) {
-    console.info('finished ' + task.description);
     currentFrame.pendingTask = null;
     task.resolve(result);
   }, function(error) {
-    console.error('failed ' + task.description);
     currentFrame.pendingTask = null;
     task.reject(error);
   });
@@ -1058,10 +1050,7 @@ webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
  * @private
  */
 webdriver.promise.Application.prototype.commenceShutdown_ = function() {
-  console.log('possibily commencing shutdown...');
   if (!this.shutdownId_) {
-    console.log('...commencing shutdown');
-
     // Go ahead and stop the event loop now.  If we're in here, then there are
     // no more frames with tasks to execute. If we waited to cancel the event
     // loop in our timeout below, the event loop could trigger *before* the
@@ -1072,7 +1061,6 @@ webdriver.promise.Application.prototype.commenceShutdown_ = function() {
 
     var self = this;
     self.shutdownId_ = setTimeout(function() {
-      console.log('...shutting down NOW');
       self.shutdownId_ = null;
       self.emit(webdriver.promise.Application.EventType.IDLE);
     }, 0);
@@ -1086,7 +1074,6 @@ webdriver.promise.Application.prototype.commenceShutdown_ = function() {
  */
 webdriver.promise.Application.prototype.cancelShutdown_ = function() {
   if (this.shutdownId_) {
-    console.log('...canceling shutdown');
     clearTimeout(this.shutdownId_);
     this.shutdownId_ = null;
   }
@@ -1110,13 +1097,10 @@ webdriver.promise.Application.prototype.abortNow_ = function(error) {
   var listeners = this.listeners(
       webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION);
   if (!listeners.length) {
-    console.warn('waiting to abort');
     setTimeout(function() {
-      console.warn('aborting NOW');
       throw error;
     }, 0);
   } else {
-    console.warn('aborting NOW');
     this.emit(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
         error);
   }
@@ -1136,7 +1120,6 @@ webdriver.promise.Application.prototype.abortCurrentFrame_ = function(error) {
   var frame = this.frames_.pop();
   if (frame) {
     try {
-      console.error('rejecting frame: ' + error);
       frame.reject(error);
     } catch (ex) {
       throw ex;
