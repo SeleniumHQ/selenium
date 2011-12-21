@@ -92,9 +92,12 @@ Class LogEntries</H2>
 java.lang.Object
   <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LogEntries</B>
 </PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD>java.lang.Iterable&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;</DD>
+</DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>LogEntries</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>LogEntries</B><DT>extends java.lang.Object<DT>implements java.lang.Iterable&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;</DL>
 </PRE>
 
 <P>
@@ -147,6 +150,14 @@ Represent a pool of . This class also provides filtering
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.Iterator&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntries.html#iterator()">iterator</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
@@ -193,8 +204,11 @@ getAll</H3>
 public java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt; <B>getAll</B>()</PRE>
 <DL>
 <DD><DL>
+</DL>
+</DD>
+<DD><DL>
 
-<DT><B>Returns:</B><DD>an immutable list of all <A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><CODE>LogEntry</CODE></A> fetched.</DL>
+<DT><B>Returns:</B><DD>a view of all <A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><CODE>LogEntry</CODE></A> fetched.</DL>
 </DD>
 </DL>
 <HR>
@@ -205,8 +219,25 @@ filter</H3>
 public java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt; <B>filter</B>(java.util.logging.Level&nbsp;level)</PRE>
 <DL>
 <DD><DL>
+</DL>
+</DD>
+<DD><DL>
 <DT><B>Parameters:</B><DD><CODE>level</CODE> - <CODE>Level</CODE> The level to filter the log entries.
 <DT><B>Returns:</B><DD>all log entries for that level and above.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="iterator()"><!-- --></A><H3>
+iterator</H3>
+<PRE>
+public java.util.Iterator&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt; <B>iterator</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>iterator</CODE> in interface <CODE>java.lang.Iterable&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

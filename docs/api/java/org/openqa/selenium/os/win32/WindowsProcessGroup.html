@@ -3,17 +3,17 @@
 <HTML>
 <HEAD>
 <TITLE>
-LoggingPreferences
+WindowsProcessGroup
 </TITLE>
 
 
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
 
 <SCRIPT type="text/javascript">
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="LoggingPreferences";
+        parent.document.title="WindowsProcessGroup";
     }
 }
 </SCRIPT>
@@ -35,13 +35,13 @@ function windowTitle()
 <A NAME="navbar_top_firstrow"><!-- --></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
   <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
 </TABLE>
 </TD>
@@ -52,20 +52,20 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/os/win32/Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.ByReference.html" title="class in org.openqa.selenium.os.win32"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/logging/LoggingPreferences.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="LoggingPreferences.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/os/win32/WindowsProcessGroup.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WindowsProcessGroup.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
   }
   //-->
 </SCRIPT>
 <NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
 </NOSCRIPT>
 
 
@@ -85,28 +85,24 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.logging</FONT>
+org.openqa.selenium.os.win32</FONT>
 <BR>
-Class LoggingPreferences</H2>
+Class WindowsProcessGroup</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LoggingPreferences</B>
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.os.win32.WindowsProcessGroup</B>
 </PRE>
 <HR>
 <DL>
-<DT><PRE>public class <B>LoggingPreferences</B><DT>extends java.lang.Object</DL>
+<DT><PRE><FONT SIZE="-1"><A HREF="../../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</A>
+</FONT>public class <B>WindowsProcessGroup</B><DT>extends java.lang.Object</DL>
 </PRE>
 
 <P>
-Represents the logging preferences.
-
- Sample usage:
-  DesiredCapabilities caps = DesiredCapabilities.firefox();
-  LoggingPreferences logs = new LoggingPreferences();
-  logs.enable(LogType.DRIVER, Level.INFO);
-  caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
-
-  WebDriver driver = new FirefoxDriver(caps);
+Utility class for grouping a set of processes into a process group on
+ Windows. This is primarily used for processes that spawn child processes and
+ then disconnect from them: killing the parent process should kill the
+ children too. That sounds a bit more sinsiter than it actually is.
 <P>
 
 <P>
@@ -123,7 +119,7 @@ Represents the logging preferences.
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#LoggingPreferences()">LoggingPreferences</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/os/win32/WindowsProcessGroup.html#WindowsProcessGroup(java.lang.String...)">WindowsProcessGroup</A></B>(java.lang.String...&nbsp;executableAndArgs)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -141,24 +137,15 @@ Represents the logging preferences.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#enable(java.lang.String, java.util.logging.Level)">enable</A></B>(java.lang.String&nbsp;logType,
-       java.util.logging.Level&nbsp;level)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enables logging for the given log type at the specified level and above.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.util.Set&lt;java.lang.String&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#getEnabledLogTypes()">getEnabledLogTypes</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/os/win32/WindowsProcessGroup.html#destroy()">destroy</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.util.logging.Level</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html#getLevel(java.lang.String)">getLevel</A></B>(java.lang.String&nbsp;logType)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/os/win32/WindowsProcessGroup.html#executeAsync()">executeAsync</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -186,10 +173,10 @@ Represents the logging preferences.
 </TR>
 </TABLE>
 
-<A NAME="LoggingPreferences()"><!-- --></A><H3>
-LoggingPreferences</H3>
+<A NAME="WindowsProcessGroup(java.lang.String...)"><!-- --></A><H3>
+WindowsProcessGroup</H3>
 <PRE>
-public <B>LoggingPreferences</B>()</PRE>
+public <B>WindowsProcessGroup</B>(java.lang.String...&nbsp;executableAndArgs)</PRE>
 <DL>
 </DL>
 
@@ -203,41 +190,24 @@ public <B>LoggingPreferences</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="enable(java.lang.String, java.util.logging.Level)"><!-- --></A><H3>
-enable</H3>
+<A NAME="executeAsync()"><!-- --></A><H3>
+executeAsync</H3>
 <PRE>
-public void <B>enable</B>(java.lang.String&nbsp;logType,
-                   java.util.logging.Level&nbsp;level)</PRE>
+public void <B>executeAsync</B>()</PRE>
 <DL>
-<DD>Enables logging for the given log type at the specified level and above.
-<P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>logType</CODE> - String the logType. Can be any of <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A>.<DD><CODE>level</CODE> - <CODE>Level</CODE> the level.</DL>
+</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="getEnabledLogTypes()"><!-- --></A><H3>
-getEnabledLogTypes</H3>
+<A NAME="destroy()"><!-- --></A><H3>
+destroy</H3>
 <PRE>
-public java.util.Set&lt;java.lang.String&gt; <B>getEnabledLogTypes</B>()</PRE>
+public void <B>destroy</B>()</PRE>
 <DL>
 <DD><DL>
-
-<DT><B>Returns:</B><DD>the set of log types for which logging has been enabled.</DL>
-</DD>
 </DL>
-<HR>
-
-<A NAME="getLevel(java.lang.String)"><!-- --></A><H3>
-getLevel</H3>
-<PRE>
-public java.util.logging.Level <B>getLevel</B>(java.lang.String&nbsp;logType)</PRE>
-<DL>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>logType</CODE> - String the <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A>.
-<DT><B>Returns:</B><DD>the <CODE>Level</CODE> for the given <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A> if enabled.
-     Otherwise returns <CODE>Level.OFF</CODE>.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -253,13 +223,13 @@ public java.util.logging.Level <B>getLevel</B>(java.lang.String&nbsp;logType)</P
 <A NAME="navbar_bottom_firstrow"><!-- --></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
   <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
 </TABLE>
 </TD>
@@ -270,20 +240,20 @@ public java.util.logging.Level <B>getLevel</B>(java.lang.String&nbsp;logType)</P
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/os/win32/Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.ByReference.html" title="class in org.openqa.selenium.os.win32"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/logging/LoggingPreferences.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="LoggingPreferences.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/os/win32/WindowsProcessGroup.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WindowsProcessGroup.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
   }
   //-->
 </SCRIPT>
 <NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
 </NOSCRIPT>
 
 

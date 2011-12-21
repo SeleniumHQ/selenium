@@ -131,6 +131,14 @@ java.lang.Object
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;class</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum in org.openqa.selenium.remote">RemoteWebDriver.When</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
 </TABLE>
 &nbsp;<A NAME="nested_classes_inherited_from_class_org.openqa.selenium.WebDriver"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
@@ -525,20 +533,13 @@ java.lang.Object
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>protected &nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId, java.lang.String, java.lang.Object)">log</A></B>(<A HREF="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</A>&nbsp;sessionId,
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId, java.lang.String, java.lang.Object, org.openqa.selenium.remote.RemoteWebDriver.When)">log</A></B>(<A HREF="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</A>&nbsp;sessionId,
     java.lang.String&nbsp;commandName,
-    java.lang.Object&nbsp;toLog)</CODE>
+    java.lang.Object&nbsp;toLog,
+    <A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum in org.openqa.selenium.remote">RemoteWebDriver.When</A>&nbsp;when)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Override this to be notified at key points in the execution of a command.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#logs()">logs</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -694,20 +695,6 @@ public <B>RemoteWebDriver</B>(java.net.URL&nbsp;remoteAddress,
 <B>Method Detail</B></FONT></TH>
 </TR>
 </TABLE>
-
-<A NAME="logs()"><!-- --></A><H3>
-logs</H3>
-<PRE>
-public <A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A> <B>logs</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
 
 <A NAME="setFileDetector(org.openqa.selenium.remote.FileDetector)"><!-- --></A><H3>
 setFileDetector</H3>
@@ -1592,12 +1579,13 @@ public <A HREF="../../../../org/openqa/selenium/Mouse.html" title="interface in 
 </DL>
 <HR>
 
-<A NAME="log(org.openqa.selenium.remote.SessionId, java.lang.String, java.lang.Object)"><!-- --></A><H3>
+<A NAME="log(org.openqa.selenium.remote.SessionId, java.lang.String, java.lang.Object, org.openqa.selenium.remote.RemoteWebDriver.When)"><!-- --></A><H3>
 log</H3>
 <PRE>
 protected void <B>log</B>(<A HREF="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</A>&nbsp;sessionId,
                    java.lang.String&nbsp;commandName,
-                   java.lang.Object&nbsp;toLog)</PRE>
+                   java.lang.Object&nbsp;toLog,
+                   <A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum in org.openqa.selenium.remote">RemoteWebDriver.When</A>&nbsp;when)</PRE>
 <DL>
 <DD>Override this to be notified at key points in the execution of a command.
 <P>

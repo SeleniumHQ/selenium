@@ -52,7 +52,7 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteWindow.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
 &nbsp;<A HREF="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteWebElement.html" target="_top"><B>FRAMES</B></A>  &nbsp;
@@ -870,9 +870,16 @@ public java.lang.String <B>getCssValue</B>(java.lang.String&nbsp;propertyName)</
 <DD><B>Description copied from interface: <CODE><A HREF="../../../../org/openqa/selenium/WebElement.html#getCssValue(java.lang.String)">WebElement</A></CODE></B></DD>
 <DD>Get the value of a given CSS property. This is probably not going to return what you expect it
  to unless you've already had a look at the element using something like firebug. Seriously,
- even then you'll be lucky for this to work cross-browser. Colour values should be returned as
+ even then you'll be lucky for this to work cross-browser. Color values should be returned as
  hex strings, so, for example if the "background-color" property is set as "green" in the HTML
- source, the returned value will be "#008000"
+ source, the returned value will be "#008000".
+ 
+ Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
+ margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
+ in accordance with the
+ <a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration">DOM CSS2 specification</a>
+ - you should directly access the longhand properties (e.g. background-color) to access the
+ desired values.
 <P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/WebElement.html#getCssValue(java.lang.String)">getCssValue</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A></CODE></DL>
@@ -1364,7 +1371,7 @@ public <A HREF="../../../../org/openqa/selenium/interactions/internal/Coordinate
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteWindow.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
 &nbsp;<A HREF="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteWebElement.html" target="_top"><B>FRAMES</B></A>  &nbsp;
