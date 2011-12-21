@@ -386,7 +386,11 @@ module Selenium
         end
 
         def elementEquals(element, other)
-          execute :elementEquals, :id => element.ref, :other => other.ref
+          if element.ref == other.ref
+            true
+          else
+            execute :elementEquals, :id => element.ref, :other => other.ref
+          end
         end
 
         def find_element_by(how, what, parent = nil)
