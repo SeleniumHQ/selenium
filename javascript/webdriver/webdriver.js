@@ -1342,7 +1342,6 @@ webdriver.WebElement.equals = function(a, b) {
         // If the two element's have the same ID, they should be considered
         // equal. Otherwise, they may still be equivalent, but we'll need to
         // ask the server to check for us.
-        debugger;
         if (ids[0][webdriver.WebElement.ELEMENT_KEY] ==
             ids[1][webdriver.WebElement.ELEMENT_KEY]) {
           return true;
