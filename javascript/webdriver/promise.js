@@ -473,21 +473,21 @@ webdriver.promise.checkedNodeCall = function(fn) {
  * that will be resolved when the value is. If {@code value} is not a promise,
  * then the return promise will be immediately resolved.
  * @param {*} value The value to observe.
- * @param {?function(*)} callback The function to call when the value is
+ * @param {?function(*)=} opt_callback The function to call when the value is
  *     resolved successfully.
  * @param {?function(*)=} opt_errback The function to call when the value is
  *     rejected.
  * @return {!webdriver.promise.Promise} A new promise.
  * @export
  */
-webdriver.promise.when = function(value, callback, opt_errback) {
+webdriver.promise.when = function(value, opt_callback, opt_errback) {
   if (value instanceof webdriver.promise.Promise) {
-    return value.then(callback, opt_errback);
+    return value.then(opt_callback, opt_errback);
   }
 
   var deferred = new webdriver.promise.Deferred();
   webdriver.promise.asap(value, deferred.resolve, deferred.reject);
-  return deferred.then(callback, opt_errback);
+  return deferred.then(opt_callback, opt_errback);
 };
 
 
@@ -681,6 +681,14 @@ webdriver.promise.Application.EventType = {
 
 
 /**
+ * How often, in milliseconds, the Application event loop should run.
+ * @type {number}
+ * @const
+ */
+webdriver.promise.Application.EVENT_LOOP_FREQUENCY = 10;
+
+
+/**
  * Timeout ID set when the application is about to shutdown without any errors
  * being detected. Upon shutting down, the application will emit an
  * {@link webdriver.promise.Application.EventType.IDLE} event. Idle events
@@ -703,11 +711,11 @@ webdriver.promise.Application.prototype.shutdownId_ = null;
 
 
 /**
- * Timeout ID for the application event loop.
+ * Interval ID for the application event loop.
  * @type {?number}
  * @private
  */
-webdriver.promise.Application.prototype.executeNextId_ = null;
+webdriver.promise.Application.prototype.eventLoopId_ = null;
 
 
 /**
@@ -718,7 +726,7 @@ webdriver.promise.Application.prototype.reset = function() {
   this.clearHistory();
   this.removeAllListeners();
   this.cancelShutdown_();
-  this.cancelNext_();
+  this.cancelEventLoop_();
 };
 
 
@@ -766,7 +774,7 @@ webdriver.promise.Application.prototype.schedule = function(description, fn) {
 
   this.emit(webdriver.promise.Application.EventType.SCHEDULE_TASK);
 
-  this.scheduleNext_();
+  this.scheduleEventLoopStart_();
   return task.promise;
 };
 
@@ -872,11 +880,18 @@ webdriver.promise.Application.prototype.scheduleTimeout = function(description,
 /**
  * Schedules a task that shall wait for a condition to hold. Each condition
  * function may return any value, but it will always be evaluated as a boolean.
- * In the event a condition returns a Promise, the polling loop will wait for it
- * to be resolved before evaluating whether the condition has been satisfied.
+ *
+ * <p>Condition functions may schedule sub-tasks with this application, however,
+ * their execution time will be factored into whether a wait has timed out.
+ *
+ * <p>In the event a condition returns a Promise, the polling loop will wait for
+ * it to be resolved before evaluating whether the condition has been satisfied.
  * The resolution time for a promise is factored into whether a wait has timed
- * out. If the condition function throws, or returns a rejected promise, the
+ * out.
+ *
+ * <p>If the condition function throws, or returns a rejected promise, the
  * wait task will fail.
+ *
  * @param {string} description A description of the wait.
  * @param {!Function} condition The condition function to poll.
  * @param {number} timeout How long to wait, in milliseconds, for the condition
@@ -922,24 +937,27 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
 
 
 /**
- * Schedules the next turn of the application event loop, if necessary.
+ * Schedules the interval for this application's event loop, if necessary.
  * @private
  */
-webdriver.promise.Application.prototype.scheduleNext_ = function() {
-  if (!this.executeNextId_) {
-    this.executeNextId_ = setTimeout(goog.bind(this.executeNext_, this), 0);
+webdriver.promise.Application.prototype.scheduleEventLoopStart_ = function() {
+  if (!this.eventLoopId_) {
+    console.log('Scheduling start of event loop');
+    this.eventLoopId_ = setInterval(goog.bind(this.runEventLoop_, this),
+        webdriver.promise.Application.EVENT_LOOP_FREQUENCY);
   }
 };
 
 
 /**
- * Cancels the next turn of the application event loop, if necessary.
+ * Cancels the event loop, if necessary.
  * @private
  */
-webdriver.promise.Application.prototype.cancelNext_ = function() {
-  if (this.executeNextId_) {
-    clearTimeout(this.executeNextId_);
-    this.executeNextId_ = null;
+webdriver.promise.Application.prototype.cancelEventLoop_ = function() {
+  if (this.eventLoopId_) {
+    console.log('Stopping event loop');
+    clearInterval(this.eventLoopId_);
+    this.eventLoopId_ = null;
   }
 };
 
@@ -951,13 +969,18 @@ webdriver.promise.Application.prototype.cancelNext_ = function() {
  * frame was at the top of the stack.
  * @private
  */
-webdriver.promise.Application.prototype.executeNext_ = function() {
-  this.executeNextId_ = null;
+webdriver.promise.Application.prototype.runEventLoop_ = function() {
+  console.log('Running application event loop');
 
   // If the app aborts due to an unhandled exception after we've scheduled
   // another turn of the execution loop, we can end up in here with no tasks
   // left. This is OK, just quietly return.
   var currentFrame = goog.array.peek(this.frames_);
+  if (currentFrame.pendingTask) {
+    console.info('Frame is still working');
+    return;
+  }
+
   var task = currentFrame.queue.shift();
   if (!task) {
     this.frames_.pop();
@@ -965,18 +988,20 @@ webdriver.promise.Application.prototype.executeNext_ = function() {
     return;
   }
 
-  var padding = new Array(this.frames_.length).join('.');
-  this.history_.push(padding + (task.description || '(anonymous task)'));
+  this.history_.push(task.description);
 
+  console.info('starting ' + task.description);
   currentFrame.isActive = true;
+  currentFrame.pendingTask = task;
   var result = this.executeAsap_(task.execute);
-  var self = this;
   webdriver.promise.asap(result, function(result) {
+    console.info('finished ' + task.description);
+    currentFrame.pendingTask = null;
     task.resolve(result);
-    self.scheduleNext_();
   }, function(error) {
+    console.error('failed ' + task.description);
+    currentFrame.pendingTask = null;
     task.reject(error);
-    self.scheduleNext_();
   });
 };
 
@@ -1004,7 +1029,6 @@ webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
     }
   } else {
     var frame = new webdriver.promise.Application.Frame_();
-    frame.addBoth(this.scheduleNext_, this);
     this.frames_.push(frame);
     try {
       var result = fn();
@@ -1026,16 +1050,29 @@ webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
 
 /**
  * Commences the shutdown sequence for this application. The application will
- * wait for 1 turn of the event loop before emitting the {@code IDLE} event to
- * signal listeners that is has completed. During this wait, if another task
- * is scheduled, the shutdown will be aborted and the application will continue
+ * wait for 1 turn of the event loop before emitting the
+ * {@link webdriver.promise.Application.EventType.IDLE} event to signal
+ * listeners that it has completed. During this wait, if another task is
+ * scheduled, the shutdown will be aborted and the application will continue
  * to operate.
  * @private
  */
 webdriver.promise.Application.prototype.commenceShutdown_ = function() {
+  console.log('possibily commencing shutdown...');
   if (!this.shutdownId_) {
+    console.log('...commencing shutdown');
+
+    // Go ahead and stop the event loop now.  If we're in here, then there are
+    // no more frames with tasks to execute. If we waited to cancel the event
+    // loop in our timeout below, the event loop could trigger *before* the
+    // timeout, generating an error from there being no frames.
+    // If #schedule is called before the timeout below fires, it will cancel
+    // the timeout and restart the event loop.
+    this.cancelEventLoop_();
+
     var self = this;
     self.shutdownId_ = setTimeout(function() {
+      console.log('...shutting down NOW');
       self.shutdownId_ = null;
       self.emit(webdriver.promise.Application.EventType.IDLE);
     }, 0);
@@ -1049,6 +1086,7 @@ webdriver.promise.Application.prototype.commenceShutdown_ = function() {
  */
 webdriver.promise.Application.prototype.cancelShutdown_ = function() {
   if (this.shutdownId_) {
+    console.log('...canceling shutdown');
     clearTimeout(this.shutdownId_);
     this.shutdownId_ = null;
   }
@@ -1067,15 +1105,18 @@ webdriver.promise.Application.prototype.cancelShutdown_ = function() {
 webdriver.promise.Application.prototype.abortNow_ = function(error) {
   this.frames_ = [];
   this.cancelShutdown_();
-  this.cancelNext_();
+  this.cancelEventLoop_();
 
   var listeners = this.listeners(
       webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION);
   if (!listeners.length) {
+    console.warn('waiting to abort');
     setTimeout(function() {
+      console.warn('aborting NOW');
       throw error;
     }, 0);
   } else {
+    console.warn('aborting NOW');
     this.emit(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
         error);
   }
@@ -1095,6 +1136,7 @@ webdriver.promise.Application.prototype.abortCurrentFrame_ = function(error) {
   var frame = this.frames_.pop();
   if (frame) {
     try {
+      console.error('rejecting frame: ' + error);
       frame.reject(error);
     } catch (ex) {
       throw ex;
@@ -1122,6 +1164,13 @@ webdriver.promise.Application.Frame_ = function() {
   this.queue = [];
 };
 goog.inherits(webdriver.promise.Application.Frame_, webdriver.promise.Deferred);
+
+
+/**
+ * The task currently being executed within this frame.
+ * @type {!webdriver.promise.Application.Task_}
+ */
+webdriver.promise.Application.Frame_.prototype.pendingTask = null;
 
 
 /**
@@ -1156,6 +1205,6 @@ webdriver.promise.Application.Task_ = function(fn, opt_description) {
    * The description of this task.
    * @type {string}
    */
-  this.description = opt_description;
+  this.description = opt_description || '(anonymous task)';
 };
 goog.inherits(webdriver.promise.Application.Task_, webdriver.promise.Deferred);

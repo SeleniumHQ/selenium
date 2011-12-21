@@ -34,6 +34,7 @@ limitations under the License.
     goog.require('webdriver.promise.Application');
     goog.require('webdriver.promise.Deferred');
     goog.require('webdriver.promise.Promise');
+    goog.require('webdriver.test.AppTester');
     goog.require('webdriver.test.testutil');
   </script>
 </head>
@@ -50,25 +51,24 @@ limitations under the License.
   // the IDE stop complaining.
   var By = webdriver.Locator.Strategy;
 
-  var stubs = new goog.testing.PropertyReplacer();
-
   var driver;
   var mockControl;
+  var appTester;
   var verifyAll;
 
   function setUp() {
     clock = createMockClock();
+    appTester = new webdriver.test.AppTester(clock);
     mockControl = new goog.testing.MockControl();
     verifyAll = callbackHelper(goog.bind(mockControl.$verifyAll, mockControl));
   }
 
 
   function tearDown() {
+    appTester.$tearDown();
     verifyAll.assertCalled('Never verified mocks');
     clock.uninstall();
-    stubs.reset();
     mockControl.$tearDown();
-    delete mockControl;
   }
 
 
@@ -82,7 +82,6 @@ limitations under the License.
 
   TestHelper = function() {
     this.executor_ = mockControl.createStrictMock(webdriver.CommandExecutor);
-    this.application_ = new webdriver.promise.Application();
     this.execute = function() {
       fail('Expectations not set!');
     };
@@ -91,22 +90,12 @@ limitations under the License.
 
   TestHelper.expectingFailure = function(opt_errback) {
     var helper = new TestHelper();
-    helper.name = opt_errback + '';
 
-    var callbacks = callbackPair(null, function(e) {
-      verifyAll();
-      if (opt_errback) {
-        opt_errback(e);
-      }
-    });
-    helper.application_.addListener(
-        webdriver.promise.Application.EventType.IDLE, callbacks.callback);
-    helper.application_.addListener(
-        webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
-        callbacks.errback);
     helper.execute = function() {
-      consumeTimeouts();
-      callbacks.assertErrback('Expected app to finish with an error');
+      appTester.$runApplication(null, function(e) {
+        verifyAll();
+        (opt_errback || goog.nullFunction)(e);
+      });
     };
 
     return helper;
@@ -116,21 +105,11 @@ limitations under the License.
   TestHelper.expectingSuccess = function(opt_callback) {
     var helper = new TestHelper();
 
-    var callbacks = callbackPair(function() {
-      verifyAll();
-      (opt_callback || goog.nullFunction)();
-    });
-
-    helper.application_.addListener(
-        webdriver.promise.Application.EventType.IDLE, callbacks.callback);
-    helper.application_.addListener(
-        webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
-        callbacks.errback);
-
-    helper.execute = function(opt_notFinished) {
-      consumeTimeouts();
-      if (!opt_notFinished)
-        callbacks.assertCallback('App did not finish OK');
+    helper.execute = function() {
+      appTester.$runApplication(function() {
+        verifyAll();
+        (opt_callback || goog.nullFunction)();
+      });
     };
 
     return helper;
@@ -139,20 +118,6 @@ limitations under the License.
 
   TestHelper.prototype.expect = function(commandName, opt_parameters) {
     return new TestHelper.Command(this, commandName, opt_parameters);
-  };
-
-
-  TestHelper.prototype.expectNewDriver = function() {
-    return this.expect(CName.NEW_SESSION).
-        withParameters({
-          'desiredCapabilities': {
-            'browserName': 'firefox',
-            'version': '',
-            'platform': 'ANY',
-            'javascriptEnabled': true
-          }
-        }).
-        andReturnSuccess(null);
   };
 
 
@@ -255,10 +220,6 @@ limitations under the License.
    */
   TestHelper.prototype.createDriver = function(opt_session) {
     var session = opt_session || new webdriver.Session(SESSION_ID, {});
-    var app = this.application_;
-    stubs.set(webdriver.promise.Application, 'getInstance', function() {
-      return app;
-    });
     return new webdriver.WebDriver(session, this.executor_);
   };
 
@@ -453,12 +414,9 @@ limitations under the License.
 
 
   function testDoesNotExecuteCommandIfSessionDoesNotResolve() {
-    var session = webdriver.promise.rejected('rejected session');
+    var session = webdriver.promise.rejected(STUB_ERROR);
     var testHelper = TestHelper.
-        expectingFailure(function(e) {
-          assertEquals('Expected to fail for a different reason',
-              'rejected session', e);
-        }).
+        expectingFailure(assertIsStubError).
         replayAll();
     testHelper.createDriver(session).getTitle();
     testHelper.execute();
@@ -478,6 +436,7 @@ limitations under the License.
     }));
 
     testHelper.execute();
+    callback.assertCalled();
   }
 
 
@@ -532,8 +491,7 @@ limitations under the License.
         andReturnError(ECode.NO_SUCH_WINDOW, {'message': 'window not found'}).
         replayAll();
 
-    testHelper.createDriver().
-        switchTo().window('foo');
+    testHelper.createDriver().switchTo().window('foo');
 
     testHelper.execute();
   }
@@ -550,13 +508,10 @@ limitations under the License.
         andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
         replayAll();
 
-    var error = Error('ouch');
     var driver = testHelper.createDriver();
     driver.switchTo().window('foo').
-        addErrback(function() { return error; }).
-        addCallback(callback = callbackHelper(function(e) {
-          assertEquals(error, e);
-        }));
+        addErrback(function() { return STUB_ERROR; }).
+        addCallback(callback = callbackHelper(assertIsStubError));
 
     testHelper.execute();
   }
@@ -564,15 +519,13 @@ limitations under the License.
 
   function testErrbacksThrownCanOverrideOriginalError() {
     var testHelper = TestHelper.
-        expectingFailure(expectedError(undefined, 'ouch')).
+        expectingFailure(assertIsStubError).
         expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
         andReturnError(ECode.NO_SUCH_WINDOW, {'message':'window not found'}).
         replayAll();
 
     var driver = testHelper.createDriver();
-    driver.switchTo().window('foo').addErrback(function() {
-      throw Error('ouch');
-    });
+    driver.switchTo().window('foo').addErrback(throwStubError);
 
     testHelper.execute();
   }
@@ -861,7 +814,7 @@ limitations under the License.
           assertEquals(3, value);
         });
 
-    testHelper.execute(true);
+    appTester.$turnEventLoop();
     add.assertNotCalled();
 
     promisedArg.resolve(2);
@@ -981,14 +934,19 @@ limitations under the License.
     var testHelper = TestHelper.expectingSuccess().replayAll();
 
     var d = new webdriver.promise.Deferred(),
-        stepOne = function() { return d.promise; },
+        stepOne = callbackHelper(function() { return d.promise; }),
         stepTwo = callbackHelper();
 
     var driver = testHelper.createDriver();
     driver.call(stepOne);
     driver.call(stepTwo);
 
-    testHelper.execute(true);
+    appTester.$turnEventLoop();
+    stepOne.assertCalled();
+    stepTwo.assertNotCalled();
+
+    appTester.$turnEventLoop();
+    stepOne.assertCalled();
     stepTwo.assertNotCalled();
 
     d.resolve();

@@ -21,34 +21,25 @@ limitations under the License.
   goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.jsunit');
   goog.require('webdriver.promise.Application');
-  goog.require('webdriver.test.testutil');
+  goog.require('webdriver.test.AppTester');
   goog.require('webdriver.testing.asserts');
 </script>
 <script>
-  var app, callbacks,
-      onExpectFail = callbackHelper(),
-      stubs = new goog.testing.PropertyReplacer;
+  var appTester,
+      onExpectFail = callbackHelper();
 
   function setUp() {
     onExpectFail.reset();
-    callbacks = null;
     clock = createMockClock();
-    app = new webdriver.promise.Application();
-    stubs.set(webdriver.promise.Application, 'getInstance', function() {
-      return app;
-    });
+    appTester = new webdriver.test.AppTester(clock);
     messages = [];
-    setAppExpectations();
     webdriver.testing.asserts.on(webdriver.testing.asserts.EXPECTATION_FAILURE,
         onExpectFail);
   }
 
 
   function tearDown() {
-    consumeTimeouts();
-    app.reset();
-    clock.dispose();
-    stubs.reset();
+    appTester.$tearDown();
     webdriver.testing.asserts.removeAllListeners();
   }
 
@@ -58,59 +49,49 @@ limitations under the License.
    * @oaram {*=} retValue The value to return from the task.
    */
   function schedulePush(value, opt_retValue) {
-    return app.schedule('push ' + value, function() {
+    return appTester.schedule('push ' + value, function() {
       messages.push(value);
       return opt_retValue;
     });
   }
 
 
-  /**
-   * @param {Function=} opt_onSuccess The function to call when the app
-   *     finishes OK.
-   * @param {Function=} opt_onFailure The function to call when the app
-   *     aborts abnormally.
-   */
-  function setAppExpectations(opt_onSuccess, opt_onFailure) {
-    if (callbacks) {
-      app.removeListener('idle', callbacks.callback);
-      app.removeListener('uncaughtException', callbacks.errback);
-    }
-    callbacks = callbackPair(opt_onSuccess, opt_onFailure);
-    app.addListener('idle', callbacks.callback);
-    app.addListener('uncaughtException', callbacks.errback);
+  /** @see {@link webdriver.test.AppTester#$turnEventLoop}. */
+  function turnEventLoop(opt_fn, var_args) {
+    appTester.$turnEventLoop.apply(appTester, arguments);
+  }
+
+
+  /** @see {@link webdriver.test.AppTester#$runApplication}. */
+  function runApplication(opt_callback, opt_errback) {
+    appTester.$runApplication.apply(appTester, arguments);
   }
 
 
   function testAbortsAppIfAssertThatStatementFails() {
-    setAppExpectations(null, assertingMessages('a'));
     assertThat(schedulePush('a', 123), equals('foo'));
     schedulePush('should not execute');
-    consumeTimeouts();
-    callbacks.assertErrback();
+
+    runApplication(null, assertingMessages('a'));
     onExpectFail.assertNotCalled();
   }
 
 
   function testContinuesAppAfterExpectThatStatementFails() {
-    setAppExpectations(assertingMessages('a', 'b'));
     expectThat(schedulePush('a', 123), equals('foo'));
     schedulePush('b');
-    consumeTimeouts();
-    callbacks.assertCallback();
+
+    runApplication(assertingMessages('a', 'b'));
     onExpectFail.assertCalled();
   }
 
 
   function testExpectsAndAssertsInterwined_assertFails() {
-    setAppExpectations(null, assertingMessages('a', 'b'));
-
     expectThat(schedulePush('a', 123), equals('foo'));
     assertThat(schedulePush('b', 123), equals('bar'));
     expectThat(schedulePush('c', 123), equals('baz'));
 
-    consumeTimeouts();
-    callbacks.assertErrback();
+    runApplication(null, assertingMessages('a', 'b'));
     onExpectFail.assertCalled();
   }
 

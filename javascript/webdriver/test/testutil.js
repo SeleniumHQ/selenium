@@ -25,6 +25,16 @@ var clock;
 /** @type {Array.<!string>} */
 var messages;
 
+var STUB_ERROR = new Error('ouch');
+STUB_ERROR.stack = '(stub error; stack irrelevant)';
+
+function throwStubError() {
+  throw STUB_ERROR;
+}
+
+function assertIsStubError(error) {
+  assertEquals(STUB_ERROR, error);
+}
 
 function createMockClock() {
   clock = new goog.testing.MockClock(true);
@@ -199,6 +209,14 @@ function callbackPair(opt_callback, opt_errback) {
   var pair = {
     callback: callbackHelper(opt_callback),
     errback: callbackHelper(opt_errback)
+  };
+
+  pair.assertEither = function(opt_message) {
+    if (!pair.callback.wasCalled() && !pair.errback.wasCalled()) {
+      var message = ['Neither callback nor errback has been called'];
+      if (opt_message) goog.array.insertAt(message, opt_message);
+      fail(message.join('\n'));
+    }
   };
 
   pair.assertNeither = function(opt_message) {

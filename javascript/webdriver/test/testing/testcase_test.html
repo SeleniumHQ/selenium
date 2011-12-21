@@ -24,6 +24,7 @@ limitations under the License.
     goog.require('goog.testing.mockmatchers');
     goog.require('goog.testing.jsunit');
     goog.require('goog.testing.recordFunction');
+    goog.require('webdriver.test.AppTester');
     goog.require('webdriver.test.testutil');
     goog.require('webdriver.testing.TestCase');
   </script>
@@ -33,20 +34,14 @@ limitations under the License.
 
   var IGNORE_ARGUMENT = goog.testing.mockmatchers.ignoreArgument;
   var IS_ARRAY_ARGUMENT = goog.testing.mockmatchers.isArray;
-  var BOOM = new Error('boom');
-  function goBoom() { throw BOOM; }
 
   var control = new goog.testing.MockControl();
-  var stubs = new goog.testing.PropertyReplacer();
-  var app, mockTestCase, testStub, mockOnComplete, mockOnError,
+  var appTester, mockTestCase, testStub, mockOnComplete, mockOnError,
       mockOnExpectationFailures;
 
   function setUp() {
     clock = createMockClock();
-    app = new webdriver.promise.Application();
-    stubs.set(webdriver.promise.Application, 'getInstance', function() {
-      return app;
-    });
+    appTester = new webdriver.test.AppTester(clock);
 
     // Use one master mock so we can assert execution order.
     mockTestCase = control.createStrictMock({
@@ -73,11 +68,10 @@ limitations under the License.
   }
 
   function tearDown() {
-    consumeTimeouts();
+    appTester.$assertAppNotRunning();
+    appTester.$tearDown();
     control.$tearDown();
-    app.reset();
     clock.dispose();
-    stubs.reset();
   }
 
   /**
@@ -87,17 +81,14 @@ limitations under the License.
    *     from the scheduled task.
    */
   function schedulePush(msg, value, opt_taskPromise) {
-    return app.schedule(msg, function() {
-      messages.push(value);
-      return opt_taskPromise;
-    });
+    return appTester.$schedulePush.apply(appTester, arguments);
   }
 
-  function runTest() {
+  function runTest(n) {
     webdriver.testing.TestCase.prototype.runSingleTest_.
         call(mockTestCase, testStub, mockOnError, mockOnExpectationFailures).
         then(mockOnComplete);
-    consumeTimeouts();
+    appTester.$runIdleWaitLoopNTimes(n);
     control.$verifyAll();
   }
 
@@ -108,7 +99,7 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testExecutingAHappyTestWithScheduledActions() {
@@ -118,55 +109,55 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT).$does(assertingMessages('a', 'b', 'c'));
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testShouldSkipTestFnIfSetupThrows() {
-    mockTestCase.setUp().$does(goBoom);
-    mockOnError(BOOM);
+    mockTestCase.setUp().$does(throwStubError);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(2);
   }
 
   function testShouldSkipTestFnIfSetupActionFails_1() {
     mockTestCase.setUp().$does(function() {
-      app.schedule('an explosion', goBoom);
+      appTester.schedule('an explosion', throwStubError);
     });
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(2);
   }
 
   function testShouldSkipTestFnIfSetupActionFails_2() {
     mockTestCase.setUp().$does(function() {
-      app.schedule('an explosion', goBoom);
+      appTester.schedule('an explosion', throwStubError);
     });
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(2);
   }
 
   function testShouldSkipTestFnIfNestedSetupActionFails() {
     mockTestCase.setUp().$does(function() {
-      app.schedule('a', goog.nullFunction).then(function() {
-        app.schedule('b', goBoom);
+      appTester.schedule('a', goog.nullFunction).then(function() {
+        appTester.schedule('b', throwStubError);
       });
     });
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(2);
   }
 
   function testRunsAllTasksForEachPhaseBeforeTheNextPhase() {
@@ -183,53 +174,53 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
     assertMessages('a', 'b', 'c');
   }
 
   function testRecordsErrorsFromTestFnBeforeTearDown() {
     mockTestCase.setUp();
-    mockTestCase.testFn().$does(goBoom);
-    mockOnError(BOOM);
+    mockTestCase.testFn().$does(throwStubError);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testRecordsErrorsFromTearDown() {
     mockTestCase.setUp();
     mockTestCase.testFn();
-    mockTestCase.tearDown().$does(goBoom);
-    mockOnError(BOOM);
+    mockTestCase.tearDown().$does(throwStubError);
+    mockOnError(STUB_ERROR);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testErrorFromSetUpAndTearDown() {
-    mockTestCase.setUp().$does(goBoom);
-    mockOnError(BOOM);
-    mockTestCase.tearDown().$does(goBoom);
-    mockOnError(BOOM);
+    mockTestCase.setUp().$does(throwStubError);
+    mockOnError(STUB_ERROR);
+    mockTestCase.tearDown().$does(throwStubError);
+    mockOnError(STUB_ERROR);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(2);
   }
 
   function testErrorFromTestFnAndTearDown() {
     mockTestCase.setUp();
-    mockTestCase.testFn().$does(goBoom);
-    mockOnError(BOOM);
-    mockTestCase.tearDown().$does(goBoom);
-    mockOnError(BOOM);
+    mockTestCase.testFn().$does(throwStubError);
+    mockOnError(STUB_ERROR);
+    mockTestCase.tearDown().$does(throwStubError);
+    mockOnError(STUB_ERROR);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testExpectationFailures_inSetup() {
@@ -242,21 +233,21 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testExpectationAndAssertionFailures_inSetup() {
     mockTestCase.setUp().$does(function() {
       expectThat(false, equals(true));
-      goBoom();
+      throwStubError();
     });
     mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(2);
   }
 
   function testExpectationFailures_inTestFn() {
@@ -269,22 +260,22 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testExpectationAndAssertionFailures_inTestFn() {
     mockTestCase.setUp();
     mockTestCase.testFn().$does(function() {
       expectThat(false, equals(true));
-      goBoom();
+      throwStubError();
     });
     mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testExpectationFailures_inTearDown() {
@@ -297,7 +288,7 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testExpectationAndAssertionFailures_inTearDown() {
@@ -305,33 +296,33 @@ limitations under the License.
     mockTestCase.testFn();
     mockTestCase.tearDown().$does(function() {
       expectThat(false, equals(true));
-      goBoom();
+      throwStubError();
     });
     mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 
   function testExpectationAndAssertionFailures_inSetupAndTearDown() {
     mockTestCase.setUp().$does(function() {
       expectThat(false, equals(true));
-      goBoom();
+      throwStubError();
     });
     mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockTestCase.tearDown().$does(function() {
       expectThat(false, equals(true));
-      goBoom();
+      throwStubError();
     });
     mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
-    mockOnError(BOOM);
+    mockOnError(STUB_ERROR);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(2);
   }
 
   function testExpectationFailures_inEachPhase() {
@@ -350,7 +341,7 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest();
+    runTest(3);
   }
 </script>
 </body>
