@@ -32,8 +32,8 @@ module Selenium
           keylogger.text.strip.should =~ /^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/
         end
 
-        it "raises an UnsupportedOperationError if the pressed key is not a modifier key" do
-          lambda { driver.keyboard.press :return }.should raise_error(Error::UnsupportedOperationError)
+        it "raises an ArgumentError if the pressed key is not a modifier key" do
+          lambda { driver.keyboard.press :return }.should raise_error(ArgumentError)
         end
 
         it "can press and release modifier keys" do
