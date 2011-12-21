@@ -412,13 +412,13 @@ webdriver.promise.delayed = function(ms) {
 
 /**
  * Creates a promise that has been resolved with the given value.
- * @param {*} value The resolved value.
+ * @param {*=} opt_value The resolved value.
  * @return {!webdriver.promise.Promise} The resolved promise.
  * @export
  */
-webdriver.promise.resolved = function(value) {
+webdriver.promise.resolved = function(opt_value) {
   var deferred = new webdriver.promise.Deferred();
-  deferred.resolve(value);
+  deferred.resolve(opt_value);
   return deferred.promise;
 };
 
@@ -620,11 +620,23 @@ webdriver.promise.fullyResolved = function(value) {
 
 /**
  * Handles the execution of scheduled tasks, each of which may be an
- * asynchronous operation.  Internally, the application will maintain a stack
- * frame for scheduled tasks, ensuring each task will not be executed until the
- * tasks before it in the queue have completed.
+ * asynchronous operation. The application will ensure tasks are executed in the
+ * ordered scheduled, starting each tasks only once those before it have
+ * completed.
  *
- * Each time an application empties its task queue, it will fire an
+ * <p>Each task scheduled with the application may return a
+ * {@link webdriver.promise.Promise} to indicate it is an asynchronous
+ * operation. The Application will wait for such promises to be resolved before
+ * marking the task as completed.
+ *
+ * <p>Tasks and each callback registered on a {@link webdriver.promise.Deferred}
+ * will be run in their own Application frame.  Any tasks scheduled within a
+ * frame will take precedence over previously scheduled tasks. Furthermore, if
+ * any of the tasks in the frame fails, the remainder of the tasks in that frame
+ * will be discarded and the failure will be propagated to user through the
+ * callback/task's promised result.
+ *
+ * <p>Each thime an application empties its task queue, it will fire an
  * {@link webdriver.promise.Application.EventType.IDLE} event. Conversely,
  * whenever the application terminates due to an unhandled error,
  * it will remove all remaining tasks in its queue and fire an
@@ -735,7 +747,7 @@ webdriver.promise.Application.prototype.reset = function() {
  * separate line.
  * @return {string} The task history.
  */
-webdriver.promise.Application.prototype.getHistory = function(e) {
+webdriver.promise.Application.prototype.getHistory = function() {
   return this.history_.join('\n');
 };
 
@@ -743,6 +755,20 @@ webdriver.promise.Application.prototype.getHistory = function(e) {
 /** Clears this instance's task history. */
 webdriver.promise.Application.prototype.clearHistory = function() {
   this.history_ = [];
+};
+
+
+webdriver.promise.Application.prototype.getSchedule = function() {
+  var schedule = [];
+  goog.array.forEach(this.frames_, function(frame) {
+    schedule.push([
+      '[',
+      goog.array.map(frame.queue, function(task) {
+        return task.description;
+      }).join(', '),
+      ']'].join(''));
+  });
+  return schedule.join('');
 };
 
 
@@ -912,17 +938,22 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
                                                                 opt_waitNot) {
   var sleep = Math.min(timeout, 100);
   var waitOnInverse = !!opt_waitNot;
+  var self = this;
 
   return this.schedule(description, function() {
     var startTime = goog.now();
     var waitResult = new webdriver.promise.Deferred();
+    var waitFrame = goog.array.peek(self.frames_);
+    waitFrame.isWaiting = true;
     pollCondition();
     return waitResult.promise;
 
     function pollCondition() {
-      return webdriver.promise.when(condition(), function(value) {
+      var result = self.executeAsap_(condition);
+      return webdriver.promise.when(result, function(value) {
         var ellapsed = goog.now() - startTime;
         if (waitOnInverse != !!value) {
+          waitFrame.isWaiting = false;
           waitResult.resolve();
         } else if (ellapsed >= timeout) {
           waitResult.reject(new Error((opt_message ? opt_message + '\n' : '') +
@@ -930,7 +961,7 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
         } else {
           setTimeout(pollCondition, sleep);
         }
-      });
+      }, waitResult.reject);
     }
   });
 };
@@ -978,6 +1009,10 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
 
   var task = currentFrame.queue.shift();
   if (!task) {
+    if (currentFrame.isWaiting) {
+      currentFrame.isActive = false;
+      return;
+    }
     this.frames_.pop();
     currentFrame.resolve();
     return;
@@ -1154,6 +1189,15 @@ goog.inherits(webdriver.promise.Application.Frame_, webdriver.promise.Deferred);
  * @type {!webdriver.promise.Application.Task_}
  */
 webdriver.promise.Application.Frame_.prototype.pendingTask = null;
+
+
+/**
+ * Whethr this frame is currently blocked on a waiting task. Each time a
+ * frame blocked on waiting empties its queue, it will be marked as inactive,
+ * but left on the stack for future polling attempts for the wait condition.
+ * @type {boolean}
+ */
+webdriver.promise.Application.Frame_.prototype.isWaiting = false;
 
 
 /**

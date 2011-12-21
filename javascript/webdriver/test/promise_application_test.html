@@ -243,6 +243,99 @@ limitations under the License.
   }
 
 
+  function testFraming_promiseCallbacks() {
+    var d = new webdriver.promise.Deferred();
+    webdriver.promise.resolved().then(function() {
+      schedule('b');
+    });
+    schedule('a');
+
+    runApplication();
+    assertAppHistory('b', 'a');
+  }
+
+
+  function testFraming_allCallbacksInAFrameAreScheduledWhenPromiseIsResolved() {
+    var a = schedule('a');
+    a.then(function() { schedule('b'); });
+    schedule('c');
+    a.then(function() { schedule('d'); });
+    schedule('e');
+
+    runApplication();
+    assertAppHistory('a', 'b', 'd', 'c', 'e');
+  }
+
+
+  function testFraming_tasksScheduledInInActiveFrameDoNotGetPrecedence() {
+    var d = new webdriver.promise.Deferred();
+
+    schedule('a');
+    schedule('b');
+    d.then(function() { schedule('c'); });
+
+    d.resolve();
+    runApplication();
+    assertAppHistory('a', 'b', 'c');
+  }
+
+
+  function testFraming_tasksScheduledInAFrameGetPrecedence_1() {
+    var a = schedule('a');
+    schedule('b').then(function() {
+      a.then(function() {
+        schedule('c');
+        schedule('d');
+      });
+      var e = schedule('e');
+      a.then(function() {
+        // When this function runs, |e| will not be resolved yet, so |f| and
+        // |h| will be resolved first.  After |e| is resolved, |g| will be
+        // scheduled in a new frame, resulting in: [j][f, h, i][g], so |g| is
+        // expected to execute first.
+        schedule('f');
+        e.then(function() {
+          schedule('g');
+        });
+        schedule('h');
+      });
+      schedule('i');
+    });
+    schedule('j');
+
+    runApplication();
+    assertAppHistory('a', 'b', 'c', 'd', 'e', 'g', 'f', 'h', 'i', 'j');
+  }
+
+
+  function testFraming_callbacksScheduledInAFrameGetPrecedence_2() {
+    var a = schedule('a');
+    schedule('b').then(function() {
+      a.then(function() {
+        schedule('c');
+        schedule('d');
+      });
+      var e = schedule('e');
+      a.then(function() {
+        // When this function runs, |e| will not be resolved yet, so |f| and
+        // |h| will be resolved first.  After |e| is resolved, |g| will be
+        // scheduled in a new frame, resulting in: [j][f, h, i][g], so |g| is
+        // expected to execute first.
+        schedule('f');
+        e.then(function() {
+          schedule('g');
+        });
+        schedule('h');
+      });
+      schedule('i');
+    });
+    schedule('j');
+
+    runApplication();
+    assertAppHistory('a', 'b', 'c', 'd', 'e', 'g', 'f', 'h', 'i', 'j');
+  }
+
+
   function testErrorHandling_thrownErrorsArePassedToTaskErrback() {
     var callbacks = callbackPair(null, assertIsStubError);
     appTester.schedule('function that throws', throwStubError).
@@ -588,6 +681,138 @@ limitations under the License.
     assertEquals(3, count);
 
     runApplication();
+  }
+
+
+  function testWaiting_aConditionThatReturnsATaskResult() {
+    var count = 0;
+    appTester.scheduleWait('counting to 3', function() {
+      return appTester.schedule('increment count', function() {
+        return ++count == 3;
+      });
+    }, 200);
+    schedule('post wait');
+
+    turnEventLoop();
+    assertEquals(0, count);
+
+    turnEventLoop();  // Runs scheduled task.
+    assertEquals(1, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(1, count);
+    turnEventLoop();
+    assertEquals(2, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(2, count);
+    turnEventLoop();
+    assertEquals(3, count);
+
+    runApplication();
+    assertEquals(3, count);
+    assertAppHistory(
+        'counting to 3',
+        'increment count',
+        'increment count',
+        'increment count',
+        'post wait');
+  }
+
+
+  function testWaiting_conditionContainsASubtask() {
+    var count = 0;
+    appTester.scheduleWait('counting to 3', function() {
+      schedule('sub task');
+      return ++count == 3;
+    }, 200);
+    schedule('post wait');
+
+    runApplication();
+    assertEquals(3, count);
+    assertAppHistory(
+        'counting to 3',
+        'sub task',
+        'sub task',
+        'sub task',
+        'post wait');
+  }
+
+
+  function testWaiting_failsIfConditionThrows() {
+    var callbacks = callbackPair(null, assertIsStubError);
+    appTester.scheduleWait('goes boom', throwStubError).
+        then(callbacks.callback, callbacks.errback);
+    schedule('post wait');
+    runApplication();
+    assertAppHistory('goes boom', 'post wait');
+    callbacks.assertErrback();
+  }
+
+
+  function testWaiting_failsIfConditionReturnsARejectedPromise() {
+    var callbacks = callbackPair(null, assertIsStubError);
+    appTester.scheduleWait('goes boom', function() {
+      return webdriver.promise.rejected(STUB_ERROR);
+    }).then(callbacks.callback, callbacks.errback);
+    schedule('post wait');
+    runApplication();
+    assertAppHistory('goes boom', 'post wait');
+    callbacks.assertErrback();
+  }
+
+
+  function testWaiting_failsIfConditionHasAFailedSubtask() {
+    var callbacks = callbackPair(null, assertIsStubError);
+    var count = 0;
+    appTester.scheduleWait('waiting', function() {
+      appTester.schedule('maybe throw', function() {
+        if (++count == 2) {
+          throw STUB_ERROR;
+        }
+      });
+    }, 200).then(callbacks.callback, callbacks.errback);
+    schedule('post wait');
+
+    turnEventLoop();
+    assertEquals(0, count);
+
+    turnEventLoop();  // Runs scheduled task.
+    assertEquals(1, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(1, count);
+    turnEventLoop();
+    assertEquals(2, count);
+
+    runApplication();
+    assertEquals(2, count);
+    assertAppHistory(
+        'waiting',
+        'maybe throw',
+        'maybe throw',
+        'post wait');
+  }
+
+
+  function testWaiting_blocksNextTaskOnWait() {
+    var count = 0;
+    appTester.scheduleWait('counting to 3', function() {
+      return ++count == 3;
+    }, 200);
+    schedule('post wait');
+
+    turnEventLoop();  // Start the application; triggers first condition poll.
+    assertAppHistory('counting to 3');
+    assertEquals(1, count);
+    clock.tick(100);  // Poll 2 more times.
+    assertAppHistory('counting to 3');
+    clock.tick(100);
+    assertAppHistory('counting to 3');
+    assertEquals(3, count);
+
+    runApplication();
+    assertAppHistory('counting to 3', 'post wait');
   }
 
 
