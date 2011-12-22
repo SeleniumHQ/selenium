@@ -1,3 +1,8 @@
+v2.16.6
+=======
+* WebDriver
+  * Issue 2985 fixed, Calling quit() on the IE Driver in a shutdown hook will kill the JVM.
+  * Issue 2958 fixed, Selenium RC fails to close IE HTA after tests (mshta.exe doesn't get killed)
 v2.15.0
 =======
 Project:
