@@ -56,7 +56,7 @@ class FirefoxProfile(object):
         "network.manage-offline-status": "false",
         "network.http.max-connections-per-server": "10",
         "network.http.phishy-userpass-length": "255",
-        "offline-apps.allow_by_default": true,
+        "offline-apps.allow_by_default": "true",
         "prompts.tab_modal.enabled": "false",
         "security.fileuri.origin_policy": "3",
         "security.fileuri.strict_origin_policy": "false",
