@@ -1,0 +1,5 @@
+#include "Base"
+
+// Common
+ONLY_ACTIVE_ARCH = YES
+GCC_OPTIMIZATION_LEVEL = 0

@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title>Dynamic Server Example</title>
+</head>
+<body bgcolor="#FFFFFF">
+	<h1>
+		Welcome to <a href="http://code.google.com/p/cocoahttpserver/">CocoaHTTPServer</a>!
+	</h1>
+	
+	<p>
+	Parts of this file are generated dynamically.<br/>
+	This is done via the HTTPDynamicFileResponse class.<br/>
+	It uses a replacement dictionary to automatically replace<br/>
+	tagged strings in the included Web/index.html file.<br/>
+	</p>
+	
+	<p>
+	Computer name: %%COMPUTER_NAME%%<br/>
+	<br/>
+	
+	<!-- Test 1: replacement value length > key length -->
+	The current time is: %%TIME%%<br/>
+	<br/>
+	Tell me a story: %%STORY%%<br/>
+	<br/>
+	
+	<!-- Test 2: replacement value length < key length -->
+	The first letter of the english alphabet: %%ALPHABET%%<br/>
+	<br/>
+	
+	<!-- Test 3: replacement value length == key length -->
+	The sound a duck makes: %%QUACK%%<br/>
+	<br/>
+	<br/>
+	Thank you. Come again.
+	</p>
+	
+</body>
+</html>

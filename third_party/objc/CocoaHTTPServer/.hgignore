@@ -1,0 +1,6 @@
+syntax: glob
+
+Samples/*/build
+*.pbxuser
+*.mode1v3
+*.xcuserdatad

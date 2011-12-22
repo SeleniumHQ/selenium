@@ -1,0 +1,3 @@
+Since there are so many different sample Xcode projects, we use these Xcode config files to help simplify a lot configuring of the projects and targets, and ensuring they are all in sync.
+
+Please note: These settings are not required if you want to include the CocoaHTTPServer in your project. They mostly help the developers of the project by ensuring that many compiler warnings are turned on so we don't introduce compiler issues into the project.

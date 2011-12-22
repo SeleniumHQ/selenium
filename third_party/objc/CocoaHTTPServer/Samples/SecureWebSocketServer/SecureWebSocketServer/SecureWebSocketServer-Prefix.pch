@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'SecureWebSocketServer' target in the 'SecureWebSocketServer' project
+//
+
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+#endif

@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'SecureHTTPServer' target in the 'SecureHTTPServer' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
