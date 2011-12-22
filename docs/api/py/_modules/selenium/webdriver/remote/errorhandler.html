@@ -180,7 +180,7 @@
             <span class="n">screen</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;screen&#39;</span><span class="p">]</span>
 
         <span class="n">stacktrace</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="s">&#39;stackTrace&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s">&#39;stackTrace&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;stackTrace&#39;</span><span class="p">]:</span>
             <span class="n">zeroeth</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">zeroeth</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;stackTrace&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
