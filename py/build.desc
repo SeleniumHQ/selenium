@@ -17,6 +17,12 @@ py_test(
   browsers = [ "ff" ])
 
 py_test(
+  name = "chrome_test",
+  ff_specific_tests = [ "test/selenium/webdriver/chrome/*_tests.py" ],
+  deps = [ ":test_chrome" ],
+  browsers = [ "chrome" ])
+
+py_test(
   name = "ie_test",
   deps = [ ":test_ie" ],
   resources = [
