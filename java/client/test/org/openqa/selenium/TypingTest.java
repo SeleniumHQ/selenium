@@ -618,7 +618,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, OPERA, ANDROID})
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE})
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
