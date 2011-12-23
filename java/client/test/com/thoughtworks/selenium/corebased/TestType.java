@@ -3,6 +3,7 @@ package com.thoughtworks.selenium.corebased;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Test;
+import org.openqa.selenium.internal.WrapsDriver;
 
 public class TestType extends InternalSelenseTestBase {
   @Test
@@ -22,9 +23,17 @@ public class TestType extends InternalSelenseTestBase {
     verifyEquals(selenium.getValue("password"), "testUserPasswordIsVe");
     selenium.type("password", "testUserPassword");
     verifyEquals(selenium.getValue("password"), "testUserPassword");
-    selenium.type("file", "/test/file");
-    selenium.click("submitButton");
-    selenium.waitForPageToLoad("30000");
-    verifyTrue(selenium.isTextPresent("Welcome, TestUser!"));
+    if (isAbleToUpdateFileElements()) {
+      selenium.type("file", "/test/file");
+      selenium.click("submitButton");
+      selenium.waitForPageToLoad("30000");
+      verifyTrue(selenium.isTextPresent("Welcome, TestUser!"));
+    }
+  }
+
+  private boolean isAbleToUpdateFileElements() {
+    String browser = runtimeBrowserString();
+    return selenium instanceof WrapsDriver ||
+           "*firefox".equals(browser) || "*firefoxchrome".equals(browser);
   }
 }
