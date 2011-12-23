@@ -1,8 +1,35 @@
-v2.16.6
+v2.16.0
 =======
-* WebDriver
-  * Issue 2985 fixed, Calling quit() on the IE Driver in a shutdown hook will kill the JVM.
-  * Issue 2958 fixed, Selenium RC fails to close IE HTA after tests (mshta.exe doesn't get killed)
+
+WebDriver:
+  * The FirefoxDriver now enables apps to use offline storage by default.
+  * ChromeDriver allows setting the chrome driver's environment more easily.
+  * RemoteWebElement implementations now guarantee that the ID used to
+    identify them. This allows "hashCode" and "equals" to be local operations
+    in Java.
+  * The PageFactory will now no longer decorate List<WebElement> fields unless
+    annotated with a @FindBy.
+  * By default, clicks will now be in the middle of elements.  
+  * FIXED: 2985: Calling quit() on the IE Driver in a shutdown hook will no
+    longer kill the JVM.
+
+WebDriverJS:
+  * Test failures are now annotate with the task history.
+  * Change the promise.Application event loop to run at a set interval
+    instead of trying to explicitly trigger it at the appropriate times. This
+    makes debugging much simpler. 
+
+RC:
+  * IE HTA mode will now close the final window.
+  * All windows are now opened as "resizable". This means that they should
+    always open in new windows rather than tabs in IE.
+  * *chrome mode can type into file input elements on Firefox 8+
+ 
+Automation Atoms: 
+  * Bug fixes and updates
+  * Included a touchscreen abstraction
+ 
+ 
 v2.15.0
 =======
 Project:
@@ -363,6 +390,3 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-
-
-
