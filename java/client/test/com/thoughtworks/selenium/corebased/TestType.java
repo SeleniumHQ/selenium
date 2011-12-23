@@ -32,7 +32,8 @@ public class TestType extends InternalSelenseTestBase {
   }
 
   private boolean isAbleToUpdateFileElements() {
-    String browser = runtimeBrowserString();
+    String browser = System.getProperty("selenium.browser", runtimeBrowserString());
+
     return selenium instanceof WrapsDriver ||
            "*firefox".equals(browser) || "*firefoxchrome".equals(browser);
   }
