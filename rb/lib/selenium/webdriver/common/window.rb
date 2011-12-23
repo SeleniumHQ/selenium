@@ -7,9 +7,19 @@ module Selenium
 
     class Window
 
+      #
+      # @api private
+      #
+
       def initialize(bridge)
         @bridge = bridge
       end
+
+      #
+      # Resize the current window to the given dimension.
+      #
+      # @param [Selenium::WebDriver::Dimension, #width and #height] dimension The new size.
+      #
 
       def size=(dimension)
         unless dimension.respond_to?(:width) && dimension.respond_to?(:height)
@@ -20,9 +30,21 @@ module Selenium
         @bridge.setWindowSize dimension.width, dimension.height
       end
 
+      #
+      # Get the size of the current window.
+      #
+      # @return [Selenium::WebDriver::Dimension] The size.
+      #
+
       def size
         @bridge.getWindowSize
       end
+
+      #
+      # Move the current window to the given position.
+      #
+      # @param [Selenium::WebDriver::Point, #x and #y] point The new position.
+      #
 
       def position=(point)
         unless point.respond_to?(:x) && point.respond_to?(:y)
@@ -33,17 +55,22 @@ module Selenium
         @bridge.setWindowPosition point.x, point.y
       end
 
+      #
+      # Get the position of the current window.
+      #
+      # @return [Selenium::WebDriver::Point] The position.
+      #
+
       def position
         @bridge.getWindowPosition
       end
 
       #
-      # equivalent to #size=, but accepts width and height arguments
+      # Equivalent to #size=, but accepts width and height arguments.
       #
+      # @example Maximize the window.
       #
-      #   Example:
-      #    max_width = driver.execute_script("return window.screen.availWidth;")
-      #    max_height = driver.execute_script("return window.screen.availHeight;")
+      #    max_width, max_height = driver.execute_script("return [window.screen.availWidth, window.screen.availHeight];")
       #    driver.manage.window.resize_to(max_width, max_height)
       #
 
@@ -52,7 +79,11 @@ module Selenium
       end
 
       #
-      # equivalent to #position=, but accepts x and y arguments
+      # Equivalent to #position=, but accepts x and y arguments.
+      #
+      # @example
+      #
+      #   driver.manage.window.move_to(300, 400)
       #
 
       def move_to(x, y)
