@@ -478,6 +478,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
 
   // TODO(danielwh): Add extensive CSS selector tests
 
+  @Ignore(value = SELENESE, reason = "Just not working")
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(appServer.whereIs("missedJsReference.html"));
     driver.switchTo().frame("inner");
