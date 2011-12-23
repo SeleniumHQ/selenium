@@ -1,10 +1,10 @@
 module Selenium
   module WebDriver
-    
+
     #
     # @api beta This API may be changed or removed in a future release.
-    # 
-    
+    #
+
     class Window
 
       def initialize(bridge)
@@ -39,6 +39,12 @@ module Selenium
 
       #
       # equivalent to #size=, but accepts width and height arguments
+      #
+      #
+      #   Example:
+      #    max_width = driver.execute_script("return window.screen.availWidth;")
+      #    max_height = driver.execute_script("return window.screen.availHeight;")
+      #    driver.manage.window.resize_to(max_width, max_height)
       #
 
       def resize_to(width, height)
