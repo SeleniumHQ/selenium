@@ -16,7 +16,7 @@ module Selenium
         end
 
         def error
-          klass = Error.for_code(@payload['status']) || return
+          klass = Error.for_code(status) || return
 
           ex = klass.new(error_message)
           ex.set_backtrace(caller)
@@ -26,7 +26,7 @@ module Selenium
         end
 
         def error_message
-          val = @payload['value']
+          val = value
 
           case val
           when Hash
@@ -34,6 +34,8 @@ module Selenium
             msg << " (#{ val['class'] })" if val['class']
           when String
             msg = val
+          else
+            msg = "unknown error, status=#{status}: #{val.inspect}"
           end
 
           msg
@@ -56,7 +58,11 @@ module Selenium
         end
 
         def add_backtrace(ex)
-          return unless server_trace = @payload['value']['stackTrace']
+          unless value.kind_of?(Hash) && value['stackTrace']
+            return
+          end
+
+          server_trace = value['stackTrace']
 
           backtrace = server_trace.map do |frame|
             next unless frame.kind_of?(Hash)
@@ -77,6 +83,14 @@ module Selenium
           end.compact
 
           ex.set_backtrace(backtrace + ex.backtrace)
+        end
+
+        def status
+          @payload['status']
+        end
+
+        def value
+          @payload['value']
         end
 
       end # Response
