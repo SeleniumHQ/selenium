@@ -13,7 +13,7 @@ module Selenium
       end
 
       #
-      # Release a modifier key
+      # Press a modifier key
       #
       # @see Selenium::WebDriver::Keys
       #
