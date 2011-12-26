@@ -601,6 +601,12 @@ limitations under the License.
       assertEquals(json, 3, innerResult['value']);
     }
 
+    function testElementCacheShouldDisallowAccessToOrphanedElements() {
+      var element = document.createElement('div');
+      var key = bot.inject.cache.addElement(element);
+      assertThrows(goog.partial(bot.inject.cache.getElement, key, document));
+    }
+
   </script>
 </body>
 </html>
