@@ -88,7 +88,9 @@ namespace OpenQA.Selenium.Remote
         private void InitializeCommandDictionary()
         {
             this.commandDictionary.Add(DriverCommand.DefineDriverMapping, new CommandInfo(CommandInfo.PostCommand, "/config/drivers"));
+            this.commandDictionary.Add(DriverCommand.Status, new CommandInfo(CommandInfo.GetCommand, "/status"));
             this.commandDictionary.Add(DriverCommand.NewSession, new CommandInfo(CommandInfo.PostCommand, "/session"));
+            this.commandDictionary.Add(DriverCommand.GetSessionList, new CommandInfo(CommandInfo.GetCommand, "/sessions"));
             this.commandDictionary.Add(DriverCommand.GetSessionCapabilities, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}"));
             this.commandDictionary.Add(DriverCommand.Quit, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}"));
             this.commandDictionary.Add(DriverCommand.GetCurrentWindowHandle, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/window_handle"));

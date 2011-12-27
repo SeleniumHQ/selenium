@@ -49,19 +49,21 @@ class Server {
 
  protected:
   virtual SessionHandle InitializeSession(void) = 0;
+  virtual std::string GetStatus(void) = 0;
 
  private:
   typedef std::map<std::string, int> VerbMap;
   typedef std::map<std::string, VerbMap> UrlMap;
   typedef std::map<std::string, SessionHandle> SessionMap;
 
+  std::string ListSessions(void);
   int LookupCommand(const std::string& uri,
                     const std::string& http_verb,
                     std::string* session_id,
                     std::string* locator);
   std::string DispatchCommand(const std::string& url,
-                               const std::string& http_verb,
-                               const std::string& command_body);
+                              const std::string& http_verb,
+                              const std::string& command_body);
   std::string CreateSession(void);
   void ShutDownSession(const std::string& session_id);
   std::string ReadRequestBody(struct mg_connection* conn,

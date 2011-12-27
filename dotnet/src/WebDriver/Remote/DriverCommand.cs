@@ -29,9 +29,19 @@ namespace OpenQA.Selenium.Remote
         DefineDriverMapping,
 
         /// <summary>
+        /// Represents the Status command.
+        /// </summary>
+        Status,
+
+        /// <summary>
         /// Represents a New Session command
         /// </summary>
         NewSession,
+
+        /// <summary>
+        /// Represents the Get Session List command
+        /// </summary>
+        GetSessionList,
 
         /// <summary>
         /// Represents the Get Session Capabilities command
@@ -301,7 +311,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Represents the SetAsyncScriptTimeout command
         /// </summary>
-        SetAsyncScriptTimeout, 
+        SetAsyncScriptTimeout,
 
         /// <summary>
         /// Represents the MouseClick command.

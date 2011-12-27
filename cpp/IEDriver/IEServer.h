@@ -29,6 +29,7 @@ class IEServer : public Server
 
  protected:
   virtual SessionHandle InitializeSession(void);
+  virtual std::string GetStatus(void);
 };
 
 } // namespace webdriver

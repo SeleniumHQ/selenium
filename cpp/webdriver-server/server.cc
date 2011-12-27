@@ -171,6 +171,13 @@ std::string Server::DispatchCommand(const std::string& uri,
       serialized_response.append(uri);
       serialized_response.append("\" }");
     }
+  } else if (command == Status) {
+    // Status command must be handled by the server, not by the session.
+    serialized_response = this->GetStatus();
+  } else if (command == GetSessionList) {
+    // GetSessionList command must be handled by the server,
+    // not by the session.
+    serialized_response = this->ListSessions();
   } else {
     if (command == NewSession) {
       session_id = this->CreateSession();
@@ -209,6 +216,41 @@ std::string Server::DispatchCommand(const std::string& uri,
   return serialized_response;
 }
 
+std::string Server::ListSessions() {
+  // Manually construct the serialized command for getting 
+  // session capabilities.
+  std::vector<char> command_value_buffer(3);
+  _itoa_s(GetSessionCapabilities, 
+          &command_value_buffer[0],
+          3,
+          10);
+  std::string command_value = &command_value_buffer[0];
+  std::string get_caps_command = "{ \"command\" : " + command_value + 
+                                 ", \"locator\" : {}, \"parameters\" : {} }";
+
+  Json::Value sessions(Json::arrayValue);
+  SessionMap::iterator it = this->sessions_.begin();
+  for (; it != this->sessions_.end(); ++it) {
+    // Each element of the GetSessionList command is an object with two
+    // named properties, "id" and "capabilities". We already know the
+    // ID, so we execute the GetSessionCapabilities command on each session
+    // to be able to return the capabilities.
+    Json::Value session_descriptor;
+    session_descriptor["id"] = it->first;
+
+    SessionHandle session = it->second;
+    std::string serialized_session_response;
+    session->ExecuteCommand(get_caps_command, &serialized_session_response);
+
+    Response session_response;
+    session_response.Deserialize(serialized_session_response);
+    session_descriptor["capabilities"] = session_response.value();
+    sessions.append(session_descriptor);
+  }
+  Response response;
+  response.SetSuccessResponse(sessions);
+  return response.Serialize();
+}
 
 bool Server::LookupSession(const std::string& session_id,
                            SessionHandle* session_handle) {
@@ -443,6 +485,7 @@ int Server::LookupCommand(const std::string& uri,
 void Server::PopulateCommandRepository() {
   this->commands_["/status"]["GET"] = Status;
   this->commands_["/session"]["POST"] = NewSession;
+  this->commands_["/sessions"]["GET"] = GetSessionList;
   this->commands_["/session/:sessionid"]["GET"] = GetSessionCapabilities;
   this->commands_["/session/:sessionid"]["DELETE"] = Quit;
   this->commands_["/session/:sessionid/window_handle"]["GET"] = GetCurrentWindowHandle;

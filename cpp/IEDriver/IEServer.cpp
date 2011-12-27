@@ -29,4 +29,49 @@ SessionHandle IEServer::InitializeSession() {
   return session_handle;
 }
 
+std::string IEServer::GetStatus() {
+  SYSTEM_INFO system_info;
+  ::ZeroMemory(&system_info, sizeof(SYSTEM_INFO));
+  ::GetNativeSystemInfo(&system_info);
+
+  OSVERSIONINFO os_version_info;
+  ::ZeroMemory(&os_version_info, sizeof(OSVERSIONINFO));
+  os_version_info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  ::GetVersionEx(&os_version_info);
+
+  // Allocate only 2 characters for the major and minor versions
+  // and 5 characters for the build number (+1 for null char)
+  vector<char> major_buffer(3);
+  _itoa_s(os_version_info.dwMajorVersion, &major_buffer[0], 3, 10);
+  vector<char> minor_buffer(3);
+  _itoa_s(os_version_info.dwMinorVersion, &minor_buffer[0], 3, 10);
+  vector<char> build_buffer(6);
+  _itoa_s(os_version_info.dwBuildNumber, &build_buffer[0], 6, 10);
+
+  std::string major_version(&major_buffer[0]);
+  std::string minor_version(&minor_buffer[0]);
+  std::string build_version(&build_buffer[0]);
+  std::string os_version = major_version + "." + minor_version + "." + build_version;
+
+  std::string arch = "x86";
+  if (system_info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+    arch = "x64";
+  }
+
+  Json::Value build;
+  build["version"] = "2.16.0";
+
+  Json::Value os;
+  os["arch"] = arch;
+  os["name"] = "windows";
+  os["version"] = os_version;
+    
+  Json::Value status;
+  status["build"] = build;
+  status["os"] = os;
+  Response response;
+  response.SetSuccessResponse(status);
+  return response.Serialize();
+}
+
 } //namespace webdriver

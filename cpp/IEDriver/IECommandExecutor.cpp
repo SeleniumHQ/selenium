@@ -571,6 +571,7 @@ void IECommandExecutor::PopulateCommandHandlers() {
 
   // As-yet unimplemented commands
   this->command_handlers_[Status] = CommandHandlerHandle(new IECommandHandler);
+  this->command_handlers_[GetSessionList] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[GetOrientation] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[SetOrientation] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[ListAvailableImeEngines] = CommandHandlerHandle(new IECommandHandler);

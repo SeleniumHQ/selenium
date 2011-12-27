@@ -21,6 +21,7 @@ namespace webdriver {
 enum CommandType {
   NoCommand,
   Status,
+  GetSessionList,
   NewSession,
   GetSessionCapabilities,
   Close,
