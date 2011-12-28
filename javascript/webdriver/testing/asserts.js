@@ -190,9 +190,16 @@ webdriver.testing.asserts.not = function(matcher) {
       });
 };
 
+webdriver.testing.asserts.matchesRegex = function(regex) {
+  return new webdriver.testing.asserts.Matcher('match regex ' + regex,
+      function(value) {
+        return !!value.match(regex);
+      });
+};
 
 goog.exportSymbol('assertThat', webdriver.testing.asserts.assertThat);
 goog.exportSymbol('expectThat', webdriver.testing.asserts.expectThat);
 goog.exportSymbol('equalTo', webdriver.testing.asserts.equalTo);
 goog.exportSymbol('equals', webdriver.testing.asserts.equalTo);
 goog.exportSymbol('not', webdriver.testing.asserts.not);
+goog.exportSymbol('matchesRegex', webdriver.testing.asserts.matchesRegex);
