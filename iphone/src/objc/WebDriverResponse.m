@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@
 //  limitations under the License.
 
 #import "WebDriverResponse.h"
+#import "HTTPResponse.h"
 #import "HTTPJSONResponse.h"
 #import "HTTPPNGResponse.h"
 #import "NSData+Base64.h"
@@ -173,7 +175,7 @@
 }
 
 - (int)status {
-  return status_;
+  return [self errorStatusCode];
 }
 
 - (void)setStatus:(int)newStatus {

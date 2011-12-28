@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -19,6 +20,7 @@
 #import <Foundation/Foundation.h>
 #import <CFNetwork/CFNetwork.h>
 #import "HTTPResponse.h"
+#import "HTTPMessage.h"
 
 @class HTTPVirtualDirectory;
 
@@ -36,6 +38,6 @@
 - (id) initWithIpAddress:(NSString *)ipAddress 
                     port:(int)port;
 
-- (NSObject<HTTPResponse> *)httpResponseForRequest:(CFHTTPMessageRef)request;
+- (NSObject<HTTPResponse> *)httpResponseForRequest:(HTTPMessage*)request;
 
 @end

@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -41,7 +42,7 @@
 
   // This makes up for a bug in the java http client (r733). We forward
   // requests for /session to /hub/session.
-  [serverRoot_ setResource:[HTTPStaticResource redirectWithURL:@"/hub/session/"]
+  [serverRoot_ setResource:[[HTTPRedirectResponse alloc]initWithPath:@"/hub/session/"]
                   withName:@"session"];
 
   // The root of our REST service.
@@ -74,31 +75,30 @@
 
 // Extract message properties from an http request and return them.
 // Pass nil in the |query|, |method| or |data| arguments to ignore.
-+ (void)propertiesOfHTTPMessage:(CFHTTPMessageRef)request
++ (void)propertiesOfHTTPMessage:(HTTPMessage*)request
                         toQuery:(NSString **)query
                           toUri:(NSURL **)uri
                          method:(NSString **)method
                            data:(NSData **)data {
   // Extract method
   if (method != nil) {
-    *method = [(NSString *)CFHTTPMessageCopyRequestMethod(request)
-                        autorelease];
+    *method = [request method];
   }
   
   // Extract requested URI
   if (query != nil) {
-    *uri = [(NSURL *)CFHTTPMessageCopyRequestURL(request) autorelease];
+    *uri = [request url];
     *query = [*uri relativeString];
   }
   
   // Extract POST data
   if (data != nil) {
-    *data = [(NSData*)CFHTTPMessageCopyBody(request) autorelease];
+    *data = [request body];
   }
 }
 
 // Send the request to the right HTTPResource and return its response.
-- (NSObject<HTTPResponse> *)httpResponseForRequest:(CFHTTPMessageRef)request {
+- (NSObject<HTTPResponse> *)httpResponseForRequest:(HTTPMessage*)request {
 
   NSString *query;
   NSURL *uri;
@@ -127,7 +127,12 @@
   // Unfortunately, WebDriver only supports absolute redirects (r733). We need
   // to expand all relative redirects to absolute redirects.
   if ([response isKindOfClass:[HTTPRedirectResponse class]]) {
-    [(HTTPRedirectResponse *)response expandRelativeUrlWithBase:uri];
+    NSString * path = [[(HTTPRedirectResponse *)response httpHeaders] objectForKey:@"Location"];
+    response = [[HTTPRedirectResponse alloc] initWithPath:
+                [[NSString alloc] initWithFormat:@"http://%@:%@/wd/hub/%@",
+                                       [uri host], [uri port], path ]
+                ];
+    NSLog(@"redirecting to: http://%@:%@/wd/hub/%@", [uri host], [uri port], path);
   }
 	
   if (response == nil) {

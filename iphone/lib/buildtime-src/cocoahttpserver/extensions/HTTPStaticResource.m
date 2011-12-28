@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -23,7 +24,7 @@
 
 @synthesize response;
 
-- (id)initWithResponse:(id<HTTPResponse,NSObject>)theResponse
+- (id)initWithResponse:(HTTPRedirectResponse*)theResponse
 {
 	if (![super init])
 		return nil;
@@ -40,18 +41,20 @@
 	[super dealloc];
 }
 
-+ (HTTPStaticResource *)resourceWithResponse:(id<HTTPResponse,NSObject>)theResponse
++ (HTTPStaticResource *)resourceWithResponse:(HTTPRedirectResponse*)theResponse
 {
 	return [[[self alloc] initWithResponse:theResponse] autorelease];
 }
 
 + (HTTPStaticResource *)redirectWithURL:(NSString *)url
 {
-	return [self resourceWithResponse:[HTTPRedirectResponse redirectToURL:url]];
+	return [self resourceWithResponse:
+          [[HTTPRedirectResponse alloc] initWithPath:url]
+  ];
 }
 
 // Get the HTTP response to this request
-- (id<HTTPResponse,NSObject>)httpResponseForQuery:(NSString *)query
+- (HTTPRedirectResponse*)httpResponseForQuery:(NSString *)query
 										  method:(NSString *)method
 										withData:(NSData *)theData
 {

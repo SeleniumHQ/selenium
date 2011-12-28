@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -46,7 +47,7 @@
 	return [[[self alloc] init] autorelease];
 }
 
-- (void)setResource:(id<HTTPResource>)resource withName:(NSString *)name
+- (void)setResource:(NSObject*)resource withName:(NSString *)name
 {
 	[contents setValue:resource forKey:name];
 }

@@ -21,6 +21,7 @@
 #import "JSONRESTResource.h"
 #import "NSObject+SBJson.h"
 #import "Status.h"
+#import "HTTPDataResponse.h"
 
 @implementation Status
 

@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -17,7 +18,7 @@
 //  limitations under the License.
 
 #import "HTTPServerController.h"
-#import "WebDriverHTTPServer.h"
+#import "HTTPServer.h"
 #import "WebDriverHTTPConnection.h"
 #import "RESTServiceMapping.h"
 #import "WebDriverPreferences.h"
@@ -85,11 +86,10 @@ static NSMutableData *webData;
   UInt16 portNumber = [[WebDriverPreferences sharedInstance] serverPortNumber];
   NSString* grid = [[WebDriverPreferences sharedInstance] gridLocation];
 
-  server_ = [[WebDriverHTTPServer alloc] init];
+  server_ = [[HTTPServer alloc] init];
 
   [server_ setType:@"_http._tcp."];
   [server_ setPort:portNumber];
-  [server_ setDelegate:self];
   [server_ setConnectionClass:[WebDriverHTTPConnection class]];
   
   NSError *error;
@@ -215,7 +215,7 @@ static HTTPServerController *singleton = nil;
   return singleton;
 }
 
-- (NSObject<HTTPResponse> *)httpResponseForRequest:(CFHTTPMessageRef)request {
+- (NSObject<HTTPResponse> *)httpResponseForRequest:(HTTPMessage*)request {
   return [serviceMapping_ httpResponseForRequest:request];
 }
 

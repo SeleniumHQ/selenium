@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -19,12 +20,13 @@
 #import "WebDriverHTTPConnection.h"
 #import "WebViewController.h"
 #import "HTTPServerController.h"
+#import "HTTPMessage.h"
 
 @implementation WebDriverHTTPConnection
 
-- (NSObject<HTTPResponse> *)httpResponseForRequest:(CFHTTPMessageRef)theRequest {
+- (NSObject<HTTPResponse> *)httpResponseForRequest:(HTTPMessage*)theRequest {
   // Forward the message to our |RESTServiceMapping| instance.
-  return [[server delegate] httpResponseForRequest:theRequest];
+  return [[HTTPServerController sharedInstance] httpResponseForRequest:theRequest];
 }
 
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method
@@ -38,39 +40,26 @@
   return YES;
 }
 
-// Overridden to read the data chunk straight into the request object.
-// iWebDriver doesn't support range requests. 
-- (void)prepareForBodyWithSize:(UInt64)contentLength {
-  // Since none of the webdriver RPC methods send much data, for simplicity
-  // we'll buffer the whole POST data segment in memory.
-  NSMutableData *data = [[NSMutableData alloc] initWithCapacity:contentLength];
-  CFHTTPMessageSetBody(request, (CFDataRef)data);
-  [data release];
+// Overriding this method since CocoaHTTPServer is just a pass and it doesn't
+// do anything with the POST data otherwise. See HTTPConnection.m
+- (void)processBodyData:(NSData *)postDataChunk{
+  [request appendData:postDataChunk];
 }
 
-// Overridden to read the data chunk straight into the request object.
-// See |prepareForBodyWithSize:| above.
-- (void)processDataChunk:(NSData *)postDataChunk {
-  CFHTTPMessageAppendBytes(request,
-                           [postDataChunk bytes],
-                           [postDataChunk length]);
-}
-
-- (NSData *)preprocessErrorResponse:(CFHTTPMessageRef)response {
+- (NSData *)preprocessErrorResponse:(HTTPMessage *)response {
   // Return a token 404 message.
-  if(CFHTTPMessageGetResponseStatusCode(response) == 404) {
+  if([response statusCode] == 404) {
     NSString *msg = @"<html><body>Error 404 - Not Found</body></html>";
-    NSData *msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
+    [response setBody:[msg dataUsingEncoding:NSUTF8StringEncoding]];
 
-    CFHTTPMessageSetBody(response, (CFDataRef)msgData);
-
-    NSString *contentLengthStr =
-      [NSString stringWithFormat:@"%u",
-                                 (unsigned)[msgData length]];
+//    NSString *contentLengthStr =
+//      [NSString stringWithFormat:@"%u",
+//                                 (unsigned)[msgData length]];
   
-    CFHTTPMessageSetHeaderFieldValue(response,
-                                     CFSTR("Content-Length"),
-                                     (CFStringRef)contentLengthStr);
+    
+//    CFHTTPMessageSetHeaderFieldValue(response,
+//                                     CFSTR("Content-Length"),
+//                                     (CFStringRef)contentLengthStr);
   }
   
   return [super preprocessErrorResponse:response];

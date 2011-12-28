@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -35,7 +36,7 @@
 
 // The index of the vdir. This will be returnd on .../vdir/ and .../vdir
 // You can make this a redirect to index.html or something if you want.
-@property (nonatomic, retain) id<HTTPResource> index;
+@property (nonatomic, retain) NSObject* index;
 
 // Do we redirect /foo/self to /foo/self/ or just return index?
 @property (nonatomic) BOOL redirectBaseToIndex;
@@ -46,7 +47,7 @@
 // Set a virtual file in the VirtualDirectory. The resource is retained.
 // If resource is nil, this method removes the named resource from the
 // VirtualDirectory. 
-- (void)setResource:(id<HTTPResource>)resource withName:(NSString *)name;
+- (void)setResource:(NSObject*)resource withName:(NSString *)name;
 
 // Remove a resource from the VirtualDirectory.
 - (void)removeResourceWithName:(NSString *)name;

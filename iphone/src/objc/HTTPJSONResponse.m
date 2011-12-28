@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -41,8 +42,8 @@
     return [[[self alloc] initWithObject:object] autorelease];
 }
 
-- (NSString *)contentType {
-  return @"application/json; charset=UTF-8";
+- (NSDictionary *)httpHeaders {
+	return [NSDictionary dictionaryWithObject:@"application/json; charset=UTF-8" forKey:@"Content-Type"];
 }
 
 @end

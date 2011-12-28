@@ -3,6 +3,7 @@
 //  iWebDriver
 //
 //  Copyright 2009 Google Inc.
+//  Copyright 2011 Software Freedom Convervancy.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -125,24 +126,6 @@
   return (NSDictionary *)requestData;
 }
 
-// Validate the arguments are valid for this HTTP method + signature. Return
-// a |WebDriverResponse| containing the error if we encountered one.
-- (WebDriverResponse *)validateArgumentDictionary:(NSDictionary *)arguments
-                                    forHTTPMethod:(NSString *)method
-                                        signature:(NSMethodSignature *)signature {
-  
-  // If it was a PUT or POST, POST data is required (though an empty dictionary
-  // may still be allowed).
-  if (([method isEqualToString:@"PUT"] || [method isEqualToString:@"POST"])
-      && arguments == nil) {
-    return [WebDriverResponse responseWithError:@"Invalid arguments"];
-  }
-
-  // TODO(josephg): check argument type as well as number.
-  
-  return nil;
-}
-
 // Create a WebDriver response from a given selector.
 - (WebDriverResponse *)createResponseFromSelector:(SEL)selector
                                           signature:(NSMethodSignature *)method
@@ -203,16 +186,6 @@
   }
   
   NSDictionary *arguments = [self getArgumentDictionaryFromData:theData];
-  
-  response = [self validateArgumentDictionary:arguments
-                                forHTTPMethod:method
-                                    signature:methodSignature];
-  
-  // response != nil if validation failed.
-  if (response != nil) {
-    [self configureWebDriverResponse:response];
-    return response;
-  }
   
   [[MainViewController sharedInstance]
    describeLastAction:NSStringFromSelector(selector)];
