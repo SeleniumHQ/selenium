@@ -134,12 +134,13 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             // Attempt to connect to the given port on the host
             // If we can't connect, then we're good to use it
-            int newport;
+            int newPort;
 
-            for (newport = port; newport < port + 200; newport++)
+            for (newPort = port; newPort < port + 200; newPort++)
             {
                 using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
                 {
+                    socket.ExclusiveAddressUse = true;
                     IPHostEntry hostEntry = Dns.GetHostEntry(host);
 
                     // Use the first IPv4 address that we find
@@ -153,12 +154,12 @@ namespace OpenQA.Selenium.Firefox.Internal
                         }
                     }
 
-                    IPEndPoint address = new IPEndPoint(endPointAddress, newport);
+                    IPEndPoint address = new IPEndPoint(endPointAddress, newPort);
 
                     try
                     {
                         socket.Bind(address);
-                        return newport;
+                        return newPort;
                     }
                     catch (SocketException)
                     {
@@ -167,7 +168,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
             }
 
-            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot find free port in the range {0} to {1} ", port, newport));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot find free port in the range {0} to {1} ", port, newPort));
         }
 
         private static List<IPEndPoint> ObtainLoopbackAddresses(int port)
