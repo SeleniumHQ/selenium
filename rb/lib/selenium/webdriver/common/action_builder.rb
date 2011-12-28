@@ -343,6 +343,8 @@ module Selenium
         @actions.each { |receiver, method, args|
           @devices.fetch(receiver).__send__(method, *args)
         }
+
+        nil
       end
 
     end # ActionBuilder
