@@ -127,7 +127,7 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
                           withName:@"location"];
   
   // HTML5 Database Storage
-  [self setResource:[Database alloc] 
+  [self setResource:[[Database alloc] init]
            withName:@"execute_sql"];
   
   // Execute JS function with the given body.
@@ -149,7 +149,7 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   // page.
   elementStore_ = [ElementStore elementStoreForSession:self];
 
-  [self setResource:[Cookie alloc]
+  [self setResource:[[Cookie alloc] init]
            withName:@"cookie"];
   
   [self setResource:[Timeouts timeoutsForSession:self]
