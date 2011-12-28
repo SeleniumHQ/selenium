@@ -538,85 +538,105 @@ webdriver.promise.asap = function(value, callback, opt_errback) {
  */
 webdriver.promise.fullyResolved = function(value) {
   if (webdriver.promise.isPromise(value)) {
-    return webdriver.promise.when(value, resolveValue);
+    return webdriver.promise.when(value, webdriver.promise.fullyResolveValue_);
   }
-  return resolveValue(value);
+  return webdriver.promise.fullyResolveValue_(value);
+};
 
-  function resolveValue(value) {
-    switch (goog.typeOf(value)) {
-      case 'array':
-        // In IE, goog.array.forEach will not iterate properly over arrays
-        // containing undefined values because "index in array" returns
-        // false when array[index] === undefined. To get around this, we need
-        // to use our own forEach implementation.  Yay, IE.
-        return resolveKeys(value, value.length, function(arr, f, opt_obj) {
-          var l = arr.length;
-          for (var i = 0; i < l; ++i) {
-            f.call(opt_obj, arr[i], i, arr);
-          }
-        });
 
-      case 'object':
-        if (webdriver.promise.isPromise(value)) {
-          // We get here when the original input value is a promise that
-          // resolves to itself. When the user provides us with such a promise,
-          // trust that it counts as a "fully resolved" value and return it.
-          // Of course, since it's already a promise, we can just return it
-          // to the user instead of wrapping it in another promise.
-          return value;
-        }
-
-        if (goog.isNumber(value.nodeType)) {
-          // DOM node; return early to avoid infinite recursion. Should we
-          // only support objects with a certain level of nesting?
-          return webdriver.promise.resolved(value);
-        }
-
-        return resolveKeys(value, goog.object.getKeys(value).length,
-            goog.object.forEach);
-
-      default:  // boolean, function, null, number, string, undefined
-        return webdriver.promise.resolved(value);
-    }
-  }
-
-  function resolveKeys(obj, numKeys, forEachKey) {
-    if (!numKeys) {
-      return webdriver.promise.resolved(obj);
-    }
-
-    var numResolved = 0;
-    var rejected = false;
-    var deferred = new webdriver.promise.Deferred();
-
-    forEachKey(obj, function(partialValue, key) {
-      var type = goog.typeOf(partialValue);
-      if (type != 'array' && type != 'object') {
-        return maybeResolveValue();
-      }
-
-      webdriver.promise.fullyResolved(partialValue).then(
-          function(resolvedValue) {
-            obj[key] = resolvedValue;
-            maybeResolveValue();
-          },
-          function(err) {
-            if (!rejected) {
-              rejected = true;
-              deferred.reject(err);
+/**
+ * @param {*} value The value to fully resolve. If a promise, assumed to
+ *     already be resolved.
+ * @return {!webdriver.promise.Promise} A promise for a fully resolved version
+ *     of the input value.
+ */
+webdriver.promise.fullyResolveValue_ = function(value) {
+  switch (goog.typeOf(value)) {
+    case 'array':
+      // In IE, goog.array.forEach will not iterate properly over arrays
+      // containing undefined values because "index in array" returns
+      // false when array[index] === undefined. To get around this, we need
+      // to use our own forEach implementation.  Yay, IE.
+      return webdriver.promise.fullyResolveKeys_(value, value.length,
+          function(arr, f, opt_obj) {
+            var l = arr.length;
+            for (var i = 0; i < l; ++i) {
+              f.call(opt_obj, arr[i], i, arr);
             }
           });
 
-      function maybeResolveValue() {
-        if (++numResolved == numKeys) {
-          deferred.resolve(obj);
-        }
+    case 'object':
+      if (webdriver.promise.isPromise(value)) {
+        // We get here when the original input value is a promise that
+        // resolves to itself. When the user provides us with such a promise,
+        // trust that it counts as a "fully resolved" value and return it.
+        // Of course, since it's already a promise, we can just return it
+        // to the user instead of wrapping it in another promise.
+        return value;
       }
-    });
 
-    return deferred.promise;
+      if (goog.isNumber(value.nodeType)) {
+        // DOM node; return early to avoid infinite recursion. Should we
+        // only support objects with a certain level of nesting?
+        return webdriver.promise.resolved(value);
+      }
+
+      return webdriver.promise.fullyResolveKeys_(value,
+          goog.object.getKeys(value).length,
+          goog.object.forEach);
+
+    default:  // boolean, function, null, number, string, undefined
+      return webdriver.promise.resolved(value);
   }
 };
+
+
+/**
+ * @param {!Object} obj the object to resolve.
+ * @param {number} numKeys The number of keys in the object.
+ * @param {!Function} forEachKey The function to use for iterating over the keys
+ *     in the object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ *     input object once all of its values have been fully resolved.
+ * @private
+ */
+webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
+  if (!numKeys) {
+    return webdriver.promise.resolved(obj);
+  }
+
+  var numResolved = 0;
+  var rejected = false;
+  var deferred = new webdriver.promise.Deferred();
+
+  forEachKey(obj, function(partialValue, key) {
+    var type = goog.typeOf(partialValue);
+    if (type != 'array' && type != 'object') {
+      return maybeResolveValue();
+    }
+
+    webdriver.promise.fullyResolved(partialValue).then(
+        function(resolvedValue) {
+          obj[key] = resolvedValue;
+          maybeResolveValue();
+        },
+        function(err) {
+          if (!rejected) {
+            rejected = true;
+            deferred.reject(err);
+          }
+        });
+
+    function maybeResolveValue() {
+      if (++numResolved == numKeys) {
+        deferred.resolve(obj);
+      }
+    }
+  });
+
+  return deferred.promise;
+};
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
