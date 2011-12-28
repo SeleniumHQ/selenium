@@ -118,6 +118,11 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
       if (goog.isFunction(obj.toJSON)) {
         return webdriver.promise.resolved(obj.toJSON());
       }
+      if (goog.isNumber(obj.nodeType) && goog.isString(obj.nodeName)) {
+        throw Error([
+          'Invalid argument type: ', obj.nodeName, '(', obj.nodeType, ')'
+        ].join(''));
+      }
       return webdriver.promise.fullyResolved(
           goog.object.map(obj, webdriver.WebDriver.toWireValue_));
     case 'function':

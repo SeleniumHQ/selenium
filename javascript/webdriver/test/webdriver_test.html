@@ -286,6 +286,13 @@ limitations under the License.
   }
 
 
+  function testToWireValue_domElement() {
+    assertThrows(
+        goog.partial(webdriver.WebDriver.toWireValue_, document.body));
+    verifyAll();  // Expected by tear down.
+  }
+
+
   function testToWireValue_simpleArray() {
     var expected = ['foo'];
     var callback;

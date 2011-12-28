@@ -565,6 +565,13 @@ webdriver.promise.fullyResolved = function(value) {
           // to the user instead of wrapping it in another promise.
           return value;
         }
+
+        if (goog.isNumber(value.nodeType)) {
+          // DOM node; return early to avoid infinite recursion. Should we
+          // only support objects with a certain level of nesting?
+          return webdriver.promise.resolved(value);
+        }
+
         return resolveKeys(value, goog.object.getKeys(value).length,
             goog.object.forEach);
 

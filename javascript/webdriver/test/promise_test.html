@@ -919,6 +919,18 @@ function testFullyResolved_deferredThatResolvesOnItself() {
 }
 
 
+function testFullyResolved_aDomElement() {
+  var e = document.createElement('div');
+  var callbacks = callbackPair(function(resolved) {
+    assertEquals(e, resolved);
+  });
+
+  webdriver.promise.fullyResolved(e).
+      then(callbacks.callback, callbacks.errback);
+  callbacks.assertCallback();
+}
+
+
 function testCallbackChain_nonSplit() {
   var stage1 = callbackPair(),
       stage2 = callbackPair(),
