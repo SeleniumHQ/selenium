@@ -53,16 +53,16 @@ class JsTestSuiteBuilder {
   private static final boolean NO_REFRESH_DRIVER = false;
 
   private Function<String, Test> testFactory = null;
-//  private Class<? extends WebDriver> driverClazz = null;
+  private Supplier<WebDriver> driverSupplier = new WebDriverBuilder();
 
   /**
-   * @param driverClazz The type of {@link WebDriver} that should be used to
-   *     run the tests.
+   * @param driverSupplier The supplier to use for acquiring {@link WebDriver}
+   *     instances when running the tests.
    * @return A self reference.
    */
-  public JsTestSuiteBuilder withDriverClazz(
-      Class<? extends WebDriver> driverClazz) {
-//    this.driverClazz = checkNotNull(driverClazz);
+  public JsTestSuiteBuilder withDriverSupplier(
+      Supplier<WebDriver> driverSupplier) {
+    this.driverSupplier = checkNotNull(driverSupplier);
     return this;
   }
 
@@ -82,13 +82,10 @@ class JsTestSuiteBuilder {
    */
   public Test build() {
     checkNotNull(testFactory, "No path to test function specified");
-//    checkNotNull(driverClazz, "No driver class specified");
 
     File testDirectory = getTestDirectory();
     ImmutableSet<File> excludedFiles = getExcludedFiles(testDirectory);
     String basePath = getTestUrlPath();
-
-    Supplier<WebDriver> driverSupplier = new WebDriverBuilder();
 
     TestSuite suite = new TestSuite();
     List<File> testFiles = findTestFiles(testDirectory,

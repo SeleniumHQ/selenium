@@ -17,16 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.javascript;
 
-import com.google.common.base.Function;
-
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestCase;
-
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.DriverTestDecorator;
 import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
@@ -35,6 +25,17 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import com.google.common.base.Function;
+import com.google.common.base.Supplier;
+import com.google.common.base.Throwables;
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,7 +49,7 @@ public class WebDriverJsTestSuite {
     final AppServer appServer = createAppServer(testEventServlet);
 
     Test test = new JsTestSuiteBuilder()
-        .withDriverClazz(RemoteWebDriverForTest.class)
+        .withDriverSupplier(createDriverSupplier())
         .withTestFactory(new Function<String, Test>() {
           public Test apply(String testPath) {
             return new WebDriverJsTestCase(testPath, appServer,
@@ -72,6 +73,18 @@ public class WebDriverJsTestSuite {
     Jetty7AppServer appServer = new Jetty7AppServer();
     appServer.addHandler(context);
     return appServer;
+  }
+  
+  private static Supplier<WebDriver> createDriverSupplier() {
+    return new Supplier<WebDriver>() {
+      public WebDriver get() {
+        try {
+          return new RemoteWebDriverForTest();
+        } catch (MalformedURLException e) {
+          throw Throwables.propagate(e);
+        }
+      }
+    };
   }
 
   private static DesiredCapabilities getCapabilities() {
