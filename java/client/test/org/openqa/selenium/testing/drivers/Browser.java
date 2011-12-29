@@ -24,7 +24,12 @@ public enum Browser {
   android,
   chrome,
   ff,
-  htmlunit,
+  htmlunit {
+    @Override
+    public boolean isJavascriptEnabled() {
+      return false;
+    }
+  },
   htmlunit_js,
   ie,
   ipad,
@@ -47,5 +52,9 @@ public enum Browser {
       log.severe("Cannot locate matching browser for: " + browserName);
       return null;
     }
+  }
+
+  public boolean isJavascriptEnabled() {
+    return true;
   }
 }

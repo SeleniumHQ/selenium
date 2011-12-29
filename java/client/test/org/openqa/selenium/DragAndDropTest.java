@@ -31,6 +31,7 @@ import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

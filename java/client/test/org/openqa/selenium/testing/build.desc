@@ -1,9 +1,22 @@
 
 java_library(name = "testing",
+  srcs = [
+    "TestUtilities.java",
+  ],
   deps = [
     ":junit",
     ":mock",
     ":util",
+    "//java/client/test/org/openqa/selenium/testing/drivers",
+  ])
+
+java_library(name = "annotations",
+  srcs = [
+    "Ignore.java",
+    "JavascriptEnabled.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:base",
   ])
 
 java_library(name = "tests",
@@ -26,21 +39,19 @@ java_library(name = "dev_mode",
 java_library(name = "util",
   srcs = [
     "InProject.java",
-    "TestUtilities.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/remote",
-    "//java/client/test/org/openqa/selenium/testing/drivers",
   ])
 
 java_library(name = "junit",
   srcs = [
-    "Ignore.java",
     "IgnoreComparator.java",
     "IgnoredTestCallback.java",
   ],
   deps = [
+    ":annotations",
     ":util",
     "//third_party/java/guava-libraries",
   ])

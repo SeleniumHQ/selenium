@@ -1,6 +1,7 @@
 package org.openqa.selenium;
 
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)

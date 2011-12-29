@@ -20,7 +20,7 @@ package org.openqa.selenium.interactions;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TestWaiter;

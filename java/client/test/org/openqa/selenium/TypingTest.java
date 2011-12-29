@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;

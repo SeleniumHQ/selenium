@@ -18,6 +18,7 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.environment.DomainHelper;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.net.URI;
 import java.util.Date;

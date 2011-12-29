@@ -19,7 +19,7 @@ limitations under the License.
 package org.openqa.selenium.support.pagefactory;
 
 import org.junit.Test;
-import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;

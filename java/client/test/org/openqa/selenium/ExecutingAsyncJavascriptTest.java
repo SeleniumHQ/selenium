@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.instanceOf;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.Iterator;
 import java.util.List;

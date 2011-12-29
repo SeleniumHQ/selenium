@@ -11,6 +11,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.List;
 

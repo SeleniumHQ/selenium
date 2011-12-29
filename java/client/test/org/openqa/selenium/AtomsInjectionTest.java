@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.testing.JavascriptEnabled;
+
 public class AtomsInjectionTest extends AbstractDriverTestCase {
 
   /** http://code.google.com/p/selenium/issues/detail?id=1333 */

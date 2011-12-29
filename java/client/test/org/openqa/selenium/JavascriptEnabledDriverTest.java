@@ -38,6 +38,7 @@ import org.openqa.selenium.internal.Locatable;
 
 import org.hamcrest.Matchers;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;

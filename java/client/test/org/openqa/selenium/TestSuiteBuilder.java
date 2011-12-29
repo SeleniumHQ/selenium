@@ -34,6 +34,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.IgnoredTestCallback;
 import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 

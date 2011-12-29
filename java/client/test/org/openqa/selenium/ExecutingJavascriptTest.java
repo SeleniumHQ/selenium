@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.instanceOf;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.io.File;
 import java.io.IOException;

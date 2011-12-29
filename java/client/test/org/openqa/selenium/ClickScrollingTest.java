@@ -11,6 +11,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 @Ignore(value = {ANDROID, HTMLUNIT}, reason = "Android: Race condition when click returns, "
     + "the UI did not finish scrolling..\nHtmlUnit: Scrolling requires rendering")

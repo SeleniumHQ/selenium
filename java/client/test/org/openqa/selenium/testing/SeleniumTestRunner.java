@@ -27,13 +27,14 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+import org.openqa.selenium.testing.drivers.TestIgnorance;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
 
-  private IgnoreComparator ignoreComparator = new IgnoreComparator();
+  private TestIgnorance ignorance;
 
   /**
    * Creates a BlockJUnit4ClassRunner to run {@code klass}
@@ -43,6 +44,8 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
    */
   public SeleniumTestRunner(Class<?> klass) throws InitializationError {
     super(klass);
+
+    ignorance = new TestIgnorance();
   }
 
   @Override
@@ -60,16 +63,11 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
       runLeaf(new Fail(e), description, notifier);
     }
 
-    if (isIgnored(method, test)) {
+    if (ignorance.isIgnored(method, test)) {
       notifier.fireTestIgnored(description);
     } else {
       runLeaf(methodBlock(method, test), description, notifier);
     }
-  }
-
-  private boolean isIgnored(FrameworkMethod method, Object test) {
-    return ignoreComparator.shouldIgnore(test.getClass().getAnnotation(Ignore.class)) ||
-        ignoreComparator.shouldIgnore(method.getMethod().getAnnotation(Ignore.class));
   }
 
   private Statement methodBlock(FrameworkMethod method, Object test) {
