@@ -8,7 +8,7 @@ module Selenium
       describe Bridge do
         let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities }}
         let(:service) { mock(Service, :start => true, :uri => "http://example.com") }
-        let(:caps)    { mock(Remote::Capabilities).as_null_object    }
+        let(:caps)    { {} }
         let(:http)    { mock(Remote::Http::Default, :call => resp).as_null_object   }
 
         before do
@@ -18,33 +18,43 @@ module Selenium
           Service.stub!(:default_service).and_return(service)
         end
 
-        it "sets the chrome.nativeEvents capability" do
-          caps.should_receive(:merge!).with('chrome.nativeEvents' => true)
+        it "sets the nativeEvents capability" do
           Bridge.new(:http_client => http, :native_events => true)
+
+          caps['chromeOptions']['nativeEvents'].should be_true
+          caps['chrome.nativeEvents'].should be_true
         end
 
-        it "sets the chrome.switches capability" do
-          caps.should_receive(:merge!).with('chrome.switches' => %w[--foo=bar])
-          Bridge.new(:http_client => http, :switches => %w[--foo=bar])
+        it "sets the args capability" do
+          Bridge.new(:http_client => http, :args => %w[--foo=bar])
+
+          caps['chromeOptions']['args'].should == %w[--foo=bar]
+          caps['chrome.switches'].should == %w[--foo=bar]
         end
 
         it "sets the chrome.verbose capability" do
-          caps.should_receive(:merge!).with('chrome.verbose' => true)
           Bridge.new(:http_client => http, :verbose => true)
+
+          caps['chromeOptions']['verbose'].should be_true
+          caps['chrome.verbose'].should be_true
         end
 
         it "sets the chrome.detach capability" do
-          caps.should_receive(:merge!).with('chrome.detach' => true)
           Bridge.new(:http_client => http) # true by default
+
+          caps['chromeOptions']['detach'].should be_true
+          caps['chrome.detach'].should be_true
         end
 
         it "lets the user override chrome.detach" do
-          caps.should_receive(:merge!).with('chrome.detach' => false)
           Bridge.new(:http_client => http, :detach => false)
+
+          caps['chromeOptions']['detach'].should be_false
+          caps['chrome.detach'].should be_false
         end
 
-        it "raises an ArgumentError if switches is not an Array" do
-          lambda { Bridge.new(:switches => "--foo=bar")}.should raise_error(ArgumentError)
+        it "raises an ArgumentError if args is not an Array" do
+          lambda { Bridge.new(:args => "--foo=bar")}.should raise_error(ArgumentError)
         end
 
         it "uses the given profile" do
@@ -53,14 +63,14 @@ module Selenium
           profile['some_pref'] = true
           profile.add_extension(__FILE__)
 
-          profile_data = profile.as_json
-
-          caps.should_receive(:merge!).with(
-            'chrome.profile'    => profile_data['zip'],
-            'chrome.extensions' => profile_data['extensions']
-          )
-
           Bridge.new(:http_client => http, :profile => profile)
+
+          profile_data = profile.as_json
+          caps['chromeOptions']['profile'].should == profile_data['zip']
+          caps['chromeOptions']['extensions'].should == profile_data['extensions']
+
+          caps['chrome.profile'].should == profile_data['zip']
+          caps['chrome.extensions'].should == profile_data['extensions']
         end
       end
 

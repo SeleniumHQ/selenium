@@ -46,7 +46,7 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          switches      = opts.delete(:switches)
+          args          = opts.delete(:args) || opts.delete(:switches)
           native_events = opts.delete(:native_events)
           verbose       = opts.delete(:verbose)
           profile       = opts.delete(:profile)
@@ -56,28 +56,37 @@ module Selenium
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
-          caps = Remote::Capabilities.chrome
+          chrome_options = {}
 
-          if switches
-            unless switches.kind_of? Array
-              raise ArgumentError, ":switches must be an Array of Strings"
+          if args
+            unless args.kind_of? Array
+              raise ArgumentError, ":args must be an Array of Strings"
             end
 
-            caps.merge! 'chrome.switches' => switches.map { |e| e.to_s }
+            chrome_options['args'] = args.map { |e| e.to_s }
           end
 
           if profile
             data = profile.as_json
 
-            caps.merge! 'chrome.profile'    => data['zip'],
-                        'chrome.extensions' => data['extensions']
+            chrome_options.merge! 'profile'    => data['zip'],
+                                  'extensions' => data['extensions']
           end
 
 
-          caps.merge! 'chrome.binary'       => Chrome.path if Chrome.path
-          caps.merge! 'chrome.nativeEvents' => true if native_events
-          caps.merge! 'chrome.verbose'      => true if verbose
-          caps.merge! 'chrome.detach'       => detach.nil? || !!detach
+          chrome_options['binary']       = Chrome.path if Chrome.path
+          chrome_options['nativeEvents'] = true if native_events
+          chrome_options['verbose']      = true if verbose
+          chrome_options['detach']       = detach.nil? || !!detach
+
+          caps = Remote::Capabilities.chrome
+          caps['chromeOptions'] = chrome_options
+
+          # legacy options - for chromedriver < 17.0.963.0
+          caps["chrome.switches"] = chrome_options['args'] if chrome_options.member?('args')
+          %w[binary detach extensions nativeEvents profile verbose].each do |key|
+            caps["chrome.#{key}"] = chrome_options[key] if chrome_options.member?(key)
+          end
 
           caps
         end
