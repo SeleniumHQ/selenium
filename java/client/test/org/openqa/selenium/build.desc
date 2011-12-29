@@ -7,10 +7,19 @@ java_library(name = "selenium",
     "//java/client/src/org/openqa/selenium/remote",
   ])
 
+java_library(name = "build",
+  srcs = [
+    "Build.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/os",
+    "//java/client/test/org/openqa/selenium/testing:util",
+    "//third_party/java/junit",
+  ])
+
 java_library(name = "base",
   srcs = [
     "AbstractDriverTestCase.java",
-    "Build.java",
     "DriverTestDecorator.java",
     "EmptyTest.java",
     "EnvironmentStarter.java",
@@ -34,6 +43,7 @@ java_library(name = "base",
     { "messages.properties" : "org/openqa/selenium/messages.properties" },
   ],
   deps = [
+    ":build",
     "//java/client/src/org/openqa/selenium",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/test/org/openqa/selenium/environment",

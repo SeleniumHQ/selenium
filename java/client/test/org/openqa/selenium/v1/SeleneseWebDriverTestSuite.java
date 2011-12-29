@@ -24,19 +24,19 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class SeleneseWebDriverTestSuite extends TestSuite {
 
   public static Test suite() throws Exception {
-    System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
+    System.setProperty("selenium.browser.selenium", "true");
 
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(SeleneseBackedWebDriver.class)
+        .usingDriver(FirefoxDriver.class)
         .exclude(SELENESE)
         .includeJavascriptTests()
         .keepDriverInstance()
-        .addSuiteDecorator("org.openqa.selenium.v1.SeleniumServerStarter")
         .create();
   }
 }

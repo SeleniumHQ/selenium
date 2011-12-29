@@ -22,7 +22,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SeleneseCommandExecutor;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -31,27 +30,18 @@ import java.net.URL;
 
 public class SeleneseBackedWebDriver extends RemoteWebDriver
     implements TakesScreenshot {
-  public SeleneseBackedWebDriver(Capabilities ignored) throws Exception {
-    super(newCommandExecutor(getSeleniumServerUrl(), describeBrowser()),
-          describeBrowser());
+  public SeleneseBackedWebDriver(Capabilities capabilities) throws Exception {
+    super(newCommandExecutor(getSeleniumServerUrl(capabilities), capabilities), capabilities);
   }
   
-  public SeleneseBackedWebDriver() throws Exception {
-    this(null);
-  }
-
   private static CommandExecutor newCommandExecutor(URL remoteAddress, Capabilities capabilities)
       throws MalformedURLException {
-    return new SeleneseCommandExecutor(getSeleniumServerUrl(), remoteAddress, capabilities);
+    return new SeleneseCommandExecutor(getSeleniumServerUrl(capabilities), remoteAddress, capabilities);
   }
 
-  private static URL getSeleniumServerUrl() throws MalformedURLException {
-    String port = System.getProperty("webdriver.selenium.server.port", "5555");
-    return new URL("http://localhost:" + port);
-  }
-
-  private static Capabilities describeBrowser() {
-    return DesiredCapabilities.firefox();
+  private static URL getSeleniumServerUrl(Capabilities caps) throws MalformedURLException {
+    String serverUrl = (String) caps.getCapability("selenium.server.url");
+    return new URL(serverUrl);
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {

@@ -70,6 +70,9 @@ public class SingleTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     String driver = FIREFOX_TEST;
 
+    System.setProperty("selenium.browser.remote", "false");
+    System.setProperty("selenium.browser.selenium", "false");
+
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
     System.setProperty("webdriver.development", "true");

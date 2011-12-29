@@ -1,7 +1,14 @@
 
 java_library(name = "drivers",
-  srcs = [ "*.java" ],
+  srcs = [
+    "Browser.java",
+    "SauceDriver.java",
+    "TestIgnorance.java",
+    "WebDriverBuilder.java",
+    "*Supplier.java",
+  ],
   deps = [
+    ":test_selenium_server",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/test/org/openqa/selenium/testing:annotations",
     "//java/client/test/org/openqa/selenium/testing:dev_mode",
@@ -9,4 +16,13 @@ java_library(name = "drivers",
     "//third_party/java/guava-libraries",
     "//third_party/java/opera-driver",
     "//third_party/java/junit",
+  ])
+
+java_library(name = "test_selenium_server",
+  srcs = [ "OutOfProcessSeleniumServer.java" ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/net",
+    "//java/client/src/org/openqa/selenium/os",
+    "//java/client/test/org/openqa/selenium:build",
+    "//java/client/test/org/openqa/selenium/v1:selenium_backed_webdriver",
   ])

@@ -74,6 +74,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
     suppliers.add(new SauceBackedDriverSupplier(caps));
     suppliers.add(new RemoteSupplier(caps));
+    suppliers.add(new SeleniumBackedSupplier(caps));
     suppliers.add(new OperaDriverSupplier(caps));
     suppliers.add(new ReflectionBackedDriverSupplier(caps));
     suppliers.add(new DefaultDriverSupplier(caps));
@@ -114,9 +115,13 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         caps = DesiredCapabilities.opera();
         break;
 
+      case safari:
+        caps = new DesiredCapabilities();
+        caps.setBrowserName("safari");
+        break;
+
       case ipad:
       case iphone:
-      case safari:
         throw new RuntimeException("Browser is unsupported: " + detect);
 
       default:
