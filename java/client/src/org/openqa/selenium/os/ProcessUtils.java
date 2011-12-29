@@ -1,12 +1,8 @@
 package org.openqa.selenium.os;
 
-import com.google.common.io.Closeables;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.io.IOUtils;
+
+import com.google.common.io.Closeables;
 
 public class ProcessUtils {
   /**
@@ -72,7 +68,7 @@ public class ProcessUtils {
       }
       try {
         System.out.println("Process didn't die after 10 seconds");
-        kill9(process);
+        UnixUtils.kill9(process);
         exitValue = waitForProcessDeath(process, 10000);
         closeAllStreamsAndDestroyProcess( process);
       } catch (Exception e) {
@@ -84,55 +80,6 @@ public class ProcessUtils {
       }
     }
     return exitValue;
-  }
-
-  /**
-   * @param p The process to gather the PID of.
-   * @return The process's PID
-   */
-  public static int getProcessId(Process p) {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      throw new IllegalStateException("UnixUtils may not be used on Windows");
-    }
-    try {
-      Field f = p.getClass().getDeclaredField("pid");
-      f.setAccessible(true);
-      Integer pid = (Integer) f.get(p);
-      return pid;
-    } catch (Exception e) {
-      throw new RuntimeException("Couldn't detect pid", e);
-    }
-  }
-
-  /**
-   * Runs "kill -9" on the specified pid
-   * 
-   * @param pid The PID of the process to kill.
-   * @throws IOException If unable to kill the process.
-   * @throws InterruptedException If unable to kill the process.
-   */
-  public static void kill9(Integer pid) throws IOException, InterruptedException {
-    ProcessBuilder pb = new ProcessBuilder("kill", "-9", pid.toString());
-    pb.redirectErrorStream();
-    Process p = pb.start();
-    int code = p.waitFor();
-
-    if (code != 0) {
-      String output = IOUtils.readFully(p.getInputStream());
-      throw new RuntimeException("kill return code " + code + ": " + output);
-    }
-      closeAllStreamsAndDestroyProcess(p);
-  }
-
-  /**
-   * Runs "kill -9" on the specified process
-   * 
-   * @param p The process to kill.
-   * @throws IOException If unable to kill the process.
-   * @throws InterruptedException If unable to kill the process.
-   */
-  public static void kill9(Process p) throws IOException, InterruptedException {
-    kill9(getProcessId(p));
   }
 
   private static class ProcessWaiter implements Runnable {
@@ -158,7 +105,6 @@ public class ProcessUtils {
   }
 
   public static class ProcessStillAliveException extends RuntimeException {
-
     public ProcessStillAliveException(String message, Throwable cause) {
       super(message, cause);
     }
