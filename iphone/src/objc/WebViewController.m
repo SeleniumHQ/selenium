@@ -281,6 +281,16 @@ static const NSString* kGeoAltitudeKey = @"altitude";
                 waitUntilLoad:YES];
 }
 
+// Currently only one window handle is supported
+// These are just here to support WebDriverBackedSelenium
+-(NSString*)windowHandle {
+  return @"1";
+}
+
+-(NSArray*)windowHandles {
+  return [[NSArray alloc] initWithObjects:@"1", nil];
+}
+
 - (id)visible {
   // The WebView is always visible.
   return [NSNumber numberWithBool:YES];  

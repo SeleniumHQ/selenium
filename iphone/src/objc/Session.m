@@ -112,6 +112,16 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   [self setResourceToViewMethodGET:@selector(screenshot)
                               POST:NULL
                           withName:@"screenshot"];
+  
+  // Get a window handle
+  [self setResourceToViewMethodGET:@selector(windowHandle)
+                              POST:NULL
+                          withName:@"window_handle"];
+  
+  // Get a window handles
+  [self setResourceToViewMethodGET:@selector(windowHandles)
+                              POST:NULL
+                          withName:@"window_handles"];
 
   // HTML5 Local WebStorage
   [self setResource:[Storage storageWithType:LOCAL_STORAGE]
