@@ -1,114 +1,166 @@
 package org.openqa.selenium.rc;
 
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-import static org.openqa.selenium.net.PortProber.findFreePort;
-import static org.openqa.selenium.net.PortProber.pollPort;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION;
+import com.google.common.base.Throwables;
 
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.NoDriverAfterTest;
+import org.json.JSONObject;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openqa.selenium.Build;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.SeleniumServerInstance;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
-import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpRequest;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.testing.SeleniumTestRunner;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.HttpRequest.Method.DELETE;
+import static org.openqa.selenium.remote.HttpRequest.Method.GET;
+import static org.openqa.selenium.remote.HttpRequest.Method.POST;
+import static org.openqa.selenium.remote.HttpRequest.Method.PUT;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-// This test only makes sense for IE, but needs a lot of supporting code.
-@Ignore(value = ALL, reason = "Needs to be run manually")
-public class SetProxyTest extends TestCase {
-  private DefaultProxy proxyInstance = new DefaultProxy();
-  private SeleniumServerInstance seleniumServer = new SeleniumServerInstance();
-  private TestEnvironment env;
+@Ignore(value = {ANDROID, IE, IPHONE, SELENESE},
+        reason = "Not tested on these browsers yet.")
+@RunWith(SeleniumTestRunner.class)
+public class SetProxyTest {
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  private static BrowserMobProxyServer proxyServer;
+  private static Pages pages;
+  private ProxyInstance instance;
 
-    env = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
-    seleniumServer.start();
-    proxyInstance.start();
+  @BeforeClass
+  public static void startProxy() {
+    TestEnvironment environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    pages = new Pages(environment.getAppServer());
+    proxyServer = new BrowserMobProxyServer();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    proxyInstance.stop();
-    seleniumServer.stop();
-    env.stop();
-
-    super.tearDown();
+  @AfterClass
+  public static void detroyProxy() {
+    proxyServer.destroy();
   }
 
-  @NoDriverAfterTest
-  public void testCanMakeIeDriverUseASpecifiedProxy() throws Exception {
-    System.setProperty("webdriver.development", "true");
-    System.setProperty("jna.library.path", "..\\build;build");
+  @Before
+  public void newProxyInstance() {
+    instance = proxyServer.newInstance();
+  }
 
-    Proxy proxy = new Proxy();
-    // TODO(simon): Modify the proxy to make the port con4figurable
-    proxy.setHttpProxy("localhost:9638");
+  @After
+  public void deleteProxyInstance() {
+    instance.destroy();
+  }
 
-    DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
+  @Test
+  public void shouldDoSomething() {
+    Proxy proxy = instance.asProxy();
+
+    DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(PROXY, proxy);
-    caps.setCapability(ENSURING_CLEAN_SESSION, true);
 
-    // WebDriver driver = new SynthesizedFirefoxDriverTestSuite.TestFirefoxDriver(caps);
-    // WebDriver driver = new RemoteWebDriver(seleniumServer.getWebDriverUrl(), caps);
-    WebDriver driver = new InternetExplorerDriver(caps);
+    WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
 
-    driver.get(new Pages(env.getAppServer()).xhtmlTestPage);
+    driver.get(pages.simpleTestPage);
     driver.quit();
 
-    String response = getBlocks();
-    assertTrue(response, response.contains("xhtmlTest.html"));
+    assertTrue(instance.hasBeenCalled());
   }
 
-  private String getBlocks() throws Exception {
-    String payload = "callCount=1\n"
-        + "windowName=\n"
-        + "c0-scriptName=ProxyServer\n"
-        + "c0-methodName=getBlocks\n"
-        + "c0-id=0\n"
-        + "batchId=3\n"
-        + "page=/\n"
-        + "httpSessionId=njh9zqjbhyhe\n"
-        + "scriptSessionId=74C83DBD88D9E47B8464C2B6DA9190D2";
-    HttpRequest request = new HttpRequest(HttpRequest.Method.POST,
-        "http://localhost:" + proxyInstance.getPort()
-            + "/dwr/call/plaincall/ProxyServer.getBlocks.dwr", payload);
-    return request.getResponse();
+  private static class BrowserMobProxyServer {
+
+    private CommandLine process;
+    private String proxyUrl;
+
+    public BrowserMobProxyServer() {
+      // We need to run out of process as the browsermob proxy has a dependency
+      // on the Selenium Proxy interface, which may change.
+      new Build().of("//third_party/java/browsermob_proxy:browsermob_proxy:uber").go();
+      String browserBinary = InProject.locate(
+          "build/third_party/java/browsermob_proxy/browsermob_proxy-standalone.jar")
+          .getAbsolutePath();
+      int port = PortProber.findFreePort();
+      process = new CommandLine("java", "-jar", browserBinary, "--port", String.valueOf(port));
+      process.copyOutputTo(System.err);
+      process.executeAsync();
+
+      PortProber.pollPort(port);
+
+      String address = new NetworkUtils().getPrivateLocalAddress();
+      proxyUrl = String.format("http://%s:%d", address, port);
+    }
+
+    public ProxyInstance newInstance() {
+      try {
+        HttpRequest request = new HttpRequest(POST, proxyUrl + "/proxy", null);
+        JSONObject proxyDetails = new JSONObject(request.getResponse());
+        int port = proxyDetails.getInt("port");
+        // Wait until the proxy starts and is listening
+        PortProber.pollPort(port);
+
+        // Start recording requests
+        new HttpRequest(PUT, String.format("%s/proxy/%d/har", proxyUrl, port), null);
+
+        return new ProxyInstance(proxyServer.proxyUrl, port);
+      } catch (Exception e) {
+        throw Throwables.propagate(e);
+      }
+    }
+
+    public void destroy() {
+      process.destroy();
+    }
   }
 
-  private static class DefaultProxy {
-    private int port;
-    private CommandLine command;
+  private static class ProxyInstance {
 
-    public void start() {
-      port = findFreePort();
+    private final String baseUrl;
+    private final int port;
 
-      command = new CommandLine(
-          "java", "-jar",
-          "third_party/java/browsermob_proxy/browsermob-proxy-1.0-SNAPSHOT-release.jar",
-          "-port=" + port);
-      command.executeAsync();
-
-      pollPort(port);
+    public ProxyInstance(String baseUrl, int port) {
+      this.baseUrl = baseUrl;
+      this.port = port;
     }
 
-    public void stop() {
-      command.destroy();
+    public boolean hasBeenCalled() {
+      String url = String.format("%s/proxy/%d/har", baseUrl, port);
+      HttpRequest request = new HttpRequest(GET, url, null);
+      String response = request.getResponse();
+
+      return response.length() > 0;
     }
 
-    public int getPort() {
-      return port;
+    public void destroy() {
+      try {
+        String url = String.format("%s/proxy/%d", baseUrl, port);
+        new HttpRequest(DELETE, url, null);
+      } catch (Exception e) {
+        throw Throwables.propagate(e);
+      }
+    }
+
+    public Proxy asProxy() {
+      Proxy proxy = new Proxy();
+      String address = new NetworkUtils().getPrivateLocalAddress();
+      String format = String.format("%s:%d", address, port);
+      proxy.setHttpProxy(format);
+      return proxy;
     }
   }
 }
