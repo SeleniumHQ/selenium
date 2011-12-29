@@ -1,10 +1,17 @@
 package org.openqa.selenium.os;
 
-import org.openqa.selenium.Platform;
-
 import com.google.common.io.Closeables;
 
+import org.openqa.selenium.Platform;
+
+import java.lang.reflect.Field;
+import java.util.logging.Logger;
+
+import static org.openqa.selenium.Platform.WINDOWS;
+
 public class ProcessUtils {
+  static Logger log = Logger.getLogger(ProcessUtils.class.getName());
+
   /**
    * Waits the specified timeout for the process to die
    * 
@@ -12,7 +19,7 @@ public class ProcessUtils {
    * @param timeout How long to wait in milliseconds.
    * @return The exit code of the given process.
    */
-  public static int waitForProcessDeath(Process p, long timeout) {
+  private static int waitForProcessDeath(Process p, long timeout) {
     ProcessWaiter pw = new ProcessWaiter(p);
     Thread waiter = new Thread(pw);  // Thread safety reviewed
     waiter.start();
@@ -67,12 +74,12 @@ public class ProcessUtils {
         throw ex;
       }
       try {
-        System.out.println("Process didn't die after 10 seconds");
-        UnixUtils.kill9(process);
+        log.info("Process didn't die after 10 seconds");
+        kill9(process);
         exitValue = waitForProcessDeath(process, 10000);
         closeAllStreamsAndDestroyProcess( process);
       } catch (Exception e) {
-        System.out.println("Process refused to die after 10 seconds, and couldn't kill9 it");
+        log.warning("Process refused to die after 10 seconds, and couldn't kill9 it");
         e.printStackTrace();
         throw new RuntimeException(
             "Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(),
@@ -110,11 +117,44 @@ public class ProcessUtils {
     }
   }
 
-  public static void closeAllStreamsAndDestroyProcess(Process process) {
+  private static void closeAllStreamsAndDestroyProcess(Process process) {
     Closeables.closeQuietly(process.getInputStream());
     Closeables.closeQuietly(process.getErrorStream());
     Closeables.closeQuietly(process.getOutputStream());
     process.destroy();
+  }
+
+  private static int getProcessId(Process p) {
+    if (Platform.getCurrent().is(WINDOWS)) {
+      throw new IllegalStateException("UnixUtils may not be used on Windows");
+    }
+    try {
+      Field f = p.getClass().getDeclaredField("pid");
+      f.setAccessible(true);
+      Integer pid = (Integer) f.get(p);
+      return pid;
+    } catch (Exception e) {
+      throw new RuntimeException("Couldn't detect pid", e);
+    }
+  }
+
+  /** runs "kill -9" on the specified pid */
+  private static void kill9(Integer pid) {
+    log.fine("kill -9 " + pid);
+
+    CommandLine command = new CommandLine("kill", "-9", pid.toString());
+    command.execute();
+    String result = command.getStdOut();
+    int output = command.getExitCode();
+    log.fine(String.valueOf(output));
+    if (!command.isSuccessful()) {
+      throw new RuntimeException("exec return code " + result + ": " + output);
+    }
+  }
+
+  /** runs "kill -9" on the specified process */
+  private static void kill9(Process p) {
+    kill9(getProcessId(p));
   }
 
 }
