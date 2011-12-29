@@ -16,7 +16,9 @@ goog.provide('webdriver.test.testutil');
 
 goog.require('goog.array');
 goog.require('goog.json');
+goog.require('goog.string');
 goog.require('goog.testing.MockClock');
+goog.require('goog.testing.recordFunction');
 
 
 /** @type {goog.testing.MockClock} */
@@ -147,51 +149,32 @@ function assertNotPromise(obj) {
  * @return {!Function} The wrapped function.
  */
 function callbackHelper(opt_fn, opt_expectError) {
-  var fn = opt_fn || goog.nullFunction;
-  var args = null, error = null;
-  var callback = function() {
-    try {
-      args = goog.array.map(arguments, function(arg) {
-        if (arg) {
-          if (arg.isJsUnitException)
-            return {
-              isJUnitException: true,
-              message: arg.message,
-              stack: arg.stack
-            };
-          if (arg instanceof Error)
-            return {message:arg.message, stack:arg.stack};
-        }
-        return arg;
-      });
-      return fn.apply(this, arguments);
-    } catch (ex) {
-      error = ex;
-      throw ex;
-    }
-  };
+  var callback = goog.testing.recordFunction(opt_fn);
 
-  callback.getError = function() { return error; };
-  callback.getArgs = function() { return args; };
-  callback.wasCalled = function() { return args !== null };
-  callback.reset = function() {
-    args = null;
-    error = null;
+  callback.getExpectedCallCountMessage = function(n, opt_prefix, opt_noJoin) {
+    var message = [];
+    if (opt_prefix) message.push(opt_prefix);
+
+    var calls = callback.getCalls();
+    message.push(
+        'Expected to be called ' + n + ' times.',
+        '  was called ' + calls.length + ' times:');
+    message = goog.array.concat(message, goog.array.map(calls, function(call, i) {
+      return goog.string.repeat(' ', 4) +
+          'args(call #' + i + '): ' +
+          goog.json.serialize(call.getArguments());
+    }));
+    return opt_noJoin ? message : message.join('\n');
   };
 
   callback.assertCalled = function(opt_message) {
-    if (error && !opt_expectError) throw error;
-    var message = 'Callback not called';
-    if (opt_message) message += ': ' + opt_message;
-    assertTrue(message, callback.wasCalled());
+    assertEquals(callback.getExpectedCallCountMessage(1, opt_message),
+        1, callback.getCallCount());
   };
 
   callback.assertNotCalled = function(opt_message) {
-    if (error) throw error;
-    var message = 'Callback called';
-    if (opt_message) message += ': ' + opt_message;
-    if (args != null) message += '; args: ' + goog.json.serialize(args);
-    assertFalse(message, callback.wasCalled());
+    assertEquals(callback.getExpectedCallCountMessage(1, opt_message),
+        0, callback.getCallCount());
   };
 
   return callback;
@@ -212,7 +195,8 @@ function callbackPair(opt_callback, opt_errback) {
   };
 
   pair.assertEither = function(opt_message) {
-    if (!pair.callback.wasCalled() && !pair.errback.wasCalled()) {
+    if (!pair.callback.getCallCount() &&
+        !pair.errback.getCallCount()) {
       var message = ['Neither callback nor errback has been called'];
       if (opt_message) goog.array.insertAt(message, opt_message);
       fail(message.join('\n'));
@@ -220,18 +204,19 @@ function callbackPair(opt_callback, opt_errback) {
   };
 
   pair.assertNeither = function(opt_message) {
-    var message = [];
-    if (pair.callback.wasCalled()) {
-      message.push('Did not expect callback to be called; args: ' +
-          goog.json.serialize(pair.callback.getArgs()));
+    var message = [opt_message || 'Unexpected callback results:'];
+    if (pair.callback.getCallCount()) {
+      message = goog.array.concat(message,
+          pair.callback.getExpectedCallCountMessage(0,
+              'Did not expect callback to be called.', true));
     }
-    if (pair.errback.wasCalled()) {
-      message.push('Did not expect errback to be called; args: ' +
-          goog.json.serialize(pair.errback.getArgs()));
+    if (pair.errback.getCallCount()) {
+      message = goog.array.concat(message,
+          pair.callback.getExpectedCallCountMessage(0,
+              'Did not expect errback to be called.', true));
     }
-    if (message.length) {
-      if (opt_message) goog.array.insertAt(message, opt_message);
-      fail(message.join('\n'));
+    if (message.length > 1) {
+      fail(message.join('\n  -- '));
     }
   };
 
@@ -255,14 +240,20 @@ function callbackPair(opt_callback, opt_errback) {
   function assertCalls(expectedFn, expectedName, unexpectedFn, unexpectedName,
                        opt_message) {
     var message = [opt_message || 'Unexpected callback results:'];
-    if (!expectedFn.wasCalled()) {
+    if (!expectedFn.getCallCount()) {
       message.push('Expected ' + expectedName + ' to be called.');
+    } else if (expectedFn.getCallCount() > 1) {
+      message.push(
+          'Expected ' + expectedName + ' to be called only once.',
+          '  was called ' + expectedFn.getCallCount() + ' times:');
+      message = goog.array.concat(message, expectedFn.getFormattedArgs(4));
     }
 
-    if (unexpectedFn.wasCalled()) {
-      message.push('Did not expect ' + unexpectedName +
-          ' to be called; args: ' +
-          goog.json.serialize(unexpectedFn.getArgs()));
+    if (unexpectedFn.getCallCount()) {
+      message.push(
+          'Did not expect ' + unexpectedName + ' to be called.',
+          '  was called ' + unexpectedFn.getCallCount() + ' times:');
+      message = goog.array.concat(message, unexpectedFn.getFormattedArgs(4));
     }
 
     if (message.length > 1) {
@@ -274,14 +265,6 @@ function callbackPair(opt_callback, opt_errback) {
 
 function _assertObjectEquals(expected, actual) {
   assertObjectEquals(
-      'Expected: ' + goog.json.serialize(expected) + '\n' +
-      'Actual:   ' + goog.json.serialize(actual),
-      expected, actual);
-}
-
-
-function _assertArrayEquals(expected, actual) {
-  assertArrayEquals(
       'Expected: ' + goog.json.serialize(expected) + '\n' +
       'Actual:   ' + goog.json.serialize(actual),
       expected, actual);

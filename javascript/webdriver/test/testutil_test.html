@@ -32,6 +32,14 @@ limitations under the License.
     assertThrows(callback.assertNotCalled);
   }
 
+  function testCallbackHelper_functionCalledMoreThanOnce() {
+    var callback = callbackHelper();
+    callback();
+    callback(123, 'abc');
+    assertThrows(callback.assertCalled);
+    assertThrows(callback.assertNotCalled);
+  }
+
   function testCallbackHelper_functionNotCalled() {
     var callback = callbackHelper();
     assertNotThrows(callback.assertNotCalled);
@@ -56,6 +64,13 @@ limitations under the License.
     assertNotThrows(pair.assertCallback);
     pair.errback();
     assertThrows(pair.assertCallback);
+
+    pair.reset();
+    pair.callback();
+    assertNotThrows(pair.assertCallback);
+    pair.callback();
+    assertThrows('Should expect to be called only once',
+        pair.assertCallback);
   }
 
   function testCallbackPair_errbackExpected() {
@@ -65,6 +80,30 @@ limitations under the License.
     assertNotThrows(pair.assertErrback);
     pair.callback();
     assertThrows(pair.assertErrback);
+  }
+
+  function testCallbackPair_eitherExpected() {
+    var pair = callbackPair();
+    assertThrows(pair.assertEither);
+    pair.errback();
+    assertNotThrows(pair.assertEither);
+    pair.reset();
+    pair.callback();
+    assertNotThrows(pair.assertEither);
+    pair.errback();
+    assertNotThrows(pair.assertEither);
+  }
+
+  function testCallbackPair_neitherExpected() {
+    var pair = callbackPair();
+    assertNotThrows(pair.assertNeither);
+    pair.errback();
+    assertThrows(pair.assertNeither);
+    pair.reset();
+    pair.callback();
+    assertThrows(pair.assertNeither);
+    pair.errback();
+    assertThrows(pair.assertNeither);
   }
 </script>
 </body>

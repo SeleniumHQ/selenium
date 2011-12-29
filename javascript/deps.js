@@ -185,8 +185,7 @@ goog.addDependency("../../../javascript/webdriver/node/node.js", ['webdriver.nod
 goog.addDependency("../../../javascript/webdriver/node/optparse.js", [], []);
 goog.addDependency("../../../javascript/webdriver/test/app_tester.js", ['webdriver.test.AppTester'], ['goog.testing.PropertyReplacer', 'webdriver.promise.Application', 'webdriver.test.testutil']);
 goog.addDependency("../../../javascript/webdriver/test/test_bootstrap.js", [], []);
-goog.addDependency("../../../javascript/webdriver/test/testutil.js", ['webdriver.test.testutil'], ['goog.array', 'goog.json', 'goog.testing.MockClock']);
-goog.addDependency("../../../javascript/webdriver/test_e2e/test_bootstrap.js", [], []);
+goog.addDependency("../../../javascript/webdriver/test/testutil.js", ['webdriver.test.testutil'], ['goog.array', 'goog.json', 'goog.string', 'goog.testing.MockClock', 'goog.testing.recordFunction']);
 goog.addDependency("../../../javascript/webdriver/test_e2e/testutil.js", ['webdriver.test_e2e.TestUtil'], []);
 goog.addDependency("../../../javascript/webdriver/testing/asserts.js", ['webdriver.testing.asserts', 'webdriver.testing.asserts.Matcher'], ['goog.array', 'webdriver.promise']);
 goog.addDependency("../../../javascript/webdriver/testing/client.js", ['webdriver.testing.Client'], ['goog.net.XmlHttp', 'goog.json']);
