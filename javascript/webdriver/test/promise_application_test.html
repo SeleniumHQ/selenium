@@ -29,13 +29,21 @@ limitations under the License.
 </head>
 <body>
 <script>
-  var appTester;
+  // Aliases for readability.
+  var STUB_ERROR = webdriver.test.testutil.STUB_ERROR,
+      throwStubError = webdriver.test.testutil.throwStubError,
+      assertIsStubError = webdriver.test.testutil.assertIsStubError,
+      assertingMessages = webdriver.test.testutil.assertingMessages,
+      callbackHelper = webdriver.test.testutil.callbackHelper,
+      callbackPair = webdriver.test.testutil.callbackPair;
+
+  var appTester, clock;
 
 
   function setUp() {
-    clock = createMockClock();
+    clock = webdriver.test.testutil.createMockClock();
     appTester = new webdriver.test.AppTester(clock);
-    messages = [];
+    webdriver.test.testutil.messages = [];
   }
 
 
@@ -544,7 +552,7 @@ limitations under the License.
      */
 
     appTester.schedule('doFoo and throw', function() {
-      messages.push('foo');
+      webdriver.test.testutil.messages.push('foo');
       throw new Error('ouch');
     }).then(goog.partial(schedulePush, 'doBar', 'bar')).
        addBoth(goog.partial(schedulePush, 'doBaz', 'baz'));
@@ -565,7 +573,7 @@ limitations under the License.
     schedulePush('doFoo', 'foo').
         then(function() {
           return appTester.schedule('doBar and throw', function() {
-            messages.push('bar');
+            webdriver.test.testutil.messages.push('bar');
             throw STUB_ERROR;
           });
         }).
@@ -1017,7 +1025,7 @@ limitations under the License.
     appTester.scheduleAndWaitForIdle('', throwStubError).
         then(callbacks.callback, callbacks.errback);
     runApplication(null, assertIsStubError);
-    consumeTimeouts();
+    webdriver.test.testutil.consumeTimeouts();
     callbacks.assertErrback();
   }
 
@@ -1039,7 +1047,7 @@ limitations under the License.
     wait.assertNeither('Wait should still not have resolved');
 
     runApplication();
-    consumeTimeouts();
+    webdriver.test.testutil.consumeTimeouts();
     wait.assertCallback('Wait should have resolved');
   }
 
@@ -1058,7 +1066,7 @@ limitations under the License.
     // Tick 3 more times for the same sequence above.
     appTester.schedule('fn2', throwStubError);
     runApplication(null, assertIsStubError);
-    consumeTimeouts();
+    webdriver.test.testutil.consumeTimeouts();
     wait.assertErrback();
   }
 
@@ -1069,7 +1077,7 @@ limitations under the License.
     appTester.scheduleAndWaitForIdle('a', throwStubError).
         then(wait1.callback, wait1.errback);
     runApplication(null, assertIsStubError);
-    consumeTimeouts();
+    webdriver.test.testutil.consumeTimeouts();
     wait1.assertErrback('Wait1 should have been rejected');
 
     var wait2 = callbackPair();
@@ -1093,13 +1101,13 @@ limitations under the License.
         then(wait2.callback, wait2.errback);
 
     turnEventLoop();
-    consumeTimeouts();
+    webdriver.test.testutil.consumeTimeouts();
     wait1.assertErrback('wait 1 should have been rejected');
     schedule2.assertCalled('never scheduled wait 2');
     wait2.assertNeither('wait 2 should not have been called yet');
 
     runApplication();
-    consumeTimeouts();
+    webdriver.test.testutil.consumeTimeouts();
     wait2.assertCallback('wait 2 should have been resolved');
   }
 

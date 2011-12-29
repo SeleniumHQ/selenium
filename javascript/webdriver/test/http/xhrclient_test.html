@@ -29,6 +29,9 @@ limitations under the License.
     goog.require('webdriver.test.testutil');
   </script>
   <script>
+  // Alias for readabiliyt.
+  var callbackHelper = webdriver.test.testutil.callbackHelper;
+
   function FakeXhr() {}
   FakeXhr.prototype.status = 200;
   FakeXhr.prototype.responseText = '';
@@ -118,7 +121,7 @@ limitations under the License.
           assertEquals(200, response.status);
           assertEquals('', response.body);
 
-          _assertObjectEquals({
+          webdriver.test.testutil.assertObjectEquals({
             'a': 'b',
             'c': 'd',
             'e': 'f',
@@ -150,7 +153,7 @@ limitations under the License.
           assertEquals(200, response.status);
           assertEquals('', response.body);
 
-          _assertObjectEquals({
+          webdriver.test.testutil.assertObjectEquals({
             'a': 'b',
             'c': 'd',
             'e': 'f',
@@ -177,7 +180,7 @@ limitations under the License.
           assertEquals(200, response.status);
           assertEquals('', response.body);
 
-          _assertObjectEquals({}, response.headers);
+          webdriver.test.testutil.assertObjectEquals({}, response.headers);
         }));
     callback.assertCalled();
     control.$verifyAll();
@@ -198,7 +201,7 @@ limitations under the License.
           assertNull(e);
           assertEquals(200, response.status);
           assertEquals('foobar', response.body);
-          _assertObjectEquals({}, response.headers);
+          webdriver.test.testutil.assertObjectEquals({}, response.headers);
         }));
     callback.assertCalled();
     control.$verifyAll();

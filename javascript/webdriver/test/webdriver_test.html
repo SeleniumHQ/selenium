@@ -43,21 +43,26 @@ limitations under the License.
   var SESSION_ID = 'test_session_id';
 
   // Alias some long names that interfere with test readability.
-  var CName = webdriver.CommandName;
-  var ECode = bot.ErrorCode;
+  var CName = webdriver.CommandName,
+      ECode = bot.ErrorCode,
+      STUB_ERROR = webdriver.test.testutil.STUB_ERROR,
+      throwStubError = webdriver.test.testutil.throwStubError,
+      assertIsStubError = webdriver.test.testutil.assertIsStubError,
+      callbackHelper = webdriver.test.testutil.callbackHelper;
 
   // By is exported by webdriver.Locator, but IDEs don't
   // recognize goog.exportSymbol. Explicitly define it here to make
   // the IDE stop complaining.
   var By = webdriver.Locator.Strategy;
 
+  var clock;
   var driver;
   var mockControl;
   var appTester;
   var verifyAll;
 
   function setUp() {
-    clock = createMockClock();
+    clock = webdriver.test.testutil.createMockClock();
     appTester = new webdriver.test.AppTester(clock);
     mockControl = new goog.testing.MockControl();
     verifyAll = callbackHelper(goog.bind(mockControl.$verifyAll, mockControl));
@@ -249,7 +254,7 @@ limitations under the License.
     webdriver.WebDriver.toWireValue_({
       'sessionId': new webdriver.Session('foo', {})
     }).then(callback = callbackHelper(function(actual) {
-      _assertObjectEquals(expected, actual);
+      webdriver.test.testutil.assertObjectEquals(expected, actual);
     }));
     callback.assertCalled();
     verifyAll();  // Expected by tear down.
@@ -264,7 +269,7 @@ limitations under the License.
         'value': new webdriver.Session('foo', {})
       }
     }).then(callback = callbackHelper(function(actual) {
-      _assertObjectEquals(expected, actual);
+      webdriver.test.testutil.assertObjectEquals(expected, actual);
     }));
     callback.assertCalled();
     verifyAll();  // Expected by tear down.
@@ -279,7 +284,7 @@ limitations under the License.
     var callback;
     webdriver.WebDriver.toWireValue_(element).
         then(callback = callbackHelper(function(actual) {
-          _assertObjectEquals(expected, actual);
+          webdriver.test.testutil.assertObjectEquals(expected, actual);
         }));
     callback.assertCalled();
     verifyAll();  // Expected by tear down.
@@ -315,7 +320,7 @@ limitations under the License.
         then(callback = callbackHelper(function(actual) {
           assertTrue(goog.isArray(actual));
           assertEquals(1, actual.length);
-          _assertObjectEquals(elementJson, actual[0]);
+          webdriver.test.testutil.assertObjectEquals(elementJson, actual[0]);
         }));
     callback.assertCalled();
     verifyAll();  // Expected by tear down.
@@ -332,7 +337,7 @@ limitations under the License.
     var callback;
     webdriver.WebDriver.toWireValue_(input).
         then(callback = callbackHelper(function(actual) {
-          _assertObjectEquals(expected, actual);
+          webdriver.test.testutil.assertObjectEquals(expected, actual);
         }));
     callback.assertCalled();
     verifyAll();  // Expected by tear down.
@@ -358,7 +363,7 @@ limitations under the License.
     var callback;
     webdriver.WebDriver.toWireValue_(parameters).
         then(callback = callbackHelper(function(actual) {
-          _assertObjectEquals(expected, actual);
+          webdriver.test.testutil.assertObjectEquals(expected, actual);
         }));
     callback.assertCalled();
     verifyAll();  // Expected by tear down.
@@ -388,7 +393,7 @@ limitations under the License.
 
     var callback;
     webdriver.promise.when(element.id_, callback = callbackHelper(function(id) {
-      _assertObjectEquals(json, id);
+      webdriver.test.testutil.assertObjectEquals(json, id);
     }));
     callback.assertCalled();
 
@@ -399,7 +404,7 @@ limitations under the License.
   function testFromWireValue_simpleObject() {
     var json = {'sessionId': 'foo'};
     var out = webdriver.WebDriver.fromWireValue_({}, json);
-    _assertObjectEquals(json, out);
+    webdriver.test.testutil.assertObjectEquals(json, out);
     verifyAll();  // Expected by tear down.
   }
 
@@ -407,7 +412,7 @@ limitations under the License.
   function testFromWireValue_nestedObject() {
     var json = {'foo': {'bar': 123}};
     var out = webdriver.WebDriver.fromWireValue_({}, json);
-    _assertObjectEquals(json, out);
+    webdriver.test.testutil.assertObjectEquals(json, out);
     verifyAll();  // Expected by tear down.
   }
 
@@ -415,7 +420,7 @@ limitations under the License.
   function testFromWireValue_array() {
     var json = [{'foo': {'bar': 123}}];
     var out = webdriver.WebDriver.fromWireValue_({}, json);
-    _assertObjectEquals(json, out);
+    webdriver.test.testutil.assertObjectEquals(json, out);
     verifyAll();  // Expected by tear down.
   }
 
@@ -1201,7 +1206,7 @@ limitations under the License.
         then(function(webelement) {
           webdriver.promise.when(webelement.id_,
               callback = callbackHelper(function(id) {
-                _assertObjectEquals(id, json);
+                webdriver.test.testutil.assertObjectEquals(id, json);
               }));
         });
     testHelper.execute();
@@ -1228,7 +1233,7 @@ limitations under the License.
         then(function(array) {
           webdriver.promise.when(array[0].id_,
               callback = callbackHelper(function(id) {
-                _assertObjectEquals(id, json[0]);
+                webdriver.test.testutil.assertObjectEquals(id, json[0]);
               }));
         });
     testHelper.execute();
@@ -1255,7 +1260,7 @@ limitations under the License.
         then(function(obj) {
           webdriver.promise.when(obj['foo'].id_,
               callback = callbackHelper(function(id) {
-                _assertObjectEquals(id, json['foo']);
+                webdriver.test.testutil.assertObjectEquals(id, json['foo']);
               }));
         });
     testHelper.execute();
@@ -1533,7 +1538,7 @@ limitations under the License.
             elements[index] instanceof webdriver.WebElement);
         elements[index].toWireValue().
             then(callbacks[index] = callbackHelper(function(id) {
-              _assertObjectEquals(json[index], id);
+              webdriver.test.testutil.assertObjectEquals(json[index], id);
             }));
       }
 
@@ -1575,7 +1580,7 @@ limitations under the License.
                 elements[index] instanceof webdriver.WebElement);
             elements[index].toWireValue().
                 then(callbacks[index] = callbackHelper(function(id) {
-                  _assertObjectEquals(json[index], id);
+                  webdriver.test.testutil.assertObjectEquals(json[index], id);
                 }));
           }
 
@@ -1621,7 +1626,7 @@ limitations under the License.
                 elements[index] instanceof webdriver.WebElement);
             elements[index].toWireValue().
                 then(callbacks[index] = callbackHelper(function(id) {
-                  _assertObjectEquals(json[jsonIndex], id);
+                  webdriver.test.testutil.assertObjectEquals(json[jsonIndex], id);
                 }));
           }
 
@@ -1656,7 +1661,7 @@ limitations under the License.
           assertTrue(elements[0] instanceof webdriver.WebElement);
           elements[0].toWireValue().
               then(callback2 = callbackHelper(function(id) {
-                _assertObjectEquals(json, id);
+                webdriver.test.testutil.assertObjectEquals(json, id);
               }));
         }));
 

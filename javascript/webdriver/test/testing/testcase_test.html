@@ -32,15 +32,19 @@ limitations under the License.
 <body>
 <script>
 
-  var IGNORE_ARGUMENT = goog.testing.mockmatchers.ignoreArgument;
-  var IS_ARRAY_ARGUMENT = goog.testing.mockmatchers.isArray;
+  // Aliases for readability.
+  var IGNORE_ARGUMENT = goog.testing.mockmatchers.ignoreArgument,
+      IS_ARRAY_ARGUMENT = goog.testing.mockmatchers.isArray,
+      STUB_ERROR = webdriver.test.testutil.STUB_ERROR,
+      throwStubError = webdriver.test.testutil.throwStubError,
+      assertIsStubError = webdriver.test.testutil.assertIsStubError;
 
   var control = new goog.testing.MockControl();
-  var appTester, mockTestCase, testStub, mockOnComplete, mockOnError,
+  var appTester, clock, mockTestCase, testStub, mockOnComplete, mockOnError,
       mockOnExpectationFailures;
 
   function setUp() {
-    clock = createMockClock();
+    clock = webdriver.test.testutil.createMockClock();
     appTester = new webdriver.test.AppTester(clock);
 
     // Use one master mock so we can assert execution order.
@@ -64,7 +68,7 @@ limitations under the License.
       ref: mockTestCase.testFn
     };
 
-    messages = [];
+    webdriver.test.testutil.messages = [];
   }
 
   function tearDown() {
@@ -76,12 +80,20 @@ limitations under the License.
 
   /**
    * @param {string} msg Task message.
-   * @param {string} value Value to push to the messages queue.
-   * @param {!webdriver.promise.Promise=} opt_taskPromise Promise to return
-   *     from the scheduled task.
+   * @param {*=} opt_return The optional return value.
    */
-  function schedulePush(msg, value, opt_taskPromise) {
-    return appTester.$schedulePush.apply(appTester, arguments);
+  function schedule(msg, opt_return) {
+    return appTester.schedule(msg, function() {
+      return opt_return;
+    });
+  }
+
+  /** @see {@link webdriver.test.AppTester#$assertAppHistory}. */
+  function assertAppHistory(var_args) {
+    var args = goog.array.slice(arguments, 0);
+    return function() {
+      appTester.$assertAppHistory.apply(appTester, args);
+    };
   }
 
   function runTest(n) {
@@ -103,10 +115,13 @@ limitations under the License.
   }
 
   function testExecutingAHappyTestWithScheduledActions() {
-    mockTestCase.setUp().$does(function() { schedulePush('a', 'a'); });
-    mockTestCase.testFn().$does(function() { schedulePush('b', 'b'); });
-    mockTestCase.tearDown().$does(function() { schedulePush('c', 'c'); });
-    mockOnComplete(IGNORE_ARGUMENT).$does(assertingMessages('a', 'b', 'c'));
+    mockTestCase.setUp().$does(function() { schedule('a'); });
+    mockTestCase.testFn().$does(function() { schedule('b'); });
+    mockTestCase.tearDown().$does(function() { schedule('c'); });
+    mockOnComplete(IGNORE_ARGUMENT).$does(assertAppHistory(
+        'testStub.setUp', 'a',
+        'testStub', 'b',
+        'testStub.tearDown', 'c'));
     control.$replayAll();
 
     runTest(3);
@@ -161,21 +176,18 @@ limitations under the License.
   }
 
   function testRunsAllTasksForEachPhaseBeforeTheNextPhase() {
-    messages = [];
-    mockTestCase.setUp().$does(function() {
-      schedulePush('a', 'a');
-    });
-    mockTestCase.testFn().$does(function() {
-      schedulePush('b', 'b');
-    });
-    mockTestCase.tearDown().$does(function() {
-      schedulePush('c', 'c');
-    });
+    webdriver.test.testutil.messages = [];
+    mockTestCase.setUp().$does(function() { schedule('a'); });
+    mockTestCase.testFn().$does(function() { schedule('b'); });
+    mockTestCase.tearDown().$does(function() { schedule('c'); });
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
     runTest(3);
-    assertMessages('a', 'b', 'c');
+    appTester.$assertAppHistory(
+        'testStub.setUp', 'a',
+        'testStub', 'b',
+        'testStub.tearDown', 'c');
   }
 
   function testRecordsErrorsFromTestFnBeforeTearDown() {

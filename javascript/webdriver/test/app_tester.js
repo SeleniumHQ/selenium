@@ -29,7 +29,7 @@ webdriver.test.AppTester = function(clock) {
    */
   this.app_ = new webdriver.promise.Application();
 
-  this.watcher_ = callbackPair();
+  this.watcher_ = webdriver.test.testutil.callbackPair();
   this.$attachAppListener(this.watcher_);
 
   var app = this.app_;
@@ -87,7 +87,7 @@ webdriver.test.AppTester.prototype.$runApplication = function(
 
   var app = this.app_;
   var isDone = false;
-  var callbacks = callbackPair(
+  var callbacks = webdriver.test.testutil.callbackPair(
       function() {
         isDone = true;
         opt_callback && opt_callback();
@@ -131,7 +131,7 @@ webdriver.test.AppTester.prototype.$runIdleWaitLoopNTimes = function(n) {
   for (var i = 0; i < n; ++i) {
     this.watcher_.reset();
     this.$runApplication(null, null, true);
-    consumeTimeouts();
+    webdriver.test.testutil.consumeTimeouts();
     this.$assertAppNotRunning();
   }
 };
@@ -175,14 +175,14 @@ webdriver.test.AppTester.prototype.$assertFrameCount = function(n) {
 webdriver.test.AppTester.prototype.$schedulePush = function(msg, value,
                                                             opt_taskPromise) {
   return this.app_.schedule(msg, function() {
-    messages.push(value);
+    webdriver.test.testutil.messages.push(value);
     return opt_taskPromise;
   });
 };
 
 
 webdriver.test.AppTester.prototype.$tearDown = function() {
-  consumeTimeouts();
+  webdriver.test.testutil.consumeTimeouts();
   this.app_.reset();
   this.stubs_.reset();
   this.clock_.dispose();

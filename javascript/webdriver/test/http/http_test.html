@@ -33,6 +33,9 @@ limitations under the License.
 </head>
 <body>
 <script>
+  // Alias for readability.
+  var callbackHelper = webdriver.test.testutil.callbackHelper;
+
   var control = new goog.testing.MockControl();
   var mockClient, executor, onCallback, onErrback;
 
@@ -72,7 +75,7 @@ limitations under the License.
         function(request) {
           assertEquals('wrong method', method, request.method);
           assertEquals('wrong path', path + '', request.path);
-          _assertObjectEquals(data, request.data);
+          webdriver.test.testutil.assertObjectEquals(data, request.data);
           assertNull(
               'Wrong headers for request:\n' + description +
               '\n    Actual headers were:\n' + headersToString(request.headers),
@@ -103,7 +106,8 @@ limitations under the License.
     var finalPath = webdriver.http.Executor.buildPath_(
         '/session/:sessionId/url', parameters);
     assertEquals('/session/foo/url', finalPath);
-    _assertObjectEquals({'url':'http://www.google.com'}, parameters);
+    webdriver.test.testutil.assertObjectEquals({'url':'http://www.google.com'},
+        parameters);
   }
 
   function testBuildPath_withWebElement() {
@@ -113,7 +117,7 @@ limitations under the License.
     var finalPath = webdriver.http.Executor.buildPath_(
         '/session/:sessionId/element/:id/click', parameters);
     assertEquals('/session/foo/element/bar/click', finalPath);
-    _assertObjectEquals({}, parameters);
+    webdriver.test.testutil.assertObjectEquals({}, parameters);
   }
 
   function testBuildPath_throwsIfMissingParameter() {
@@ -237,7 +241,7 @@ limitations under the License.
     control.$replayAll();
 
     assertSendsSuccessfully(command, function(response) {
-      _assertObjectEquals(responseObj, response);
+      webdriver.test.testutil.assertObjectEquals(responseObj, response);
     });
   }
 
@@ -252,7 +256,7 @@ limitations under the License.
     control.$replayAll();
 
     assertSendsSuccessfully(command, function(response) {
-      _assertObjectEquals({
+      webdriver.test.testutil.assertObjectEquals({
         'status': bot.ErrorCode.SUCCESS,
         'value': 'hello, world\ngoodbye, world!'
       }, response);
@@ -272,7 +276,7 @@ limitations under the License.
     assertSendsSuccessfully(
         new webdriver.Command(webdriver.CommandName.NEW_SESSION),
         function(response) {
-          _assertObjectEquals({
+          webdriver.test.testutil.assertObjectEquals({
             'status': bot.ErrorCode.SUCCESS,
             'value': invalidJson
           }, response);
@@ -290,7 +294,7 @@ limitations under the License.
     control.$replayAll();
 
     assertSendsSuccessfully(command, function(response) {
-      _assertObjectEquals({
+      webdriver.test.testutil.assertObjectEquals({
         'status': bot.ErrorCode.UNKNOWN_COMMAND,
         'value': 'hello, world\ngoodbye, world!'
       }, response);
@@ -308,7 +312,7 @@ limitations under the License.
     control.$replayAll();
 
     assertSendsSuccessfully(command, function(response) {
-      _assertObjectEquals({
+      webdriver.test.testutil.assertObjectEquals({
         'status': bot.ErrorCode.UNKNOWN_ERROR,
         'value': 'hello, world\ngoodbye, world!'
       }, response);
@@ -330,7 +334,7 @@ limitations under the License.
     control.$replayAll();
 
     assertSendsSuccessfully(command, function(response) {
-      _assertObjectEquals(responseObj, response);
+      webdriver.test.testutil.assertObjectEquals(responseObj, response);
     });
   }
 
@@ -353,7 +357,7 @@ limitations under the License.
     assertEquals(200, response.status);
     assertEquals('', response.body);
 
-    _assertObjectEquals({
+    webdriver.test.testutil.assertObjectEquals({
       'a': 'b',
       'c': 'd',
       'e': 'f',
@@ -372,7 +376,7 @@ limitations under the License.
     assertEquals(200, response.status);
     assertEquals('', response.body);
 
-    _assertObjectEquals({
+    webdriver.test.testutil.assertObjectEquals({
       'a': 'b',
       'c': 'd',
       'e': 'f',
@@ -385,7 +389,7 @@ limitations under the License.
         FakeXmlHttpRequest('', 200, ''));
     assertEquals(200, response.status);
     assertEquals('', response.body);
-    _assertObjectEquals({}, response.headers);
+    webdriver.test.testutil.assertObjectEquals({}, response.headers);
   }
 
   function testXmlHttpRequestToHttpResponse_stripsNullCharactersFromBody() {
@@ -393,7 +397,7 @@ limitations under the License.
         FakeXmlHttpRequest('', 200, '\x00\0foo\x00\x00bar\x00\0'));
     assertEquals(200, response.status);
     assertEquals('foobar', response.body);
-    _assertObjectEquals({}, response.headers);
+    webdriver.test.testutil.assertObjectEquals({}, response.headers);
   }
 </script>
 </body>

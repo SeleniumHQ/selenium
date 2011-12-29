@@ -22,17 +22,22 @@ limitations under the License.
   goog.require('goog.testing.jsunit');
   goog.require('webdriver.promise.Application');
   goog.require('webdriver.test.AppTester');
+  goog.require('webdriver.test.testutil');
   goog.require('webdriver.testing.asserts');
 </script>
 <script>
+  // Alias for readability.
+  var assertingMessages = webdriver.test.testutil.assertingMessages;
+
   var appTester,
-      onExpectFail = callbackHelper();
+      onExpectFail = webdriver.test.testutil.callbackHelper(),
+      clock;
 
   function setUp() {
     onExpectFail.reset();
-    clock = createMockClock();
+    clock = webdriver.test.testutil.createMockClock();
     appTester = new webdriver.test.AppTester(clock);
-    messages = [];
+    webdriver.test.testutil.messages = [];
     webdriver.testing.asserts.on(webdriver.testing.asserts.EXPECTATION_FAILURE,
         onExpectFail);
   }
@@ -50,7 +55,7 @@ limitations under the License.
    */
   function schedulePush(value, opt_retValue) {
     return appTester.schedule('push ' + value, function() {
-      messages.push(value);
+      webdriver.test.testutil.messages.push(value);
       return opt_retValue;
     });
   }

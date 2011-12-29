@@ -36,13 +36,16 @@ limitations under the License.
     var REQUEST_URL_PREFIX = URL +
         '/jsonp?method=GET&path=%2Fsession%2Fs123%2Furl&body=%22%22';
 
+    // Alias for readability.
+    var callbackHelper = webdriver.test.testutil.callbackHelper;
+
     var control = new goog.testing.MockControl();
     var stubs = new goog.testing.PropertyReplacer();
     var clock, mockDom, client;
 
     function setUp() {
       stubs.set(webdriver.http.JsonpClient, 'nextRequestId_', 0);
-      clock = createMockClock();
+      clock = webdriver.test.testutil.createMockClock();
 
       mockDom = control.createStrictMock(goog.dom.DomHelper);
       client = new webdriver.http.JsonpClient(URL, mockDom);
@@ -61,7 +64,7 @@ limitations under the License.
       var fakeScript = {src: expectedSrc};
       mockDom.createDom('script',
           new goog.testing.mockmatchers.ArgumentMatcher(function(attributes) {
-            _assertObjectEquals({
+            webdriver.test.testutil.assertObjectEquals({
               'type': 'text/javascript',
               'charset': 'UTF-8',
               'src': expectedSrc
@@ -128,7 +131,7 @@ limitations under the License.
         assertNull(error);
         assertUndefined(goog.global['wdJSONP_0_0']);
         assertEquals(200, response.status);
-        _assertObjectEquals({}, response.headers);
+        webdriver.test.testutil.assertObjectEquals({}, response.headers);
         assertEquals('serverResponse', response.body);
       }));
       callback.assertCalled();

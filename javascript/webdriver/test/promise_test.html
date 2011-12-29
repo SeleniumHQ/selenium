@@ -28,11 +28,16 @@ limitations under the License.
 <body>
 <script>
 
+// Aliases for readability.
+var assertIsPromise = webdriver.test.testutil.assertIsPromise,
+    assertNotPromise = webdriver.test.testutil.assertNotPromise,
+    callbackHelper = webdriver.test.testutil.callbackHelper,
+    callbackPair = webdriver.test.testutil.callbackPair;
 
-var uncaughtException;
+var clock, uncaughtException;
 
 function setUp() {
-  clock = new goog.testing.MockClock(true);
+  clock = webdriver.test.testutil.createMockClock();
   uncaughtException = callbackHelper();
   webdriver.promise.Application.
       getInstance().
@@ -42,7 +47,7 @@ function setUp() {
 
 
 function tearDown() {
-  consumeTimeouts();
+  webdriver.test.testutil.consumeTimeouts();
   clock.dispose();
   webdriver.promise.Application.getInstance().reset();
   uncaughtException.assertNotCalled();
@@ -732,7 +737,7 @@ function testFullyResolved_simpleHash() {
   webdriver.promise.fullyResolved(hash).then(
       callback = callbackHelper(function(resolved) {
         assertEquals(hash, resolved);
-        _assertObjectEquals({'a': 123}, resolved);
+        webdriver.test.testutil.assertObjectEquals({'a': 123}, resolved);
       }),
       errback = callbackHelper());
 
@@ -749,8 +754,9 @@ function testFullyResolved_nestedHash() {
   webdriver.promise.fullyResolved(hash).then(
       callback = callbackHelper(function(resolved) {
         assertEquals(hash, resolved);
-        _assertObjectEquals({'a': 123, 'b': {'foo': 'bar'}}, resolved);
-        _assertObjectEquals(nestedHash, resolved['b']);
+        webdriver.test.testutil.assertObjectEquals(
+            {'a': 123, 'b': {'foo': 'bar'}}, resolved);
+        webdriver.test.testutil.assertObjectEquals(nestedHash, resolved['b']);
       }),
       errback = callbackHelper());
 
@@ -766,7 +772,7 @@ function testFullyResolved_promiseResolvesToSimpleHash() {
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
       callback = callbackHelper(function(resolved) {
-        _assertObjectEquals(hash, resolved);
+        webdriver.test.testutil.assertObjectEquals(hash, resolved);
       }),
       errback = callbackHelper());
 
@@ -783,8 +789,8 @@ function testFullyResolved_promiseResolvesToNestedHash() {
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
       callback = callbackHelper(function(resolved) {
-        _assertObjectEquals(hash, resolved);
-        _assertObjectEquals(nestedHash, resolved['b']);
+        webdriver.test.testutil.assertObjectEquals(hash, resolved);
+        webdriver.test.testutil.assertObjectEquals(nestedHash, resolved['b']);
       }),
       errback = callbackHelper());
 
@@ -801,7 +807,7 @@ function testFullyResolved_promiseResolvesToHashWithPromises() {
   var callback, errback;
   webdriver.promise.fullyResolved(promise).then(
       callback = callbackHelper(function(resolved) {
-        _assertObjectEquals({'a': 123}, resolved);
+        webdriver.test.testutil.assertObjectEquals({'a': 123}, resolved);
       }),
       errback = callbackHelper());
 
@@ -856,7 +862,7 @@ function testFullyResolved_instantiatedObject() {
     callback = callbackHelper(function(resolvedFoo) {
       assertEquals(foo, resolvedFoo);
       assertTrue(resolvedFoo instanceof Foo);
-      _assertObjectEquals(new Foo, resolvedFoo);
+      webdriver.test.testutil.assertObjectEquals(new Foo, resolvedFoo);
     }),
     errback = callbackHelper());
   errback.assertNotCalled();
@@ -880,7 +886,7 @@ function testFullyResolved_withEmptyHash() {
   var callback, errback;
   webdriver.promise.fullyResolved({}).then(
     callback = callbackHelper(function(resolved) {
-      _assertObjectEquals({}, resolved);
+      webdriver.test.testutil.assertObjectEquals({}, resolved);
     }),
     errback = callbackHelper());
   errback.assertNotCalled();
@@ -896,7 +902,7 @@ function testFullyResolved_arrayWithPromisedHash() {
   var callback, errback;
   webdriver.promise.fullyResolved(array).then(
       callback = callbackHelper(function(resolved) {
-        _assertObjectEquals(resolved, [obj]);
+        webdriver.test.testutil.assertObjectEquals(resolved, [obj]);
       }),
       errback = callbackHelper());
 
@@ -1029,7 +1035,7 @@ function testCheckedNodeCall_functionThrowsAndReturns() {
   }).then(pair.callback, pair.errback);
   pair.assertErrback();
   pair.reset();
-  consumeTimeouts();
+  webdriver.test.testutil.consumeTimeouts();
   pair.assertNeither();
 }
 

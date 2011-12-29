@@ -25,6 +25,10 @@ limitations under the License.
 </head>
 <body>
 <script>
+  // Aliases for readability.
+  var callbackHelper = webdriver.test.testutil.callbackHelper,
+      callbackPair = webdriver.test.testutil.callbackPair;
+
   function testCallbackHelper_functionCalled() {
     var callback = callbackHelper();
     callback();

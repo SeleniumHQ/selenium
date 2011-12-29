@@ -27,8 +27,8 @@ limitations under the License.
     var result, expectationFailure;
 
     function setUp() {
-      result = callbackPair();
-      expectationFailure = callbackHelper();
+      result = webdriver.test.testutil.callbackPair();
+      expectationFailure = webdriver.test.testutil.callbackHelper();
       webdriver.testing.asserts.on('expectationFailure', expectationFailure);
     }
 

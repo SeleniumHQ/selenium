@@ -21,25 +21,26 @@ goog.require('goog.testing.MockClock');
 goog.require('goog.testing.recordFunction');
 
 
-/** @type {goog.testing.MockClock} */
-var clock;
+/** @type {?goog.testing.MockClock} */
+webdriver.test.testutil.clock = null;
 
 /** @type {Array.<!string>} */
-var messages;
+webdriver.test.testutil.messages = [];
 
-var STUB_ERROR = new Error('ouch');
-STUB_ERROR.stack = '(stub error; stack irrelevant)';
+/** @type {!Error} */
+webdriver.test.testutil.STUB_ERROR = new Error('ouch');
+webdriver.test.testutil.STUB_ERROR.stack = '(stub error; stack irrelevant)';
 
-function throwStubError() {
-  throw STUB_ERROR;
-}
+webdriver.test.testutil.throwStubError = function() {
+  throw webdriver.test.testutil.STUB_ERROR;
+};
 
-function assertIsStubError(error) {
-  assertEquals(STUB_ERROR, error);
-}
+webdriver.test.testutil.assertIsStubError = function(error) {
+  assertEquals(webdriver.test.testutil.STUB_ERROR, error);
+};
 
-function createMockClock() {
-  clock = new goog.testing.MockClock(true);
+webdriver.test.testutil.createMockClock = function() {
+  webdriver.test.testutil.clock = new goog.testing.MockClock(true);
 
   /* Patch to work around the following bug with mock clock:
    *   function testZeroBasedTimeoutsRunInNextEventLoop() {
@@ -55,7 +56,7 @@ function createMockClock() {
    *     assertEquals(3, count);
    *   }
    */
-  clock.runFunctionsWithinRange_ = function(endTime) {
+  webdriver.test.testutil.clock.runFunctionsWithinRange_ = function(endTime) {
     var adjustedEndTime = endTime - this.timeoutDelay_;
 
     // Repeatedly pop off the last item since the queue is always sorted.
@@ -74,7 +75,8 @@ function createMockClock() {
         // Only move time forwards.
         this.nowMillis_ = Math.max(this.nowMillis_,
             timeout.runAtMillis + this.timeoutDelay_);
-        // Call timeout in global scope and pass the timeout key as the argument.
+        // Call timeout in global scope and pass the timeout key as
+        // the argument.
         timeout.funcToCall.call(goog.global, timeout.timeoutKey);
         // In case the interval was cleared in the funcToCall
         if (timeout.recurring) {
@@ -85,8 +87,8 @@ function createMockClock() {
     }
   };
 
-  return clock;
-}
+  return webdriver.test.testutil.clock;
+};
 
 
 /**
@@ -95,60 +97,71 @@ function createMockClock() {
  *     specified, will advance the clock once for every timeout made.
  *     Assumes all timeouts are 0-based.
  */
-function consumeTimeouts(opt_n) {
+webdriver.test.testutil.consumeTimeouts = function(opt_n) {
   // webdriver.promise and webdriver.application only schedule 0 timeouts to
   // yield until the next available event loop.
-  for (var i = 0; i < (opt_n || clock.getTimeoutsMade()); i++) {
-    clock.tick();
+  for (var i = 0;
+       i < (opt_n || webdriver.test.testutil.clock.getTimeoutsMade()); i++) {
+    webdriver.test.testutil.clock.tick();
   }
-}
+};
 
 
-function assertMessages(var_args) {
+/**
+ * Asserts the contents of the {@link webdriver.test.testutil.messages} array
+ * are as expected.
+ * @param {...*} var_args The expected contents.
+ */
+webdriver.test.testutil.assertMessages = function(var_args) {
   var args = Array.prototype.slice.call(arguments, 0);
-  assertEquals(
-      'Wrong # messages, expected [' + args.join(',') + '], but was [' +
-          messages.join(',') + ']',
-      args.length, messages.length);
-  assertEquals(args.join(''), messages.join(''));
-}
+  assertArrayEquals(args, webdriver.test.testutil.messages);
+};
 
 
-function assertingMessages(var_args) {
+/**
+ * Wraps a call to {@link webdriver.test.testutil.assertMessages} so it can
+ * be passed as a callback.
+ * @param {...*} var_args The expected contents.
+ * @return {!Function} The wrapped function.
+ */
+webdriver.test.testutil.assertingMessages = function(var_args) {
   var args = goog.array.slice(arguments, 0);
   return function() {
-    return assertMessages.apply(null, args);
+    return webdriver.test.testutil.assertMessages.apply(null, args);
   };
-}
+};
 
 
-function assertIsPromise(obj) {
+/**
+ * Asserts an object is a promise.
+ * @param {*} obj The object to check.
+ */
+webdriver.test.testutil.assertIsPromise = function(obj) {
   assertTrue('Value is not a promise: ' + goog.typeOf(obj),
       webdriver.promise.isPromise(obj));
-}
+};
 
 
-function assertNotPromise(obj) {
+/**
+ * Asserts an object is not a promise.
+ * @param {*} obj The object to check.
+ */
+webdriver.test.testutil.assertNotPromise = function(obj) {
   assertFalse(webdriver.promise.isPromise(obj));
-}
+};
 
 /**
  * Wraps a function. The wrapped function will have several utility functions:
  * <ul>
- * <li>getError: Returns any errors thrown by the wrapped function
- * <li>getArgs: Returns the arguments the wrapped function was called with.
- * <li>wasCalled: Returns whether the function was called.
- * <li>reset: Resets the recording.
  * <li>assertCalled: Asserts that the function was called.
  * <li>assertNotCalled: Asserts that the function was not called.
  * </ul> 
  * @param {Function=} opt_fn The function to wrap; defaults to
  *     goog.nullFunction.
- * @param {boolean=} opt_expectError Whether the wrapped function is
- *     expected to throw; defaults to false.
  * @return {!Function} The wrapped function.
+ * @see goog.testing.recordFunction
  */
-function callbackHelper(opt_fn, opt_expectError) {
+webdriver.test.testutil.callbackHelper = function(opt_fn) {
   var callback = goog.testing.recordFunction(opt_fn);
 
   callback.getExpectedCallCountMessage = function(n, opt_prefix, opt_noJoin) {
@@ -159,11 +172,11 @@ function callbackHelper(opt_fn, opt_expectError) {
     message.push(
         'Expected to be called ' + n + ' times.',
         '  was called ' + calls.length + ' times:');
-    message = goog.array.concat(message, goog.array.map(calls, function(call, i) {
-      return goog.string.repeat(' ', 4) +
-          'args(call #' + i + '): ' +
-          goog.json.serialize(call.getArguments());
-    }));
+    message = goog.array.concat(message,
+        goog.array.map(calls, function(call, i) {
+          return goog.string.repeat(' ', 4) + 'args(call #' + i + '): ' +
+              goog.json.serialize(call.getArguments());
+        }));
     return opt_noJoin ? message : message.join('\n');
   };
 
@@ -178,7 +191,7 @@ function callbackHelper(opt_fn, opt_expectError) {
   };
 
   return callback;
-}
+};
 
 
 /**
@@ -188,10 +201,10 @@ function callbackHelper(opt_fn, opt_expectError) {
  * @param {Function=} opt_callback The callback to manage.
  * @param {Function=} opt_errback The errback to manage.
  */
-function callbackPair(opt_callback, opt_errback) {
+webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
   var pair = {
-    callback: callbackHelper(opt_callback),
-    errback: callbackHelper(opt_errback)
+    callback: webdriver.test.testutil.callbackHelper(opt_callback),
+    errback: webdriver.test.testutil.callbackHelper(opt_errback)
   };
 
   pair.assertEither = function(opt_message) {
@@ -260,12 +273,12 @@ function callbackPair(opt_callback, opt_errback) {
       fail(message.join('\n  -- '));
     }
   }
-}
+};
 
 
-function _assertObjectEquals(expected, actual) {
+webdriver.test.testutil.assertObjectEquals = function(expected, actual) {
   assertObjectEquals(
       'Expected: ' + goog.json.serialize(expected) + '\n' +
       'Actual:   ' + goog.json.serialize(actual),
       expected, actual);
-}
+};
