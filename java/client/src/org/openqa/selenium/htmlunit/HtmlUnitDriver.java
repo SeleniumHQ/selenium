@@ -208,7 +208,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     String browserName = null;
     String browserVersion = null;
 
-    String[] splitVersion = capabilities.getVersion().split("-");
+    String rawVersion = capabilities.getVersion();
+    String[] splitVersion = rawVersion == null ? new String[0] : rawVersion.split("-");
     if (splitVersion.length > 1) {
       browserVersion = splitVersion[1];
       browserName = splitVersion[0];
@@ -219,7 +220,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     // This is for backwards compatibility - in case there are users who are trying to
     // configure the HtmlUnitDriver by using the c'tor with capabilities.
-    if (!capabilities.getBrowserName().equals("htmlunit")) {
+    if (!"htmlunit".equals(capabilities.getBrowserName())) {
       browserName = capabilities.getBrowserName();
       browserVersion = capabilities.getVersion();
     }

@@ -21,12 +21,12 @@ package org.openqa.selenium.htmlunit;
 
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestSuite {
 
@@ -40,9 +40,15 @@ public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestSuite {
   }
 
   public static class HtmlUnitDriverForTest extends HtmlUnitDriver {
-    public HtmlUnitDriverForTest() {
-      super(BrowserVersion.FIREFOX_3);
-      setJavascriptEnabled(true);
+    public HtmlUnitDriverForTest(Capabilities capabilities) {
+      super(tweak(capabilities));
+    }
+
+    private static Capabilities tweak(Capabilities capabilities) {
+      DesiredCapabilities caps = new DesiredCapabilities(capabilities);
+      caps.setJavascriptEnabled(true);
+      caps.setVersion("3.6");
+      return caps;
     }
   }
 }
