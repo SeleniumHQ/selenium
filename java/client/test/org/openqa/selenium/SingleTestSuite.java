@@ -98,9 +98,6 @@ public class SingleTestSuite extends TestSuite {
     if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {
       builder.addSuiteDecorator(
           "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteDriverServerStarter");
-    } else if (SELENIUM.equals(driver)) {
-      builder.addSuiteDecorator(
-          "org.openqa.selenium.v1.SeleniumServerStarter");
     }
 
     builder.addSuiteDecorator("org.openqa.selenium.TestNameDecorator");

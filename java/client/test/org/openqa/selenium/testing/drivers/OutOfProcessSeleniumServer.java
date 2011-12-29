@@ -30,7 +30,6 @@ import org.openqa.selenium.testing.InProject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -82,5 +81,13 @@ public class OutOfProcessSeleniumServer {
     new Build().of("//java/server/src/org/openqa/grid/selenium:selenium:uber").go();
     return InProject.locate(
         "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar").getAbsolutePath();
+  }
+
+  public URL getWebDriverUrl() {
+    try {
+      return new URL(baseUrl + "/wd/hub");
+    } catch (MalformedURLException e) {
+      throw Throwables.propagate(e);
+    }
   }
 }

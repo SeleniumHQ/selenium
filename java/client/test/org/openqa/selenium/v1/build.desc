@@ -52,7 +52,6 @@ java_library(name = "selenium_backed_webdriver",
 
 java_test(name = "selenium-backed-webdriver-test",
   srcs = [
-    "SeleniumServerStarter.java",
     "SeleneseWebDriverTestSuite.java",
   ],
   deps = [

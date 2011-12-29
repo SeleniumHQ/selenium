@@ -6,7 +6,6 @@ import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.SeleniumServerInstance;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -15,16 +14,17 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
 import junit.framework.TestCase;
 
 import java.net.MalformedURLException;
 
 // TODO(reorg): This test is never run. It must be.
-//Firefox specific test, but needs to be in remote
+// Firefox specific test, but needs to be in remote
 @Ignore
 public class CopyProfileTest extends TestCase {
-  private SeleniumServerInstance selenium;
+  private OutOfProcessSeleniumServer selenium;
   private TestEnvironment env;
 
   @Override
@@ -32,7 +32,7 @@ public class CopyProfileTest extends TestCase {
     super.setUp();
 
     env = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
-    selenium = new SeleniumServerInstance();
+    selenium = new OutOfProcessSeleniumServer();
     selenium.start();
   }
 
