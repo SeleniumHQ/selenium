@@ -245,31 +245,35 @@
   <PropertyGroup>
     <PostBuildEvent>if %25PROCESSOR_ARCHITECTURE%25 == x86 (
   if not defined PROCESSOR_ARCHITEW6432 (
+    echo Detected 32-bit platform
     if exist "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll" (
-      echo Detected 32-bit platform, found 32-bit native binary
-      echo Copying native code from Win32 build target
-      copy /y "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)"
+      echo Found IE 32-bit native binary, copying from Win32 build target $(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll
+      copy /y "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)" &gt; NUL
     ) else (
-      echo Detected 32-bit platform, missing 32-bit native binary
-      echo Copying native code from Win32 prebuilt location
-      copy /y "$(SolutionDir)cpp\prebuilt\Win32\Release\IEDriver.dll" "$(TargetDir)"
+      echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(SolutionDir)cpp\prebuilt\Win32\Release\IEDriver.dll
+      copy /y "$(SolutionDir)cpp\prebuilt\Win32\Release\IEDriver.dll" "$(TargetDir)" &gt; NUL
     )
     goto end
   )
 )
 
+echo Detected 64-bit platform
 if exist "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll" (
-  echo Detected 64-bit platform, found 64-bit native binary
-  echo Copying native code from x64 build target
-  copy /y "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)"
+  echo Found IE 64-bit native binary, copying from x64 build target $(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll
+  copy /y "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)" &gt; NUL
 ) else (
-  echo Detected 64-bit platform, missing 64-bit native binary
-  echo Copying native code from x64 prebuilt location
-  copy /y "$(SolutionDir)cpp\prebuilt\x64\Release\IEDriver.dll" "$(TargetDir)"
+  echo Missing IE 64-bit native binary, copying from x64 prebuilt location $(SolutionDir)cpp\prebuilt\x64\Release\IEDriver.dll
+  copy /y "$(SolutionDir)cpp\prebuilt\x64\Release\IEDriver.dll" "$(TargetDir)" &gt; NUL
 )
 
 :end
-if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi copy /y $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi $(TargetDir)
+if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi (
+  echo Copying Firefox extension from $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi
+  copy /y $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi $(TargetDir) &gt; NUL
+) else (
+  echo WARN: No Firefox extension found at $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi
+)
+
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
