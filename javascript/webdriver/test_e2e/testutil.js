@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('webdriver.test_e2e.testutil');
+goog.provide('webdriver.test_e2e.TestUtil');
 
 
-(function() {
+webdriver.test_e2e.TestUtil = (function() {
 
   var MAIN_WINDOW_NAME = 'main_window';
   var TEST_WINDOW_NAME = 'test_window';
@@ -23,7 +23,7 @@ goog.provide('webdriver.test_e2e.testutil');
 
   window.name = MAIN_WINDOW_NAME;
 
-  window.TestUtil = {
+  return {
     /**
      * Opens a new test window. Does not check if the window opened
      * successfully.
@@ -73,38 +73,6 @@ goog.provide('webdriver.test_e2e.testutil');
         throw new Error('The test window is not open. Is the pop-up blocker enabled?');
       }
       driver.switchTo().window(TEST_WINDOW_NAME);
-    },
-
-    whereIs: whereIs,
-
-    PAGES: {
-      /* Keep this list in alphabetical order. */
-      chinesePage: whereIs('cn-test.html'),
-      framesetPage: whereIs('frameset.html'),
-      formPage: whereIs('formPage.html'),
-      iframePage: whereIs('iframes.html'),
-      javascriptEnhancedForm: whereIs('javascriptEnhancedForm.html'),
-      javascriptPage: whereIs('javascriptPage.html'),
-      metaRedirectPage: whereIs('meta-redirect.html'),
-      nestedPage: whereIs('nestedElements.html'),
-      redirectPage: whereIs('redirect'),
-      resultPage: whereIs('resultPage.html'),
-      richtextPage: whereIs('rich_text.html'),
-      simpleTestPage: whereIs('simpleTest.html'),
-      textPage: whereIs('plain.txt'),
-      xhtmlTestPage: whereIs('xhtmlTest.html')
     }
   };
-
-  /**
-   * Identifies the location of a file on the current host.  Assumes the file
-   * is relative to the {@code /common} servlet.
-   * @param {string} path The path of the file to compute, relative to the
-   *     /common servlet.
-   * @return {string} The file path.
-   */
-  function whereIs(path) {
-    return [window.location.protocol, '//', window.location.host, '/common/',
-        path].join('');
-  }
 })();

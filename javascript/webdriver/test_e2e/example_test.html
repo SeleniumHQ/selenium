@@ -14,17 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<html>
 <title>example_test.html</title>
 <script src="../test/test_bootstrap.js"></script>
 <script>
   goog.require('goog.userAgent');
   goog.require('goog.userAgent.product');
   goog.require('webdriver.Builder');
-  goog.require('webdriver.test_e2e.testutil');
+  goog.require('webdriver.test_e2e.TestUtil');
   goog.require('webdriver.testing.jsunit');
 </script>
 <script>
+  var TestUtil = webdriver.test_e2e.TestUtil;
   var IOS = goog.userAgent.product.IPAD || goog.userAgent.product.IOS;
 
   function setUpPage() {
@@ -62,8 +62,8 @@ limitations under the License.
       // navigation commands always apply to window.top!
       TestUtil.switchToTestWindow(driver);
 
-      driver.get(TestUtil.PAGES.formPage);
-      assertThat(driver.getTitle(), equals('We Leave From Here'));
+      driver.get(window.frames[0].location.href);
+      assertThat(driver.getTitle(), equals('ajaxy_page'));
     };
   }
 
@@ -76,7 +76,7 @@ limitations under the License.
 
     driver.switchTo().frame(0);
     assertThat(driver.executeScript('return document.title'),
-               equals('We Leave From Here'));
+               equals('ajaxy_page'));
   }
 
   function testShouldBeAbleToLocateDomElements() {
@@ -92,11 +92,5 @@ limitations under the License.
     assertThat(driver.findElement(div).getInnerHtml(), equals('hello world'));
   }
 </script>
-<body>
-<iframe id="testFrame"></iframe>
-<script>
-  document.getElementById("testFrame").src = TestUtil.PAGES.formPage;
-</script>
+<iframe src="ajaxy_page.html" width="100%" height="300px"></iframe>
 <label>Text input: <input type="text"/></label>
-</body>
-</html>
