@@ -26,6 +26,7 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
@@ -37,6 +38,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
@@ -71,7 +73,12 @@ public class RemoteWebDriverTestSuite extends TestSuite {
   }
 
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
-    public RemoteWebDriverForTest() throws Exception {
+    // For the pleasure of cglib
+    public RemoteWebDriverForTest() throws MalformedURLException {
+      this(DesiredCapabilities.firefox());
+    }
+
+    public RemoteWebDriverForTest(Capabilities ignored) throws MalformedURLException {
       super(new URL("http://localhost:6000/common/hub"), DesiredCapabilities.firefox());
       // Use the local file detector so that we exercise the file upload paths
       setFileDetector(new LocalFileDetector());

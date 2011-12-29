@@ -23,12 +23,14 @@ import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class RemoteWebDriverIeTestSuite extends TestSuite {
@@ -74,8 +76,12 @@ public class RemoteWebDriverIeTestSuite extends TestSuite {
   }
 
   public static class RemoteIeWebDriverForTest extends RemoteWebDriver {
-    public RemoteIeWebDriverForTest() throws Exception {
+    public RemoteIeWebDriverForTest(Capabilities ignored) throws MalformedURLException {
       super(new URL("http://localhost:6000/common/hub"), DesiredCapabilities.internetExplorer());
+    }
+
+    public RemoteIeWebDriverForTest() throws MalformedURLException {
+      this(DesiredCapabilities.internetExplorer());
     }
   }
 }
