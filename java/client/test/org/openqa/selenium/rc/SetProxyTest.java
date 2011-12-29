@@ -69,7 +69,7 @@ public class SetProxyTest {
   }
 
   @Test
-  public void shouldDoSomething() {
+  public void shouldAllowProxyToBeSetViaTheCapabilities() {
     Proxy proxy = instance.asProxy();
 
     DesiredCapabilities caps = new DesiredCapabilities();
