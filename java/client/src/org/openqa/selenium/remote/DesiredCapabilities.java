@@ -66,10 +66,17 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     }
   }
 
-  public DesiredCapabilities(org.openqa.selenium.Capabilities other) {
-    super();
+  public DesiredCapabilities(Capabilities other) {
     if (other != null) {
-      capabilities.putAll(other.asMap());
+      merge(other);
+    }
+  }
+
+  public DesiredCapabilities(Capabilities... others) {
+    for (Capabilities caps : others) {
+      if (caps != null) {
+        merge(caps);
+      }
     }
   }
 
