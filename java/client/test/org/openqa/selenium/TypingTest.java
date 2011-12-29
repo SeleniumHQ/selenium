@@ -664,8 +664,8 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-        reason = "Untested browsers.")
+  @Ignore(value = {ANDROID, CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
+        reason = "Untested browsers.", issues = {3127})
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable"));
