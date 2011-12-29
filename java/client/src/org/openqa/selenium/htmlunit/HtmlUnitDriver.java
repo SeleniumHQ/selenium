@@ -505,6 +505,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   private Object parseArgumentIntoJavsacriptParameter(
       Context context, Scriptable scope, Object arg) {
+    if (arg instanceof WrapsElement) {
+      arg = ((WrapsElement) arg).getWrappedElement();
+    }
+    
     if (!(arg instanceof HtmlUnitWebElement ||
         arg instanceof HtmlElement || // special case the underlying type
         arg instanceof Number ||
