@@ -7,6 +7,7 @@ module Selenium
           begin
             driver = Selenium::WebDriver.for :chrome, :args => ["--user-agent=foo;bar"]
             driver.navigate.to url_for("click_jacker.html")
+
             ua = driver.execute_script "return window.navigator.userAgent"
             ua.should == "foo;bar"
           ensure
@@ -14,7 +15,7 @@ module Selenium
           end
         end
 
-        it "should raise ArgumentError if :switches is not an Array" do
+        it "should raise ArgumentError if :args is not an Array" do
           lambda {
             Selenium::WebDriver.for(:chrome, :args => "--foo")
           }.should raise_error(ArgumentError)
