@@ -1178,9 +1178,13 @@ webdriver.Key = {
   'END':          '\uE010',
   'HOME':         '\uE011',
   'ARROW_LEFT':   '\uE012',
+  'LEFT':         '\uE012',
   'ARROW_UP':     '\uE013',
+  'UP':           '\uE013',
   'ARROW_RIGHT':  '\uE014',
+  'RIGHT':        '\uE014',
   'ARROW_DOWN':   '\uE015',
+  'DOWN':         '\uE015',
   'INSERT':       '\uE016',
   'DELETE':       '\uE017',
   'SEMICOLON':    '\uE018',
@@ -1341,22 +1345,23 @@ webdriver.WebElement.ELEMENT_KEY = 'ELEMENT';
  *     whether the two WebElements are equal.
  */
 webdriver.WebElement.equals = function(a, b) {
-  return a == b ?
-      webdriver.promise.resolved(true) :
-      webdriver.promise.fullyResolved([a.id_, b.id_]).then(function(ids) {
-        // If the two element's have the same ID, they should be considered
-        // equal. Otherwise, they may still be equivalent, but we'll need to
-        // ask the server to check for us.
-        if (ids[0][webdriver.WebElement.ELEMENT_KEY] ==
-            ids[1][webdriver.WebElement.ELEMENT_KEY]) {
-          return true;
-        }
+  if (a == b) {
+    return webdriver.promise.resolved(true);
+  }
+  return webdriver.promise.fullyResolved([a.id_, b.id_]).then(function(ids) {
+    // If the two element's have the same ID, they should be considered
+    // equal. Otherwise, they may still be equivalent, but we'll need to
+    // ask the server to check for us.
+    if (ids[0][webdriver.WebElement.ELEMENT_KEY] ==
+        ids[1][webdriver.WebElement.ELEMENT_KEY]) {
+      return true;
+    }
 
-        var command = new webdriver.Command(
-            webdriver.CommandName.ELEMENT_EQUALS);
-        command.setParameter('other', b);
-        return a.schedule_(command, 'webdriver.WebElement.equals()');
-      });
+    var command = new webdriver.Command(
+        webdriver.CommandName.ELEMENT_EQUALS);
+    command.setParameter('other', b);
+    return a.schedule_(command, 'webdriver.WebElement.equals()');
+  });
 };
 
 

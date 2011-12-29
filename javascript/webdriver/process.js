@@ -58,6 +58,7 @@ webdriver.process.getEnv = function(name, opt_default) {
 
 /**
  * Sets an environment value. If the new value is either null or undefined, the
+ *     environment variable will be cleared.
  * @param {string} name The value to set.
  * @param {*} value The new value; will be coerced to a string.
  * @export

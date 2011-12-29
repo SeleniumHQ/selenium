@@ -73,7 +73,7 @@ webdriver.atoms.inject.frame.defaultContent = function() {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @return {string} The window corresponding to the frame element
  * wrapped in a JSON string as defined by the wire protocol.
  */

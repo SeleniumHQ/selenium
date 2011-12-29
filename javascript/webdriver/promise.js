@@ -648,7 +648,7 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
 /**
  * Handles the execution of scheduled tasks, each of which may be an
  * asynchronous operation. The application will ensure tasks are executed in the
- * ordered scheduled, starting each tasks only once those before it have
+ * ordered scheduled, starting each task only once those before it have
  * completed.
  *
  * <p>Each task scheduled with the application may return a
@@ -1213,13 +1213,13 @@ goog.inherits(webdriver.promise.Application.Frame_, webdriver.promise.Deferred);
 
 /**
  * The task currently being executed within this frame.
- * @type {!webdriver.promise.Application.Task_}
+ * @type {webdriver.promise.Application.Task_}
  */
 webdriver.promise.Application.Frame_.prototype.pendingTask = null;
 
 
 /**
- * Whethr this frame is currently blocked on a waiting task. Each time a
+ * Whether this frame is currently blocked on a waiting task. Each time a
  * frame blocked on waiting empties its queue, it will be marked as inactive,
  * but left on the stack for future polling attempts for the wait condition.
  * @type {boolean}

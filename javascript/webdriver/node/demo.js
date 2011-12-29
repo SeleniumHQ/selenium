@@ -92,7 +92,7 @@ if (browser) {
     });
   });
 } else {
-  log('\n----------------------------------------------------------------------');
+  log('\n--------------------------------------------------------------------');
   log('Welcome to the WebDriverJS node demo. This is just for playing around');
   log('with a bare JS client for WebDriver. A full server implementation for');
   log('Node is still in the works. As such, you will need to start a separate');
@@ -101,14 +101,15 @@ if (browser) {
   setDefaultUrl(webdriver.process.getEnv(webdriver.Builder.SERVER_URL_ENV) ||
                 DEFAULT_SERVER_URL);
   log('');
-  log('You may change the default URL by calling setDefaultUrl(). Conversely, ');
+  log('You may change the default URL by calling setDefaultUrl(). Conversely,');
   log('you may set the URL for individual clients on the webdriver.Builder');
   log('');
   log('To create new WebDriver clients, you can use the Builder (available to');
   log('this REPL as "webdriver.Builder"), or you may simply call ');
-  log('createDriver(browserName), where browserName is the name of the browser');
-  log('you want a client for: chrome, firefox, internet explorer, or opera');
-  log('----------------------------------------------------------------------\n');
+  log('createDriver(browserName), where browserName is the name of the');
+  log('browser you want a client for: chrome, firefox, internet explorer, ');
+  log('or opera');
+  log('--------------------------------------------------------------------\n');
   log('');
 
   var repl = require('repl').start();

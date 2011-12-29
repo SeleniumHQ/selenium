@@ -225,7 +225,8 @@ webdriver.Builder.prototype.build = function() {
     session = webdriver.Builder.createSession_(executor, this.capabilities_);
   } else {
     if (!this.serverUrl_) {
-      throw new Error('The remote WebDriver server URL has not been specified.');
+      throw new Error(
+          'The remote WebDriver server URL has not been specified.');
     }
 
     var clientCtor = webdriver.process.isNative() ?
@@ -240,7 +241,7 @@ webdriver.Builder.prototype.build = function() {
 
     if (this.sessionId_) {
       session = webdriver.Builder.getSession_(this.sessionId_, executor);
-    } else if (webdriver.process.isNative() || useFirefoxDomExecutor) {
+    } else if (webdriver.process.isNative()) {
       session = webdriver.Builder.createSession_(executor, this.capabilities_);
     } else {
       throw new Error('Unable to create a new client for this browser. The ' +

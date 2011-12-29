@@ -33,7 +33,7 @@ goog.require('goog.style');
  * @return {boolean} Whether the element is checked or selected.
  */
 webdriver.atoms.element.isSelected = function(element) {
-  // Although this method looks unloved, its compiled form is used by 
+  // Although this method looks unloved, its compiled form is used by
   // the Chrome and OperaDrivers.
   if (!bot.dom.isSelectable(element)) {
     return false;

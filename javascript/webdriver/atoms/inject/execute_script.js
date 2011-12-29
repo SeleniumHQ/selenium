@@ -27,7 +27,7 @@ goog.require('bot.inject.cache');
 /**
  * Wrapper to allow passing a seliazed window object to executeScript.
  *
- * @param {!(string|function)} fn The function to execute.
+ * @param {!(string|Function)} fn The function to execute.
  * @param {Array.<*>} args Array of arguments to pass to fn.
  * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
  *     object to be read from the cache.
@@ -70,7 +70,7 @@ webdriver.atoms.inject.executeAsyncScript =
 webdriver.atoms.inject.getWindow_ = function(opt_window) {
   var win;
   if (opt_window) {
-    win = bot.inject.cache.getElement(opt_window['WINDOW']);
+    win = bot.inject.cache.getElement(opt_window[bot.inject.WINDOW_KEY]);
   } else {
     win = window;
   }

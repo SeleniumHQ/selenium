@@ -27,7 +27,7 @@ goog.require('webdriver.atoms.element');
 
 /**
  * Gets the visisble text for the given element.
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @return {string} The visible text wrapped in a JSON string as defined by the
  *     WebDriver wire protocol.
  */
@@ -37,7 +37,7 @@ webdriver.atoms.inject.dom.getText = function(element) {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @return {string} A boolean describing whether the element is
  *     checked or selected wrapped in a JSON string as defined by
  *     the wire protocol.
@@ -48,7 +48,7 @@ webdriver.atoms.inject.dom.isSelected = function(element) {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @return {string} The coordinates of the top left corner in a JSON
  *     string as defined by the wire protocol.
  */
@@ -58,7 +58,7 @@ webdriver.atoms.inject.dom.getTopLeftCoordinates = function(element) {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @param {string} attribute The attribute to look up.
  * @return {string} The requested attribute value in a JSON string
  *     as defined by the wire protocol.
