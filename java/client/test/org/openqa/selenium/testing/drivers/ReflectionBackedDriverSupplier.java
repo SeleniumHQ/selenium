@@ -44,7 +44,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         return null;
       }
 
-      return driverClass.newInstance();
+      return driverClass.getConstructor(Capabilities.class).newInstance(caps);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }

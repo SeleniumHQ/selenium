@@ -52,8 +52,12 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
       tweaked.setCapability(PROFILE, createTemporaryProfile());
     } else {
       try {
-        FirefoxProfile profile =
-            FirefoxProfile.fromJson((String) tweaked.getCapability(PROFILE));
+        FirefoxProfile profile;
+        if (tweaked.getCapability(PROFILE) instanceof FirefoxProfile) {
+          profile = (FirefoxProfile) tweaked.getCapability(PROFILE);
+        } else {
+          profile = FirefoxProfile.fromJson((String) tweaked.getCapability(PROFILE));
+        }
         copyExtensionTo(profile);
         tweaked.setCapability(PROFILE, profile);
       } catch (IOException e) {

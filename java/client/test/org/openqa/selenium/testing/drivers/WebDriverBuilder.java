@@ -33,8 +33,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
+  private Capabilities capabilities;
+
   public WebDriver get() {
     Capabilities caps = getCabilitiesFor(Browser.detect());
+    caps = new DesiredCapabilities(capabilities, caps);
 
     List<Supplier<WebDriver>> suppliers = getSuppliers(caps);
 
@@ -73,7 +76,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     suppliers.add(new RemoteSupplier(caps));
     suppliers.add(new OperaDriverSupplier(caps));
     suppliers.add(new ReflectionBackedDriverSupplier(caps));
-    suppliers.add(new DefaultDriverSupplier());
+    suppliers.add(new DefaultDriverSupplier(caps));
     return suppliers;
   }
 
@@ -129,6 +132,12 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         Boolean.getBoolean("selenium.browser.native_events"));
 
     return caps;
+  }
+
+  public WebDriverBuilder setCapabilities(Capabilities capabilities) {
+    this.capabilities = capabilities;
+
+    return this;
   }
 
   private enum LogLevel {

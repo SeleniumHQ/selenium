@@ -20,8 +20,10 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
@@ -30,8 +32,11 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
   private static final Logger log = Logger.getLogger(DefaultDriverSupplier.class.getName());
   private Class<? extends WebDriver> driverClass;
+  private final Capabilities capabilities;
 
-  public DefaultDriverSupplier() {
+  public DefaultDriverSupplier(Capabilities capabilities) {
+    this.capabilities = capabilities;
+
     try {
       // Only support a default driver if we're actually in dev mode.
       if (isInDevMode()) {
@@ -49,10 +54,14 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     log.info("Providing default driver instance");
 
     try {
-      return driverClass.newInstance();
+      return driverClass.getConstructor(Capabilities.class).newInstance(capabilities);
     } catch (InstantiationException e) {
       throw Throwables.propagate(e);
     } catch (IllegalAccessException e) {
+      throw Throwables.propagate(e);
+    } catch (NoSuchMethodException e) {
+      throw Throwables.propagate(e);
+    } catch (InvocationTargetException e) {
       throw Throwables.propagate(e);
     }
   }
