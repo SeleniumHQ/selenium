@@ -31,9 +31,13 @@ import java.net.URL;
 
 public class SeleneseBackedWebDriver extends RemoteWebDriver
     implements TakesScreenshot {
-  public SeleneseBackedWebDriver() throws Exception {
+  public SeleneseBackedWebDriver(Capabilities ignored) throws Exception {
     super(newCommandExecutor(getSeleniumServerUrl(), describeBrowser()),
-        describeBrowser());
+          describeBrowser());
+  }
+  
+  public SeleneseBackedWebDriver() throws Exception {
+    this(null);
   }
 
   private static CommandExecutor newCommandExecutor(URL remoteAddress, Capabilities capabilities)
