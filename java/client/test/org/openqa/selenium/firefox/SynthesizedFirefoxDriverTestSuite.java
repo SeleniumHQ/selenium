@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX_SYNTHESIZED;
+import static org.openqa.selenium.testing.Ignore.NativeEventsEnabledState.DISABLED;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -38,8 +38,7 @@ public class SynthesizedFirefoxDriverTestSuite extends TestSuite {
 //        .addSourceDir("java/client/test/org/openqa/selenium/firefox") Haven't been running for a while, apparently, and some of them don't pass now...
         .usingDriver(SynthesizedFirefoxDriver.class)
         .exclude(FIREFOX)
-        .exclude(FIREFOX_SYNTHESIZED)
-        .exclude(Ignore.NativeEventsEnabledState.DISABLED)
+        .exclude(DISABLED)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();
