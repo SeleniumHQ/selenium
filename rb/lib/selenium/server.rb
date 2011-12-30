@@ -90,6 +90,18 @@ module Selenium
       end
     end
 
+    #
+    # @param [String] jar Path to the server jar.
+    # @param [Hash] opts the options to create the server process with
+    #
+    # @option opts [Integer] :port Port the server should listen on (default: 4444).
+    # @option opts [Integer] :timeout Seconds to wait for server launch/shutdown (default: 30)
+    # @option opts [true,false] :background Run the server in the background (default: false)
+    # @option opts [true,false,String] :log Either a path to a log file,
+    #                                      or true to pass server log to stdout.
+    # @raise [Errno::ENOENT] if the jar file does not exist
+    #
+
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
 
