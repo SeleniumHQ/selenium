@@ -4,12 +4,10 @@ import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore.Driver;
-import org.openqa.selenium.testing.Ignore.NativeEventsEnabledState;
 
 import java.util.Set;
 
 public class IgnoreComparator {
-  private NativeEventsEnabledState nativeEventsIgnoreState = NativeEventsEnabledState.ALL;
   private Set<Ignore.Driver> ignored = Sets.newHashSet();
   private Platform currentPlatform = Platform.getCurrent();
 
@@ -18,18 +16,8 @@ public class IgnoreComparator {
     ignored.add(driverToIgnore);
   }
 
-  public void setNativeEventsIgnoreState(NativeEventsEnabledState value) {
-    this.nativeEventsIgnoreState = value;
-  }
-
   public void setCurrentPlatform(Platform platform) {
     currentPlatform = platform;
-  }
-
-  private boolean shouldIgnoreBecauseOfNativeEvents(NativeEventsEnabledState nativeEvents) {
-    return nativeEvents == NativeEventsEnabledState.ALL ||
-           this.nativeEventsIgnoreState == NativeEventsEnabledState.ALL ||
-           this.nativeEventsIgnoreState == nativeEvents;
   }
 
   public boolean shouldIgnore(Ignore ignoreAnnotation) {
@@ -45,7 +33,7 @@ public class IgnoreComparator {
       if (ignored.contains(value) || value == Ignore.Driver.ALL) {
         for (Platform platform : ignoreAnnotation.platforms()) {
           if (platform.is(currentPlatform)) {
-            return shouldIgnoreBecauseOfNativeEvents(ignoreAnnotation.nativeEvents());
+            return true;
           }
         }
       }

@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2011 WebDriver committers
+Copyright 2011 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.testing;
 
@@ -24,28 +24,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+// Adding this as I remove the native events data from the Ignore. This is not
+// currently wired up into the TestIgnorance, but could be with minimal effort.
+
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface Ignore {
-
-  public static enum Driver {
-    ALL,
-    ANDROID,
-    CHROME,
-    HTMLUNIT,
-    FIREFOX,
-    IE,
-    IPHONE,
-    OPERA,
-    REMOTE,
-    SELENESE,
-  }
-  
-  Driver[] value() default {Driver.ALL};
-  
-  Platform[] platforms() default {Platform.ANY};
-
-  String reason() default ("Not implemented in driver yet");
-  
-  int[] issues() default {};
+@Target(ElementType.METHOD)
+public @interface NativeEventsRequired {
+  boolean enabled() default true;
+  Platform[] onlyOn() default {Platform.ANY};
 }
