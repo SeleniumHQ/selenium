@@ -17,20 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class SupportTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(FirefoxDriver.class)
-        .exclude(FIREFOX)
+        .using(Browser.ff)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();

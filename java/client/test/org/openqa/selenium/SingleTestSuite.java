@@ -17,58 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.net.PortProber.findFreePort;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.drivers.Browser;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.openqa.selenium.net.PortProber.findFreePort;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestSuite {
-  private static final String CHROME = "org.openqa.selenium.chrome.ChromeDriver";
-
-  private static final String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
-  private static final String FIREFOX_TEST =
-      "org.openqa.selenium.firefox.SynthesizedFirefoxDriver";
-
-  private static final String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
-  private static final String HTML_UNIT_JS =
-      "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
-  private static final String IE = "org.openqa.selenium.ie.InternetExplorerDriverTestSuite$TestInternetExplorerDriver";
-  private static final String IPHONE = "org.openqa.selenium.iphone.IPhoneDriver";
-
-  private static final String OPERA = "com.opera.core.systems.OperaDriver";
-
-  private static final String REMOTE =
-      "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
-  private static final String REMOTE_IE =
-      "org.openqa.selenium.remote.server.RemoteWebDriverIeTestSuite$RemoteIeWebDriverForTest";
-  private static final String SELENIUM = "org.openqa.selenium.v1.SeleneseBackedWebDriver";
-
-  private static final Map<String, Ignore.Driver> EXCLUSIONS_BY_DRIVER =
-      new HashMap<String, Ignore.Driver>() {
-        {
-          put(CHROME, Ignore.Driver.CHROME);
-          put(FIREFOX, Ignore.Driver.FIREFOX);
-          put(FIREFOX_TEST, Ignore.Driver.FIREFOX);
-          put(HTML_UNIT, Ignore.Driver.HTMLUNIT);
-          put(HTML_UNIT_JS, Ignore.Driver.HTMLUNIT);
-          put(IE, Ignore.Driver.IE);
-          put(IPHONE, Ignore.Driver.IPHONE);
-          put(OPERA, Ignore.Driver.OPERA);
-          put(REMOTE, Ignore.Driver.REMOTE);
-          put(REMOTE_IE, Ignore.Driver.IE);
-          put(SELENIUM, Ignore.Driver.SELENESE);
-        }
-      };
-
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    Browser browser = Browser.ff;
 
     System.setProperty("selenium.browser.remote", "false");
     System.setProperty("selenium.browser.selenium", "false");
@@ -81,7 +40,7 @@ public class SingleTestSuite extends TestSuite {
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(driver)
+        .using(browser)
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ClickScrollingTest")
@@ -89,13 +48,12 @@ public class SingleTestSuite extends TestSuite {
         .onlyRun("FrameSwitchingTest")
 //        .method("testShouldSetRelatedTargetForMouseOver")
         .method("testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs")
-        .exclude(ALL)
-        .exclude(EXCLUSIONS_BY_DRIVER.get(driver))
         .outputTestNames()
         .leaveRunning()
         ; // Yeah, this look strange :)
 
-    if (REMOTE.equals(driver) || REMOTE_IE.equals(driver)) {
+
+    if (Boolean.getBoolean("selenium.browser.remote")) {
       builder.addSuiteDecorator(
           "org.openqa.selenium.remote.server.RemoteWebDriverTestSuite$RemoteDriverServerStarter");
     }

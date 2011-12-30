@@ -17,15 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.NativeEventsEnabledState.ENABLED;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class NativeEventsFirefoxDriverTestSuite extends TestSuite {
 
@@ -34,11 +31,11 @@ public class NativeEventsFirefoxDriverTestSuite extends TestSuite {
       return new TestSuite();
     }
 
+    System.setProperty("selenium.browser.native", "true");
+
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(NativeEventsFirefoxDriver.class)
-        .exclude(FIREFOX)
-        .exclude(ENABLED)
+        .using(Browser.ff)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();

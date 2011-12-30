@@ -19,26 +19,25 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestSuite {
 
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(HtmlUnitDriverForTest.class)
-        .exclude(HTMLUNIT)
+        .using(Browser.htmlunit_js)
         .includeJavascriptTests()
         .create();
   }
 
+  // Used by the reflection-based supplier
   public static class HtmlUnitDriverForTest extends HtmlUnitDriver {
     public HtmlUnitDriverForTest(Capabilities capabilities) {
       super(tweak(capabilities));

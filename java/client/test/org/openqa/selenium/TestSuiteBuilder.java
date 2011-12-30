@@ -17,11 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertTrue;
-
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -31,23 +26,27 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.IgnoredTestCallback;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.testing.drivers.TestIgnorance;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
+
 public class TestSuiteBuilder {
   private Set<File> sourceDirs = Sets.newHashSet();
-  private Class<? extends WebDriver> driverClass;
   private boolean keepDriver;
   private boolean includeJavascript;
   private boolean withDriver = true;
@@ -61,7 +60,8 @@ public class TestSuiteBuilder {
   private Set<IgnoredTestCallback> ignoredTestCallbacks = Sets.newHashSet();
   private boolean outputTestNames = false;
   private File baseDir;
-  private IgnoreComparator ignoreComparator = new IgnoreComparator();
+  private TestIgnorance ignorance = new TestIgnorance(Browser.none);
+  private Browser browser;
 
   public TestSuiteBuilder() {
     baseDir = InProject.locate("Rakefile").getParentFile();
@@ -75,24 +75,9 @@ public class TestSuiteBuilder {
     return this;
   }
 
-  public TestSuiteBuilder usingDriver(Class<? extends WebDriver> ss) {
-    this.driverClass = ss;
-    System.setProperty("selenium.browser.class_name", ss.getName());
-    return this;
-  }
-
-  @SuppressWarnings("unchecked")
-  public TestSuiteBuilder usingDriver(String driverClassName) {
-    try {
-      Class<?> clazz = Class.forName(driverClassName);
-      return usingDriver((Class<? extends WebDriver>) clazz);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public TestSuiteBuilder exclude(Ignore.Driver tagToIgnore) {
-    ignoreComparator.addDriver(tagToIgnore);
+  public TestSuiteBuilder using(Browser browser) {
+    this.browser = browser;
+    ignorance.setBrowser(browser);
     return this;
   }
 
@@ -132,7 +117,7 @@ public class TestSuiteBuilder {
     }
 
     if (withDriver) {
-      assertThat("No driver class set", driverClass, is(notNullValue()));
+      assertThat("No driver class set", browser, is(notNullValue()));
     }
 
     TestSuite suite = new TestSuite();
@@ -217,7 +202,7 @@ public class TestSuiteBuilder {
       return;
     }
 
-    if (isIgnored(clazz)) {
+    if (ignorance.isIgnored(clazz)) {
       invokeIgnoreCallbacks(clazz, "", clazz.getAnnotation(Ignore.class));
       return;
     }
@@ -267,8 +252,8 @@ public class TestSuiteBuilder {
             restartDriver = true;
           }
 
-          if (withDriver && driverClass != null) {
-            Supplier<WebDriver> supplier = new WebDriverBuilder();
+          if (withDriver && browser != null) {
+            Supplier<WebDriver> supplier = new WebDriverBuilder(browser);
             test = new DriverTestDecorator(test, supplier,
                 keepDriver, freshDriver, restartDriver);
           }
@@ -286,7 +271,7 @@ public class TestSuiteBuilder {
       return testMethodNames.contains(method.getName());
     }
 
-    if (isIgnored(method)) {
+    if (ignorance.isIgnored(method)) {
       invokeIgnoreCallbacks(method.getDeclaringClass(), method.getName(), method.getAnnotation(Ignore.class));
       return false;
     }
@@ -318,10 +303,6 @@ public class TestSuiteBuilder {
     for (IgnoredTestCallback ignoredTestCallback : ignoredTestCallbacks) {
       ignoredTestCallback.callback(clazz, methodName, ignore);
     }
-  }
-
-  private boolean isIgnored(AnnotatedElement annotatedElement) {
-    return ignoreComparator.shouldIgnore(annotatedElement.getAnnotation(Ignore.class));
   }
 
   private Class<?> getClassFrom(File file) {
@@ -440,12 +421,9 @@ public class TestSuiteBuilder {
       } else {
         message = "Ignoring: " + clazz.getName() + "." + testName;
       }
-      System.err.println(message + ": " + ignore.reason());
-    }
-  }
 
-  public TestSuiteBuilder exclude(Ignore.NativeEventsEnabledState value) {
-    ignoreComparator.setNativeEventsIgnoreState(value);
-    return this;
+      String reason = ignore == null ? "No reason given" : ignore.reason();
+      System.err.println(message + ": " + reason);
+    }
   }
 }

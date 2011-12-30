@@ -19,6 +19,7 @@ package org.openqa.selenium.android;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rotatable;
@@ -56,6 +57,10 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
    */
   public AndroidDriver() {
     this(getDefaultUrl());
+  }
+
+  public AndroidDriver(Capabilities ignored) {
+    this();
   }
 
   public AndroidDriver(String remoteAddress) throws MalformedURLException {

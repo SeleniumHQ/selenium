@@ -17,19 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
 
+import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
+
 public class HtmlUnitDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(HtmlUnitDriver.class)
-        .exclude(HTMLUNIT)
+        .using(htmlunit)
         .create();
   }
 }

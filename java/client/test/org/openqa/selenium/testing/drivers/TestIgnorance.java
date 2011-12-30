@@ -18,11 +18,14 @@ limitations under the License.
 package org.openqa.selenium.testing.drivers;
 
 import org.junit.runners.model.FrameworkMethod;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreComparator;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.lang.reflect.AnnotatedElement;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -37,16 +40,19 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
  * Class that decides whether a test class or method should be ignored.
  */
 public class TestIgnorance {
-  private final IgnoreComparator ignoreComparator = new IgnoreComparator();
-  private final Browser browser;
-
-  public TestIgnorance() {
-    this(Browser.detect());
-  }
+  private IgnoreComparator ignoreComparator = new IgnoreComparator();
+  private Browser browser;
 
   public TestIgnorance(Browser browser) {
-    this.browser = checkNotNull(browser, "Browser to use must be set");
-    addIgnoresForBrowser(browser, ignoreComparator);
+    setBrowser(browser);
+  }
+
+  public boolean isIgnored(AnnotatedElement element) {
+    boolean ignored = ignoreComparator.shouldIgnore(element.getAnnotation(Ignore.class));
+
+    ignored |= isIgnoredDueToJavascript(element.getAnnotation(JavascriptEnabled.class));
+
+    return ignored;
   }
 
   // JUnit 4
@@ -67,8 +73,17 @@ public class TestIgnorance {
 
     return !browser.isJavascriptEnabled();
   }
-  
+
+  public void setBrowser(Browser browser) {
+    this.browser = checkNotNull(browser, "Browser to use must be set");
+    addIgnoresForBrowser(browser, ignoreComparator);
+  }
+
   private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
+    if (Boolean.getBoolean("selenium.browser.selenium")) {
+      comparator.addDriver(SELENESE);
+    }
+
     switch (browser) {
       case android:
         comparator.addDriver(ANDROID);
@@ -101,11 +116,15 @@ public class TestIgnorance {
         comparator.addDriver(REMOTE);
         break;
 
+      case none:
+        comparator.addDriver(ALL);
+        break;
+
       case opera:
         comparator.addDriver(OPERA);
         comparator.addDriver(REMOTE);
         break;
-      
+
       case safari:
         comparator.addDriver(SELENESE);
         comparator.addDriver(REMOTE);

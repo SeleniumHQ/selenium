@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -28,6 +25,9 @@ import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.testing.drivers.Browser.ie;
+
 public class InternetExplorerDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     System.setProperty("webdriver.development", "true");
@@ -35,8 +35,7 @@ public class InternetExplorerDriverTestSuite extends TestSuite {
     if (TestSuiteBuilder.getEffectivePlatform().is(WINDOWS)) {
       return new TestSuiteBuilder()
           .addSourceDir("java/client/test")
-          .usingDriver(TestInternetExplorerDriver.class)
-          .exclude(IE)
+          .using(ie)
           .includeJavascriptTests()
           .keepDriverInstance()
           .outputTestNames()

@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -33,6 +30,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.openqa.selenium.testing.drivers.Browser.ie;
+
 public class RemoteWebDriverIeTestSuite extends TestSuite {
   public static Test suite() throws Exception {
     if (!(Platform.getCurrent().is(Platform.WINDOWS))) {
@@ -41,13 +40,7 @@ public class RemoteWebDriverIeTestSuite extends TestSuite {
       return toReturn;
     }
 
-//    System.setProperty("webdriver.development", "true");
-//    String arch = System.getProperty("os.arch").toLowerCase() + "/";
-//    if (arch.contains("64")) {
-//      System.setProperty("jna.library.path", "..\\build\\x64\\Debug;build\\x64\\Debug");
-//    } else {
-//      System.setProperty("jna.library.path", "..\\build\\Win32\\Debug;build\\Win32\\Debug");
-//    }
+    System.setProperty("selenium.browser.remote", "true");
 
     Test rawSuite =
         new TestSuiteBuilder()
@@ -55,9 +48,7 @@ public class RemoteWebDriverIeTestSuite extends TestSuite {
             .addSourceDir("java/server/test")
             .keepDriverInstance()
             .includeJavascriptTests()
-            .usingDriver(RemoteIeWebDriverForTest.class)
-            .exclude(IE)
-            .exclude(REMOTE)
+            .using(ie)
             .excludePattern(".*IntegrationTest")
             .excludePattern(".*CaptureNetworkTrafficTest")
             .excludePattern(".*FirefoxMiniHTMLRunnerTest")

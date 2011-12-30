@@ -34,8 +34,10 @@ public enum Browser {
   ie,
   ipad,
   iphone,
+  none, // For those cases where you don't actually want a browser
   opera,
-  safari;
+  safari
+  ;
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
 

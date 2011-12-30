@@ -17,14 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import static org.openqa.selenium.net.PortProber.findFreePort;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class SeleneseWebDriverTestSuite extends TestSuite {
 
@@ -33,8 +30,7 @@ public class SeleneseWebDriverTestSuite extends TestSuite {
 
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .usingDriver(FirefoxDriver.class)
-        .exclude(SELENESE)
+        .using(Browser.ff)
         .includeJavascriptTests()
         .keepDriverInstance()
         .create();

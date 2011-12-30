@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-
 import com.google.common.collect.Maps;
 
 import junit.extensions.TestSetup;
@@ -36,6 +33,7 @@ import org.openqa.selenium.remote.HttpRequest;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -44,7 +42,7 @@ import java.util.Map;
 
 public class RemoteWebDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
-    System.setProperty("webdriver.development", "true");
+    System.setProperty("selenium.browser.remote", "true");
 
     Test rawSuite =
         new TestSuiteBuilder()
@@ -52,9 +50,7 @@ public class RemoteWebDriverTestSuite extends TestSuite {
             .addSourceDir("java/server/test")
             .keepDriverInstance()
             .includeJavascriptTests()
-            .usingDriver(RemoteWebDriverForTest.class)
-            .exclude(FIREFOX)
-            .exclude(REMOTE)
+            .using(Browser.ff)
             .excludePattern(".*IntegrationTest")
             .excludePattern(".*CaptureNetworkTrafficTest")
             .excludePattern(".*FirefoxMiniHTMLRunnerTest")

@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
-
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
@@ -32,11 +30,22 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.logging.Level;
 
+import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
+
 public class WebDriverBuilder implements Supplier<WebDriver> {
   private Capabilities capabilities;
+  private final Browser browser;
+
+  public WebDriverBuilder() {
+    this(Browser.detect());
+  }
+
+  public WebDriverBuilder(Browser browser) {
+    this.browser = browser;
+  }
 
   public WebDriver get() {
-    Capabilities caps = getCabilitiesFor(Browser.detect());
+    Capabilities caps = getCabilitiesFor(browser);
     caps = new DesiredCapabilities(capabilities, caps);
 
     List<Supplier<WebDriver>> suppliers = getSuppliers(caps);
@@ -54,7 +63,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   private void modifyLogLevel(WebDriver driver) {
     Class[] args = {Level.class};
-    Method setLogLevel = null;
+    Method setLogLevel;
     try {
       setLogLevel = driver.getClass().getMethod("setLogLevel", args);
 
@@ -89,6 +98,10 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     DesiredCapabilities caps;
 
     switch (detect) {
+      case android:
+        caps = DesiredCapabilities.android();
+        break;
+
       case chrome:
         caps = DesiredCapabilities.chrome();
         break;

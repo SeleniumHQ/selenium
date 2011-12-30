@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -27,6 +25,7 @@ import junit.framework.TestSuite;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.util.Arrays;
@@ -45,8 +44,7 @@ public class ChromeDriverTestSuite extends TestSuite {
 
     Test rawTest = new TestSuiteBuilder()
         .addSourceDir("java/client/test")
-        .exclude(CHROME)
-        .usingDriver(DriverForTest.class)
+        .using(Browser.chrome)
         .includeJavascriptTests()
         .keepDriverInstance()
         .restrictToPackage("org.openqa.selenium")

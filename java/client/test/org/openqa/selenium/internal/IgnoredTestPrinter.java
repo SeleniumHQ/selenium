@@ -3,8 +3,7 @@ package org.openqa.selenium.internal;
 import com.google.common.io.Files;
 
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.File;
 
@@ -12,11 +11,13 @@ public class IgnoredTestPrinter {
   public static void main(String[] args) throws Exception {
     IgnoreCollector collector = new IgnoreCollector();
 
-    for (Ignore.Driver driver : Ignore.Driver.values()) {
+    for (Browser browser : Browser.values()) {
+      if (browser == Browser.none) {
+        continue;
+      }
       new TestSuiteBuilder()
           .addSourceDir("java/client/test")
-          .usingDriver(WebDriver.class)
-          .exclude(driver)
+          .using(browser)
           .withIgnoredTestCallback(collector)
           .create()
       ;

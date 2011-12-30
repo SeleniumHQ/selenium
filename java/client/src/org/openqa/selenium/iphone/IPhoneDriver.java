@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.iphone;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -83,6 +84,10 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    */
   public IPhoneDriver() throws Exception {
     this(DEFAULT_IWEBDRIVER_URL);
+  }
+
+  public IPhoneDriver(Capabilities ignored) throws Exception {
+    this();
   }
 
   @Override

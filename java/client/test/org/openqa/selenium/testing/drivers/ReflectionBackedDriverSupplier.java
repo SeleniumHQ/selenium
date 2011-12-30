@@ -21,11 +21,15 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
@@ -39,12 +43,22 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
   public WebDriver get() {
     try {
-      Class<? extends WebDriver> driverClass = mapToClass(caps);
+      DesiredCapabilities toUse = new DesiredCapabilities(caps);
+
+      Class<? extends WebDriver> driverClass = mapToClass(toUse);
       if (driverClass == null) {
         return null;
       }
 
-      return driverClass.getConstructor(Capabilities.class).newInstance(caps);
+      if (DesiredCapabilities.firefox().getBrowserName().equals(toUse.getBrowserName())) {
+        FirefoxProfile profile = new FirefoxProfile();
+        boolean enableEvents = Boolean.getBoolean("selenium.browser.native") ||
+                               Platform.getCurrent().is( WINDOWS);
+        profile.setPreference("webdriver_enable_native_events", enableEvents);
+        toUse.setCapability(FirefoxDriver.PROFILE, profile);
+      }
+
+      return driverClass.getConstructor(Capabilities.class).newInstance(toUse);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
@@ -56,15 +70,11 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     String className = null;
 
     if (DesiredCapabilities.android().getBrowserName().equals(name)) {
-      // Do nothing
+      className = "org.openqa.selenium.android.AndroidDriver";
     } else if (DesiredCapabilities.chrome().getBrowserName().equals(name)) {
       className = "org.openqa.selenium.chrome.ChromeDriver";
     } else if (DesiredCapabilities.firefox().getBrowserName().equals(name)) {
-      if (isInDevMode()) {
-        className = "org.openqa.selenium.firefox.SynthesizedFirefoxDriver";
-      } else {
-        className = "org.openqa.selenium.firefox.FirefoxDriver";
-      }
+      className = getFirefoxClassName();
     } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(name)) {
       if (caps.isJavascriptEnabled()) {
         className =
@@ -97,6 +107,14 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       return Class.forName(className).asSubclass(WebDriver.class);
     } catch (ClassNotFoundException e) {
       throw Throwables.propagate(e);
+    }
+  }
+
+  private String getFirefoxClassName() {
+    if (isInDevMode()) {
+      return "org.openqa.selenium.firefox.SynthesizedFirefoxDriver";
+    } else {
+      return "org.openqa.selenium.firefox.FirefoxDriver";
     }
   }
 }
