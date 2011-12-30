@@ -24,6 +24,20 @@ describe Selenium::Server do
     server.start
   end
 
+  it "waits for the server process by default" do
+    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+
+    ChildProcess.should_receive(:build).
+                 with("java", "-jar", "selenium-server-test.jar", "-port", "4444").
+                 and_return(mock_process)
+
+    server = Selenium::Server.new("selenium-server-test.jar")
+    server.stub!(:socket).and_return(mock_poller)
+
+    mock_process.should_receive(:wait)
+    server.start
+  end
+
   it "adds additional args" do
     File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
 

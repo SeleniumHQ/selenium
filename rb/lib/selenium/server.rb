@@ -119,13 +119,7 @@ module Selenium
       process.start
       poll_for_service
 
-      unless @background
-        begin
-          sleep 1 while process.alive?
-        rescue Errno::ECHILD
-          # no longer alive
-        end
-      end
+      process.wait unless @background
     end
 
     def stop
