@@ -15,7 +15,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase {

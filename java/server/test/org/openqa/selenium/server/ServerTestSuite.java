@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.server;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.TestSuiteBuilder;

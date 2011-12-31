@@ -190,13 +190,15 @@ public class SeleneseTestBase {
     } else if (expected instanceof String[] && actual instanceof String[]) {
       assertEquals((String[]) expected, (String[]) actual);
     } else {
-      assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead", expected.equals(actual));
+      assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead",
+          expected.equals(actual));
     }
   }
 
   /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese */
   public static void assertEquals(String expected, String actual) {
-    assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead", seleniumEquals(expected, actual));
+    assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead",
+        seleniumEquals(expected, actual));
   }
 
   /**
@@ -218,8 +220,8 @@ public class SeleneseTestBase {
     if (expectedPattern == null || actual == null) {
       return expectedPattern == null && actual == null;
     }
-    if (actual.startsWith("regexp:") || actual.startsWith("regex:") ||
-        actual.startsWith("regexpi:") || actual.startsWith("regexi:")) {
+    if (actual.startsWith("regexp:") || actual.startsWith("regex:")
+        || actual.startsWith("regexpi:") || actual.startsWith("regexi:")) {
       // swap 'em
       String tmp = actual;
       actual = expectedPattern;
@@ -258,8 +260,8 @@ public class SeleneseTestBase {
     expectedGlob = expectedGlob.replaceAll("\\*", ".*");
     expectedGlob = expectedGlob.replaceAll("\\?", ".");
     if (!Pattern.compile(expectedGlob, Pattern.DOTALL).matcher(actual).matches()) {
-      System.out.println("expected \"" + actual + "\" to match glob \"" + expectedPattern +
-          "\" (had transformed the glob into regexp \"" + expectedGlob + "\"");
+      System.out.println("expected \"" + actual + "\" to match glob \"" + expectedPattern
+          + "\" (had transformed the glob into regexp \"" + expectedGlob + "\"");
       return false;
     }
     return true;
@@ -325,7 +327,8 @@ public class SeleneseTestBase {
       }
     }
     if (misMatch) {
-      return "Expected " + stringArrayToString(expected) + " but saw " + stringArrayToString(actual);
+      return "Expected " + stringArrayToString(expected) + " but saw "
+          + stringArrayToString(actual);
     }
     return null;
   }
@@ -333,10 +336,7 @@ public class SeleneseTestBase {
   private static String stringArrayToString(String[] sa) {
     StringBuffer sb = new StringBuffer("{");
     for (int j = 0; j < sa.length; j++) {
-      sb.append(" ")
-          .append("\"")
-          .append(sa[j])
-          .append("\"");
+      sb.append(" ").append("\"").append(sa[j]).append("\"");
     }
     sb.append(" }");
     return sb.toString();
@@ -372,7 +372,7 @@ public class SeleneseTestBase {
   /** Like assertNotEquals, but fails at the end of the test (during tearDown) */
   public void verifyNotEquals(boolean expected, boolean actual) {
     try {
-      assertNotEquals(Boolean.valueOf(expected),Boolean.valueOf(actual));
+      assertNotEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
     } catch (AssertionError e) {
       verificationErrors.append(throwableToString(e));
     }
@@ -392,8 +392,7 @@ public class SeleneseTestBase {
   }
 
   static public void assertTrue(String message, boolean condition) {
-    if (!condition)
-      fail(message);
+    if (!condition) fail(message);
   }
 
   static public void assertTrue(boolean condition) {
@@ -417,8 +416,7 @@ public class SeleneseTestBase {
   public void pause(int millisecs) {
     try {
       Thread.sleep(millisecs);
-    } catch (InterruptedException e) {
-    }
+    } catch (InterruptedException e) {}
   }
 
   /**

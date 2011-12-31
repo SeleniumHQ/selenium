@@ -17,24 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.javascript;
 
-import com.google.common.base.Function;
-import com.google.common.base.Throwables;
-
 import junit.framework.Test;
 
 import org.openqa.selenium.EnvironmentStarter;
-import org.openqa.selenium.WebDriver;
+
+import com.google.common.base.Function;
+
 
 public class ClosureTestSuite {
 
   public static Test suite() {
-    Test suite = new JsTestSuiteBuilder()
-        .withTestFactory(new Function<String, Test>() {
-          public Test apply(String input) {
-            return new ClosureTestCase(input);
-          }
-        })
-        .build();
+    Test suite = new JsTestSuiteBuilder().withTestFactory(new Function<String, Test>() {
+      public Test apply(String input) {
+        return new ClosureTestCase(input);
+      }
+    }).build();
     return new EnvironmentStarter(suite);
   }
 }

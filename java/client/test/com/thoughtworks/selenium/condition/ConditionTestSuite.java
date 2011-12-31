@@ -18,7 +18,6 @@ limitations under the License.
 package com.thoughtworks.selenium.condition;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class ConditionTestSuite extends TestSuite {

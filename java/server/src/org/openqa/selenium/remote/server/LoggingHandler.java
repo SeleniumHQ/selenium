@@ -72,7 +72,7 @@ public class LoggingHandler extends Handler {
 
   public void attachTo(Logger logger, Level level) {
     Handler[] handlers = logger.getHandlers();
-    for (Handler handler : logger.getHandlers()) {
+    for (Handler handler : handlers) {
       if (handler == this) {
         // the handler has already been added
         return;

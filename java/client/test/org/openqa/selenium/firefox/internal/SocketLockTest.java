@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,8 +35,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SocketLockTest extends TestCase {
   private int freePort;
-  private final Random portRandom = new Random();
-
+  
   @Override
   protected void setUp() throws Exception {
     freePort = PortProber.findFreePort();

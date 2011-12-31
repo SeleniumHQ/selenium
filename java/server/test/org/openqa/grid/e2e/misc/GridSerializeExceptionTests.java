@@ -28,12 +28,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.net.URL;
-
 public class GridSerializeExceptionTests {
 
-
-  private URL hubURL;
   private Hub hub;
 
   @BeforeClass(alwaysRun = false)

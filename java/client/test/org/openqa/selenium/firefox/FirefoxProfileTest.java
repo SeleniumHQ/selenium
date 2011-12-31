@@ -238,7 +238,7 @@ public class FirefoxProfileTest extends TestCase {
 
     assertEquals(dir, parsedPrefs.getPreference("browser.download.dir"));
   }
-	  
+  
   private void assertPreferenceValueEquals(String key, Object value) throws Exception {
     List<String> props = readGeneratedProperties(profile);
     boolean seenKey = false;

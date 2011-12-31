@@ -25,7 +25,7 @@ public class INetAddress {
 
   public INetAddress(InetAddress inetAddress) {
     this.hostName = inetAddress.getHostName();
-    hostAddress = inetAddress.getHostAddress();
+    this.hostAddress = inetAddress.getHostAddress();
     this.loopbackAddress = inetAddress.isLoopbackAddress();
   }
 

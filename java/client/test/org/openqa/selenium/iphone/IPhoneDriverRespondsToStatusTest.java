@@ -46,13 +46,13 @@ public class IPhoneDriverRespondsToStatusTest extends AbstractDriverTestCase {
     String raw = (String) res.getValue();
     System.out.println("RAW:");
     System.out.println(raw);
-	JSONObject response = new JSONObject(raw);
-	
-	JSONObject value = response.getJSONObject("value");
-	assertHasKeys(value, "os"/*, "build"*/);
-	assertHasKeys(value.getJSONObject("os"), "name", "arch", CapabilityType.VERSION);
+    JSONObject response = new JSONObject(raw);
+
+    JSONObject value = response.getJSONObject("value");
+    assertHasKeys(value, "os"/*, "build"*/);
+    assertHasKeys(value.getJSONObject("os"), "name", "arch", CapabilityType.VERSION);
     // build is not currently in response, is a TODO
-	//assertHasKeys(value.getJSONObject("build"), CapabilityType.VERSION, "revision", "time");
+    //assertHasKeys(value.getJSONObject("build"), CapabilityType.VERSION, "revision", "time");
   }
 
   private static void assertHasKeys(JSONObject object, String... keys) {
