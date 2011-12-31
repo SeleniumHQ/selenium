@@ -22,6 +22,17 @@ module Selenium
   #   server = Selenium::Server.get :latest
   #   server.start
   #
+  # Run the server in the background:
+  #
+  #   server = Selenium::Server.new(jar, :background => true)
+  #   server.start
+  #
+  # Add additional arguments:
+  #
+  #   server = Selenium::Server.new(jar)
+  #   server << ["--additional", "args"]
+  #   server.start
+  #
 
   class Server
     class Error < StandardError; end
