@@ -94,7 +94,7 @@
                     <!-- See http://maven.apache.org/plugins/maven-gpg-plugin/ -->
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
-			<version>1.4</version>
+                        <version>1.4</version>
                         <executions>
                             <execution>
                                 <phase>install</phase>
