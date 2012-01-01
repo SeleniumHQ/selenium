@@ -33,7 +33,6 @@ goog.require('webdriver.http.Response');
  * object.  The JSON responses will <em>always</em> be returned with a 200
  * response from the server; clients must rely on the response's "status" field
  * to determine whether the command succeeded.
- * TODO(jleyba): Document this extension on the wiki.
  *
  * <p>This client cannot be used with the standard wire protocol due to
  * limitations in the various browser implementations of the CORS specification:
