@@ -298,8 +298,7 @@ webdriver.http.headersToString_ = function(headers) {
  * final request.
  * @param {string} method The HTTP method to use for the request.
  * @param {string} path Path on the server to send the request to.
- * @param {string=} opt_data This request's body; if specified, must be a JSON
- *     string.
+ * @param {Object=} opt_data This request's JSON data.
  * @constructor
  */
 webdriver.http.Request = function(method, path, opt_data) {
@@ -318,9 +317,9 @@ webdriver.http.Request = function(method, path, opt_data) {
 
   /**
    * This request's body.
-   * @type {string}
+   * @type {!Object}
    */
-  this.data = opt_data || '';
+  this.data = opt_data || {};
 
   /**
    * The headers to send with the request.
@@ -332,17 +331,12 @@ webdriver.http.Request = function(method, path, opt_data) {
 
 /** @override */
 webdriver.http.Request.prototype.toString = function() {
-  var ret = [
+  return [
     this.method + ' ' + this.path + ' HTTP/1.1',
     webdriver.http.headersToString_(this.headers),
-    ''
-  ];
-
-  if (this.data) {
-    ret.push(this.data);
-  }
-
-  return ret.join('\n');
+    '',
+    goog.json.serialize(this.data)
+  ].join('\n');
 };
 
 
@@ -380,23 +374,26 @@ webdriver.http.Response = function(status, headers, body) {
 
 
 /**
- * Builds a {@code webdriver.http.Response} from a {@code XMLHttpRequest}'s
- * response.
- * @param {!XMLHttpRequest} xhr The request to parse.
+ * Builds a {@code webdriver.http.Response} from a {@code XMLHttpRequest} or
+ * {@code XDomainRequest} response object.
+ * @param {!(XDomainRequest|XMLHttpRequest)} xhr The request to parse.
  * @return {!webdriver.http.Response} The parsed response.
  */
 webdriver.http.Response.fromXmlHttpRequest = function(xhr) {
   var headers = {};
 
-  var tmp = xhr.getAllResponseHeaders();
-  if (tmp) {
-    tmp = tmp.replace(/\r\n/g, '\n').split('\n');
-    goog.array.forEach(tmp, function(header) {
-      var parts = header.split(/\s*:\s*/, 2);
-      if (parts[0]) {
-        headers[parts[0]] = parts[1] || '';
-      }
-    });
+  // getAllResponseHeaders is only available on XMLHttpRequest objects.
+  if (xhr.getAllResponseHeaders) {
+    var tmp = xhr.getAllResponseHeaders();
+    if (tmp) {
+      tmp = tmp.replace(/\r\n/g, '\n').split('\n');
+      goog.array.forEach(tmp, function(header) {
+        var parts = header.split(/\s*:\s*/, 2);
+        if (parts[0]) {
+          headers[parts[0]] = parts[1] || '';
+        }
+      });
+    }
   }
 
   return new webdriver.http.Response(xhr.status, headers,

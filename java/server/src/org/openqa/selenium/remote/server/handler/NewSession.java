@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -34,23 +35,34 @@ public class NewSession implements Handler, JsonParametersAware {
   private volatile DriverSessions allSessions;
   private volatile Capabilities desiredCapabilities;
   private volatile SessionId sessionId;
+  private final Response response;
 
   public NewSession(DriverSessions allSession) {
     this.allSessions = allSession;
+    this.response = new Response();
   }
 
   public Capabilities getCapabilities() {
     return desiredCapabilities;
   }
+  
+  public Response getResponse() {
+    return response;
+  }
 
   @SuppressWarnings({"unchecked"})
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+  public void setJsonParameters(Map<String, Object> allParameters)
+      throws Exception {
     desiredCapabilities = new DesiredCapabilities(
         (Map<String, Object>) allParameters.get("desiredCapabilities"));
   }
 
   public ResultType handle() throws Exception {
-    sessionId = allSessions.newSession(desiredCapabilities);
+    // Handle the case where the client does not send any desired capabilities.
+    sessionId = allSessions.newSession(desiredCapabilities != null
+        ? desiredCapabilities : new DesiredCapabilities());
+    response.setSessionId(sessionId.toString());
+    response.setValue(allSessions.get(sessionId).getCapabilities().asMap());
 
     LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId.toString());
     return ResultType.SUCCESS;

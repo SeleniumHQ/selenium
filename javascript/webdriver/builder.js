@@ -21,10 +21,9 @@ goog.require('webdriver.FirefoxDomExecutor');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.error');
+goog.require('webdriver.http.CorsClient');
 goog.require('webdriver.http.Executor');
 goog.require('webdriver.http.Response');
-goog.require('webdriver.http.XhrClient');
-goog.require('webdriver.http.JsonpClient');
 goog.require('webdriver.node.HttpClient');
 goog.require('webdriver.process');
 goog.require('webdriver.promise.Deferred');
@@ -107,22 +106,10 @@ webdriver.Builder.SERVER_URL_ENV = 'wdurl';
 
 
 /**
- * Environment variable which specifies whether to always prefer JSONP over
- * cross-origin XmlHttpRequests. This option is only application when running in
- * a web browser.
- * @type {string}
- * @const
- * @see webdriver.process.getEnv
- * @export
- */
-webdriver.Builder.USE_JSONP_ENV = 'wdjsonp';
-
-
-/**
  * Sends a command to the server that is expected to return a response whose
  * value describes the capabilities of that session. By virtue of the WebDriver
  * wire protocol, the session ID can be extract from the response as well.
- * @param {!webdriver.http.Executor} executor Command executor to use when
+ * @param {!webdriver.CommandExecutor} executor Command executor to use when
  *     querying for session details.
  * @param {!webdriver.Command} command The command to send to fetch the session
  *     details.
@@ -143,7 +130,7 @@ webdriver.Builder.getSessionHelper_ = function(executor, command) {
  * Queries a server for the capabilities of a particular session. The returned
  * promise will resolve with a fully formed {@code webdriver.Session} object.
  * @param {string} id ID of the session to query.
- * @param {!webdriver.http.Executor} executor Command executor to use when
+ * @param {!webdriver.CommandExecutor} executor Command executor to use when
  *     querying for session details.
  * @return {!webdriver.promise.Promise} A promise for the
  *     {@code webdriver.Session}.
@@ -158,7 +145,7 @@ webdriver.Builder.getSession_ = function(id, executor) {
 
 /**
  * Creates a new WebDriver session.
- * @param {!webdriver.http.Executor} executor The executor to use to create a
+ * @param {!webdriver.CommandExecutor} executor The executor to use to create a
  *     new session.
  * @param {!Object.<*>} capabilities The desired session capabilities.
  * @return {!webdriver.promise.Promise} A promise for the new
@@ -231,10 +218,7 @@ webdriver.Builder.prototype.build = function() {
 
     var clientCtor = webdriver.process.isNative() ?
         webdriver.node.HttpClient :
-        (webdriver.process.getEnv(webdriver.Builder.USE_JSONP_ENV) ||
-         !webdriver.http.XhrClient.isCorsAvailable()) ?
-            webdriver.http.JsonpClient :
-            webdriver.http.XhrClient;
+        webdriver.http.CorsClient;
 
     var client = new clientCtor(this.serverUrl_);
     executor = new webdriver.http.Executor(client);

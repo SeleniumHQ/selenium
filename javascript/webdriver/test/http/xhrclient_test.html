@@ -29,7 +29,7 @@ limitations under the License.
     goog.require('webdriver.test.testutil');
   </script>
   <script>
-  // Alias for readabiliyt.
+  // Alias for readability.
   var callbackHelper = webdriver.test.testutil.callbackHelper;
 
   function FakeXhr() {}
@@ -70,17 +70,6 @@ limitations under the License.
       mockXhr.setRequestHeader(header, REQUEST.headers[header]);
     }
     return mockXhr.send(goog.json.serialize(REQUEST.data));
-  }
-
-  function testDetectsWhenCorsIsAvailable() {
-    setXhr(undefined);
-    assertFalse(webdriver.http.XhrClient.isCorsAvailable());
-    setXhr(function() {});
-    assertFalse(webdriver.http.XhrClient.isCorsAvailable());
-    setXhr(function() { this.withCredentials = null; });
-    assertFalse(webdriver.http.XhrClient.isCorsAvailable());
-    setXhr(function() { this.withCredentials = true; });
-    assertTrue(webdriver.http.XhrClient.isCorsAvailable());
   }
 
   function testXhrClient_whenUnableToSendARequest() {

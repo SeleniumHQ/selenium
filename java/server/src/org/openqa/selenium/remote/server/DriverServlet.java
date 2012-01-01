@@ -17,7 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import com.google.common.base.Throwables;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Supplier;
 
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
@@ -119,27 +120,24 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
-import org.openqa.selenium.remote.server.renderer.ResourceCopyResult;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
-import org.openqa.selenium.remote.server.renderer.JsonpResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
+import org.openqa.selenium.remote.server.renderer.ResourceCopyResult;
 import org.openqa.selenium.remote.server.resource.StaticResource;
 import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.Result;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRenderer;
+import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
@@ -148,21 +146,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
 
-  private static final String JSONP_PATH = "/jsonp";
+  private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
-  private static final String CALLBACK = ":callback";
   private static final String EXCEPTION = ":exception";
   private static final String RESPONSE = ":response";
+
+  private final Supplier<DriverSessions> sessionsSupplier;
 
   private UrlMapper getMapper;
   private UrlMapper postMapper;
   private UrlMapper deleteMapper;
   private SessionCleaner sessionCleaner;
+
+  public DriverServlet() {
+    this.sessionsSupplier = new DriverSessionsSupplier();
+  }
+
+  @VisibleForTesting
+  DriverServlet(Supplier<DriverSessions> sessionsSupplier) {
+    this.sessionsSupplier = sessionsSupplier;
+  }
 
   @Override
   public void init() throws ServletException {
@@ -171,14 +177,7 @@ public class DriverServlet extends HttpServlet {
     Logger logger = getLogger();
     logger.addHandler(LoggingHandler.getInstance());
 
-    Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
-    if (attribute == null) {
-      attribute = new DefaultDriverSessions();
-    }
-
-    DriverSessions driverSessions = (DriverSessions) attribute;
-
-
+    DriverSessions driverSessions = sessionsSupplier.get();
     setupMappings(driverSessions, logger);
 
     int sessionTimeOut = Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
@@ -219,10 +218,10 @@ public class DriverServlet extends HttpServlet {
     addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
     addGlobalHandler(ResultType.ERROR, jsonErrorResult);
 
-    Result jsonpResult = new Result(MimeType.JSONP,
-        new JsonpResult(RESPONSE, EXCEPTION, CALLBACK), true);
+    Result xdrpcResult = new Result(MimeType.CROSS_DOMAIN_RPC,
+        new CrossDomainRpcRenderer(RESPONSE, EXCEPTION), true);
     for (ResultType resultType : EnumSet.allOf(ResultType.class)) {
-      addGlobalHandler(resultType, jsonpResult);
+      addGlobalHandler(resultType, xdrpcResult);
     }
 
     // When requesting the command root from a JSON-client, just return the server
@@ -494,6 +493,9 @@ public class DriverServlet extends HttpServlet {
     if (request.getHeader("Origin") != null) {
       setAccessControlHeaders(response);
     }
+    // Make sure our browser-clients never cache responses.
+    response.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
+    response.setHeader("Cache-Control", "no-cache");
     super.service(request, response);
   }
 
@@ -513,21 +515,17 @@ public class DriverServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    // Make sure our browser-clients never cache GET responses.
-    response.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
-    response.setHeader("Cache-Control", "no-cache");
-
-    if (JSONP_PATH.equalsIgnoreCase(request.getPathInfo())) {
-      handleJsonpRequest(request, response);
-    } else {
-      handleRequest(getMapper, request, response);
-    }
+    handleRequest(getMapper, request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    handleRequest(postMapper, request, response);
+    if (CROSS_DOMAIN_RPC_PATH.equalsIgnoreCase(request.getPathInfo())) {
+      handleCrossDomainRpc(request, response);
+    } else {
+      handleRequest(postMapper, request, response);
+    }
   }
 
   @Override
@@ -536,34 +534,26 @@ public class DriverServlet extends HttpServlet {
     handleRequest(deleteMapper, request, response);
   }
 
-  private void handleJsonpRequest(HttpServletRequest request, HttpServletResponse response)
+  private void handleCrossDomainRpc(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    CrossDomainRpc rpc;
     UrlMapper urlMapper;
     try {
-      String method = getRequiredJsonPParameter(request, "method")
-          .toUpperCase();
-      String path = getRequiredJsonPParameter(request, "path");
-      String callback = getRequiredJsonPParameter(request, "callback");
-
-      String body = request.getParameter("body");
-      if (body == null) {
-        body = "";
-      }
-
-      request = JsonpHttpServletRequestProxy.createProxy(request, method, path, body);
-      request.setAttribute(CALLBACK, callback);
-      urlMapper = getJsonPUrlMapper(method);
-    } catch (RuntimeException rte) {
+      rpc = new CrossDomainRpcLoader().loadRpc(request);
+      urlMapper = getUrlMapper(rpc.getMethod());
+    } catch (IllegalArgumentException e) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      response.getOutputStream().println("Unknown method: " + rte.getMessage());
+      response.getOutputStream().println(e.getMessage());
       response.getOutputStream().flush();
       return;
     }
 
+    request = HttpServletRequestProxy.createProxy(request, rpc,
+        CROSS_DOMAIN_RPC_PATH, MimeType.CROSS_DOMAIN_RPC);
     handleRequest(urlMapper, request, response);
   }
 
-  private UrlMapper getJsonPUrlMapper(String method) {
+  private UrlMapper getUrlMapper(String method) {
     if ("DELETE".equals(method)) {
       return deleteMapper;
     } else if ("GET".equals(method)) {
@@ -573,13 +563,6 @@ public class DriverServlet extends HttpServlet {
     } else {
       throw new IllegalArgumentException("Unknown method: " + method);
     }
-  }
-
-  private String getRequiredJsonPParameter(HttpServletRequest request,
-      String parameterName) {
-    String parameter = request.getParameter(parameterName);
-    return checkNotNull(parameter,
-        "Request is missing required JSONP parameter '%s'", parameterName);
   }
 
   protected void handleRequest(UrlMapper mapper, HttpServletRequest request,
@@ -600,73 +583,16 @@ public class DriverServlet extends HttpServlet {
 
   private static interface MimeType {
     static final String EMPTY = "";
-    static final String JSONP = "application/jsonp";
+    static final String CROSS_DOMAIN_RPC = "application/xdrpc";
   }
-
-  private static class JsonpHttpServletRequestProxy implements InvocationHandler {
-
-    private final HttpServletRequest proxiedRequest;
-    private final String method;
-    private final String pathInfo;
-    private final String body;
-
-    private JsonpHttpServletRequestProxy(HttpServletRequest proxiedRequest,
-        String method, String pathInfo, String body) {
-      this.proxiedRequest = proxiedRequest;
-      this.method = method;
-      this.pathInfo = pathInfo;
-      this.body = body;
-    }
-
-    public static HttpServletRequest createProxy(HttpServletRequest request,
-        String method, String pathInfo, String body) {
-      checkNotNull(request);
-      return (HttpServletRequest) Proxy.newProxyInstance(
-          request.getClass().getClassLoader(),
-          request.getClass().getInterfaces(),
-          new JsonpHttpServletRequestProxy(request, method, pathInfo, body));
-    }
-
-    private String trimJsonpPath(String str) {
-      return str.substring(0, str.indexOf(JSONP_PATH));
-    }
-
-    public Object invoke(Object proxy, Method method, Object[] args)
-        throws Throwable {
-      if ("getMethod".equals(method.getName())) {
-        return this.method;
+  
+  private class DriverSessionsSupplier implements Supplier<DriverSessions> {
+    public DriverSessions get() {
+      Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
+      if (attribute == null) {
+        attribute = new DefaultDriverSessions();
       }
-
-      if ("getRequestURL".equals(method.getName())) {
-        return trimJsonpPath(proxiedRequest.getRequestURL().toString()) + pathInfo;
-      }
-
-      if ("getRequestURI".equals(method.getName())) {
-        return trimJsonpPath(proxiedRequest.getRequestURI()) + pathInfo;
-      }
-
-      if ("getPathInfo".equals(method.getName())) {
-        return pathInfo;
-      }
-
-      if ("getReader".equals(method.getName())) {
-        return new BufferedReader(new StringReader(body));
-      }
-
-      if ("getHeader".equals(method.getName())) {
-        String headerName = (String) args[0];
-        if ("accept".equalsIgnoreCase(headerName)) {
-          return MimeType.JSONP;
-        }
-      }
-
-      try {
-        return method.invoke(proxiedRequest, args);
-      } catch (InvocationTargetException e) {
-        throw e.getTargetException();
-      } catch (Exception e) {
-        throw Throwables.propagate(e);
-      }
+      return (DriverSessions) attribute;
     }
   }
 }

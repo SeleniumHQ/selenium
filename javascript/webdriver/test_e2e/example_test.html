@@ -17,6 +17,7 @@ limitations under the License.
 <title>example_test.html</title>
 <script src="../test/test_bootstrap.js"></script>
 <script>
+  goog.require('bot.ErrorCode');
   goog.require('goog.userAgent');
   goog.require('goog.userAgent.product');
   goog.require('webdriver.Builder');
@@ -42,6 +43,24 @@ limitations under the License.
     new webdriver.Builder().build();  // Yup, this is all we need to do.
   }
 
+  function testCanHandleErrorsReturnedByTheServer() {
+    var called = 'neither';
+    var driver = new webdriver.Builder().build();
+    driver.findElement(By.id('not-there')).
+        then(function() {
+          called = 'callback';
+          fail('Attempt to find element should have failed');
+        }, function(e) {
+          called = 'errback';
+          assertEquals('Wrong error code', bot.ErrorCode.NO_SUCH_ELEMENT,
+              e.code);
+        });
+
+    driver.call(function() {
+      assertEquals('Wrong callback function called', 'errback', called);
+    });
+  }
+
   function testCanType() {
     var driver = new webdriver.Builder().build();
 
@@ -49,6 +68,7 @@ limitations under the License.
       TestUtil.switchToMainWindow(driver);
 
     var inputElement = driver.findElement(By.tagName('input'));
+    driver.executeScript('arguments[0].value = "";', inputElement);
     inputElement.sendKeys('foo');
     assertThat(inputElement.getAttribute('value'), equals('foo'));
   }

@@ -177,6 +177,7 @@ goog.addDependency("../../../javascript/webdriver/atoms/inject/session_storage.j
 goog.addDependency("../../../javascript/webdriver/atoms/inject/sql_database.js", ['webdriver.atoms.inject.storage.database'], ['bot.Error', 'bot.ErrorCode', 'bot.inject', 'bot.storage.database']);
 goog.addDependency("../../../javascript/webdriver/atoms/storage/local_storage.js", ['webdriver.atoms.storage.local'], ['bot.storage']);
 goog.addDependency("../../../javascript/webdriver/atoms/storage/session_storage.js", ['webdriver.atoms.storage.session'], ['bot.storage']);
+goog.addDependency("../../../javascript/webdriver/http/corsclient.js", ['webdriver.http.CorsClient'], ['goog.json', 'webdriver.http.Response']);
 goog.addDependency("../../../javascript/webdriver/http/http.js", ['webdriver.http.Client', 'webdriver.http.Executor', 'webdriver.http.Request', 'webdriver.http.Response'], ['bot.ErrorCode', 'goog.json', 'webdriver.CommandName', 'webdriver.promise.Deferred']);
 goog.addDependency("../../../javascript/webdriver/http/jsonpclient.js", ['webdriver.http.JsonpClient'], ['goog.dom', 'goog.json', 'webdriver.http.Response']);
 goog.addDependency("../../../javascript/webdriver/http/xhrclient.js", ['webdriver.http.XhrClient'], ['goog.json', 'webdriver.http.Response']);

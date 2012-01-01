@@ -24,6 +24,8 @@ js_test(name = "test",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
 
+# Tests not run on Opera; requires Opera 12.
+# TODO(jleyba): Update rule when Opera 12 is the stable release for Opera.
 webdriverjs_test(name = "test_e2e",
   srcs = [
     "test_e2e/*.js",
@@ -35,4 +37,9 @@ webdriverjs_test(name = "test_e2e",
     "//javascript/webdriver:deps",
     "//java/client/test/org/openqa/selenium/javascript:jsapi",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ],
+  browsers = [
+    "chrome",
+    "ff",
+    "ie",
   ])
