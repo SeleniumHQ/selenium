@@ -18,6 +18,8 @@
  */
 
 goog.require('remote.ui.Client');
+goog.require('webdriver.http.Executor');
+goog.require('webdriver.http.XhrClient');
 
 
 goog.exportSymbol('init', function() {
@@ -31,6 +33,9 @@ goog.exportSymbol('init', function() {
       loc.pathname.replace(/\/static\/resource(?:\/[^\/]*)?$/, '')
   ].join('');
 
-  var client = new remote.ui.Client(href);
+  var executor = new webdriver.http.Executor(
+      new webdriver.http.XhrClient(href));
+
+  var client = new remote.ui.Client(href, executor);
   client.init();
 });

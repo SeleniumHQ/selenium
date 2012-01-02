@@ -112,5 +112,5 @@ remote.ui.Banner.prototype.reposition_ = function() {
   var bannerSize = goog.style.getSize(this.getElement());
   var viewSize = goog.dom.getViewportSize(win);
   var left = Math.max(x + viewSize.width / 2 - bannerSize.width / 2, 0);
-  goog.style.setPosition(this.getElement(), left, top);
+  goog.style.setPosition(this.getElement(), left, 0);
 };

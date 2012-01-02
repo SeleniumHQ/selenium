@@ -52,7 +52,7 @@ webdriver.http.XhrClient.prototype.send = function(request, callback) {
     xhr.onerror = function() {
       callback(Error([
         'Unable to send request: ', request.method, ' ', url,
-        'Original request: ', request
+        '\nOriginal request:\n', request
       ].join('')));
     };
 

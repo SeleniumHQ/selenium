@@ -4,6 +4,12 @@ body {
   cursor: default;
 }
 
+/* The following rules are required to make IE6-8 render the page
+ * (semi-)consistently with the other browsers.
+ */
+body { margin: 8px; }
+fieldset { padding: 5px 10px 11px; }
+
 .goog-inline-block {
   position: relative;
   display: inline-block;

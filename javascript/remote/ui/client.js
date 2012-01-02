@@ -31,18 +31,18 @@ goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Session');
 goog.require('webdriver.error');
-goog.require('webdriver.http.Executor');
-goog.require('webdriver.http.XhrClient');
 goog.require('webdriver.promise');
 
 
 /**
  * Primary widget for the webdriver server UI.
  * @param {string} url URL of the server to communicate with.
+ * @param {!webdriver.CommandExecutor} executor The command executor to use when
+ *     communicating with the server.
  * @constructor
  * @extends {goog.Disposable}
  */
-remote.ui.Client = function(url) {
+remote.ui.Client = function(url, executor) {
   goog.base(this);
 
   /**
@@ -66,11 +66,10 @@ remote.ui.Client = function(url) {
   this.url_ = url;
 
   /**
-   * @type {!webdriver.http.Executor}
+   * @type {!webdriver.CommandExecutor}
    * @private
    */
-  this.executor_ = new webdriver.http.Executor(
-      new webdriver.http.XhrClient(url));
+  this.executor_ = executor;
 
   /**
    * @type {!remote.ui.Banner}
@@ -164,7 +163,7 @@ remote.ui.Client.prototype.execute_ = function(command) {
  * @private
  */
 remote.ui.Client.prototype.logError_ = function(msg, e) {
-  this.log_.severe(msg, e);
+  this.log_.severe(msg + '\n' + e);
   this.banner_.setMessage(msg);
   this.banner_.setVisible(true);
 };
@@ -177,7 +176,7 @@ remote.ui.Client.prototype.logError_ = function(msg, e) {
 remote.ui.Client.prototype.updateServerInfo_ = function() {
   this.execute_(new webdriver.Command(webdriver.CommandName.GET_SERVER_STATUS)).
       addCallback(function(response) {
-        var value = response['value'];
+        var value = response['value'] || {};
         var os = value['os'];
         if (os && os['name']) {
           os = os['name'] + (os['version'] ? ' ' + os['version'] : '');
