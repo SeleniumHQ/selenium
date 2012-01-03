@@ -18,7 +18,7 @@ py_test(
 
 py_test(
   name = "chrome_test",
-  ff_specific_tests = [ "test/selenium/webdriver/chrome/*_tests.py" ],
+  chrome_specific_tests = [ "test/selenium/webdriver/chrome/*_tests.py" ],
   deps = [ ":test_chrome" ],
   browsers = [ "chrome" ])
 

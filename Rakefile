@@ -217,7 +217,7 @@ task :test_rb => [
   "//rb:chrome-test"
 ].compact
 
-task :test_py => [ "//py:test_ff:run" ]
+task :test_py => [ "//py:firefox_test:run" ]
 
 task :test_dotnet => [
   "//dotnet/test:firefox:run"
