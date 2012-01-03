@@ -44,7 +44,8 @@ binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WI
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-5.dll ABI=WINNT_x86-msvc appversion=5.0.1 appversion=5.0
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-6.dll ABI=WINNT_x86-msvc appversion=6.0 appversion=6.0.1 appversion=6.0.2
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-7.dll ABI=WINNT_x86-msvc appversion>=7
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=8
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll ABI=WINNT_x86-msvc appversion>=8
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=9
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff4.so ABI=Linux_x86_64-gcc3 appversion<5
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff5.so ABI=Linux_x86_64-gcc3 appversion=5.0.1 appversion=5.0

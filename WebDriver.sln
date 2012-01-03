@@ -72,6 +72,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-7", "cpp\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-latest", "cpp\webdriver-firefox\webdriver-firefox-latest.vcxproj", "{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-previous", "cpp\webdriver-firefox\webdriver-firefox-previous.vcxproj", "{322CD167-C8F9-4E13-8F8A-DFAE834255AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -440,6 +442,22 @@ Global
 		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|Win32.ActiveCfg = Release|Win32
 		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|Win32.Build.0 = Release|Win32
 		{FE99DB39-DAB7-43BD-BF08-6549FAB88C13}.Release|x64.ActiveCfg = Release|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|.NET.ActiveCfg = Debug|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|Win32.Build.0 = Debug|Win32
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|x64.ActiveCfg = Debug|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Debug|x64.Build.0 = Debug|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|.NET.ActiveCfg = Release|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|Any CPU.ActiveCfg = Release|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|Mixed Platforms.Build.0 = Release|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|Win32.ActiveCfg = Release|Win32
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|Win32.Build.0 = Release|Win32
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|x64.ActiveCfg = Release|x64
+		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
