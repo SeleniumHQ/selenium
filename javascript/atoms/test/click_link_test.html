@@ -4,7 +4,6 @@
   <meta http-equiv="Expire" content="0"/>
   <title>click_link_test.html</title>
   <script src="test_bootstrap.js"></script>
-  <script src="./window_focus.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.locators');
@@ -22,6 +21,7 @@
     goog.require('goog.userAgent.product');
   </script>
   <script type="text/javascript">
+    var FIREFOX6 = goog.userAgent.GECKO && goog.userAgent.isVersion(6);
     var divConsole;
     var iframe, iframeWindow, other, otherWindow;
     var link, link2;
@@ -67,7 +67,11 @@
       window.setTimeout(function() {
         asyncTestCase.continueTesting();
         fn();
-      }, 0);
+      // Firefox 6 currently needs a fairly long timeout before a hashchange is
+      // completed, while other browsers complete it on the next event cycle.
+      // TODO(user): Remove superfluous link following from device.js and
+      // then check whether this longer timeout is still necessary.
+      }, FIREFOX6 ? 250 : 0);
     }
 
     function resolveUrl(url) {
@@ -170,7 +174,9 @@
 
       clickTarget.href = targetHref;
       action(clickTarget);
-      assertEquals(targetHref, iframeWindow.location.href);
+      continueAfterTimeout(function() {
+        assertEquals(targetHref, iframeWindow.location.href);
+      });
     }
 
     var testClickAbsoluteUrlInAnIframeExecutesDefaultHandler =
@@ -195,7 +201,9 @@
           '/testdata/click_iframe.html#' + Math.random();
       clickTarget.href = targetHref;
       action(clickTarget);
-      assertContains(targetHref, iframeWindow.location.href);
+      continueAfterTimeout(function() {
+        assertContains(targetHref, iframeWindow.location.href);
+      });
     }
 
     var testClickAbsoluteServerPathAnchorInAnIframeExecutesDefaultHandler =
@@ -218,7 +226,9 @@
       var targetHref = 'click_iframe.html#' + Math.random();
       clickTarget.href = targetHref;
       action(clickTarget);
-      assertContains(targetHref, iframeWindow.location.href);
+      continueAfterTimeout(function() {
+        assertContains(targetHref, iframeWindow.location.href);
+      });
     }
 
     var testClickRelativeServerPathAnchorInAnIframeExecutesDefaultHandler =
@@ -241,7 +251,9 @@
       var targetHref = '#' + Math.random();
       clickTarget.href = targetHref;
       action(clickTarget);
-      assertEquals(targetHref, iframeWindow.location.hash);
+      continueAfterTimeout(function() {
+        assertEquals(targetHref, iframeWindow.location.hash);
+      });
     }
 
     var testClickHashOnlyAnchorInAnIframeExecutesDefaultHandler =
@@ -265,7 +277,9 @@
       var targetHref = '#' + Math.random();
       parent.href = targetHref;
       action(clickTarget);
-      assertEquals(targetHref, iframeWindow.location.hash);
+      continueAfterTimeout(function() {
+        assertEquals(targetHref, iframeWindow.location.hash);
+      });
     }
 
     var testClickNestedElementInAnIframeExecutesDefaultHandler =
@@ -291,7 +305,9 @@
       });
 
       action(clickTarget);
-      assertEquals(previousLocation, window.location.href);
+      continueAfterTimeout(function() {
+        assertEquals(previousLocation, window.location.href);
+      });
     }
 
     var testClickDoesNotFollowLinkWhenEventDefaultPrevented =
@@ -312,7 +328,9 @@
       clickTarget.href = '#' + Math.random();
 
       action(clickTarget);
-      assertEquals(previousLocation, window.location.href);
+      continueAfterTimeout(function() {
+        assertEquals(previousLocation, window.location.href);
+      });
     }
 
     var testClickDoNotFollowLinkWhenEventDefaultPreventedWithInlineHandler =
@@ -333,7 +351,9 @@
       var previousLocation = window.location.href;
 
       action(clickTarget);
-      assertEquals(previousLocation, window.location.href);
+      continueAfterTimeout(function() {
+        assertEquals(previousLocation, window.location.href);
+      });
     }
 
     var testClickDoesNotFollowLinkWhenNoHrefIsGiven = goog.partial(
@@ -370,8 +390,8 @@
       var clickTarget = domHelper.getElement('iframeClickTarget');
 
       var targetHref = '?a=?/+';
-        clickTarget.href = targetHref;
-        continueAfterLoad(iframe, function() {
+      clickTarget.href = targetHref;
+      continueAfterLoad(iframe, function() {
         assertEquals(targetHref, iframeWindow.location.search);
       });
       action(clickTarget);

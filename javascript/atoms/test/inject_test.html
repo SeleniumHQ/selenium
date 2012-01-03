@@ -27,17 +27,17 @@ limitations under the License.
     goog.require('bot.userAgent');
     goog.require('goog.dom');
     goog.require('goog.dom.TagName');
+    goog.require('goog.events');
     goog.require('goog.json');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
-
 </head>
 <body>
   <div style="display:none">
-    <iframe id="test-frame"></iframe>
+    <iframe id="test-frame" src="testdata/blank_page.html"></iframe>
   </div>
   <script type="text/javascript">
     goog.global.MY_GLOBAL_CONSTANT = 123;
@@ -46,43 +46,46 @@ limitations under the License.
     // window.setTimeout delay for the conditions under test.
     var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
 
-    function tearDown() {
-      // Force the cache to be recreated on the next access. We cannot
-      // "delete" it here because IE complains about it being an unsupported
-      // operation.
+    var frame, frameWin, frameDoc;
+
+    function setUp() {
+      frame = goog.dom.$('test-frame');
+      frameWin = goog.dom.getFrameContentWindow(frame);
+      frameDoc = goog.dom.getFrameContentDocument(frame);
+
+      // Force the cache to be recreated on the next access. We cannot "delete"
+      // it here because IE complains about it being an unsupported operation.
       document[bot.inject.cache.CACHE_KEY_] = null;
 
       // Delete the cache in our test frame, if it was created.
-      var testFrame = goog.dom.$('test-frame');
-      var testFrameWindow = goog.dom.getFrameContentWindow(testFrame);
-      if (testFrameWindow.document) {
-        testFrameWindow.document[bot.inject.cache.CACHE_KEY_] = null;
-      }
+      frameDoc[bot.inject.cache.CACHE_KEY_] = null;
+
+      // Remove any event listeners.
+      goog.events.removeAll();
     }
 
     function testAddWindowToCache() {
-      var id = bot.inject.cache.addElement(window.frames[0]);
-      assertEquals(window.frames[0], bot.inject.cache.getElement(id));
+      var id = bot.inject.cache.addElement(frameWin);
+      assertEquals(frameWin, bot.inject.cache.getElement(id));
     }
 
 
     function testAddWindowToCacheMultipleTimesReusesIds() {
-      var id1 = bot.inject.cache.addElement(window.frames[0]);
-      var id2 = bot.inject.cache.addElement(window.frames[0]);
+      var id1 = bot.inject.cache.addElement(frameWin);
+      var id2 = bot.inject.cache.addElement(frameWin);
       assertEquals(id1, id2);
     }
 
 
     function testGetElementThrowsIfWindowIsClosed() {
-      var win = {document:1, closed:1};
+      var win = {document: 1, closed: 1};
       var id = bot.inject.cache.addElement(win);
       assertThrows(goog.partial(bot.inject.cache.getElement, id));
     }
 
 
     function testShouldWrapAndUnwrapWindow() {
-      var win = window.frames[0];
-      var wrapped = bot.inject.wrapValue(win);
+      var wrapped = bot.inject.wrapValue(frameWin);
       assertNotNull(wrapped);
       assertNotUndefined(wrapped);
       assertTrue(goog.isObject(wrapped));
@@ -90,11 +93,11 @@ limitations under the License.
 
       var id = wrapped[bot.inject.WINDOW_KEY];
       var res = bot.inject.cache.getElement(id);
-      assertEquals(window.frames[0], res);
-      assertEquals(window.frames[0], bot.inject.unwrapValue_(wrapped));
+      assertEquals(frameWin, res);
+      assertEquals(frameWin, bot.inject.unwrapValue_(wrapped));
     }
 
-    
+
     function testShouldBeAbleToCacheElements() {
       var id = bot.inject.cache.addElement(document.body);
       var el = bot.inject.cache.getElement(id);
@@ -108,7 +111,7 @@ limitations under the License.
       assertEquals(id1, id2);
     }
 
-    
+
     function testShouldThrowIfElementDoesNotExistInTheCache() {
       assertThrows(goog.partial(bot.inject.cache.getElement, 'not-there'));
     }
@@ -210,23 +213,20 @@ limitations under the License.
 
 
     function testShouldBeAbleToUnWrapNestedObjects() {
-      var unwrapped = {"foo":{"bar":document.body}};
+      var unwrapped = {'foo': {'bar': document.body}};
       var wrapped = bot.inject.wrapValue(unwrapped);
       var roundTripped = bot.inject.unwrapValue_(wrapped);
 
-      assertTrue(goog.object.containsKey(roundTripped, "foo"));
+      assertTrue(goog.object.containsKey(roundTripped, 'foo'));
       var foo = roundTripped['foo'];
 
-      assertTrue(goog.object.containsKey(foo, "bar"));
+      assertTrue(goog.object.containsKey(foo, 'bar'));
       assertEquals(document.body, foo['bar']);
     }
 
 
     function testShouldUnWrapElementsUsingTheGivenDocumentsCache() {
-      var testFrame = goog.dom.$('test-frame');
-      var testFrameDoc = goog.dom.getFrameContentDocument(testFrame);
-
-      var wrapped = bot.inject.wrapValue(testFrameDoc.body);
+      var wrapped = bot.inject.wrapValue(frameDoc.body);
       assertNotNull(wrapped);
       assertNotUndefined(wrapped);
       assertTrue(goog.isObject(wrapped));
@@ -236,8 +236,8 @@ limitations under the License.
       // was cached on its ownerDocument.
       assertThrows(goog.partial(bot.inject.unwrapValue_, wrapped));
 
-      var unwrapped = bot.inject.unwrapValue_(wrapped, testFrameDoc);
-      assertEquals(testFrameDoc.body, unwrapped);
+      var unwrapped = bot.inject.unwrapValue_(wrapped, frameDoc);
+      assertEquals(frameDoc.body, unwrapped);
     }
 
 
@@ -273,21 +273,16 @@ limitations under the License.
 
 
     function testShouldResetCacheWhenPageIsRefreshed() {
-      var testFrameWin = document.getElementById('test-frame').contentWindow;
-      var testFrameDoc = testFrameWin.document;
-      var id = bot.inject.cache.addElement(testFrameWin.document.body);
-      assertEquals(testFrameWin.document.body,
-          bot.inject.cache.getElement(id, testFrameWin.document));
+      var id = bot.inject.cache.addElement(frameDoc.body);
+      assertEquals(frameDoc.body, bot.inject.cache.getElement(id, frameDoc));
 
-      testFrameWin.location.reload();
-
-      // Need to use a short timeout so the reload above can take effect.
-      window.setTimeout(function() {
+      asyncTestCase.waitForAsync('Waiting for frame to reload');
+      goog.events.listenOnce(frame, 'load', function() {
         asyncTestCase.continueTesting();
-        assertThrows(goog.partial(bot.inject.cache.getElement, id,
-            testFrameWin.document));
-      }, 250);
-      asyncTestCase.waitForAsync('reload');
+        frameDoc = goog.dom.getFrameContentDocument(frame);
+        assertThrows(goog.partial(bot.inject.cache.getElement, id, frameDoc));
+      });
+      frameWin.location.reload();
     }
 
 
@@ -331,7 +326,7 @@ limitations under the License.
 
       asyncTestCase.waitForAsync('callback');
       bot.inject.executeAsyncScript(
-          "window.setTimeout(goog.partial(arguments[0], 1), 10)",
+          'window.setTimeout(goog.partial(arguments[0], 1), 10)',
           [], 250, onDone);
     }
 
@@ -346,7 +341,7 @@ limitations under the License.
       }
 
       asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript("arguments[0](1)", [], 0, onDone);
+      bot.inject.executeAsyncScript('arguments[0](1)', [], 0, onDone);
     }
 
 
@@ -373,7 +368,7 @@ limitations under the License.
       }
 
       asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript("nosuchfunc()", [], 0, onDone);
+      bot.inject.executeAsyncScript('nosuchfunc()', [], 0, onDone);
     }
 
 
@@ -385,7 +380,7 @@ limitations under the License.
       }
 
       asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript("", [], 0, onDone);
+      bot.inject.executeAsyncScript('', [], 0, onDone);
     }
 
 
@@ -398,7 +393,7 @@ limitations under the License.
       }
 
       asyncTestCase.waitForAsync('callback');
-      bot.inject.executeAsyncScript("", [], 0, onDone, true);
+      bot.inject.executeAsyncScript('', [], 0, onDone, true);
     }
 
 
@@ -420,19 +415,17 @@ limitations under the License.
       args[0][bot.inject.ELEMENT_KEY] = id;
       asyncTestCase.waitForAsync('callback');
       var result = bot.inject.executeAsyncScript(
-          "arguments[1](arguments[0])", args, 0, onDone);
+          'arguments[1](arguments[0])', args, 0, onDone);
     }
 
     function testShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow() {
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            bot.userAgent.ANDROID_VERSION < 4)) {
-        // Android prior to Ice Cream Sandwich has a known issue
+        // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
         // TODO(user): Don't skip this.
         return;
       }
-      var testFrameWin = goog.dom.getFrameContentWindow(
-          goog.dom.$('test-frame'));
 
       function onDone(result) {
         asyncTestCase.continueTesting();
@@ -446,8 +439,10 @@ limitations under the License.
 
         assertEquals(jsonResult, true, value['this == window']);
         assertEquals(jsonResult, false, value['this == top']);
-        assertEquals(jsonResult, 'undefined', value['typeof window.MY_GLOBAL_CONSTANT']);
-        assertEquals(jsonResult, 'number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
+        assertEquals(jsonResult, 'undefined',
+                     value['typeof window.MY_GLOBAL_CONSTANT']);
+        assertEquals(jsonResult, 'number',
+                     value['typeof window.top.MY_GLOBAL_CONSTANT']);
       }
 
       asyncTestCase.waitForAsync('callback');
@@ -459,19 +454,17 @@ limitations under the License.
           'typeof window.top.MY_GLOBAL_CONSTANT':
               (typeof window.top.MY_GLOBAL_CONSTANT)
         });
-      }, [], 0, onDone, false, testFrameWin);
+      }, [], 0, onDone, false, frameWin);
     }
 
     function testShouldExecuteScriptsInTheContextOfTheSpecifiedWindow() {
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            bot.userAgent.ANDROID_VERSION < 4)) {
-        // Android prior to Ice Cream Sandwich has a known issue
+        // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
         // TODO(user): Don't skip this.
         return;
       }
-      var testFrameWin = goog.dom.getFrameContentWindow(
-          goog.dom.$('test-frame'));
 
       var result = bot.inject.executeScript(function() {
         return {
@@ -481,7 +474,7 @@ limitations under the License.
           'typeof window.top.MY_GLOBAL_CONSTANT':
               (typeof window.top.MY_GLOBAL_CONSTANT)
         };
-      }, [], false, testFrameWin);
+      }, [], false, frameWin);
 
       var jsonResult = goog.json.serialize(result);
 
@@ -493,14 +486,16 @@ limitations under the License.
 
       assertEquals(jsonResult, true, value['this == window']);
       assertEquals(jsonResult, false, value['this == top']);
-      assertEquals(jsonResult, 'undefined', value['typeof window.MY_GLOBAL_CONSTANT']);
-      assertEquals(jsonResult, 'number', value['typeof window.top.MY_GLOBAL_CONSTANT']);
+      assertEquals(jsonResult, 'undefined',
+                   value['typeof window.MY_GLOBAL_CONSTANT']);
+      assertEquals(jsonResult, 'number',
+                   value['typeof window.top.MY_GLOBAL_CONSTANT']);
     }
 
     function testCorrectlyUnwrapsFunctionArgsForInjectedScripts() {
       var result = bot.inject.executeScript(function() {
         return arguments[0]();
-      }, [function(){return 1}], false);
+      }, [function() {return 1;}], false);
       assertEquals(bot.ErrorCode.SUCCESS, result['status']);
       assertEquals(1, result['value']);
     }
@@ -512,13 +507,13 @@ limitations under the License.
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
         assertEquals(1, result['value']);
       }
- 
+
       asyncTestCase.waitForAsync('bot.inject.executeAsyncScript');
 
       var result = bot.inject.executeAsyncScript(function() {
         var callback = arguments[arguments.length - 1];
         callback(arguments[0]());
-      }, [function(){return 1}], 0, onDone, false);
+      }, [function() {return 1;}], 0, onDone, false);
     }
 
     function testCorrectlyUnwrapsArgsForInjectedScripts() {
@@ -526,13 +521,11 @@ limitations under the License.
         // TODO(user): Don't skip this.
         return;
       }
-      var testFrame = goog.dom.$('test-frame');
-      var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
-      var wrapped = bot.inject.wrapValue(testFrameWin.document.body);
+      var wrapped = bot.inject.wrapValue(frameDoc.body);
 
       var result = bot.inject.executeScript(function() {
         return [arguments[0], arguments[0].tagName.toUpperCase()];
-      }, [wrapped], false, testFrameWin);
+      }, [wrapped], false, frameWin);
 
       assertEquals(bot.ErrorCode.SUCCESS, result['status']);
 
@@ -553,9 +546,7 @@ limitations under the License.
         // TODO(user): Don't skip this.
         return;
       }
-      var testFrame = goog.dom.$('test-frame');
-      var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
-      var wrapped = bot.inject.wrapValue(testFrameWin.document.body);
+      var wrapped = bot.inject.wrapValue(frameDoc.body);
 
       function onDone(result) {
         asyncTestCase.continueTesting();
@@ -577,7 +568,7 @@ limitations under the License.
       asyncTestCase.waitForAsync('bot.inject.executeAsyncScript');
       bot.inject.executeAsyncScript(function(element, callback) {
         callback([element, element.tagName.toUpperCase()]);
-      }, [wrapped], 0, onDone, false, testFrameWin);
+      }, [wrapped], 0, onDone, false, frameWin);
     }
 
     function testExecuteScriptShouldBeAbleToRecurseOnItself() {
@@ -599,12 +590,6 @@ limitations under the License.
       assertEquals(json, bot.ErrorCode.SUCCESS, innerResult['status']);
       assertTrue(json, goog.object.containsKey(innerResult, 'value'));
       assertEquals(json, 3, innerResult['value']);
-    }
-
-    function testElementCacheShouldDisallowAccessToOrphanedElements() {
-      var element = document.createElement('div');
-      var key = bot.inject.cache.addElement(element);
-      assertThrows(goog.partial(bot.inject.cache.getElement, key, document));
     }
 
   </script>

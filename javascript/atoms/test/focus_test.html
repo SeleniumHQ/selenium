@@ -3,9 +3,9 @@
 <head>
   <title>focus_test.html</title>
   <script src="test_bootstrap.js"></script>
-  <script src="./window_focus.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
+    goog.require('bot.test');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
@@ -94,7 +94,7 @@
       if (goog.userAgent.IE && goog.userAgent.isVersion('8')) {
         return;
       }
-      if (!isWindowFocused()) {
+      if (!bot.test.isWindowFocused()) {
         return;
       }
       recordBlurAndFocus(text1);
@@ -125,7 +125,7 @@
     }
 
     function testShouldRetainFocusIfElementIsAlreadyActive() {
-      if (!isWindowFocused()) {
+      if (!bot.test.isWindowFocused()) {
         return;
       }
 

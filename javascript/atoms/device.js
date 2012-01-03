@@ -327,7 +327,15 @@ bot.Device.prototype.focusOnElement = function() {
   // Try to focus on the element.
   if (goog.isFunction(elementToFocus.focus) ||
       goog.userAgent.IE && goog.isObject(elementToFocus.focus)) {
-    elementToFocus.focus();
+    // Opera fires focus events on hidden elements (e.g. that are hidden after
+    // mousedown in a click sequence), but as of Opera 11 the focus() command
+    // does not, so we fire a focus event on the hidden element explicitly.
+    if (goog.userAgent.OPERA && goog.userAgent.isVersion(11) &&
+        !bot.dom.isShown(elementToFocus)) {
+      bot.events.fire(elementToFocus, bot.events.EventType.FOCUS);
+    } else {
+      elementToFocus.focus();
+    }
     return true;
   }
 

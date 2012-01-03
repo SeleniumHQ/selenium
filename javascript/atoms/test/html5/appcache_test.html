@@ -6,18 +6,24 @@
   <script type="text/javascript">
     goog.require('bot.appcache');
     goog.require('bot.html5');
+    goog.require('bot.test');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
   </script>
 
   <script type="text/javascript">
-    function testGetStatusWithHtmlManifest() {
-      if (!bot.html5.isSupported(bot.html5.API.APPCACHE)) {
-        return;
-      }
+    // WebDriver does not enable application cache for Android (b/5478400).
+    // WebDriver does not enable application cache for Firefox (b/5787180).
+    // Selenium breaks application cache on Opera (b/578165).
+    var APPCACHE_NOT_WORKING =
+      !bot.html5.isSupported(bot.html5.API.APPCACHE) ||
+      goog.userAgent.product.ANDROID ||
+      goog.userAgent.product.FIREFOX ||
+      (goog.userAgent.OPERA && bot.test.isSeleniumBacked());
 
-      // Android does support the application cache, but disabling because
-      // WebDriver cannot currently enable it, b/5478400.
-      if (goog.userAgent.product.ANDROID) {
+    function testGetStatusWithHtmlManifest() {
+      if (APPCACHE_NOT_WORKING) {
         return;
       }
 

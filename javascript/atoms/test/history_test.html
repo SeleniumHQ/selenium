@@ -6,6 +6,7 @@
   <script type="text/javascript">
     goog.require('bot');
     goog.require('bot.locators');
+    goog.require('bot.test');
     goog.require('bot.window');
     goog.require('goog');
     goog.require('goog.dom');
@@ -21,28 +22,24 @@
 <iframe id="frame"></iframe>
 <script type="text/javascript">
   var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  // Set longer timeout due both to slowness in the Android emulator and
+  // slowness in the loading of popup windows in all browsers.
+  asyncTestCase.stepTimeout = 5000;
+
   var frame = null;
   var popup = null;
   var callback = null;
 
-  // Set longer timeout due to android emulator slowness.
-  if (goog.userAgent.product.ANDROID) {
-    asyncTestCase.stepTimeout = 5000;
-  }
-
-  // Two bugs prevent us from fully testing history across all browsers.
-  // On Safari, the window.opener property of popups have no properties,
-  // so we can't notify this page when the popup has loaded, b/3504107.
-  // On Firefox/Linux and IE8, popups sometimes fail to load, b/4974829.
-  // For Webview (android), window.open will cause a dialog prompt that will
-  // cause load failure.
+  // On Selenium-backed drivers (as used for Safari and Opera 10), the
+  // window.opener property of popups has no properties, so we can't notify
+  // this page when the popup has loaded (b/3504107). On Opera 11.5, the popup
+  // blocker is currently enabled (b/5746540). On Webview (Android),
+  // window.open will cause a dialog prompt that will cause load failure.
   // For these browsers, we test history in an iframe instead of a popup,
   // which limits the history properties we can reliably check.
-  // TODO (gdennis): Use popups on all browsers once these bugs are fixed.
-  if (goog.userAgent.product.SAFARI ||
-      (goog.userAgent.GECKO && goog.userAgent.LINUX) ||
-      (goog.userAgent.IE && goog.userAgent.isVersion(8)) ||
-      goog.userAgent.product.ANDROID) {
+  // TODO(user): Use popups on all browsers once these bugs are fixed.
+  if (bot.test.isSeleniumBacked() || goog.userAgent.product.ANDROID ||
+      (goog.userAgent.product.OPERA && goog.userAgent.isVersion(11.5))) {
     // A bug in prior versions of WebKit (persisting into Safari 5) causes the
     // initial page of an iframe to not enter the browser history, so we
     // initialize the iframe to a dummy page and the test cases here do not

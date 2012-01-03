@@ -314,6 +314,9 @@
     }
 
     function testEnterTextArea() {
+      // Although this looks like a platform dependent change, these newlines
+      // are what is seen. In particular, the Opera line ending is consistent
+      // cross-platform.
       var newline = (goog.userAgent.IE || goog.userAgent.OPERA) ? '\r\n' : '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);

@@ -634,6 +634,19 @@ bot.action.LegacyDevice_.focusOnElement = function(element) {
 bot.action.scrollIntoView = function(element, opt_coords) {
   if (!bot.dom.isScrolledIntoView(element, opt_coords)) {
     element.scrollIntoView();
+    // In Opera 10, scrollIntoView only scrolls the element into the viewport of
+    // its immediate parent window, so we explicitly scroll the ancestor frames
+    // into view of their respective windows. Note that scrolling the top frame
+    // first --- and so on down to the element itself --- does not work, because
+    // Opera 10 apparently treats element.scrollIntoView() as a noop when it
+    // immediately follows a scrollIntoView() call on its parent frame.
+    if (goog.userAgent.OPERA && !goog.userAgent.isVersion(11)) {
+      var win = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
+      for (var frame = win.frameElement; frame; frame = win.frameElement) {
+        frame.scrollIntoView();
+        win = goog.dom.getWindow(goog.dom.getOwnerDocument(frame));
+      }
+    }
   }
   var isInView = bot.dom.isScrolledIntoView(element, opt_coords);
   if (!isInView && opt_coords) {

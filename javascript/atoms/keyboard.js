@@ -315,7 +315,9 @@ bot.Keyboard.MODIFIERS = [
 
 
 /**
- * The value used for newlines in the current browser/OS combination.
+ * The value used for newlines in the current browser/OS combination. Although
+ * the line endings look platform dependent, they are browser dependent. In
+ * particular, Opera uses \r\n on all platforms.
  * @type {string}
  * @private
  * @const

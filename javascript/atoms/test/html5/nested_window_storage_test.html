@@ -6,26 +6,29 @@
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.frame');
-    goog.require('bot.storage');
     goog.require('bot.html5');
+    goog.require('bot.storage');
     goog.require('goog.testing.jsunit');
   </script>
 
   <script type="text/javascript">
+    var frameWin;
+
+    function setUpPage() {
+      frameWin = bot.frame.findFrameByNameOrId('frame_a');
+    }
+
     function testNestedFrameLocalStorage() {
-      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE, frameWin)) {
         return;
       }
 
-      var win = bot.frame.findFrameByNameOrId('frame_a');
-      assertNotNull(win);
-
-      var localStorage = bot.storage.getLocalStorage(win);
+      var localStorage = bot.storage.getLocalStorage(frameWin);
       assertEquals('bar11', localStorage.getItem('foo1'));
     }
 
     function testUniqueWindowLocalStorage() {
-      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE, frameWin)) {
         return;
       }
 
@@ -35,20 +38,16 @@
     }
 
     function testNestedFrameSessionStorage() {
-      if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE)) {
+      if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE, frameWin)) {
         return;
       }
 
-      var win = bot.frame.findFrameByNameOrId('frame_a');
-      assertNotNull(win);
-
-      var sessionStorage = bot.storage.getSessionStorage(win);
-      //assertEquals('bar22', sessionStorage.getItem('foo2'));
-      assertEquals('bar22', win.sessionStorage.getItem('foo2'));
+      var sessionStorage = bot.storage.getSessionStorage(frameWin);
+      assertEquals('bar22', sessionStorage.getItem('foo2'));
     }
 
     function testUniqueWindowSessionStorage() {
-      if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE)) {
+      if (!bot.html5.isSupported(bot.html5.API.SESSION_STORAGE, frameWin)) {
         return;
       }
 

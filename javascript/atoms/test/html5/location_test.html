@@ -6,14 +6,30 @@
   <script type="text/javascript">
     goog.require('bot');
     goog.require('bot.geolocation');
+    goog.require('bot.test');
     goog.require('bot.html5');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
 
   <script type="text/javascript">
     var asyncTestCase = null;
+
+    // WebDriver does not enable geolocation for Android (b/5787618).
+    // WebDriver does not enable geolocation for Chrome (b/5416356).
+    // WebDriver does not enable geolocation for Firefox (b/5787180).
+    // WebDriver does not enable geolocation for Opera 11.5 (b/5746540).
+    // Selenium breaks geolocation on Opera (b/5773581).
+    var GEOLOCATION_NOT_WORKING =
+      !bot.html5.isSupported(bot.html5.API.GEOLOCATION) ||
+      goog.userAgent.product.ANDROID ||
+      goog.userAgent.product.CHROME ||
+      goog.userAgent.product.FIREFOX ||
+      (goog.userAgent.OPERA && (bot.test.isSeleniumBacked() ||
+                                goog.userAgent.isVersion(11.5)));
+
 
     /**
      * This method checks if the device location
@@ -21,15 +37,7 @@
      * period.
      */
     function testLocationWithinDefaultInterval() {
-      if (!bot.html5.isSupported(bot.html5.API.GEOLOCATION)) {
-        return;
-      }
-
-      // TODO(user): Use expected failures for this
-      // Chrome does support location, but disabling due to b/5416356.
-      // Android does support location, but these tests are run under an
-      // emulator which does not by default.
-      if (goog.userAgent.product.CHROME || goog.userAgent.product.ANDROID) {
+      if (GEOLOCATION_NOT_WORKING) {
         return;
       }
 
@@ -62,9 +70,10 @@
      * whose code attribute is set to TIMEOUT.
      */
     function testLocationNoTimeout() {
-      if (!bot.html5.isSupported(bot.html5.API.GEOLOCATION)) {
+      if (GEOLOCATION_NOT_WORKING) {
         return;
       }
+
       var posOptions = {
         enableHighAccuracy: true,
         maximumAge: 0,

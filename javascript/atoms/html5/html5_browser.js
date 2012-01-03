@@ -46,17 +46,6 @@ bot.html5.API = {
 
 
 /**
- * True if the current browser is FF3 or FF4.
- *
- * @private
- * @type {boolean}
- * @const
- */
-bot.html5.IS_FF_3_OR_4_ = goog.userAgent.GECKO &&
-    bot.userAgent.isVersion(3) && !bot.userAgent.isVersion(5);
-
-
-/**
  * True if the current browser is IE8.
  *
  * @private
@@ -103,11 +92,8 @@ bot.html5.isSupported = function(api, opt_window) {
 
   switch (api) {
     case bot.html5.API.APPCACHE:
-      // FF3 and FF4 need to explicitly enable appcache
-      // in user prefs.
-      // TODO(user): Enable this when the FF profile is changed.
-      // IE8 does not support appcache APIs though the APIs exist.
-      if (bot.html5.IS_FF_3_OR_4_ || bot.html5.IS_IE8_) {
+      // IE8 does not support application cache, though the APIs exist.
+      if (bot.html5.IS_IE8_) {
         return false;
       }
       return goog.isDefAndNotNull(win.applicationCache);
@@ -124,32 +110,24 @@ bot.html5.isSupported = function(api, opt_window) {
       return goog.isDefAndNotNull(win.openDatabase);
 
     case bot.html5.API.GEOLOCATION:
-      // FF3 and FF4 needs geo location to be explicitely set in
-      // the user preds. Uncomment this when the FirefoxProfile
-      // supports this.
-      // Geolocation doesn't respond on Safari5 on Windows, see:
+      // Safari 5 on Windows does not support geolocation, see:
       // https://discussions.apple.com/thread/3547900
-      if (goog.userAgent.GECKO || bot.html5.IS_SAFARI5_WINDOWS_) {
+      if (bot.html5.IS_SAFARI5_WINDOWS_) {
         return false;
       }
       return goog.isDefAndNotNull(win.navigator) &&
           goog.isDefAndNotNull(win.navigator.geolocation);
 
     case bot.html5.API.LOCAL_STORAGE:
-      // FF3 and FF4 don't support local storage fully.
-      // Though present in the API, IE8 does not support local
-      // storage.
-      if (bot.html5.IS_FF_3_OR_4_ || bot.html5.IS_IE8_) {
+      // IE8 does not support local storage, though the APIs exist.
+      if (bot.html5.IS_IE8_) {
         return false;
       }
       return goog.isDefAndNotNull(win.localStorage);
 
     case bot.html5.API.SESSION_STORAGE:
-      // This is needed for FF3 FF4 which does not
-      // support session storage fully.
-      // Tough present in the API, IE8 does not support session
-      // storage.
-      if (bot.html5.IS_FF_3_OR_4_ || bot.html5.IS_IE8_) {
+      // IE8 does not support session storage, though the APIs exist.
+      if (bot.html5.IS_IE8_) {
         return false;
       }
       return goog.isDefAndNotNull(win.sessionStorage) &&

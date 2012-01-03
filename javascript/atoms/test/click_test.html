@@ -4,10 +4,10 @@
   <meta http-equiv="Expire" content="0"/>
   <title>click_test.html</title>
   <script src="test_bootstrap.js"></script>
-  <script src="./window_focus.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.locators');
+    goog.require('bot.test');
     goog.require('goog.Uri');
     goog.require('goog.debug.DivConsole');
     goog.require('goog.debug.Logger');
@@ -259,7 +259,7 @@
 
         // If we expect a focus event, only test if the window is focused.
         if (!goog.array.contains(expectedEvents, goog.events.EventType.FOCUS) ||
-             isWindowFocused()) {
+             bot.test.isWindowFocused()) {
           runTest(hideOn, expectedEvents);
         }
       }

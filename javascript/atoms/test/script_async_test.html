@@ -4,120 +4,77 @@
   <title>script_async_test.html</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot.locators');
     goog.require('bot.script');
+    goog.require('goog.dom');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
-    goog.require('goog.userAgent.product');
-    goog.require('goog.userAgent.product.isVersion');
   </script>
 </head>
 <body>
+<iframe id="iframe" src="testdata/blank_page.html"></iframe>
 <script type="text/javascript">
   var TEST_CASE = goog.testing.AsyncTestCase.createAndInstall();
-  var testWindow;
+  var IFRAME = goog.dom.getElement('iframe');
 
-  function setUp() {
-    testWindow = window.open('');
-    assertNotNullNorUndefined('window.open() failed: ' +
-        'is a pop-up blocker enabled?', testWindow);
-    goog.global.onload = function() {
-      fail('Unexpected onload call');
-    };
-  }
+  // These browsers cannot execute a script in a provided window context.
+  var CANNOT_EXECUTE_IN_PROVIDED_CONTEXT =
+      (goog.userAgent.IE && !goog.userAgent.isVersion(9)) ||
+      (goog.userAgent.OPERA && !goog.userAgent.isVersion(11)) ||
+      // Excludes Android < 3, Chrome < 6, and Safari < 5.
+      (goog.userAgent.WEBKIT && !goog.userAgent.isVersion(534));
 
-  function tearDown() {
-    if (testWindow) {
-      testWindow.close();
-      testWindow = null;
-    }
+  function executeScriptInFrame(script, onSuccess, onFailure) {
+    TEST_CASE.waitForAsync('waiting for bot.script.execute');
+    bot.script.execute(script, [], 250,
+        function(var_args) {
+          TEST_CASE.continueTesting();
+          onSuccess.apply(null, arguments);
+        },
+        function(var_args) {
+          TEST_CASE.continueTesting();
+          onFailure.apply(null, arguments);
+        },
+        goog.dom.getFrameContentWindow(IFRAME));
   }
 
   function testSynchronizesTimeoutsWithGivenWindow() {
-    if (goog.userAgent.product.SAFARI &&
-        goog.userAgent.getUserAgentString().search('Version/5') == -1) {
-      // Fails in Safari prior to v5.
-      return;
-    }
-
-    if (goog.userAgent.IE && !goog.userAgent.product.isVersion(8)) {
-      // Fails in IE 7.
-      return;
-    }
-
-    if (goog.userAgent.product.ANDROID) {
-      return;
-    }
-
     var script = 'var callback = arguments[arguments.length - 1];' +
                  'var count = 0;' +
-                 'window.setTimeout(function() {count += 1;}, 250);' +
-                 'window.setTimeout(function() {count += 2;}, 250);' +
-                 'window.setTimeout(function() {callback(count);}, 250);';
+                 'window.setTimeout(function() {count += 1;}, 200);' +
+                 'window.setTimeout(function() {count += 2;}, 200);' +
+                 'window.setTimeout(function() {callback(count);}, 200);';
 
-    TEST_CASE.waitForAsync('bot.script.execute');
-    bot.script.execute(script, [], 250,
+    executeScriptInFrame(script,
         function(count) {
-          TEST_CASE.continueTesting();
           assertEquals(3, count);
         },
-        fail, testWindow);
+        fail);
   }
 
 
   function testShouldExecuteInTheContextOfTheProvidedWindow() {
-    if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
-        goog.userAgent.product.ANDROID) {
-      // IE has trouble communicating with testWindow.
-      // Safari cannot execute script in testWindow's context.
-      // Android does not execute in the window context properly.
+    if (CANNOT_EXECUTE_IN_PROVIDED_CONTEXT) {
       return;
     }
 
-    TEST_CASE.waitForAsync('waiting for test window to load page');
-    goog.global.onload = function(loadedWindow) {
-      assertEquals('wrong window', testWindow, loadedWindow);
-
-      TEST_CASE.waitForAsync('bot.script.execute');
-      bot.script.execute(
-          'arguments[arguments.length - 1](document.title);', [], 0,
-          function(title) {
-            TEST_CASE.continueTesting();
-            assertEquals('script_data', title);
-          }, fail, testWindow);
-    };
-    testWindow.location = './testdata/script_data.html';
+    executeScriptInFrame('arguments[arguments.length - 1](location);',
+        function(loc) {
+          assertContains(loc.pathname, IFRAME.src);
+        },
+        fail);
   }
 
   function testCanDetectPageUnloadEventsAndFailsTheScriptWhenTheyOccur() {
-    if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
-        goog.userAgent.product.ANDROID) {
-      // IE has trouble communicating with testWindow.
-      // Safari cannot execute script in testWindow's context.
-      // Android does not execute in the window context properly.
+    if (CANNOT_EXECUTE_IN_PROVIDED_CONTEXT) {
       return;
     }
 
-    var navigateTo = window.location.protocol + '//' + window.location.host;
-    var script = 'window.location = "' + navigateTo + '"';
-
-    TEST_CASE.waitForAsync('waiting for test window to load page');
-    goog.global.onload = function(loadedWindow) {
-      assertEquals('wrong window', testWindow, loadedWindow);
-
-      TEST_CASE.waitForAsync('bot.script.execute');
-      bot.script.execute(script, [], 250,
-          function() {
-            fail('Expected to get an unload error');
-          },
-          function(e) {
-            TEST_CASE.continueTesting();
-            assertTrue(e.message, /Detected a page unload event;/.test(e.message));
-          },
-          testWindow);
-    };
-    testWindow.location = './testdata/script_data.html';
+    executeScriptInFrame('window.location = "' + IFRAME.src + '?x=y";',
+        goog.partial(fail, 'Expected to get an unload error'),
+        function(e) {
+          assertContains('Detected a page unload event;', e.message);
+        });
   }
 </script>
 </body>

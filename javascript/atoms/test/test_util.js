@@ -13,25 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * @fileoverview Generic testing utilities.
+ */
+
+goog.provide('bot.test');
+
+goog.require('goog.userAgent');
 
 
-function isWindowFocused() {
-  if (!goog.userAgent.GECKO) {
-    return true;
-  }
+/**
+ * @return {boolean} Whether the window under test has focus.
+ */
+bot.test.isWindowFocused = function() {
+  return !goog.userAgent.GECKO || window.document.hasFocus();
+};
 
-  var windowFocused = 0;
 
-  var key = goog.events.listen(
-      document.body, goog.events.EventType.BLUR, function() {
-        windowFocused++;
-      });
-  // Need to fire the event twice, since the first one may actually get
-  // processed
-  document.body.blur();
-  document.body.blur();
-
-  goog.events.unlistenByKey(key);
-
-  return windowFocused == 2;
-}
+/**
+ * @return {boolean} Whether the current test is Selenium-backed.
+ */
+bot.test.isSeleniumBacked = function() {
+  // Test ('selenium' in window.opener) rather than !!window.opener['selenium']
+  // to avoid "attempted to read protected variable" error in Opera.
+  return !!window.opener && ('selenium' in window.opener);
+};
