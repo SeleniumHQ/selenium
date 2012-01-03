@@ -382,7 +382,8 @@ module Javascript
     MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH - "        \n".length
     COPYRIGHT =
           "/*\n" +
-          " * Copyright 2011 WebDriver committers\n" +
+          " * Copyright 2011-2012 WebDriver committers\n" +
+          " *\n" +
           " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
           " * you may not use this file except in compliance with the License.\n" +
           " * You may obtain a copy of the License at\n" +
