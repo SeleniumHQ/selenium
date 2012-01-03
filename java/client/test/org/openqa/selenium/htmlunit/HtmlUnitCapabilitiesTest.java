@@ -44,7 +44,7 @@ public class HtmlUnitCapabilitiesTest extends TestCase {
         new DesiredCapabilities("firefox", "", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_3);
+        BrowserVersion.FIREFOX_3_6);
   }
 
   public void testConfigurationOfFirefoxViaRemote() {
@@ -52,7 +52,7 @@ public class HtmlUnitCapabilitiesTest extends TestCase {
         new DesiredCapabilities("htmlunit", "firefox", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_3);
+        BrowserVersion.FIREFOX_3_6);
   }
 
   public void testConfigurationOfIEViaRemote() {

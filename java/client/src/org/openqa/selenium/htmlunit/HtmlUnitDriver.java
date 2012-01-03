@@ -226,7 +226,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if ("firefox".equals(browserName)) {
-      return BrowserVersion.FIREFOX_3;
+      return BrowserVersion.FIREFOX_3_6;
     }
 
     if ("internet explorer".equals(browserName)) {
