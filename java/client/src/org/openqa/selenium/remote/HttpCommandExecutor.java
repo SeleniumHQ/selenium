@@ -374,6 +374,11 @@ public class HttpCommandExecutor implements CommandExecutor {
         httpMethod.addHeader("Content-Type", "application/json; charset=utf-8");
       }
 
+      // Do not allow web proxy caches to cache responses to "get" commands
+      if (httpMethod instanceof HttpGet)  {
+        httpMethod.addHeader("Cache-Control", "no-cache");
+      }
+
       HttpResponse response = fallBackExecute(context, httpMethod);
 
       response = followRedirects(client, context, response, /* redirect count */0);
