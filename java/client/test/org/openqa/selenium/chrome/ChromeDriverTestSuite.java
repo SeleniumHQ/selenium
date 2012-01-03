@@ -1,6 +1,6 @@
 /*
 Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
+Copyright 2007-2009 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,18 +31,8 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 import java.util.Arrays;
 
 public class ChromeDriverTestSuite extends TestSuite {
-  private static ChromeDriverService chromeDriverService;
-
   public static Test suite() throws Exception {
-    if (!SauceDriver.shouldUseSauce()) {
-      try {
-        chromeDriverService = ChromeDriverService.createDefaultService();
-      } catch (Throwable t) {
-        return new InitializationError(t);
-      }
-    }
-
-    Test rawTest = new TestSuiteBuilder()
+    return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
         .using(Browser.chrome)
         .includeJavascriptTests()
@@ -50,63 +40,5 @@ public class ChromeDriverTestSuite extends TestSuite {
         .restrictToPackage("org.openqa.selenium")
         .restrictToPackage("org.openqa.selenium.chrome")
         .create();
-
-    TestSuite suite = new TestSuite();
-    suite.addTest(new ServiceStarter(rawTest));
-    return suite;
   }
-
-  /**
-   * Customized RemoteWebDriver that will communicate with a service that lives and dies with the
-   * entire test suite. We do not use {@link ChromeDriver} since that starts and stops the service
-   * with each instance (and that is too expensive for our purposes).
-   */
-  public static class DriverForTest extends RemoteWebDriver {
-    public DriverForTest() {
-      super(chromeDriverService.getUrl(), chromeWithExtensionsDisabled());
-    }
-    
-    private static DesiredCapabilities chromeWithExtensionsDisabled() {
-      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-      capabilities.setCapability("chrome.switches", Arrays.asList("--disable-extensions"));
-      return capabilities;
-    }
-  }
-
-  private static class ServiceStarter extends TestSetup {
-
-    public ServiceStarter(Test test) {
-      super(test);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-      super.setUp();
-      if (chromeDriverService != null) {
-        chromeDriverService.start();
-      }
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-      if (chromeDriverService != null) {
-        chromeDriverService.stop();
-      }
-      super.tearDown();
-    }
-  }
-
-  private static class InitializationError extends TestCase {
-    private final Throwable t;
-
-    public InitializationError(Throwable t) {
-      this.t = t;
-    }
-
-    @Override
-    protected void runTest() throws Throwable {
-      throw t;
-    }
-  }
-
 }
