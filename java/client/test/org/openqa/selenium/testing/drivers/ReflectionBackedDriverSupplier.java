@@ -90,9 +90,10 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         className = "org.openqa.selenium.ie.InternetExplorerDriver";
       }
     } else if (DesiredCapabilities.ipad().getBrowserName().equals(name)) {
-      // Do nothing
+    	// for now using the iphone sim... TODO need to make the sim launch in ipad mode
+    	className = "org.openqa.selenium.iphone.IPhoneDriverTestSuite$TestIPhoneSimulatorDriver";
     } else if (DesiredCapabilities.iphone().getBrowserName().equals(name)) {
-      // Do nothing
+    	className = "org.openqa.selenium.iphone.IPhoneDriverTestSuite$TestIPhoneSimulatorDriver";
     } else {
       // The last chance saloon.
       className = System.getProperty("selenium.browser.class_name");

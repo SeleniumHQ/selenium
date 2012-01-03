@@ -6,7 +6,6 @@ import com.google.common.base.Preconditions;
 
 public class DomainHelper {
 
-  private String hostname;
   private AppServer appServer;
 
   public DomainHelper(AppServer appServer) {
@@ -30,18 +29,18 @@ public class DomainHelper {
   }
 
   public boolean checkIsOnValidHostname() {
-    boolean correct = hostname != null && isValidHostname(hostname);
+    boolean correct = getHostName() != null && isValidHostname(getHostName());
     if (!correct) {
-      System.out.println("Skipping test: unable to find domain name to use");
+      System.out.println("Skipping test: unable to find domain name to use, hostname: " + getHostName());
     }
     return correct;
   }
 
   public boolean checkIsOnValidSubDomain() {
-    boolean correct = hostname != null && isValidSubDomain(hostname);
+    boolean correct = getHostName() != null && isValidSubDomain(getHostName());
 
     if (!correct) {
-      System.out.println("Skipping test: unable to find sub domain name to use");
+      System.out.println("Skipping test: unable to find sub domain name to use, hostname: " + getHostName());
     }
     return correct;
   }
@@ -65,6 +64,6 @@ public class DomainHelper {
   }
 
   public String getHostName() {
-    return hostname;
+    return appServer.getHostName();
   }
 }

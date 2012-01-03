@@ -17,14 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.iphone;
 
+import java.io.File;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.Browser;
-
-import java.io.File;
 
 public class IPhoneDriverTestSuite extends TestSuite {
 
@@ -38,7 +39,7 @@ public class IPhoneDriverTestSuite extends TestSuite {
   }
 
   public static class TestIPhoneSimulatorDriver extends IPhoneSimulatorDriver {
-    public TestIPhoneSimulatorDriver() throws Exception {
+    public TestIPhoneSimulatorDriver(Capabilities ignore) throws Exception {
       super(locateSimulatorBinary());
     }
 

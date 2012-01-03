@@ -134,8 +134,12 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         break;
 
       case ipad:
+    	caps = DesiredCapabilities.ipad();
+    	break;
+    	
       case iphone:
-        throw new RuntimeException("Browser is unsupported: " + detect);
+        caps = DesiredCapabilities.iphone();
+        break;
 
       default:
         throw new RuntimeException("Cannot determine browser config to use");
