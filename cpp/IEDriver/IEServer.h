@@ -16,6 +16,8 @@
 
 #include "server.h"
 
+#define IESERVER_SHUTDOWN_EVENT_NAME L"IEServer_Shutdown_Event"
+
 using namespace std;
 
 namespace webdriver
@@ -30,6 +32,7 @@ class IEServer : public Server
  protected:
   virtual SessionHandle InitializeSession(void);
   virtual std::string GetStatus(void);
+  virtual void ShutDown(void);
 };
 
 } // namespace webdriver

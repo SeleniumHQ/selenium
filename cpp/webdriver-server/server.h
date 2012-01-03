@@ -50,6 +50,7 @@ class Server {
  protected:
   virtual SessionHandle InitializeSession(void) = 0;
   virtual std::string GetStatus(void) = 0;
+  virtual void ShutDown(void) = 0;
 
  private:
   typedef std::map<std::string, int> VerbMap;

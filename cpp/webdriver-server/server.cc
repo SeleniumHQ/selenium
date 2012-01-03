@@ -85,6 +85,13 @@ int Server::ProcessRequest(struct mg_connection* conn,
                      SERVER_DEFAULT_PAGE,
                      HTML_CONTENT_TYPE);
     http_response_code = 200;
+  } else if (strcmp(request_info->uri, "/shutdown") == 0) {
+    this->SendHttpOk(conn,
+                     request_info,
+                     SERVER_DEFAULT_PAGE,
+                     HTML_CONTENT_TYPE);
+    http_response_code = 200;
+    this->ShutDown();
   } else {
     std::string serialized_response = this->DispatchCommand(request_info->uri,
                                                              http_verb,
@@ -174,7 +181,6 @@ std::string Server::DispatchCommand(const std::string& uri,
   } else if (command == Status) {
     // Status command must be handled by the server, not by the session.
     serialized_response = this->GetStatus();
-  } else if (command == GetSessionList) {
     // GetSessionList command must be handled by the server,
     // not by the session.
     serialized_response = this->ListSessions();
@@ -276,6 +282,11 @@ int Server::SendResponseToClient(struct mg_connection* conn,
                        serialized_response,
                        JSON_CONTENT_TYPE);
       return_code = 200;
+    } else if (return_code == 200) {
+      this->SendHttpOk(conn,
+                       request_info,
+                       serialized_response,
+                       HTML_CONTENT_TYPE);
     } else if (return_code == 303) {
       std::string location = response.value().asString();
       response.SetSuccessResponse(response.value());

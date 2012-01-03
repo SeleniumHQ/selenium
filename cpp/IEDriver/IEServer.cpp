@@ -74,4 +74,14 @@ std::string IEServer::GetStatus() {
   return response.Serialize();
 }
 
+void IEServer::ShutDown() {
+  HANDLE event_handle = ::OpenEvent(EVENT_MODIFY_STATE,
+                                    FALSE, 
+                                    IESERVER_SHUTDOWN_EVENT_NAME);
+  if (event_handle) {
+    ::SetEvent(event_handle);
+    ::CloseHandle(event_handle);
+  }
+}
+
 } //namespace webdriver
