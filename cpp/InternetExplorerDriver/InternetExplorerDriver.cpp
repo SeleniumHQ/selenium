@@ -15,6 +15,8 @@
 #include "resource.h"
 #include "IEServer.h"
 
+// TODO(JimEvans): Change the prototypes of these functions in the
+// IEDriver project to match the prototype specified here.
 typedef void (__cdecl *STARTSERVERPROC)(int); 
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
@@ -27,7 +29,8 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define START_SERVER_API_NAME "StartServer"
 #define STOP_SERVER_API_NAME "StopServer"
 
-bool ExtractResource(unsigned short resource_id, const std::wstring& output_file_name) {
+bool ExtractResource(unsigned short resource_id,
+                     const std::wstring& output_file_name) {
   bool success = false; 
   try {
     // First find and load the required resource
