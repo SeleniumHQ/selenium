@@ -145,7 +145,9 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
    * {@link Capabilities} instance.
    * 
    * @param baseUrl The URL from which relative URLs should be based on
+   * @deprecated Use {@link #WebDriverCommandProcessor(String, com.google.common.base.Supplier)} instead.
    */
+  @Deprecated
   public WebDriverCommandProcessor(String baseUrl) {
     // Firefox seems like a reasonable default
     this(baseUrl, new SuppliesWebDriver(DesiredCapabilities.firefox()));
@@ -156,7 +158,9 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
    * 
    * @param baseUrl The URL from which relative URLs should be based on
    * @param likeThis Typically a {@link org.openqa.selenium.remote.DesiredCapabilities} instance
+   * @deprecated Use {@link #WebDriverCommandProcessor(String, com.google.common.base.Supplier)} instead.
    */
+  @Deprecated
   public WebDriverCommandProcessor(String baseUrl, Capabilities likeThis) {
     this(baseUrl, new SuppliesWebDriver(likeThis));
   }
