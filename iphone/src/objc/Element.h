@@ -88,16 +88,6 @@
 // This method is only valid on checkboxes and radio buttons.
 - (NSNumber *)isChecked;
 
-// Set the element's checked property.
-// This method is only valid on checkboxes and radio buttons.
-- (void)setChecked:(NSDictionary*)ignored;
-
-// Toggle the element's checked property.
-// This method is only valid on checkboxes and radio buttons.
-// Dictionary parameters are passed in by REST service, but are redundant
-// with directory ID and are thus ignored.
-- (void)toggleSelected;
-
 // Is the element enabled?
 - (NSNumber *)isEnabled;
 

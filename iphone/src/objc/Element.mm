@@ -237,19 +237,6 @@ static NSString* const kElementIdKey = @"ELEMENT";
          withArgs:[NSArray arrayWithObject:[self idDictionary]]];
 }
 
-// This method is only valid on option elements, checkboxes and radio buttons.
-- (void)setChecked:(NSDictionary*)ignored {
-  [self executeAtom:webdriver::atoms::SET_SELECTED
-           withArgs:[NSArray arrayWithObjects:
-               [self idDictionary], [NSNumber numberWithBool:YES], nil]];
-}
-
-// Like |checked| above, we should check that the element is valid.
-- (void)toggleSelected {
-  [self executeAtom:webdriver::atoms::TOGGLE
-           withArgs:[NSArray arrayWithObject:[self idDictionary]]];
-}
-
 - (NSNumber *)isEnabled {
   return (NSNumber*) [self
       executeAtom:webdriver::atoms::IS_ENABLED
