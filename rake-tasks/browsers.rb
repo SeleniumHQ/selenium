@@ -13,7 +13,7 @@ BROWSERS = {
     },
     :java => {
       :class => "org.openqa.selenium.firefox.SynthesizedFirefoxDriver",
-      :deps => [ "//java/client/test/org/openqa/selenium/firefox:drivers" ]
+      :deps => [ "//java/client/test/org/openqa/selenium/testing/drivers" ]
     },
     :browser_name => "firefox",
   },
