@@ -68,6 +68,7 @@ goog.require('webdriver.promise.Promise');
  * @param {!webdriver.CommandExecutor} executor The executor to use when
  *     sending commands to the browser.
  * @constructor
+ * @export
  */
 webdriver.WebDriver = function(session, executor) {
 
@@ -93,6 +94,7 @@ webdriver.WebDriver = function(session, executor) {
  *     querying for session details.
  * @param {string} sessionId ID of the session to attach to.
  * @return {!webdriver.WebDriver} A new client for the specified session.
+ * @export
  */
 webdriver.WebDriver.attachToSession = function(executor, sessionId) {
   return webdriver.WebDriver.acquireSession_(executor,
@@ -108,6 +110,7 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
  * @param {!Object.<*>} desiredCapabilities The desired capabilities for the
  *     new session.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
+ * @export
  */
 webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
   return webdriver.WebDriver.acquireSession_(executor,

@@ -59,6 +59,7 @@ goog.require('webdriver.http.Response');
  * @see <a href="http://www.w3.org/TR/cors/">CORS Spec</a>
  * @see <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">
  *     JSON wire protocol</a>
+ * @export
  */
 webdriver.http.CorsClient = function(url) {
   if (!webdriver.http.CorsClient.isAvailable()) {

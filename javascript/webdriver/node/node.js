@@ -87,6 +87,7 @@ webdriver.node.checkIsNative_ = function() {
  *     to.
  * @constructor
  * @implements {webdriver.http.Client}
+ * @export
  */
 webdriver.node.HttpClient = function(url) {
   webdriver.node.checkIsNative_();

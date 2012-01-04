@@ -58,6 +58,7 @@ webdriver.http.Client.prototype.send = function(request, callback) {
  *     requests to the server.
  * @constructor
  * @implements {webdriver.CommandExecutor}
+ * @export
  */
 webdriver.http.Executor = function(client) {
 
