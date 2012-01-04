@@ -1,3 +1,18 @@
+v2.16.0
+=======
+ * Made By, Cookie and Screenshot .NET classes serializable.
+ * Slightly modifying build output to be more informative when building
+   .NET bindings from within the Visual Studio IDE.
+ * Explicitly setting socket.ExclusiveAddressUse = true when attempting to 
+   find a free port for the .NET bindings' FirefoxDriver.
+ * Updating the .NET remote Command object to return an empty JSON object 
+   ("{}") instead of an empty string when the command has no parameters.
+ * Implementing the /sessions and /status commands for the IE driver and the
+   .NET bindings.
+ * Check elements' internal IDs for equality before making RPC call to 
+   determine IWebElement equality in .NET.
+ * Removed unused JSON wire protocol command values from the .NET bindings.
+
 v2.15.0
 =======
  * Added support for window positioning and sizing API to IE.
