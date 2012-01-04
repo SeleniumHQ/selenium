@@ -157,7 +157,7 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
   }
 
   std::wstring script_source(L"(function() { return function(){");
-  script_source += atoms::SIZZLE;
+  script_source += atoms::asString(atoms::SIZZLE);
   script_source += L"\n";
   script_source += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
   script_source += L"if (root['querySelector']) { return root.querySelector(arguments[0]); } ";
@@ -202,7 +202,7 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
   }
 
   std::wstring script_source(L"(function() { return function(){");
-  script_source += atoms::SIZZLE;
+  script_source += atoms::asString(atoms::SIZZLE);
   script_source += L"\n";
   script_source += L"var root = arguments[1] ? arguments[1] : document.documentElement;";
   script_source += L"if (root['querySelectorAll']) { return root.querySelectorAll(arguments[0]); } ";
