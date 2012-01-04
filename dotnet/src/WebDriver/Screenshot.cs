@@ -28,6 +28,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Represents an image of the page currently loaded in the browser.
     /// </summary>
+    [Serializable]
     public class Screenshot
     {
         private string base64Encoded = string.Empty;

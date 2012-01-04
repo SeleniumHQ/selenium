@@ -24,6 +24,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Represents a cookie in the browser.
     /// </summary>
+    [Serializable]
     public class Cookie
     {
         private string cookieName;
