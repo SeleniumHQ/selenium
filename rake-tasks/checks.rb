@@ -87,7 +87,7 @@ def python?
 end
 
 def msbuild_installed?
-  windows? && present?("msbuild.exe")
+  windows? && present?("vcbuild.exe")
 end
 
 def xcode?
