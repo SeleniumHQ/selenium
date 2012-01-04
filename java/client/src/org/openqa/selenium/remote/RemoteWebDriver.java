@@ -494,34 +494,29 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public Set<Cookie> getCookies() {
       Object returned = execute(DriverCommand.GET_ALL_COOKIES).getValue();
 
-      try {
-        List<Map<String, Object>> cookies =
-            new JsonToBeanConverter().convert(List.class, returned);
-        Set<Cookie> toReturn = new HashSet<Cookie>();
-        for (Map<String, Object> rawCookie : cookies) {
-          String name = (String) rawCookie.get("name");
-          String value = (String) rawCookie.get("value");
-          String path = (String) rawCookie.get("path");
-          String domain = (String) rawCookie.get("domain");
-          Boolean secure = (Boolean) rawCookie.get("secure");
+      List<Map<String, Object>> cookies =
+          new JsonToBeanConverter().convert(List.class, returned);
+      Set<Cookie> toReturn = new HashSet<Cookie>();
+      for (Map<String, Object> rawCookie : cookies) {
+        String name = (String) rawCookie.get("name");
+        String value = (String) rawCookie.get("value");
+        String path = (String) rawCookie.get("path");
+        String domain = (String) rawCookie.get("domain");
+        Boolean secure = (Boolean) rawCookie.get("secure");
 
-          Number expiryNum = (Number) rawCookie.get("expiry");
-          Date expiry = expiryNum == null ? null : new Date(
-              TimeUnit.SECONDS.toMillis(expiryNum.longValue()));
+        Number expiryNum = (Number) rawCookie.get("expiry");
+        Date expiry = expiryNum == null ? null : new Date(
+            TimeUnit.SECONDS.toMillis(expiryNum.longValue()));
 
-          toReturn.add(new Cookie.Builder(name, value)
-              .path(path)
-              .domain(domain)
-              .isSecure(secure)
-              .expiresOn(expiry)
-              .build());
-        }
-
-        return toReturn;
-      } catch (Exception e) {
-        throw new WebDriverException(e);
+        toReturn.add(new Cookie.Builder(name, value)
+            .path(path)
+            .domain(domain)
+            .isSecure(secure)
+            .expiresOn(expiry)
+            .build());
       }
 
+      return toReturn;
     }
 
     public Cookie getCookieNamed(String name) {
