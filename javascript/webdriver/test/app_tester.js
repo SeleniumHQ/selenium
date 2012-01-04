@@ -117,7 +117,7 @@ webdriver.test.AppTester.prototype.$runApplication = function(
 
   function assertIsDone() {
     clock.tick();  // Shutdown is done in one extra turn of the event loop.
-    assertTrue('Should be done now', isDone);
+    assertTrue('Should be done now: ' + app.getSchedule(), isDone);
   }
 
   function determineIfShouldBeDone() {

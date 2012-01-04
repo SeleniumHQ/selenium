@@ -174,6 +174,10 @@ webdriver.test.testutil.callbackHelper = function(opt_fn) {
         '  was called ' + calls.length + ' times:');
     message = goog.array.concat(message,
         goog.array.map(calls, function(call, i) {
+          var e = call.getError();
+          if (e) {
+            throw e;
+          }
           return goog.string.repeat(' ', 4) + 'args(call #' + i + '): ' +
               goog.json.serialize(call.getArguments());
         }));

@@ -14,19 +14,13 @@
 
 goog.provide('webdriver.Builder');
 
-goog.require('goog.string');
-goog.require('webdriver.Command');
-goog.require('webdriver.CommandName');
 goog.require('webdriver.FirefoxDomExecutor');
-goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
-goog.require('webdriver.error');
 goog.require('webdriver.http.CorsClient');
 goog.require('webdriver.http.Executor');
 goog.require('webdriver.http.Response');
 goog.require('webdriver.node.HttpClient');
 goog.require('webdriver.process');
-goog.require('webdriver.promise.Deferred');
 
 
 /**
@@ -106,60 +100,6 @@ webdriver.Builder.SERVER_URL_ENV = 'wdurl';
 
 
 /**
- * Sends a command to the server that is expected to return a response whose
- * value describes the capabilities of that session. By virtue of the WebDriver
- * wire protocol, the session ID can be extract from the response as well.
- * @param {!webdriver.CommandExecutor} executor Command executor to use when
- *     querying for session details.
- * @param {!webdriver.Command} command The command to send to fetch the session
- *     details.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with a
- *     {@link webdriver.Session}.
- * @private
- */
-webdriver.Builder.getSessionHelper_ = function(executor, command) {
-  var fn = goog.bind(executor.execute, executor, command);
-  return webdriver.promise.checkedNodeCall(fn).then(function(response) {
-    webdriver.error.checkResponse(response);
-    return new webdriver.Session(response['sessionId'], response['value']);
-  });
-};
-
-
-/**
- * Queries a server for the capabilities of a particular session. The returned
- * promise will resolve with a fully formed {@code webdriver.Session} object.
- * @param {string} id ID of the session to query.
- * @param {!webdriver.CommandExecutor} executor Command executor to use when
- *     querying for session details.
- * @return {!webdriver.promise.Promise} A promise for the
- *     {@code webdriver.Session}.
- * @private
- */
-webdriver.Builder.getSession_ = function(id, executor) {
-  return webdriver.Builder.getSessionHelper_(executor,
-      new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
-          setParameter('sessionId', id));
-};
-
-
-/**
- * Creates a new WebDriver session.
- * @param {!webdriver.CommandExecutor} executor The executor to use to create a
- *     new session.
- * @param {!Object.<*>} capabilities The desired session capabilities.
- * @return {!webdriver.promise.Promise} A promise for the new
- *     {@code webdriver.Session}.
- * @private
- */
-webdriver.Builder.createSession_ = function(executor, capabilities) {
-  return webdriver.Builder.getSessionHelper_(executor,
-      new webdriver.Command(webdriver.CommandName.NEW_SESSION).
-          setParameter('desiredCapabilities', capabilities));
-};
-
-
-/**
  * Configures which WebDriver server should be used for new sessions. Overrides
  * the value loaded from the {@code webdriver.Builder.SERVER_URL_ENV} upon
  * instantion of this instance.
@@ -206,10 +146,10 @@ webdriver.Builder.prototype.withCapabilities = function(capabilities) {
  * @export
  */
 webdriver.Builder.prototype.build = function() {
-  var executor, session;
+  var executor;
   if (webdriver.FirefoxDomExecutor.isAvailable()) {
     executor = new webdriver.FirefoxDomExecutor();
-    session = webdriver.Builder.createSession_(executor, this.capabilities_);
+    return webdriver.WebDriver.createSession(executor, this.capabilities_);
   } else {
     if (!this.serverUrl_) {
       throw new Error(
@@ -224,14 +164,12 @@ webdriver.Builder.prototype.build = function() {
     executor = new webdriver.http.Executor(client);
 
     if (this.sessionId_) {
-      session = webdriver.Builder.getSession_(this.sessionId_, executor);
+      return webdriver.WebDriver.attachToSession(executor, this.sessionId_);
     } else if (webdriver.process.isNative()) {
-      session = webdriver.Builder.createSession_(executor, this.capabilities_);
+      return webdriver.WebDriver.createSession(executor, this.capabilities_);
     } else {
       throw new Error('Unable to create a new client for this browser. The ' +
           'WebDriver session ID has not been defined.');
     }
   }
-
-  return new webdriver.WebDriver(session, executor);
 };

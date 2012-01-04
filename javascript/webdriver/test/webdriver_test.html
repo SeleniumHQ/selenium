@@ -85,6 +85,21 @@ limitations under the License.
   }
 
 
+  function createCommandMatcher(commandName, parameters) {
+    return new goog.testing.mockmatchers.ArgumentMatcher(function(actual) {
+      assertEquals('wrong name', commandName, actual.getName());
+      var differences = goog.testing.asserts.findDifferences(
+          parameters, actual.getParameters());
+      assertNull(
+          'Wrong parameters for "' + commandName + '"' +
+              '\n    Expected: ' + goog.json.serialize(parameters) +
+              '\n    Actual: ' + goog.json.serialize(actual.getParameters()),
+          differences);
+      return true;
+    }, commandName + '(' + goog.json.serialize(parameters) + ')');
+  }
+
+
   TestHelper = function() {
     this.executor_ = mockControl.createStrictMock(webdriver.CommandExecutor);
     this.execute = function() {
@@ -149,26 +164,7 @@ limitations under the License.
 
 
   TestHelper.Command.prototype.buildExpectation_ = function() {
-    var commandName = this.name_;
-    var parameters = this.parameters_;
-
-    var commandMatcher = new goog.testing.mockmatchers.ArgumentMatcher(
-        function(actualCommand) {
-          assertEquals('wrong name', commandName, actualCommand.getName());
-          var actualParameters = actualCommand.getParameters();
-
-          var expected = goog.json.serialize(parameters);
-          var actual = goog.json.serialize(actualParameters);
-          var differences = goog.testing.asserts.findDifferences(
-              parameters, actualParameters);
-          assertNull(
-              'Wrong parameters for "' + commandName + '"' +
-              '\n    Expected: ' + expected +
-              '\n    Actual: ' + actual,
-              differences);
-          return true;
-        }, commandName + '(' + goog.json.serialize(parameters) + ')');
-
+    var commandMatcher = createCommandMatcher(this.name_, this.parameters_);
     assertNotNull(this.toDo_);
     this.helper_.executor_.
         execute(commandMatcher, goog.testing.mockmatchers.isFunction).
@@ -234,6 +230,119 @@ limitations under the License.
   //    Tests
   //
   //////////////////////////////////////////////////////////////////////////////
+
+  function testAttachToSession_sessionIsAvailable() {
+    var commandMatcher = createCommandMatcher(CName.DESCRIBE_SESSION, {
+      'sessionId': 'foo'
+    });
+
+    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
+    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
+        $does(function(command, callback) {
+          callback(null, {
+            'status': bot.ErrorCode.SUCCESS,
+            'sessionId': 'foo',
+            'value': { 'browserName': 'firefox' }
+          });
+        });
+    mockControl.$replayAll();
+
+    var driver = webdriver.WebDriver.attachToSession(executor, 'foo');
+    verifyAll();
+
+    var callback;
+    driver.getSession().then(callback = callbackHelper(function(session) {
+      assertEquals('foo', session.getId());
+      assertEquals('firefox', session.getCapability('browserName'));
+    }));
+    callback.assertCalled();
+  }
+
+
+  function testAttachToSession_failsToGetSessionInfo() {
+    var commandMatcher = createCommandMatcher(CName.DESCRIBE_SESSION, {
+      'sessionId': 'foo'
+    });
+
+    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
+    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
+        $does(function(command, callback) {
+          callback(null, {
+            'status': bot.ErrorCode.UNKNOWN_ERROR,
+            'value': { 'message': 'boom' }
+          });
+        });
+    mockControl.$replayAll();
+
+    var driver = webdriver.WebDriver.attachToSession(executor, 'foo');
+    verifyAll();
+
+    var errback;
+    driver.getSession().then(null, errback = callbackHelper(function(e) {
+      assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
+      assertEquals('boom', e.message);
+    }));
+    errback.assertCalled();
+  }
+
+
+  function testCreateSession_happyPath() {
+    var commandMatcher = createCommandMatcher(CName.NEW_SESSION, {
+      'desiredCapabilities': {'browserName': 'firefox'}
+    });
+
+    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
+    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
+        $does(function(command, callback) {
+          callback(null, {
+            'status': bot.ErrorCode.SUCCESS,
+            'sessionId': 'foo',
+            'value': { 'browserName': 'firefox' }
+          });
+        });
+    mockControl.$replayAll();
+
+    var driver = webdriver.WebDriver.createSession(executor, {
+      'browserName': 'firefox'
+    });
+    verifyAll();
+
+    var callback;
+    driver.getSession().then(callback = callbackHelper(function(session) {
+      assertEquals('foo', session.getId());
+      assertEquals('firefox', session.getCapability('browserName'));
+    }));
+    callback.assertCalled();
+  }
+
+
+  function testCreateSession_failsToCreateSession() {
+    var commandMatcher = createCommandMatcher(CName.NEW_SESSION, {
+      'desiredCapabilities': {'browserName': 'firefox'}
+    });
+
+    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
+    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
+        $does(function(command, callback) {
+          callback(null, {
+            'status': bot.ErrorCode.UNKNOWN_ERROR,
+            'value': { 'message': 'boom' }
+          });
+        });
+    mockControl.$replayAll();
+
+    var driver = webdriver.WebDriver.createSession(executor, {
+      'browserName': 'firefox'
+    });
+    verifyAll();
+
+    var errback;
+    driver.getSession().then(null, errback = callbackHelper(function(e) {
+      assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
+      assertEquals('boom', e.message);
+    }));
+    errback.assertCalled();
+  }
 
 
   function testToWireValue_function() {

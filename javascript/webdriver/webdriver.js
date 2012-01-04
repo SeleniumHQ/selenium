@@ -88,6 +88,56 @@ webdriver.WebDriver = function(session, executor) {
 
 
 /**
+ * Creates a new WebDriver client for an existing session.
+ * @param {!webdriver.CommandExecutor} executor Command executor to use when
+ *     querying for session details.
+ * @param {string} sessionId ID of the session to attach to.
+ * @return {!webdriver.WebDriver} A new client for the specified session.
+ */
+webdriver.WebDriver.attachToSession = function(executor, sessionId) {
+  return webdriver.WebDriver.acquireSession_(executor,
+      new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
+          setParameter('sessionId', sessionId));
+};
+
+
+/**
+ * Creates a new WebDriver session.
+ * @param {!webdriver.CommandExecutor} executor The executor to create the new
+ *     session with.
+ * @param {!Object.<*>} desiredCapabilities The desired capabilities for the
+ *     new session.
+ * @return {!webdriver.WebDriver} The driver for the newly created session.
+ */
+webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
+  return webdriver.WebDriver.acquireSession_(executor,
+      new webdriver.Command(webdriver.CommandName.NEW_SESSION).
+          setParameter('desiredCapabilities', desiredCapabilities));
+};
+
+
+/**
+ * Sends a command to the server that is expected to return the details for a
+ * {@link webdriver.Session}. This may either be an existing session, or a
+ * newly created one.
+ * @param {!webdriver.CommandExecutor} executor Command executor to use when
+ *     querying for session details.
+ * @param {!webdriver.Command} command The command to send to fetch the session
+ *     details.
+ * @return {!webdriver.WebDriver} A new WebDriver client for the session.
+ * @private
+ */
+webdriver.WebDriver.acquireSession_ = function(executor, command) {
+  var fn = goog.bind(executor.execute, executor, command);
+  var session = webdriver.promise.checkedNodeCall(fn).then(function(response) {
+    webdriver.error.checkResponse(response);
+    return new webdriver.Session(response['sessionId'], response['value']);
+  });
+  return new webdriver.WebDriver(session, executor);
+};
+
+
+/**
  * Converts an object to its JSON representation in the WebDriver wire protocol.
  * When converting values of type object, the following steps will be taken:
  * <ol>

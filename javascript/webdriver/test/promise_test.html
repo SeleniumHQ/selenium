@@ -206,16 +206,16 @@ function testCatchingAndSuppressingRejectionErrors() {
 
 
 function testThrowingNewRejectionErrors() {
-  var errback1 = callbackHelper(function(error) {
-    assertEquals('foo', error);
-    throw new Error('hi');
-  }, true);
+  var errback1 = callbackHelper(goog.partial(assertEquals, 'foo'));
   var errback2 = callbackHelper(function(error) {
     assertEquals('hi', error.message);
   });
 
   webdriver.promise.rejected('foo').
-      addErrback(errback1).
+      addErrback(function(error) {
+        errback1(error);
+        throw new Error('hi');
+      }).
       addErrback(errback2);
   errback1.assertCalled();
   errback2.assertCalled();

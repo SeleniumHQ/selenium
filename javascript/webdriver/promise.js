@@ -785,6 +785,9 @@ webdriver.promise.Application.prototype.clearHistory = function() {
 };
 
 
+/**
+ * @return {string} The scheduled tasks still pending with this application.
+ */
 webdriver.promise.Application.prototype.getSchedule = function() {
   var schedule = [];
   goog.array.forEach(this.frames_, function(frame) {
