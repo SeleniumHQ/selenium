@@ -74,6 +74,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-latest", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-previous", "cpp\webdriver-firefox\webdriver-firefox-previous.vcxproj", "{322CD167-C8F9-4E13-8F8A-DFAE834255AA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InternetExplorerDriver", "cpp\InternetExplorerDriver\InternetExplorerDriver.vcxproj", "{08C3286F-F132-44EC-80F0-2DF30D87A5D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -458,6 +460,22 @@ Global
 		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|Win32.Build.0 = Release|Win32
 		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|x64.ActiveCfg = Release|x64
 		{322CD167-C8F9-4E13-8F8A-DFAE834255AA}.Release|x64.Build.0 = Release|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|.NET.ActiveCfg = Debug|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|Win32.Build.0 = Debug|Win32
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|x64.ActiveCfg = Debug|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Debug|x64.Build.0 = Debug|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|.NET.ActiveCfg = Release|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|Any CPU.ActiveCfg = Release|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|Mixed Platforms.Build.0 = Release|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|Win32.ActiveCfg = Release|Win32
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|Win32.Build.0 = Release|Win32
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|x64.ActiveCfg = Release|x64
+		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
