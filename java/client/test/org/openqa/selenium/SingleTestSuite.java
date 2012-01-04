@@ -30,7 +30,7 @@ public class SingleTestSuite extends TestSuite {
     Browser browser = Browser.ff;
 
     System.setProperty("selenium.browser.remote", "false");
-    System.setProperty("selenium.browser.selenium", "false");
+    System.setProperty("selenium.browser.selenium", "true");
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -43,11 +43,9 @@ public class SingleTestSuite extends TestSuite {
         .using(browser)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ClickScrollingTest")
-        .onlyRun("ClickTest")
-        .onlyRun("FrameSwitchingTest")
-//        .method("testShouldSetRelatedTargetForMouseOver")
-        .method("testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs")
+        .onlyRun("ExecutingJavascriptTest")
+        .method("testCanPassAMapAsAParameter")
+//        .method("testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs")
         .outputTestNames()
         .leaveRunning()
         ; // Yeah, this look strange :)

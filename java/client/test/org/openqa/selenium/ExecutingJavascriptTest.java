@@ -17,14 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.instanceOf;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.testing.Ignore;
@@ -39,6 +33,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
@@ -435,6 +439,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("", text);
   }
 
+  @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
@@ -529,5 +534,19 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
         "return arguments[0][0].tagName", args);
 
     assertEquals("form", name.toLowerCase());
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, OPERA},
+          reason = "Opera and HtmlUnit obey the method contract. Androidn, IE and iOS, not tested")
+  public void testCanPassAMapAsAParameter() {
+    driver.get(pages.simpleTestPage);
+    
+    List<Integer> nums = ImmutableList.of(1, 2);
+    Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
+    
+    Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
+
+    assertEquals(2, ((Number) res).intValue());
   }
 }
