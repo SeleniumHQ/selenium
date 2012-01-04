@@ -2,6 +2,7 @@ v2.16.0
 =======
 
 WebDriver:
+  * Native events enabled for Firefox 9
   * The FirefoxDriver now enables apps to use offline storage by default.
   * ChromeDriver allows setting the chrome driver's environment more easily.
   * RemoteWebElement implementations now guarantee that the ID used to
@@ -10,20 +11,35 @@ WebDriver:
   * The PageFactory will now no longer decorate List<WebElement> fields unless
     annotated with a @FindBy.
   * By default, clicks will now be in the middle of elements.  
+  * RemoteWebDriver will use uncacheable GET requests to communicate with the
+    remote webdriver server.
+  * HtmlUnitDriver defaults to emulating Firefox 3.6.
   * FIXED: 2985: Calling quit() on the IE Driver in a shutdown hook will no
     longer kill the JVM.
+  * FIXED: 2893: You can now pass a Map to executeScript when using Firefox.
+  * FIXED: 1395, 2747, 2869, 2431: Upgraded version of CocoaHTTPServer to the
+    latest and greatest.
 
 WebDriverJS:
-  * Test failures are now annotate with the task history.
+  * Test failures are now annotated with the task history.
+  * JSONP support dropped in favour of CORS. For those browsers where CORS is
+    not fully implemented, added a "/xdrpc" (cross-domain rpc) end-point.
   * Change the promise.Application event loop to run at a set interval
     instead of trying to explicitly trigger it at the appropriate times. This
     makes debugging much simpler. 
+  * WebDriverJS hub front-end now renders correctly in IE.
+
+Grid:
+  * It's now a beautiful butterfly.
 
 RC:
   * IE HTA mode will now close the final window.
   * All windows are now opened as "resizable". This means that they should
     always open in new windows rather than tabs in IE.
   * *chrome mode can type into file input elements on Firefox 8+
+  * WebDriverCommandProcessor has all constructors depending on the
+    (deprecated) SuppliesWebDriver class marked as deprecated. Will be deleted
+    in the next release.
  
 Automation Atoms: 
   * Bug fixes and updates
