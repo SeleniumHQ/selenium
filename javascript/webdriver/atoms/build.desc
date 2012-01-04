@@ -83,19 +83,9 @@ js_fragment(name = "is_selected",
   function = "webdriver.atoms.element.isSelected",
   deps = [ ":deps" ])
 
-js_fragment(name = "set_selected",
-  module = "bot.action",
-  function = "bot.action.setSelected",
-  deps = [ "//javascript/atoms:deps" ])
-
 js_fragment(name = "submit",
   module = "bot.action",
   function = "bot.action.submit",
-  deps = [ "//javascript/atoms:deps" ])
-
-js_fragment(name = "toggle",
-  module = "bot.action",
-  function = "bot.action.toggle",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "type",

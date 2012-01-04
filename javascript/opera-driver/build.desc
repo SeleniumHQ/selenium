@@ -16,8 +16,6 @@ js_fragment_java(name = "atoms",
     "//javascript/webdriver/atoms:is_displayed",
     "//javascript/webdriver/atoms:is_enabled",
     "//javascript/webdriver/atoms:is_selected",
-    "//javascript/webdriver/atoms:set_selected",
     "//javascript/webdriver/atoms:submit",
-    "//javascript/webdriver/atoms:toggle",
     "//javascript/webdriver/atoms:get_frame_index",
   ])
