@@ -1,7 +1,6 @@
 java_library(name = "drivers",
   srcs = [
     "Firebug.java",
-    "NativeEventsFirefoxDriver.java",
     "SynthesizedFirefoxDriver.java",
   ],
   resources = [

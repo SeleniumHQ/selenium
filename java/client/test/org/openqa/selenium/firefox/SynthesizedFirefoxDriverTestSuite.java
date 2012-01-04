@@ -30,7 +30,7 @@ public class SynthesizedFirefoxDriverTestSuite extends TestSuite {
       return new TestSuite();
     }
 
-    System.setProperty("selenium.browser.native", "false");
+    System.setProperty("selenium.browser.native_events", "false");
 
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")

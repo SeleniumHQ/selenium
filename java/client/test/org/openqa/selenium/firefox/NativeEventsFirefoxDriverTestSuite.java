@@ -31,7 +31,7 @@ public class NativeEventsFirefoxDriverTestSuite extends TestSuite {
       return new TestSuite();
     }
 
-    System.setProperty("selenium.browser.native", "true");
+    System.setProperty("selenium.browser.native_events", "true");
 
     return new TestSuiteBuilder()
         .addSourceDir("java/client/test")
