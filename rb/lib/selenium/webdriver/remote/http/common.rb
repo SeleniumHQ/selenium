@@ -21,6 +21,7 @@ module Selenium
           def call(verb, url, command_hash)
             url      = server_url.merge(url) unless url.kind_of?(URI)
             headers  = DEFAULT_HEADERS.dup
+            headers['Cache-Control'] = "no-cache" if verb == :get
 
             if command_hash
               payload                   = MultiJson.encode(command_hash)
