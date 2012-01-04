@@ -145,52 +145,11 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html#closeAllStreamsAndDestroyProcess(java.lang.Process)">closeAllStreamsAndDestroyProcess</A></B>(java.lang.Process&nbsp;process)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html#getProcessId(java.lang.Process)">getProcessId</A></B>(java.lang.Process&nbsp;p)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html#kill9(java.lang.Integer)">kill9</A></B>(java.lang.Integer&nbsp;pid)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Runs "kill -9" on the specified pid</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html#kill9(java.lang.Process)">kill9</A></B>(java.lang.Process&nbsp;p)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Runs "kill -9" on the specified process</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;int</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html#killProcess(java.lang.Process)">killProcess</A></B>(java.lang.Process&nbsp;process)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Forcibly kills a process, using OS tools like "kill" as a last resort</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html#waitForProcessDeath(java.lang.Process, long)">waitForProcessDeath</A></B>(java.lang.Process&nbsp;p,
-                    long&nbsp;timeout)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Waits the specified timeout for the process to die</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -232,21 +191,6 @@ public <B>ProcessUtils</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="waitForProcessDeath(java.lang.Process, long)"><!-- --></A><H3>
-waitForProcessDeath</H3>
-<PRE>
-public static int <B>waitForProcessDeath</B>(java.lang.Process&nbsp;p,
-                                      long&nbsp;timeout)</PRE>
-<DL>
-<DD>Waits the specified timeout for the process to die
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p</CODE> - The process to kill.<DD><CODE>timeout</CODE> - How long to wait in milliseconds.
-<DT><B>Returns:</B><DD>The exit code of the given process.</DL>
-</DD>
-</DL>
-<HR>
-
 <A NAME="killProcess(java.lang.Process)"><!-- --></A><H3>
 killProcess</H3>
 <PRE>
@@ -257,65 +201,6 @@ public static int <B>killProcess</B>(java.lang.Process&nbsp;process)</PRE>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>process</CODE> - The process to kill.
 <DT><B>Returns:</B><DD>The exit value of the process.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getProcessId(java.lang.Process)"><!-- --></A><H3>
-getProcessId</H3>
-<PRE>
-public static int <B>getProcessId</B>(java.lang.Process&nbsp;p)</PRE>
-<DL>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p</CODE> - The process to gather the PID of.
-<DT><B>Returns:</B><DD>The process's PID</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="kill9(java.lang.Integer)"><!-- --></A><H3>
-kill9</H3>
-<PRE>
-public static void <B>kill9</B>(java.lang.Integer&nbsp;pid)
-                  throws java.io.IOException,
-                         java.lang.InterruptedException</PRE>
-<DL>
-<DD>Runs "kill -9" on the specified pid
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>pid</CODE> - The PID of the process to kill.
-<DT><B>Throws:</B>
-<DD><CODE>java.io.IOException</CODE> - If unable to kill the process.
-<DD><CODE>java.lang.InterruptedException</CODE> - If unable to kill the process.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="kill9(java.lang.Process)"><!-- --></A><H3>
-kill9</H3>
-<PRE>
-public static void <B>kill9</B>(java.lang.Process&nbsp;p)
-                  throws java.io.IOException,
-                         java.lang.InterruptedException</PRE>
-<DL>
-<DD>Runs "kill -9" on the specified process
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p</CODE> - The process to kill.
-<DT><B>Throws:</B>
-<DD><CODE>java.io.IOException</CODE> - If unable to kill the process.
-<DD><CODE>java.lang.InterruptedException</CODE> - If unable to kill the process.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="closeAllStreamsAndDestroyProcess(java.lang.Process)"><!-- --></A><H3>
-closeAllStreamsAndDestroyProcess</H3>
-<PRE>
-public static void <B>closeAllStreamsAndDestroyProcess</B>(java.lang.Process&nbsp;process)</PRE>
-<DL>
-<DD><DL>
-</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
