@@ -1,15 +1,3 @@
-java_library(name = "drivers",
-  srcs = [
-    "Firebug.java",
-    "SynthesizedFirefoxDriver.java",
-  ],
-  resources = [
-    {"//third_party/firebug" : "resource/firebug-1.5.0-fx.xpi"}
-  ],
-  deps = [
-    "//java/client/src/org/openqa/selenium/firefox",
-    "//java/client/test/org/openqa/selenium:base",
-  ])
 
 java_library(name = "tests_common",
   srcs = [
@@ -17,9 +5,9 @@ java_library(name = "tests_common",
     "internal/*.java",
   ],
   deps = [
-    ":drivers",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/test/org/openqa/selenium:tests",
+    "//java/client/test/org/openqa/selenium/testing/drivers",
     "//third_party/java/junit",
   ])
 
@@ -29,7 +17,6 @@ java_test(name = "test_synthesized",
     { "selenium.browser" : "ff" },
   ],
   deps = [
-    ":drivers",
     ":tests_common",
   ])
 
@@ -39,6 +26,5 @@ java_test(name = "test_native",
     { "selenium.browser" : "ff" },
   ],
   deps = [
-    ":drivers",
     ":tests_common",
   ])

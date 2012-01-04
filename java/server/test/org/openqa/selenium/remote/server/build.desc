@@ -14,7 +14,7 @@ java_test(name = "test",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/server/src/org/openqa/selenium/remote/server",
     "//java/client/test/org/openqa/selenium:base",
-    "//java/client/test/org/openqa/selenium/firefox:drivers",
     "//java/client/test/org/openqa/selenium/remote:common-tests",
+    "//java/client/test/org/openqa/selenium/testing/drivers",
     "//third_party/java/junit",
   ])

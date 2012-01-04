@@ -108,7 +108,7 @@ public class RemoteWebDriverTestSuite extends TestSuite {
         Map<String, Object> payload = Maps.newHashMap();
         payload.put("capabilities", DesiredCapabilities.firefox());
         payload
-            .put("class", "org.openqa.selenium.firefox.SynthesizedFirefoxDriver");
+            .put("class", "org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver");
 
         new HttpRequest(
             HttpRequest.Method.POST, "http://localhost:6000/common/hub/config/drivers",

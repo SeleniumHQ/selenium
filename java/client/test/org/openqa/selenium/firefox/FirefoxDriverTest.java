@@ -59,6 +59,7 @@ import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class FirefoxDriverTest extends AbstractDriverTestCase {

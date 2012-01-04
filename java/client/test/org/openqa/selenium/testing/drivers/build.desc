@@ -2,15 +2,21 @@
 java_library(name = "drivers",
   srcs = [
     "Browser.java",
+    "Firebug.java",
     "SauceDriver.java",
+    "SynthesizedFirefoxDriver.java",
     "TestChromeDriver.java",
     "TestIgnorance.java",
     "WebDriverBuilder.java",
     "*Supplier.java",
   ],
+  resources = [
+    {"//third_party/firebug" : "resource/firebug-1.5.0-fx.xpi"}
+  ],
   deps = [
     ":test_selenium_server",
     "//java/client/src/org/openqa/selenium/chrome",
+    "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/test/org/openqa/selenium/testing:annotations",
     "//java/client/test/org/openqa/selenium/testing:dev_mode",

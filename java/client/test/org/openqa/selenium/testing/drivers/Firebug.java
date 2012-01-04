@@ -16,8 +16,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.testing.drivers;
 
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.File;

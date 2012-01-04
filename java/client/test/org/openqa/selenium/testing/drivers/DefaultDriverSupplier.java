@@ -40,7 +40,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     try {
       // Only support a default driver if we're actually in dev mode.
       if (isInDevMode()) {
-        driverClass = Class.forName("org.openqa.selenium.firefox.SynthesizedFirefoxDriver")
+        driverClass = Class.forName("org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver")
             .asSubclass(WebDriver.class);
       } else {
         driverClass = null;

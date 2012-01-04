@@ -17,12 +17,14 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.testing.drivers;
 
 import static org.junit.Assert.fail;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
