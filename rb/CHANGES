@@ -1,3 +1,26 @@
+2.16.0 (2012-01-04)
+===================
+
+* Firefox:
+  * Native events support for Firefox 9
+  * Allow apps to use offline storage by default
+  * Fix excessive unwrapping when executing mouseMove
+  * Click in the middle, rather than the top-left of elements (#3034, #2700)
+* IE:
+  * Raise StaleElementReferenceError when interacting with elements outside the currently focused frame
+  * Handle frames and iframes in showModalDialog windows
+* Chrome:
+  * Improve client handling of invalid error responses
+* iPhone:
+  * Updated to latest CocoaHTTPServer
+* Remote:
+  * Improve performance of Element#== by only making an RPC when necessary.
+  * Disallow caching of GET requests
+* Various:
+  * Raise ArgumentError instead of UnsupportedOperationError on invalid modifier key
+  * Improve docs for Server, ActionBuilder and Window
+  * Update to latest Sizzle (used for :css selectors in older browsers)
+
 2.15.0 (2011-12-08)
 ===================
 
