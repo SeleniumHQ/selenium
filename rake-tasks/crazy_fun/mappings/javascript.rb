@@ -377,9 +377,10 @@ module Javascript
 
   class GenerateAtoms < BaseJs
 
-    MAX_LINE_LENGTH = 78
-    MAX_STR_LENGTH_CPP = MAX_LINE_LENGTH - "    L\"\"\n".length
-    MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH - "        \n".length
+    MAX_LINE_LENGTH_CPP = 78
+    MAX_LINE_LENGTH_JAVA = 100
+    MAX_STR_LENGTH_CPP = MAX_LINE_LENGTH_CPP - "    L\"\"\n".length
+    MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH_JAVA - "     \"\"+\n".length
     COPYRIGHT =
           "/*\n" +
           " * Copyright 2011-2012 WebDriver committers\n" +
@@ -445,7 +446,7 @@ module Javascript
         # Don't need the 'L' on each line for UTF8.
         line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
       elsif language == :java
-        line_format = "        \"%s\""
+        line_format = "    \"%s\""
       end
 
       to_file << "\n"
@@ -453,7 +454,7 @@ module Javascript
       if language == :cpp
         to_file << "const #{atom_type}* const #{atom_name}[] = {\n"
       elsif language == :java
-        to_file << "    #{atom_name}(\n"
+        to_file << "  #{atom_name}(\n"
       end
 
       # Make the header file play nicely in a terminal: limit lines to 80
@@ -479,7 +480,7 @@ module Javascript
       to_file << line_format % contents if contents.length > 0
 
       if language == :java
-        to_file << "\n    ),\n"
+        to_file << "\n  ),\n"
       elsif language == :cpp
         to_file << ",\n    NULL\n};\n"
       end
@@ -586,40 +587,46 @@ module Javascript
           out << "import java.util.HashMap;\n"
           out << "import java.util.Map;\n"
           out << "\n"
-          out << "/*\n"
-          out << " * AUTO GENERATED - DO NOT EDIT BY HAND\n"
+          out << "/**\n"
+          out << " * The WebDriver atoms are used to ensure consistent behaviour cross-browser.\n"
           out << " */\n"
-          out << "\n"
           out << "public enum #{implementation}Atoms {\n"
+          out << "\n"
+          out << "  // AUTO GENERATED - DO NOT EDIT BY HAND\n"
 
           js_files.each do |js_file|
             write_atom_string_literal(out, dir, js_file, :java)
           end
 
-          out << ";\n"
+          out << "  ;\n"
           out << "\n"
-          out << "    private String value;\n"
+          out << "  private String value;\n"
           out << "\n"
-          out << "    public String getValue() {\n"
-          out << "        return value;\n"
+          out << "  public String getValue() {\n"
+          out << "    return value;\n"
+          out << "  }\n"
+          out << "\n"
+          out << "  public String toString() {\n"
+          out << "    return getValue();\n"
+          out << "  }\n"
+          out << "\n"
+          out << "  private #{class_name}(String value) {\n"
+          out << "    this.value = value;\n"
+          out << "  }\n"
+          out << "\n"
+          out << "  private static final Map<String, String> lookup = new HashMap<String, String>();\n"
+          out << "\n"
+          out << "  static {\n"
+          out << "    for (#{class_name} key : EnumSet.allOf(#{class_name}.class)) {\n"
+          out << "      lookup.put(key.name(), key.value);\n"
           out << "    }\n"
+          out << "  }\n"
           out << "\n"
-          out << "    private #{class_name}(String value) {\n"
-          out << "        this.value = value;\n"
-          out << "    }\n"
+          out << "  public static String get(String key) {\n"
+          out << "    return lookup.get(key);\n"
+          out << "  }\n"
           out << "\n"
-          out << "    private static final Map<String, String> lookup = new HashMap<String, String>();\n"
-          out << "\n"
-          out << "    static {\n"
-          out << "        for (#{class_name} key : EnumSet.allOf(#{class_name}.class))\n"
-          out << "          lookup.put(key.name(), key.value);\n"
-          out << "    }\n"
-          out << "\n"
-          out << "    public static String get(String key) {\n"
-          out << "        return lookup.get(key);\n"
-          out << "    }\n"
-          out << "\n"
-          out << "}\n"
+          out << "}"
         end
       end
     end
