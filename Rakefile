@@ -606,6 +606,27 @@ task :release => [
   cp "build/java/client/src/org/openqa/selenium/client-combined.zip", "build/dist/selenium-java-#{version}.zip"
 end
 
+task :push_release => [:release] do
+  py = "java -jar third_party/py/jython.jar"
+  if (python?)
+    py = "python"
+  end
+
+  print "Enter your googlecode username:"
+  googlecode_username = STDIN.gets.chomp
+  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
+  googlecode_password = STDIN.gets.chomp
+
+  [
+    {:file => "build/dist/selenium-server-standalone-#{version}.jar", :description => "Use this if you want to use the Selenium RC or Remote WebDriver or use Grid 2 without needing any additional dependencies"},
+    {:file => "build/dist/selenium-server-#{version}.zip", :description => "All variants of the Selenium Server: stand-alone, jar with dependencies and sources."},
+    {:file => "build/dist/selenium-java-#{version}.zip", :description => "The Java bindings for Selenium 2, including the WebDriver API and the Selenium RC clients. Download this if you plan on just using the client-side pieces of Selenium"}
+  ].each do |file|
+    puts "Uploading file #{file[:file]}..."
+    sh "#{py} third_party/py/googlecode/googlecode_upload.py -s '#{file[:description]}' -p selenium #{file[:file]} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
+  end
+end
+
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined:project'
 
