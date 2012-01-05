@@ -1,3 +1,9 @@
+v2.16.1
+======
+
+RC:
+  * FIXED: 3148: Allow IE to be launched.
+
 v2.16.0
 =======
 
