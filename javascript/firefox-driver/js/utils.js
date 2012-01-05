@@ -382,25 +382,25 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
       if (controlKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
         Utils.keyEvent(doc, element, "keyup", kCode, 0,
-            controlKey = false, shiftKey, altKey, metaKey);
+            controlKey = false, shiftKey, altKey, metaKey, false);
       }
 
       if (shiftKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
         Utils.keyEvent(doc, element, "keyup", kCode, 0,
-            controlKey, shiftKey = false, altKey, metaKey);
+            controlKey, shiftKey = false, altKey, metaKey, false);
       }
 
       if (altKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
         Utils.keyEvent(doc, element, "keyup", kCode, 0,
-            controlKey, shiftKey, altKey = false, metaKey);
+            controlKey, shiftKey, altKey = false, metaKey, false);
       }
 
       if (metaKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
         Utils.keyEvent(doc, element, "keyup", kCode, 0,
-            controlKey, shiftKey, altKey, metaKey = false);
+            controlKey, shiftKey, altKey, metaKey = false, false);
       }
 
       continue;
@@ -580,7 +580,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
     if (modifierEvent) {
       Utils.keyEvent(doc, element, modifierEvent, keyCode, 0,
-          controlKey, shiftKey, altKey, metaKey);
+          controlKey, shiftKey, altKey, metaKey, false);
       continue;
     }
 
@@ -594,7 +594,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       Utils.keyEvent(doc, element, "keydown", kCode, 0,
-          controlKey, true, altKey, metaKey);
+          controlKey, true, altKey, metaKey, false);
       Utils.shiftCount += 1;
     }
 
@@ -625,20 +625,20 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
     var accepted =
         Utils.keyEvent(doc, element, "keydown", keyCode, 0,
-            controlKey, needsShift || shiftKey, altKey, metaKey);
+            controlKey, needsShift || shiftKey, altKey, metaKey, false);
 
     Utils.keyEvent(doc, element, "keypress", pressCode, charCode,
         controlKey, needsShift || shiftKey, altKey, metaKey, !accepted);
 
     Utils.keyEvent(doc, element, "keyup", keyCode, 0,
-        controlKey, needsShift || shiftKey, altKey, metaKey);
+        controlKey, needsShift || shiftKey, altKey, metaKey, false);
 
     // shift up if needed
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       Utils.keyEvent(doc, element, "keyup", kCode, 0,
-          controlKey, false, altKey, metaKey);
+          controlKey, false, altKey, metaKey, false);
     }
   }
 
@@ -647,25 +647,25 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
   if (controlKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
-        controlKey = false, shiftKey, altKey, metaKey);
+        controlKey = false, shiftKey, altKey, metaKey, false);
   }
 
   if (shiftKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
-        controlKey, shiftKey = false, altKey, metaKey);
+        controlKey, shiftKey = false, altKey, metaKey, false);
   }
 
   if (altKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
-        controlKey, shiftKey, altKey = false, metaKey);
+        controlKey, shiftKey, altKey = false, metaKey, false);
   }
 
   if (metaKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
     Utils.keyEvent(doc, element, "keyup", kCode, 0,
-        controlKey, shiftKey, altKey, metaKey = false);
+        controlKey, shiftKey, altKey, metaKey = false, false);
   }
 
   return {
