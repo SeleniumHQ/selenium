@@ -37,7 +37,7 @@ require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/gecko_sdks'
 
 def version
-  "2.16.0"
+  "2.16.1"
 end
 ide_version = "1.0.12"
 
