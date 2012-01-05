@@ -17,6 +17,14 @@
 
 goog.provide('fxdriver.moz');
 
+goog.require('bot.userAgent');
+
+
+/** @const */ var CC = Components.classes;
+/** @const */ var CI = Components.interfaces;
+/** @const */ var CR = Components.results;
+/** @const */ var CU = Components.utils;
+
 
 /**
  * Import an existing jsm. We need this function because otherwise the closure
@@ -52,7 +60,7 @@ fxdriver.moz.getService = function(className, serviceName) {
  *
  * @param {!object} self The instance which the method is being added to.
  * @param {Array.<object>} iids The IIDs to use.
- * @return {function(!object}:!object} A QueryInterface implementation.
+ * @return {function(!object):!object} A QueryInterface implementation.
  */
 fxdriver.moz.queryInterface = function(self, iids) {
   return function(iid) {

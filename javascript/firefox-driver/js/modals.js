@@ -21,6 +21,7 @@
 
 goog.provide('fxdriver.modals');
 
+goog.require('WebDriverError');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.Timer');

@@ -19,6 +19,11 @@
  * @fileoverview Mozilla JS specific externs.
  */
 
+// Misc
+var JSON;
+var __LOCATION__;
+
+// Modules and built-ins
 var Components;
 Components.classes;
 Components.interfaces;
@@ -27,6 +32,8 @@ Components.results;
 Components.stack;
 Components.utils;
 Components.utils['import'];
+
+var NetUtil;
 
 var XPCNativeWrapper;
 

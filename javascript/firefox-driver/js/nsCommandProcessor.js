@@ -17,7 +17,7 @@
  */
 
 /**
- * @fileOverview Contains a Javascript implementation for
+ * @fileoverview Contains a Javascript implementation for
  *     nsICommandProcessor.idl. The implemented XPCOM component is exposed to
  *     the content page as a global property so that it can be used from
  *     unpriviledged code.
@@ -547,7 +547,7 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
  * @private
  * @param {!Response} response The response object to send the command response
  *     in.
- * @param {!}
+ * @param {!Object.<string, *>} parameters The parameters for the call.
  */
 nsCommandProcessor.prototype.getLogs = function(response, parameters) {
   fxdriver.Logger.dumpn("parameters: " + parameters.type);
@@ -577,9 +577,9 @@ nsCommandProcessor.prototype.getLogs = function(response, parameters) {
  * window found in the search.
  * @param {?string} search_criteria The category of windows to search or
  *     {@code null} to search all windows.
- * @param {function} visitor_fn A visitor function to call with each window. The
- *     function may return true to indicate that the window search should abort
- *     early.
+ * @param {function(!Window)} visitor_fn A visitor function to call with each
+ *     window. The function may return true to indicate that the window search
+ *     should abort early.
  * @return {boolean} Whether the visitor function short circuited the search.
  */
 nsCommandProcessor.prototype.searchWindows_ = function(search_criteria,

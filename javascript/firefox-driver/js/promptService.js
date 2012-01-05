@@ -7,11 +7,6 @@ goog.require('fxdriver.moz');
 goog.require('goog.array');
 
 
-/** @const */ var CC = Components.classes;
-/** @const */ var CI = Components.interfaces;
-/** @const */ var CR = Components.results;
-/** @const */ var CU = Components.utils;
-
 var EXCLUDED_NAMES = [
   'QueryInterface',
   'alert',
@@ -264,14 +259,14 @@ function(aParent, aDialogTitle, aText, aCount, aSelectList, aOutSelection) {
 
 // nsIPromptService2 functions
 DrivenPromptService.prototype.promptAuth = function(aParent, aChannel, level, authInfo, checkboxLabel, checkValue) {
-  fxdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, '');
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.promptAuth(aParent, aChannel, level, authInfo, checkboxLabel, checkValue);
 };
 
 DrivenPromptService.prototype.asyncPromptAuth = function(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue) {
-  fxdriver.modals.signalOpenModal(aParent, aText);
+  fxdriver.modals.signalOpenModal(aParent, '');
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
   return service.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue)

@@ -32,10 +32,6 @@ goog.require('fxdriver.moz');
 goog.require('goog.array');
 
 
-var CC = Components.classes;
-var CI = Components.interfaces;
-var CR = Components.results;
-
 
 fxdriver.moz.queryInterface = function(self, iids) {
   return function(iid) {

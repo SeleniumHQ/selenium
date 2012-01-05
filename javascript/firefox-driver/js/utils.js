@@ -17,6 +17,7 @@
  */
 
 goog.provide('Utils');
+goog.provide('WebDriverError');
 
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
@@ -35,7 +36,7 @@ goog.require('goog.style');
  *     propagate.
  * @constructor
  */
-function WebDriverError(code, messageOrError) {
+WebDriverError = function(code, messageOrError) {
 
   var message;
   var stack;
