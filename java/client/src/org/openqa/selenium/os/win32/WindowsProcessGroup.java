@@ -44,8 +44,13 @@ public class WindowsProcessGroup {
 
     StringBuilder toExecute = new StringBuilder();
 
+    boolean first = true;
     for (String arg : executableAndArgs) {
-      toExecute.append(" ").append(quote(arg));
+      if (!first) {
+        toExecute.append(" ");
+      }
+      toExecute.append(quote(arg));
+      first = false;
     }
 
     cmd = toExecute.toString();
