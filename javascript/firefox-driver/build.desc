@@ -97,7 +97,7 @@ js_binary(name = "synthetic_mouse",
 # required by the loader in firefox
 js_binary(name = "atoms",
   srcs = [
-    "js/errorcode.js",
+    "js/error.js",
     "js/events.js",
     "js/exported_symbols.js",
     "js/firefox-utils.js",
@@ -119,7 +119,7 @@ js_binary(name = "atoms",
 
 js_binary(name = "command_processor",
   srcs = [
-    "js/errorcode.js",
+    "js/error.js",
     "js/logging.js",
     "js/moz.js",
     "js/nsCommandProcessor.js",
