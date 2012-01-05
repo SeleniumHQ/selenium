@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Beta
 public class RemoteLogs implements Logs {
   private static final String LEVEL = "level";
   private static final String TIMESTAMP= "timestamp";

@@ -18,9 +18,12 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
+import org.openqa.selenium.Beta;
+
 /**
  * Logs's interface.
  */
+@Beta
 public interface Logs {
 
   /**

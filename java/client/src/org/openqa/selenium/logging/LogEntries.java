@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
+import org.openqa.selenium.Beta;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.logging.Level;
  * Represent a pool of {@Link LogEntry}. This class also provides filtering
  * mechanisms based on levels.
  */
+@Beta
 public class LogEntries implements Iterable<LogEntry> {
   private final List<LogEntry> entries;
 

@@ -470,6 +470,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   protected class RemoteWebDriverOptions implements Options {
 
+    @Beta
     public Logs logs() {
       return logs;
     }
