@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Chrome::Profile
   
-    &mdash; Documentation by YARD 0.7.3
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -284,7 +284,6 @@ A new instance of Profile
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -299,10 +298,11 @@ A new instance of Profile
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/profile.rb', line 12</span>
 
-<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id model'>model</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@model</span>      <span class='op'>=</span> <span class='id verify_model'>verify_model</span><span class='lparen'>(</span><span class='id model'>model</span><span class='rparen'>)</span>
-  <span class='ivar'>@extensions</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='model identifier id'>model</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='@model ivar id'>@model</span>      <span class='assign token'>=</span> <span class='verify_model identifier id'>verify_model</span><span class='lparen token'>(</span><span class='model identifier id'>model</span><span class='rparen token'>)</span>
+  <span class='@extensions ivar id'>@extensions</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -336,10 +336,11 @@ A new instance of Profile
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/profile.rb', line 36</span>
 
-<span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
-  <span class='id parts'>parts</span> <span class='op'>=</span> <span class='id key'>key</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id parts'>parts</span><span class='period'>.</span><span class='id inject'>inject</span><span class='lparen'>(</span><span class='id prefs'>prefs</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id pr'>pr</span><span class='comma'>,</span> <span class='id k'>k</span><span class='op'>|</span> <span class='id pr'>pr</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='id k'>k</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='aref op'>[]</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
+  <span class='parts identifier id'>parts</span> <span class='assign token'>=</span> <span class='key identifier id'>key</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;.&quot;</span><span class='rparen token'>)</span>
+  <span class='parts identifier id'>parts</span><span class='dot token'>.</span><span class='inject identifier id'>inject</span><span class='lparen token'>(</span><span class='prefs identifier id'>prefs</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='pr identifier id'>pr</span><span class='comma token'>,</span> <span class='k identifier id'>k</span><span class='bitor op'>|</span> <span class='pr identifier id'>pr</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='k identifier id'>k</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -367,7 +368,6 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -382,10 +382,11 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/profile.rb', line 31</span>
 
-<span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id key'>key</span><span class='comma'>,</span> <span class='id value'>value</span><span class='rparen'>)</span>
-  <span class='id parts'>parts</span> <span class='op'>=</span> <span class='id key'>key</span><span class='period'>.</span><span class='id split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id parts'>parts</span><span class='lbracket'>[</span><span class='int'>0</span><span class='op'>..</span><span class='op'>-</span><span class='int'>2</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id inject'>inject</span><span class='lparen'>(</span><span class='id prefs'>prefs</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id pr'>pr</span><span class='comma'>,</span> <span class='id k'>k</span><span class='op'>|</span> <span class='id pr'>pr</span><span class='lbracket'>[</span><span class='id k'>k</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span> <span class='rbrace'>}</span><span class='lbracket'>[</span><span class='id parts'>parts</span><span class='period'>.</span><span class='id last'>last</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id value'>value</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='aset op'>[]=</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
+  <span class='parts identifier id'>parts</span> <span class='assign token'>=</span> <span class='key identifier id'>key</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;.&quot;</span><span class='rparen token'>)</span>
+  <span class='parts identifier id'>parts</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='dot2 op'>..</span><span class='integer val'>-2</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='inject identifier id'>inject</span><span class='lparen token'>(</span><span class='prefs identifier id'>prefs</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='pr identifier id'>pr</span><span class='comma token'>,</span> <span class='k identifier id'>k</span><span class='bitor op'>|</span> <span class='pr identifier id'>pr</span><span class='lbrack token'>[</span><span class='k identifier id'>k</span><span class='rbrack token'>]</span> <span class='opasgn op'>||=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span> <span class='rbrace token'>}</span><span class='lbrack token'>[</span><span class='parts identifier id'>parts</span><span class='dot token'>.</span><span class='last identifier id'>last</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -415,13 +416,14 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/profile.rb', line 17</span>
 
-<span class='kw'>def</span> <span class='id add_extension'>add_extension</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id file?'>file?</span><span class='lparen'>(</span><span class='id path'>path</span><span class='rparen'>)</span>
-    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>could not find extension at </span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='add_extension identifier id'>add_extension</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
+  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span><span class='lparen token'>(</span><span class='path identifier id'>path</span><span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;could not find extension at #{path.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
 
-  <span class='ivar'>@extensions</span> <span class='op'>&lt;&lt;</span> <span class='id path'>path</span>
-<span class='kw'>end</span></pre>
+  <span class='@extensions ivar id'>@extensions</span> <span class='lshft op'>&lt;&lt;</span> <span class='path identifier id'>path</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -451,13 +453,14 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/profile.rb', line 50</span>
 
-<span class='kw'>def</span> <span class='id as_json'>as_json</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id extensions'>extensions</span> <span class='op'>=</span> <span class='ivar'>@extensions</span><span class='period'>.</span><span class='id map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id crx_path'>crx_path</span><span class='op'>|</span>
-    <span class='const'>Base64</span><span class='period'>.</span><span class='id strict_encode64'>strict_encode64</span> <span class='const'>File</span><span class='period'>.</span><span class='id read'>read</span><span class='lparen'>(</span><span class='id crx_path'>crx_path</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='extensions identifier id'>extensions</span> <span class='assign token'>=</span> <span class='@extensions ivar id'>@extensions</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='crx_path identifier id'>crx_path</span><span class='bitor op'>|</span>
+    <span class='Base64 constant id'>Base64</span><span class='dot token'>.</span><span class='strict_encode64 identifier id'>strict_encode64</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='read identifier id'>read</span><span class='lparen token'>(</span><span class='crx_path identifier id'>crx_path</span><span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>
 
-  <span class='kw'>super</span><span class='period'>.</span><span class='id merge'>merge</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>extensions</span><span class='tstring_end'>'</span></span> <span class='op'>=&gt;</span> <span class='id extensions'>extensions</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='super super kw'>super</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='string val'>'extensions'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='extensions identifier id'>extensions</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -488,14 +491,15 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/profile.rb', line 41</span>
 
-<span class='kw'>def</span> <span class='id layout_on_disk'>layout_on_disk</span>
-  <span class='id dir'>dir</span> <span class='op'>=</span> <span class='ivar'>@model</span> <span class='op'>?</span> <span class='id create_tmp_copy'>create_tmp_copy</span><span class='lparen'>(</span><span class='ivar'>@model</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>webdriver-chrome-profile</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='const'>FileReaper</span> <span class='op'>&lt;&lt;</span> <span class='id dir'>dir</span>
+<span class='def def kw'>def</span> <span class='layout_on_disk identifier id'>layout_on_disk</span>
+  <span class='dir identifier id'>dir</span> <span class='assign token'>=</span> <span class='@model ivar id'>@model</span> <span class='question op'>?</span> <span class='create_tmp_copy identifier id'>create_tmp_copy</span><span class='lparen token'>(</span><span class='@model ivar id'>@model</span><span class='rparen token'>)</span> <span class='colon op'>:</span> <span class='Dir constant id'>Dir</span><span class='dot token'>.</span><span class='mktmpdir identifier id'>mktmpdir</span><span class='lparen token'>(</span><span class='string val'>&quot;webdriver-chrome-profile&quot;</span><span class='rparen token'>)</span>
+  <span class='FileReaper constant id'>FileReaper</span> <span class='lshft op'>&lt;&lt;</span> <span class='dir identifier id'>dir</span>
 
-  <span class='id write_prefs_to'>write_prefs_to</span> <span class='id dir'>dir</span>
+  <span class='write_prefs_to identifier id'>write_prefs_to</span> <span class='dir identifier id'>dir</span>
 
-  <span class='id dir'>dir</span>
-<span class='kw'>end</span></pre>
+  <span class='dir identifier id'>dir</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -506,9 +510,9 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 29 01:07:03 2011 by 
+  Generated on Thu Jan  5 01:52:41 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.2).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

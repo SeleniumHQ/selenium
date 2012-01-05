@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Select
   
-    &mdash; Documentation by YARD 0.7.3
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -378,7 +378,6 @@ The select element to use
   
 </ul>
 
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -399,16 +398,17 @@ The select element to use
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 10</span>
 
-<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id tag_name'>tag_name</span> <span class='op'>=</span> <span class='id element'>element</span><span class='period'>.</span><span class='id tag_name'>tag_name</span>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='tag_name identifier id'>tag_name</span> <span class='assign token'>=</span> <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='tag_name identifier id'>tag_name</span>
 
-  <span class='kw'>unless</span> <span class='id tag_name'>tag_name</span><span class='period'>.</span><span class='id downcase'>downcase</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>select</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unexpected tag name </span><span class='embexpr_beg'>#{</span><span class='id tag_name'>tag_name</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='unless unless kw'>unless</span> <span class='tag_name identifier id'>tag_name</span><span class='dot token'>.</span><span class='downcase identifier id'>downcase</span> <span class='eq op'>==</span> <span class='string val'>&quot;select&quot;</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unexpected tag name #{tag_name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
 
-  <span class='ivar'>@element</span> <span class='op'>=</span> <span class='id element'>element</span>
-  <span class='ivar'>@multi</span>   <span class='op'>=</span> <span class='op'>!</span><span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>false</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id include?'>include?</span><span class='lparen'>(</span><span class='id element'>element</span><span class='period'>.</span><span class='id attribute'>attribute</span><span class='lparen'>(</span><span class='symbol'>:multiple</span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='@element ivar id'>@element</span> <span class='assign token'>=</span> <span class='element identifier id'>element</span>
+  <span class='@multi ivar id'>@multi</span>   <span class='assign token'>=</span> <span class='notop op'>!</span><span class='lbrack token'>[</span><span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='string val'>&quot;false&quot;</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='dot token'>.</span><span class='attribute identifier id'>attribute</span><span class='lparen token'>(</span><span class='symbol val'>:multiple</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -439,8 +439,7 @@ selections.
   </div>
 </div>
 <div class="tags">
-  
-<h3>Raises:</h3>
+  <h3>Raises:</h3>
 <ul class="raise">
   
     <li>
@@ -477,13 +476,14 @@ if the element does not support multiple selections.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 138</span>
 
-<span class='kw'>def</span> <span class='id deselect_all'>deselect_all</span>
-  <span class='kw'>unless</span> <span class='id multiple?'>multiple?</span>
-    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>you may only deselect all options of a multi-select</span><span class='tstring_end'>'</span></span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='deselect_all identifier id'>deselect_all</span>
+  <span class='unless unless kw'>unless</span> <span class='multiple? fid id'>multiple?</span>
+    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='string val'>'you may only deselect all options of a multi-select'</span>
+  <span class='end end kw'>end</span>
 
-  <span class='id options'>options</span><span class='period'>.</span><span class='id each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id e'>e</span><span class='op'>|</span> <span class='id deselect_option'>deselect_option</span> <span class='id e'>e</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+  <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='deselect_option identifier id'>deselect_option</span> <span class='e identifier id'>e</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -545,7 +545,6 @@ What value to find the option by.
   
 </ul>
 
-
   <h3>See Also:</h3>
   <ul class="see">
     
@@ -575,18 +574,19 @@ What value to find the option by.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 105</span>
 
-<span class='kw'>def</span> <span class='id deselect_by'>deselect_by</span><span class='lparen'>(</span><span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='rparen'>)</span>
-  <span class='kw'>case</span> <span class='id how'>how</span>
-  <span class='kw'>when</span> <span class='symbol'>:text</span>
-    <span class='id deselect_by_text'>deselect_by_text</span> <span class='id what'>what</span>
-  <span class='kw'>when</span> <span class='symbol'>:value</span>
-    <span class='id deselect_by_value'>deselect_by_value</span> <span class='id what'>what</span>
-  <span class='kw'>when</span> <span class='symbol'>:index</span>
-    <span class='id deselect_by_index'>deselect_by_index</span> <span class='id what'>what</span>
-  <span class='kw'>else</span>
-    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can't deselect options by </span><span class='embexpr_beg'>#{</span><span class='id how'>how</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='deselect_by identifier id'>deselect_by</span><span class='lparen token'>(</span><span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='rparen token'>)</span>
+  <span class='case case kw'>case</span> <span class='how identifier id'>how</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:text</span>
+    <span class='deselect_by_text identifier id'>deselect_by_text</span> <span class='what identifier id'>what</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:value</span>
+    <span class='deselect_by_value identifier id'>deselect_by_value</span> <span class='what identifier id'>what</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:index</span>
+    <span class='deselect_by_index identifier id'>deselect_by_index</span> <span class='what identifier id'>what</span>
+  <span class='else else kw'>else</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;can't deselect options by #{how.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -609,8 +609,7 @@ Get the first selected option in this select element
   </div>
 </div>
 <div class="tags">
-  
-<h3>Returns:</h3>
+  <h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -657,10 +656,11 @@ if no options are selected
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 58</span>
 
-<span class='kw'>def</span> <span class='id first_selected_option'>first_selected_option</span>
-  <span class='id option'>option</span> <span class='op'>=</span> <span class='id options'>options</span><span class='period'>.</span><span class='id find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id e'>e</span><span class='op'>|</span> <span class='id e'>e</span><span class='period'>.</span><span class='id selected?'>selected?</span> <span class='rbrace'>}</span>
-  <span class='id option'>option</span> <span class='kw'>or</span> <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>no options are selected</span><span class='tstring_end'>'</span></span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='first_selected_option identifier id'>first_selected_option</span>
+  <span class='option identifier id'>option</span> <span class='assign token'>=</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='find identifier id'>find</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='selected? fid id'>selected?</span> <span class='rbrace token'>}</span>
+  <span class='option identifier id'>option</span> <span class='or or kw'>or</span> <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='NoSuchElementError constant id'>NoSuchElementError</span><span class='comma token'>,</span> <span class='string val'>'no options are selected'</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -683,8 +683,7 @@ Does this select element support selecting multiple options?
   </div>
 </div>
 <div class="tags">
-  
-<h3>Returns:</h3>
+  <h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -711,9 +710,10 @@ Does this select element support selecting multiple options?
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 27</span>
 
-<span class='kw'>def</span> <span class='id multiple?'>multiple?</span>
-  <span class='ivar'>@multi</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='multiple? fid id'>multiple?</span>
+  <span class='@multi ivar id'>@multi</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -736,8 +736,7 @@ Get all options for this select element
   </div>
 </div>
 <div class="tags">
-  
-<h3>Returns:</h3>
+  <h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -764,9 +763,10 @@ Get all options for this select element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 37</span>
 
-<span class='kw'>def</span> <span class='id options'>options</span>
-  <span class='ivar'>@element</span><span class='period'>.</span><span class='id find_elements'>find_elements</span> <span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>option</span><span class='tstring_end'>'</span></span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='options identifier id'>options</span>
+  <span class='@element ivar id'>@element</span><span class='dot token'>.</span><span class='find_elements identifier id'>find_elements</span> <span class='symbol val'>:tag_name</span><span class='comma token'>,</span> <span class='string val'>'option'</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -790,8 +790,7 @@ selections.
   </div>
 </div>
 <div class="tags">
-  
-<h3>Raises:</h3>
+  <h3>Raises:</h3>
 <ul class="raise">
   
     <li>
@@ -828,13 +827,14 @@ if the element does not support multiple selections.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 124</span>
 
-<span class='kw'>def</span> <span class='id select_all'>select_all</span>
-  <span class='kw'>unless</span> <span class='id multiple?'>multiple?</span>
-    <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>you may only select all options of a multi-select</span><span class='tstring_end'>'</span></span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='select_all identifier id'>select_all</span>
+  <span class='unless unless kw'>unless</span> <span class='multiple? fid id'>multiple?</span>
+    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='string val'>'you may only select all options of a multi-select'</span>
+  <span class='end end kw'>end</span>
 
-  <span class='id options'>options</span><span class='period'>.</span><span class='id each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id e'>e</span><span class='op'>|</span> <span class='id select_option'>select_option</span> <span class='id e'>e</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+  <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='select_option identifier id'>select_option</span> <span class='e identifier id'>e</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -858,16 +858,16 @@ argument. That is, when given &#8220;Bar&#8221; this would select an option
 like:
 </p>
 <pre class="code">
-    &lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;
-</pre>
+    <span class='lt op'>&lt;</span><span class='option identifier id'>option</span> <span class='value identifier id'>value</span><span class='assign token'>=</span><span class='string val'>&quot;foo&quot;</span><span class='gt op'>&gt;</span><span class='Bar constant id'>Bar</span><span class='lt op'>&lt;</span><span class='regexp val'>/option&gt;
+</span></pre>
 <p>
 When slecting by :value, selects all options that have a value matching the
 argument. That is, when given &#8220;foo&#8221; this would select an option
 like:
 </p>
 <pre class="code">
-    &lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;
-</pre>
+    <span class='lt op'>&lt;</span><span class='option identifier id'>option</span> <span class='value identifier id'>value</span><span class='assign token'>=</span><span class='string val'>&quot;foo&quot;</span><span class='gt op'>&gt;</span><span class='Bar constant id'>Bar</span><span class='lt op'>&lt;</span><span class='regexp val'>/option&gt;
+</span></pre>
 <p>
 When selecting by :index, selects the option at the given index. This is
 done by examining the &#8220;index&#8221; attribute of an element, and not
@@ -917,7 +917,6 @@ What value to find the option by.
   
 </ul>
 
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -940,18 +939,19 @@ What value to find the option by.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 83</span>
 
-<span class='kw'>def</span> <span class='id select_by'>select_by</span><span class='lparen'>(</span><span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='rparen'>)</span>
-  <span class='kw'>case</span> <span class='id how'>how</span>
-  <span class='kw'>when</span> <span class='symbol'>:text</span>
-    <span class='id select_by_text'>select_by_text</span> <span class='id what'>what</span>
-  <span class='kw'>when</span> <span class='symbol'>:index</span>
-    <span class='id select_by_index'>select_by_index</span> <span class='id what'>what</span>
-  <span class='kw'>when</span> <span class='symbol'>:value</span>
-    <span class='id select_by_value'>select_by_value</span> <span class='id what'>what</span>
-  <span class='kw'>else</span>
-    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can't select options by </span><span class='embexpr_beg'>#{</span><span class='id how'>how</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='select_by identifier id'>select_by</span><span class='lparen token'>(</span><span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='rparen token'>)</span>
+  <span class='case case kw'>case</span> <span class='how identifier id'>how</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:text</span>
+    <span class='select_by_text identifier id'>select_by_text</span> <span class='what identifier id'>what</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:index</span>
+    <span class='select_by_index identifier id'>select_by_index</span> <span class='what identifier id'>what</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:value</span>
+    <span class='select_by_value identifier id'>select_by_value</span> <span class='what identifier id'>what</span>
+  <span class='else else kw'>else</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;can't select options by #{how.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -974,8 +974,7 @@ Get all selected options for this select element
   </div>
 </div>
 <div class="tags">
-  
-<h3>Returns:</h3>
+  <h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1002,9 +1001,10 @@ Get all selected options for this select element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 47</span>
 
-<span class='kw'>def</span> <span class='id selected_options'>selected_options</span>
-  <span class='id options'>options</span><span class='period'>.</span><span class='id select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id e'>e</span><span class='op'>|</span> <span class='id e'>e</span><span class='period'>.</span><span class='id selected?'>selected?</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='selected_options identifier id'>selected_options</span>
+  <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='select identifier id'>select</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='selected? fid id'>selected?</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -1015,9 +1015,9 @@ Get all selected options for this select element
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 29 01:07:03 2011 by 
+  Generated on Thu Jan  5 01:52:29 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.2).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

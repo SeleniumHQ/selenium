@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Bridge
   
-    &mdash; Documentation by YARD 0.7.3
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -110,7 +110,6 @@
 </div>
 <div class="tags">
   
-
 </div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="../Android/Bridge.html" title="Selenium::WebDriver::Android::Bridge (class)">Android::Bridge</a></span>, <span class='object_link'><a href="../Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Chrome::Bridge</a></span>, <span class='object_link'><a href="../Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Firefox::Bridge</a></span>, <span class='object_link'><a href="../IE/Bridge.html" title="Selenium::WebDriver::IE::Bridge (class)">IE::Bridge</a></span>, <span class='object_link'><a href="../IPhone/Bridge.html" title="Selenium::WebDriver::IPhone::Bridge (class)">IPhone::Bridge</a></span>, <span class='object_link'><a href="../Opera/Bridge.html" title="Selenium::WebDriver::Opera::Bridge (class)">Opera::Bridge</a></span></p>
@@ -133,10 +132,10 @@
 </div>
 <div class="tags">
   
-
 </div>
         </dt>
-        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>IOError</span><span class='rbracket'>]</span></pre></dd>
+        <dd><pre class="code"><span class='lbrack token'>[</span><span class='IOError constant id'>IOError</span><span class='rbrack token'>]</span>
+</pre></dd>
       
     </dl>
   
@@ -1864,7 +1863,6 @@ an instance of Remote::Capabilities describing the capabilities you want
   
 </ul>
 
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -1902,33 +1900,34 @@ an instance of Remote::Capabilities describing the capabilities you want
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 43</span>
 
-<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id opts'>opts</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id dup'>dup</span>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='dup identifier id'>dup</span>
 
-  <span class='id http_client'>http_client</span>          <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http_client</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Http</span><span class='op'>::</span><span class='const'>Default</span><span class='period'>.</span><span class='id new'>new</span> <span class='rbrace'>}</span>
-  <span class='id desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Capabilities</span><span class='period'>.</span><span class='id firefox'>firefox</span> <span class='rbrace'>}</span>
-  <span class='id url'>url</span>                  <span class='op'>=</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id localhost'>localhost</span><span class='rbrace'>}</span><span class='tstring_content'>:4444/wd/hub</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+  <span class='http_client identifier id'>http_client</span>          <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='Http constant id'>Http</span><span class='colon2 op'>::</span><span class='Default constant id'>Default</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='rbrace token'>}</span>
+  <span class='desired_capabilities identifier id'>desired_capabilities</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:desired_capabilities</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='firefox identifier id'>firefox</span> <span class='rbrace token'>}</span>
+  <span class='url identifier id'>url</span>                  <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:url</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='dstring node'>&quot;http://#{Platform.localhost}:4444/wd/hub&quot;</span> <span class='rbrace token'>}</span>
 
-  <span class='kw'>unless</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id empty?'>empty?</span>
-    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown option</span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>s</span><span class='tstring_end'>'</span></span> <span class='kw'>if</span> <span class='id opts'>opts</span><span class='period'>.</span><span class='id size'>size</span> <span class='op'>!=</span> <span class='int'>1</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id opts'>opts</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='unless unless kw'>unless</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown option#{'s' if opts.size != 1}: #{opts.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
 
-  <span class='kw'>if</span> <span class='id desired_capabilities'>desired_capabilities</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
-    <span class='kw'>unless</span> <span class='const'>Capabilities</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='id desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
-      <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid desired capability: </span><span class='embexpr_beg'>#{</span><span class='id desired_capabilities'>desired_capabilities</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
+  <span class='if if kw'>if</span> <span class='desired_capabilities identifier id'>desired_capabilities</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='Symbol constant id'>Symbol</span><span class='rparen token'>)</span>
+    <span class='unless unless kw'>unless</span> <span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='desired_capabilities identifier id'>desired_capabilities</span><span class='rparen token'>)</span>
+      <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;invalid desired capability: #{desired_capabilities.inspect}&quot;</span>
+    <span class='end end kw'>end</span>
 
-    <span class='id desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='const'>Capabilities</span><span class='period'>.</span><span class='id send'>send</span><span class='lparen'>(</span><span class='id desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
+    <span class='desired_capabilities identifier id'>desired_capabilities</span> <span class='assign token'>=</span> <span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='send identifier id'>send</span><span class='lparen token'>(</span><span class='desired_capabilities identifier id'>desired_capabilities</span><span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>
 
-  <span class='id uri'>uri</span> <span class='op'>=</span> <span class='id url'>url</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>URI</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id url'>url</span> <span class='op'>:</span> <span class='const'>URI</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span>
-  <span class='id uri'>uri</span><span class='period'>.</span><span class='id path'>path</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id uri'>uri</span><span class='period'>.</span><span class='id path'>path</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\/$</span><span class='regexp_end'>/</span></span>
+  <span class='uri identifier id'>uri</span> <span class='assign token'>=</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='URI constant id'>URI</span><span class='rparen token'>)</span> <span class='question op'>?</span> <span class='url identifier id'>url</span> <span class='colon op'>:</span> <span class='URI constant id'>URI</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
+  <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='path identifier id'>path</span> <span class='opasgn op'>+=</span> <span class='string val'>&quot;/&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='uri identifier id'>uri</span><span class='dot token'>.</span><span class='path identifier id'>path</span> <span class='match op'>=~</span> <span class='regexp val'>/\/$/</span>
 
-  <span class='id http_client'>http_client</span><span class='period'>.</span><span class='id server_url'>server_url</span> <span class='op'>=</span> <span class='id uri'>uri</span>
+  <span class='http_client identifier id'>http_client</span><span class='dot token'>.</span><span class='server_url identifier id'>server_url</span> <span class='assign token'>=</span> <span class='uri identifier id'>uri</span>
 
-  <span class='ivar'>@http</span>          <span class='op'>=</span> <span class='id http_client'>http_client</span>
-  <span class='ivar'>@capabilities</span>  <span class='op'>=</span> <span class='id create_session'>create_session</span><span class='lparen'>(</span><span class='id desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='@http ivar id'>@http</span>          <span class='assign token'>=</span> <span class='http_client identifier id'>http_client</span>
+  <span class='@capabilities ivar id'>@capabilities</span>  <span class='assign token'>=</span> <span class='create_session identifier id'>create_session</span><span class='lparen token'>(</span><span class='desired_capabilities identifier id'>desired_capabilities</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -1964,7 +1963,6 @@ Returns the value of attribute capabilities
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -1978,9 +1976,10 @@ Returns the value of attribute capabilities
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 33</span>
 
-<span class='kw'>def</span> <span class='id capabilities'>capabilities</span>
-  <span class='ivar'>@capabilities</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
+  <span class='@capabilities ivar id'>@capabilities</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2011,7 +2010,6 @@ Returns the value of attribute context
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2025,9 +2023,10 @@ Returns the value of attribute context
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 32</span>
 
-<span class='kw'>def</span> <span class='id context'>context</span>
-  <span class='ivar'>@context</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='context identifier id'>context</span>
+  <span class='@context ivar id'>@context</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2058,7 +2057,6 @@ Returns the value of attribute file_detector
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2072,9 +2070,10 @@ Returns the value of attribute file_detector
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 32</span>
 
-<span class='kw'>def</span> <span class='id file_detector'>file_detector</span>
-  <span class='ivar'>@file_detector</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='file_detector identifier id'>file_detector</span>
+  <span class='@file_detector ivar id'>@file_detector</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2105,7 +2104,6 @@ Returns the value of attribute http
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2119,9 +2117,10 @@ Returns the value of attribute http
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 32</span>
 
-<span class='kw'>def</span> <span class='id http'>http</span>
-  <span class='ivar'>@http</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='http identifier id'>http</span>
+  <span class='@http ivar id'>@http</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2213,7 +2212,6 @@ the appropriate http verb, such as :get, :post, or :delete
   
 </ul>
 
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2227,9 +2225,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 28</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id command'>command</span><span class='lparen'>(</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id verb'>verb</span><span class='comma'>,</span> <span class='id url'>url</span><span class='rparen'>)</span>
-  <span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id verb'>verb</span><span class='comma'>,</span> <span class='id url'>url</span><span class='period'>.</span><span class='id freeze'>freeze</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='command identifier id'>command</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='rparen token'>)</span>
+  <span class='COMMANDS constant id'>COMMANDS</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='freeze identifier id'>freeze</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2260,7 +2259,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2274,9 +2272,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 122</span>
 
-<span class='kw'>def</span> <span class='id acceptAlert'>acceptAlert</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:acceptAlert</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='acceptAlert identifier id'>acceptAlert</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:acceptAlert</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2301,7 +2300,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2315,9 +2313,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 247</span>
 
-<span class='kw'>def</span> <span class='id addCookie'>addCookie</span><span class='lparen'>(</span><span class='id cookie'>cookie</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:addCookie</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:cookie</span> <span class='op'>=&gt;</span> <span class='id cookie'>cookie</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='addCookie identifier id'>addCookie</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:addCookie</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:cookie</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='cookie identifier id'>cookie</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2342,7 +2341,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2356,9 +2354,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 71</span>
 
-<span class='kw'>def</span> <span class='id browser'>browser</span>
-  <span class='ivar'>@browser</span> <span class='op'>||=</span> <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id browser_name'>browser_name</span><span class='period'>.</span><span class='id gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>_</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id to_sym'>to_sym</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
+  <span class='@browser ivar id'>@browser</span> <span class='opasgn op'>||=</span> <span class='@capabilities ivar id'>@capabilities</span><span class='dot token'>.</span><span class='browser_name identifier id'>browser_name</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='string val'>&quot; &quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;_&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2383,7 +2382,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2397,9 +2395,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 351</span>
 
-<span class='kw'>def</span> <span class='id clearElement'>clearElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:clearElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:clearElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2424,7 +2423,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2438,9 +2436,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 267</span>
 
-<span class='kw'>def</span> <span class='id click'>click</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:button</span> <span class='op'>=&gt;</span> <span class='int'>0</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='click identifier id'>click</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:button</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='integer val'>0</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2465,7 +2464,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2479,9 +2477,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 263</span>
 
-<span class='kw'>def</span> <span class='id clickElement'>clickElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:clickElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:clickElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2506,7 +2505,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2520,9 +2518,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 190</span>
 
-<span class='kw'>def</span> <span class='id close'>close</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:close</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='close identifier id'>close</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:close</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2547,7 +2546,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2561,9 +2559,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 275</span>
 
-<span class='kw'>def</span> <span class='id contextClick'>contextClick</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:button</span> <span class='op'>=&gt;</span> <span class='int'>2</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='contextClick identifier id'>contextClick</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:button</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='integer val'>2</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2588,7 +2587,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2605,12 +2603,13 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 91</span>
 
-<span class='kw'>def</span> <span class='id create_session'>create_session</span><span class='lparen'>(</span><span class='id desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
-  <span class='id resp'>resp</span> <span class='op'>=</span> <span class='id raw_execute'>raw_execute</span> <span class='symbol'>:newSession</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:desiredCapabilities</span> <span class='op'>=&gt;</span> <span class='id desired_capabilities'>desired_capabilities</span>
-  <span class='ivar'>@session_id</span> <span class='op'>=</span> <span class='id resp'>resp</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>sessionId</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='kw'>or</span> <span class='id raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>no sessionId in returned payload</span><span class='tstring_end'>'</span></span>
+<span class='def def kw'>def</span> <span class='create_session identifier id'>create_session</span><span class='lparen token'>(</span><span class='desired_capabilities identifier id'>desired_capabilities</span><span class='rparen token'>)</span>
+  <span class='resp identifier id'>resp</span> <span class='assign token'>=</span> <span class='raw_execute identifier id'>raw_execute</span> <span class='symbol val'>:newSession</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:desiredCapabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='desired_capabilities identifier id'>desired_capabilities</span>
+  <span class='@session_id ivar id'>@session_id</span> <span class='assign token'>=</span> <span class='resp identifier id'>resp</span><span class='lbrack token'>[</span><span class='string val'>'sessionId'</span><span class='rbrack token'>]</span> <span class='or or kw'>or</span> <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>'no sessionId in returned payload'</span>
 
-  <span class='const'>Capabilities</span><span class='period'>.</span><span class='id json_create'>json_create</span> <span class='id resp'>resp</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>value</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+  <span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='json_create identifier id'>json_create</span> <span class='resp identifier id'>resp</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2635,7 +2634,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2649,9 +2647,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 259</span>
 
-<span class='kw'>def</span> <span class='id deleteAllCookies'>deleteAllCookies</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:deleteAllCookies</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='deleteAllCookies identifier id'>deleteAllCookies</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:deleteAllCookies</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2676,7 +2675,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2690,9 +2688,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 251</span>
 
-<span class='kw'>def</span> <span class='id deleteCookie'>deleteCookie</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:deleteCookieNamed</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id name'>name</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='deleteCookie identifier id'>deleteCookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:deleteCookieNamed</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2717,7 +2716,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2731,9 +2729,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id dismissAlert'>dismissAlert</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:dismissAlert</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='dismissAlert identifier id'>dismissAlert</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:dismissAlert</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2758,7 +2757,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2772,9 +2770,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 271</span>
 
-<span class='kw'>def</span> <span class='id doubleClick'>doubleClick</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:doubleClick</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='doubleClick identifier id'>doubleClick</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:doubleClick</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2799,7 +2798,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2813,9 +2811,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 384</span>
 
-<span class='kw'>def</span> <span class='id dragElement'>dragElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:dragElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:x</span> <span class='op'>=&gt;</span> <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='symbol'>:y</span> <span class='op'>=&gt;</span> <span class='id down_by'>down_by</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='dragElement identifier id'>dragElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:dragElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:x</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='symbol val'>:y</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='down_by identifier id'>down_by</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2840,7 +2839,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2858,13 +2856,14 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 75</span>
 
-<span class='kw'>def</span> <span class='id driver_extensions'>driver_extensions</span>
-  <span class='lbracket'>[</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasInputDevices</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>UploadsFiles</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span>
-  <span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
+  <span class='lbrack token'>[</span>
+    <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='HasInputDevices constant id'>HasInputDevices</span><span class='comma token'>,</span>
+    <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='UploadsFiles constant id'>UploadsFiles</span><span class='comma token'>,</span>
+    <span class='DriverExtensions constant id'>DriverExtensions</span><span class='colon2 op'>::</span><span class='TakesScreenshot constant id'>TakesScreenshot</span>
+  <span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2889,7 +2888,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2898,14 +2896,23 @@ the appropriate http verb, such as :get, :post, or :delete
 
 388
 389
-390</pre>
+390
+391
+392
+393
+394</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 388</span>
 
-<span class='kw'>def</span> <span class='id elementEquals'>elementEquals</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id other'>other</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:elementEquals</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='period'>.</span><span class='id ref'>ref</span><span class='comma'>,</span> <span class='symbol'>:other</span> <span class='op'>=&gt;</span> <span class='id other'>other</span><span class='period'>.</span><span class='id ref'>ref</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='elementEquals identifier id'>elementEquals</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='other identifier id'>other</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span> <span class='eq op'>==</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span>
+    <span class='true true kw'>true</span>
+  <span class='else else kw'>else</span>
+    <span class='execute identifier id'>execute</span> <span class='symbol val'>:elementEquals</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='symbol val'>:other</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2930,7 +2937,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2947,12 +2953,13 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 240</span>
 
-<span class='kw'>def</span> <span class='id executeAsyncScript'>executeAsyncScript</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='id assert_javascript_enabled'>assert_javascript_enabled</span>
+<span class='def def kw'>def</span> <span class='executeAsyncScript identifier id'>executeAsyncScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='assert_javascript_enabled identifier id'>assert_javascript_enabled</span>
 
-  <span class='id result'>result</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:executeAsyncScript</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:script</span> <span class='op'>=&gt;</span> <span class='id script'>script</span><span class='comma'>,</span> <span class='symbol'>:args</span> <span class='op'>=&gt;</span> <span class='id args'>args</span>
-  <span class='id unwrap_script_result'>unwrap_script_result</span> <span class='id result'>result</span>
-<span class='kw'>end</span></pre>
+  <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:executeAsyncScript</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:script</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='symbol val'>:args</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='args identifier id'>args</span>
+  <span class='unwrap_script_result identifier id'>unwrap_script_result</span> <span class='result identifier id'>result</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -2977,7 +2984,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -2994,12 +3000,13 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 233</span>
 
-<span class='kw'>def</span> <span class='id executeScript'>executeScript</span><span class='lparen'>(</span><span class='id script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='id assert_javascript_enabled'>assert_javascript_enabled</span>
+<span class='def def kw'>def</span> <span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='assert_javascript_enabled identifier id'>assert_javascript_enabled</span>
 
-  <span class='id result'>result</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:executeScript</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:script</span> <span class='op'>=&gt;</span> <span class='id script'>script</span><span class='comma'>,</span> <span class='symbol'>:args</span> <span class='op'>=&gt;</span> <span class='id args'>args</span>
-  <span class='id unwrap_script_result'>unwrap_script_result</span> <span class='id result'>result</span>
-<span class='kw'>end</span></pre>
+  <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:executeScript</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:script</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='symbol val'>:args</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='args identifier id'>args</span>
+  <span class='unwrap_script_result identifier id'>unwrap_script_result</span> <span class='result identifier id'>result</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3024,35 +3031,35 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-392
-393
-394
-395
 396
 397
 398
 399
-400</pre>
+400
+401
+402
+403
+404</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 392</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 396</span>
 
-<span class='kw'>def</span> <span class='id find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id parent'>parent</span>
-    <span class='id id'>id</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:findChildElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id parent'>parent</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:using</span> <span class='op'>=&gt;</span> <span class='id how'>how</span><span class='comma'>,</span> <span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='id what'>what</span><span class='rbrace'>}</span>
-  <span class='kw'>else</span>
-    <span class='id id'>id</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:findElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:using</span> <span class='op'>=&gt;</span> <span class='id how'>how</span><span class='comma'>,</span> <span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='id what'>what</span><span class='rbrace'>}</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='find_element_by identifier id'>find_element_by</span><span class='lparen token'>(</span><span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='parent identifier id'>parent</span>
+    <span class='id identifier id'>id</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:findChildElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='parent identifier id'>parent</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:using</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='what identifier id'>what</span><span class='rbrace token'>}</span>
+  <span class='else else kw'>else</span>
+    <span class='id identifier id'>id</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:findElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:using</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='what identifier id'>what</span><span class='rbrace token'>}</span>
+  <span class='end end kw'>end</span>
 
-  <span class='const'>Element</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id id'>id</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3077,35 +3084,35 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-402
-403
-404
-405
 406
 407
 408
 409
-410</pre>
+410
+411
+412
+413
+414</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 402</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 406</span>
 
-<span class='kw'>def</span> <span class='id find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id how'>how</span><span class='comma'>,</span> <span class='id what'>what</span><span class='comma'>,</span> <span class='id parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id parent'>parent</span>
-    <span class='id ids'>ids</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:findChildElements</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id parent'>parent</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:using</span> <span class='op'>=&gt;</span> <span class='id how'>how</span><span class='comma'>,</span> <span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='id what'>what</span><span class='rbrace'>}</span>
-  <span class='kw'>else</span>
-    <span class='id ids'>ids</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:findElements</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:using</span> <span class='op'>=&gt;</span> <span class='id how'>how</span><span class='comma'>,</span> <span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='id what'>what</span><span class='rbrace'>}</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='find_elements_by identifier id'>find_elements_by</span><span class='lparen token'>(</span><span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='parent identifier id'>parent</span>
+    <span class='ids identifier id'>ids</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:findChildElements</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='parent identifier id'>parent</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:using</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='what identifier id'>what</span><span class='rbrace token'>}</span>
+  <span class='else else kw'>else</span>
+    <span class='ids identifier id'>ids</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:findElements</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:using</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='what identifier id'>what</span><span class='rbrace token'>}</span>
+  <span class='end end kw'>end</span>
 
-  <span class='id ids'>ids</span><span class='period'>.</span><span class='id map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id id'>id</span><span class='op'>|</span> <span class='const'>Element</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id id'>id</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+  <span class='ids identifier id'>ids</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='id identifier id'>id</span><span class='bitor op'>|</span> <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3130,7 +3137,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3144,9 +3150,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 98</span>
 
-<span class='kw'>def</span> <span class='id get'>get</span><span class='lparen'>(</span><span class='id url'>url</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:get</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:url</span> <span class='op'>=&gt;</span> <span class='id url'>url</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:get</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:url</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='url identifier id'>url</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3175,7 +3182,6 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3189,9 +3195,10 @@ the appropriate http verb, such as :get, :post, or :delete
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 379</span>
 
-<span class='kw'>def</span> <span class='id getActiveElement'>getActiveElement</span>
-  <span class='const'>Element</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:getActiveElement</span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getActiveElement identifier id'>getActiveElement</span>
+  <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='symbol val'>:getActiveElement</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3219,7 +3226,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3233,9 +3239,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 118</span>
 
-<span class='kw'>def</span> <span class='id getAlert'>getAlert</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getAlert</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getAlert identifier id'>getAlert</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getAlert</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3260,7 +3267,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3274,9 +3280,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 134</span>
 
-<span class='kw'>def</span> <span class='id getAlertText'>getAlertText</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getAlertText</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getAlertText identifier id'>getAlertText</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getAlertText</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3301,7 +3308,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3315,9 +3321,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 255</span>
 
-<span class='kw'>def</span> <span class='id getAllCookies'>getAllCookies</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getAllCookies</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getAllCookies identifier id'>getAllCookies</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getAllCookies</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3342,7 +3349,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3356,9 +3362,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 102</span>
 
-<span class='kw'>def</span> <span class='id getCapabilities'>getCapabilities</span>
-  <span class='const'>Capabilities</span><span class='period'>.</span><span class='id json_create'>json_create</span> <span class='id execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:getCapabilities</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getCapabilities identifier id'>getCapabilities</span>
+  <span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='json_create identifier id'>json_create</span> <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='symbol val'>:getCapabilities</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3383,7 +3390,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3397,9 +3403,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 150</span>
 
-<span class='kw'>def</span> <span class='id getCurrentUrl'>getCurrentUrl</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getCurrentUrl</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getCurrentUrl identifier id'>getCurrentUrl</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getCurrentUrl</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3424,7 +3431,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3438,9 +3444,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 202</span>
 
-<span class='kw'>def</span> <span class='id getCurrentWindowHandle'>getCurrentWindowHandle</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getCurrentWindowHandle</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getCurrentWindowHandle</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3465,7 +3472,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3479,9 +3485,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 305</span>
 
-<span class='kw'>def</span> <span class='id getElementAttribute'>getElementAttribute</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id name'>name</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getElementAttribute</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id name'>name</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementAttribute</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3506,7 +3513,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3522,11 +3528,12 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 317</span>
 
-<span class='kw'>def</span> <span class='id getElementLocation'>getElementLocation</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getElementLocation</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
+<span class='def def kw'>def</span> <span class='getElementLocation identifier id'>getElementLocation</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementLocation</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
 
-  <span class='const'>Point</span><span class='period'>.</span><span class='id new'>new</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>x</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>y</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+  <span class='Point constant id'>Point</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'x'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'y'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3551,7 +3558,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3567,11 +3573,12 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 323</span>
 
-<span class='kw'>def</span> <span class='id getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getElementLocationOnceScrolledIntoView</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
+<span class='def def kw'>def</span> <span class='getElementLocationOnceScrolledIntoView identifier id'>getElementLocationOnceScrolledIntoView</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementLocationOnceScrolledIntoView</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
 
-  <span class='const'>Point</span><span class='period'>.</span><span class='id new'>new</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>x</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>y</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+  <span class='Point constant id'>Point</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'x'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'y'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3596,7 +3603,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3612,11 +3618,12 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 329</span>
 
-<span class='kw'>def</span> <span class='id getElementSize'>getElementSize</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getElementSize</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
+<span class='def def kw'>def</span> <span class='getElementSize identifier id'>getElementSize</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementSize</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
 
-  <span class='const'>Dimension</span><span class='period'>.</span><span class='id new'>new</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>width</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>height</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+  <span class='Dimension constant id'>Dimension</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'width'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'height'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3641,7 +3648,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3655,9 +3661,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 301</span>
 
-<span class='kw'>def</span> <span class='id getElementTagName'>getElementTagName</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getElementTagName</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getElementTagName identifier id'>getElementTagName</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementTagName</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3682,7 +3689,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3696,9 +3702,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 313</span>
 
-<span class='kw'>def</span> <span class='id getElementText'>getElementText</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getElementText</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getElementText identifier id'>getElementText</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementText</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3723,7 +3730,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3737,9 +3743,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 309</span>
 
-<span class='kw'>def</span> <span class='id getElementValue'>getElementValue</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getElementValue</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getElementValue identifier id'>getElementValue</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementValue</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3764,7 +3771,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3778,9 +3784,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 375</span>
 
-<span class='kw'>def</span> <span class='id getElementValueOfCssProperty'>getElementValueOfCssProperty</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id prop'>prop</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getElementValueOfCssProperty</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='comma'>,</span> <span class='symbol'>:property_name</span> <span class='op'>=&gt;</span> <span class='id prop'>prop</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementValueOfCssProperty</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='symbol val'>:property_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='prop identifier id'>prop</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3805,7 +3812,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3819,9 +3825,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 158</span>
 
-<span class='kw'>def</span> <span class='id getPageSource'>getPageSource</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getPageSource</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getPageSource identifier id'>getPageSource</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getPageSource</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3846,7 +3853,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3860,9 +3866,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 229</span>
 
-<span class='kw'>def</span> <span class='id getScreenshot'>getScreenshot</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:screenshot</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getScreenshot identifier id'>getScreenshot</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:screenshot</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3887,7 +3894,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3901,9 +3907,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 154</span>
 
-<span class='kw'>def</span> <span class='id getTitle'>getTitle</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getTitle</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getTitle identifier id'>getTitle</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getTitle</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3928,7 +3935,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3942,9 +3948,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 162</span>
 
-<span class='kw'>def</span> <span class='id getVisible'>getVisible</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getVisible</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getVisible identifier id'>getVisible</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getVisible</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -3969,7 +3976,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -3983,9 +3989,10 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 198</span>
 
-<span class='kw'>def</span> <span class='id getWindowHandles'>getWindowHandles</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:getWindowHandles</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='getWindowHandles identifier id'>getWindowHandles</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getWindowHandles</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4010,7 +4017,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4026,11 +4032,12 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 223</span>
 
-<span class='kw'>def</span> <span class='id getWindowPosition'>getWindowPosition</span><span class='lparen'>(</span><span class='id handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getWindowPosition</span><span class='comma'>,</span> <span class='symbol'>:window_handle</span> <span class='op'>=&gt;</span> <span class='id handle'>handle</span>
+<span class='def def kw'>def</span> <span class='getWindowPosition identifier id'>getWindowPosition</span><span class='lparen token'>(</span><span class='handle identifier id'>handle</span> <span class='assign token'>=</span> <span class='symbol val'>:current</span><span class='rparen token'>)</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getWindowPosition</span><span class='comma token'>,</span> <span class='symbol val'>:window_handle</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='handle identifier id'>handle</span>
 
-  <span class='const'>Point</span><span class='period'>.</span><span class='id new'>new</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>x</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>y</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+  <span class='Point constant id'>Point</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'x'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'y'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4055,7 +4062,6 @@ alerts
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4071,11 +4077,12 @@ alerts
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 212</span>
 
-<span class='kw'>def</span> <span class='id getWindowSize'>getWindowSize</span><span class='lparen'>(</span><span class='id handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
-  <span class='id data'>data</span> <span class='op'>=</span> <span class='id execute'>execute</span> <span class='symbol'>:getWindowSize</span><span class='comma'>,</span> <span class='symbol'>:window_handle</span> <span class='op'>=&gt;</span> <span class='id handle'>handle</span>
+<span class='def def kw'>def</span> <span class='getWindowSize identifier id'>getWindowSize</span><span class='lparen token'>(</span><span class='handle identifier id'>handle</span> <span class='assign token'>=</span> <span class='symbol val'>:current</span><span class='rparen token'>)</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getWindowSize</span><span class='comma token'>,</span> <span class='symbol val'>:window_handle</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='handle identifier id'>handle</span>
 
-  <span class='const'>Dimension</span><span class='period'>.</span><span class='id new'>new</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>width</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>height</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+  <span class='Dimension constant id'>Dimension</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'width'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'height'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4103,7 +4110,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4117,9 +4123,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 142</span>
 
-<span class='kw'>def</span> <span class='id goBack'>goBack</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:goBack</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='goBack identifier id'>goBack</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:goBack</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4144,7 +4151,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4158,9 +4164,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 146</span>
 
-<span class='kw'>def</span> <span class='id goForward'>goForward</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:goForward</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='goForward identifier id'>goForward</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:goForward</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4185,7 +4192,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4199,9 +4205,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 363</span>
 
-<span class='kw'>def</span> <span class='id isElementDisplayed'>isElementDisplayed</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:isElementDisplayed</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='isElementDisplayed identifier id'>isElementDisplayed</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementDisplayed</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4226,7 +4233,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4240,9 +4246,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 355</span>
 
-<span class='kw'>def</span> <span class='id isElementEnabled'>isElementEnabled</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:isElementEnabled</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='isElementEnabled identifier id'>isElementEnabled</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementEnabled</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4267,7 +4274,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4281,9 +4287,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 359</span>
 
-<span class='kw'>def</span> <span class='id isElementSelected'>isElementSelected</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:isElementSelected</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='isElementSelected identifier id'>isElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementSelected</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4308,7 +4315,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4322,9 +4328,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 279</span>
 
-<span class='kw'>def</span> <span class='id mouseDown'>mouseDown</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:mouseDown</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='mouseDown identifier id'>mouseDown</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:mouseDown</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4349,7 +4356,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4369,15 +4375,16 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 287</span>
 
-<span class='kw'>def</span> <span class='id mouseMoveTo'>mouseMoveTo</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id x'>x</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id params'>params</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='id element'>element</span> <span class='rbrace'>}</span>
+<span class='def def kw'>def</span> <span class='mouseMoveTo identifier id'>mouseMoveTo</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='x identifier id'>x</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='y identifier id'>y</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='params identifier id'>params</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span> <span class='symbol val'>:element</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span> <span class='rbrace token'>}</span>
 
-  <span class='kw'>if</span> <span class='id x'>x</span> <span class='op'>&amp;&amp;</span> <span class='id y'>y</span>
-    <span class='id params'>params</span><span class='period'>.</span><span class='id merge!'>merge!</span> <span class='symbol'>:xoffset</span> <span class='op'>=&gt;</span> <span class='id x'>x</span><span class='comma'>,</span> <span class='symbol'>:yoffset</span> <span class='op'>=&gt;</span> <span class='id y'>y</span>
-  <span class='kw'>end</span>
+  <span class='if if kw'>if</span> <span class='x identifier id'>x</span> <span class='andop op'>&amp;&amp;</span> <span class='y identifier id'>y</span>
+    <span class='params identifier id'>params</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span> <span class='symbol val'>:xoffset</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='symbol val'>:yoffset</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='y identifier id'>y</span>
+  <span class='end end kw'>end</span>
 
-  <span class='id execute'>execute</span> <span class='symbol'>:mouseMoveTo</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id params'>params</span>
-<span class='kw'>end</span></pre>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:mouseMoveTo</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='params identifier id'>params</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4402,7 +4409,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4416,9 +4422,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 283</span>
 
-<span class='kw'>def</span> <span class='id mouseUp'>mouseUp</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:mouseUp</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='mouseUp identifier id'>mouseUp</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:mouseUp</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4443,7 +4450,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4459,11 +4465,12 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 184</span>
 
-<span class='kw'>def</span> <span class='id quit'>quit</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:quit</span>
-  <span class='id http'>http</span><span class='period'>.</span><span class='id close'>close</span>
-<span class='kw'>rescue</span> <span class='op'>*</span><span class='const'>QUIT_ERRORS</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:quit</span>
+  <span class='http identifier id'>http</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
+<span class='rescue rescue kw'>rescue</span> <span class='mult op'>*</span><span class='QUIT_ERRORS constant id'>QUIT_ERRORS</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4488,7 +4495,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4502,9 +4508,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 194</span>
 
-<span class='kw'>def</span> <span class='id refresh'>refresh</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:refresh</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:refresh</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4529,7 +4536,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4543,9 +4549,10 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 297</span>
 
-<span class='kw'>def</span> <span class='id sendKeysToActiveElement'>sendKeysToActiveElement</span><span class='lparen'>(</span><span class='id key'>key</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:sendKeysToActiveElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='id key'>key</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='sendKeysToActiveElement identifier id'>sendKeysToActiveElement</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:sendKeysToActiveElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='key identifier id'>key</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4570,7 +4577,6 @@ navigation
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4588,13 +4594,14 @@ navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 335</span>
 
-<span class='kw'>def</span> <span class='id sendKeysToElement'>sendKeysToElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id keys'>keys</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='ivar'>@file_detector</span> <span class='op'>&amp;&amp;</span> <span class='id local_file'>local_file</span> <span class='op'>=</span> <span class='ivar'>@file_detector</span><span class='period'>.</span><span class='id call'>call</span><span class='lparen'>(</span><span class='id keys'>keys</span><span class='rparen'>)</span>
-    <span class='id keys'>keys</span> <span class='op'>=</span> <span class='id upload'>upload</span><span class='lparen'>(</span><span class='id local_file'>local_file</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='@file_detector ivar id'>@file_detector</span> <span class='andop op'>&amp;&amp;</span> <span class='local_file identifier id'>local_file</span> <span class='assign token'>=</span> <span class='@file_detector ivar id'>@file_detector</span><span class='dot token'>.</span><span class='call identifier id'>call</span><span class='lparen token'>(</span><span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
+    <span class='keys identifier id'>keys</span> <span class='assign token'>=</span> <span class='upload identifier id'>upload</span><span class='lparen token'>(</span><span class='local_file identifier id'>local_file</span><span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>
 
-  <span class='id execute'>execute</span> <span class='symbol'>:sendKeysToElement</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:value</span> <span class='op'>=&gt;</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id keys'>keys</span><span class='rparen'>)</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:sendKeysToElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Array constant id'>Array</span><span class='lparen token'>(</span><span class='keys identifier id'>keys</span><span class='rparen token'>)</span><span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4622,7 +4629,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4636,9 +4642,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 87</span>
 
-<span class='kw'>def</span> <span class='id session_id'>session_id</span>
-  <span class='ivar'>@session_id</span> <span class='op'>||</span> <span class='id raise'>raise</span><span class='lparen'>(</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>no current session exists</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='session_id identifier id'>session_id</span>
+  <span class='@session_id ivar id'>@session_id</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='WebDriverError constant id'>WebDriverError</span><span class='comma token'>,</span> <span class='string val'>&quot;no current session exists&quot;</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4663,7 +4670,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4677,9 +4683,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 130</span>
 
-<span class='kw'>def</span> <span class='id setAlertValue'>setAlertValue</span><span class='lparen'>(</span><span class='id keys'>keys</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setAlertValue</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:text</span> <span class='op'>=&gt;</span> <span class='id keys'>keys</span><span class='period'>.</span><span class='id to_s'>to_s</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='setAlertValue identifier id'>setAlertValue</span><span class='lparen token'>(</span><span class='keys identifier id'>keys</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setAlertValue</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:text</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='keys identifier id'>keys</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4704,7 +4711,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4718,9 +4724,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 371</span>
 
-<span class='kw'>def</span> <span class='id setElementSelected'>setElementSelected</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setElementSelected</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='setElementSelected identifier id'>setElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setElementSelected</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4745,7 +4752,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4759,9 +4765,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 106</span>
 
-<span class='kw'>def</span> <span class='id setImplicitWaitTimeout'>setImplicitWaitTimeout</span><span class='lparen'>(</span><span class='id milliseconds'>milliseconds</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setImplicitWaitTimeout</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:ms</span> <span class='op'>=&gt;</span> <span class='id milliseconds'>milliseconds</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='setImplicitWaitTimeout identifier id'>setImplicitWaitTimeout</span><span class='lparen token'>(</span><span class='milliseconds identifier id'>milliseconds</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setImplicitWaitTimeout</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:ms</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='milliseconds identifier id'>milliseconds</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4786,7 +4793,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4800,9 +4806,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 110</span>
 
-<span class='kw'>def</span> <span class='id setScriptTimeout'>setScriptTimeout</span><span class='lparen'>(</span><span class='id milliseconds'>milliseconds</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setScriptTimeout</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:ms</span> <span class='op'>=&gt;</span> <span class='id milliseconds'>milliseconds</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='setScriptTimeout identifier id'>setScriptTimeout</span><span class='lparen token'>(</span><span class='milliseconds identifier id'>milliseconds</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setScriptTimeout</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:ms</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='milliseconds identifier id'>milliseconds</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4827,7 +4834,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4841,9 +4847,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 166</span>
 
-<span class='kw'>def</span> <span class='id setVisible'>setVisible</span><span class='lparen'>(</span><span class='id bool'>bool</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setVisible</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id bool'>bool</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='setVisible identifier id'>setVisible</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setVisible</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='bool identifier id'>bool</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4868,7 +4875,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4883,10 +4889,11 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 218</span>
 
-<span class='kw'>def</span> <span class='id setWindowPosition'>setWindowPosition</span><span class='lparen'>(</span><span class='id x'>x</span><span class='comma'>,</span> <span class='id y'>y</span><span class='comma'>,</span> <span class='id handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setWindowPosition</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:window_handle</span> <span class='op'>=&gt;</span> <span class='id handle'>handle</span><span class='rbrace'>}</span><span class='comma'>,</span>
-                               <span class='symbol'>:x</span> <span class='op'>=&gt;</span> <span class='id x'>x</span><span class='comma'>,</span> <span class='symbol'>:y</span> <span class='op'>=&gt;</span> <span class='id y'>y</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='setWindowPosition identifier id'>setWindowPosition</span><span class='lparen token'>(</span><span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='comma token'>,</span> <span class='handle identifier id'>handle</span> <span class='assign token'>=</span> <span class='symbol val'>:current</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setWindowPosition</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:window_handle</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='handle identifier id'>handle</span><span class='rbrace token'>}</span><span class='comma token'>,</span>
+                               <span class='symbol val'>:x</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='symbol val'>:y</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='y identifier id'>y</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4911,7 +4918,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4927,11 +4933,12 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 206</span>
 
-<span class='kw'>def</span> <span class='id setWindowSize'>setWindowSize</span><span class='lparen'>(</span><span class='id width'>width</span><span class='comma'>,</span> <span class='id height'>height</span><span class='comma'>,</span> <span class='id handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:setWindowSize</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='symbol'>:window_handle</span> <span class='op'>=&gt;</span> <span class='id handle'>handle</span><span class='rbrace'>}</span><span class='comma'>,</span>
-                           <span class='symbol'>:width</span>  <span class='op'>=&gt;</span> <span class='id width'>width</span><span class='comma'>,</span>
-                           <span class='symbol'>:height</span> <span class='op'>=&gt;</span> <span class='id height'>height</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='setWindowSize identifier id'>setWindowSize</span><span class='lparen token'>(</span><span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='comma token'>,</span> <span class='handle identifier id'>handle</span> <span class='assign token'>=</span> <span class='symbol val'>:current</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setWindowSize</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:window_handle</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='handle identifier id'>handle</span><span class='rbrace token'>}</span><span class='comma token'>,</span>
+                           <span class='symbol val'>:width</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='width identifier id'>width</span><span class='comma token'>,</span>
+                           <span class='symbol val'>:height</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='height identifier id'>height</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4956,7 +4963,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -4970,9 +4976,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 367</span>
 
-<span class='kw'>def</span> <span class='id submitElement'>submitElement</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:submitElement</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id element'>element</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='submitElement identifier id'>submitElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:submitElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -4997,7 +5004,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -5011,9 +5017,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 178</span>
 
-<span class='kw'>def</span> <span class='id switchToDefaultContent'>switchToDefaultContent</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:switchToFrame</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='kw'>nil</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='switchToDefaultContent identifier id'>switchToDefaultContent</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:switchToFrame</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='nil nil kw'>nil</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -5038,7 +5045,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -5052,9 +5058,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 174</span>
 
-<span class='kw'>def</span> <span class='id switchToFrame'>switchToFrame</span><span class='lparen'>(</span><span class='id id'>id</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:switchToFrame</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id id'>id</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='switchToFrame identifier id'>switchToFrame</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:switchToFrame</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='id identifier id'>id</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -5079,7 +5086,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -5093,9 +5099,10 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 170</span>
 
-<span class='kw'>def</span> <span class='id switchToWindow'>switchToWindow</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
-  <span class='id execute'>execute</span> <span class='symbol'>:switchToWindow</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id name'>name</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='switchToWindow identifier id'>switchToWindow</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:switchToWindow</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -5120,7 +5127,6 @@ Returns the current session ID.
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -5138,13 +5144,14 @@ Returns the current session ID.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 343</span>
 
-<span class='kw'>def</span> <span class='id upload'>upload</span><span class='lparen'>(</span><span class='id local_file'>local_file</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id file?'>file?</span><span class='lparen'>(</span><span class='id local_file'>local_file</span><span class='rparen'>)</span>
-    <span class='id raise'>raise</span> <span class='const'>WebDriverError</span><span class='op'>::</span><span class='const'>Error</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>you may only upload files: </span><span class='embexpr_beg'>#{</span><span class='id local_file'>local_file</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='upload identifier id'>upload</span><span class='lparen token'>(</span><span class='local_file identifier id'>local_file</span><span class='rparen token'>)</span>
+  <span class='unless unless kw'>unless</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='file? fid id'>file?</span><span class='lparen token'>(</span><span class='local_file identifier id'>local_file</span><span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='WebDriverError constant id'>WebDriverError</span><span class='colon2 op'>::</span><span class='Error constant id'>Error</span><span class='comma token'>,</span> <span class='dstring node'>&quot;you may only upload files: #{local_file.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
 
-  <span class='id execute'>execute</span> <span class='symbol'>:uploadFile</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:file</span> <span class='op'>=&gt;</span> <span class='const'>Zipper</span><span class='period'>.</span><span class='id zip_file'>zip_file</span><span class='lparen'>(</span><span class='id local_file'>local_file</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:uploadFile</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='symbol val'>:file</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Zipper constant id'>Zipper</span><span class='dot token'>.</span><span class='zip_file identifier id'>zip_file</span><span class='lparen token'>(</span><span class='local_file identifier id'>local_file</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -5155,9 +5162,9 @@ Returns the current session ID.
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 29 01:07:02 2011 by 
+  Generated on Thu Jan  5 01:51:24 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.2).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

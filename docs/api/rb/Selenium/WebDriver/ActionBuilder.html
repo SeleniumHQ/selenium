@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ActionBuilder
   
-    &mdash; Documentation by YARD 0.7.3
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -103,22 +103,26 @@ This class should not be instantiated directly, but is created by
 Selenium::WebDriver::DriverExtensions::HasInputDevices#action, which is
 available on Driver instances that support the user interaction API.
 </p>
-<p>
-Example:
-</p>
-<pre class="code">
- <span class='id driver'>driver</span><span class='period'>.</span><span class='id action'>action</span><span class='period'>.</span><span class='id key_down'>key_down</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span>
-               <span class='id click'>click</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span><span class='period'>.</span>
-               <span class='id click'>click</span><span class='lparen'>(</span><span class='id second_element'>second_element</span><span class='rparen'>)</span><span class='period'>.</span>
-               <span class='id key_up'>key_up</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span>
-               <span class='id drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id third_element'>third_element</span><span class='rparen'>)</span><span class='period'>.</span>
-               <span class='id perform'>perform</span></pre>
 
 
   </div>
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'></div></h4>
+      <pre class="example code">
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+              <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+              <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='second_element identifier id'>second_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+              <span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+              <span class='drag_and_drop identifier id'>drag_and_drop</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='third_element identifier id'>third_element</span><span class='rparen token'>)</span><span class='dot token'>.</span>
+              <span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
 
 </div>
 
@@ -136,7 +140,7 @@ Example:
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#click-instance_method" title="#click (instance method)">- (Object) <strong>click</strong>(element = nil) </a>
+      <a href="#click-instance_method" title="#click (instance method)">- (ActionBuilder) <strong>click</strong>(element = nil) </a>
     
 
     
@@ -149,7 +153,10 @@ Example:
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Clicks in the middle of the given element.
+</p>
+</div></span>
   
 </li>
 
@@ -157,7 +164,7 @@ Example:
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#click_and_hold-instance_method" title="#click_and_hold (instance method)">- (Object) <strong>click_and_hold</strong>(element) </a>
+      <a href="#click_and_hold-instance_method" title="#click_and_hold (instance method)">- (ActionBuilder) <strong>click_and_hold</strong>(element) </a>
     
 
     
@@ -170,7 +177,10 @@ Example:
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Clicks (without releasing) in the middle of the given element.
+</p>
+</div></span>
   
 </li>
 
@@ -178,7 +188,7 @@ Example:
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#context_click-instance_method" title="#context_click (instance method)">- (Object) <strong>context_click</strong>(element = nil) </a>
+      <a href="#context_click-instance_method" title="#context_click (instance method)">- (ActionBuilder) <strong>context_click</strong>(element) </a>
     
 
     
@@ -191,7 +201,10 @@ Example:
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Performs a context-click at middle of the given element.
+</p>
+</div></span>
   
 </li>
 
@@ -199,7 +212,7 @@ Example:
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#double_click-instance_method" title="#double_click (instance method)">- (Object) <strong>double_click</strong>(element = nil) </a>
+      <a href="#double_click-instance_method" title="#double_click (instance method)">- (ActionBuilder) <strong>double_click</strong>(element = nil) </a>
     
 
     
@@ -212,7 +225,10 @@ Example:
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Performs a double-click at middle of the given element.
+</p>
+</div></span>
   
 </li>
 
@@ -220,7 +236,7 @@ Example:
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#drag_and_drop-instance_method" title="#drag_and_drop (instance method)">- (Object) <strong>drag_and_drop</strong>(source, target) </a>
+      <a href="#drag_and_drop-instance_method" title="#drag_and_drop (instance method)">- (ActionBuilder) <strong>drag_and_drop</strong>(source, target) </a>
     
 
     
@@ -233,7 +249,12 @@ Example:
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+A convenience method that performs click-and-hold at the location of the
+source element, moves to the location of the target element, then releases
+the mouse.
+</p>
+</div></span>
   
 </li>
 
@@ -241,7 +262,7 @@ Example:
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#drag_and_drop_by-instance_method" title="#drag_and_drop_by (instance method)">- (Object) <strong>drag_and_drop_by</strong>(source, right_by, down_by) </a>
+      <a href="#drag_and_drop_by-instance_method" title="#drag_and_drop_by (instance method)">- (ActionBuilder) <strong>drag_and_drop_by</strong>(source, right_by, down_by) </a>
     
 
     
@@ -254,7 +275,11 @@ Example:
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+A convenience method that performs click-and-hold at the location of the
+source element, moves by a given offset, then releases the mouse.
+</p>
+</div></span>
   
 </li>
 
@@ -288,7 +313,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#key_down-instance_method" title="#key_down (instance method)">- (Object) <strong>key_down</strong>(*args) </a>
+      <a href="#key_down-instance_method" title="#key_down (instance method)">- (ActionBuilder) <strong>key_down</strong>(*args) </a>
     
 
     
@@ -301,7 +326,10 @@ A new instance of ActionBuilder.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Performs a modifier key press.
+</p>
+</div></span>
   
 </li>
 
@@ -309,7 +337,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#key_up-instance_method" title="#key_up (instance method)">- (Object) <strong>key_up</strong>(*args) </a>
+      <a href="#key_up-instance_method" title="#key_up (instance method)">- (ActionBuilder) <strong>key_up</strong>(*args) </a>
     
 
     
@@ -322,7 +350,10 @@ A new instance of ActionBuilder.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Performs a modifier key release.
+</p>
+</div></span>
   
 </li>
 
@@ -330,7 +361,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#move_by-instance_method" title="#move_by (instance method)">- (Object) <strong>move_by</strong>(right_by, down_by) </a>
+      <a href="#move_by-instance_method" title="#move_by (instance method)">- (ActionBuilder) <strong>move_by</strong>(right_by, down_by) </a>
     
 
     
@@ -343,7 +374,10 @@ A new instance of ActionBuilder.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Moves the mouse from its current position (or 0,0) by the given offset.
+</p>
+</div></span>
   
 </li>
 
@@ -351,7 +385,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#move_to-instance_method" title="#move_to (instance method)">- (Object) <strong>move_to</strong>(element, right_by = nil, down_by = nil) </a>
+      <a href="#move_to-instance_method" title="#move_to (instance method)">- (ActionBuilder) <strong>move_to</strong>(element, right_by = nil, down_by = nil) </a>
     
 
     
@@ -364,7 +398,10 @@ A new instance of ActionBuilder.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Moves the mouse to the middle of the given element.
+</p>
+</div></span>
   
 </li>
 
@@ -385,7 +422,10 @@ A new instance of ActionBuilder.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Executes the actions added to the builder.
+</p>
+</div></span>
   
 </li>
 
@@ -393,7 +433,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#release-instance_method" title="#release (instance method)">- (Object) <strong>release</strong>(element = nil) </a>
+      <a href="#release-instance_method" title="#release (instance method)">- (ActionBuilder) <strong>release</strong>(element = nil) </a>
     
 
     
@@ -406,7 +446,10 @@ A new instance of ActionBuilder.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Releases the depressed left mouse button at the current mouse location.
+</p>
+</div></span>
   
 </li>
 
@@ -414,7 +457,7 @@ A new instance of ActionBuilder.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#send_keys-instance_method" title="#send_keys (instance method)">- (Object) <strong>send_keys</strong>(*args) </a>
+      <a href="#send_keys-instance_method" title="#send_keys (instance method)">- (ActionBuilder) <strong>send_keys</strong>(*args) </a>
     
 
     
@@ -427,7 +470,10 @@ A new instance of ActionBuilder.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Sends keys to the active element.
+</p>
+</div></span>
   
 </li>
 
@@ -460,7 +506,6 @@ A new instance of ActionBuilder
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -479,14 +524,15 @@ A new instance of ActionBuilder
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 28</span>
 
-<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id mouse'>mouse</span><span class='comma'>,</span> <span class='id keyboard'>keyboard</span><span class='rparen'>)</span>
-  <span class='ivar'>@devices</span>    <span class='op'>=</span> <span class='lbrace'>{</span>
-    <span class='symbol'>:mouse</span>    <span class='op'>=&gt;</span> <span class='id mouse'>mouse</span><span class='comma'>,</span>
-    <span class='symbol'>:keyboard</span> <span class='op'>=&gt;</span> <span class='id keyboard'>keyboard</span>
-  <span class='rbrace'>}</span>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='mouse identifier id'>mouse</span><span class='comma token'>,</span> <span class='keyboard identifier id'>keyboard</span><span class='rparen token'>)</span>
+  <span class='@devices ivar id'>@devices</span>    <span class='assign token'>=</span> <span class='lbrace token'>{</span>
+    <span class='symbol val'>:mouse</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='mouse identifier id'>mouse</span><span class='comma token'>,</span>
+    <span class='symbol val'>:keyboard</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='keyboard identifier id'>keyboard</span>
+  <span class='rbrace token'>}</span>
 
-  <span class='ivar'>@actions</span>  <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
+  <span class='@actions ivar id'>@actions</span>  <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -502,28 +548,110 @@ A new instance of ActionBuilder
       <div class="method_details first">
   <p class="signature first" id="click-instance_method">
   
-    - (<tt>Object</tt>) <strong>click</strong>(element = nil) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>click</strong>(element = nil) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Clicks in the middle of the given element. Equivalent to:
+</p>
+<pre class="code">
+  <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='click identifier id'>click</span>
+</pre>
+<p>
+When no element is passed, the current mouse position will be clicked.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Clicking on an element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+      <h4><div class='inline'><p>
+Clicking at the current mouse position
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='click identifier id'>click</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An optional element to click.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-74
-75
-76
-77</pre>
+186
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 186</span>
 
-<span class='kw'>def</span> <span class='id click'>click</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -532,28 +660,98 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="click_and_hold-instance_method">
   
-    - (<tt>Object</tt>) <strong>click_and_hold</strong>(element) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>click_and_hold</strong>(element) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Clicks (without releasing) in the middle of the given element. This is
+equivalent to:
+</p>
+<pre class="code">
+  <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='click_and_hold identifier id'>click_and_hold</span>
+</pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Clicking and holding on some element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='click_and_hold identifier id'>click_and_hold</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+the element to move to and click.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-64
-65
-66
-67</pre>
+145
+146
+147
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 145</span>
 
-<span class='kw'>def</span> <span class='id click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id element'>element</span><span class='rparen'>)</span>
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='click_and_hold identifier id'>click_and_hold</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:down</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -562,28 +760,95 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="context_click-instance_method">
   
-    - (<tt>Object</tt>) <strong>context_click</strong>(element = nil) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>context_click</strong>(element) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Performs a context-click at middle of the given element. First performs a
+move_to to the location of the element.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Context-click at middle of given element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='context_click identifier id'>context_click</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An element to context click.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-99
-100
-101
-102</pre>
+282
+283
+284
+285</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 282</span>
 
-<span class='kw'>def</span> <span class='id context_click'>context_click</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:context_click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='context_click identifier id'>context_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:context_click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -592,28 +857,99 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="double_click-instance_method">
   
-    - (<tt>Object</tt>) <strong>double_click</strong>(element = nil) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>double_click</strong>(element = nil) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Performs a double-click at middle of the given element. Equivalent to:
+</p>
+<pre class="code">
+  <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='double_click identifier id'>double_click</span>
+</pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Double click an element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='double_click identifier id'>double_click</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An optional element to move to.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-79
-80
-81
-82</pre>
+205
+206
+207
+208</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 205</span>
 
-<span class='kw'>def</span> <span class='id double_click'>double_click</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:double_click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='double_click identifier id'>double_click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:double_click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -622,34 +958,120 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="drag_and_drop-instance_method">
   
-    - (<tt>Object</tt>) <strong>drag_and_drop</strong>(source, target) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>drag_and_drop</strong>(source, target) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A convenience method that performs click-and-hold at the location of the
+source element, moves to the location of the target element, then releases
+the mouse.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Drag and drop one element onto another
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el1 identifier id'>el1</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id1&quot;</span><span class='rparen token'>)</span>
+<span class='el2 identifier id'>el2</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id2&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='drag_and_drop identifier id'>drag_and_drop</span><span class='lparen token'>(</span><span class='el1 identifier id'>el1</span><span class='comma token'>,</span> <span class='el2 identifier id'>el2</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>source</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+element to emulate button down at.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>target</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+element to move to and release the mouse at.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-104
-105
-106
-107
-108
-109
-110</pre>
+304
+305
+306
+307
+308
+309
+310</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 304</span>
 
-<span class='kw'>def</span> <span class='id drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id source'>source</span><span class='comma'>,</span> <span class='id target'>target</span><span class='rparen'>)</span>
-  <span class='id click_and_hold'>click_and_hold</span> <span class='id source'>source</span>
-  <span class='id move_to'>move_to</span>        <span class='id target'>target</span>
-  <span class='id release'>release</span>        <span class='id target'>target</span>
+<span class='def def kw'>def</span> <span class='drag_and_drop identifier id'>drag_and_drop</span><span class='lparen token'>(</span><span class='source identifier id'>source</span><span class='comma token'>,</span> <span class='target identifier id'>target</span><span class='rparen token'>)</span>
+  <span class='click_and_hold identifier id'>click_and_hold</span> <span class='source identifier id'>source</span>
+  <span class='move_to identifier id'>move_to</span>        <span class='target identifier id'>target</span>
+  <span class='release identifier id'>release</span>        <span class='target identifier id'>target</span>
 
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -658,34 +1080,152 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="drag_and_drop_by-instance_method">
   
-    - (<tt>Object</tt>) <strong>drag_and_drop_by</strong>(source, right_by, down_by) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>drag_and_drop_by</strong>(source, right_by, down_by) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A convenience method that performs click-and-hold at the location of the
+source element, moves by a given offset, then releases the mouse.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Drag and drop an element by offset
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id1&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='drag_and_drop_by identifier id'>drag_and_drop_by</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='comma token'>,</span> <span class='integer val'>100</span><span class='comma token'>,</span> <span class='integer val'>100</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>source</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+Element to emulate button down at.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>right_by</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+horizontal move offset.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>down_by</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+vertical move offset.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>target</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+Element to move to and release the mouse at.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-112
-113
-114
-115
-116
-117
-118</pre>
+329
+330
+331
+332
+333
+334
+335</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 329</span>
 
-<span class='kw'>def</span> <span class='id drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id source'>source</span><span class='comma'>,</span> <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rparen'>)</span>
-  <span class='id click_and_hold'>click_and_hold</span> <span class='id source'>source</span>
-  <span class='id move_by'>move_by</span>        <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span>
-  <span class='id release'>release</span>
+<span class='def def kw'>def</span> <span class='drag_and_drop_by identifier id'>drag_and_drop_by</span><span class='lparen token'>(</span><span class='source identifier id'>source</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
+  <span class='click_and_hold identifier id'>click_and_hold</span> <span class='source identifier id'>source</span>
+  <span class='move_by identifier id'>move_by</span>        <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span>
+  <span class='release identifier id'>release</span>
 
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -694,36 +1234,157 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="key_down-instance_method">
   
-    - (<tt>Object</tt>) <strong>key_down</strong>(*args) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>key_down</strong>(*args) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Performs a modifier key press. Does not release the modifier key -
+subsequent interactions may assume it&#8217;s kept pressed. Note that the
+modifier key is never released implicitly - either #key_up(key) or
+#send_keys(:null) must be called to release the modifier.
+</p>
+<p>
+Equivalent to:
+</p>
+<pre class="code">
+  <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='click identifier id'>click</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
+  <span class='comment val'># or</span>
+  <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='click identifier id'>click</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='key identifier id'>key</span><span class='rparen token'>)</span>
+</pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Press a key
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='symbol val'>:control</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+      <h4><div class='inline'><p>
+Press a key on an element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='comma token'>,</span> <span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>The</span>
+      
+      
+        <span class='type'>(<tt>:shift</tt>, <tt>:alt</tt>, <tt>:control</tt>, <tt>:command</tt>, <tt>:meta</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+key to press.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An optional element
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+if the given key is not a modifier
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-37
-38
-39
-40
-41
-42
-43
-44</pre>
+63
+64
+65
+66
+67
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 63</span>
 
-<span class='kw'>def</span> <span class='id key_down'>key_down</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id args'>args</span><span class='period'>.</span><span class='id first'>first</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Element</span>
-    <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id args'>args</span><span class='period'>.</span><span class='id shift'>shift</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='key_down identifier id'>key_down</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Element constant id'>Element</span>
+    <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='args identifier id'>args</span><span class='dot token'>.</span><span class='shift identifier id'>shift</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
 
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:keyboard</span><span class='comma'>,</span> <span class='symbol'>:press</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:keyboard</span><span class='comma token'>,</span> <span class='symbol val'>:press</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -732,36 +1393,147 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="key_up-instance_method">
   
-    - (<tt>Object</tt>) <strong>key_up</strong>(*args) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>key_up</strong>(*args) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Performs a modifier key release. Releasing a non-depressed modifier key
+will yield undefined behaviour.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Release a key
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='symbol val'>:shift</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+      <h4><div class='inline'><p>
+Release a key from an element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='comma token'>,</span> <span class='symbol val'>:alt</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>The</span>
+      
+      
+        <span class='type'>(<tt>:shift</tt>, <tt>:alt</tt>, <tt>:control</tt>, <tt>:command</tt>, <tt>:meta</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+modifier key to release.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An optional element
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+if the given key is not a modifier key
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-46
-47
-48
-49
-50
-51
-52
-53</pre>
+91
+92
+93
+94
+95
+96
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 91</span>
 
-<span class='kw'>def</span> <span class='id key_up'>key_up</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id args'>args</span><span class='period'>.</span><span class='id first'>first</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Element</span>
-    <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id args'>args</span><span class='period'>.</span><span class='id shift'>shift</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='key_up identifier id'>key_up</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Element constant id'>Element</span>
+    <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='args identifier id'>args</span><span class='dot token'>.</span><span class='shift identifier id'>shift</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
 
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:keyboard</span><span class='comma'>,</span> <span class='symbol'>:release</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:keyboard</span><span class='comma token'>,</span> <span class='symbol val'>:release</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -770,28 +1542,131 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="move_by-instance_method">
   
-    - (<tt>Object</tt>) <strong>move_by</strong>(right_by, down_by) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>move_by</strong>(right_by, down_by) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Moves the mouse from its current position (or 0,0) by the given offset. If
+the coordinates provided are outside the viewport (the mouse will end up
+outside the browser window) then the viewport is scrolled to match.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Move the mouse to a certain offset from its current position
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='move_by identifier id'>move_by</span><span class='lparen token'>(</span><span class='integer val'>100</span><span class='comma token'>,</span> <span class='integer val'>100</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>right_by</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+horizontal offset. A negative value means moving the mouse left.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>down_by</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+vertical offset. A negative value means moving the mouse up.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>MoveTargetOutOfBoundsError</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+if the provided offset is outside the document&#8217;s boundaries.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-94
-95
-96
-97</pre>
+264
+265
+266
+267</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 264</span>
 
-<span class='kw'>def</span> <span class='id move_by'>move_by</span><span class='lparen'>(</span><span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rparen'>)</span>
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:move_by</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='move_by identifier id'>move_by</span><span class='lparen token'>(</span><span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_by</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -800,38 +1675,155 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="move_to-instance_method">
   
-    - (<tt>Object</tt>) <strong>move_to</strong>(element, right_by = nil, down_by = nil) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>move_to</strong>(element, right_by = nil, down_by = nil) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Moves the mouse to the middle of the given element. The element is scrolled
+into view and its location is calculated using getBoundingClientRect. Then
+the mouse is moved to optional offset coordinates from the element.
+</p>
+<p>
+Note that when using offsets, both coordinates need to be passed.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Scroll element into view and move the mouse to it
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+      <h4><div class='inline'></div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='comma token'>,</span> <span class='integer val'>100</span><span class='comma token'>,</span> <span class='integer val'>100</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+to move to.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>right_by</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+Optional offset from the top-left corner. A negative value means
+coordinates right from the element.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>down_by</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+Optional offset from the top-left corner. A negative value means
+coordinates above the element.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-84
-85
-86
-87
-88
-89
-90
-91
-92</pre>
+235
+236
+237
+238
+239
+240
+241
+242
+243</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 235</span>
 
-<span class='kw'>def</span> <span class='id move_to'>move_to</span><span class='lparen'>(</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id right_by'>right_by</span> <span class='op'>&amp;&amp;</span> <span class='id down_by'>down_by</span>
-    <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:move_to</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id element'>element</span><span class='comma'>,</span> <span class='id right_by'>right_by</span><span class='comma'>,</span> <span class='id down_by'>down_by</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>else</span>
-    <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:move_to</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='right_by identifier id'>right_by</span> <span class='andop op'>&amp;&amp;</span> <span class='down_by identifier id'>down_by</span>
+    <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_to</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='else else kw'>else</span>
+    <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:move_to</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
 
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -844,26 +1836,42 @@ A new instance of ActionBuilder
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Executes the actions added to the builder.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-120
-121
-122
-123
-124</pre>
+342
+343
+344
+345
+346
+347
+348</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 342</span>
 
-<span class='kw'>def</span> <span class='id perform'>perform</span>
-  <span class='ivar'>@actions</span><span class='period'>.</span><span class='id each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id receiver'>receiver</span><span class='comma'>,</span> <span class='id method'>method</span><span class='comma'>,</span> <span class='id args'>args</span><span class='op'>|</span>
-    <span class='ivar'>@devices</span><span class='period'>.</span><span class='id fetch'>fetch</span><span class='lparen'>(</span><span class='id receiver'>receiver</span><span class='rparen'>)</span><span class='period'>.</span><span class='id __send__'>__send__</span><span class='lparen'>(</span><span class='id method'>method</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='perform identifier id'>perform</span>
+  <span class='@actions ivar id'>@actions</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='receiver identifier id'>receiver</span><span class='comma token'>,</span> <span class='method identifier id'>method</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='bitor op'>|</span>
+    <span class='@devices ivar id'>@devices</span><span class='dot token'>.</span><span class='fetch identifier id'>fetch</span><span class='lparen token'>(</span><span class='receiver identifier id'>receiver</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='__send__ identifier id'>__send__</span><span class='lparen token'>(</span><span class='method identifier id'>method</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='rbrace token'>}</span>
+
+  <span class='nil nil kw'>nil</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -872,28 +1880,73 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="release-instance_method">
   
-    - (<tt>Object</tt>) <strong>release</strong>(element = nil) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>release</strong>(element = nil) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Releases the depressed left mouse button at the current mouse location.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Releasing an element after clicking and holding it
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='click_and_hold identifier id'>click_and_hold</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='release identifier id'>release</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-69
-70
-71
-72</pre>
+161
+162
+163
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 69</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 161</span>
 
-<span class='kw'>def</span> <span class='id release'>release</span><span class='lparen'>(</span><span class='id element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='release identifier id'>release</span><span class='lparen token'>(</span><span class='element identifier id'>element</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:up</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='element identifier id'>element</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -902,36 +1955,137 @@ A new instance of ActionBuilder
       <div class="method_details ">
   <p class="signature " id="send_keys-instance_method">
   
-    - (<tt>Object</tt>) <strong>send_keys</strong>(*args) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>send_keys</strong>(*args) 
   
 
   
-</p><table class="source_code">
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Sends keys to the active element. This differs from calling
+Element#send_keys(keys) on the active element in two ways:
+</p>
+<ul>
+<li>The modifier keys included in this call are not released.
+
+</li>
+<li>There is no attempt to re-focus the element - so send_keys(:tab) for
+switching elements should work.
+
+</li>
+</ul>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Send the text &#8220;help&#8221; to an element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='el identifier id'>el</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='symbol val'>:id</span><span class='comma token'>,</span> <span class='string val'>&quot;some_id&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='el identifier id'>el</span><span class='comma token'>,</span> <span class='string val'>&quot;help&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+      <h4><div class='inline'><p>
+Send the text &#8220;help&#8221; to the currently focused element
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='action identifier id'>action</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='string val'>&quot;help&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='perform identifier id'>perform</span>
+</pre>
+    
+  </div>
+<h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>element</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An optional element
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>keys</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The keys to be sent.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+A self reference.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-55
-56
-57
-58
-59
-60
-61
-62</pre>
+121
+122
+123
+124
+125
+126
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 121</span>
 
-<span class='kw'>def</span> <span class='id send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id args'>args</span><span class='period'>.</span><span class='id first'>first</span><span class='period'>.</span><span class='id kind_of?'>kind_of?</span> <span class='const'>Element</span>
-    <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id args'>args</span><span class='period'>.</span><span class='id shift'>shift</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='first identifier id'>first</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span> <span class='Element constant id'>Element</span>
+    <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:mouse</span><span class='comma token'>,</span> <span class='symbol val'>:click</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='args identifier id'>args</span><span class='dot token'>.</span><span class='shift identifier id'>shift</span><span class='rbrack token'>]</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
 
-  <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:keyboard</span><span class='comma'>,</span> <span class='symbol'>:send_keys</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rbracket'>]</span>
-  <span class='kw'>self</span>
-<span class='kw'>end</span></pre>
+  <span class='@actions ivar id'>@actions</span> <span class='lshft op'>&lt;&lt;</span> <span class='lbrack token'>[</span><span class='symbol val'>:keyboard</span><span class='comma token'>,</span> <span class='symbol val'>:send_keys</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -942,9 +2096,9 @@ A new instance of ActionBuilder
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 29 01:07:04 2011 by 
+  Generated on Thu Jan  5 01:52:40 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.2).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

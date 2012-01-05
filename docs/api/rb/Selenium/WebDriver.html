@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver
   
-    &mdash; Documentation by YARD 0.7.3
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -187,9 +187,10 @@ AbstractEventListener.
     
       <h4><div class='inline'></div></h4>
       <pre class="example code">
-<span class='const'>WebDriver</span><span class='period'>.</span><span class='id for'>for</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:profile</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some-profile</span><span class='tstring_end'>&quot;</span></span>
-<span class='const'>WebDriver</span><span class='period'>.</span><span class='id for'>for</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:profile</span> <span class='op'>=&gt;</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id new'>new</span>
-<span class='const'>WebDriver</span><span class='period'>.</span><span class='id for'>for</span> <span class='symbol'>:remote</span><span class='comma'>,</span>  <span class='symbol'>:url</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://localhost:4444/wd/hub</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:desired_capabilities</span> <span class='op'>=&gt;</span> <span class='id caps'>caps</span></pre>
+<span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;some-profile&quot;</span>
+<span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:firefox</span><span class='comma token'>,</span> <span class='symbol val'>:profile</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Profile constant id'>Profile</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+<span class='WebDriver constant id'>WebDriver</span><span class='dot token'>.</span><span class='for identifier id'>for</span> <span class='symbol val'>:remote</span><span class='comma token'>,</span>  <span class='symbol val'>:url</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;http://localhost:4444/wd/hub&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='caps identifier id'>caps</span>
+</pre>
     
   </div>
 <h3>Parameters:</h3>
@@ -230,7 +231,6 @@ arguments passed to Bridge.new
     </li>
   
 </ul>
-
 <h3>Returns:</h3>
 <ul class="return">
   
@@ -279,9 +279,10 @@ arguments passed to Bridge.new
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 59</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='kw'>for</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-  <span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id for'>for</span><span class='lparen'>(</span><span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='for identifier id'>for</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Driver constant id'>Driver</span><span class='dot token'>.</span><span class='for identifier id'>for</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -306,7 +307,6 @@ arguments passed to Bridge.new
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
@@ -320,9 +320,10 @@ arguments passed to Bridge.new
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 25</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id root'>root</span>
-  <span class='ivar'>@root</span> <span class='op'>||=</span> <span class='const'>File</span><span class='period'>.</span><span class='id expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>../..</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='root identifier id'>root</span>
+  <span class='@root ivar id'>@root</span> <span class='opasgn op'>||=</span> <span class='File constant id'>File</span><span class='dot token'>.</span><span class='expand_path identifier id'>expand_path</span><span class='lparen token'>(</span><span class='string val'>&quot;../..&quot;</span><span class='comma token'>,</span> <span class='__FILE__ __file__ kw'>__FILE__</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -333,9 +334,9 @@ arguments passed to Bridge.new
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 29 01:06:59 2011 by 
+  Generated on Thu Jan  5 01:52:52 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.2).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

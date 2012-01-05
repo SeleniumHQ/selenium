@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Window
   
-    &mdash; Documentation by YARD 0.7.3
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -100,7 +100,6 @@
 </div>
 <div class="tags">
   
-
 </div>
 
 
@@ -129,7 +128,7 @@
   
   
   
-  
+  <span class="private note title">Private</span>
 
   
     <span class="summary_desc"><div class='inline'><p>
@@ -157,7 +156,7 @@ A new instance of Window.
 
   
     <span class="summary_desc"><div class='inline'><p>
-equivalent to #position=, but accepts x and y arguments.
+Equivalent to #position=, but accepts x and y arguments.
 </p>
 </div></span>
   
@@ -167,7 +166,7 @@ equivalent to #position=, but accepts x and y arguments.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#position-instance_method" title="#position (instance method)">- (Object) <strong>position</strong> </a>
+      <a href="#position-instance_method" title="#position (instance method)">- (Selenium::WebDriver::Point) <strong>position</strong> </a>
     
 
     
@@ -180,7 +179,10 @@ equivalent to #position=, but accepts x and y arguments.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Get the position of the current window.
+</p>
+</div></span>
   
 </li>
 
@@ -201,7 +203,10 @@ equivalent to #position=, but accepts x and y arguments.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Move the current window to the given position.
+</p>
+</div></span>
   
 </li>
 
@@ -223,7 +228,7 @@ equivalent to #position=, but accepts x and y arguments.
 
   
     <span class="summary_desc"><div class='inline'><p>
-equivalent to #size=, but accepts width and height arguments.
+Equivalent to #size=, but accepts width and height arguments.
 </p>
 </div></span>
   
@@ -233,7 +238,7 @@ equivalent to #size=, but accepts width and height arguments.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#size-instance_method" title="#size (instance method)">- (Object) <strong>size</strong> </a>
+      <a href="#size-instance_method" title="#size (instance method)">- (Selenium::WebDriver::Dimension) <strong>size</strong> </a>
     
 
     
@@ -246,7 +251,10 @@ equivalent to #size=, but accepts width and height arguments.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Get the size of the current window.
+</p>
+</div></span>
   
 </li>
 
@@ -267,7 +275,10 @@ equivalent to #size=, but accepts width and height arguments.
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'><p>
+Resize the current window to the given dimension.
+</p>
+</div></span>
   
 </li>
 
@@ -287,7 +298,11 @@ equivalent to #size=, but accepts width and height arguments.
   
 </p><div class="docstring">
   <div class="discussion">
-    <p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
 A new instance of Window
 </p>
 
@@ -296,23 +311,23 @@ A new instance of Window
 </div>
 <div class="tags">
   
-
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-10
-11
-12</pre>
+14
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 14</span>
 
-<span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id bridge'>bridge</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id bridge'>bridge</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
+  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -335,7 +350,7 @@ A new instance of Window
 </p><div class="docstring">
   <div class="discussion">
     <p>
-equivalent to #position=, but accepts x and y arguments
+Equivalent to #position=, but accepts x and y arguments.
 </p>
 
 
@@ -343,6 +358,15 @@ equivalent to #position=, but accepts x and y arguments
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'></div></h4>
+      <pre class="example code">
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='manage identifier id'>manage</span><span class='dot token'>.</span><span class='window identifier id'>window</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='integer val'>300</span><span class='comma token'>,</span> <span class='integer val'>400</span><span class='rparen token'>)</span>
+</pre>
+    
+  </div>
 
 </div><table class="source_code">
   <tr>
@@ -350,16 +374,17 @@ equivalent to #position=, but accepts x and y arguments
       <pre class="lines">
 
 
-52
-53
-54</pre>
+89
+90
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 89</span>
 
-<span class='kw'>def</span> <span class='id move_to'>move_to</span><span class='lparen'>(</span><span class='id x'>x</span><span class='comma'>,</span> <span class='id y'>y</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setWindowPosition'>setWindowPosition</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id x'>x</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id y'>y</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='rparen token'>)</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowPosition identifier id'>setWindowPosition</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='x identifier id'>x</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='y identifier id'>y</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -368,18 +393,39 @@ equivalent to #position=, but accepts x and y arguments
       <div class="method_details ">
   <p class="signature " id="position-instance_method">
   
-    - (<tt>Object</tt>) <strong>position</strong> 
+    - (<tt><span class='object_link'><a href="Point.html" title="Selenium::WebDriver::Point (class)">Selenium::WebDriver::Point</a></span></tt>) <strong>position</strong> 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
-    
+    <p>
+Get the position of the current window.
+</p>
+
 
   </div>
 </div>
 <div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
   
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Point.html" title="Selenium::WebDriver::Point (class)">Selenium::WebDriver::Point</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The position.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -387,16 +433,17 @@ equivalent to #position=, but accepts x and y arguments
       <pre class="lines">
 
 
-36
-37
-38</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 64</span>
 
-<span class='kw'>def</span> <span class='id position'>position</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id getWindowPosition'>getWindowPosition</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='position identifier id'>position</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getWindowPosition identifier id'>getWindowPosition</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -411,12 +458,35 @@ equivalent to #position=, but accepts x and y arguments
   
 </p><div class="docstring">
   <div class="discussion">
-    
+    <p>
+Move the current window to the given position.
+</p>
+
 
   </div>
 </div>
 <div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>point</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Point.html" title="Selenium::WebDriver::Point (class)">Selenium::WebDriver::Point</a></span></tt>, <tt>#x and #y</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The new position.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -424,26 +494,27 @@ equivalent to #position=, but accepts x and y arguments
       <pre class="lines">
 
 
-27
-28
-29
-30
-31
-32
-33
-34</pre>
+49
+50
+51
+52
+53
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 49</span>
 
-<span class='kw'>def</span> <span class='id position='>position=</span><span class='lparen'>(</span><span class='id point'>point</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='id point'>point</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:x</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id point'>point</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:y</span><span class='rparen'>)</span>
-    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='id point'>point</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id point'>point</span><span class='period'>.</span><span class='id class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span>
-                          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> to respond to #x and #y</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='position= identifier id'>position=</span><span class='lparen token'>(</span><span class='point identifier id'>point</span><span class='rparen token'>)</span>
+  <span class='unless unless kw'>unless</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:x</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:y</span><span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected #{point.inspect}:#{point.class}&quot;</span> <span class='plus op'>+</span>
+                          <span class='string val'>&quot; to respond to #x and #y&quot;</span>
+  <span class='end end kw'>end</span>
 
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setWindowPosition'>setWindowPosition</span> <span class='id point'>point</span><span class='period'>.</span><span class='id x'>x</span><span class='comma'>,</span> <span class='id point'>point</span><span class='period'>.</span><span class='id y'>y</span>
-<span class='kw'>end</span></pre>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowPosition identifier id'>setWindowPosition</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='y identifier id'>y</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -459,7 +530,7 @@ equivalent to #position=, but accepts x and y arguments
 </p><div class="docstring">
   <div class="discussion">
     <p>
-equivalent to #size=, but accepts width and height arguments
+Equivalent to #size=, but accepts width and height arguments.
 </p>
 
 
@@ -467,6 +538,19 @@ equivalent to #size=, but accepts width and height arguments
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Maximize the window.
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='max_width identifier id'>max_width</span><span class='comma token'>,</span> <span class='max_height identifier id'>max_height</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='execute_script identifier id'>execute_script</span><span class='lparen token'>(</span><span class='string val'>&quot;return [window.screen.availWidth, window.screen.availHeight];&quot;</span><span class='rparen token'>)</span>
+<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='manage identifier id'>manage</span><span class='dot token'>.</span><span class='window identifier id'>window</span><span class='dot token'>.</span><span class='resize_to identifier id'>resize_to</span><span class='lparen token'>(</span><span class='max_width identifier id'>max_width</span><span class='comma token'>,</span> <span class='max_height identifier id'>max_height</span><span class='rparen token'>)</span>
+</pre>
+    
+  </div>
 
 </div><table class="source_code">
   <tr>
@@ -474,16 +558,17 @@ equivalent to #size=, but accepts width and height arguments
       <pre class="lines">
 
 
-44
-45
-46</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 77</span>
 
-<span class='kw'>def</span> <span class='id resize_to'>resize_to</span><span class='lparen'>(</span><span class='id width'>width</span><span class='comma'>,</span> <span class='id height'>height</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setWindowSize'>setWindowSize</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id width'>width</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id height'>height</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='resize_to identifier id'>resize_to</span><span class='lparen token'>(</span><span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='rparen token'>)</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowSize identifier id'>setWindowSize</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='width identifier id'>width</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='height identifier id'>height</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -492,18 +577,39 @@ equivalent to #size=, but accepts width and height arguments
       <div class="method_details ">
   <p class="signature " id="size-instance_method">
   
-    - (<tt>Object</tt>) <strong>size</strong> 
+    - (<tt><span class='object_link'><a href="Dimension.html" title="Selenium::WebDriver::Dimension (class)">Selenium::WebDriver::Dimension</a></span></tt>) <strong>size</strong> 
   
 
   
 </p><div class="docstring">
   <div class="discussion">
-    
+    <p>
+Get the size of the current window.
+</p>
+
 
   </div>
 </div>
 <div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
   
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Dimension.html" title="Selenium::WebDriver::Dimension (class)">Selenium::WebDriver::Dimension</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The size.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -511,16 +617,17 @@ equivalent to #size=, but accepts width and height arguments
       <pre class="lines">
 
 
-23
-24
-25</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 39</span>
 
-<span class='kw'>def</span> <span class='id size'>size</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id getWindowSize'>getWindowSize</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='size identifier id'>size</span>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getWindowSize identifier id'>getWindowSize</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -535,12 +642,35 @@ equivalent to #size=, but accepts width and height arguments
   
 </p><div class="docstring">
   <div class="discussion">
-    
+    <p>
+Resize the current window to the given dimension.
+</p>
+
 
   </div>
 </div>
 <div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>dimension</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Dimension.html" title="Selenium::WebDriver::Dimension (class)">Selenium::WebDriver::Dimension</a></span></tt>, <tt>#width and #height</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The new size.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -548,26 +678,27 @@ equivalent to #size=, but accepts width and height arguments
       <pre class="lines">
 
 
-14
-15
-16
-17
-18
-19
-20
-21</pre>
+24
+25
+26
+27
+28
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 24</span>
 
-<span class='kw'>def</span> <span class='id size='>size=</span><span class='lparen'>(</span><span class='id dimension'>dimension</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='id dimension'>dimension</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:width</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id dimension'>dimension</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:height</span><span class='rparen'>)</span>
-    <span class='id raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='id dimension'>dimension</span><span class='period'>.</span><span class='id inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id dimension'>dimension</span><span class='period'>.</span><span class='id class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span>
-                          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> to respond to #width and #height</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+<span class='def def kw'>def</span> <span class='size= identifier id'>size=</span><span class='lparen token'>(</span><span class='dimension identifier id'>dimension</span><span class='rparen token'>)</span>
+  <span class='unless unless kw'>unless</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:width</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:height</span><span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected #{dimension.inspect}:#{dimension.class}&quot;</span> <span class='plus op'>+</span>
+                          <span class='string val'>&quot; to respond to #width and #height&quot;</span>
+  <span class='end end kw'>end</span>
 
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id setWindowSize'>setWindowSize</span> <span class='id dimension'>dimension</span><span class='period'>.</span><span class='id width'>width</span><span class='comma'>,</span> <span class='id dimension'>dimension</span><span class='period'>.</span><span class='id height'>height</span>
-<span class='kw'>end</span></pre>
+  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowSize identifier id'>setWindowSize</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='height identifier id'>height</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -578,9 +709,9 @@ equivalent to #size=, but accepts width and height arguments
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 29 01:07:02 2011 by 
+  Generated on Thu Jan  5 01:52:13 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.2).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>

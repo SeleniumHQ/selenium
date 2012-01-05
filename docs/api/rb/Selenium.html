@@ -6,7 +6,7 @@
 <title>
   Module: Selenium
   
-    &mdash; Documentation by YARD 0.7.3
+    &mdash; Documentation by YARD 0.7.2
   
 </title>
 
@@ -83,7 +83,7 @@
   <div class="discussion">
     <p>
 Defines a mixin module that you can use to write Selenium tests without
-typing &#8220;@selenium.&#8221; in front of every command.  Every call to a
+typing &#8220;@selenium.&#8221; in front of every command. Every call to a
 missing method will be automatically sent to the @selenium object.
 </p>
 
@@ -92,7 +92,6 @@ missing method will be automatically sent to the @selenium object.
 </div>
 <div class="tags">
   
-
 </div><h2>Defined Under Namespace</h2>
 <p class="children">
    
@@ -113,10 +112,11 @@ missing method will be automatically sent to the @selenium object.
         <dt id="DEPRECATED_CONSTANTS-constant" class="">DEPRECATED_CONSTANTS =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='symbol'>:SeleniumDriver</span> <span class='op'>=&gt;</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Client</span><span class='op'>::</span><span class='const'>Driver</span><span class='comma'>,</span>
-  <span class='symbol'>:CommandError</span>   <span class='op'>=&gt;</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Client</span><span class='op'>::</span><span class='const'>CommandError</span>
-<span class='rbrace'>}</span></pre></dd>
+        <dd><pre class="code"><span class='lbrace token'>{</span>
+  <span class='symbol val'>:SeleniumDriver</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Client constant id'>Client</span><span class='colon2 op'>::</span><span class='Driver constant id'>Driver</span><span class='comma token'>,</span>
+  <span class='symbol val'>:CommandError</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Client constant id'>Client</span><span class='colon2 op'>::</span><span class='CommandError constant id'>CommandError</span>
+<span class='rbrace token'>}</span>
+</pre></dd>
       
     </dl>
   
@@ -188,14 +188,15 @@ missing method will be automatically sent to the @selenium object.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client.rb', line 29</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id const_missing'>const_missing</span><span class='lparen'>(</span><span class='id name'>name</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id replacement'>replacement</span> <span class='op'>=</span> <span class='const'>DEPRECATED_CONSTANTS</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='period'>.</span><span class='id to_sym'>to_sym</span><span class='rbracket'>]</span>
-    <span class='id warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>the Selenium::</span><span class='embexpr_beg'>#{</span><span class='id name'>name</span><span class='rbrace'>}</span><span class='tstring_content'> constant has been deprecated, please use </span><span class='embexpr_beg'>#{</span><span class='id replacement'>replacement</span><span class='rbrace'>}</span><span class='tstring_content'> instead</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id replacement'>replacement</span>
-  <span class='kw'>else</span>
-    <span class='kw'>super</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='const_missing identifier id'>const_missing</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='replacement identifier id'>replacement</span> <span class='assign token'>=</span> <span class='DEPRECATED_CONSTANTS constant id'>DEPRECATED_CONSTANTS</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='rbrack token'>]</span>
+    <span class='warn identifier id'>warn</span> <span class='dstring node'>&quot;the Selenium::#{name} constant has been deprecated, please use #{replacement} instead&quot;</span>
+    <span class='replacement identifier id'>replacement</span>
+  <span class='else else kw'>else</span>
+    <span class='super super kw'>super</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
     </td>
   </tr>
 </table>
@@ -206,9 +207,9 @@ missing method will be automatically sent to the @selenium object.
 </div>
     
     <div id="footer">
-  Generated on Tue Nov 29 01:06:58 2011 by 
+  Generated on Thu Jan  5 01:52:52 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.3 (ruby-1.9.2).
+  0.7.2 (ruby-1.8.7).
 </div>
 
   </body>
