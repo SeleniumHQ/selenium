@@ -25,7 +25,106 @@ import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.internal.seleniumemulation.*;
+import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
+import org.openqa.selenium.internal.seleniumemulation.AddSelection;
+import org.openqa.selenium.internal.seleniumemulation.AlertOverride;
+import org.openqa.selenium.internal.seleniumemulation.AllowNativeXPath;
+import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.AltKeyUp;
+import org.openqa.selenium.internal.seleniumemulation.AssignId;
+import org.openqa.selenium.internal.seleniumemulation.AttachFile;
+import org.openqa.selenium.internal.seleniumemulation.CaptureScreenshotToString;
+import org.openqa.selenium.internal.seleniumemulation.Check;
+import org.openqa.selenium.internal.seleniumemulation.Click;
+import org.openqa.selenium.internal.seleniumemulation.ClickAt;
+import org.openqa.selenium.internal.seleniumemulation.Close;
+import org.openqa.selenium.internal.seleniumemulation.CompoundMutator;
+import org.openqa.selenium.internal.seleniumemulation.ControlKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.ControlKeyUp;
+import org.openqa.selenium.internal.seleniumemulation.CreateCookie;
+import org.openqa.selenium.internal.seleniumemulation.DeleteAllVisibleCookies;
+import org.openqa.selenium.internal.seleniumemulation.DeleteCookie;
+import org.openqa.selenium.internal.seleniumemulation.DoubleClick;
+import org.openqa.selenium.internal.seleniumemulation.DragAndDrop;
+import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
+import org.openqa.selenium.internal.seleniumemulation.FindFirstSelectedOptionProperty;
+import org.openqa.selenium.internal.seleniumemulation.FindSelectedOptionProperties;
+import org.openqa.selenium.internal.seleniumemulation.FireEvent;
+import org.openqa.selenium.internal.seleniumemulation.FireNamedEvent;
+import org.openqa.selenium.internal.seleniumemulation.GetAlert;
+import org.openqa.selenium.internal.seleniumemulation.GetAllButtons;
+import org.openqa.selenium.internal.seleniumemulation.GetAllFields;
+import org.openqa.selenium.internal.seleniumemulation.GetAllLinks;
+import org.openqa.selenium.internal.seleniumemulation.GetAllWindowTitles;
+import org.openqa.selenium.internal.seleniumemulation.GetAttribute;
+import org.openqa.selenium.internal.seleniumemulation.GetAttributeFromAllWindows;
+import org.openqa.selenium.internal.seleniumemulation.GetBodyText;
+import org.openqa.selenium.internal.seleniumemulation.GetConfirmation;
+import org.openqa.selenium.internal.seleniumemulation.GetCookie;
+import org.openqa.selenium.internal.seleniumemulation.GetCookieByName;
+import org.openqa.selenium.internal.seleniumemulation.GetElementHeight;
+import org.openqa.selenium.internal.seleniumemulation.GetElementIndex;
+import org.openqa.selenium.internal.seleniumemulation.GetElementPositionLeft;
+import org.openqa.selenium.internal.seleniumemulation.GetElementPositionTop;
+import org.openqa.selenium.internal.seleniumemulation.GetElementWidth;
+import org.openqa.selenium.internal.seleniumemulation.GetEval;
+import org.openqa.selenium.internal.seleniumemulation.GetExpression;
+import org.openqa.selenium.internal.seleniumemulation.GetHtmlSource;
+import org.openqa.selenium.internal.seleniumemulation.GetLocation;
+import org.openqa.selenium.internal.seleniumemulation.GetSelectOptions;
+import org.openqa.selenium.internal.seleniumemulation.GetTable;
+import org.openqa.selenium.internal.seleniumemulation.GetText;
+import org.openqa.selenium.internal.seleniumemulation.GetTitle;
+import org.openqa.selenium.internal.seleniumemulation.GetValue;
+import org.openqa.selenium.internal.seleniumemulation.GetXpathCount;
+import org.openqa.selenium.internal.seleniumemulation.GoBack;
+import org.openqa.selenium.internal.seleniumemulation.Highlight;
+import org.openqa.selenium.internal.seleniumemulation.IsAlertPresent;
+import org.openqa.selenium.internal.seleniumemulation.IsChecked;
+import org.openqa.selenium.internal.seleniumemulation.IsConfirmationPresent;
+import org.openqa.selenium.internal.seleniumemulation.IsCookiePresent;
+import org.openqa.selenium.internal.seleniumemulation.IsEditable;
+import org.openqa.selenium.internal.seleniumemulation.IsElementPresent;
+import org.openqa.selenium.internal.seleniumemulation.IsOrdered;
+import org.openqa.selenium.internal.seleniumemulation.IsSomethingSelected;
+import org.openqa.selenium.internal.seleniumemulation.IsTextPresent;
+import org.openqa.selenium.internal.seleniumemulation.IsVisible;
+import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
+import org.openqa.selenium.internal.seleniumemulation.KeyEvent;
+import org.openqa.selenium.internal.seleniumemulation.KeyState;
+import org.openqa.selenium.internal.seleniumemulation.MetaKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.MetaKeyUp;
+import org.openqa.selenium.internal.seleniumemulation.MouseEvent;
+import org.openqa.selenium.internal.seleniumemulation.MouseEventAt;
+import org.openqa.selenium.internal.seleniumemulation.NoOp;
+import org.openqa.selenium.internal.seleniumemulation.Open;
+import org.openqa.selenium.internal.seleniumemulation.OpenWindow;
+import org.openqa.selenium.internal.seleniumemulation.Refresh;
+import org.openqa.selenium.internal.seleniumemulation.RemoveAllSelections;
+import org.openqa.selenium.internal.seleniumemulation.RemoveSelection;
+import org.openqa.selenium.internal.seleniumemulation.RunScript;
+import org.openqa.selenium.internal.seleniumemulation.ScriptMutator;
+import org.openqa.selenium.internal.seleniumemulation.SelectFrame;
+import org.openqa.selenium.internal.seleniumemulation.SelectOption;
+import org.openqa.selenium.internal.seleniumemulation.SelectWindow;
+import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
+import org.openqa.selenium.internal.seleniumemulation.SetNextConfirmationState;
+import org.openqa.selenium.internal.seleniumemulation.SetTimeout;
+import org.openqa.selenium.internal.seleniumemulation.ShiftKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.ShiftKeyUp;
+import org.openqa.selenium.internal.seleniumemulation.Submit;
+import org.openqa.selenium.internal.seleniumemulation.Timer;
+import org.openqa.selenium.internal.seleniumemulation.Type;
+import org.openqa.selenium.internal.seleniumemulation.TypeKeys;
+import org.openqa.selenium.internal.seleniumemulation.Uncheck;
+import org.openqa.selenium.internal.seleniumemulation.UseXPathLibrary;
+import org.openqa.selenium.internal.seleniumemulation.WaitForCondition;
+import org.openqa.selenium.internal.seleniumemulation.WaitForPageToLoad;
+import org.openqa.selenium.internal.seleniumemulation.WaitForPopup;
+import org.openqa.selenium.internal.seleniumemulation.WindowFocus;
+import org.openqa.selenium.internal.seleniumemulation.WindowMaximize;
+import org.openqa.selenium.internal.seleniumemulation.Windows;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Map;
 
@@ -40,6 +139,31 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
   private final CompoundMutator scriptMutator;
   private Supplier<WebDriver> maker;
   private WebDriver driver;
+
+  /**
+   * Create an instance that will later be configured by calling {@link #start(Object)} with a
+   * {@link Capabilities} instance.
+   * 
+   * @param baseUrl The URL from which relative URLs should be based on
+   * @deprecated Use {@link #WebDriverCommandProcessor(String, com.google.common.base.Supplier)} instead.
+   */
+  @Deprecated
+  public WebDriverCommandProcessor(String baseUrl) {
+    // Firefox seems like a reasonable default
+    this(baseUrl, new SuppliesWebDriver(DesiredCapabilities.firefox()));
+  }
+
+  /**
+   * Create an instance that will later be started by calling {@link #start()}
+   * 
+   * @param baseUrl The URL from which relative URLs should be based on
+   * @param likeThis Typically a {@link org.openqa.selenium.remote.DesiredCapabilities} instance
+   * @deprecated Use {@link #WebDriverCommandProcessor(String, com.google.common.base.Supplier)} instead.
+   */
+  @Deprecated
+  public WebDriverCommandProcessor(String baseUrl, Capabilities likeThis) {
+    this(baseUrl, new SuppliesWebDriver(likeThis));
+  }
 
   public WebDriverCommandProcessor(String baseUrl, WebDriver driver) {
     this(baseUrl, new ExplodingSupplier());

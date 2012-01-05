@@ -86,6 +86,7 @@ java_library(name = "webdriver-api",
 java_library(name = "selenium-api",
   srcs = [
     "ExplodingSupplier.java",
+    "SuppliesWebDriver.java",
     "WebDriverCommandProcessor.java",
     "internal/seleniumemulation/**/*.java",
   ],
