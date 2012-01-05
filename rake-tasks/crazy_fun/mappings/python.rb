@@ -20,13 +20,16 @@ module Python
     end
   end
 
+  def self.lib_dir
+     Dir::glob('build/lib*')[0] || 'build/lib'
+  end
+
   class PyTask < Tasks
     def get_resources(browser, args)
       resources = []
       resources.concat(args[:resources]) if args[:resources]
       browser_specific_resources = BROWSERS[browser][:python][:resources]
       resources.concat(browser_specific_resources) if browser_specific_resources
-      #end
       return resources
     end
   end
@@ -76,7 +79,7 @@ module Python
       end
 
       #This path should be somehow passed through the py_env dep, rather than hard-coded
-      path = "build/lib/selenium/test/selenium/webdriver/#{browser_data[:dir]}"
+      path = "#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}"
       unless File.exists?(path)
         mkdir_p path
         touch "#{path}/__init__.py"
@@ -88,7 +91,7 @@ module Python
       tests = Dir.glob(test_files.map { |test| dir + Platform.dir_separator + test })
       tests.each do |test_file|
         #This path should be somehow passed through the py_env dep, rather than hard-coded
-        cp test_file, "build/lib/selenium/test/selenium/webdriver/#{BROWSERS[browser][:python][:dir]}"
+        cp test_file, "#{Python::lib_dir}/selenium/test/selenium/webdriver/#{BROWSERS[browser][:python][:dir]}"
       end
     end
 
@@ -101,7 +104,7 @@ module Python
         task_name = "#{base_task_name}_#{browser}"
         task task_name do
           resources = get_resources(browser, args)
-          copy_resources dir, resources, "build"
+          copy_resources dir, resources, Python::lib_dir
           copy_common_tests(dir, args[:common_tests], browser) if args[:common_tests]
 
           browser_specific_tests = args[:"#{browser}_specific_tests"]
@@ -144,7 +147,7 @@ module Python
         task task_name => deps do
           copy_source_to_env
 
-          tests = ["build/lib/selenium/test/selenium/webdriver/#{browser_data[:dir]}/*_tests.py"]
+          tests = ["#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}/*_tests.py"]
           pytest_args = [pytest_path] + tests
           pytest_args += ["-k", "-ignore_#{browser_data[:ignore]}"] if browser_data[:ignore]
           sh pytest_args.join(' '), :verbose => true

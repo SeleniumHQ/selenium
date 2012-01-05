@@ -12,7 +12,7 @@ py_test(
   ff_specific_tests = [ "test/selenium/webdriver/firefox/*_tests.py" ],
   deps = [ ":test_ff" ],
   resources = [
-    { "//javascript/firefox-driver:webdriver" : "lib/selenium/webdriver/firefox" }
+    { "//javascript/firefox-driver:webdriver" : "selenium/webdriver/firefox/" }
   ],
   browsers = [ "ff" ])
 
@@ -26,8 +26,8 @@ py_test(
   name = "ie_test",
   deps = [ ":test_ie" ],
   resources = [
-    {"//cpp:ie_win32_dll" : "lib\\selenium\\webdriver\\ie\\win32\\IEDriver.dll"},
-    {"//cpp:ie_x64_dll" : "lib\\selenium\\webdriver\\ie\\x64\\IEDriver.dll"}
+    {"//cpp:ie_win32_dll" : "selenium\\webdriver\\ie\\win32\\IEDriver.dll"},
+    {"//cpp:ie_x64_dll" : "selenium\\webdriver\\ie\\x64\\IEDriver.dll"}
   ],
 
   browsers = [ "ie" ])
