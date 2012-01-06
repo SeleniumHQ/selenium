@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * IDE. We don't live in the ideal world. We'll find out the hard way whether
  * reading docs is the same thing.
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({
     ElementType.ANNOTATION_TYPE,
     ElementType.CONSTRUCTOR,
