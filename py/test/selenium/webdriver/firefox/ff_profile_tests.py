@@ -70,6 +70,31 @@ class TestFirefoxProfile:
             break
         fp.close()
 
+    def test_that_unicode_prefs_are_written_in_the_correct_format(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        profile = webdriver.FirefoxProfile()
+        profile.set_preference("sample.preference.2", u"hi there")
+        profile.update_preferences()
+
+        assert '"hi there"' == profile.default_preferences["sample.preference.2"]
+
+        encoded = profile.encoded
+        decoded = base64.decodestring(encoded)
+        fp = StringIO(decoded)
+        zip = zipfile.ZipFile(fp, "r")
+        for entry in zip.namelist():
+            if entry.endswith("user.js"):
+                user_js = zip.read(entry)
+                for line in user_js.splitlines():
+                    if line.startswith('user_pref("sample.preference.2",'):
+                        assert True == line.endswith('"hi there");')
+            # there should be only one user.js
+            break
+        fp.close()
+
+
     def test_that_we_delete_the_profile(self):
         path = self.driver.firefox_profile.path
         self.driver.quit()

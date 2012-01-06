@@ -115,6 +115,8 @@ class FirefoxProfile(object):
             clean_value = 'false'
         elif isinstance(value, str):
             clean_value = '"%s"' % value
+        elif isinstance(value, unicode):
+            clean_value = '"%s"' % value
         else:
             clean_value = str(int(value))
 
