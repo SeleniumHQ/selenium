@@ -25,7 +25,7 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.openqa.selenium.android.library.Logger;
 import org.openqa.selenium.android.Platform;
-import org.openqa.selenium.android.app.R;
+import org.openqa.selenium.android.R;
 
 import android.app.NotificationManager;
 import android.app.Service;

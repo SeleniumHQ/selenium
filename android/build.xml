@@ -56,7 +56,7 @@
       <pathelement path="${sdk.dir}/tools/lib/jarutils.jar" />
     </path>
 
-    <property name="root.dir" value="../../"/>
+    <property name="root.dir" value="../"/>
     <property name="third_party.location" value="${root.dir}/third_party"/>
     <property name="build.location" value="${root.dir}/build" />
     <property name="javascript.atoms" value="javascript/atoms"/>

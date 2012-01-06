@@ -2,7 +2,7 @@
 android_r(name = "r",
   manifest = "AndroidManifest.xml",
   resource = "res",
-  out = "gen/org/openqa/selenium/android/app")
+  out = "gen/org/openqa/selenium/android")
 
 java_library(name = "server",
   srcs = [

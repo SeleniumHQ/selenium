@@ -187,17 +187,17 @@ module Android
       file apk do
         if (android_installed?)
           android_target = $properties["androidtarget"].to_s
-          sh "#{$android} update project -p android/app/ --target #{android_target}"
-           Dir.chdir("android/app") do
+          sh "#{$android} update project -p android/ --target #{android_target}"
+           Dir.chdir("android") do
              if windows?
-               # ant -Dgo=go.bat overrides the go in the build file android/app/build.xml
+               # ant -Dgo=go.bat overrides the go in the build file android/build.xml
                sh "ant debug -Dgo=go.bat"
              else
-              sh "ant debug; "  
+              sh "ant debug; "
              end
-           end 
-           apk = File.join('build', 'android', 'app', 'android-server.apk')
-           sh "cp android/app/bin/MainActivity-debug.apk #{apk}"
+           end
+           apk = File.join('build', 'android', 'android-server.apk')
+           sh "cp android/bin/MainActivity-debug.apk #{apk}"
            copy_to_prebuilt(apk, fun)
         else
           puts apk
@@ -298,7 +298,7 @@ module Android
 
         raise LoadError.new("Emulator didn't respond properly - infrastructure failure") unless started
 
-        sh "#{$adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity"
+        sh "#{$adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android/.MainActivity"
         sleep 5
 
         sh "#{$adb} forward tcp:8080 tcp:8080"
