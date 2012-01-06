@@ -42,7 +42,6 @@ third_party/gecko-7
 third_party/gecko-8
 cpp/IEDriver/Generated/atoms.h
 chromedriver.log
-*.rbc
 android/libs
 android/bin
 android/local.properties
@@ -50,3 +49,8 @@ android/proguard.cfg
 junit*.properties
 WebDriver.suo
 WebDriver.sln.cache
+*.rbc
+.rbx
+.yardoc
+rb/.yardoc
+.tm_properties
