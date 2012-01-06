@@ -83,6 +83,13 @@
                 <role>Committer</role>
             </roles>
         </developer>
+        <developer>
+            <id>lsemerau</id>
+            <name>Luke Inman-Semerau</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
         <!-- A complete list can be found here: http://code.google.com/p/selenium/people/list -->
     </developers>
 
