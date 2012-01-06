@@ -49,7 +49,7 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   [[self webView] setScalesPageToFit:NO];
   [[self webView] setDelegate:self];
 
-  if ([[UIDevice currentDevice] respondsToSelector:@selector(setMediaPlaybackRequiresUserAction)]) {
+  if ([[self webView] respondsToSelector:@selector(mediaPlaybackRequiresUserAction)]) {
     [[self webView] setMediaPlaybackRequiresUserAction:NO];
   } else {
     //Too bad, though it seems iOS 3 supported this by default
