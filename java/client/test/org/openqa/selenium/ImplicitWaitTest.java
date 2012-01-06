@@ -6,6 +6,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -142,7 +143,8 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
   
   @Test
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE, OPERA})
+  // OPERA: Does not support alerts yet
   public void testShouldImplicitlyWaitForAnAlert() {
     driver.get(pages.alertsPage);
 
@@ -159,7 +161,8 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
 
   @Test
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE, OPERA})
+  // OPERA: Does not support alerts yet
   public void testShouldCheckAlertImmediatelyIfNoImplicitWaitSpecified() {
     driver.get(pages.alertsPage);
 
