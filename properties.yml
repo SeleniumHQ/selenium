@@ -1,7 +1,7 @@
-default: 
+default:
   android:
     # Path to the android sdk
-    androidsdkpath : "/usr/local/google/android_sdk/android-sdk-linux_86/"
+    androidsdkpath : "../android_sdk/"
     # Target id. To get a list of all targets do "./android list targets".
     # We want whatever matches android 4.0 (IceCreamSandwich API level 14)
     #
