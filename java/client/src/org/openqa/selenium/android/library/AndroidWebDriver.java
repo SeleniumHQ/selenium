@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.android;
+package org.openqa.selenium.android.library;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -895,7 +895,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     resultReady = false;
     activity.runOnUiThread(new Runnable() {
       public void run() {
-        org.openqa.selenium.android.JavascriptExecutor.executeJs(
+        org.openqa.selenium.android.library.JavascriptExecutor.executeJs(
             webview, notifier, script);
       }
     });

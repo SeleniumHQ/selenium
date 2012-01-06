@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.openqa.selenium.android;
+package org.openqa.selenium.android.library;
 
 import android.app.Activity;
 import android.util.Log;

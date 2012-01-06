@@ -18,5 +18,8 @@
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true" />
   </component>
+  <component name="JavacSettings">
+    <option name="MAXIMUM_HEAP_SIZE" value="800" />
+  </component>
 </project>
 

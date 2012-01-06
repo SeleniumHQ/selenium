@@ -23,7 +23,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.library.Logger;
 import org.openqa.selenium.android.Platform;
 import org.openqa.selenium.android.app.R;
 

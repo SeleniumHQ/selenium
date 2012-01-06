@@ -15,8 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.android;
+package org.openqa.selenium.android.library;
 
-interface JavascriptResultNotifier {
-  void notifyResultReady(String result);
+class DomWindow {
+  private final String key;
+
+  public DomWindow(String key) {
+    this.key = key;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getJsObject() {
+    return "{'WINDOW':'" + key + "'}";
+  }
 }

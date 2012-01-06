@@ -23,7 +23,7 @@ import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.AndroidWebDriver;
+import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.html5.LocalStorage;

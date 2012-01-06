@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.app;
 
-import static java.util.logging.Level.OFF;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 
@@ -28,8 +27,8 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import org.openqa.selenium.android.AndroidWebDriver;
-import org.openqa.selenium.android.Logger;
+import org.openqa.selenium.android.library.AndroidWebDriver;
+import org.openqa.selenium.android.library.Logger;
 import org.openqa.selenium.android.server.JettyService;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;

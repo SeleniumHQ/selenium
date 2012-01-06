@@ -1,15 +1,12 @@
-# Be warned, spaces in paths in this file will cause Bad Things to happen to
-# your build.
-
-default:
+default: 
   android:
     # Path to the android sdk
-    androidsdkpath : "../android_sdk/"
+    androidsdkpath : "/usr/local/google/android_sdk/android-sdk-linux_86/"
     # Target id. To get a list of all targets do "./android list targets".
     # We want whatever matches android 4.0 (IceCreamSandwich API level 14)
     #
     # Note: Android WebDriver will not work on Gingerbread (SDK 2.3) emulator because of
     # an emulator bug. However it will work with Gingerbread (SDK 2.3) devices.
-    androidtarget : "android-14"
+    androidtarget : 29
     # Android platform. You can find supported platforms under androidsdkpath/platforms/
     androidplatform : "android-14"

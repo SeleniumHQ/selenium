@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.android;
+package org.openqa.selenium.android.library;
 
 /**
  * Custom module that is added to the WebView's JavaScript engine to enable callbacks to java
