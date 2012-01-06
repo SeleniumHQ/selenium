@@ -17,5 +17,5 @@
 	<classpathentry kind="lib" path="../../build/java/client/src/org/openqa/selenium/webdriver-api.jar"/>
 	<classpathentry kind="lib" path="../../build/java/server/src/org/openqa/selenium/remote/server/server.jar"/>
 	<classpathentry kind="lib" path="../../third_party/java/guava-libraries/guava-r09.jar"/>
-	<classpathentry kind="output" path="build"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

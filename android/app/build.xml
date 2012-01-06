@@ -79,7 +79,7 @@
     <copy file="${third_party.location}/java/guava-libraries/guava-10.0.1.jar" todir="libs/"  />
     <copy file="${third_party.location}/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar" todir="libs/" />
     <copy file="${third_party.location}/java/json/json-20080701.jar" todir="libs/" />
-    <copy file="${build.location}/java/client/src/java/org/openqa/selenium/android/android_library.jar" todir="libs" />
+    <copy file="${build.location}/java/client/src/org/openqa/selenium/android/android_library.jar" todir="libs" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/io/io.jar" todir="libs" />
     <copy file="${third_party.location}/java/junit/junit-dep-4.10.jar" todir="libs/" />
 
