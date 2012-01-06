@@ -479,7 +479,7 @@ class WebDriver(object):
         Switches focus to the specified window.
 
         :Args:
-         - window_name: The name of the window to switch to.
+         - window_name: The name or window handle of the window to switch to.
 
         :Usage:
             driver.switch_to_window('main')
