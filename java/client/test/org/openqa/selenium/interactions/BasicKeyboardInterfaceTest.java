@@ -33,6 +33,7 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.TestUtilities;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
@@ -134,6 +135,11 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, SELENESE})
   public void testSendingKeysToActiveElement() {
+    if (TestUtilities.isFirefox9(driver)) {
+      // This test fails due to a bug in Firefox 9. For more details, see:
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=696020
+      return;
+    }
     driver.get(pages.bodyTypingPage);
 
     Action someKeys = getBuilder(driver).sendKeys("ab").build();

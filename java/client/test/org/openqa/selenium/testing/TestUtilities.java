@@ -67,6 +67,10 @@ public class TestUtilities {
     return getUserAgent(driver).contains("Firefox/3.5.");
   }
 
+  public static boolean isFirefox9(WebDriver driver) {
+    return getUserAgent(driver).contains("Firefox/9.0");
+  }
+
   public static Platform getEffectivePlatform() {
     if (SauceDriver.shouldUseSauce()) {
       return SauceDriver.getEffectivePlatform();
