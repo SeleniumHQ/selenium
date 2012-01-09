@@ -17,7 +17,7 @@ limitations under the License.
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.openqa.selenium.android">
+  package="org.openqa.selenium.android.app">
   
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WRITE_SETTINGS" />
