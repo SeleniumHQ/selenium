@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
+import com.google.common.base.Preconditions;
+
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -33,13 +35,22 @@ class WebDriverWebView {
   private WebViewFactory factory;
   private WebViewClient viewc;
   private WebChromeClient chromec;
+  private View.OnFocusChangeListener focusListener;
 
   /* package */ WebDriverWebView(final AndroidWebDriver driver,
-      WebViewFactory factory, WebViewClient viewc, WebChromeClient chromec) {
+      WebViewFactory factory, WebViewClient viewc, WebChromeClient chromec,
+      View.OnFocusChangeListener focusListener) {
+    Preconditions.checkNotNull(driver);
+    Preconditions.checkNotNull(factory);
     this.driver = driver;
     this.factory = factory;
+
     this.viewc = viewc;
     this.chromec = chromec;
+    this.focusListener = focusListener == null ? new View.OnFocusChangeListener(){
+      public void onFocusChange(View view, boolean b) {
+      }
+    } : focusListener;
   }
 
   public WebView create() {
@@ -57,6 +68,7 @@ class WebDriverWebView {
         if (!focused) {
           driver.setEditAreaHasFocus(true);
         }
+        focusListener.onFocusChange(view, focused);
       }
     });
     

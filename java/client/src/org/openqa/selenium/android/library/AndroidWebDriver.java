@@ -29,6 +29,7 @@ import android.graphics.Picture;
 import android.location.LocationManager;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
@@ -203,7 +204,8 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   public AndroidWebDriver(Activity activity) {
     this.activity = activity;
     initDriverState();
-    WebDriverWebView wdview = new WebDriverWebView(this, new DefaultWebViewFactory(), null, null);
+    WebDriverWebView wdview = new WebDriverWebView(this, new DefaultWebViewFactory(), null, null,
+        null);
     // Create a new view and delete existing windows.
     newWebView( /*Delete existing windows*/true, wdview);
     initCookiesState();
@@ -225,15 +227,36 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
    *     to override onCloseWindow and onCreateWindow to do window management.
    */
   public AndroidWebDriver(Activity activity, WebViewFactory viewFactory,
-      WebViewClient viewClient,
-      WebChromeClient chromeClient) {
+      WebViewClient viewClient, WebChromeClient chromeClient) {
     this.activity = activity;
     initDriverState();
-    WebDriverWebView wdview = new WebDriverWebView(this, viewFactory, viewClient, chromeClient);
+    WebDriverWebView wdview = new WebDriverWebView(this, viewFactory, viewClient, chromeClient,
+        null);
     newWebView(/*Delete existing windows*/true, wdview);
     initCookiesState();
     networkHandler = new NetworkStateHandler(activity, webview);
+  }
 
+  /**
+   * Use this constructor to use WebDriver with a custom WebView and a custom
+   * View.OnFocusChangeListener for that WebView..
+   *
+   * @param activity the activity context where the WebView will be created.
+   * @param viewFactory a implementation of the WebViewFactory interface. WebDriver will
+   *     use this creation mechanism to create WebViews when needed (when clicking on a link
+   *     that opens a new window for instance).
+   * @param viewClient the WebViewClient used by the custom WebView. WebDriver will instrument
+   *     the WebViewClient used by the custom WebView to detect certain events.
+   * @param chromeClient the WebChromeClient used by the custom WebView. WebDriver will
+   *     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
+   *     WebDriver will take care of the Window creation and destruction, so it is not advised
+   *     to override onCloseWindow and onCreateWindow to do window management.
+   * @param focusListener the listener used by the WebView that will be created by the viewFactory.
+   */
+  public AndroidWebDriver(Activity activity, WebViewFactory viewFactory,
+      WebViewClient viewClient, WebChromeClient chromeClient,
+      View.OnFocusChangeListener focusListener) {
+    
   }
 
    String getLastUrlLoaded() {
