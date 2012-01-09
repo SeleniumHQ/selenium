@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package org.openqa.selenium.android;
+package org.openqa.selenium.android.app;
 
 public final class R {
     public static final class attr {
