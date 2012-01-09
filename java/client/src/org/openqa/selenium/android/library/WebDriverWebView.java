@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -31,13 +29,25 @@ class WebDriverWebView {
 
   private static JavascriptInterface jsInterface =
       new JavascriptInterface(new JavascriptExecutor());
+  private AndroidWebDriver driver;
+  private WebViewFactory factory;
+  private WebViewClient viewc;
+  private WebChromeClient chromec;
 
-  public static WebView create(final AndroidWebDriver driver) {
+  /* package */ WebDriverWebView(final AndroidWebDriver driver,
+      WebViewFactory factory, WebViewClient viewc, WebChromeClient chromec) {
+    this.driver = driver;
+    this.factory = factory;
+    this.viewc = viewc;
+    this.chromec = chromec;
+  }
 
-    WebChromeClient chromeClient = new ChromeClient(driver);
-    WebViewClient viewClient = new ViewClient(driver);
+  public WebView create() {
 
-    WebView view = new WebView(driver.getActivity());
+    WebChromeClient chromeClient = new ChromeClient(driver, this, chromec);
+    WebViewClient viewClient = new ViewClient(driver, viewc);
+
+    WebView view = factory.createNewView(driver.getActivity());
     view.setWebChromeClient(chromeClient);
     view.setWebViewClient(viewClient);
 

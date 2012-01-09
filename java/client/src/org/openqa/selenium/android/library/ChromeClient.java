@@ -15,10 +15,16 @@
 
 package org.openqa.selenium.android.library;
 
+import android.graphics.Bitmap;
 import android.os.Message;
+import android.view.View;
+import android.webkit.ConsoleMessage;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 
 import com.google.common.collect.BiMap;
@@ -29,9 +35,17 @@ import org.openqa.selenium.ElementNotVisibleException;
 class ChromeClient extends WebChromeClient {
   private final AndroidWebDriver driver;
   private static BiMap<WebView, Alert> unhandledAlerts = HashBiMap.create();
+  private final WebChromeClient delegate;
+  private final WebDriverWebView wdview;
 
-  public ChromeClient(AndroidWebDriver driver) {
+  public ChromeClient(AndroidWebDriver driver, WebDriverWebView wdview, WebChromeClient client) {
     this.driver = driver;
+    this.wdview = wdview;
+    if (client == null) {
+      delegate = new WebChromeClient();
+    } else {
+      delegate = client;
+    }
   }
 
   @Override
@@ -39,18 +53,23 @@ class ChromeClient extends WebChromeClient {
     // Dispose of unhandled alerts, if any.
     unhandledAlerts.remove(window);
     driver.getViewManager().removeView(window);
-    super.onCloseWindow(window);
+    delegate.onCloseWindow(window);
   }
 
   @Override
   public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture,
       Message resultMsg) {
-    WebView newView = WebDriverWebView.create(driver);
+    WebView newView = wdview.create();
     WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
     transport.setWebView(newView);
     resultMsg.sendToTarget();
     driver.getViewManager().addView(newView);
-    return true;
+    return delegate.onCreateWindow(view, dialog, userGesture, resultMsg);
+  }
+
+  @Override
+  public void onRequestFocus(WebView view) {
+    delegate.onRequestFocus(view);
   }
 
   @Override
@@ -59,25 +78,116 @@ class ChromeClient extends WebChromeClient {
         && driver.getLastUrlLoaded().equals(view.getUrl())) {
       driver.notifyPageDoneLoading();
     }
+    delegate.onProgressChanged(view, newProgress);
+  }
+
+  @Override
+  public void onReceivedTitle(WebView view, String title) {
+    delegate.onReceivedTitle(view, title);
+  }
+
+  @Override
+  public void onReceivedIcon(WebView view, Bitmap icon) {
+    delegate.onReceivedIcon(view, icon);
+  }
+
+  @Override
+  public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
+    delegate.onReceivedTouchIconUrl(view, url, precomposed);
+  }
+
+  @Override
+  public void onShowCustomView(View view, CustomViewCallback callback) {
+    delegate.onShowCustomView(view, callback);
+  }
+
+  @Override
+  public void onShowCustomView(View view, int requestedOrientation,
+      CustomViewCallback callback) {
+    delegate.onShowCustomView(view, requestedOrientation, callback);
+  }
+
+  @Override
+  public void onHideCustomView() {
+    delegate.onHideCustomView();
   }
 
   @Override
   public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
     unhandledAlerts.put(view, new AndroidAlert(message, result));
-    return true;
+    return delegate.onJsAlert(view, url, message, result);
   }
 
   @Override
   public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
     unhandledAlerts.put(view, new AndroidAlert(message, result));
-    return true;
+    return delegate.onJsConfirm(view, url, message, result);
   }
 
   @Override
   public boolean onJsPrompt(WebView view, String url, String message, String defaultValue,
       JsPromptResult result) {
     unhandledAlerts.put(view, new AndroidAlert(message, result, defaultValue));
-    return true;
+    return delegate.onJsPrompt(view, url, message, defaultValue, result);
+  }
+
+  @Override
+  public boolean onJsBeforeUnload(WebView view, String url, String message, JsResult result) {
+    return super.onJsBeforeUnload(view, url, message, result);
+  }
+
+  @Override
+  public void onExceededDatabaseQuota(String url, String databaseIdentifier, long currentQuota,
+      long estimatedSize, long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
+    delegate.onExceededDatabaseQuota(url, databaseIdentifier, currentQuota, estimatedSize,
+        totalUsedQuota, quotaUpdater);
+  }
+
+  @Override
+  public void onReachedMaxAppCacheSize(long spaceNeeded, long totalUsedQuota,
+      WebStorage.QuotaUpdater quotaUpdater) {
+    delegate.onReachedMaxAppCacheSize(spaceNeeded, totalUsedQuota, quotaUpdater);
+  }
+
+  @Override
+  public void onGeolocationPermissionsShowPrompt(String origin,
+      GeolocationPermissions.Callback callback) {
+    delegate.onGeolocationPermissionsShowPrompt(origin, callback);
+  }
+
+  @Override
+  public void onGeolocationPermissionsHidePrompt() {
+    delegate.onGeolocationPermissionsHidePrompt();
+  }
+
+  @Override
+  public boolean onJsTimeout() {
+    return delegate.onJsTimeout();
+  }
+
+  @Override
+  public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+    delegate.onConsoleMessage(message, lineNumber, sourceID);
+  }
+
+  @Override
+  public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+    return delegate.onConsoleMessage(consoleMessage);
+  }
+
+  @Override
+  public Bitmap getDefaultVideoPoster() {
+    return delegate.getDefaultVideoPoster();
+  }
+
+  @Override
+  public View getVideoLoadingProgressView() {
+    return delegate.getVideoLoadingProgressView();
+  }
+
+  @Override
+  public void getVisitedHistory(ValueCallback<String[]> callback) {
+    delegate.getVisitedHistory(callback);
   }
 
   public static Alert getAlertForView(WebView view) {

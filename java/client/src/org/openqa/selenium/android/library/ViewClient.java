@@ -19,8 +19,12 @@ package org.openqa.selenium.android.library;
 
 import android.graphics.Bitmap;
 import android.net.http.SslError;
+import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -34,9 +38,16 @@ import java.util.logging.Level;
 class ViewClient extends WebViewClient {
   private final AndroidWebDriver driver;
   private final String LOG_TAG = ViewClient.class.getName();
-  
-  public ViewClient(AndroidWebDriver driver) {
+  private final WebViewClient delegate;
+  private String tmpUrl;
+
+  public ViewClient(AndroidWebDriver driver, WebViewClient client) {
     this.driver = driver;
+    if (client == null) {
+      delegate = new WebViewClient();
+    } else {
+      delegate = client;
+    }
   }
   
   @Override
@@ -44,6 +55,17 @@ class ViewClient extends WebViewClient {
       String failingUrl) {
     Logger.log(Level.WARNING, LOG_TAG, "onReceiveError", description
         + ", error code: " + errorCode);
+    delegate.onReceivedError(view, errorCode, description, failingUrl);
+  }
+
+  @Override
+  public void onFormResubmission(WebView view, Message dontResend, Message resend) {
+    delegate.onFormResubmission(view, dontResend, resend);
+  }
+
+  @Override
+  public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+    delegate.doUpdateVisitedHistory(view, url, isReload);
   }
 
   @Override
@@ -55,29 +77,73 @@ class ViewClient extends WebViewClient {
     if (shouldAcceptSslCerts) {
       handler.proceed();
     } else {
-      super.onReceivedSslError(view, handler, error);
+      delegate.onReceivedSslError(view, handler, error);
     }
   }
 
-  private String tmpUrl;
+  @Override
+  public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host,
+      String realm) {
+    delegate.onReceivedHttpAuthRequest(view, handler, host, realm);
+  }
+
+  @Override
+  public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+    return delegate.shouldOverrideKeyEvent(view, event);
+  }
+
+  @Override
+  public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
+    delegate.onUnhandledKeyEvent(view, event);
+  }
+
+  @Override
+  public void onScaleChanged(WebView view, float oldScale, float newScale) {
+    delegate.onScaleChanged(view, oldScale, newScale);
+  }
+
+  @Override
+  public void onReceivedLoginRequest(WebView view, String realm, String account, String args) {
+    delegate.onReceivedLoginRequest(view, realm, account, args);
+  }
+
+  @Override
+  public boolean shouldOverrideUrlLoading(WebView view, String url) {
+    return delegate.shouldOverrideUrlLoading(view, url);
+  }
 
   @Override
   public void onPageStarted(WebView view, String url, Bitmap favicon) {
     driver.setLastUrlLoaded(url);
     tmpUrl = url;
     driver.notifyPageStartedLoading();
-    super.onPageStarted(view, url, favicon);
+    delegate.onPageStarted(view, url, favicon);
   }
 
   @Override
   public void onPageFinished(WebView view, String url) {
-    super.onPageFinished(view, url);
     driver.setLastUrlLoaded(url);
-        
+
     // If it is a html fragment or the current url loaded, the page is
     // not reloaded and the onProgessChanged function is not called.
     if (url.contains("#") && tmpUrl.equals(url.split("#")[0])) {
       driver.notifyPageDoneLoading();
     }
+    delegate.onPageFinished(view, url);
+  }
+
+  @Override
+  public void onLoadResource(WebView view, String url) {
+    delegate.onLoadResource(view, url);
+  }
+
+  @Override
+  public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+    return delegate.shouldInterceptRequest(view, url);
+  }
+
+  @Override
+  public void onTooManyRedirects(WebView view, Message cancelMsg, Message continueMsg) {
+    delegate.onTooManyRedirects(view, cancelMsg, continueMsg);
   }
 }

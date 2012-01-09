@@ -30,7 +30,9 @@ import android.location.LocationManager;
 import android.os.Environment;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,27 +97,27 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private static final String STATUS = "status";
   private static final String VALUE = "value";
 
-  private final AndroidWebElement element;
+  private AndroidWebElement element;
   private DomWindow currentWindowOrFrame;
   private long implicitWait = 0;
   ;
   // Maps the element ID to the AndroidWebElement
   private Map<String, AndroidWebElement> store;
-  private final AndroidTouchScreen touchScreen;
-  private final AndroidNavigation navigation;
-  private final AndroidOptions options;
-  private final AndroidLocalStorage localStorage;
-  private final AndroidSessionStorage sessionStorage;
-  private final AndroidTargetLocator targetLocator;
-  private final AndroidFindBy findBy;
-  private final AndroidLogs logs;
+  private AndroidTouchScreen touchScreen;
+  private AndroidNavigation navigation;
+  private AndroidOptions options;
+  private AndroidLocalStorage localStorage;
+  private AndroidSessionStorage sessionStorage;
+  private AndroidTargetLocator targetLocator;
+  private AndroidFindBy findBy;
+  private AndroidLogs logs;
 
   // Use for control redirect, contains the last url loaded (updated after each redirect)
   private volatile String lastUrlLoaded;
 
   private SessionCookieManager sessionCookieManager;
   private WebView webview;
-  private final WebViewManager viewManager;
+  private WebViewManager viewManager;
   private final Object syncObject = new Object();
   private volatile boolean pageDoneLoading;
   private NetworkStateHandler networkHandler;
@@ -135,7 +137,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
 
   private boolean acceptSslCerts;  
   private volatile boolean pageStartedLoading;
-  private boolean done = false;  
+  private boolean done = false;
 
   private JavascriptResultNotifier notifier = new JavascriptResultNotifier() {
 
@@ -166,9 +168,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     return acceptSslCerts;
   }
 
-  public AndroidWebDriver(Activity activity) {
-    this.activity = activity;
-
+  private void initDriverState() {
     store = Maps.newHashMap();
     findBy = new AndroidFindBy();
     currentWindowOrFrame = new DomWindow("");
@@ -181,15 +181,57 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     sessionStorage = new AndroidSessionStorage(this);
     targetLocator = new AndroidTargetLocator();
     viewManager = new WebViewManager();
-    // Create a new view and delete existing windows.
-    newWebView( /*Delete existing windows*/true);
+    logs = new AndroidLogs();
+  }
+
+  private void initCookiesState() {
     // Needs to be called before CookieMAnager::getInstance()
     CookieSyncManager.createInstance(activity);
     sessionCookieManager = new SessionCookieManager();
     CookieManager cookieManager = CookieManager.getInstance();
     cookieManager.removeAllCookie();
+  }
+
+  /**
+   * Use this contructor to use WebDriver with a WebView that has the same settings as
+   * the Android browser.
+   *
+   * @param activity the activity context where the WebView will be created.
+   */
+  public AndroidWebDriver(Activity activity) {
+    this.activity = activity;
+    initDriverState();
+    WebDriverWebView wdview = new WebDriverWebView(this, new DefaultWebViewFactory(), null, null);
+    // Create a new view and delete existing windows.
+    newWebView( /*Delete existing windows*/true, wdview);
+    initCookiesState();
     networkHandler = new NetworkStateHandler(activity, webview);
-    logs = new AndroidLogs();
+  }
+
+  /**
+   * Use this constructor to use WebDriver with a custom WebView.
+   *
+   * @param activity the activity context where the WebView will be created.
+   * @param viewFactory a implementation of the WebViewFactory interface. WebDriver will
+   *     use this creation mechanism to create WebViews when needed (when clicking on a link
+   *     that opens a new window for instance).
+   * @param viewClient the WebViewClient used by the custom WebView. WebDriver will instrument
+   *     the WebViewClient used by the custom WebView to detect certain events.
+   * @param chromeClient the WebChromeClient used by the custom WebView. WebDriver will
+   *     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
+   *     WebDriver will take care of the Window creation and destruction, so it is not advised
+   *     to override onCloseWindow and onCreateWindow to do window management.
+   */
+  public AndroidWebDriver(Activity activity, WebViewFactory viewFactory,
+      WebViewClient viewClient,
+      WebChromeClient chromeClient) {
+    this.activity = activity;
+    initDriverState();
+    WebDriverWebView wdview = new WebDriverWebView(this, viewFactory, viewClient, chromeClient);
+    newWebView(/*Delete existing windows*/true, wdview);
+    initCookiesState();
+    networkHandler = new NetworkStateHandler(activity, webview);
+
   }
 
    String getLastUrlLoaded() {
@@ -266,7 +308,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     return webview;
   }
 
-  void newWebView(boolean newDriver) {
+  void newWebView(boolean newDriver, final WebDriverWebView wdview) {
     // If we are requesting a new driver, then close all
     // existing window before opening a new one.
     if (newDriver) {
@@ -278,7 +320,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     activity.runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          final WebView newView = WebDriverWebView.create(AndroidWebDriver.this);
+          final WebView newView = wdview.create();
           webview = newView;
           viewManager.addView(webview);
           activity.setContentView(webview);
