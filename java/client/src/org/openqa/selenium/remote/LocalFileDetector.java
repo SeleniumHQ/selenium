@@ -32,7 +32,15 @@ public class LocalFileDetector implements FileDetector {
     for (CharSequence chars : keys) {
       builder.append(chars);
     }
-    File file = new File(builder.toString());
+
+    String filepath = builder.toString();
+
+    // If empty string, no file is meant to be sent
+    if (filepath.isEmpty()) {
+        return null;
+    }
+
+    File file = new File(filepath);
 
     // It turns out that files in the CWD may not have a parent file.
     File parentDir = file.getParentFile();
