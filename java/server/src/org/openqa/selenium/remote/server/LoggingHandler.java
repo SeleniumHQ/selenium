@@ -37,8 +37,7 @@ import java.util.logging.Logger;
  */
 public class LoggingHandler extends Handler {
 
-  // For now keep track of the last 10000 log records.
-  private static final int MAX_RECORDS = 10000;
+  private static final int MAX_RECORDS = 1000;
   private LinkedList<LogEntry> records = Lists.newLinkedList();
   private static final LoggingHandler instance = new LoggingHandler();
 
@@ -52,12 +51,12 @@ public class LoggingHandler extends Handler {
    *
    * @return an unmodifiable list of LogEntry.
    */
-  public List<LogEntry> getRecords() {
+  public synchronized List<LogEntry> getRecords() {
     return Collections.unmodifiableList(records);
   }
 
   @Override
-  public void publish(LogRecord logRecord) {
+  public synchronized  void publish(LogRecord logRecord) {
     if (isLoggable(logRecord)) {
       if (records.size() > MAX_RECORDS) {
         records.remove();
@@ -87,7 +86,7 @@ public class LoggingHandler extends Handler {
   }
 
   @Override
-  public void close() throws SecurityException {
+  public synchronized void close() throws SecurityException {
     records.clear();
   }
 }
