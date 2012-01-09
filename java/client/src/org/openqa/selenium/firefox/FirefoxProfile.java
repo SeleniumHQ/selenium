@@ -93,7 +93,9 @@ public class FirefoxProfile {
           .put("security.warn_viewing_mixed.show_once", false)
           .put("signon.rememberSignons", false)
           .put("toolkit.networkmanager.disable", true)
-          .put("toolkit.telemetry.prompted", true)
+          .put("toolkit.telemetry.prompted", 2)
+          .put("toolkit.telemetry.enabled", false)
+          .put("toolkit.telemetry.rejected", true)
           .build();
 
   /**
