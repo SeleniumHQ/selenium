@@ -302,6 +302,8 @@ module Selenium
           "signon.rememberSignons"                    => 'false',
           "toolkit.networkmanager.disable"            => 'true',
           "toolkit.telemetry.prompted"                => '2',
+          "toolkit.telemetry.enabled"                 => 'false',
+          "toolkit.telemetry.rejected"                => 'true',
           "javascript.options.showInConsole"          => 'true',
           "browser.dom.window.dump.enabled"           => 'true',
           "dom.report_all_js_exceptions"              => "true"
