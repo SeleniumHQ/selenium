@@ -28,6 +28,7 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.location.LocationManager;
 import android.os.Environment;
+import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
@@ -87,6 +88,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
     TakesScreenshot, Rotatable, BrowserConnection, HasTouchScreen,
@@ -918,6 +920,13 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       case ErrorCodes.STALE_ELEMENT_REFERENCE:
         throw new StaleElementReferenceException("WebElement is stale.");
       default:
+        if (jsonObject.toString().contains("Result of expression 'd.evaluate' [undefined] is"
+            + " not a function.")) {
+          throw new WebDriverException("You are using a version of Android WebDriver APK"
+              + " compatible with ICS SDKs or more recent SDKs. For more info take a look at"
+              + " http://code.google.com/p/selenium/wiki/AndroidDriver#Supported_Platforms. Error:"
+              + " " + jsonObject.toString());
+        }
         throw new WebDriverException("Error: " + errorMsg);
     }
   }
