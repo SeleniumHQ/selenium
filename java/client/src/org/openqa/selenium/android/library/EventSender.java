@@ -53,7 +53,13 @@ class EventSender {
           float zoom = view.getScale();
           for (MotionEvent event : events) {
             event.setLocation(zoom * event.getX(), zoom * event.getY());
-            event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+            try {
+              event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+            } catch (NoSuchMethodError e) {
+              throw new WebDriverException("You are using an Android WebDriver APK "
+                  + "for ICS SDKs or more recent SDK versions. For more info see "
+                  + "http://code.google.com/p/selenium/wiki/AndroidDriver#Supported_Platforms.", e);
+            }
             view.dispatchTouchEvent(event);
             synchronized (syncObject) {
               done = true;
