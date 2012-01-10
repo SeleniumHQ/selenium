@@ -31,9 +31,9 @@ import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.android.library.Logger;
 import org.openqa.selenium.android.server.JettyService;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.LoggingHandler;
 
 /**
  * Main application activity.
