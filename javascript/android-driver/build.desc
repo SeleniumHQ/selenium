@@ -31,4 +31,4 @@ js_fragment_java(name = "atoms",
           "//javascript/webdriver/atoms:execute_script:android",
          ],
   utf8 = "true",
-  package = "org.openqa.selenium.android")
+  package = "org.openqa.selenium.android.library")
