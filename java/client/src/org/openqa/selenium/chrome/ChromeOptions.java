@@ -180,7 +180,7 @@ public class ChromeOptions {
     // TODO: remove this once the deprecated capabilities are no longer supported.
     capabilities.setCapability("chrome.switches", args);
     if (binary != null) {
-      capabilities.setCapability("chrome.binary", binary);
+      capabilities.setCapability("chrome.binary", binary.getPath());
     }
 
     return capabilities;
