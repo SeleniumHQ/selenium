@@ -21,6 +21,7 @@ goog.provide('webdriver.testing.asserts');
 goog.provide('webdriver.testing.asserts.Matcher');
 
 goog.require('goog.array');
+goog.require('goog.string');
 goog.require('webdriver.promise');
 
 
@@ -174,15 +175,11 @@ webdriver.testing.asserts.expectThat = function(failureMessageOrActualValue,
 };
 
 
-webdriver.testing.asserts.equalTo = function(a) {
-  return new webdriver.testing.asserts.Matcher('' +
-      'to equal ' + a + webdriver.testing.asserts.typeOf_(a),
-      function(b) {
-        return a === b;
-      });
-};
-
-
+/**
+ * Creates a matcher that inverts another matcher.
+ * @param {!webdriver.testing.asserts.Matcher} matcher The matcher to invert.
+ * @return {!webdriver.testing.asserts.Matcher} The new matcher.
+ */
 webdriver.testing.asserts.not = function(matcher) {
   return new webdriver.testing.asserts.Matcher('not ' + matcher.description,
       function(value) {
@@ -190,16 +187,66 @@ webdriver.testing.asserts.not = function(matcher) {
       });
 };
 
+
+/**
+ * Creates a matcher that does a strict equality (===) check.
+ * @param {*} expected The expected value.
+ * @return {!webdriver.testing.asserts.Matcher} The new matcher.
+ */
+webdriver.testing.asserts.equalTo = function(expected) {
+  return new webdriver.testing.asserts.Matcher('' +
+      'to equal ' + a + webdriver.testing.asserts.typeOf_(expected),
+      function(actual) {
+        return expected === actual;
+      });
+};
+
+
+/**
+ * Creates a matcher that verifies a string contains a substring.
+ * @param {string} expected The expected substring.
+ * @return {!webdriver.testing.asserts.Matcher} The new matcher.
+ */
+webdriver.testing.asserts.contains = function(expected) {
+  return new webdriver.testing.asserts.Matcher('to contain ' + expected,
+      function(actual) {
+        return goog.string.contains(actual, expected);
+      });
+};
+
+
+/**
+ * Creates a matcher that verifies a string matchess a regular expression.
+ * @param {!RegExp} regex The regex to check against.
+ * @return {!webdriver.testing.asserts.Matcher} The new matcher.
+ */
 webdriver.testing.asserts.matchesRegex = function(regex) {
-  return new webdriver.testing.asserts.Matcher('match regex ' + regex,
+  return new webdriver.testing.asserts.Matcher('to match regex ' + regex,
       function(value) {
         return !!value.match(regex);
       });
 };
 
+/**
+ * Creates a matcher that verifies a string starts with another string.
+ * @param {string} expected The expected string prefix.
+ * @return {!webdriver.testing.asserts.Matcher} The new matcher.
+ */
+webdriver.testing.asserts.startsWith = function(expected) {
+  return new webdriver.testing.asserts.Matcher(
+      'to start with ' + expected,
+      function(value) {
+        return goog.string.startsWith(value, expected);
+      });
+};
+
+
 goog.exportSymbol('assertThat', webdriver.testing.asserts.assertThat);
+goog.exportSymbol('contains', webdriver.testing.asserts.contains);
 goog.exportSymbol('expectThat', webdriver.testing.asserts.expectThat);
 goog.exportSymbol('equalTo', webdriver.testing.asserts.equalTo);
 goog.exportSymbol('equals', webdriver.testing.asserts.equalTo);
-goog.exportSymbol('not', webdriver.testing.asserts.not);
+goog.exportSymbol('is', webdriver.testing.asserts.equalTo);
 goog.exportSymbol('matchesRegex', webdriver.testing.asserts.matchesRegex);
+goog.exportSymbol('not', webdriver.testing.asserts.not);
+goog.exportSymbol('startsWith', webdriver.testing.asserts.startsWith);
