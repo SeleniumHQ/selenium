@@ -119,9 +119,9 @@ limitations under the License.
     mockTestCase.testFn().$does(function() { schedule('b'); });
     mockTestCase.tearDown().$does(function() { schedule('c'); });
     mockOnComplete(IGNORE_ARGUMENT).$does(assertAppHistory(
-        'testStub.setUp', 'a',
-        'testStub', 'b',
-        'testStub.tearDown', 'c'));
+        'testStub.setUp', '..a',
+        'testStub', '..b',
+        'testStub.tearDown', '..c'));
     control.$replayAll();
 
     runTest(3);
@@ -185,9 +185,9 @@ limitations under the License.
 
     runTest(3);
     appTester.$assertAppHistory(
-        'testStub.setUp', 'a',
-        'testStub', 'b',
-        'testStub.tearDown', 'c');
+        'testStub.setUp', '..a',
+        'testStub', '..b',
+        'testStub.tearDown', '..c');
   }
 
   function testRecordsErrorsFromTestFnBeforeTearDown() {

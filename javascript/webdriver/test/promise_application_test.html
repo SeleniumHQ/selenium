@@ -198,7 +198,7 @@ limitations under the License.
     schedule('b');
 
     runApplication();
-    assertAppHistory('a', 'c', 'b');
+    assertAppHistory('a', '..c', 'b');
   }
 
 
@@ -215,7 +215,7 @@ limitations under the License.
     schedule('b');
 
     runApplication();
-    assertAppHistory('a', 'c', 'e', 'g', 'f', 'd', 'b');
+    assertAppHistory('a', '..c', '....e', '......g', '....f', '..d', 'b');
   }
 
 
@@ -231,7 +231,7 @@ limitations under the License.
     schedule('e');
 
     runApplication();
-    assertAppHistory('a', 'b', 'c', 'd', 'e');
+    assertAppHistory('a', '..b', '..c', '..d', 'e');
   }
 
 
@@ -247,7 +247,7 @@ limitations under the License.
     schedule('e');
 
     runApplication();
-    assertAppHistory('a', 'b', 'c', 'd', 'e');
+    assertAppHistory('a', '..b', '..c', '..d', 'e');
   }
 
 
@@ -271,7 +271,7 @@ limitations under the License.
     schedule('e');
 
     runApplication();
-    assertAppHistory('a', 'b', 'd', 'c', 'e');
+    assertAppHistory('a', '..b', '..d', 'c', 'e');
   }
 
 
@@ -312,7 +312,17 @@ limitations under the License.
     schedule('j');
 
     runApplication();
-    assertAppHistory('a', 'b', 'c', 'd', 'e', 'g', 'f', 'h', 'i', 'j');
+    assertAppHistory(
+        'a',
+        'b',
+        '..c',
+        '..d',
+        '..e',
+        '....g',
+        '..f',
+        '..h',
+        '..i',
+        'j');
   }
 
 
@@ -340,7 +350,17 @@ limitations under the License.
     schedule('j');
 
     runApplication();
-    assertAppHistory('a', 'b', 'c', 'd', 'e', 'g', 'f', 'h', 'i', 'j');
+    assertAppHistory(
+        'a',
+        'b',
+        '..c',
+        '..d',
+        '..e',
+        '....g',
+        '..f',
+        '..h',
+        '..i',
+        'j');
   }
 
 
@@ -414,7 +434,7 @@ limitations under the License.
     });
     schedule('this should not run');
     runApplication(null, assertIsStubError);
-    assertAppHistory('outer task', 'inner task');
+    assertAppHistory('outer task', '..inner task');
   }
 
 
@@ -428,7 +448,7 @@ limitations under the License.
     });
 
     runApplication(null, assertIsStubError);
-    assertAppHistory('a', 'b', 'c');
+    assertAppHistory('a', '..b', '....c');
   }
 
 
@@ -496,7 +516,7 @@ limitations under the License.
     }).addErrback(errback = callbackHelper(assertIsStubError));
     schedule('d');
     runApplication();
-    assertAppHistory('a', 'b', 'c', 'd');
+    assertAppHistory('a', '..b', '....c', 'd');
     errback.assertCalled();
   }
 
@@ -537,7 +557,7 @@ limitations under the License.
         then(goog.partial(schedulePush, 'doBar', 'bar')).
         addBoth(goog.partial(schedulePush, 'doBaz', 'baz'));
     runApplication(assertingMessages('foo', 'bar', 'baz'));
-    assertAppHistory('doFoo', 'doBar', 'doBaz');
+    assertAppHistory('doFoo', '..doBar', '..doBaz');
   }
 
 
@@ -594,7 +614,7 @@ limitations under the License.
     schedule('e');
 
     runApplication();
-    assertAppHistory('a', 'b', 'c', 'd', 'e');
+    assertAppHistory('a', 'b', '..c', '..d', 'e');
   }
 
 
@@ -608,7 +628,7 @@ limitations under the License.
     schedule('f');
 
     runApplication();
-    assertAppHistory('a', 'b', 'c', 'd', 'e', 'f');
+    assertAppHistory('a', 'b', '..c', '..d', '..e', 'f');
   }
 
 
@@ -721,9 +741,9 @@ limitations under the License.
     assertEquals(3, count);
     assertAppHistory(
         'counting to 3',
-        'increment count',
-        'increment count',
-        'increment count',
+        '..increment count',
+        '..increment count',
+        '..increment count',
         'post wait');
   }
 
@@ -740,9 +760,9 @@ limitations under the License.
     assertEquals(3, count);
     assertAppHistory(
         'counting to 3',
-        'sub task',
-        'sub task',
-        'sub task',
+        '..sub task',
+        '..sub task',
+        '..sub task',
         'post wait');
   }
 
@@ -797,8 +817,8 @@ limitations under the License.
     assertEquals(2, count);
     assertAppHistory(
         'waiting',
-        'maybe throw',
-        'maybe throw',
+        '..maybe throw',
+        '..maybe throw',
         'post wait');
   }
 
@@ -908,7 +928,15 @@ limitations under the License.
 
     runApplication();
     assertAppHistory(
-        'a', 'wait 1', 'd', 'wait 2', 'e', 'b', 'wait 3', 'c', 'wait 4');
+        'a',
+        'wait 1',
+        '..d',
+        '..wait 2',
+        '..e',
+        'b',
+        'wait 3',
+        'c',
+        'wait 4');
   }
 
 
@@ -921,7 +949,7 @@ limitations under the License.
     schedule('b');
 
     runApplication();
-    assertAppHistory('a', 'sub-tasks', 'c', 'd', 'b');
+    assertAppHistory('a', 'sub-tasks', '..c', '..d', 'b');
   }
 
 
@@ -938,8 +966,15 @@ limitations under the License.
     schedule('f');
 
     runApplication();
-    assertAppHistory('a', 'sub-tasks', 'b', 'sub-sub-tasks',
-        'c', 'd', 'e', 'f');
+    assertAppHistory(
+        'a',
+        'sub-tasks',
+        '..b',
+        '..sub-sub-tasks',
+        '....c',
+        '....d',
+        '..e',
+        'f');
   }
 
 
@@ -951,7 +986,7 @@ limitations under the License.
     schedule('b');
 
     runApplication();
-    assertAppHistory('a', 'sub-tasks', 'c', 'b');
+    assertAppHistory('a', 'sub-tasks', '..c', 'b');
   }
 
 
@@ -978,7 +1013,7 @@ limitations under the License.
     schedule('should never execute');
 
     runApplication(null, assertIsStubError);
-    assertAppHistory('a', 'sub-tasks', 'sub-task that fails');
+    assertAppHistory('a', 'sub-tasks', '..sub-task that fails');
   }
 
 
@@ -1127,10 +1162,10 @@ limitations under the License.
     runApplication();
     assertAppHistory(
         'one',
-        'one.a',
-        'one.a.i',
-        'one.a.ii',
-        'one.b',
+        '..one.a',
+        '....one.a.i',
+        '....one.a.ii',
+        '..one.b',
         'two',
         '(anonymous task)',
         'three');

@@ -1080,7 +1080,8 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
     return;
   }
 
-  this.history_.push(task.description);
+  var prefix = new Array(this.frames_.length).join('..');
+  this.history_.push(prefix + task.description);
 
   currentFrame.isActive = true;
   currentFrame.pendingTask = task;
