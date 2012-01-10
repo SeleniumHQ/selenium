@@ -1137,6 +1137,60 @@ limitations under the License.
     appTester.clearHistory();
     assertAppHistory();
   }
+
+
+  function testEventLoopWaitsOnPendingPromiseRejections_oneRejections() {
+    var pair = callbackPair(null, assertIsStubError);
+    appTester.$attachAppListener(pair);
+
+    var d = new webdriver.promise.Deferred;
+    appTester.schedule('one', function() {
+      return d.promise;
+    });
+    appTester.schedule('two', goog.nullFunction);
+
+    turn();
+    assertAppHistory('one');
+    turn(-1);
+    d.reject(STUB_ERROR);
+    clock.tick(1);
+    assertAppHistory('one');
+    pair.assertErrback();
+
+    function turn(opt_minusN) {
+      var n = webdriver.promise.Application.EVENT_LOOP_FREQUENCY;
+      if (opt_minusN) n -= Math.abs(opt_minusN);
+      clock.tick(n);
+    }
+  }
+
+
+  function testEventLoopWaitsOnPendingPromiseRejections_multipleRejections() {
+    var record = [];
+    var pair = callbackPair(null, function(e) {
+      record.push(e);
+    });
+    appTester.$attachAppListener(pair);
+
+    appTester.schedule('one', goog.nullFunction);
+    appTester.schedule('two', goog.nullFunction);
+
+    turn();
+    assertAppHistory('one');
+    turn(-1);
+    webdriver.promise.rejected('once');
+    webdriver.promise.rejected('twice');
+    clock.tick(1);
+    assertAppHistory('one');
+    pair.assertErrback('Expected two uncaughtExceptions', 2);
+    assertArrayEquals(['once', 'twice'], record);
+
+    function turn(opt_minusN) {
+      var n = webdriver.promise.Application.EVENT_LOOP_FREQUENCY;
+      if (opt_minusN) n -= Math.abs(opt_minusN);
+      clock.tick(n);
+    }
+  }
 </script>
 </body>
 </html>

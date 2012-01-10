@@ -43,6 +43,29 @@ webdriver.test.testutil.createMockClock = function() {
   webdriver.test.testutil.clock = new goog.testing.MockClock(true);
 
   /* Patch to work around the following bug with mock clock:
+   *   function testNewZeroBasedTimeoutsRunInNextEventLoopAfterExistingTasks() {
+   *     var events = [];
+   *     setInterval(function() { events.push('a'); }, 1);
+   *     setTimeout(function() { events.push('b'); }, 0);
+   *     clock.tick();
+   *     assertEquals('ab', events.join(''));
+   *   }
+   */
+  goog.testing.MockClock.insert_ = function(timeout, queue) {
+    if (timeout.runAtMillis === goog.now() && timeout.millis === 0) {
+      timeout.runAtMillis += 1;
+    }
+    // Original goog.testing.MockClock.insert_ follows.
+    for (var i = queue.length; i != 0; i--) {
+      if (queue[i - 1].runAtMillis > timeout.runAtMillis) {
+        break;
+      }
+      queue[i] = queue[i - 1];
+    }
+    queue[i] = timeout;
+  };
+
+  /* Patch to work around the following bug with mock clock:
    *   function testZeroBasedTimeoutsRunInNextEventLoop() {
    *     var count = 0;
    *     setTimeout(function() {
@@ -237,14 +260,14 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
     }
   };
 
-  pair.assertCallback = function(opt_message) {
+  pair.assertCallback = function(opt_message, opt_count) {
     assertCalls(pair.callback, 'callback', pair.errback, 'errback',
-        opt_message);
+        opt_message, opt_count);
   };
 
-  pair.assertErrback = function(opt_message) {
+  pair.assertErrback = function(opt_message, opt_count) {
     assertCalls(pair.errback, 'errback', pair.callback, 'callback',
-        opt_message);
+        opt_message, opt_count);
   };
 
   pair.reset = function() {
@@ -255,22 +278,19 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
   return pair;
 
   function assertCalls(expectedFn, expectedName, unexpectedFn, unexpectedName,
-                       opt_message) {
+                       opt_message, opt_count) {
+    var count = opt_count || 1;
     var message = [opt_message || 'Unexpected callback results:'];
-    if (!expectedFn.getCallCount()) {
-      message.push('Expected ' + expectedName + ' to be called.');
-    } else if (expectedFn.getCallCount() > 1) {
-      message.push(
-          'Expected ' + expectedName + ' to be called only once.',
-          '  was called ' + expectedFn.getCallCount() + ' times:');
-      message = goog.array.concat(message, expectedFn.getFormattedArgs(4));
+    if (expectedFn.getCallCount() != count) {
+      message = goog.array.concat(message,
+          expectedFn.getExpectedCallCountMessage(count,
+              'Unexpected call pattern for ' + expectedName, true));
     }
 
     if (unexpectedFn.getCallCount()) {
-      message.push(
-          'Did not expect ' + unexpectedName + ' to be called.',
-          '  was called ' + unexpectedFn.getCallCount() + ' times:');
-      message = goog.array.concat(message, unexpectedFn.getFormattedArgs(4));
+      message = goog.array.concat(message,
+          unexpectedFn.getExpectedCallCountMessage(0,
+          'Expected ' + unexpectedName + ' to never be called', true));
     }
 
     if (message.length > 1) {

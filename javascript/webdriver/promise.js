@@ -250,9 +250,12 @@ webdriver.promise.Deferred = function() {
     }
 
     if (!handled && state == webdriver.promise.Deferred.State.REJECTED) {
+      var app = webdriver.promise.Application.getInstance();
+      app.pendingRejections_ += 1;
       setTimeout(function() {
+        app.pendingRejections_ -= 1;
         if (!handled) {
-          webdriver.promise.Application.getInstance().abortCurrentFrame_(value);
+          app.abortCurrentFrame_(value);
         }
       }, 0);
     }
@@ -758,6 +761,26 @@ webdriver.promise.Application.prototype.eventLoopId_ = null;
 
 
 /**
+ * The number of "pending" promise rejections.
+ *
+ * <p>Each time a promise is rejected and is not handled by a listener, it will
+ * schedule a 0-based timeout to check if it is still unrejected in the next
+ * turn of the JS-event loop. This allows listeners to attach to, and handle,
+ * the rejected promise at any point in same turn of the event loop that the
+ * promise was rejected.
+ *
+ * <p>When this Application's own event loop triggers, it will not run if there
+ * are any outstanding promise rejections. This allows unhandled promises to
+ * be reported before a new task is started, ensuring the error is reported to
+ * the current task queue.
+ *
+ * @type {number}
+ * @private
+ */
+webdriver.promise.Application.prototype.pendingRejections_ = 0;
+
+
+/**
  * Resets this instance, clearing its queue and removing all event listeners.
  */
 webdriver.promise.Application.prototype.reset = function() {
@@ -1029,6 +1052,15 @@ webdriver.promise.Application.prototype.cancelEventLoop_ = function() {
  * @private
  */
 webdriver.promise.Application.prototype.runEventLoop_ = function() {
+  // If we get here and there are pending promise rejections, then those
+  // promises are queued up to run as soon as this (JS) event loop terminates.
+  // Short-circuit our loop to give those promises a chance to run. Otherwise,
+  // we might start a new task only to have it fail because of one of these
+  // pending rejections.
+  if (this.pendingRejections_) {
+    return;
+  }
+
   // If the app aborts due to an unhandled exception after we've scheduled
   // another turn of the execution loop, we can end up in here with no tasks
   // left. This is OK, just quietly return.
@@ -1170,7 +1202,6 @@ webdriver.promise.Application.prototype.abortNow_ = function(error) {
         error);
   }
 };
-
 
 
 /**
