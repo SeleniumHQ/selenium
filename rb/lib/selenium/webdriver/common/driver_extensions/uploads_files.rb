@@ -21,7 +21,8 @@ module Selenium
         #     driver = Selenium::WebDriver.for :remote
         #     driver.file_detector = lambda do |args|
         #        # args => ["/path/to/file"]
-        #        str if File.exist?(args.first.to_s)
+        #        str = args.first.to_s
+        #        str if File.exist?(str)
         #     end
         #
         #     driver.find_element(:id => "upload").send_keys "/path/to/file"
