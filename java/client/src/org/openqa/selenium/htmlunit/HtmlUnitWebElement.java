@@ -432,7 +432,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         return ((HtmlTextArea) element).getText();
       }
 
-      return value == null ? "" : value;
+      return value == null || "".equals(value) ? element.getTextContent() : value;
     }
 
     if (!"".equals(value)) {

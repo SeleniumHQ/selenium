@@ -106,4 +106,12 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     element.click();
     assertTrue("Expected to be selected", element.isSelected());
   }
+  
+  public void testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist() {
+	  driver.get(pages.formPage);
+	  WebElement element = driver.findElement(By.cssSelector("select[name='select-default'] option"));
+	  assertThat(element.getAttribute("value"), is("One"));
+	  element = driver.findElement(By.id("blankOption"));
+	  assertThat(element.getAttribute("value"), is(""));
+  }
 }
