@@ -1654,7 +1654,8 @@ webdriver.WebElement.prototype.getTagName = function() {
 webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
   var name = webdriver.CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
   return this.schedule_(
-      new webdriver.Command(name).setParameter('name', cssStyleProperty),
+      new webdriver.Command(name).
+          setParameter('propertyName', cssStyleProperty),
       'WebElement.getCssValue(' + cssStyleProperty + ')');
 };
 

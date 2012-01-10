@@ -234,7 +234,7 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
       put(webdriver.CommandName.GET_ELEMENT_ATTRIBUTE,
           get('/session/:sessionId/element/:id/attribute/:name')).
       put(webdriver.CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-          get('/session/:sessionId/element/:id/css/:name')).
+          get('/session/:sessionId/element/:id/css/:propertyName')).
       put(webdriver.CommandName.ELEMENT_EQUALS,
           get('/session/:sessionId/element/:id/equals/:other')).
       put(webdriver.CommandName.SWITCH_TO_WINDOW,
