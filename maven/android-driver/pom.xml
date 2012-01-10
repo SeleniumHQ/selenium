@@ -17,6 +17,11 @@
             <artifactId>selenium-remote-driver</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>4.0.1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
