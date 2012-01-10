@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Nultithreaded client code should use this to assert that it accesses webdriver in a
+ * Multithreaded client code should use this to assert that it accesses webdriver in a
  * thread-safe manner.
  *
  * Wrap WebDriver instances as follows:
