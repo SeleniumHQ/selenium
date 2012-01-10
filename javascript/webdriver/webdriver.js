@@ -805,6 +805,26 @@ webdriver.WebDriver.prototype.findElements = function(locator, var_args) {
 
 
 /**
+ * Schedule a command to take a screenshot. The driver makes a best effort to
+ * return a screenshot of the following, in order of preference:
+ * <ol>
+ *   <li>Entire page
+ *   <li>Current window
+ *   <li>Visible portion of the current frame
+ *   <li>The screenshot of the entire display containing the browser
+ * </ol>
+ *
+ * @return {!webdriver.promise.Promise} A promise that will be resolved to the
+ *     screenshot as a base-64 encoded PNG.
+ * @export
+ */
+webdriver.WebDriver.prototype.takeScreenshot = function() {
+  return this.schedule(new webdriver.Command(webdriver.CommandName.SCREENSHOT),
+      'WebDriver.takeScreenshot()');
+};
+
+
+/**
  * @return {!webdriver.WebDriver.Options} The options interface for this
  *     instance.
  * @export

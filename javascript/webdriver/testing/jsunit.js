@@ -43,15 +43,154 @@ webdriver.testing.jsunit.TestRunner = function() {
 goog.inherits(webdriver.testing.jsunit.TestRunner, goog.testing.TestRunner);
 
 
+/**
+ * DOM element used to stored screenshots. Screenshots are stored in the DOM to
+ * avoid exhausting JS stack-space.
+ * @type {Element}
+ * @private
+ */
+webdriver.testing.jsunit.TestRunner.prototype.screenshotCacheEl_ = null;
+
+
+/** @override */
+webdriver.testing.jsunit.TestRunner.prototype.initialize = function(testCase) {
+  goog.base(this, 'initialize', testCase);
+  this.screenshotCacheEl_ = document.createElement('div');
+  document.body.appendChild(this.screenshotCacheEl_);
+  this.screenshotCacheEl_.style.display = 'none';
+};
+
+
 /** @override */
 webdriver.testing.jsunit.TestRunner.prototype.execute = function() {
   if (!this.testCase) {
     throw Error('The test runner must be initialized with a test case before ' +
                 'execute can be called.');
   }
+  this.screenshotCacheEl_.innerHTML = '';
   this.client_.sendInitEvent();
   this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
   this.testCase.runTests();
+};
+
+
+/**
+ * Writes a nicely formatted log out to the document. Overrides
+ * {@link goog.testing.TestRunner#writeLog} to handle writing screenshots to the
+ *     log.
+ * @param {string} log The string to write.
+ * @override
+ */
+webdriver.testing.jsunit.TestRunner.prototype.writeLog = function(log) {
+  var lines = log.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    var color;
+    var isFailOrError = /FAILED/.test(line) || /ERROR/.test(line);
+    if (/PASSED/.test(line)) {
+      color = 'darkgreen';
+    } else if (isFailOrError) {
+      color = 'darkred';
+    } else {
+      color = '#333';
+    }
+
+    var isScreenshot = / \[SCREENSHOT\] /.test(line);
+
+    var div = document.createElement('div');
+    if (line.substr(0, 2) == '> ') {
+      // The stack trace may contain links so it has to be interpreted as HTML.
+      div.innerHTML = line;
+    } else {
+      div.appendChild(document.createTextNode(line));
+    }
+
+    if (isFailOrError) {
+      var testNameMatch = /(\S+) (\[[^\]]*] )?: (FAILED|ERROR)/.exec(line);
+      if (testNameMatch) {
+        // Build a URL to run the test individually.  If this test was already
+        // part of another subset test, we need to overwrite the old runTests
+        // query parameter.  We also need to do this without bringing in any
+        // extra dependencies, otherwise we could mask missing dependency bugs.
+        var newSearch = 'runTests=' + testNameMatch[1];
+        var search = window.location.search;
+        if (search) {
+          var oldTests = /runTests=([^&]*)/.exec(search);
+          if (oldTests) {
+            newSearch = search.substr(0, oldTests.index) +
+                        newSearch +
+                        search.substr(oldTests.index + oldTests[0].length);
+          } else {
+            newSearch = search + '&' + newSearch;
+          }
+        } else {
+          newSearch = '?' + newSearch;
+        }
+        var href = window.location.href;
+        var hash = window.location.hash;
+        if (hash && hash.charAt(0) != '#') {
+          hash = '#' + hash;
+        }
+        href = href.split('#')[0].split('?')[0] + newSearch + hash;
+
+        // Add the link.
+        var a = document.createElement('A');
+        a.innerHTML = '(run individually)';
+        a.style.fontSize = '0.8em';
+        a.href = href;
+        div.appendChild(document.createTextNode(' '));
+        div.appendChild(a);
+      }
+    }
+
+    if (isScreenshot && this.screenshotCacheEl_.childNodes.length) {
+      var nextScreenshot = this.screenshotCacheEl_.childNodes[0];
+      this.screenshotCacheEl_.removeChild(nextScreenshot);
+
+      a = document.createElement('A');
+      a.style.fontSize = '0.8em';
+      a.href = 'javascript:void(0);';
+      a.onclick = goog.partial(toggleVisibility, a, nextScreenshot);
+      toggleVisibility(a, nextScreenshot);
+      div.appendChild(document.createTextNode(' '));
+      div.appendChild(a);
+    }
+
+    div.style.color = color;
+    div.style.font = 'normal 100% monospace';
+
+    try {
+      div.style.whiteSpace = 'pre-wrap';
+    } catch (e) {
+      // NOTE(user): IE raises an exception when assigning to pre-wrap.
+      // Thankfully, it doesn't collapse whitespace when using monospace fonts,
+      // so it will display correctly if we ignore the exception.
+    }
+
+    if (i < 2) {
+      div.style.fontWeight = 'bold';
+    }
+    this.logEl_.appendChild(div);
+
+    if (nextScreenshot) {
+      a = document.createElement('A');
+      a.href = nextScreenshot.src;
+      a.target = '_blank';
+      a.appendChild(nextScreenshot);
+      this.logEl_.appendChild(a);
+      nextScreenshot = null;
+    }
+  }
+
+  function toggleVisibility(link, img) {
+    if (img.style.display === 'none') {
+      img.style.display = '';
+      link.innerHTML = '(hide screenshot)';
+    } else {
+      img.style.display = 'none';
+      link.innerHTML = '(view screenshot)';
+    }
+  }
 };
 
 
@@ -74,6 +213,43 @@ webdriver.testing.jsunit.TestRunner.prototype.onComplete_ = function() {
 
   this.writeLog(log);
   this.client_.sendResultsEvent(this.isSuccess(), this.getReport());
+};
+
+
+/**
+ * Takes a screenshot. In addition to saving the screenshot for viewing in the
+ * HTML logs, the screenshot will also be saved using
+ * @param {!webdriver.WebDriver} driver The driver to take the screenshot with.
+ * @param {string=} opt_label An optional debug label to identify the screenshot
+ *     with.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved to the
+ *     screenshot as a base-64 encoded PNG.
+ */
+webdriver.testing.jsunit.TestRunner.prototype.takeScreenshot = function(
+    driver, opt_label) {
+  if (!this.isInitialized()) {
+    throw Error(
+        'The test runner must be initialized before it may be used to' +
+        ' take screenshots');
+  }
+
+  var client = this.client_;
+  var testCase = this.testCase;
+  var screenshotCache = this.screenshotCacheEl_;
+  return driver.takeScreenshot().then(function(png) {
+    client.sendScreenshotEvent(png, opt_label);
+
+    var img = document.createElement('img');
+    img.src = 'data:image/png;base64,' + png;
+    img.style.border = '1px solid black';
+    img.style.maxWidth = '500px';
+    screenshotCache.appendChild(img);
+
+    if (testCase) {
+      testCase.saveMessage('[SCREENSHOT] ' + (opt_label || '<Not Labeled>'));
+    }
+    return png;
+  });
 };
 
 
