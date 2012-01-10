@@ -195,7 +195,7 @@ webdriver.testing.asserts.not = function(matcher) {
  */
 webdriver.testing.asserts.equalTo = function(expected) {
   return new webdriver.testing.asserts.Matcher('' +
-      'to equal ' + a + webdriver.testing.asserts.typeOf_(expected),
+      'to equal ' + expected + webdriver.testing.asserts.typeOf_(expected),
       function(actual) {
         return expected === actual;
       });
