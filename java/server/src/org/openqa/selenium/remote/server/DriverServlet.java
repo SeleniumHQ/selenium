@@ -17,9 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.logging.Logger;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
@@ -137,14 +144,8 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRenderer;
 import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
 
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Supplier;
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";

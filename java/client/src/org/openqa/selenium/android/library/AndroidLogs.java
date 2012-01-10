@@ -16,13 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
-import com.google.common.collect.Lists;
-
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
-import org.openqa.selenium.remote.server.LoggingHandler;
+
+import com.google.common.collect.Lists;
 
 public class AndroidLogs implements Logs {
 

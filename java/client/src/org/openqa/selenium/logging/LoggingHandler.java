@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.logging;
 
 import com.google.common.collect.Lists;
 
