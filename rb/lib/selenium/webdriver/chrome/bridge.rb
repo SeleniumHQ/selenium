@@ -58,6 +58,7 @@ module Selenium
           verbose       = opts.delete(:verbose)
           profile       = opts.delete(:profile)
           detach        = opts.delete(:detach)
+          proxy         = opts.delete(:proxy)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -88,6 +89,7 @@ module Selenium
 
           caps = Remote::Capabilities.chrome
           caps['chromeOptions'] = chrome_options
+          caps['proxy'] = proxy if proxy
 
           # legacy options - for chromedriver < 17.0.963.0
           caps["chrome.switches"] = chrome_options['args'] if chrome_options.member?('args')

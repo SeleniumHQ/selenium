@@ -32,6 +32,13 @@ module Selenium
           caps['chrome.switches'].should == %w[--foo=bar]
         end
 
+        it "sets the proxy capabilitiy" do
+          proxy = Proxy.new(:http => "localhost:1234")
+          Bridge.new(:http_client => http, :proxy => proxy)
+
+          caps['proxy'].should == proxy
+        end
+
         it "sets the chrome.verbose capability" do
           Bridge.new(:http_client => http, :verbose => true)
 
