@@ -19,8 +19,7 @@ describe "Driver" do
     driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
   end
 
-  not_compliant_on({:browser => [:opera, :iphone]}, 
-                   {:browser => :chrome, :platform => :linux}) do
+  not_compliant_on({:browser => [:opera, :iphone]}) do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
       path = "screenshot_tmp.png"
