@@ -7,13 +7,20 @@ module Selenium
 
         def initialize(opts = {})
           http_client = opts.delete(:http_client)
-          caps        = create_capabilities(opts)
 
-          @service = Service.default_service
-          @service.start
+          if opts.has_key?(:url)
+            url = opts.delete(:url)
+          else
+            @service = Service.default_service
+            @service.start
+
+            url = @service.uri
+          end
+
+          caps = create_capabilities(opts)
 
           remote_opts = {
-            :url                  => @service.uri,
+            :url                  => url,
             :desired_capabilities => caps
           }
 
@@ -40,7 +47,7 @@ module Selenium
         def quit
           super
         ensure
-          @service.stop
+          @service.stop if @service
         end
 
         private

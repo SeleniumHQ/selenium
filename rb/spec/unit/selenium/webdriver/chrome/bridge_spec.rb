@@ -53,6 +53,13 @@ module Selenium
           caps['chrome.detach'].should be_false
         end
 
+        it "uses the user-provided server URL if given" do
+          Service.should_not_receive(:default_service)
+          http.should_receive(:server_url=).with(URI.parse("http://example.com"))
+
+          Bridge.new(:http_client => http, :url => "http://example.com")
+        end
+
         it "raises an ArgumentError if args is not an Array" do
           lambda { Bridge.new(:args => "--foo=bar")}.should raise_error(ArgumentError)
         end
