@@ -15,7 +15,7 @@ class JavaFormatter
     return "}\n"
   end
   def generate_line_string(numeric_type, type_desc)
-    return "\tpublic static final int #{type_desc} = #{numeric_type};\n"
+    return "  public static final int #{type_desc} = #{numeric_type};\n"
   end
 end
 
