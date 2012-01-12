@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class.
         /// </summary>
         public ChromeDriver()
-            : this(ChromeDriverService.CreateDefaultService(), DesiredCapabilities.Chrome(), TimeSpan.FromSeconds(60))
+            : this(ChromeDriverService.CreateDefaultService(), new ChromeOptions(), TimeSpan.FromSeconds(60))
         {
         }
 
@@ -78,7 +78,48 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         public ChromeDriver(string chromeDriverDirectory)
-            : this(chromeDriverDirectory, DesiredCapabilities.Chrome())
+            : this(chromeDriverDirectory, new ChromeOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified options.
+        /// </summary>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        public ChromeDriver(ChromeOptions options)
+            : this(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe and options.
+        /// </summary>
+        /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        public ChromeDriver(string chromeDriverDirectory, ChromeOptions options)
+            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), options, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe, command timeout, and options.
+        /// </summary>
+        /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public ChromeDriver(string chromeDriverDirectory, ChromeOptions options, TimeSpan commandTimeout)
+            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), options, commandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified <see cref="ChromeDriverService"/>.
+        /// </summary>
+        /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        private ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
+            : base(new ChromeCommandExecutor(service, commandTimeout), options.ToCapabilities())
         {
         }
 
@@ -86,6 +127,7 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class using the capabilities.
         /// </summary>
         /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
+        [Obsolete("Deprecated. Please use constructors using ChromeOptions")]
         public ChromeDriver(ICapabilities capabilities)
             : this(ChromeDriverService.CreateDefaultService(), capabilities, TimeSpan.FromSeconds(60))
         {
@@ -96,6 +138,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
+        [Obsolete("Deprecated. Please use constructors using ChromeOptions")]
         public ChromeDriver(string chromeDriverDirectory, ICapabilities capabilities)
             : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), capabilities, TimeSpan.FromSeconds(60))
         {
@@ -107,6 +150,7 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        [Obsolete("Deprecated. Please use constructors using ChromeOptions")]
         public ChromeDriver(string chromeDriverDirectory, ICapabilities capabilities, TimeSpan commandTimeout)
             : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), capabilities, commandTimeout)
         {
@@ -137,28 +181,6 @@ namespace OpenQA.Selenium.Chrome
 
             // ... and convert it.
             return new Screenshot(base64);
-        }
-        #endregion
-
-        #region Protected Methods
-        /// <summary>
-        /// By default will try to load Chrome from system property
-        /// webdriver.chrome.bin and the extension from
-        /// webdriver.chrome.extensiondir.  If the former fails, will try to guess the
-        /// path to Chrome.  If the latter fails, will try to unzip from the JAR we 
-        /// hope we're in.  If these fail, throws exceptions.
-        /// </summary>
-        protected override void StartClient()
-        {
-            ((ChromeCommandExecutor)CommandExecutor).Start();
-        }
-
-        /// <summary>
-        /// Kills the started Chrome process and ChromeCommandExecutor if they exist
-        /// </summary>
-        protected override void StopClient()
-        {
-            ((ChromeCommandExecutor)CommandExecutor).Stop();
         }
         #endregion
     }

@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="commandToExecute">The command you wish to execute</param>
         /// <returns>A response from the browser</returns>
-        public Response Execute(Command commandToExecute)
+        public virtual Response Execute(Command commandToExecute)
         {
             if (commandToExecute == null)
             {

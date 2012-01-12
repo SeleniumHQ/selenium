@@ -62,6 +62,31 @@ namespace OpenQA.Selenium.Chrome
             this.service.Dispose();
         }
 
+        public override Response Execute(Command commandToExecute)
+        {
+            Response toReturn = null;
+            if (commandToExecute.Name == DriverCommand.NewSession)
+            {
+                this.service.Start();
+            }
+
+            // Use a try-catch block to catch exceptions for the Quit
+            // command, so that we can get the finally block.
+            try
+            {
+                toReturn = base.Execute(commandToExecute);
+            }
+            finally
+            {
+                if (commandToExecute.Name == DriverCommand.Quit)
+                {
+                    this.service.Dispose();
+                }
+            }
+
+            return toReturn;
+        }
+
         private static Uri GetDriverServiceUrl(ChromeDriverService driverService)
         {
             Uri driverUrl = null;

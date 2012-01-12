@@ -86,6 +86,7 @@
     <Compile Include="Chrome\ChromeCommandExecutor.cs" />
     <Compile Include="Chrome\ChromeDriver.cs" />
     <Compile Include="Chrome\ChromeDriverService.cs" />
+    <Compile Include="Chrome\ChromeOptions.cs" />
     <Compile Include="Chrome\ChromeWebElement.cs" />
     <Compile Include="Cookie.cs" />
     <Compile Include="InvalidSelectorException.cs" />
