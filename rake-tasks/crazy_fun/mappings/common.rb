@@ -278,10 +278,10 @@ class Tasks
   end
 
   def halt_on_error?
-    [nil, 'true'].include? ENV['haltonerror']
+    ([nil, 'true'].include? ENV['haltonerror']) && ([nil, 'true'].include? ENV['haltonfailure'])
   end
 
   def halt_on_failure?
-    [nil, 'true'].include? ENV['haltonfailure']
+    halt_on_error?
   end
 end
