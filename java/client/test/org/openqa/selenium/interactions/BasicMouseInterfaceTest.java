@@ -87,7 +87,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IE, IPHONE, SELENESE})
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
@@ -96,7 +96,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, ANDROID, IE, REMOTE, IPHONE, SELENESE},
+      value = {HTMLUNIT, ANDROID, IE, IPHONE, SELENESE},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
@@ -118,7 +118,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IE, IPHONE, SELENESE})
   public void testDoubleClickThenGet() {
       // Fails in ff3 if WebLoadingListener removes browser listener
       driver.get(pages.javascriptPage);
@@ -132,7 +132,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IE, IPHONE, SELENESE})
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
@@ -168,7 +168,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, REMOTE, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -184,7 +184,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE, REMOTE, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE})
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -198,7 +198,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IE, IPHONE, SELENESE})
   public void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
@@ -215,7 +215,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, FIREFOX, REMOTE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IE, IPHONE, SELENESE, FIREFOX})
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
 
@@ -278,7 +278,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME},
       reason = "Not implemented yet.")
   public void testMovingMousePastViewPort() {
     if (!isNativeEventsEnabled(driver)) {
@@ -316,7 +316,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     waitFor(elementTextToContain(resultArea, "parent matches"));
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, CHROME, OPERA},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME, OPERA},
       reason = "Not implemented yet.")
   public void testMovingMouseBackAndForthPastViewPort() {
 
