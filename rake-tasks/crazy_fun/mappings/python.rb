@@ -150,6 +150,8 @@ module Python
           tests = ["#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}/*_tests.py"]
           pytest_args = [pytest_path] + tests
           pytest_args += ["-k", "-ignore_#{browser_data[:ignore]}"] if browser_data[:ignore]
+          pytest_args += ["--junitxml=build/test_logs/python-#{browser}-#{Time.now.to_i}.xml"]
+          mkdir_p "build/test_logs"
           sh pytest_args.join(' '), :verbose => true
         end
       end
