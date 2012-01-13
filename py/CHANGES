@@ -1,3 +1,9 @@
+Selenium 2.16
+* bug fixes
+
+Selenium 2.15
+* bug fixes
+
 Selenium 2.14
 * Fix for LD_PRELOAD being polluted by WebDriver
 * Added Orientation API
