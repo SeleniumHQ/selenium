@@ -186,7 +186,7 @@ namespace OpenQA.Selenium.Chrome
             // versions of chromedriver.
             // TODO: remove this once the deprecated capabilities are no longer supported.
             capabilities.SetCapability("chrome.switches", this.arguments);
-            if (string.IsNullOrEmpty(this.binaryLocation))
+            if (!string.IsNullOrEmpty(this.binaryLocation))
             {
                 capabilities.SetCapability("chrome.binary", this.binaryLocation);
             }
