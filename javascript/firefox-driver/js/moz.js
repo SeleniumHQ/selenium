@@ -151,7 +151,7 @@ fxdriver.moz.unwrapXpcOnly = function(thing) {
 
 
 fxdriver.moz.unwrapFor4 = function(doc) {
-  if (bot.userAgent.isEngineVersion(4)) {
+  if (bot.userAgent.isProductVersion(4)) {
     return fxdriver.moz.unwrap(doc);
   }
   return doc;

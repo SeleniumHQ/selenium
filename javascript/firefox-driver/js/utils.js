@@ -258,7 +258,7 @@ Utils.getElementAt = function(index, currentDoc) {
 Utils.isAttachedToDom = function(element) {
   // In Firefox 4, our DOM nodes need to be wrapped in XPCNativeWrappers
   function wrapNode(node) {
-    if (bot.userAgent.isEngineVersion(4)) {
+    if (bot.userAgent.isProductVersion(4)) {
       return node ? new XPCNativeWrapper(node) : null;
     }
     return node;
@@ -702,7 +702,7 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
     keyboardEvent.preventDefault();
   }
 
-  if (bot.userAgent.isEngineVersion(4)) {
+  if (bot.userAgent.isProductVersion(4)) {
     var win = doc.defaultView;
     var domUtil = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
         .getInterface(Components.interfaces.nsIDOMWindowUtils);

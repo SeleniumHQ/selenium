@@ -25,7 +25,7 @@ goog.require('fxdriver.moz');
 goog.require('goog.dom');
 
 
-if (!bot.userAgent.isEngineVersion('3.5')) {
+if (!bot.userAgent.isProductVersion('3.5')) {
   fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
   var cssSelectorFunction = (function() {
     var sizzle = [

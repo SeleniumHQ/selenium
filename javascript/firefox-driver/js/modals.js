@@ -71,7 +71,7 @@ fxdriver.modals.setValue = function(driver, value) {
 
   try {
     var isVisible = false;
-    if (bot.userAgent.isEngineVersion(8)) {
+    if (bot.userAgent.isProductVersion(8)) {
       isVisible = textbox.clientHeight != 0;
     } else {
       isVisible = textbox.selectionStart > -1;
