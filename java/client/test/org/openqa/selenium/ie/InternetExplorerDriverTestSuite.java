@@ -49,10 +49,14 @@ public class InternetExplorerDriverTestSuite extends TestSuite {
 
   public static class TestInternetExplorerDriver extends InternetExplorerDriver {
     public TestInternetExplorerDriver() {
-      super(buildDesiredCapabilities());
+      this(buildDesiredCapabilities());
     }
 
-    private static Capabilities buildDesiredCapabilities() {
+    public TestInternetExplorerDriver(Capabilities extraCapabilities) {
+      super(buildDesiredCapabilities().merge(extraCapabilities));
+    }
+
+    private static DesiredCapabilities buildDesiredCapabilities() {
       DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
       caps.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
       return caps;

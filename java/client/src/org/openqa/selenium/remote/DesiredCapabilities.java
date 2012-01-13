@@ -148,11 +148,12 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    * @param extraCapabilities Additional capabilities to be added.
    */
 
-  public void merge(
+  public DesiredCapabilities merge(
       org.openqa.selenium.Capabilities extraCapabilities) {
     if (extraCapabilities != null) {
       capabilities.putAll(extraCapabilities.asMap());
     }
+    return this;
   }
 
   public void setCapability(String capabilityName, boolean value) {
