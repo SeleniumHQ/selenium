@@ -54,6 +54,12 @@ BROWSERS = {
     :available => chrome?
   },
   "opera" => {
+    :python => {
+      :ignore => "opera",
+      :dir => "opera",
+      :file_string => "opera",
+      :class => "Opera"
+    },
     :java => {
       :class => "com.opera.core.systems.OperaDriver",
       :deps => [ "//third_party/java/opera-driver" ]

@@ -23,6 +23,12 @@ py_test(
   browsers = [ "chrome" ])
 
 py_test(
+  name = "opera_test",
+  opera_specific_tests = [ "test/selenium/webdriver/opera/*_tests.py" ],
+  deps = [ ":test_opera" ],
+  browsers = [ "opera" ])
+
+py_test(
   name = "ie_test",
   deps = [ ":test_ie" ],
   resources = [
@@ -58,5 +64,6 @@ py_test(
     "chrome",
     "ff",
     "ie",
-    "remote_firefox"
+    "remote_firefox",
+    "opera"
   ])

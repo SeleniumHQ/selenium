@@ -95,6 +95,7 @@ setup(
               'selenium.webdriver.support',
               'selenium.webdriver.firefox',
               'selenium.webdriver.ie',
+              'selenium.webdriver.opera',
               'selenium.webdriver.remote',
               'selenium.webdriver.support', ],
     package_data={
