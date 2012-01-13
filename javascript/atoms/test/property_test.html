@@ -65,6 +65,16 @@ limitations under the License.
       assertTrue(bot.dom.getProperty(disabled, 'disabled'));
     }
 
+    function testCanGetValueFromOptionViaPropertyWhenPropertyDoesntExist() {
+      var e = bot.locators.findElement({id: 'novalue'});
+      assertEquals('One', bot.dom.getProperty(e, 'value'));
+    }
+
+    function testCanGetBlankValueFromOptionViaPropertyWhenPropertyDoesntExist() {
+      var e = bot.locators.findElement({id: 'novalue-blank'});
+      assertEquals('', bot.dom.getProperty(e, 'value'));
+    }
+
   </script>
 </head>
 <body>
@@ -79,6 +89,12 @@ limitations under the License.
       <option id="peas"  value="peas" selected>Mushy Peas</option>
       <option value="gravy">Gravy</option>
     </select>
+
+    <select>
+      <option id="novalue">One</option>
+      <option id="novalue-blank"></option>
+    </select>
+
     <input id="is_disabled" name="foo" disabled />
   </form>
   <p id="not_disabled">This paragraph can check for the disabled property.</p>
