@@ -42,7 +42,8 @@
       div1.addTarget(div2);
       div1.init();
       div2.init();
-      function setPosition(event) {
+
+      goog.events.listen(div2, 'drop', function(event) {
         var dragSrc = event.dragSourceItem;
         var elem = event.dragSourceItem.element;
         var pos = goog.style.getClientPosition(elem);
@@ -50,8 +51,7 @@
                           'px';
         elem.style.top = pos.y + (event.clientY - dragSrc.startPosition_.y) +
                           'px';
-      }
-      goog.events.listen(div2, 'drop', setPosition);
+      });
 
       // Start testing
       var target = document.getElementById('testDiv');
@@ -62,8 +62,8 @@
       bot.action.drag(target, dx, dy, coords);
 
       var coordNew = goog.style.getClientPosition(target);
-      assertEquals(coordNew.x, coordOld.x + dx);
-      assertEquals(coordNew.y, coordOld.y + dy);
+      assertEquals('Wrong x coordinate', coordNew.x, coordOld.x + dx);
+      assertEquals('Wrong y coordinate', coordNew.y, coordOld.y + dy);
 
       // End of the test
       div1.dispose();

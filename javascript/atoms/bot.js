@@ -70,25 +70,3 @@ bot.setWindow = function(win) {
 bot.getDocument = function() {
   return bot.window_.document;
 };
-
-
-/**
- * @return {boolean} Whether atoms are executing in a Firefox extension.
- */
-bot.isFirefoxExtension = function() {
-  if (!goog.userAgent.GECKO) {
-    return false;
-  }
-
-  var Components = goog.global.Components;
-  try {
-    // Instantiate something the way that an extension could. Use bracket
-    // lookups so compiler doesn't complain about undefined properties.
-    Components['classes']['@mozilla.org/uuid-generator;1']['getService'](
-        Components['interfaces']['nsIUUIDGenerator']);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-

@@ -7,12 +7,12 @@
     goog.require('bot');
     goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('bot.userAgent');
     goog.require('goog.dom');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.platform');
-    goog.require('goog.userAgent.product.isVersion');
   </script>
 
   <script type="text/javascript">
@@ -82,7 +82,7 @@
 
     function testElementWithZeroHeightIsNotConsideredDisplayed() {
       // IE6 doesn't render the element correctly for the test to work.
-      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
+      if (goog.userAgent.IE && bot.userAgent.isEngineVersion(6)) {
         return;
       }
       var zeroHeight = findElement({id: 'zeroheight'});
@@ -92,7 +92,7 @@
 
     function testElementWithZeroWidthIsNotConsideredDisplayed() {
       // IE6 doesn't render the element correctly for the test to work.
-      if (goog.userAgent.IE && goog.userAgent.product.isVersion(6)) {
+      if (goog.userAgent.IE && bot.userAgent.isEngineVersion(6)) {
         return;
       }
 

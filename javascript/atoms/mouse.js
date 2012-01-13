@@ -111,8 +111,8 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  * where each cell contains the (left/middle/right/none) button values.
  *               click/    mouseup/   mouseout/  mousemove  contextmenu
  *               dblclick/ mousedown  mouseover
- * IE            0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0    X X 0 X
- * WEBKIT        0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
+ * IE_DOC_PRE9   0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0    X X 0 X
+ * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
  * GECKO/OPERA   0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
  *
  * @type {!Object.<bot.events.EventType, !Array.<?number>>}
@@ -123,13 +123,13 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
   // EventTypes can safely be used as keys without collisions in a JS Object,
   // because its toString method returns a unique string (the event type name).
   var buttonValueMap = {};
-  if (goog.userAgent.IE) {
+  if (bot.userAgent.IE_DOC_PRE9) {
     buttonValueMap[bot.events.EventType.CLICK] = [0, 0, 0, null];
     buttonValueMap[bot.events.EventType.CONTEXTMENU] = [null, null, 0, null];
     buttonValueMap[bot.events.EventType.MOUSEUP] = [1, 4, 2, null];
     buttonValueMap[bot.events.EventType.MOUSEOUT] = [0, 0, 0, 0];
     buttonValueMap[bot.events.EventType.MOUSEMOVE] = [1, 4, 2, 0];
-  } else if (goog.userAgent.WEBKIT) {
+  } else if (goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9) {
     buttonValueMap[bot.events.EventType.CLICK] = [0, 1, 2, null];
     buttonValueMap[bot.events.EventType.CONTEXTMENU] = [null, null, 2, null];
     buttonValueMap[bot.events.EventType.MOUSEUP] = [0, 1, 2, null];
@@ -165,7 +165,7 @@ bot.Mouse.prototype.fireMousedown_ = function() {
   // the SELECT to open, blocking further JS execution. This is undesirable,
   // and so needs to be detected. We always focus in this case.
   // TODO(user): This is a nasty way to avoid locking the browser
-  var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isVersion(4);
+  var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isProductVersion(4);
   var blocksOnMousedown = (goog.userAgent.WEBKIT || isFirefox3) &&
       (bot.dom.isElement(this.getElement(), goog.dom.TagName.OPTION) ||
        bot.dom.isElement(this.getElement(), goog.dom.TagName.SELECT));

@@ -25,6 +25,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.userAgent');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 
 /**
@@ -53,7 +54,7 @@ bot.html5.API = {
  * @const
  */
 bot.html5.IS_IE8_ = goog.userAgent.IE &&
-    bot.userAgent.isVersion(8) && !bot.userAgent.isVersion(9);
+    bot.userAgent.isEngineVersion(8) && !bot.userAgent.isEngineVersion(9);
 
 
 /**
@@ -63,8 +64,19 @@ bot.html5.IS_IE8_ = goog.userAgent.IE &&
  * @type {boolean}
  * @const
  */
-bot.html5.IS_SAFARI4_ = goog.userAgent.SAFARI &&
-    bot.userAgent.isVersion(4) && !bot.userAgent.isVersion(5);
+bot.html5.IS_SAFARI4_ = goog.userAgent.product.SAFARI &&
+    bot.userAgent.isProductVersion(4) && !bot.userAgent.isProductVersion(5);
+
+
+/**
+ * True if the browser is Android 2.2 (Froyo).
+ *
+ * @private
+ * @type {boolean}
+ * @const
+ */
+bot.html5.IS_ANDROID_FROYO_ = goog.userAgent.product.ANDROID &&
+    bot.userAgent.isProductVersion(2.2) && !bot.userAgent.isProductVersion(2.3);
 
 
 /**
@@ -75,8 +87,8 @@ bot.html5.IS_SAFARI4_ = goog.userAgent.SAFARI &&
  * @const
  */
 bot.html5.IS_SAFARI5_WINDOWS_ = goog.userAgent.WINDOWS &&
-    goog.userAgent.SAFARI && bot.userAgent.isVersion(5) &&
-    !bot.userAgent.isVersion(6);
+    goog.userAgent.product.SAFARI && bot.userAgent.isProductVersion(5) &&
+    !bot.userAgent.isProductVersion(6);
 
 
 /**
@@ -105,6 +117,10 @@ bot.html5.isSupported = function(api, opt_window) {
     case bot.html5.API.DATABASE:
       // Safari4 database API does not allow writes.
       if (bot.html5.IS_SAFARI4_) {
+        return false;
+      }
+      // Android Froyo does not support database, though the APIs exist.
+      if (bot.html5.IS_ANDROID_FROYO_) {
         return false;
       }
       return goog.isDefAndNotNull(win.openDatabase);

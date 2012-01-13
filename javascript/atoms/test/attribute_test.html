@@ -69,10 +69,15 @@ limitations under the License.
       var e2 = bot.locators.findElement({name: 'checky'});
       var e3 = bot.locators.findElement({id: 'checked'});
 
-      assertEquals('true', bot.dom.getAttribute(e1, 'selected'));
-      assertEquals('true', bot.dom.getAttribute(e2, 'checked'));
-      assertEquals('true', bot.dom.getAttribute(e2, 'readonly'));
-      assertEquals('true', bot.dom.getAttribute(e3, 'checked'));
+      assertReturnsTrue(e1, 'selected');
+      assertReturnsTrue(e2, 'checked');
+      assertReturnsTrue(e2, 'readonly');
+      assertReturnsTrue(e3, 'checked');
+
+      function assertReturnsTrue(element, attribute) {
+        assertEquals('Should return "true" for attribute "' + attribute + '"',
+            'true', bot.dom.getAttribute(element, attribute));
+      }
     }
 
     function testAttributeMatchesAreCaseInsensitive() {

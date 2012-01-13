@@ -5,6 +5,7 @@
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.script');
+    goog.require('bot.userAgent');
     goog.require('goog.dom');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
@@ -19,10 +20,10 @@
 
   // These browsers cannot execute a script in a provided window context.
   var CANNOT_EXECUTE_IN_PROVIDED_CONTEXT =
-      (goog.userAgent.IE && !goog.userAgent.isVersion(9)) ||
-      (goog.userAgent.OPERA && !goog.userAgent.isVersion(11)) ||
+      (goog.userAgent.IE && !bot.userAgent.isEngineVersion(9)) ||
+      (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) ||
       // Excludes Android < 3, Chrome < 6, and Safari < 5.
-      (goog.userAgent.WEBKIT && !goog.userAgent.isVersion(534));
+      (goog.userAgent.WEBKIT && !bot.userAgent.isEngineVersion(534));
 
   function executeScriptInFrame(script, onSuccess, onFailure) {
     TEST_CASE.waitForAsync('waiting for bot.script.execute');

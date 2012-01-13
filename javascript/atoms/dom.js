@@ -22,6 +22,7 @@ goog.provide('bot.dom');
 
 goog.require('bot');
 goog.require('bot.locators.xpath');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeIterator');
@@ -322,11 +323,11 @@ bot.dom.getAttribute = function(element, attributeName) {
   // Attempt to always return either true or null for boolean attributes.
   // In IE, attributes will sometimes be present even when not user-specified.
   // We would like to rely on the 'specified' property of attribute nodes, but
-  // that is sometimes false for user-specified boolean attributes. However,
+  // that is sometimes false for user-specified boolean attributes.
   // IE does consistently yield 'true' or 'false' strings for boolean attribute
   // values, and so we know 'false' attribute values were not user-specified.
   if (goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
-    return (goog.userAgent.IE && attr.value == 'false') ? null : 'true';
+    return bot.userAgent.IE_DOC_PRE9 && attr.value == 'false' ? null : 'true';
   }
 
   // For non-boolean attributes, we compensate for IE's extra attributes by
@@ -1151,7 +1152,7 @@ bot.dom.isScrolledIntoView = function(element, opt_coords) {
   var topWindow = ownerWindow.top;
   var elSize = goog.style.getSize(element);
 
-  for (var win = ownerWindow; ; win = win.parent) {
+  for (var win = ownerWindow;; win = win.parent) {
     var scroll = goog.dom.getDomHelper(win.document).getDocumentScroll();
     var size = goog.dom.getViewportSize(win);
     var viewportRect = new goog.math.Rect(scroll.x,

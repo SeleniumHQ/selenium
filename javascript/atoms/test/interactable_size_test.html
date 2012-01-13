@@ -7,6 +7,7 @@
   <script type="text/javascript">
     goog.require('bot');
     goog.require('bot.locators');
+    goog.require('bot.userAgent');
     goog.require('bot.window');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -39,8 +40,8 @@
       var size = getSizeOfFrameWithId('quirks_size');
 
       // In quirks mode IE limits the size of the frame to the content
-      var width = goog.userAgent.IE ? 110 : 700;
-      var height = goog.userAgent.IE ? 100 : 500;
+      var width = bot.userAgent.IE_DOC_PRE9 ? 110 : 700;
+      var height = bot.userAgent.IE_DOC_PRE9 ? 100 : 500;
 
       assertEquals(width, size.width);
       assertEquals(height, size.height);

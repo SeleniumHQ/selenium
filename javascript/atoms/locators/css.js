@@ -17,6 +17,7 @@
 
 goog.provide('bot.locators.css');
 
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -37,7 +38,7 @@ goog.require('goog.userAgent');
 bot.locators.css.single = function(target, root) {
   if (!goog.isFunction(root['querySelector']) &&
       // IE8 in non-compatibility mode reports querySelector as an object.
-      goog.userAgent.IE && goog.userAgent.isVersion(8) &&
+      goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
       !goog.isObject(root['querySelector'])) {
     throw Error('CSS selection is not supported');
   }
@@ -70,7 +71,7 @@ bot.locators.css.single = function(target, root) {
 bot.locators.css.many = function(target, root) {
   if (!goog.isFunction(root['querySelectorAll']) &&
       // IE8 in non-compatibility mode reports querySelector as an object.
-      goog.userAgent.IE && goog.userAgent.isVersion(8) &&
+      goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
       !goog.isObject(root['querySelector'])) {
     throw Error('CSS selection is not supported');
   }

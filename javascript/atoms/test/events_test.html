@@ -17,61 +17,79 @@ limitations under the License.
 -->
 <html>
 <head>
-  <title>event_test.html</title>
-  <script src="test_bootstrap.js"></script>
-  <script type="text/javascript">
+<title>events_test.html</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
   goog.require('bot.events');
   goog.require('bot.events.EventType');
   goog.require('bot.locators');
+  goog.require('bot.userAgent');
   goog.require('goog.array');
   goog.require('goog.events');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
   goog.require('goog.userAgent.product');
-  </script>
+</script>
+</head>
+<body>
+<form>
+  <input id="target" type="text">
+</form>
+<script type="text/javascript">
+  var target = bot.locators.findElement({id: 'target'});
 
-  <script type="text/javascript">
-    MESSAGES = [];
-
-    function log(message) {
-      MESSAGES.push(message);
+  /**
+   * Fires an event of the given type on the target input box with the optional
+   * event arguments and asserts the event was fired on the target. If a
+   * listener is provided, it is applied to the event.
+   */
+  function fireAndTest(type, opt_args, opt_listener) {
+    var fired = false, exception = null;
+    goog.events.listenOnce(target, type.toString(), function(event) {
+      fired = true;
+      try {
+        assertEquals(target, event.target);
+        if (opt_listener) {
+          opt_listener(event);
+        }
+      } catch (e) {
+        // Save any exception here and rethrow them outside the listener;
+        // otherwise the JS runner may not catch them and report the error.
+        exception = e;
+      }
+    });
+    bot.events.fire(target, type, opt_args);
+    assertTrue('Event was not fired', fired);
+    if (exception) {
+      throw exception;
     }
-  </script>
-
-  <script type="text/javascript">
+  }
 
   function testCanFireEvent() {
-    var e = bot.locators.findElement({id: 'target'});
-    bot.events.fire(e, bot.events.EventType.FOCUS);
-    assertTrue(goog.array.indexOf(MESSAGES, 'focus') != -1);
+    fireAndTest(bot.events.EventType.FOCUS);
   }
 
   function testCanFireMouseEvent() {
-    var e = bot.locators.findElement({id: 'target'});
-    bot.events.fire(e, bot.events.EventType.MOUSEMOVE, {
+    fireAndTest(bot.events.EventType.MOUSEMOVE, {
       clientX: 0,
       clientY: 0,
       button: 0,
       altKey: false,
       ctrlKey: false,
       metaKey: false,
-      ctrlKey: false,
-      relatedTarget: null
+      relatedTarget: null,
+      wheelDelta: 0
     });
-    assertTrue(goog.array.indexOf(MESSAGES, 'mousemove') != -1);
   }
 
   function testCanFireKeyboardEvent() {
-    var e = bot.locators.findElement({id: 'target'});
-    bot.events.fire(e, bot.events.EventType.KEYDOWN, {
+    fireAndTest(bot.events.EventType.KEYDOWN, {
       keyCode: 0,
       charCode: 0,
       altKey: false,
       ctrlKey: false,
-      metaKey: false,
-      ctrlKey: false
+      metaKey: false
     });
-    assertTrue(goog.array.indexOf(MESSAGES, 'keydown') != -1);
   }
 
   function testCanFireTouchEvent() {
@@ -79,7 +97,6 @@ limitations under the License.
       return;
     }
 
-    var e = bot.locators.findElement({id: 'target'});
     var touch = {
       identifier: 0,
       clientX: 0,
@@ -89,92 +106,99 @@ limitations under the License.
       pageX: 0,
       pageY: 0
     };
-    bot.events.fire(e, bot.events.EventType.TOUCHSTART, {
+    fireAndTest(bot.events.EventType.TOUCHSTART, {
       touches: [touch],
       targetTouches: [touch],
       changedTouches: [touch],
       altKey: false,
       ctrlKey: false,
       metaKey: false,
-      ctrlKey: false,
       relatedTarget: null,
       clientX: 0,
       clientY: 0,
       scale: 0,
       rotation: 0
     });
-    assertTrue(goog.array.indexOf(MESSAGES, 'touchstart') != -1);
-  }
-
-  function testCanAccessEventProperties_NonIE() {
-    if (goog.userAgent.IE) {
-      return;
-    }
-
-    var type, target;
-    var elem = bot.locators.findElement({id: 'target'});
-    elem.onchange = function(e) {
-      type = e.type;
-      target = e.target;
-    };
-    bot.events.fire(elem, bot.events.EventType.CHANGE);
-
-    assertEquals('change', type);
-    assertEquals(elem, target);
-  }
-
-  function testCanAccessEventProperties_IE() {
-    if (!goog.userAgent.IE) {
-      return;
-    }
-
-    var type, target;
-    var elem = bot.locators.findElement({id: 'target'});
-    elem.onchange = function() {
-      type = window.event.type;
-      target = window.event.srcElement;
-    };
-    bot.events.fire(elem, bot.events.EventType.CHANGE);
-
-    assertEquals('change', type);
-    assertEquals(elem, target);
   }
 
   function testIsSynthentic() {
-    var nativeListenerCalled = false;
-    var closureListenerCalled = false;
-    var elem = bot.locators.findElement({id: 'target'});
-    if (elem.addEventListener) {
-      elem.addEventListener('change', function(event) {
-        nativeListenerCalled = true;
-        assertTrue(bot.events.isSynthetic(event));
-      }, false);
-    } else {
-      elem.attachEvent('onchange', function(event) {
-        nativeListenerCalled = true;
-        assertTrue(bot.events.isSynthetic(event));
-      });
-    }
-    goog.events.listen(elem, 'change', function(event) {
-      closureListenerCalled = true;
+    fireAndTest(bot.events.EventType.CHANGE, {}, function(event) {
       assertTrue(bot.events.isSynthetic(event));
+      assertTrue(bot.events.isSynthetic(event.getBrowserEvent()));
     });
-    bot.events.fire(elem, bot.events.EventType.CHANGE);
-
-    // Make sure the assertions were actually checked.
-    assertTrue(nativeListenerCalled);
-    assertTrue(closureListenerCalled);
   }
-  </script>
 
-</head>
-<body>
-  <form>
-  <input id="target" value="target"
-      onfocus="log('focus');"
-      onmousemove="log('mousemove');"
-      onkeydown="log('keydown');"
-      ontouchstart="log('touchstart');">
-  </form>
+  function testRelatedTargetCorrectlySet() {
+    var args = {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: document.body,
+      wheelDelta: 0
+    };
+
+    fireAndTest(bot.events.EventType.MOUSEOUT, args, function(event) {
+      assertEquals(args.relatedTarget, event.relatedTarget);
+      // We are only able to set the native from/toElement on IE >= 8.
+      if (goog.userAgent.IE && Object.defineProperty) {
+        var nativeEvent = event.getBrowserEvent();
+        assertEquals(target, nativeEvent.fromElement);
+        assertEquals(args.relatedTarget, nativeEvent.toElement);
+      }
+    });
+
+    fireAndTest(bot.events.EventType.MOUSEOVER, args, function(event) {
+      assertEquals(args.relatedTarget, event.relatedTarget);
+      // We are only able to set the native from/toElement on IE >= 8.
+      if (goog.userAgent.IE && Object.defineProperty) {
+        var nativeEvent = event.getBrowserEvent();
+        assertEquals(args.relatedTarget, nativeEvent.fromElement);
+        assertEquals(target, nativeEvent.toElement);
+      }
+    });
+  }
+
+  function testWheelDeltaCorrectlySet() {
+    var args = {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      wheelDelta: 0
+    };
+
+    // Test a positive delta wheel scroll.
+    args.wheelDelta = 120;
+    fireAndTest(bot.events.EventType.MOUSEWHEEL, args, function(event) {
+      var nativeEvent = event.getBrowserEvent();
+      if ((goog.userAgent.IE && Object.defineProperty) ||
+          goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
+        assertEquals(120, nativeEvent.wheelDelta);
+      }
+      if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
+        assertEquals(-3, nativeEvent.detail);
+      }
+    });
+
+    // Test a negative delta wheel scroll.
+    args.wheelDelta = -80;
+    fireAndTest(bot.events.EventType.MOUSEWHEEL, args, function(event) {
+      var nativeEvent = event.getBrowserEvent();
+      if ((goog.userAgent.IE && Object.defineProperty) ||
+          goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
+        assertEquals(-80, nativeEvent.wheelDelta);
+      }
+      if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
+        assertEquals(2, nativeEvent.detail);
+      }
+    });
+  }
+</script>
 </body>
 </html>

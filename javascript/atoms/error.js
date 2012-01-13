@@ -21,7 +21,6 @@
 goog.provide('bot.Error');
 goog.provide('bot.ErrorCode');
 
-goog.require('goog.debug.Error');
 goog.require('goog.object');
 
 
@@ -70,10 +69,9 @@ bot.ErrorCode = {
  * @param {!bot.ErrorCode} code The error's status code.
  * @param {string=} opt_message Optional error message.
  * @constructor
- * @extends {goog.debug.Error}
+ * @extends {Error}
  */
 bot.Error = function(code, opt_message) {
-  goog.base(this, opt_message);
 
   /**
    * This error's status code.
@@ -81,39 +79,49 @@ bot.Error = function(code, opt_message) {
    */
   this.code = code;
 
-  /** @inheritDoc */
+  /** @override */
+  this.message = opt_message || '';
+
+  /** @override */
   this.name = (/**@type {string}*/ bot.Error.NAMES_[code] ||
       bot.Error.NAMES_[bot.ErrorCode.UNKNOWN_ERROR]);
+
+  // Generate a stacktrace for our custom error; ensure the error has our
+  // custom name and message so the stack prints correctly in all browsers.
+  var template = new Error(this.message);
+  template.name = this.name;
+
+  /** @override */
+  this.stack = template.stack || '';
 };
-goog.inherits(bot.Error, goog.debug.Error);
+goog.inherits(bot.Error, Error);
 
 
 /**
  * A map of error codes to error names.
- * @type {Object.<bot.ErrorCode, String>}
+ * @type {!Object.<string>}
  * @const
  * @private
  */
-bot.Error.NAMES_ = goog.object.transpose({
-  'NoSuchElementError': bot.ErrorCode.NO_SUCH_ELEMENT,
-  'NoSuchFrameError': bot.ErrorCode.NO_SUCH_FRAME,
-  'UnknownCommandError': bot.ErrorCode.UNKNOWN_COMMAND,
-  'StaleElementReferenceError': bot.ErrorCode.STALE_ELEMENT_REFERENCE,
-  'ElementNotVisibleError': bot.ErrorCode.ELEMENT_NOT_VISIBLE,
-  'InvalidElementStateError': bot.ErrorCode.INVALID_ELEMENT_STATE,
-  'UnknownError': bot.ErrorCode.UNKNOWN_ERROR,
-  'ElementNotSelectableError': bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-  'XPathLookupError': bot.ErrorCode.XPATH_LOOKUP_ERROR,
-  'NoSuchWindowError': bot.ErrorCode.NO_SUCH_WINDOW,
-  'InvalidCookieDomainError': bot.ErrorCode.INVALID_COOKIE_DOMAIN,
-  'UnableToSetCookieError': bot.ErrorCode.UNABLE_TO_SET_COOKIE,
-  'ModalDialogOpenedError': bot.ErrorCode.MODAL_DIALOG_OPENED,
-  'NoModalDialogOpenError': bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
-  'ScriptTimeoutError': bot.ErrorCode.SCRIPT_TIMEOUT,
-  'InvalidSelectorError': bot.ErrorCode.INVALID_SELECTOR_ERROR,
-  'SqlDatabaseError': bot.ErrorCode.SQL_DATABASE_ERROR,
-  'MoveTargetOutOfBoundsError': bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS
-});
+bot.Error.NAMES_ = goog.object.create(
+    bot.ErrorCode.NO_SUCH_ELEMENT, 'NoSuchElementError',
+    bot.ErrorCode.NO_SUCH_FRAME, 'NoSuchFrameError',
+    bot.ErrorCode.UNKNOWN_COMMAND, 'UnknownCommandError',
+    bot.ErrorCode.STALE_ELEMENT_REFERENCE, 'StaleElementReferenceError',
+    bot.ErrorCode.ELEMENT_NOT_VISIBLE, 'ElementNotVisibleError',
+    bot.ErrorCode.INVALID_ELEMENT_STATE, 'InvalidElementStateError',
+    bot.ErrorCode.UNKNOWN_ERROR, 'UnknownError',
+    bot.ErrorCode.ELEMENT_NOT_SELECTABLE, 'ElementNotSelectableError',
+    bot.ErrorCode.XPATH_LOOKUP_ERROR, 'XPathLookupError',
+    bot.ErrorCode.NO_SUCH_WINDOW, 'NoSuchWindowError',
+    bot.ErrorCode.INVALID_COOKIE_DOMAIN, 'InvalidCookieDomainError',
+    bot.ErrorCode.UNABLE_TO_SET_COOKIE, 'UnableToSetCookieError',
+    bot.ErrorCode.MODAL_DIALOG_OPENED, 'ModalDialogOpenedError',
+    bot.ErrorCode.NO_MODAL_DIALOG_OPEN, 'NoModalDialogOpenError',
+    bot.ErrorCode.SCRIPT_TIMEOUT, 'ScriptTimeoutError',
+    bot.ErrorCode.INVALID_SELECTOR_ERROR, 'InvalidSelectorError',
+    bot.ErrorCode.SQL_DATABASE_ERROR, 'SqlDatabaseError',
+    bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, 'MoveTargetOutOfBoundsError');
 
 
 /**

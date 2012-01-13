@@ -180,12 +180,12 @@
   function testUnknownCharacter() {
     var unknownChar = '\u7231';
     var unknownKey = bot.Keyboard.Key.fromChar(unknownChar).key;
-    var chCode = unknownKey.character.charCodeAt(0);
+    var cc = unknownKey.character.charCodeAt(0);
     assertKeyEvents(unknownKey, false, {
-      GECKO:  {downUp: {key: 0, char: 0}, press: {key:      0, char: chCode}},
-      IE:     {downUp: {key: 0, char: U}, press: {key: chCode, char:      U}},
-      OPERA:  {downUp: {key: 0, char: U}, press: {key: chCode, char:      U}},
-      WEBKIT: {downUp: {key: 0, char: 0}, press: {key: chCode, char: chCode}}
+      GECKO:  {downUp: {key: cc, char: 0}, press: {key:  0, char: cc}},
+      IE:     {downUp: {key: cc, char: U}, press: {key: cc, char:  U}},
+      OPERA:  {downUp: {key: cc, char: U}, press: {key: cc, char:  U}},
+      WEBKIT: {downUp: {key: cc, char: 0}, press: {key: cc, char: cc}}
     });
   }
 

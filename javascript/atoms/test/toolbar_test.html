@@ -38,17 +38,17 @@
     toolbar.setFocusable(true);
     runColorButtonMenuInteractionTest();
   }
-  
+
   function testCanInteractWithColorbuttonMenu_toolbarNotIsFocusable() {
     toolbar.setFocusable(false);
     runColorButtonMenuInteractionTest();
   }
-  
+
   function runColorButtonMenuInteractionTest() {
     bgColorMenu.setValue('#FFF');
 
     bot.action.click(bgColorMenu.getElement());
-    assertTrue(bgColorMenu.isOpen());
+    assertTrue('Menu not opened', bgColorMenu.isOpen());
 
     var actionFired = false;
     goog.events.listenOnce(toolbar, goog.ui.Component.EventType.ACTION,
@@ -60,7 +60,7 @@
 
     assertTrue('Action event not fired!', actionFired);
   }
-  
+
   function getRedSwatch() {
     var colorMenu = bgColorMenu.getMenu();
     var solidPalette = colorMenu.getChildAt(1);

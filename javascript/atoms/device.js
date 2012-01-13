@@ -145,6 +145,7 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
     ctrlKey: false,
     shiftKey: false,
     metaKey: false,
+    wheelDelta: 0,
     relatedTarget: opt_related || null
   };
 
@@ -319,7 +320,7 @@ bot.Device.prototype.focusOnElement = function() {
     // Note that IE8 will hit this branch unless the page is forced into
     // IE8-strict mode. This shouldn't hurt anything, we just use the
     // useragent sniff so we can compile this out for proper browsers.
-    if (goog.userAgent.IE && !goog.userAgent.isVersion(8)) {
+    if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
       goog.dom.getWindow(goog.dom.getOwnerDocument(elementToFocus)).focus();
     }
   }
@@ -330,7 +331,7 @@ bot.Device.prototype.focusOnElement = function() {
     // Opera fires focus events on hidden elements (e.g. that are hidden after
     // mousedown in a click sequence), but as of Opera 11 the focus() command
     // does not, so we fire a focus event on the hidden element explicitly.
-    if (goog.userAgent.OPERA && goog.userAgent.isVersion(11) &&
+    if (goog.userAgent.OPERA && bot.userAgent.isEngineVersion(11) &&
         !bot.dom.isShown(elementToFocus)) {
       bot.events.fire(elementToFocus, bot.events.EventType.FOCUS);
     } else {
@@ -353,10 +354,9 @@ bot.Device.prototype.focusOnElement = function() {
  */
 bot.Device.EXPLICIT_FOLLOW_LINK_ = goog.userAgent.IE ||
     // Normal firefox
-    (goog.userAgent.GECKO && !bot.isFirefoxExtension()) ||
+    (goog.userAgent.GECKO && !bot.userAgent.FIREFOX_EXTENSION) ||
     // Firefox extension prior to Firefox 4
-    (goog.userAgent.GECKO && bot.isFirefoxExtension() &&
-        !bot.userAgent.isVersion(4));
+    (bot.userAgent.FIREFOX_EXTENSION && !bot.userAgent.isProductVersion(4));
 
 
 /**
@@ -366,8 +366,8 @@ bot.Device.EXPLICIT_FOLLOW_LINK_ = goog.userAgent.IE ||
  * @private
  * @const
  */
-bot.Device.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_ = goog.userAgent.GECKO &&
-    bot.isFirefoxExtension() && bot.userAgent.isVersion(4);
+bot.Device.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_ =
+    bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(4);
 
 
 /**
@@ -378,7 +378,7 @@ bot.Device.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_ = goog.userAgent.GECKO &&
  * @private
  */
 bot.Device.SYNTHESISED_EVENTS_CAN_OPEN_JAVASCRIPT_WINDOWS_ =
-    goog.userAgent.GECKO && bot.isFirefoxExtension();
+    bot.userAgent.FIREFOX_EXTENSION;
 
 
 /**
@@ -423,7 +423,7 @@ bot.Device.shouldFollowHref_ = function(element) {
   }
 
   if (goog.userAgent.IE ||
-      (goog.userAgent.GECKO && !bot.isFirefoxExtension())) {
+      (goog.userAgent.GECKO && !bot.userAgent.FIREFOX_EXTENSION)) {
     return true;
   }
 
@@ -460,7 +460,7 @@ bot.Device.followHref_ = function(anchorElement) {
   // we have to resolve the relative URL ourselves. We do not use Closure's
   // goog.Uri to resolve, because it incorrectly fails to support empty but
   // undefined query and fragment components and re-encodes the given url.
-  if (goog.userAgent.IE && !goog.userAgent.isVersion(8)) {
+  if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
     targetHref = bot.Device.resolveUrl_(owner.location, targetHref);
   }
 
@@ -511,7 +511,7 @@ bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasSelected) {
   }
   this.element_.checked = !wasSelected;
   // Only Opera versions < 11 do not fire the change event themselves.
-  if (goog.userAgent.OPERA && !goog.userAgent.isVersion(11)) {
+  if (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) {
     bot.events.fire(this.element_, bot.events.EventType.CHANGE);
   }
 };

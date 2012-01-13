@@ -8,6 +8,7 @@
     goog.require('bot.locators');
     goog.require('bot.test');
     goog.require('bot.window');
+    goog.require('bot.userAgent');
     goog.require('goog');
     goog.require('goog.dom');
     goog.require('goog.events');
@@ -37,9 +38,9 @@
   // window.open will cause a dialog prompt that will cause load failure.
   // For these browsers, we test history in an iframe instead of a popup,
   // which limits the history properties we can reliably check.
-  // TODO(user): Use popups on all browsers once these bugs are fixed.
+  // TODO (user): Use popups on all browsers once these bugs are fixed.
   if (bot.test.isSeleniumBacked() || goog.userAgent.product.ANDROID ||
-      (goog.userAgent.product.OPERA && goog.userAgent.isVersion(11.5))) {
+      (goog.userAgent.OPERA && bot.userAgent.isEngineVersion(11.5))) {
     // A bug in prior versions of WebKit (persisting into Safari 5) causes the
     // initial page of an iframe to not enter the browser history, so we
     // initialize the iframe to a dummy page and the test cases here do not
@@ -129,7 +130,7 @@
       load('testdata/history_page2.html', function() {
         assertThrows(goog.partial(bot.window.back, 3));
         if (!goog.userAgent.OPERA &&
-            (!goog.userAgent.WEBKIT || goog.userAgent.isVersion('533'))) {
+            (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533'))) {
           assertThrows(goog.partial(bot.window.forward, 3));
         }
       });

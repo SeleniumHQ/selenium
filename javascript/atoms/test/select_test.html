@@ -8,6 +8,7 @@
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.locators');
+    goog.require('bot.userAgent');
     goog.require('goog.array');
     goog.require('goog.dom');
     goog.require('goog.events');
@@ -169,7 +170,7 @@
       checkboxes[0].checked = true;
       expectChanges(checkboxes[0]);
       action(checkboxes[0]);
-      assertChanges(goog.userAgent.IE ? 0 : 1);
+      assertChanges(bot.userAgent.IE_DOC_PRE9 ? 0 : 1);
 
       if (!goog.userAgent.IE) {
         expectChanges(checkboxes[1]);
@@ -177,7 +178,7 @@
       action(checkboxes[1]);
       assertChanges(1);
 
-      expectChanges(checkboxes[goog.userAgent.IE ? 1 : 2]);
+      expectChanges(checkboxes[bot.userAgent.IE_DOC_PRE9 ? 1 : 2]);
       action(checkboxes[2]);
       assertChanges(1);
 
@@ -199,7 +200,8 @@
       // IE fires a change event on the next click after the change.
       expectChanges(radioButtons[0]);
       action(radioButtons[0]);
-      assertChanges(goog.userAgent.IE ? 0 : 1);
+      assertChanges(bot.userAgent.IE_DOC_PRE9 ? 0 : 1);
+
       assertTrue(bot.dom.isSelected(radioButtons[0]));
 
       if (!goog.userAgent.IE) {
@@ -209,7 +211,7 @@
       assertChanges(1);
       assertTrue(bot.dom.isSelected(radioButtons[1]));
 
-      expectChanges(radioButtons[goog.userAgent.IE ? 1 : 2]);
+      expectChanges(radioButtons[bot.userAgent.IE_DOC_PRE9 ? 1 : 2]);
       action(radioButtons[2]);
       assertChanges(1);
       assertTrue(bot.dom.isSelected(radioButtons[2]));
@@ -305,8 +307,10 @@
 
       action(elem);
 
-      // WebKit fires a change event even when the checkbox isn't toggled.
-      assertChanges(goog.userAgent.WEBKIT ? 1 : 0);
+      // WebKit and IE9 standards mode fire change events when the
+      // checkbox isn't toggled.
+      assertChanges(
+          goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ? 1 : 0);
       assertFalse(bot.dom.isSelected(elem));
     }
 
@@ -336,7 +340,8 @@
         assertChanges(goog.userAgent.GECKO ? 0 : 1);
         assertTrue(bot.dom.isSelected(elem));
       } else {
-        assertChanges(0);
+        // IE9 standards mode still fires the change event.
+        assertChanges(bot.userAgent.IE_DOC_9 ? 1 : 0);
         assertFalse(bot.dom.isSelected(elem));
       }
     }

@@ -6,6 +6,7 @@
     <script type="text/javascript">
       goog.require('bot.dom');
       goog.require('bot.locators');
+      goog.require('bot.userAgent');
       goog.require('goog.array');
       goog.require('goog.testing.jsunit');
     </script>
@@ -68,7 +69,7 @@
 
       function testEffectiveStyleReturnsQuotedShortMsFilterAsFilter() {
         var e = bot.locators.findElement({id: 'msFilterQuotedFilterShort'});
-        if (goog.userAgent.IE && goog.userAgent.isVersion(8)) {
+        if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8)) {
           assertEquals('alpha(opacity=0)', bot.dom.getInlineStyle(e, 'filter'));
         } else {
           // -ms-filters make sense only on IE.
@@ -78,7 +79,7 @@
 
       function testEffectiveStyleReturnsQuotedLongMsFilterAsFilter() {
         var e = bot.locators.findElement({id: 'msFilterQuotedFilterLong'});
-        if (goog.userAgent.IE && goog.userAgent.isVersion(8)) {
+        if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8)) {
           assertEquals('progid:DXImageTransform.Microsoft.Alpha(Opacity=20)',
               bot.dom.getInlineStyle(e, 'filter'));
         } else {

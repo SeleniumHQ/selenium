@@ -22,6 +22,7 @@
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('bot.userAgent');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -37,11 +38,11 @@
 
       if(!goog.userAgent.IE) {
         runTestSuite(suite, 'others');
-      } else if(goog.userAgent.isVersion(8)) {
+      } else if(bot.userAgent.isEngineVersion(8)) {
         runTestSuite(suite, 'ie8');
-      } else if(goog.userAgent.isVersion(7)) {
+      } else if(bot.userAgent.isEngineVersion(7)) {
         runTestSuite(suite, 'ie7');
-      } else if(goog.userAgent.isVersion(6)) {
+      } else if(bot.userAgent.isEngineVersion(6)) {
         runTestSuite(suite, 'ie6');
       }
     }

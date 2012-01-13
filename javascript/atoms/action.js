@@ -33,6 +33,7 @@ goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.events.EventType');
 goog.require('bot.locators');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -227,7 +228,7 @@ bot.action.submitForm_ = function(form) {
     // (and thus goog.isFunction) doesn't work for form.submit in IE < 8.
     if (!bot.dom.isElement(form.submit)) {
       form.submit();
-    } else if (!goog.userAgent.IE || goog.userAgent.isVersion(8)) {
+    } else if (!goog.userAgent.IE || bot.userAgent.isEngineVersion(8)) {
       (/** @type {Function} */ form.constructor.prototype.submit).call(form);
     } else {
       var idMasks = bot.locators.findElements({'id': 'submit'}, form);
@@ -640,7 +641,7 @@ bot.action.scrollIntoView = function(element, opt_coords) {
     // first --- and so on down to the element itself --- does not work, because
     // Opera 10 apparently treats element.scrollIntoView() as a noop when it
     // immediately follows a scrollIntoView() call on its parent frame.
-    if (goog.userAgent.OPERA && !goog.userAgent.isVersion(11)) {
+    if (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) {
       var win = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
       for (var frame = win.frameElement; frame; frame = win.frameElement) {
         frame.scrollIntoView();

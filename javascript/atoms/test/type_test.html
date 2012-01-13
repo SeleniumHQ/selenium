@@ -7,6 +7,7 @@
     goog.require('bot.action');
     goog.require('bot.events');
     goog.require('bot.Keyboard.Keys');
+    goog.require('bot.userAgent');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.AsyncTestCase');
@@ -20,7 +21,7 @@
     // http://code.google.com/p/selenium/issues/detail?id=3068
     // Most typing test methods below are skipped for these versions.
     var BROKEN_KEYPRESS = goog.userAgent.OPERA &&
-        goog.userAgent.isVersion(11.5);
+        bot.userAgent.isEngineVersion(11.5);
 
     var INPUT_IDS = ['textbox', 'password', 'email', 'search', 'textarea'];
 
@@ -188,7 +189,7 @@
 
       // Firefox 3.0 (which is version 1.9.0.*) always sends an input event
       // on delete in a textbox.
-      if (goog.userAgent.GECKO && !goog.userAgent.isVersion('1.9.1')) {
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.1')) {
         var inputIds = ['textbox', 'password'];
         runTypingTest(['abcd', DELETE, DELETE], 'abcd', 6, 4, inputIds);
         inputIds = ['textarea'];
@@ -317,7 +318,8 @@
       // Although this looks like a platform dependent change, these newlines
       // are what is seen. In particular, the Opera line ending is consistent
       // cross-platform.
-      var newline = (goog.userAgent.IE || goog.userAgent.OPERA) ? '\r\n' : '\n';
+      var newline = (bot.userAgent.IE_DOC_PRE9 || goog.userAgent.OPERA) ?
+          '\r\n' : '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
     }
@@ -386,7 +388,7 @@
      * other browsers, it just executes the function straightaway.
      */
     function continueAfterDelayInIE7(desc, opt_fn) {
-      if (goog.userAgent.IE && !goog.userAgent.isVersion(8)) {
+      if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
         asyncTestCase.waitForAsync('waiting for ' + desc);
         window.setTimeout(function() {
           asyncTestCase.continueTesting();

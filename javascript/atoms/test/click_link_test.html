@@ -7,6 +7,7 @@
   <script type="text/javascript">
     goog.require('bot.action');
     goog.require('bot.locators');
+    goog.require('bot.userAgent');
     goog.require('goog.Uri');
     goog.require('goog.debug.DivConsole');
     goog.require('goog.debug.Logger');
@@ -21,7 +22,7 @@
     goog.require('goog.userAgent.product');
   </script>
   <script type="text/javascript">
-    var FIREFOX6 = goog.userAgent.GECKO && goog.userAgent.isVersion(6);
+    var GECKO6 = goog.userAgent.GECKO && bot.userAgent.isEngineVersion(6);
     var divConsole;
     var iframe, iframeWindow, other, otherWindow;
     var link, link2;
@@ -71,7 +72,7 @@
       // completed, while other browsers complete it on the next event cycle.
       // TODO(user): Remove superfluous link following from device.js and
       // then check whether this longer timeout is still necessary.
-      }, FIREFOX6 ? 250 : 0);
+      }, GECKO6 ? 250 : 0);
     }
 
     function resolveUrl(url) {

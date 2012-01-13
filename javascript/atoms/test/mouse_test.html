@@ -6,6 +6,7 @@
 <script type="text/javascript">
   goog.require('bot.Mouse');
   goog.require('bot.action');
+  goog.require('bot.userAgent');
   goog.require('goog.dom');
   goog.require('goog.events');
   goog.require('goog.events.EventType');
@@ -47,12 +48,12 @@
 
   /**
    * Returns the button value in the object depending on the current useragent.
-   * Returns the 'ie' property of the given object for IE, the 'wk' property
-   * for WebKit, and the 'ff' property for Firefox and Opera.
+   * Returns the 'wk' property for WebKit and IE9 in standards mode, the 'ie'
+   * property for IE, and the 'ff' property for Firefox and Opera.
    */
   function b(button) {
-    return goog.userAgent.IE ? button['ie'] :
-        (goog.userAgent.WEBKIT ? button['wk'] :
+    return bot.userAgent.IE_DOC_9 || goog.userAgent.WEBKIT ? button['wk'] :
+        (goog.userAgent.IE ? button['ie'] :
             button['ff']);  // Firefox or Opera
   }
 
@@ -216,11 +217,9 @@
 
     goog.events.listenOnce(greenDiv, goog.events.EventType.MOUSEOVER,
         function(e) {
-          var relatedTarget =
-            (goog.userAgent.IE) ? window.event.fromElement : e.relatedTarget;
           fired++;
-          assertNull(relatedTarget);
-    });
+          assertNull(e.relatedTarget);
+        });
 
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
 
@@ -233,18 +232,19 @@
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
 
     var fired = 0;
-
-    goog.events.listenOnce(redDiv, goog.events.EventType.MOUSEOVER,
+    var relatedTarget;
+    goog.events.listen(redDiv, goog.events.EventType.MOUSEOVER,
         function(e) {
-          var relatedTarget =
-            (goog.userAgent.IE) ? window.event.fromElement : e.relatedTarget;
           fired++;
-          assertNotNull(relatedTarget);
-          assertFalse(redDiv == relatedTarget);
-    });
+          // Catch the relatedTarget here, but check it below so any errors are
+          // handled correctly in IE.
+          relatedTarget = e.relatedTarget;
+        });
 
     mouse.move(redDiv, new goog.math.Coordinate(5, 5));
-    assertEquals(1, fired);
+    assertEquals('mouseover event not fired', 1, fired);
+    assertNotNull(relatedTarget);
+    assertNotEquals(redDiv, relatedTarget);
   }
 </script>
 <div id="green" style="background-color:green; width:100px; height:50px">

@@ -421,7 +421,7 @@ limitations under the License.
     function testShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow() {
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
-           bot.userAgent.ANDROID_VERSION < 4)) {
+           !bot.userAgent.isProductVersion(4))) {
         // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
         // TODO(user): Don't skip this.
         return;
@@ -460,7 +460,7 @@ limitations under the License.
     function testShouldExecuteScriptsInTheContextOfTheSpecifiedWindow() {
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
-           bot.userAgent.ANDROID_VERSION < 4)) {
+           !bot.userAgent.isProductVersion(4))) {
         // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
         // TODO(user): Don't skip this.
         return;

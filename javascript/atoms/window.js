@@ -24,6 +24,7 @@ goog.provide('bot.window');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
@@ -55,7 +56,7 @@ bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE &&
  * @private
  */
 bot.window.HISTORY_LENGTH_INCLUDES_FORWARD_PAGES_ = !goog.userAgent.OPERA &&
-    (!goog.userAgent.WEBKIT || goog.userAgent.isVersion('533'));
+    (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533'));
 
 
 /**

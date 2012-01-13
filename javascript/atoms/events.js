@@ -50,7 +50,7 @@ bot.events.SUPPORTS_TOUCH_EVENTS = !goog.userAgent.IE && !goog.userAgent.OPERA;
 bot.events.BROKEN_TOUCH_API_ = (function() {
   if (goog.userAgent.product.ANDROID) {
     // Native touch api supported starting in version 4.0 (Ice Cream Sandwich).
-    return bot.userAgent.ANDROID_VERSION < 4;
+    return !bot.userAgent.isProductVersion(4);
   }
   return !bot.userAgent.IOS;
 })();
@@ -74,7 +74,8 @@ bot.events.EventArgs;
  *            ctrlKey: boolean,
  *            shiftKey: boolean,
  *            metaKey: boolean,
- *            relatedTarget: Element}}
+ *            relatedTarget: Element,
+ *            wheelDelta: number}}
  */
 bot.events.MouseArgs;
 
@@ -164,7 +165,7 @@ bot.events.EventFactory_.prototype.create = function(target, opt_args) {
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
-  if (bot.events.IE_NO_W3C_EVENTS_) {
+  if (bot.userAgent.IE_DOC_PRE9) {
     event = doc.createEventObject();
   } else {
     event = doc.createEvent('HTMLEvents');
@@ -211,7 +212,7 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
-  if (bot.events.IE_NO_W3C_EVENTS_) {
+  if (bot.userAgent.IE_DOC_PRE9) {
     event = doc.createEventObject();
     event.altKey = args.altKey;
     event.ctrlKey = args.ctrlKey;
@@ -228,22 +229,60 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
     event.clientX = args.clientX;
     event.clientY = args.clientY;
 
+    // Sets a property of the event object using Object.defineProperty.
+    // Some readonly properties of the IE event object can only be set this way.
+    function setEventProperty(prop, value) {
+      Object.defineProperty(event, prop, {
+        get: function() {
+          return value;
+        }
+      });
+    }
+
     // IE has fromElement and toElement properties, no relatedTarget property.
-    if (this == bot.events.EventType.MOUSEOUT) {
-      event.fromElement = target;
-      event.toElement = args.relatedTarget;
-    } else if (this == bot.events.EventType.MOUSEOVER) {
-      event.fromElement = args.relatedTarget;
-      event.toElement = target;
-    } else {
-      event.fromElement = null;
-      event.toElement = null;
+    // IE does not allow fromElement and toElement to be set directly, but
+    // Object.defineProperty can redefine them, when it is available. Do not
+    // use Object.defineProperties (plural) because it is even less supported.
+    // If defineProperty is unavailable, fall back to setting the relatedTarget,
+    // which many event frameworks, including jQuery and Closure, forgivingly
+    // pass on as the relatedTarget on their event object abstraction.
+    if (this == bot.events.EventType.MOUSEOUT ||
+        this == bot.events.EventType.MOUSEOVER) {
+      if (Object.defineProperty) {
+        var out = (this == bot.events.EventType.MOUSEOUT);
+        setEventProperty('fromElement', out ? target : args.relatedTarget);
+        setEventProperty('toElement', out ? args.relatedTarget : target);
+      } else {
+        event.relatedTarget = args.relatedTarget;
+      }
+    }
+
+    // IE does not allow the wheelDelta property to be set directly,
+    // so we can only do it where defineProperty is supported.
+    if (this == bot.events.EventType.MOUSEWHEEL && Object.defineProperty) {
+      setEventProperty('wheelDelta', args.wheelDelta);
     }
   } else {
     var view = goog.dom.getWindow(doc);
     event = doc.createEvent('MouseEvents');
+
+    // All browser but Firefox provide the wheelDelta value in the event.
+    // Firefox provides the scroll amount in the detail field, where it has the
+    // opposite polarity of the wheelDelta (upward scroll is negative) and is a
+    // factor of 40 less than the wheelDelta value. Opera provides both values.
+    // The wheelDelta value is normally some multiple of 40.
+    var detail = 1;
+    if (this == bot.events.EventType.MOUSEWHEEL) {
+      if (!goog.userAgent.GECKO) {
+        event.wheelDelta = args.wheelDelta;
+      }
+      if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
+        detail = args.wheelDelta / -40;
+      }
+    }
+
     event.initMouseEvent(this.type_, this.bubbles_, this.cancelable_, view,
-        /*detail*/ 1, /*screenX*/ 0, /*screenY*/ 0, args.clientX, args.clientY,
+        detail, /*screenX*/ 0, /*screenY*/ 0, args.clientX, args.clientY,
         args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, args.button,
         args.relatedTarget);
   }
@@ -289,7 +328,7 @@ bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
       event.preventDefault();
     }
   } else {
-    if (bot.events.IE_NO_W3C_EVENTS_) {
+    if (bot.userAgent.IE_DOC_PRE9) {
       event = doc.createEventObject();
     } else {  // WebKit, Opera, and IE 9+ in Standards mode.
       event = doc.createEvent('Events');
@@ -341,7 +380,6 @@ bot.events.TouchEventFactory_.prototype.create = function(target, opt_args) {
   var view = goog.dom.getWindow(doc);
 
   // Creates a TouchList, using native touch Api, for touch events.
-  /** @suppress {missingProperties} */
   function createNativeTouchList(touchListArgs) {
     var touches = goog.array.map(touchListArgs, function(touchArg) {
       return doc.createTouch(view, target, touchArg.identifier,
@@ -446,6 +484,8 @@ bot.events.EventType = {
   MOUSEOUT: new bot.events.MouseEventFactory_('mouseout', true, true),
   MOUSEOVER: new bot.events.MouseEventFactory_('mouseover', true, true),
   MOUSEUP: new bot.events.MouseEventFactory_('mouseup', true, true),
+  MOUSEWHEEL: new bot.events.MouseEventFactory_(
+      goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel', true, true),
 
   // Keyboard events.
   KEYDOWN: new bot.events.KeyboardEventFactory_('keydown', true, true),
@@ -477,7 +517,7 @@ bot.events.fire = function(target, type, opt_args) {
     event.isTrusted = false;
   }
 
-  if (bot.events.IE_NO_W3C_EVENTS_) {
+  if (bot.userAgent.IE_DOC_PRE9) {
     return target.fireEvent('on' + factory.type_, event);
   } else {
     return target.dispatchEvent(event);
@@ -496,15 +536,3 @@ bot.events.isSynthetic = function(event) {
   var e = event.getBrowserEvent ? event.getBrowserEvent() : event;
   return 'isTrusted' in e ? !e.isTrusted : false;
 };
-
-
-/**
- * True if this browser is IE and does not support firing events using the W3C
- * DOM Level 2 dispatchEvent function. dispatchEvent is available only in
- * Standards mode on IE 9+.
- *
- * @type {boolean}
- * @private
- */
-bot.events.IE_NO_W3C_EVENTS_ = goog.userAgent.IE &&
-    (!goog.userAgent.isVersion(9) || !document.dispatchEvent);

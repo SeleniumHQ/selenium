@@ -293,7 +293,12 @@ bot.Keyboard.Key.fromChar = function(ch) {
   }
   var keyShiftPair = bot.Keyboard.CHAR_TO_KEY_[ch];
   if (!keyShiftPair) {
-    var key = bot.Keyboard.newKey_(0, ch.toLowerCase(), ch.toUpperCase());
+    // We don't know the true keycode of non-US keyboard characters, but
+    // ch.toUpperCase().charCodeAt(0) should occasionally be right, and
+    // at least yield a positive number.
+    var upperCase = ch.toUpperCase();
+    var keyCode = upperCase.charCodeAt(0);
+    var key = bot.Keyboard.newKey_(keyCode, ch.toLowerCase(), upperCase);
     keyShiftPair = {key: key, shift: (ch != key.character)};
   }
   return keyShiftPair;
@@ -472,7 +477,7 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
   if (goog.userAgent.WEBKIT) {
     this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
-  if (!goog.userAgent.IE) {
+  if (!bot.userAgent.IE_DOC_PRE9) {
     this.fireHtmlEvent(bot.events.EventType.INPUT);
   }
 };
