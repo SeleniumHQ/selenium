@@ -20,7 +20,7 @@ from selenium.common.exceptions import NoAlertPresentException
 
 import unittest
 
-
+@pytest.mark.ignore_opera
 class AlertsTest(unittest.TestCase):
 
     def testShouldBeAbleToOverrideTheWindowAlertMethod(self):
