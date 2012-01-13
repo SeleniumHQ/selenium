@@ -62,7 +62,7 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
       // On versions of firefox prior to 4 removing a listener may cause
       // subsequent listeners to be skipped. Favouring a memory leak over
       // not working properly.
-      if (bot.userAgent.isVersion('4')) {
+      if (bot.userAgent.isProductVersion('4')) {
         WebLoadingListener.removeListener(this.browser, this);
       }
       this.onComplete(webProgress);
@@ -105,7 +105,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
     // On versions of firefox prior to 4 removing a listener may cause
     // subsequent listeners to be skipped. Favouring a memory leak over
     // not working properly.
-    if (bot.userAgent.isVersion('4')) {
+    if (bot.userAgent.isProductVersion('4')) {
       WebLoadingListener.removeListener(this.browser, listener);
     }
     this.onComplete(webProgress || this.browserProgress);
