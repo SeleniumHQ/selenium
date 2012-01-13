@@ -1132,7 +1132,7 @@ bot.dom.getLocationInView = function(elem, opt_elemRegion) {
  * displayed in the viewport.
  *
  * @param {!Element} element The element to check.
- * @param {!goog.math.Coordinate} opt_coords Coordinate in the element,
+ * @param {!goog.math.Coordinate=} opt_coords Coordinate in the element,
  *     relative to the top-left corner of the element, to check. If none are
  *     specified, checks that any part of the element is in view.
  * @return {boolean} Whether the coordinates specified, relative to the element,
