@@ -256,7 +256,13 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   public AndroidWebDriver(Activity activity, WebViewFactory viewFactory,
       WebViewClient viewClient, WebChromeClient chromeClient,
       View.OnFocusChangeListener focusListener) {
-    
+    this.activity = activity;
+    initDriverState();
+    WebDriverWebView wdview = new WebDriverWebView(this, viewFactory, viewClient, chromeClient,
+        focusListener);
+    newWebView(/*Delete existing windows*/true, wdview);
+    initCookiesState();
+    networkHandler = new NetworkStateHandler(activity, webview);
   }
 
    String getLastUrlLoaded() {
