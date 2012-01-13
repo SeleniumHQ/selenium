@@ -18,6 +18,7 @@
 from firefox.webdriver import WebDriver as Firefox
 from firefox.firefox_profile import FirefoxProfile
 from chrome.webdriver import WebDriver as Chrome
+from chrome.options import Options as ChromeOptions
 from ie.webdriver import WebDriver as Ie
 from opera.webdriver import WebDriver as Opera
 from remote.webdriver import WebDriver as Remote

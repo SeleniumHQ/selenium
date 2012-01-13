@@ -17,10 +17,11 @@
 
 import base64
 import httplib
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import warnings
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from service import Service
+from options import Options
 
 class WebDriver(RemoteWebDriver):
     """
@@ -31,7 +32,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path="chromedriver", port=0,
-                 desired_capabilities=DesiredCapabilities.CHROME):
+                 desired_capabilities=None, chrome_options=None):
         """
         Creates a new instance of the chrome driver.
 
@@ -40,8 +41,21 @@ class WebDriver(RemoteWebDriver):
         :Args:
          - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - port you would like the service to run, if left as 0, a free port will be found.
-         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various chrome switches).
+         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various chrome
+           switches). This is being deprecated, please use chrome_options
+         - chrome_options: this takes an instance of ChromeOptions
         """
+        if chrome_options is None:
+            options = Options()
+        else:
+            options = chrome_options
+
+        if desired_capabilities is not None:
+            warnings.warn("Desired Capabilities has been deprecated, please user chrome_options.", DeprecationWarning)
+            desired_capabilities.update(options.to_capabilities())
+        else:
+            desired_capabilities = options.to_capabilities()
+
         self.service = Service(executable_path, port=port)
         self.service.start()
 
