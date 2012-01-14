@@ -29,7 +29,7 @@ class WebDriver(RemoteWebDriver):
     
     """
 
-    def __init__(self, executable_path=os.environ["SELENIUM_SERVER_JAR"], port=0,
+    def __init__(self, executable_path=None, port=0,
                  desired_capabilities=DesiredCapabilities.OPERA):
         """
         Creates a new instance of the Opera driver.
@@ -42,6 +42,12 @@ class WebDriver(RemoteWebDriver):
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Opera switches).
         """
+        if executable_path is None:
+            try:
+                executable_path = os.environ["SELENIUM_SERVER_JAR"]
+            except:
+                raise Exception("No executable path given, please add one to Environment Variable \
+                'SELENIUM_SERVER_JAR'")
         self.service = Service(executable_path, port=port)
         self.service.start()
 
