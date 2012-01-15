@@ -24,5 +24,6 @@ from opera.webdriver import WebDriver as Opera
 from remote.webdriver import WebDriver as Remote
 from common.desired_capabilities import DesiredCapabilities
 from common.action_chains import ActionChains
+from common.proxy import Proxy
 
 __version__ = '2.16.0'

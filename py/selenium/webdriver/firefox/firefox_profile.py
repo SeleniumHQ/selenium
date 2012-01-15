@@ -21,6 +21,7 @@ import shutil
 import re
 import base64
 from cStringIO import StringIO
+from selenium.webdriver.common.proxy import Proxy
 
 WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
@@ -187,8 +188,33 @@ class FirefoxProfile(object):
         zipped.close()
         return base64.encodestring(fp.getvalue())
 
+    def set_proxy(self, proxy):
+        if proxy is None:
+            raise ValueError("proxy can not be None")
+
+        if proxy.proxy_type is Proxy.ProxyType.UNSPECIFIED:
+            return
+
+        self.set_preference("network.proxy.type", proxy.proxy_type)
+
+        if proxy.proxy_type is Proxy.ProxyType.MANUAL:
+            self.set_preference("network.proxy.no_proxies_on", proxy.no_proxy)
+            self._set_manual_proxy_preference("ftp", proxy.ftp_proxy)
+            self._set_manual_proxy_preference("http", proxy.http_proxy)
+            self._set_manual_proxy_preference("ssl", proxy.ssl_proxy)
+        elif proxy.proxy_type is Proxy.ProxyType.AUTODETECT:
+            self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
 
     #Private Methods
+
+    def _set_manual_proxy_preference(self, key, setting):
+        if setting is None or setting is '':
+            return
+
+        host_details = setting.split(":")
+        self.set_preference("network.proxy.%s" % key, host_details[1][2:])
+        if len(host_details) > 1:
+            self.set_preference("network.proxy.%s_port" % key, int(host_details[2]))
 
     def _create_tempfolder(self):
         """
