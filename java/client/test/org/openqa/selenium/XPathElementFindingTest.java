@@ -107,7 +107,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
 
@@ -120,7 +120,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA})
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     if (TestUtilities.isIe6(driver)) {
       System.out.println("Ignoring xpath error test in IE6");

@@ -424,7 +424,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = {IPHONE},
+  @Ignore(value = {IPHONE, OPERA},
       reason = "iPhone: Frame switching not yet implemented.")
   @JavascriptEnabled
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {

@@ -8,6 +8,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
@@ -61,7 +62,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     assertEquals("line8", driver.findElement(By.id("clicked")).getText());
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, OPERA})
   public void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
     WebElement list = driver.findElement(By.tagName("ul"));

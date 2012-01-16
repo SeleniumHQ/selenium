@@ -537,7 +537,7 @@ public class TypingTest extends AbstractDriverTestCase {
   // and linux, but not on the MAC.
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID}, reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA}, reason = "untested user agents")
   public void testChordControlCutAndPaste() {
     // FIXME: macs don't have HOME keys, would PGUP work?
     if (Platform.getCurrent().is(Platform.MAC)) {
