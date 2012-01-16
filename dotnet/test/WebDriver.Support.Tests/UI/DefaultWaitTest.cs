@@ -15,7 +15,7 @@ namespace OpenQA.Selenium.Support.UI
 
         private int executionCount;
         private DateTime startDate = new DateTime(2011, 1, 1, 13, 30, 0);
-        private object defaultReturnValue = new object();
+        private readonly object defaultReturnValue = new object();
 
         [SetUp]
         public void Setup()
@@ -29,8 +29,8 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void ShouldWaitUntilReturnValueOfConditionIsNotNull()
         {
-            var condition = GetCondition(() => { return defaultReturnValue; },
-                                         () => { return defaultReturnValue; });
+            var condition = GetCondition(() => defaultReturnValue,
+                                         () => defaultReturnValue);
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(true));
 
@@ -45,8 +45,8 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void ShouldWaitUntilABooleanResultIsTrue()
         {
-            var condition = GetCondition(() => { return true; },
-                                         () => { return true; });
+            var condition = GetCondition(() => true,
+                                         () => true);
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(true));
 
@@ -61,8 +61,8 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         [ExpectedException(ExpectedException = typeof(TimeoutException), ExpectedMessage = "Timed out after 0 seconds")]
         public void ChecksTimeoutAfterConditionSoZeroTimeoutWaitsCanSucceed() {
-            var condition = GetCondition(() => { return null; }, 
-                                         () => { return defaultReturnValue; });
+            var condition = GetCondition(() => null, 
+                                         () => defaultReturnValue);
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(false));
 
@@ -74,9 +74,9 @@ namespace OpenQA.Selenium.Support.UI
 
         [Test]
         public void CanIgnoreMultipleExceptions()  {
-            var condition = GetCondition(() => { throw new NoSuchElementException(); return defaultReturnValue; },
-                                         () => { throw new NoSuchFrameException(); return defaultReturnValue; }, 
-                                         () => { return defaultReturnValue; });
+            var condition = GetCondition(() => { throw new NoSuchElementException(); },
+                                         () => { throw new NoSuchFrameException(); }, 
+                                         () => defaultReturnValue);
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(true));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(true));
@@ -93,7 +93,7 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         [ExpectedException(typeof(NoSuchWindowException))]
         public void PropagatesUnIgnoredExceptions() {
-            var condition = GetCondition(() => { throw new NoSuchWindowException(""); return defaultReturnValue; });
+            var condition = GetCondition<object>(() => { throw new NoSuchWindowException(""); });
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(true));
 
@@ -108,7 +108,7 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void TimeoutMessageIncludesLastIgnoredException() {
             NoSuchWindowException ex = new NoSuchWindowException("");
-            var condition = GetCondition(() => { throw ex; return defaultReturnValue; });
+            var condition = GetCondition<object>(() => { throw ex; });
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(false));
 
@@ -132,7 +132,7 @@ namespace OpenQA.Selenium.Support.UI
         [ExpectedException(ExpectedException = typeof(TimeoutException), ExpectedMessage = "Timed out after 0 seconds: Expected custom timeout message")]
         public void TmeoutMessageIncludesCustomMessage()
         {
-            var condition = GetCondition(() => { return false; });
+            var condition = GetCondition(() => false);
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(false));
 
