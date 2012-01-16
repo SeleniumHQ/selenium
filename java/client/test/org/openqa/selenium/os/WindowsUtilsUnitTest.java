@@ -53,13 +53,13 @@ public class WindowsUtilsUnitTest extends TestCase {
   public void testWMIC() {
     if (!WindowsUtils.thisIsWindows()) return;
     if (!isXpOrHigher()) return;
-    assertTrue("wmic should be found", "wmic" != WindowsUtils.findWMIC());
+    assertFalse("wmic should be found", "wmic".equals(WindowsUtils.findWMIC()));
   }
 
   public void testTaskKill() {
     if (!WindowsUtils.thisIsWindows()) return;
     if (!isXpOrHigher()) return;
-    assertTrue("taskkill should be found", "taskkill" != WindowsUtils.findTaskKill());
+    assertFalse("taskkill should be found", "taskkill".equals(WindowsUtils.findTaskKill()));
   }
 
   public void testRegistry() {
