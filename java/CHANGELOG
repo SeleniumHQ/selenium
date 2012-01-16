@@ -1,5 +1,28 @@
+v 2.17.0
+========
+
+WebDriver:
+  * Removed deprecated methods
+  * FIXED: 3152: iWebDriver will auto-play HTML5 video
+  * Fixed issue with permissions on windows caused by wrapping
+  * FIXED: 3154, 3144: Issues launching Firefox 9 due to modal dialog
+  * Adding warning to android apk when used with an incompatible android version (issue 3142)
+  * FIXED: 3167: Sending empty keys to a text field no longer throws
+  * FIXED: 3173: Using ChromeOptions no longer causes stack exhaustion
+  * FIXED: 3169: getAttribute("value") falls back to the text of option tags, if no value attribute is specified
+  * Updated operadriver to version 0.9
+
+RC:
+  * Bumped firefox support up to Firefox 12
+
+Grid:
+  * FIXED: 3161: Thread safety issues
+
+Known issues:
+  * Some issues around scrolling (3075, 3045, 3034)
+
 v2.16.1
-======
+=======
 
 RC:
   * FIXED: 3148: Allow IE to be launched.
