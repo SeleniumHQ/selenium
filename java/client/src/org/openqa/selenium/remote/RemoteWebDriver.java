@@ -130,6 +130,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return sessionId;
   }
 
+  protected void setSessionId(String opaqueKey) {
+    sessionId = new SessionId(opaqueKey);
+  }
+
   @SuppressWarnings({"unchecked"})
   protected void startSession(Capabilities desiredCapabilities) {
     Response response = execute(DriverCommand.NEW_SESSION,
