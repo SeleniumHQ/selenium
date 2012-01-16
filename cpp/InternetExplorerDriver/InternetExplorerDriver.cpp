@@ -123,7 +123,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
     return ERR_FUNCTION_NOT_FOUND;
   }
 
-  start_server_proc(GetPort(argc, argv));
+  int port = GetPort(argc, argv);
+  start_server_proc(port);
+  std::cout << "Listening on port " << port << std::endl;
 
   // Create the shutdown event and wait for it to be signaled.
   HANDLE event_handle = ::CreateEvent(NULL,
