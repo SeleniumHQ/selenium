@@ -1,3 +1,18 @@
+2.17.0 (2012-01-16)
+===================
+
+* Firefox:
+  * Fix excessive unwrapping when switching windows.
+  * Set toolkit.telemetry.{enabled,rejected} in the default Firefox profile.
+  * Support up to version 12 with synthesized events.
+  * Fixed issues launching Firefox 9 due to modal dialog (#3154, #3144)
+* Chrome:
+  * Now accepts a :url option, pointing to an already running Chrome server.
+  * Now accepts a :proxy option (i.e. Selenium::WebDriver::Proxy instance).
+* iPhone:
+  * iWebDriver will auto-play HTML5 video (#3152)
+* Element#attribute("value") falls back to the text of option tags, if no value attribute is specified (#3169)
+
 2.16.0 (2012-01-04)
 ===================
 
