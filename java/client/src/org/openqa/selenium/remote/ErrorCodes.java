@@ -13,6 +13,7 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
@@ -107,6 +108,8 @@ public class ErrorCodes {
         return ImeActivationFailedException.class;
       case NO_ALERT_PRESENT:
         return NoAlertPresentException.class;
+      case UNEXPECTED_ALERT_PRESENT:
+        return UnhandledAlertException.class;
       default:
         return WebDriverException.class;
     }
