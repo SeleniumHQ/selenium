@@ -109,6 +109,15 @@ namespace OpenQA.Selenium.Support.PageObjects
             AssertFindsElementByExactlyOneLookup(page, page.GetField);
         }
 
+        [Test]
+        public void LooksUpOverridenVirtualParentClassElement()
+        {
+            ExpectOneLookup();
+
+            var page = new AbstractChild();
+            AssertFindsElement(page, () => page.element);
+        }
+
         //TODO: Implement FindBys
         //[Test]
         //public void FallsBackOnOtherLocatorsOnFailure()
@@ -248,6 +257,17 @@ namespace OpenQA.Selenium.Support.PageObjects
         private class SubClassToPrivatePage : PrivatePage
         {
             
+        }
+
+        private class AbstractParent
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public virtual IWebElement element { get; set; }
+        }
+
+        private class AbstractChild : AbstractParent
+        {
+            public override IWebElement element { get; set; }
         }
 
         //private class FallsbackPage

@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             
             foreach (var member in members)
             {
-                var attributes = member.GetCustomAttributes(typeof(FindsByAttribute), true);
+                var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
                 foreach (var attribute in attributes)
                 {
                     var castedAttribute = (FindsByAttribute)attribute;
