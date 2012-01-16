@@ -10,7 +10,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Selenium Committers")]
 [assembly: AssemblyProduct("Selenium")]
-[assembly: AssemblyCopyright("Copyright © Software Freedom Conservancy 2011")]
+[assembly: AssemblyCopyright("Copyright © Software Freedom Conservancy 2012")]
 
 // Mark the assembly as CLSCompliant for use with all CLS languages
 [assembly: CLSCompliant(true)]
@@ -21,5 +21,5 @@ using System.Reflection;
 //      Minor Version 
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("2.16.0.0")]
-[assembly: AssemblyFileVersion("2.16.0.0")]
+[assembly: AssemblyVersion("2.17.0.0")]
+[assembly: AssemblyFileVersion("2.17.0.0")]
