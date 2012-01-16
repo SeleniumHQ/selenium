@@ -62,6 +62,11 @@ namespace OpenQA.Selenium.Chrome
             this.service.Dispose();
         }
 
+        /// <summary>
+        /// Executes a command with the ChromeDriver.
+        /// </summary>
+        /// <param name="commandToExecute">The command you wish to execute</param>
+        /// <returns>A response from the browser</returns>
         public override Response Execute(Command commandToExecute)
         {
             Response toReturn = null;

@@ -113,17 +113,6 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified <see cref="ChromeDriverService"/>.
-        /// </summary>
-        /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
-        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        private ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
-            : base(new ChromeCommandExecutor(service, commandTimeout), options.ToCapabilities())
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of the ChromeDriver class using the capabilities.
         /// </summary>
         /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
@@ -153,6 +142,17 @@ namespace OpenQA.Selenium.Chrome
         [Obsolete("Deprecated. Please use constructors using ChromeOptions")]
         public ChromeDriver(string chromeDriverDirectory, ICapabilities capabilities, TimeSpan commandTimeout)
             : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), capabilities, commandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ChromeDriver class using the specified <see cref="ChromeDriverService"/>.
+        /// </summary>
+        /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        private ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
+            : base(new ChromeCommandExecutor(service, commandTimeout), options.ToCapabilities())
         {
         }
 

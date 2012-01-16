@@ -241,7 +241,7 @@ namespace OpenQA.Selenium.Firefox
 
             switch (proxy.Kind)
             {
-                case ProxyKind.Manual:// By default, assume we're proxying the lot
+                case ProxyKind.Manual: // By default, assume we're proxying the lot
                     this.SetPreference("network.proxy.no_proxies_on", string.Empty);
 
                     this.SetManualProxyPreference("ftp", proxy.FtpProxy);
