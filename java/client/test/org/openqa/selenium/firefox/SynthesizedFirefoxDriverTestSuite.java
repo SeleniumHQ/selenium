@@ -20,16 +20,11 @@ package org.openqa.selenium.firefox;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.testing.drivers.Browser;
 
 public class SynthesizedFirefoxDriverTestSuite extends TestSuite {
   public static Test suite() throws Exception {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      return new TestSuite();
-    }
-
     System.setProperty("selenium.browser.native_events", "false");
 
     return new TestSuiteBuilder()
