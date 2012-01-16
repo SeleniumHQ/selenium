@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-LogEntry
+LoggingHandler
 </TITLE>
 
 
@@ -13,7 +13,7 @@ LogEntry
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="LogEntry";
+        parent.document.title="LoggingHandler";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/logging/LogEntry.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="LogEntry.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LoggingHandler.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LoggingHandler.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -87,18 +87,23 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <FONT SIZE="-1">
 org.openqa.selenium.logging</FONT>
 <BR>
-Class LogEntry</H2>
+Class LoggingHandler</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LogEntry</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.util.logging.Handler
+      <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LoggingHandler</B>
 </PRE>
 <HR>
 <DL>
-<DT><PRE>public class <B>LogEntry</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>LoggingHandler</B><DT>extends java.util.logging.Handler</DL>
 </PRE>
 
 <P>
-Represents a single log statement.
+A custom handler used to records log entries.
+
+ This handler queues up log records as they come, up to 10000 records.
+ If it reaches this capacity it will remove the older records
+ from the queue before adding the next one.
 <P>
 
 <P>
@@ -106,24 +111,6 @@ Represents a single log statement.
 
 <P>
 
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#LogEntry(int, long, java.lang.String)">LogEntry</A></B>(int&nbsp;level,
-         long&nbsp;timestamp,
-         java.lang.String&nbsp;message)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
 <!-- ========== METHOD SUMMARY =========== -->
 
 <A NAME="method_summary"><!-- --></A>
@@ -134,35 +121,61 @@ Represents a single log statement.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#getLevel()">getLevel</A></B>()</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html#attachTo(java.util.logging.Logger, java.util.logging.Level)">attachTo</A></B>(java.util.logging.Logger&nbsp;logger,
+         java.util.logging.Level&nbsp;level)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#getMessage()">getMessage</A></B>()</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html#close()">close</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;long</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#getTimestamp()">getTimestamp</A></B>()</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html#flush()">flush</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#toString()">toString</A></B>()</CODE>
+<CODE>static&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging">LoggingHandler</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html#getInstance()">getInstance</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html#getRecords()">getRecords</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html#publish(java.util.logging.LogRecord)">publish</A></B>(java.util.logging.LogRecord&nbsp;logRecord)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.util.logging.Handler"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.util.logging.Handler</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>getEncoding, getErrorManager, getFilter, getFormatter, getLevel, isLoggable, reportError, setEncoding, setErrorManager, setFilter, setFormatter, setLevel</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -171,33 +184,11 @@ Represents a single log statement.
 <TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</CODE></TD>
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
 <P>
-
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="LogEntry(int, long, java.lang.String)"><!-- --></A><H3>
-LogEntry</H3>
-<PRE>
-public <B>LogEntry</B>(int&nbsp;level,
-                long&nbsp;timestamp,
-                java.lang.String&nbsp;message)</PRE>
-<DL>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>level</CODE> - the integer value of the level.<DD><CODE>timestamp</CODE> - long value of the timestamp at which this log entry
-     was created.<DD><CODE>message</CODE> - String the log's message.</DL>
-</DL>
 
 <!-- ============ METHOD DETAIL ========== -->
 
@@ -209,10 +200,10 @@ public <B>LogEntry</B>(int&nbsp;level,
 </TR>
 </TABLE>
 
-<A NAME="getLevel()"><!-- --></A><H3>
-getLevel</H3>
+<A NAME="getInstance()"><!-- --></A><H3>
+getInstance</H3>
 <PRE>
-public int <B>getLevel</B>()</PRE>
+public static <A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging">LoggingHandler</A> <B>getInstance</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -220,10 +211,37 @@ public int <B>getLevel</B>()</PRE>
 </DL>
 <HR>
 
-<A NAME="getTimestamp()"><!-- --></A><H3>
-getTimestamp</H3>
+<A NAME="getRecords()"><!-- --></A><H3>
+getRecords</H3>
 <PRE>
-public long <B>getTimestamp</B>()</PRE>
+public java.util.List&lt;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&gt; <B>getRecords</B>()</PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>an unmodifiable list of LogEntry.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="publish(java.util.logging.LogRecord)"><!-- --></A><H3>
+publish</H3>
+<PRE>
+public void <B>publish</B>(java.util.logging.LogRecord&nbsp;logRecord)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>publish</CODE> in class <CODE>java.util.logging.Handler</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="attachTo(java.util.logging.Logger, java.util.logging.Level)"><!-- --></A><H3>
+attachTo</H3>
+<PRE>
+public void <B>attachTo</B>(java.util.logging.Logger&nbsp;logger,
+                     java.util.logging.Level&nbsp;level)</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -231,27 +249,33 @@ public long <B>getTimestamp</B>()</PRE>
 </DL>
 <HR>
 
-<A NAME="getMessage()"><!-- --></A><H3>
-getMessage</H3>
+<A NAME="flush()"><!-- --></A><H3>
+flush</H3>
 <PRE>
-public java.lang.String <B>getMessage</B>()</PRE>
+public void <B>flush</B>()</PRE>
 <DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>flush</CODE> in class <CODE>java.util.logging.Handler</CODE></DL>
+</DD>
 <DD><DL>
 </DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="toString()"><!-- --></A><H3>
-toString</H3>
+<A NAME="close()"><!-- --></A><H3>
+close</H3>
 <PRE>
-public java.lang.String <B>toString</B>()</PRE>
+public void <B>close</B>()
+           throws java.lang.SecurityException</PRE>
 <DL>
 <DD><DL>
-<DT><B>Overrides:</B><DD><CODE>toString</CODE> in class <CODE>java.lang.Object</CODE></DL>
+<DT><B>Specified by:</B><DD><CODE>close</CODE> in class <CODE>java.util.logging.Handler</CODE></DL>
 </DD>
 <DD><DL>
-</DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.SecurityException</CODE></DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -284,11 +308,11 @@ public java.lang.String <B>toString</B>()</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/logging/LogEntry.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="LogEntry.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LoggingHandler.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LoggingHandler.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -305,9 +329,9 @@ public java.lang.String <B>toString</B>()</PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

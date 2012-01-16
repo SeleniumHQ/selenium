@@ -1,0 +1,1246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<TITLE>
+AndroidWebDriver
+</TITLE>
+
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="AndroidWebDriver";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidLogs.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebElement.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/AndroidWebDriver.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AndroidWebDriver.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+org.openqa.selenium.android.library</FONT>
+<BR>
+Class AndroidWebDriver</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.AndroidWebDriver</B>
+</PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></DD>
+</DL>
+<HR>
+<DL>
+<DT><PRE>public class <B>AndroidWebDriver</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></DL>
+</PRE>
+
+<P>
+<HR>
+
+<P>
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+
+<A NAME="nested_class_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Nested Class Summary</B></FONT></TH>
+</TR>
+</TABLE>
+&nbsp;<A NAME="nested_classes_inherited_from_class_org.openqa.selenium.WebDriver"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Nested classes/interfaces inherited from interface org.openqa.selenium.<A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.ImeHandler.html" title="interface in org.openqa.selenium">WebDriver.ImeHandler</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</A></CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#AndroidWebDriver(android.app.Activity)">AndroidWebDriver</A></B>(android.app.Activity&nbsp;activity)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this contructor to use WebDriver with a WebView that has the same settings as
+ the Android browser.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient)">AndroidWebDriver</A></B>(android.app.Activity&nbsp;activity,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
+                 android.webkit.WebViewClient&nbsp;viewClient,
+                 android.webkit.WebChromeClient&nbsp;chromeClient)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this constructor to use WebDriver with a custom WebView.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient, android.view.View.OnFocusChangeListener)">AndroidWebDriver</A></B>(android.app.Activity&nbsp;activity,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
+                 android.webkit.WebViewClient&nbsp;viewClient,
+                 android.webkit.WebChromeClient&nbsp;chromeClient,
+                 android.view.View.OnFocusChangeListener&nbsp;focusListener)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this constructor to use WebDriver with a custom WebView and a custom
+ View.OnFocusChangeListener for that WebView..</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#close()">close</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close the current window, quitting the browser if it's the last window currently open.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.Object</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#executeAsyncScript(java.lang.String, java.lang.Object...)">executeAsyncScript</A></B>(java.lang.String&nbsp;script,
+                   java.lang.Object...&nbsp;args)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
+ window.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.Object</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#executeScript(java.lang.String, java.lang.Object...)">executeScript</A></B>(java.lang.String&nbsp;script,
+              java.lang.Object...&nbsp;args)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Executes JavaScript in the context of the currently selected frame or window.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#findElement(org.openqa.selenium.By)">findElement</A></B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;by)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find the first <A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><CODE>WebElement</CODE></A> using the given method.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.List&lt;<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#findElements(org.openqa.selenium.By)">findElements</A></B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;by)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find all elements within the current page using the given mechanism.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#get(java.lang.String)">get</A></B>(java.lang.String&nbsp;url)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load a new web page in the current browser window.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getAcceptSslCerts()">getAcceptSslCerts</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;android.app.Activity</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getActivity()">getActivity</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getCurrentUrl()">getCurrentUrl</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get a string representing the current URL that the browser is looking at.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getLocalStorage()">getLocalStorage</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getOrientation()">getOrientation</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getPageSource()">getPageSource</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the source of the last loaded page.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
+<TR ALIGN="right" VALIGN="">
+<TD NOWRAP><FONT SIZE="-1">
+<CODE>&lt;X&gt; X</CODE></FONT></TD>
+</TR>
+</TABLE>
+</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</A></B>(<A HREF="../../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</A>&lt;X&gt;&nbsp;target)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Capture the screenshot and store it in the specified location.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getSessionStorage()">getSessionStorage</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getTitle()">getTitle</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The title of the current page.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">TouchScreen</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getTouch()">getTouch</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;android.webkit.WebView</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getWebView()">getWebView</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getWindowHandle()">getWindowHandle</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return an opaque handle to this window that uniquely identifies it within this driver instance.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.Set&lt;java.lang.String&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getWindowHandles()">getWindowHandles</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return a set of window handles which can be used to iterate over all open windows of this
+ webdriver instance by passing them to <CODE>#switchTo().window(String)</CODE></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#isJavascriptEnabled()">isJavascriptEnabled</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#isOnline()">isOnline</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#location()">location</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the physical location of the browser.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#manage()">manage</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the Option interface</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#navigate()">navigate</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An abstraction allowing the driver to access the browser's history and to navigate to a given
+ URL.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;java.lang.Object</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#processJsonObject(java.lang.Object)">processJsonObject</A></B>(java.lang.Object&nbsp;res)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#quit()">quit</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quits this driver, closing every associated window.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#rotate(org.openqa.selenium.ScreenOrientation)">rotate</A></B>(<A HREF="../../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</A>&nbsp;orientation)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changes the orientation of the browser window.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#setAcceptSslCerts(boolean)">setAcceptSslCerts</A></B>(boolean&nbsp;accept)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#setLocation(org.openqa.selenium.html5.Location)">setLocation</A></B>(<A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A>&nbsp;loc)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the physical location.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#setOnline(boolean)">setOnline</A></B>(boolean&nbsp;online)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changes the application online state.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#setProxy(java.lang.String, int)">setProxy</A></B>(java.lang.String&nbsp;host,
+         int&nbsp;port)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#switchTo()">switchTo</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Send future commands to a different frame or window.</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="AndroidWebDriver(android.app.Activity)"><!-- --></A><H3>
+AndroidWebDriver</H3>
+<PRE>
+public <B>AndroidWebDriver</B>(android.app.Activity&nbsp;activity)</PRE>
+<DL>
+<DD>Use this contructor to use WebDriver with a WebView that has the same settings as
+ the Android browser.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>activity</CODE> - the activity context where the WebView will be created.</DL>
+</DL>
+<HR>
+
+<A NAME="AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient)"><!-- --></A><H3>
+AndroidWebDriver</H3>
+<PRE>
+public <B>AndroidWebDriver</B>(android.app.Activity&nbsp;activity,
+                        <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
+                        android.webkit.WebViewClient&nbsp;viewClient,
+                        android.webkit.WebChromeClient&nbsp;chromeClient)</PRE>
+<DL>
+<DD>Use this constructor to use WebDriver with a custom WebView.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>activity</CODE> - the activity context where the WebView will be created.<DD><CODE>viewFactory</CODE> - a implementation of the WebViewFactory interface. WebDriver will
+     use this creation mechanism to create WebViews when needed (when clicking on a link
+     that opens a new window for instance).<DD><CODE>viewClient</CODE> - the WebViewClient used by the custom WebView. WebDriver will instrument
+     the WebViewClient used by the custom WebView to detect certain events.<DD><CODE>chromeClient</CODE> - the WebChromeClient used by the custom WebView. WebDriver will
+     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
+     WebDriver will take care of the Window creation and destruction, so it is not advised
+     to override onCloseWindow and onCreateWindow to do window management.</DL>
+</DL>
+<HR>
+
+<A NAME="AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient, android.view.View.OnFocusChangeListener)"><!-- --></A><H3>
+AndroidWebDriver</H3>
+<PRE>
+public <B>AndroidWebDriver</B>(android.app.Activity&nbsp;activity,
+                        <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
+                        android.webkit.WebViewClient&nbsp;viewClient,
+                        android.webkit.WebChromeClient&nbsp;chromeClient,
+                        android.view.View.OnFocusChangeListener&nbsp;focusListener)</PRE>
+<DL>
+<DD>Use this constructor to use WebDriver with a custom WebView and a custom
+ View.OnFocusChangeListener for that WebView..
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>activity</CODE> - the activity context where the WebView will be created.<DD><CODE>viewFactory</CODE> - a implementation of the WebViewFactory interface. WebDriver will
+     use this creation mechanism to create WebViews when needed (when clicking on a link
+     that opens a new window for instance).<DD><CODE>viewClient</CODE> - the WebViewClient used by the custom WebView. WebDriver will instrument
+     the WebViewClient used by the custom WebView to detect certain events.<DD><CODE>chromeClient</CODE> - the WebChromeClient used by the custom WebView. WebDriver will
+     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
+     WebDriver will take care of the Window creation and destruction, so it is not advised
+     to override onCloseWindow and onCreateWindow to do window management.<DD><CODE>focusListener</CODE> - the listener used by the WebView that will be created by the viewFactory.</DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="setAcceptSslCerts(boolean)"><!-- --></A><H3>
+setAcceptSslCerts</H3>
+<PRE>
+public void <B>setAcceptSslCerts</B>(boolean&nbsp;accept)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getAcceptSslCerts()"><!-- --></A><H3>
+getAcceptSslCerts</H3>
+<PRE>
+public boolean <B>getAcceptSslCerts</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getWebView()"><!-- --></A><H3>
+getWebView</H3>
+<PRE>
+public android.webkit.WebView <B>getWebView</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getActivity()"><!-- --></A><H3>
+getActivity</H3>
+<PRE>
+public android.app.Activity <B>getActivity</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getCurrentUrl()"><!-- --></A><H3>
+getCurrentUrl</H3>
+<PRE>
+public java.lang.String <B>getCurrentUrl</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getCurrentUrl()">WebDriver</A></CODE></B></DD>
+<DD>Get a string representing the current URL that the browser is looking at.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getCurrentUrl()">getCurrentUrl</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>The URL of the page currently loaded in the browser</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getTitle()"><!-- --></A><H3>
+getTitle</H3>
+<PRE>
+public java.lang.String <B>getTitle</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getTitle()">WebDriver</A></CODE></B></DD>
+<DD>The title of the current page.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getTitle()">getTitle</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>The title of the current page, with leading and trailing whitespace stripped, or null
+         if one is not already set</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="get(java.lang.String)"><!-- --></A><H3>
+get</H3>
+<PRE>
+public void <B>get</B>(java.lang.String&nbsp;url)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#get(java.lang.String)">WebDriver</A></CODE></B></DD>
+<DD>Load a new web page in the current browser window. This is done using an HTTP GET operation,
+ and the method will block until the load is complete. This will follow redirects issued either
+ by the server or as a meta-redirect from within the returned HTML. Should a meta-redirect
+ "rest" for any duration of time, it is best to wait until this timeout is over, since should
+ the underlying page change whilst your test is executing the results of future calls against
+ this interface will be against the freshly loaded page. Synonym for
+ <A HREF="../../../../../org/openqa/selenium/WebDriver.Navigation.html#to(java.lang.String)"><CODE>WebDriver.Navigation.to(String)</CODE></A>.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#get(java.lang.String)">get</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>url</CODE> - The URL to load. It is best to use a fully qualified URL</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getPageSource()"><!-- --></A><H3>
+getPageSource</H3>
+<PRE>
+public java.lang.String <B>getPageSource</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getPageSource()">WebDriver</A></CODE></B></DD>
+<DD>Get the source of the last loaded page. If the page has been modified after loading (for
+ example, by Javascript) there is no guarentee that the returned text is that of the modified
+ page. Please consult the documentation of the particular driver being used to determine whether
+ the returned text reflects the current state of the page or the text last sent by the web
+ server. The page source returned is a representation of the underlying DOM: do not expect it to
+ be formatted or escaped in the same way as the response sent from the web server.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getPageSource()">getPageSource</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>The source of the current page</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="close()"><!-- --></A><H3>
+close</H3>
+<PRE>
+public void <B>close</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#close()">WebDriver</A></CODE></B></DD>
+<DD>Close the current window, quitting the browser if it's the last window currently open.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#close()">close</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="quit()"><!-- --></A><H3>
+quit</H3>
+<PRE>
+public void <B>quit</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#quit()">WebDriver</A></CODE></B></DD>
+<DD>Quits this driver, closing every associated window.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#quit()">quit</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="findElement(org.openqa.selenium.By)"><!-- --></A><H3>
+findElement</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A> <B>findElement</B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;by)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)">WebDriver</A></CODE></B></DD>
+<DD>Find the first <A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><CODE>WebElement</CODE></A> using the given method.
+ This method is affected by the 'implicit wait' times in force at the time of execution.
+ The findElement(..) invocation will return a matching row, or try again repeatedly until 
+ the configured timeout is reached.
+
+ findElement should not be used to look for non-present elements, use <A HREF="../../../../../org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)"><CODE>WebDriver.findElements(By)</CODE></A>
+ and assert zero length response instead.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/SearchContext.html#findElement(org.openqa.selenium.By)">findElement</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A></CODE><DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#findElement(org.openqa.selenium.By)">findElement</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>by</CODE> - The locating mechanism
+<DT><B>Returns:</B><DD>The first matching element on the current page<DT><B>See Also:</B><DD><A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium"><CODE>By</CODE></A>, 
+<A HREF="../../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><CODE>WebDriver.Timeouts</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="findElements(org.openqa.selenium.By)"><!-- --></A><H3>
+findElements</H3>
+<PRE>
+public java.util.List&lt;<A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A>&gt; <B>findElements</B>(<A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</A>&nbsp;by)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)">WebDriver</A></CODE></B></DD>
+<DD>Find all elements within the current page using the given mechanism.
+ This method is affected by the 'implicit wait' times in force at the time of execution. When
+ implicitly waiting, this method will return as soon as there are more than 0 items in the
+ found collection, or will return an empty list if the timeout is reached.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/SearchContext.html#findElements(org.openqa.selenium.By)">findElements</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A></CODE><DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#findElements(org.openqa.selenium.By)">findElements</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>by</CODE> - The locating mechanism to use
+<DT><B>Returns:</B><DD>A list of all <A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><CODE>WebElement</CODE></A>s, or an empty list if nothing matches<DT><B>See Also:</B><DD><A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium"><CODE>By</CODE></A>, 
+<A HREF="../../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><CODE>WebDriver.Timeouts</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getWindowHandles()"><!-- --></A><H3>
+getWindowHandles</H3>
+<PRE>
+public java.util.Set&lt;java.lang.String&gt; <B>getWindowHandles</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getWindowHandles()">WebDriver</A></CODE></B></DD>
+<DD>Return a set of window handles which can be used to iterate over all open windows of this
+ webdriver instance by passing them to <CODE>#switchTo().window(String)</CODE>
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getWindowHandles()">getWindowHandles</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>A set of window handles which can be used to iterate over all open windows.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getWindowHandle()"><!-- --></A><H3>
+getWindowHandle</H3>
+<PRE>
+public java.lang.String <B>getWindowHandle</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getWindowHandle()">WebDriver</A></CODE></B></DD>
+<DD>Return an opaque handle to this window that uniquely identifies it within this driver instance.
+ This can be used to switch to this window at a later date
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getWindowHandle()">getWindowHandle</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="switchTo()"><!-- --></A><H3>
+switchTo</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</A> <B>switchTo</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#switchTo()">WebDriver</A></CODE></B></DD>
+<DD>Send future commands to a different frame or window.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#switchTo()">switchTo</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>A TargetLocator which can be used to select a frame or window<DT><B>See Also:</B><DD><A HREF="../../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium"><CODE>WebDriver.TargetLocator</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getLocalStorage()"><!-- --></A><H3>
+getLocalStorage</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</A> <B>getLocalStorage</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html#getLocalStorage()">getLocalStorage</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getSessionStorage()"><!-- --></A><H3>
+getSessionStorage</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</A> <B>getSessionStorage</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html#getSessionStorage()">getSessionStorage</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="navigate()"><!-- --></A><H3>
+navigate</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</A> <B>navigate</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#navigate()">WebDriver</A></CODE></B></DD>
+<DD>An abstraction allowing the driver to access the browser's history and to navigate to a given
+ URL.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#navigate()">navigate</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>A <A HREF="../../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium"><CODE>WebDriver.Navigation</CODE></A> that allows the selection of what to
+         do next</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="isJavascriptEnabled()"><!-- --></A><H3>
+isJavascriptEnabled</H3>
+<PRE>
+public boolean <B>isJavascriptEnabled</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="executeScript(java.lang.String, java.lang.Object...)"><!-- --></A><H3>
+executeScript</H3>
+<PRE>
+public java.lang.Object <B>executeScript</B>(java.lang.String&nbsp;script,
+                                      java.lang.Object...&nbsp;args)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html#executeScript(java.lang.String, java.lang.Object...)">JavascriptExecutor</A></CODE></B></DD>
+<DD>Executes JavaScript in the context of the currently selected frame or window. The script
+ fragment provided will be executed as the body of an anonymous function.
+ 
+ <p>
+ Within the script, use <code>document</code> to refer to the current document. Note that local
+ variables will not be available once the script has finished executing, though global variables
+ will persist.
+ 
+ <p>
+ If the script has a return value (i.e. if the script contains a <code>return</code> statement),
+ then the following steps will be taken:
+ 
+ <ul>
+ <li>For an HTML element, this method returns a WebElement</li>
+ <li>For a decimal, a Double is returned</li>
+ <li>For a non-decimal number, a Long is returned</li>
+ <li>For a boolean, a Boolean is returned</li>
+ <li>For all other cases, a String is returned.</li>
+ <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
+ support nested lists.</li>
+ <li>Unless the value is null or there is no return value, in which null is returned</li>
+ </ul>
+ 
+ <p>
+ Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
+ the above. An exception will be thrown if the arguments do not meet these criteria. The
+ arguments will be made available to the JavaScript via the "arguments" magic variable, as if
+ the function were called via "Function.apply"
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html#executeScript(java.lang.String, java.lang.Object...)">executeScript</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>script</CODE> - The JavaScript to execute<DD><CODE>args</CODE> - The arguments to the script. May be empty
+<DT><B>Returns:</B><DD>One of Boolean, Long, String, List or WebElement. Or null.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="executeAsyncScript(java.lang.String, java.lang.Object...)"><!-- --></A><H3>
+executeAsyncScript</H3>
+<PRE>
+public java.lang.Object <B>executeAsyncScript</B>(java.lang.String&nbsp;script,
+                                           java.lang.Object...&nbsp;args)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String, java.lang.Object...)">JavascriptExecutor</A></CODE></B></DD>
+<DD>Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
+ window. Unlike executing <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html#executeScript(java.lang.String, java.lang.Object...)"><CODE>synchronous JavaScript</CODE></A>,
+ scripts executed with this method must explicitly signal they are finished by invoking the
+ provided callback. This callback is always injected into the executed function as the last
+ argument.
+ 
+ <p>
+ The first argument passed to the callback function will be used as the script's result. This
+ value will be handled as follows:
+ 
+ <ul>
+ <li>For an HTML element, this method returns a WebElement</li>
+ <li>For a number, a Long is returned</li>
+ <li>For a boolean, a Boolean is returned</li>
+ <li>For all other cases, a String is returned.</li>
+ <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
+ support nested lists.</li>
+ <li>Unless the value is null or there is no return value, in which null is returned</li>
+ </ul>
+ 
+ <p>
+ Example #1: Performing a sleep in the browser under test. <code><pre>
+   long start = System.currentTimeMillis();
+   ((JavascriptExecutor) driver).executeAsyncScript(
+       "window.setTimeout(arguments[arguments.length - 1], 500);");
+   System.out.println(
+       "Elapsed time: " + System.currentTimeMillis() - start);
+ </pre></code>
+ 
+ <p>
+ Example #2: Synchronizing a test with an AJAX application: <code><pre>
+   WebElement composeButton = driver.findElement(By.id("compose-button"));
+   composeButton.click();
+   ((JavascriptExecutor) driver).executeAsyncScript(
+       "var callback = arguments[arguments.length - 1];" +
+       "mailClient.getComposeWindowWidget().onload(callback);");
+   driver.switchTo().frame("composeWidget");
+   driver.findElement(By.id("to")).sendKeys("bog@example.com");
+ </pre></code>
+ 
+ <p>
+ Example #3: Injecting a XMLHttpRequest and waiting for the result: <code><pre>
+   Object response = ((JavascriptExecutor) driver).executeAsyncScript(
+       "var callback = arguments[arguments.length - 1];" +
+       "var xhr = new XMLHttpRequest();" +
+       "xhr.open('GET', '/resource/data.json', true);" +
+       "xhr.onreadystatechange = function() {" +
+       "  if (xhr.readyState == 4) {" +
+       "    callback(xhr.responseText);" +
+       "  }" +
+       "}" +
+       "xhr.send();");
+   JSONObject json = new JSONObject((String) response);
+   assertEquals("cheese", json.getString("food"));
+ </pre></code>
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String, java.lang.Object...)">executeAsyncScript</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>script</CODE> - The JavaScript to execute.<DD><CODE>args</CODE> - The arguments to the script. May be empty.
+<DT><B>Returns:</B><DD>One of Boolean, Long, String, List, WebElement, or null.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="processJsonObject(java.lang.Object)"><!-- --></A><H3>
+processJsonObject</H3>
+<PRE>
+protected java.lang.Object <B>processJsonObject</B>(java.lang.Object&nbsp;res)
+                                      throws org.json.JSONException</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>org.json.JSONException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setProxy(java.lang.String, int)"><!-- --></A><H3>
+setProxy</H3>
+<PRE>
+public void <B>setProxy</B>(java.lang.String&nbsp;host,
+                     int&nbsp;port)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="manage()"><!-- --></A><H3>
+manage</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</A> <B>manage</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#manage()">WebDriver</A></CODE></B></DD>
+<DD>Gets the Option interface
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#manage()">manage</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>An option interface<DT><B>See Also:</B><DD><A HREF="../../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium"><CODE>WebDriver.Options</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="location()"><!-- --></A><H3>
+location</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A> <B>location</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#location()">LocationContext</A></CODE></B></DD>
+<DD>Gets the physical location of the browser.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#location()">location</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>A <A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5"><CODE>Location</CODE></A> containing the location information. Returns null if the location is
+         not available</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setLocation(org.openqa.selenium.html5.Location)"><!-- --></A><H3>
+setLocation</H3>
+<PRE>
+public void <B>setLocation</B>(<A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A>&nbsp;loc)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">LocationContext</A></CODE></B></DD>
+<DD>Sets the physical location.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">setLocation</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>loc</CODE> - A <A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5"><CODE>Location</CODE></A> containing the new location information</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getScreenshotAs(org.openqa.selenium.OutputType)"><!-- --></A><H3>
+getScreenshotAs</H3>
+<PRE>
+public &lt;X&gt; X <B>getScreenshotAs</B>(<A HREF="../../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</A>&lt;X&gt;&nbsp;target)
+                  throws <A HREF="../../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">TakesScreenshot</A></CODE></B></DD>
+<DD>Capture the screenshot and store it in the specified location.
+
+ <p>For WebDriver extending TakesScreenshot, this makes a best effort
+ depending on the browser to return the following in order of preference:
+   - Entire page
+   - Current window
+   - Visible portion of the current frame
+   - The screenshot of the entire display containing the browser
+
+ <p>For WebElement extending TakesScreenshot, this makes a best effort
+ depending on the browser to return the following in order of preference:
+   - The entire content of the HTML element
+   - The visisble portion of the HTML element
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Type Parameters:</B><DD><CODE>X</CODE> - Return type for getScreenshotAs.<DT><B>Parameters:</B><DD><CODE>target</CODE> - target type, @see OutputType
+<DT><B>Returns:</B><DD>Object in which is stored information about the screenshot.
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></CODE> - on failure.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getOrientation()"><!-- --></A><H3>
+getOrientation</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</A> <B>getOrientation</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/Rotatable.html#getOrientation()">getOrientation</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>the current screen orientation of the browser</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="rotate(org.openqa.selenium.ScreenOrientation)"><!-- --></A><H3>
+rotate</H3>
+<PRE>
+public void <B>rotate</B>(<A HREF="../../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</A>&nbsp;orientation)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/Rotatable.html#rotate(org.openqa.selenium.ScreenOrientation)">Rotatable</A></CODE></B></DD>
+<DD>Changes the orientation of the browser window.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/Rotatable.html#rotate(org.openqa.selenium.ScreenOrientation)">rotate</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>orientation</CODE> - the desired screen orientation</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="isOnline()"><!-- --></A><H3>
+isOnline</H3>
+<PRE>
+public boolean <B>isOnline</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html#isOnline()">isOnline</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>true if the application is online, false otherwise</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setOnline(boolean)"><!-- --></A><H3>
+setOnline</H3>
+<PRE>
+public void <B>setOnline</B>(boolean&nbsp;online)
+               throws <A HREF="../../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html#setOnline(boolean)">BrowserConnection</A></CODE></B></DD>
+<DD>Changes the application online state.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html#setOnline(boolean)">setOnline</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>online</CODE> - A boolean representing the state
+<DT><B>Throws:</B>
+<DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getTouch()"><!-- --></A><H3>
+getTouch</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">TouchScreen</A> <B>getTouch</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html#getTouch()">getTouch</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidLogs.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebElement.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/AndroidWebDriver.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AndroidWebDriver.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+
+</BODY>
+</HTML>

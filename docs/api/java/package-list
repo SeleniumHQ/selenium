@@ -2,6 +2,7 @@ com.thoughtworks.selenium
 com.thoughtworks.selenium.condition
 org.openqa.selenium
 org.openqa.selenium.android
+org.openqa.selenium.android.library
 org.openqa.selenium.browserlaunchers
 org.openqa.selenium.browserlaunchers.locators
 org.openqa.selenium.chrome

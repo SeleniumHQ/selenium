@@ -3,17 +3,17 @@
 <HTML>
 <HEAD>
 <TITLE>
-BrowserConnection
+WebViewFactory
 </TITLE>
 
 
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
 
 <SCRIPT type="text/javascript">
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="BrowserConnection";
+        parent.document.title="WebViewFactory";
     }
 }
 </SCRIPT>
@@ -35,13 +35,13 @@ function windowTitle()
 <A NAME="navbar_top_firstrow"><!-- --></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
   <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
 </TABLE>
 </TD>
@@ -52,20 +52,20 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/html5/DatabaseStorage.html" title="interface in org.openqa.selenium.html5"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/Logger.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/html5/BrowserConnection.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="BrowserConnection.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/WebViewFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WebViewFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
   }
   //-->
 </SCRIPT>
 <NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
 </NOSCRIPT>
 
 
@@ -85,19 +85,21 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.html5</FONT>
+org.openqa.selenium.android.library</FONT>
 <BR>
-Interface BrowserConnection</H2>
+Interface WebViewFactory</H2>
 <DL>
-<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../org/openqa/selenium/android/AndroidDriver.html" title="class in org.openqa.selenium.android">AndroidDriver</A>, <A HREF="../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A></DD>
+<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../org/openqa/selenium/android/library/DefaultWebViewFactory.html" title="class in org.openqa.selenium.android.library">DefaultWebViewFactory</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public interface <B>BrowserConnection</B></DL>
+<DT><PRE>public interface <B>WebViewFactory</B></DL>
 </PRE>
 
 <P>
-Represents the connection state of the application.
+This interface should be implemented when using WebDriver with custom WebViews.
+ WebDriver will call the createNewView method to create new WebViews when needed,
+ for instance when cliking on a link that opens a new window.
 <P>
 
 <P>
@@ -115,19 +117,11 @@ Represents the connection state of the application.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/html5/BrowserConnection.html#isOnline()">isOnline</A></B>()</CODE>
+<CODE>&nbsp;android.webkit.WebView</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html#createNewView(android.app.Activity)">createNewView</A></B>(android.app.Activity&nbsp;activity)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/html5/BrowserConnection.html#setOnline(boolean)">setOnline</A></B>(boolean&nbsp;online)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changes the application online state.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -143,30 +137,13 @@ Represents the connection state of the application.
 </TR>
 </TABLE>
 
-<A NAME="isOnline()"><!-- --></A><H3>
-isOnline</H3>
+<A NAME="createNewView(android.app.Activity)"><!-- --></A><H3>
+createNewView</H3>
 <PRE>
-boolean <B>isOnline</B>()</PRE>
+android.webkit.WebView <B>createNewView</B>(android.app.Activity&nbsp;activity)</PRE>
 <DL>
 <DD><DL>
-
-<DT><B>Returns:</B><DD>true if the application is online, false otherwise</DL>
-</DD>
 </DL>
-<HR>
-
-<A NAME="setOnline(boolean)"><!-- --></A><H3>
-setOnline</H3>
-<PRE>
-void <B>setOnline</B>(boolean&nbsp;online)
-               throws <A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></PRE>
-<DL>
-<DD>Changes the application online state.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>online</CODE> - A boolean representing the state
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></CODE></DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -182,13 +159,13 @@ void <B>setOnline</B>(boolean&nbsp;online)
 <A NAME="navbar_bottom_firstrow"><!-- --></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
   <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
   <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
   </TR>
 </TABLE>
 </TD>
@@ -199,20 +176,20 @@ void <B>setOnline</B>(boolean&nbsp;online)
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/html5/DatabaseStorage.html" title="interface in org.openqa.selenium.html5"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/Logger.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/html5/BrowserConnection.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="BrowserConnection.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/WebViewFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WebViewFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
   }
   //-->
 </SCRIPT>
 <NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
 </NOSCRIPT>
 
 

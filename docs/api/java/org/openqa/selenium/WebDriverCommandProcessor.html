@@ -118,19 +118,6 @@ A CommandProcessor which delegates commands down to an underlying webdriver inst
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String)">WebDriverCommandProcessor</A></B>(java.lang.String&nbsp;baseUrl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>Use <A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, com.google.common.base.Supplier)"><CODE>WebDriverCommandProcessor(String, com.google.common.base.Supplier)</CODE></A> instead.</I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, org.openqa.selenium.Capabilities)">WebDriverCommandProcessor</A></B>(java.lang.String&nbsp;baseUrl,
-                          <A HREF="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</A>&nbsp;likeThis)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>Use <A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, com.google.common.base.Supplier)"><CODE>WebDriverCommandProcessor(String, com.google.common.base.Supplier)</CODE></A> instead.</I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, com.google.common.base.Supplier)">WebDriverCommandProcessor</A></B>(java.lang.String&nbsp;baseUrl,
                           com.google.common.base.Supplier&lt;<A HREF="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>&gt;&nbsp;maker)</CODE>
 
@@ -336,38 +323,6 @@ A CommandProcessor which delegates commands down to an underlying webdriver inst
 <B>Constructor Detail</B></FONT></TH>
 </TR>
 </TABLE>
-
-<A NAME="WebDriverCommandProcessor(java.lang.String)"><!-- --></A><H3>
-WebDriverCommandProcessor</H3>
-<PRE>
-<FONT SIZE="-1">@Deprecated
-</FONT>public <B>WebDriverCommandProcessor</B>(java.lang.String&nbsp;baseUrl)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>Use <A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, com.google.common.base.Supplier)"><CODE>WebDriverCommandProcessor(String, com.google.common.base.Supplier)</CODE></A> instead.</I>
-<P>
-<DD>Create an instance that will later be configured by calling <A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#start(java.lang.Object)"><CODE>start(Object)</CODE></A> with a
- <A HREF="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><CODE>Capabilities</CODE></A> instance.
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>baseUrl</CODE> - The URL from which relative URLs should be based on</DL>
-</DL>
-<HR>
-
-<A NAME="WebDriverCommandProcessor(java.lang.String, org.openqa.selenium.Capabilities)"><!-- --></A><H3>
-WebDriverCommandProcessor</H3>
-<PRE>
-<FONT SIZE="-1">@Deprecated
-</FONT>public <B>WebDriverCommandProcessor</B>(java.lang.String&nbsp;baseUrl,
-                                            <A HREF="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</A>&nbsp;likeThis)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>Use <A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#WebDriverCommandProcessor(java.lang.String, com.google.common.base.Supplier)"><CODE>WebDriverCommandProcessor(String, com.google.common.base.Supplier)</CODE></A> instead.</I>
-<P>
-<DD>Create an instance that will later be started by calling <A HREF="../../../org/openqa/selenium/WebDriverCommandProcessor.html#start()"><CODE>start()</CODE></A>
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>baseUrl</CODE> - The URL from which relative URLs should be based on<DD><CODE>likeThis</CODE> - Typically a <A HREF="../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><CODE>DesiredCapabilities</CODE></A> instance</DL>
-</DL>
-<HR>
 
 <A NAME="WebDriverCommandProcessor(java.lang.String, org.openqa.selenium.WebDriver)"><!-- --></A><H3>
 WebDriverCommandProcessor</H3>

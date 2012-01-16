@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-WrapsDriver
+ThreadGuard
 </TITLE>
 
 
@@ -13,7 +13,7 @@ WrapsDriver
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="WrapsDriver";
+        parent.document.title="ThreadGuard";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/internal/SocketLock.html" title="class in org.openqa.selenium.internal"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/internal/WrapsElement.html" title="interface in org.openqa.selenium.internal"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/support/PageFactory.html" title="class in org.openqa.selenium.support"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/internal/WrapsDriver.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WrapsDriver.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/support/ThreadGuard.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ThreadGuard.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -85,20 +85,29 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.internal</FONT>
+org.openqa.selenium.support</FONT>
 <BR>
-Interface WrapsDriver</H2>
-<DL>
-<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../org/openqa/selenium/android/library/AndroidWebElement.html" title="class in org.openqa.selenium.android.library">AndroidWebElement</A>, <A HREF="../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</A>, <A HREF="../../../../org/openqa/selenium/firefox/FirefoxWebElement.html" title="class in org.openqa.selenium.firefox">FirefoxWebElement</A>, <A HREF="../../../../org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</A>, <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerElement.html" title="class in org.openqa.selenium.ie">InternetExplorerElement</A>, <A HREF="../../../../org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</A>, <A HREF="../../../../org/openqa/selenium/WebDriverBackedSelenium.html" title="class in org.openqa.selenium">WebDriverBackedSelenium</A>, <A HREF="../../../../org/openqa/selenium/WebDriverCommandProcessor.html" title="class in org.openqa.selenium">WebDriverCommandProcessor</A></DD>
-</DL>
+Class ThreadGuard</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.support.ThreadGuard</B>
+</PRE>
 <HR>
 <DL>
-<DT><PRE>public interface <B>WrapsDriver</B></DL>
+<DT><PRE>public class <B>ThreadGuard</B><DT>extends java.lang.Object</DL>
 </PRE>
 
 <P>
-This interface indicates that the implementing class knows about the driver that contains it and
- can export it.
+Multithreaded client code should use this to assert that it accesses webdriver in a
+ thread-safe manner.
+
+ Wrap WebDriver instances as follows:
+
+      WebDriver driver = ThreadGuard.protect(new FirefoxDriver());
+
+ Threading issues related to incorrect client threading may have mysterious and hard to diagnose
+ errors. Using this wrapper prevents this category of errors. It is recommended for all
+ multithreaded usage. This class has no overhead of any importance.
 <P>
 
 <P>
@@ -106,6 +115,22 @@ This interface indicates that the implementing class knows about the driver that
 
 <P>
 
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/ThreadGuard.html#ThreadGuard()">ThreadGuard</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;
 <!-- ========== METHOD SUMMARY =========== -->
 
 <A NAME="method_summary"><!-- --></A>
@@ -116,15 +141,41 @@ This interface indicates that the implementing class knows about the driver that
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/internal/WrapsDriver.html#getWrappedDriver()">getWrappedDriver</A></B>()</CODE>
+<CODE>static&nbsp;<A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/ThreadGuard.html#protect(org.openqa.selenium.WebDriver)">protect</A></B>(<A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>&nbsp;actualWebDriver)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
 &nbsp;
 <P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="ThreadGuard()"><!-- --></A><H3>
+ThreadGuard</H3>
+<PRE>
+public <B>ThreadGuard</B>()</PRE>
+<DL>
+</DL>
 
 <!-- ============ METHOD DETAIL ========== -->
 
@@ -136,14 +187,13 @@ This interface indicates that the implementing class knows about the driver that
 </TR>
 </TABLE>
 
-<A NAME="getWrappedDriver()"><!-- --></A><H3>
-getWrappedDriver</H3>
+<A NAME="protect(org.openqa.selenium.WebDriver)"><!-- --></A><H3>
+protect</H3>
 <PRE>
-<A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A> <B>getWrappedDriver</B>()</PRE>
+public static <A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A> <B>protect</B>(<A HREF="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>&nbsp;actualWebDriver)</PRE>
 <DL>
 <DD><DL>
-
-<DT><B>Returns:</B><DD>The driver that contains this element.</DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -176,11 +226,11 @@ getWrappedDriver</H3>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/internal/SocketLock.html" title="class in org.openqa.selenium.internal"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/internal/WrapsElement.html" title="interface in org.openqa.selenium.internal"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/support/PageFactory.html" title="class in org.openqa.selenium.support"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/internal/WrapsDriver.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WrapsDriver.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/support/ThreadGuard.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ThreadGuard.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -197,9 +247,9 @@ getWrappedDriver</H3>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>
