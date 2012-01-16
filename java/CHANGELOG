@@ -12,6 +12,16 @@ WebDriver:
   * FIXED: 3169: getAttribute("value") falls back to the text of option tags, if no value attribute is specified
   * Updated operadriver to version 0.9
 
+Maven:
+  * NOTE: We have removed our dependency on the operadriver from our pom, because it creates a circular dependency.
+    To use the operadriver, add the following dependency to your own pom.xml file:
+
+    <dependency>
+      <groupId>com.opera</groupId>
+      <artifactId>operadriver</artifactId>
+      <version>0.9</version>
+    </dependency>
+
 RC:
   * Bumped firefox support up to Firefox 12
 

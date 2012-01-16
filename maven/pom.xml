@@ -202,11 +202,6 @@
                 <artifactId>testng</artifactId>
                 <version>6.0.1</version>
             </dependency>
-            <dependency>
-                <groupId>com.opera</groupId>
-                <artifactId>operadriver</artifactId>
-                <version>0.9</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

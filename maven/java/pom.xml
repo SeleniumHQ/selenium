@@ -59,11 +59,6 @@
             <artifactId>testng</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.opera</groupId>
-            <artifactId>operadriver</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
     <build>
