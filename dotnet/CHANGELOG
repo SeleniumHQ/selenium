@@ -1,3 +1,15 @@
+v2.17.0
+=======
+ * Reverted the .NET remote Command object to return an empty string
+   instead of an empty JSON object ("{}") when the command has no parameters.
+ * Introduced ChromeOptions class for use with the ChromeDriver. This makes
+   obsolete calling constructors on ChromeDriver that take an ICapabilities
+   object.
+ * Updated the .NET PageFactory to traverse the inheritance tree to find
+   custom attributes (Issue #3172)
+ * Added toolkit.telemetry.enabled and toolkit.telemetry.rejected to the
+   default profile used by the FirefoxDriver.
+
 v2.16.0
 =======
  * Made By, Cookie and Screenshot .NET classes serializable.
