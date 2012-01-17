@@ -897,6 +897,18 @@ Utils.getLocationViaAccessibilityInterface = function(element) {
   };
 };
 
+/**
+ * Gets the {x,y,width,height}-tuple for the passed element, relative to the
+ * document element for the window handle which owns the element. In firefox
+ * <3.6 this will be the containing frame. In firefox >=3.6, this will be the
+ * top-level document. Does not account for any browser chrome.
+ *
+ * @param {!Element} element The element whose location to get.
+ * @param {boolean=} opt_onlyFirstRect Whether the element should be treated as
+ *     if it only has one client rect - useful for link tags, which may
+ *     overflow, where clicking the middle of the tag may not actually click
+ *     within any client rect for the tag.
+ */
 Utils.getLocation = function(element, opt_onlyFirstRect) {
   try {
     element = element.wrappedJSObject ? element.wrappedJSObject : element;
@@ -951,6 +963,62 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
       height: shown ? size.height : 0
     };
   }
+};
+
+
+/**
+ * Gets location of element in window-handle space.
+ */
+Utils.getLocationRelativeToWindowHandle = function(element, browser, opt_onlyFirstRect) {
+  var loc = Utils.getLocation(element, opt_onlyFirstRect);
+
+  // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
+  // to add to the x and y locations.
+
+  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+      getService(Components.interfaces.nsIXULAppInfo);
+  var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
+      getService(Components.interfaces.nsIVersionComparator);
+  if (versionChecker.compare(appInfo.version, '3.6') >= 0) {
+    // Get the ultimate parent frame
+    var current = element.ownerDocument.defaultView;
+    var ultimateParent = element.ownerDocument.defaultView.parent;
+    while (ultimateParent != current) {
+      current = ultimateParent;
+      ultimateParent = current.parent;
+    }
+
+    var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
+    var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
+
+    loc.x += offX;
+    loc.y += offY;
+  }
+
+  var browserOffset = Utils.getBrowserSpecificOffset(browser);
+
+  loc.x += browserOffset.x;
+  loc.y += browserOffset.y;
+
+  return loc;
+};
+
+
+Utils.getBrowserSpecificOffset = function(inBrowser) {
+    // In Firefox 4, there's a shared window handle. We need to calculate an offset
+    // to add to the x and y locations.
+    var browserSpecificXOffset = 0;
+    var browserSpecificYOffset = 0;
+
+    if (bot.userAgent.isEngineVersion(4)) {
+      var rect = inBrowser.getBoundingClientRect();
+      browserSpecificYOffset += rect.top;
+      browserSpecificXOffset += rect.left;
+      fxdriver.Logger.dumpn("Browser-specific offset (X,Y): " + browserSpecificXOffset
+          + ", " + browserSpecificYOffset);
+    }
+
+  return {x: browserSpecificXOffset, y: browserSpecificYOffset};
 };
 
 

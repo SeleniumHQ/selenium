@@ -102,7 +102,22 @@ wdSession.prototype.inputSpeed_ = 1;
 wdSession.prototype.implicitWait_ = 0;
 
 /**
- * Current position of the mouse cursor, in X,Y coordinates.
+ * Last set position of the mouse cursor.
+ *
+ * x and y are relative to the document which is contained by the window handle
+ * which owns this element. In firefox <3.6, this means the frame containing the
+ * element. In firefox 3.6+, this means the top-level window. Excluding any
+ * chrome.
+ * FAIR WARNING:
+ *  * This value may accidentally be set assuming a different coordinate
+ *    system.
+ *  * This value may become invalid as soon as we switch to a different active
+ *    frame, but nothing indicates that this data is invalid.
+ *  * Currently, accessors of this data are fairly broken the moment you start
+ *    crossing frame boundaries, in particular in firefox <3.6.
+ *  * The caller is expected to know whether it wants x/y or
+ *    viewPortXOffset/viewPortYOffset.
+ * Tread with caution.
  */
 wdSession.prototype.mousePosition_ = {
   x: 0,

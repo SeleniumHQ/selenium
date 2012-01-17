@@ -48,31 +48,15 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   var unwrapped = fxdriver.moz.unwrapFor4(element);
   var nativeEvents = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(unwrapped);
-  var appInfo = Components.classes["@mozilla.org/xre/app-info;1"].
-      getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.
-      classes["@mozilla.org/xpcom/version-comparator;1"].
-      getService(Components.interfaces.nsIVersionComparator);
-
-  // I'm having trouble getting clicks to work on Firefox 2 on Windows. Always
-  // fall back for that
-  var useNativeClick =
-      versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
   var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
 
   // For now, we need to bypass native events for option elements
   var isOption = "option" == unwrapped.tagName.toLowerCase();
 
-  var loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
-  var elementHalfWidth = (loc.width ? loc.width / 2 : 0);
-  var elementHalfHeight = (loc.height ? loc.height / 2 : 0);
-
-  if (!isOption && this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
+  if (!isOption && this.enableNativeEvents && nativeEvents && node && thmgr_cls) {
     fxdriver.Logger.dumpn("Using native events for click");
 
-    var inViewAfterScroll = bot.action.scrollIntoView(
-        unwrapped,
-        new goog.math.Coordinate(elementHalfWidth, elementHalfHeight));
+    var inViewAfterScroll = bot.action.scrollIntoView(unwrapped);
 
     if (!inViewAfterScroll) {
         respond.sendError(
@@ -81,40 +65,20 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
         return;
     }
 
-    loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+    var loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+    var elementHalfWidth = (loc.width ? loc.width / 2 : 0);
+    var elementHalfHeight = (loc.height ? loc.height / 2 : 0);
     var x = loc.x + elementHalfWidth;
     var y = loc.y + elementHalfHeight;
-
-    // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
-    // to add to the x and y locations.
-
-    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-        getService(Components.interfaces.nsIXULAppInfo);
-    var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-        getService(Components.interfaces.nsIVersionComparator);
-    if (versionChecker.compare(appInfo.version, '3.6') >= 0) {
-      // Get the ultimate parent frame
-      var current = unwrapped.ownerDocument.defaultView;
-      var ultimateParent = unwrapped.ownerDocument.defaultView.parent;
-      while (ultimateParent != current) {
-        current = ultimateParent;
-        ultimateParent = current.parent;
-      }
-
-      var offX = unwrapped.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
-      var offY = unwrapped.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
-
-      x += offX;
-      y += offY;
-    }
 
     try {
       var currentPosition = respond.session.getMousePosition();
 
-      var browserOffset = this.getBrowserSpecificOffset_(respond.session.getBrowser());
+      var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
 
-      var adjustedX = x + browserOffset.x;
-      var adjustedY = y + browserOffset.y;
+      var dwh = Utils.getLocationRelativeToWindowHandle(unwrapped, respond.session.getBrowser(), unwrapped.tagName == "A");
+      var adjustedX = dwh.x + elementHalfWidth;
+      var adjustedY = dwh.y + elementHalfHeight;
 
       nativeEvents.mouseMove(node, currentPosition.x + browserOffset.x,
           currentPosition.y + browserOffset.y, adjustedX, adjustedY);
