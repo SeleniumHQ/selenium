@@ -30,6 +30,7 @@ import org.openqa.selenium.WebElement;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -349,6 +350,21 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
     new Actions(driver).moveByOffset(270 - 100, 205 - 1525).click().perform();
     expectedEvents += " Fourth";
     waitFor(elementTextToEqual(resultArea, expectedEvents));
+  }
+
+  @Ignore(ALL)
+  public void testShouldClickElementInIFrame() {
+    driver.get(pages.clicksPage);
+    try {
+      driver.switchTo().frame("source");
+      WebElement element = driver.findElement(By.id("otherframe"));
+      new Actions(driver).moveToElement(element).click().perform();
+      driver.switchTo().defaultContent()
+            .switchTo().frame("target");
+      waitFor(elementTextToEqual(driver, By.id("span"), "An inline element"));
+    } finally {
+      driver.switchTo().defaultContent();
+    }
   }
 
 }
