@@ -432,7 +432,15 @@ public class HtmlUnitWebElement implements WrapsDriver,
         return ((HtmlTextArea) element).getText();
       }
 
-      return value == null || "".equals(value) ? element.getTextContent() : value;
+      // According to 
+      // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
+      // if the value attribute doesn't exist, getting the "value" attribute defers to the 
+      // option's content.
+      if (element instanceof HtmlOption && !element.hasAttribute("value")) {
+    	  return element.getTextContent();
+      }
+      
+      return value == null ? "" : value;
     }
 
     if (!"".equals(value)) {

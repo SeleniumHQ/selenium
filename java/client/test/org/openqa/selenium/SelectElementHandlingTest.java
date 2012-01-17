@@ -114,4 +114,10 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
 	  element = driver.findElement(By.id("blankOption"));
 	  assertThat(element.getAttribute("value"), is(""));
   }
+  
+  public void testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString() {
+	  driver.get(pages.formPage);
+	  WebElement element = driver.findElement(By.id("optionEmptyValueSet"));
+	  assertThat(element.getAttribute("value"), is(""));
+  }
 }

@@ -74,6 +74,18 @@ limitations under the License.
       var e = bot.locators.findElement({id: 'novalue-blank'});
       assertEquals('', bot.dom.getProperty(e, 'value'));
     }
+    
+    function testCanGetValueFromOptionViaPropertyWhenPropertyIsEmptyString() {
+      var e = bot.locators.findElement({id: 'value-empty'});
+      assertEquals('', bot.dom.getProperty(e, 'value'));
+    }
+    
+    function testCanGetValueFromOptionViaProperty() {
+      var e = bot.locators.findElement({id: 'chips'});
+      assertEquals('chips', bot.dom.getProperty(e, 'value'));
+      e = bot.locators.findElement({id: 'peas'});
+      assertEquals('peas', bot.dom.getProperty(e, 'value'));
+    }
 
   </script>
 </head>
@@ -93,6 +105,7 @@ limitations under the License.
     <select>
       <option id="novalue">One</option>
       <option id="novalue-blank"></option>
+      <option id="value-empty" value="">nothing</option>
     </select>
 
     <input id="is_disabled" name="foo" disabled />

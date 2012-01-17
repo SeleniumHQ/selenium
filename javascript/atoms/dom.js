@@ -204,7 +204,7 @@ bot.dom.getProperty = function(element, propertyName) {
     return false;
   }
 
-  if (!value &&
+  if (value==null &&
       propertyName == 'value' &&
       bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
     // See http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
