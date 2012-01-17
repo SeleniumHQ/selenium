@@ -988,6 +988,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
           throw new WebDriverException(e);
         }
       }
+      if (!resultReady) {
+        throw new WebDriverException("The Javascript result is not ready yet!");
+      }
       return result;
     }
   }
