@@ -308,35 +308,6 @@ FirefoxDriver.prototype.isElementEnabled = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.hoverOverElement = function(respond, parameters) {
-  var element = Utils.getElementAt(parameters.id,
-                                   respond.session.getDocument());
-
-  var events = Utils.getNativeEvents();
-  var node = Utils.getNodeForNativeEvents(element);
-
-  if (this.enableNativeEvents && events && node) {
-    var loc = Utils.getLocationOnceScrolledIntoView(element);
-
-    var x = loc.x + (loc.width ? loc.width / 2 : 0);
-    var y = loc.y + (loc.height ? loc.height / 2 : 0);
-
-    var currentPosition = respond.session.getMousePosition();
-
-    events.mouseMove(node, currentPosition.x, currentPosition.y, x, y);
-    respond.session.setMousePosition(x, y);
-  } else {
-    // TODO: use the correct error type here.
-    throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        "Unable to hover over element");
-  }
-
-  respond.send();
-};
-FirefoxDriver.prototype.hoverOverElement.preconditions =
-    [ fxdriver.preconditions.visible ];
-
-
 FirefoxDriver.prototype.submitElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
@@ -429,68 +400,6 @@ FirefoxDriver.prototype.getElementSize = function(respond, parameters) {
   };
   respond.send();
 };
-
-
-FirefoxDriver.prototype.dragElement = function(respond, parameters) {
-  var element = Utils.getElementAt(parameters.id,
-                                   respond.session.getDocument());
-
-  // Scroll the first element into view
-  //  element.scrollIntoView(true);
-
-  var clientStartXY = Utils.getElementLocation(element);
-
-  var clientStartX = clientStartXY.x;
-  var clientStartY = clientStartXY.y;
-
-  var movementX = parameters.x;
-  var movementY = parameters.y;
-
-  var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX
-      + movementX);
-  var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY
-      + movementY);
-
-  // Restrict the destination into the sensible dimension
-  var body = element.ownerDocument.body;
-
-  if (clientFinishX > body.scrollWidth)
-    clientFinishX = body.scrollWidth;
-  if (clientFinishY > body.scrollHeight)
-    clientFinishY = body.scrollHeight;
-
-  var mouseSpeed = respond.session.getInputSpeed();
-  var move = function(current, dest) {
-    if (current == dest) return current;
-    if (Math.abs(current - dest) < mouseSpeed) return dest;
-    return (current < dest) ? current + mouseSpeed : current - mouseSpeed;
-  };
-
-  Utils.triggerMouseEvent(element, 'mousedown', clientStartX, clientStartY);
-  Utils.triggerMouseEvent(element, 'mousemove', clientStartX, clientStartY);
-  var clientX = clientStartX;
-  var clientY = clientStartY;
-
-  while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
-    clientX = move(clientX, clientFinishX);
-    clientY = move(clientY, clientFinishY);
-
-    Utils.triggerMouseEvent(element, 'mousemove', clientX, clientY);
-  }
-
-  Utils.triggerMouseEvent(element, 'mousemove', clientFinishX, clientFinishY);
-
-  // TODO(simon.m.stewart) If we can tell which element is under the cursor,
-  // send the mouseup to that
-  Utils.triggerMouseEvent(element, 'mouseup', clientFinishX, clientFinishY);
-
-  var finalLoc = Utils.getElementLocation(element);
-
-  respond.value = finalLoc.x + "," + finalLoc.y;
-  respond.send();
-};
-FirefoxDriver.prototype.dragElement.preconditions = 
-    [ fxdriver.preconditions.visible ];
 
 
 FirefoxDriver.prototype.getElementValueOfCssProperty = function(respond,

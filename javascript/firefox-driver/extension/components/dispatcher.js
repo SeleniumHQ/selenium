@@ -237,11 +237,6 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/element/:id/equals/:other').
       on(Request.Method.GET, Dispatcher.executeAs('elementEquals'));
 
-  this.bind_('/session/:sessionId/element/:id/hover').
-      on(Request.Method.POST, Dispatcher.executeAs('hoverOverElement'));
-  this.bind_('/session/:sessionId/element/:id/drag').
-      on(Request.Method.POST, Dispatcher.executeAs('dragElement'));
-
   this.bind_('/session/:sessionId/cookie').
       on(Request.Method.GET, Dispatcher.executeAs('getCookies')).
       on(Request.Method.POST, Dispatcher.executeAs('addCookie')).
