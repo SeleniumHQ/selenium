@@ -94,10 +94,10 @@ public class TestSuiteBuilder {
   private void applySystemProperties() {
     // Add the test case rules defined in the system properties only if there
     // were no other test cases specified in the test suite specification.
-    if (onlyRun.isEmpty()) {
-      String onlyRunProperty = System.getProperty("only_run", "");
-      if (!onlyRunProperty.equals("")) {
-        onlyRun(onlyRunProperty);
+    String onlyRunProperty = System.getProperty("only_run", "");
+    if (!onlyRunProperty.equals("")) {
+      for (String classname : onlyRunProperty.split(",")) {
+        onlyRun(classname);
       }
     }
 
