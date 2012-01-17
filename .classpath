@@ -5,8 +5,6 @@
 	<classpathentry kind="src" path="java/client/src"/>
 	<classpathentry kind="src" path="java/client/test"/>
 	<classpathentry kind="src" path="java/server/test"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="src" path="android/gen"/>
 	<classpathentry kind="lib" path="third_party/java/junit/junit-dep-4.10.jar" sourcepath="third_party/java/junit/junit-dep-4.10-src.jar"/>
 	<classpathentry kind="lib" path="third_party/java/easymock/easymockclassextension-2.4.jar"/>
 	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-core-js-2.9.jar"/>
