@@ -214,21 +214,6 @@ bot.dom.getProperty = function(element, propertyName) {
   return value;
 };
 
-/**
- * Check if the DOM element has a particular attribute.
- * Convience method since IE6/7 do not supply it.
- *
- * @param {!Element} element The element to use.
- * @param {string} attributeName The name of the attribute.
- * @return {boolean} Whether the node is has the attribute.
- */
-bot.dom.hasAttribute = function(element, attributeName) {
-  if (element.hasAttribute) {
-    return element.hasAttribute(attributeName);
-  } else {
-    return !!(element.getAttribute(attributeName));
-  }
-}
 
 /**
  * Used to determine whether we should return a boolean value from getAttribute.
@@ -349,6 +334,25 @@ bot.dom.getAttribute = function(element, attributeName) {
   // returning null if the 'specified' property of the attributes node is false.
   return attr.specified ? attr.value : null;
 };
+
+
+/**
+ * Check if the DOM element has a particular attribute.
+ * Convience method since IE6/7 do not supply it.
+ *
+ * @param {!Element} element The element to use.
+ * @param {string} attributeName The name of the attribute.
+ * @return {boolean} Whether the node is has the attribute, regardless of 
+ *     whether it is default value or user defined
+ */
+bot.dom.hasAttribute = function(element, attributeName) {
+  attributeName = attributeName.toLowerCase();
+  if (element.hasAttribute) {
+    return element.hasAttribute(attributeName);
+  } else {
+    return !!(element.getAttribute(attributeName));
+  }
+}
 
 
 /**
