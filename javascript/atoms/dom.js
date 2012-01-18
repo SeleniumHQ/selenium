@@ -204,8 +204,7 @@ bot.dom.getProperty = function(element, propertyName) {
     return false;
   }
 
-  if (value==null &&
-      propertyName == 'value' &&
+  if (propertyName == 'value' && !bot.dom.hasAttribute(element, propertyName) &&
       bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
     // See http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
     // IE does not adhere to this behaviour, so we hack it in.
@@ -214,6 +213,13 @@ bot.dom.getProperty = function(element, propertyName) {
   return value;
 };
 
+bot.dom.hasAttribute = function(element, attributeName) {
+  if (element.hasAttribute) {
+    return element.hasAttribute(attributeName);
+  } else {
+    return !!(element.getAttribute(attributeName));
+  }
+}
 
 /**
  * Used to determine whether we should return a boolean value from getAttribute.
