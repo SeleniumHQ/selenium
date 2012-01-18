@@ -2,7 +2,6 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -139,43 +138,5 @@ public class ImplicitWaitTest extends AbstractDriverTestCase {
     } catch (ElementNotVisibleException e) {
       fail("Element should have been visible");
     }
-  }
-  
-  @Test
-  @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE, OPERA})
-  // OPERA: Does not support alerts yet
-  public void testShouldImplicitlyWaitForAnAlert() {
-    driver.get(pages.alertsPage);
-
-    WebElement element = driver.findElement(By.id("slow-alert"));
-    driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
-
-    element.click();
-    try {
-       driver.switchTo().alert().accept();
-     } catch (NoAlertPresentException e) {
-      fail("No implicit wait for an alert");
-    }
-  }
-
-  @Test
-  @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE, OPERA})
-  // OPERA: Does not support alerts yet
-  public void testShouldCheckAlertImmediatelyIfNoImplicitWaitSpecified() {
-    driver.get(pages.alertsPage);
-
-    WebElement element = driver.findElement(By.id("slow-alert"));
-
-    element.click();
-    try {
-      driver.switchTo().alert().accept();
-      fail("Alert should not be found");
-    } catch (NoAlertPresentException expected) {
-    }
-
-    driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
-    driver.switchTo().alert().accept();
   }
 }
