@@ -17,39 +17,43 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
-import com.google.common.collect.HashBiMap;
-
-import android.app.Activity;
-import android.webkit.WebView;
-
 import org.openqa.selenium.WebDriverException;
+
+import com.google.common.collect.HashBiMap;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-class WebViewManager implements JavascriptResultNotifier {
-  private static HashBiMap<String, WebView> map = HashBiMap.create();
+class WebDriverViewManager implements JavascriptResultNotifier {
+  // Mapping from the ViewAdapter's handle (uuid) and the ViewAdapter
+  private static HashBiMap<String, ViewAdapter> map = HashBiMap.create();
+  // Keeps track of the views and their corresponding ViewAdapter
+  private static HashBiMap<Object, ViewAdapter> views = HashBiMap.create();
   private volatile boolean done;
   private volatile String result;
   private Object syncObject = new Object();
-  private Activity activity;
 
-  public WebView getView(String nameOrHandle) {
+  public static ViewAdapter getViewAdapterFor(Object view) {
+    return views.get(view);
+  }
+
+  public ViewAdapter getView(String nameOrHandle) {
     synchronized (syncObject) {
-      WebView toReturn = searchForViewByHandle(nameOrHandle);
+      ViewAdapter toReturn = searchForViewByHandle(nameOrHandle);
       return toReturn == null ? searchForViewByWindowName(nameOrHandle) : toReturn;
     }
   }
   
-  public void addView(WebView view) {
+  public void addView(ViewAdapter view) {
     synchronized (syncObject) {
       String u = UUID.randomUUID().toString();
       map.put(u, view);
+      views.put(view.getUnderlyingView(), view);
     }
   }
 
-  public WebView getNextView() {
+  public ViewAdapter getNextView() {
     synchronized (syncObject) {
       String key = map.keySet().iterator().next();
       return map.get(key);
@@ -58,15 +62,27 @@ class WebViewManager implements JavascriptResultNotifier {
 
   public void removeView(String nameOrHandle) {
     synchronized (syncObject) {
-      WebView toRemove = searchForViewByHandle(nameOrHandle);
+      ViewAdapter toRemove = searchForViewByHandle(nameOrHandle);
       toRemove = toRemove != null ? toRemove : searchForViewByWindowName(nameOrHandle);
       removeView(toRemove);
     }
   }
   
-  public void removeView(WebView view) {
+  public void removeView(ViewAdapter view) {
     synchronized (syncObject) {
       map.inverse().remove(view);
+      views.inverse().remove(view);
+    }
+  }
+
+  public void removeView(Object viewImpl) {
+    synchronized (syncObject) {
+      for (ViewAdapter adapter : map.values()) {
+        if (adapter.getClassForUnderlyingView().equals(viewImpl)) {
+          removeView(adapter);
+          break;
+        }
+      }
     }
   }
   
@@ -76,15 +92,15 @@ class WebViewManager implements JavascriptResultNotifier {
     }
   }
 
-  private WebView searchForViewByHandle(String handle) {
+  private ViewAdapter searchForViewByHandle(String handle) {
     synchronized (syncObject) {
       return map.get(handle);
     }
   }
 
-  private WebView searchForViewByWindowName(String windowName) {
+  private ViewAdapter searchForViewByWindowName(String windowName) {
     synchronized (syncObject) {
-      for (WebView view : map.inverse().keySet()) {
+      for (ViewAdapter view : map.inverse().keySet()) {
         done = false;
         JavascriptExecutor.executeJs(
             view, this, "window.webdriver.resultMethod(window.name);");
@@ -104,7 +120,7 @@ class WebViewManager implements JavascriptResultNotifier {
     }
   }
 
-  public String getWindowHandle(WebView view) {
+  public String getWindowHandle(ViewAdapter view) {
     synchronized (syncObject) {
       return map.inverse().get(view);
     }
@@ -114,8 +130,10 @@ class WebViewManager implements JavascriptResultNotifier {
     String s;
     for (Iterator<String> it = map.keySet().iterator(); it.hasNext(); ) {
       s = it.next();
-      map.get(s).removeAllViews();
-      map.get(s).destroy();
+      ViewAdapter viewAdapter = map.get(s);
+      viewAdapter.removeAllViews();
+      viewAdapter.destroy();
+      views.inverse().remove(viewAdapter);
       it.remove();
     }
   }

@@ -19,9 +19,16 @@ package org.openqa.selenium.android.library;
 import android.app.Activity;
 import android.webkit.WebView;
 
-public class DefaultWebViewFactory implements WebViewFactory {
+/**
+ * Provides a default ViewAdapter to be used by WebDriver. This ViewAdapter
+ * contains a view with the same settings as the Android browser.
+ *
+ * Use this if you want to use WebDriver with a view with the same settings as
+ * the Android browser.
+ */
+public class DefaultWebViewFactory implements ViewFactory {
 
-  public WebView createNewView(Activity activity) {
-    return new WebView(activity);
+  public ViewAdapter createNewView(Activity activity) {
+    return new ViewAdapter("android.webkit.WebView", new WebView(activity));
   }
 }

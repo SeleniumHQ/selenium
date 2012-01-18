@@ -17,14 +17,22 @@ limitations under the License.
 package org.openqa.selenium.android.library;
 
 import android.app.Activity;
-import android.webkit.WebView;
 
 /**
- * This interface should be implemented when using WebDriver with custom WebViews.
- * WebDriver will call the createNewView method to create new WebViews when needed,
+ * This interface should be implemented when using WebDriver with custom Views
+ * (typically a custom WebView).
+ *
+ * WebDriver will call the createNewView method to create new Views when needed,
  * for instance when cliking on a link that opens a new window.
  */
-public interface WebViewFactory {
+public interface ViewFactory {
 
-  public WebView createNewView(Activity activity);
+  /**
+   * Creates a rendering view. This should return a WebView, or an object
+   * with the same API as WebView.
+   *
+   * @param activity the activity to attach the view to.
+   * @return a ViewAdapter.
+   */
+  public ViewAdapter createNewView(Activity activity);
 }

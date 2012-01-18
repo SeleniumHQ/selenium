@@ -28,11 +28,9 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.location.LocationManager;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -89,7 +87,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
     TakesScreenshot, Rotatable, BrowserConnection, HasTouchScreen,
@@ -119,8 +116,8 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private volatile String lastUrlLoaded;
 
   private SessionCookieManager sessionCookieManager;
-  private WebView webview;
-  private WebViewManager viewManager;
+  private ViewAdapter view;
+  private WebDriverViewManager viewManager;
   private final Object syncObject = new Object();
   private volatile boolean pageDoneLoading;
   private NetworkStateHandler networkHandler;
@@ -183,7 +180,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     localStorage = new AndroidLocalStorage(this);
     sessionStorage = new AndroidSessionStorage(this);
     targetLocator = new AndroidTargetLocator();
-    viewManager = new WebViewManager();
+    viewManager = new WebDriverViewManager();
     logs = new AndroidLogs();
   }
 
@@ -204,65 +201,61 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   public AndroidWebDriver(Activity activity) {
     this.activity = activity;
     initDriverState();
-    WebDriverWebView wdview = new WebDriverWebView(this, new DefaultWebViewFactory(), null, null,
-        null);
+    ChromeClientWrapper chromeWrapper = new ChromeClientWrapper("android.webkit.WebChromeClient",
+        new DefaultChromeClient());
+    ViewClientWrapper viewClientWrapper = new ViewClientWrapper("android.webkit.WebViewClient",
+        new DefaultViewClient());
+    WebDriverView wdview = new WebDriverView(this, new DefaultWebViewFactory(),
+        viewClientWrapper, chromeWrapper, null);
     // Create a new view and delete existing windows.
     newWebView( /*Delete existing windows*/true, wdview);
     initCookiesState();
-    networkHandler = new NetworkStateHandler(activity, webview);
+    networkHandler = new NetworkStateHandler(activity, view);
   }
 
   /**
-   * Use this constructor to use WebDriver with a custom WebView.
+   * Use this constructor to use WebDriver with a custom view.
    *
-   * @param activity the activity context where the WebView will be created.
-   * @param viewFactory a implementation of the WebViewFactory interface. WebDriver will
-   *     use this creation mechanism to create WebViews when needed (when clicking on a link
-   *     that opens a new window for instance).
-   * @param viewClient the WebViewClient used by the custom WebView. WebDriver will instrument
-   *     the WebViewClient used by the custom WebView to detect certain events.
-   * @param chromeClient the WebChromeClient used by the custom WebView. WebDriver will
-   *     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
-   *     WebDriver will take care of the Window creation and destruction, so it is not advised
-   *     to override onCloseWindow and onCreateWindow to do window management.
+   * @param activity the activity context where the view will be displayed.
+   * @param viewFactory a implementation of the ViewFactory interface. WebDriver will
+   *     use this creation mechanism to create views when needed (e.g. when clicking on a link
+   *     that opens a new window).
+   * @param viewClient the ViewClientWrapper used by the custom WebView.
+   * @param chromeClient the ChromeClientWrapper used by the custom WebView.
    */
-  public AndroidWebDriver(Activity activity, WebViewFactory viewFactory,
-      WebViewClient viewClient, WebChromeClient chromeClient) {
+  public AndroidWebDriver(Activity activity, ViewFactory viewFactory,
+      ViewClientWrapper viewClient, ChromeClientWrapper chromeClient) {
     this.activity = activity;
     initDriverState();
-    WebDriverWebView wdview = new WebDriverWebView(this, viewFactory, viewClient, chromeClient,
+    WebDriverView wdview = new WebDriverView(this, viewFactory, viewClient, chromeClient,
         null);
     newWebView(/*Delete existing windows*/true, wdview);
     initCookiesState();
-    networkHandler = new NetworkStateHandler(activity, webview);
+    networkHandler = new NetworkStateHandler(activity, view);
   }
 
   /**
-   * Use this constructor to use WebDriver with a custom WebView and a custom
-   * View.OnFocusChangeListener for that WebView..
+   * Use this constructor to use WebDriver with a custom view and a custom
+   * View.OnFocusChangeListener for that view..
    *
-   * @param activity the activity context where the WebView will be created.
-   * @param viewFactory a implementation of the WebViewFactory interface. WebDriver will
-   *     use this creation mechanism to create WebViews when needed (when clicking on a link
-   *     that opens a new window for instance).
-   * @param viewClient the WebViewClient used by the custom WebView. WebDriver will instrument
-   *     the WebViewClient used by the custom WebView to detect certain events.
-   * @param chromeClient the WebChromeClient used by the custom WebView. WebDriver will
-   *     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
-   *     WebDriver will take care of the Window creation and destruction, so it is not advised
-   *     to override onCloseWindow and onCreateWindow to do window management.
-   * @param focusListener the listener used by the WebView that will be created by the viewFactory.
+   * @param activity the activity context where the view will be displayed.
+   * @param viewFactory a implementation of the ViewFactory interface. WebDriver will
+   *     use this creation mechanism to create views when needed (e.g. when clicking on a link
+   *     that opens a new window).
+   * @param viewClient the ViewClientWrapper used by the custom WebView.
+   * @param chromeClient the ChromeClientWrapper used by the custom WebView.
+   * @param focusListener the listener used by the view that will be created by the viewFactory.
    */
-  public AndroidWebDriver(Activity activity, WebViewFactory viewFactory,
-      WebViewClient viewClient, WebChromeClient chromeClient,
+  public AndroidWebDriver(Activity activity, ViewFactory viewFactory,
+      ViewClientWrapper viewClient, ChromeClientWrapper chromeClient,
       View.OnFocusChangeListener focusListener) {
     this.activity = activity;
     initDriverState();
-    WebDriverWebView wdview = new WebDriverWebView(this, viewFactory, viewClient, chromeClient,
+    WebDriverView wdview = new WebDriverView(this, viewFactory, viewClient, chromeClient,
         focusListener);
     newWebView(/*Delete existing windows*/true, wdview);
     initCookiesState();
-    networkHandler = new NetworkStateHandler(activity, webview);
+    networkHandler = new NetworkStateHandler(activity, view);
   }
 
    String getLastUrlLoaded() {
@@ -336,10 +329,17 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
   
   public WebView getWebView() {
-    return webview;
+    if (view.getUnderlyingView() instanceof WebView) {
+      return (WebView) view.getUnderlyingView();
+    }
+    throw new WebDriverException("This WebDriver instance is not using a WebView!");
   }
 
-  void newWebView(boolean newDriver, final WebDriverWebView wdview) {
+  public Object getView() {
+    return view.getUnderlyingView();
+  }
+
+  void newWebView(boolean newDriver, final WebDriverView wdview) {
     // If we are requesting a new driver, then close all
     // existing window before opening a new one.
     if (newDriver) {
@@ -351,10 +351,12 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     activity.runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          final WebView newView = wdview.create();
-          webview = newView;
-          viewManager.addView(webview);
-          activity.setContentView(webview);
+          final ViewAdapter newView = wdview.create();
+          view = newView;
+          viewManager.addView(view);
+          if (view.getUnderlyingView() instanceof View) {
+            activity.setContentView((View) view.getUnderlyingView());
+          }
           done = true;
           syncObject.notify();
         }
@@ -375,7 +377,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
   }
 
-   WebViewManager getViewManager() {
+   WebDriverViewManager getViewManager() {
     return viewManager;
   }
 
@@ -384,7 +386,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public String getCurrentUrl() {
-    if (webview == null) {
+    if (view == null) {
       throw new WebDriverException("No open windows.");
     }
     done = false;
@@ -394,7 +396,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     activity.runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          url[0] = webview.getUrl();
+          url[0] = view.getUrl();
           done = true;
           syncObject.notify();
         }
@@ -405,7 +407,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public String getTitle() {
-    if (webview == null) {
+    if (view == null) {
       throw new WebDriverException("No open windows.");
     }
     long end = System.currentTimeMillis() + UI_TIMEOUT;
@@ -414,7 +416,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     activity.runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          title[0] = webview.getTitle();
+          title[0] = view.getTitle();
           done = true;
           syncObject.notify();
         }
@@ -434,35 +436,35 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public void close() {
-    if (webview == null) {
+    if (view == null) {
       throw new WebDriverException("No open windows.");
     }
 
     // Dispose of existing alerts (if any) for this view.
-    ChromeClient.removeAlertForView(webview);
+    AlertManager.removeAlertForView(view);
 
     done = false;
     long end = System.currentTimeMillis() + RESPONSE_TIMEOUT;
     activity.runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          webview.destroy();
-          viewManager.removeView(webview);
+          view.destroy();
+          viewManager.removeView(view);
           done = true;
           syncObject.notify();
         }
       }
     });
     waitForDone(end, RESPONSE_TIMEOUT, "Failed to close window.");
-    webview = null;
+    view = null;
   }
 
   public void quit() {
-    ChromeClient.removeAllAlerts();
+    AlertManager.removeAllAlerts();
     activity.runOnUiThread(new Runnable() {
       public void run() {
         viewManager.closeAll();
-        webview = null;
+        view = null;
       }
     });
   }
@@ -597,7 +599,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public String getWindowHandle() {
-    String r = viewManager.getWindowHandle(webview);
+    String r = viewManager.getWindowHandle(view);
     if (r == null) {
       throw new WebDriverException("FATAL ERROR HANDLE IS NULL");
     }
@@ -667,15 +669,15 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       activity.runOnUiThread(new Runnable() {
         public void run() {
           synchronized (syncObject) {
-            WebView v = viewManager.getView(nameOrHandle);
+            ViewAdapter v = viewManager.getView(nameOrHandle);
             if (v != null) {
-              webview = v;
+              view = v;
             } else {
               // Can't throw an exception in the UI thread
               // Or the App crashes
               shouldhTrow[0] = true;
             }
-            activity.setContentView(webview);
+            activity.setContentView((View) view.getUnderlyingView());
             done = true;
             syncObject.notify();
           }
@@ -690,14 +692,14 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
 
     public Alert alert() {
-      if (webview == null) {
+      if (view == null) {
         // An alert may have popped up when the window was closed.
         // If there is an alert, just return it.
         throw new WebDriverException("Asked for an alert without a window context. " +
             "switchTo().window(...) first.");
       }
 
-      Alert foundAlert = ChromeClient.getAlertForView(webview);
+      Alert foundAlert = AlertManager.getAlertForView(view);
 
       if (foundAlert == null) {
         throw new NoAlertPresentException("No alert in current view.");
@@ -968,7 +970,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
    * @param script the Javascript to be executed
    */
   private String executeJavascriptInWebView(final String script) {
-    if (webview == null) {
+    if (view == null) {
       throw new WebDriverException("No open windows.");
     }
     result = null;
@@ -976,7 +978,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     activity.runOnUiThread(new Runnable() {
       public void run() {
         org.openqa.selenium.android.library.JavascriptExecutor.executeJs(
-            webview, notifier, script);
+            view, notifier, script);
       }
     });
     long timeout = System.currentTimeMillis() + RESPONSE_TIMEOUT;
@@ -1031,42 +1033,42 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
 
     public void addCookie(Cookie cookie) {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       sessionCookieManager.addCookie(getCurrentUrl(), cookie);
     }
 
     public void deleteCookieNamed(String name) {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       sessionCookieManager.remove(getCurrentUrl(), name);
     }
 
     public void deleteCookie(Cookie cookie) {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       sessionCookieManager.remove(getCurrentUrl(), cookie.getName());
     }
 
     public void deleteAllCookies() {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       sessionCookieManager.removeAllCookies(getCurrentUrl());
     }
 
     public Set<Cookie> getCookies() {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       return sessionCookieManager.getAllCookies(getCurrentUrl());
     }
 
     public Cookie getCookieNamed(String name) {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       return sessionCookieManager.getCookie(getCurrentUrl(), name);
@@ -1112,7 +1114,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   private byte[] takeScreenshot() {
-    if (webview == null) {
+    if (view == null) {
       throw new WebDriverException("No open windows.");
     }
     done = false;
@@ -1121,7 +1123,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     activity.runOnUiThread(new Runnable() {
       public void run() {
         synchronized (syncObject) {
-          Picture pic = webview.capturePicture();
+          Picture pic = view.capturePicture();
           // Bitmap of the entire document
           Bitmap raw = Bitmap.createBitmap(
               pic.getWidth(),
@@ -1196,26 +1198,26 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private class AndroidNavigation implements Navigation {
 
     public void back() {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       pageDoneLoading = false;
       activity.runOnUiThread(new Runnable() {
         public void run() {
-          webview.goBack();
+          view.goBack();
         }
       });
       waitForPageLoadToComplete();
     }
 
     public void forward() {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       pageDoneLoading = false;
       activity.runOnUiThread(new Runnable() {
         public void run() {
-          webview.goForward();
+          view.goForward();
         }
       });
       waitForPageLoadToComplete();
@@ -1225,14 +1227,14 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       if (url == null) {
         return;
       }
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       pageDoneLoading = false;
       activity.runOnUiThread(new Runnable() {
         public void run() {
           try {
-            webview.loadUrl(url);
+            view.loadUrl(url);
           } catch (Exception e) {
             // For some dark reason WebView sometimes throws an
             // NPE here.
@@ -1248,13 +1250,13 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     }
 
     public void refresh() {
-      if (webview == null) {
+      if (view == null) {
         throw new WebDriverException("No open windows.");
       }
       pageDoneLoading = false;
       activity.runOnUiThread(new Runnable() {
         public void run() {
-          webview.reload();
+          view.reload();
         }
       });
       waitForPageLoadToComplete();

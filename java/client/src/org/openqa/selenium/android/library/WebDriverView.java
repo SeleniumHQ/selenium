@@ -17,29 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
-import com.google.common.base.Preconditions;
-
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebSettings.ZoomDensity;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
-class WebDriverWebView {
+import com.google.common.base.Preconditions;
 
+/* package */ class WebDriverView {
   private static JavascriptInterface jsInterface =
       new JavascriptInterface(new JavascriptExecutor());
   private AndroidWebDriver driver;
-  private WebViewFactory factory;
-  private WebViewClient viewc;
-  private WebChromeClient chromec;
+  private ViewFactory factory;
+  private ViewClientWrapper viewc;
+  private ChromeClientWrapper chromec;
   private View.OnFocusChangeListener focusListener;
 
-  /* package */ WebDriverWebView(final AndroidWebDriver driver,
-      WebViewFactory factory, WebViewClient viewc, WebChromeClient chromec,
-      View.OnFocusChangeListener focusListener) {
+  /* package */ WebDriverView(final AndroidWebDriver driver,
+      ViewFactory factory, ViewClientWrapper viewc,
+      ChromeClientWrapper chromec, View.OnFocusChangeListener focusListener) {
     Preconditions.checkNotNull(driver);
     Preconditions.checkNotNull(factory);
     this.driver = driver;
@@ -53,14 +49,17 @@ class WebDriverWebView {
     } : focusListener;
   }
 
-  public WebView create() {
+  public ViewAdapter create() {
 
-    WebChromeClient chromeClient = new ChromeClient(driver, this, chromec);
-    WebViewClient viewClient = new ViewClient(driver, viewc);
+    //WebChromeClient chromeClient = new WebDriverChromeClient(driver, this, chromec);
+    //WebViewClient viewClient = new DefaultViewClient(driver, viewc);
+    chromec.setDriver(driver);
+    viewc.setDriver(driver);
 
-    WebView view = factory.createNewView(driver.getActivity());
-    view.setWebChromeClient(chromeClient);
-    view.setWebViewClient(viewClient);
+    ViewAdapter view = factory.createNewView(driver.getActivity());
+
+    view.setWebChromeClient(chromec);
+    view.setWebViewClient(viewc);
 
     view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       public void onFocusChange(View view, boolean focused) {
@@ -79,9 +78,9 @@ class WebDriverWebView {
     return view;
   }
 
-  private WebDriverWebView() {}
+  private WebDriverView() {}
 
-  private static void initWebViewSettings(WebView view) {
+  private static void initWebViewSettings(ViewAdapter view) {
     // Clearing the view
     view.clearCache(true);
     view.clearFormData();
@@ -117,7 +116,6 @@ class WebDriverWebView {
     settings.setDefaultFontSize(16);
     settings.setDefaultFixedFontSize(13);
     
-    view.enablePlatformNotifications();
     view.setNetworkAvailable(true);
   }
 }

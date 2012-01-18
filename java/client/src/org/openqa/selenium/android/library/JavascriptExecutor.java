@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
-import android.app.Activity;
-import android.webkit.WebView;
-
 /**
  * Class that wraps synchronization housekeeping of execution of JavaScript code within WebView.
  */
@@ -33,7 +30,7 @@ class JavascriptExecutor {
    *
    * @param jsCode JavaScript code to execute.
    */
-  public static void executeJs(final WebView webview,
+  public static void executeJs(final ViewAdapter webview,
       JavascriptResultNotifier notifier, final String jsCode) {
     resNotifier = notifier;
     if (webview.getUrl() == null) {

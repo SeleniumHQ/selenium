@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.webkit.WebView;
 
 import java.lang.reflect.Method;
 
@@ -32,9 +31,9 @@ class NetworkStateHandler {
   private BroadcastReceiver receiver;
   private boolean isConnected;
   private boolean isNetworkUp;
-  private final WebView view;
+  private final ViewAdapter view;
   
-  public NetworkStateHandler(Activity activity, final WebView view) {
+  public NetworkStateHandler(Activity activity, final ViewAdapter view) {
     this.activity = activity;
     this.view = view;
     

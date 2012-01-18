@@ -1,17 +1,18 @@
 /*
- * Copyright 2011 WebDriver committers
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+Copyright 2011 Software Freedom Conservatory.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 package org.openqa.selenium.android.library;
 
@@ -27,20 +28,37 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.ElementNotVisibleException;
-
-class ChromeClient extends WebChromeClient {
-  private final AndroidWebDriver driver;
-  private static BiMap<WebView, Alert> unhandledAlerts = HashBiMap.create();
+/**
+ * Default implementation for WebDriver's chrome client. This chrome client
+ * allows WebDriver to listen to interesting events on the page.
+ *
+ * Note that this class handles the creation and destruction of new windows.
+ * onCreateWindow will create a new view using the ViewFactory provided
+ * to WebDriver. onCloseWindow will destroy the view.
+ */
+public class DefaultChromeClient extends WebChromeClient {
+  private AndroidWebDriver driver;
   private final WebChromeClient delegate;
-  private final WebDriverWebView wdview;
+  private WebDriverView wdView;
 
-  public ChromeClient(AndroidWebDriver driver, WebDriverWebView wdview, WebChromeClient client) {
-    this.driver = driver;
-    this.wdview = wdview;
+  private WebDriverChromeClient wdChromeClient;
+
+  /**
+   * Default chrome client. Use this if the WebView you are using does not
+   * have custom settings in the WebChromeClient.
+   */
+  public DefaultChromeClient() {
+    this(null);
+  }
+
+  /**
+   * Use this constructor if the WebView you are using with WebDriver does
+   * have custom setting defined in the WebChromeClient.
+   *
+   * @param client the WebChromeClient used by the WebView that WebDriver
+   *     is driving.
+   */
+  public DefaultChromeClient(WebChromeClient client) {
     if (client == null) {
       delegate = new WebChromeClient();
     } else {
@@ -48,22 +66,30 @@ class ChromeClient extends WebChromeClient {
     }
   }
 
+  /* package */ void setDriver(AndroidWebDriver driver) {
+    this.driver = driver;
+    this.wdChromeClient = new WebDriverChromeClient(driver);
+  }
+
+  /* package */ void setWebDriverView(WebDriverView view) {
+    this.wdView = view;
+  }
+
   @Override
   public void onCloseWindow(WebView window) {
-    // Dispose of unhandled alerts, if any.
-    unhandledAlerts.remove(window);
-    driver.getViewManager().removeView(window);
+    wdChromeClient.onCloseWindow(window);
     delegate.onCloseWindow(window);
   }
 
   @Override
   public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture,
       Message resultMsg) {
-    WebView newView = wdview.create();
+    ViewAdapter newView = wdView.create();
     WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-    transport.setWebView(newView);
+    transport.setWebView((WebView) newView.getUnderlyingView());
     resultMsg.sendToTarget();
-    driver.getViewManager().addView(newView);
+
+    wdChromeClient.onCreateWindow(newView);
     return delegate.onCreateWindow(view, dialog, userGesture, resultMsg);
   }
 
@@ -74,10 +100,7 @@ class ChromeClient extends WebChromeClient {
 
   @Override
   public void onProgressChanged(WebView view, int newProgress) {
-    if (newProgress == 100 && driver.getLastUrlLoaded() != null
-        && driver.getLastUrlLoaded().equals(view.getUrl())) {
-      driver.notifyPageDoneLoading();
-    }
+    wdChromeClient.onProgressChanged(view, newProgress);
     delegate.onProgressChanged(view, newProgress);
   }
 
@@ -114,20 +137,20 @@ class ChromeClient extends WebChromeClient {
 
   @Override
   public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-    unhandledAlerts.put(view, new AndroidAlert(message, result));
+    wdChromeClient.onJsAlert(view, message, result);
     return delegate.onJsAlert(view, url, message, result);
   }
 
   @Override
   public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
-    unhandledAlerts.put(view, new AndroidAlert(message, result));
+    wdChromeClient.onJsConfirm(view, message, result);
     return delegate.onJsConfirm(view, url, message, result);
   }
 
   @Override
   public boolean onJsPrompt(WebView view, String url, String message, String defaultValue,
       JsPromptResult result) {
-    unhandledAlerts.put(view, new AndroidAlert(message, result, defaultValue));
+    wdChromeClient.onJsPrompt(view, message, defaultValue, result);
     return delegate.onJsPrompt(view, url, message, defaultValue, result);
   }
 
@@ -188,70 +211,5 @@ class ChromeClient extends WebChromeClient {
   @Override
   public void getVisitedHistory(ValueCallback<String[]> callback) {
     delegate.getVisitedHistory(callback);
-  }
-
-  public static Alert getAlertForView(WebView view) {
-    return unhandledAlerts.get(view);
-  }
-
-  public static void removeAllAlerts() {
-    unhandledAlerts.clear();
-  }
-
-  public static void removeAlertForView(WebView view) {
-    unhandledAlerts.remove(view);
-  }
-
-  private static void removeAlert(Alert alert) {
-    unhandledAlerts.inverse().remove(alert);
-  }
-
-  private class AndroidAlert implements Alert {
-
-    private final String message;
-    private final JsResult result;
-    private String textToSend = null;
-    private final String defaultValue;
-
-    public AndroidAlert(String message, JsResult result) {
-      this(message, result, null);
-    }
-
-    public AndroidAlert(String message, JsResult result, String defaultValue) {
-      this.message = message;
-      this.result = result;
-      this.defaultValue = defaultValue;
-    }
-
-    public void accept() {
-      ChromeClient.removeAlert(this);
-      if (isPrompt()) {
-        JsPromptResult promptResult = (JsPromptResult) result;
-        String result = textToSend == null ? defaultValue : textToSend;
-        promptResult.confirm(result);
-      } else {
-        result.confirm();
-      }
-    }
-
-    private boolean isPrompt() {
-      return result instanceof JsPromptResult;
-    }
-
-    public void dismiss() {
-      ChromeClient.removeAlert(this);
-      result.cancel();
-    }
-
-    public String getText() {
-      return message;
-    }
-
-    public void sendKeys(String keys) {
-      if (!isPrompt()) {
-        throw new ElementNotVisibleException("Alert did not have text field");
-      }
-      textToSend = (textToSend == null ? "" : textToSend) + keys;
-    }
   }
 }
