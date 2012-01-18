@@ -1,3 +1,4 @@
+// Copyright 2012 Software Freedom Conservancy
 // Copyright 2010 WebDriver committers
 // Copyright 2010 Google Inc.
 //
@@ -213,6 +214,14 @@ bot.dom.getProperty = function(element, propertyName) {
   return value;
 };
 
+/**
+ * Check if the DOM element has a particular attribute.
+ * Convience method since IE6/7 do not supply it.
+ *
+ * @param {!Element} element The element to use.
+ * @param {string} attributeName The name of the attribute.
+ * @return {boolean} Whether the node is has the attribute.
+ */
 bot.dom.hasAttribute = function(element, attributeName) {
   if (element.hasAttribute) {
     return element.hasAttribute(attributeName);
