@@ -455,6 +455,17 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
+  if (driver.modalOpen) {
+    if (command.name != 'getAlertText' && 
+        command.name != 'setAlertValue' &&
+        command.name != 'acceptAlert' &&
+        command.name != 'dismissAlert') {
+      response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
+          'Modal dialog present'));
+      return;
+    }
+  }
+
   response.startCommand(sessionWindow);
   new DelayedCommand(driver, command, response).execute(0);
 };

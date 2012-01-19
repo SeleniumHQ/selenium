@@ -203,7 +203,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore({ANDROID, CHROME, FIREFOX, HTMLUNIT, IE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE})
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
     driver.findElement(By.id("alert")).click();
     try {
