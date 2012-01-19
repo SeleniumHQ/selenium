@@ -217,6 +217,11 @@ namespace Selenium
             SeleneseCommand command;
             if (!this.seleneseMethods.TryGetValue(commandName, out command))
             {
+                if (this.seleneseMethods.Count == 0)
+                {
+                    throw new NotSupportedException(commandName + " is not supported\n" +
+                        "Note: Start() must be called before any other methods may be called - make sure you've called Start().");
+                }
                 throw new NotSupportedException(commandName);
             }
 
