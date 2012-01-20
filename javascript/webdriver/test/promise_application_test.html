@@ -191,6 +191,17 @@ limitations under the License.
   }
 
 
+  function testScheduling_firstScheduledTaskIsWithinACallback() {
+    webdriver.promise.resolved().then(function() {
+      schedule('a');
+      schedule('b');
+      schedule('c');
+    });
+    runApplication();
+    assertAppHistory('a', 'b', 'c');
+  }
+
+
   function testFraming_callbacksRunInANewFrame() {
     schedule('a').then(function() {
       schedule('c');
@@ -252,7 +263,6 @@ limitations under the License.
 
 
   function testFraming_promiseCallbacks() {
-    var d = new webdriver.promise.Deferred();
     webdriver.promise.resolved().then(function() {
       schedule('b');
     });
@@ -478,18 +488,6 @@ limitations under the License.
 
     callback.assertNotCalled();
     runApplication(null, assertIsStubError);
-  }
-
-
-  function testErrorHandling_catchCatchErrorsFromResultsOfNestedTasks() {
-    var errback;
-    appTester.schedule('a', goog.nullFunction).
-        then(function() {
-          return appTester.schedule('b', throwStubError);
-        }).
-        addErrback(errback = callbackHelper(assertIsStubError));
-    runApplication();
-    errback.assertCalled();
   }
 
 
@@ -1119,6 +1117,7 @@ limitations under the License.
     appTester.scheduleAndWaitForIdle('b', goog.nullFunction).
         then(wait2.callback, wait2.errback);
     runApplication();
+    webdriver.test.testutil.consumeTimeouts();
     wait2.assertCallback('Wait2 should have been resolved');
   }
 
@@ -1225,6 +1224,48 @@ limitations under the License.
       if (opt_minusN) n -= Math.abs(opt_minusN);
       clock.tick(n);
     }
+  }
+
+  function testCancelsPromiseReturnedByCallbackIfFrameFails_promiseCallback() {
+    var chainPair = callbackPair(null, assertIsStubError);
+    var deferredPair = callbackPair(null, assertIsStubError);
+
+    var d = new webdriver.promise.Deferred();
+    d.then(deferredPair.callback, deferredPair.errback);
+
+    webdriver.promise.resolved().
+        then(function() {
+          appTester.schedule('boom', throwStubError);
+          schedule('this should not run');
+          return d.promise;
+        }).
+        then(chainPair.callback, chainPair.errback);
+
+    runApplication();
+    assertAppHistory('boom');
+    chainPair.assertErrback('chain errback not invoked');
+    deferredPair.assertErrback('deferred errback not invoked');
+  }
+
+  function testCancelsPromiseReturnedByCallbackIfFrameFails_taskCallback() {
+    var chainPair = callbackPair(null, assertIsStubError);
+    var deferredPair = callbackPair(null, assertIsStubError);
+
+    var d = new webdriver.promise.Deferred();
+    d.then(deferredPair.callback, deferredPair.errback);
+
+    schedule('a').
+        then(function() {
+          appTester.schedule('boom', throwStubError);
+          schedule('this should not run');
+          return d.promise;
+        }).
+        then(chainPair.callback, chainPair.errback);
+
+    runApplication();
+    assertAppHistory('a', '..boom');
+    chainPair.assertErrback('chain errback not invoked');
+    deferredPair.assertErrback('deferred errback not invoked');
   }
 </script>
 </body>

@@ -48,6 +48,15 @@ webdriver.test.AppTester.prototype.$attachAppListener = function(callbackPair) {
 };
 
 
+webdriver.test.AppTester.prototype.$removeAppListener = function(callbackPair) {
+  this.app_.removeListener(webdriver.promise.Application.EventType.IDLE,
+      callbackPair.callback);
+  this.app_.removeListener(
+      webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
+      callbackPair.errback);
+};
+
+
 /**
  * Advances the clock so the {@link webdriver.promise.Application}'s event
  * loop will run once.
@@ -87,6 +96,7 @@ webdriver.test.AppTester.prototype.$runApplication = function(
 
   var app = this.app_;
   var isDone = false;
+  var self = this;
   var callbacks = webdriver.test.testutil.callbackPair(
       function() {
         isDone = true;
@@ -100,13 +110,18 @@ webdriver.test.AppTester.prototype.$runApplication = function(
   this.$attachAppListener(callbacks);
 
   var shouldBeDone = false;
-  while (!isDone) {
-    this.$turnEventLoop(shouldBeDone ? assertIsDone : determineIfShouldBeDone);
-    // If the event loop generated an unhandled promise, it won't be reported
-    // until one more turn of the JS event loop, so we need to tick the
-    // clock once more. This is necessary for our tests to simulate a real
-    // JS environment.
-    clock.tick();
+  try {
+    while (!isDone) {
+      this.$turnEventLoop(
+          shouldBeDone ? assertIsDone : determineIfShouldBeDone);
+      // If the event loop generated an unhandled promise, it won't be reported
+      // until one more turn of the JS event loop, so we need to tick the
+      // clock once more. This is necessary for our tests to simulate a real
+      // JS environment.
+      this.clock_.tick();
+    }
+  } finally {
+    this.$removeAppListener(callbacks);
   }
 
   if (!opt_ignoreResult) {
@@ -116,13 +131,26 @@ webdriver.test.AppTester.prototype.$runApplication = function(
   }
 
   function assertIsDone() {
-    clock.tick();  // Shutdown is done in one extra turn of the event loop.
-    assertTrue('Should be done now: ' + app.getSchedule(), isDone);
+    // Shutdown is done in one extra turn of the event loop.
+    self.clock_.tick();
+    if (!isDone && !app.frames_.length) {
+      // Not done yet, but there are no frames left.  This can happen if the
+      // very first scheduled task was scheduled inside of a promise callback.
+      // Turn the event loop one more time; the app should detect that it is now
+      // finished and start the shutdown procedure.  Don't recurse here since
+      // we could go into an infinite loop if the app is broken.
+      self.$turnEventLoop();
+      self.clock_.tick();
+    }
+    assertTrue(
+        'Should be done now:' +
+            '\n# frames: ' + app.frames_.length +
+            '\nschedule: ' + app.getSchedule(),
+        isDone);
   }
 
   function determineIfShouldBeDone() {
-    shouldBeDone = app.frames_.length == 0 ||
-        (app.frames_.length == 1 && app.frames_[0].queue.length == 0);
+    shouldBeDone = !app.frames_.length;
   }
 };
 

@@ -74,6 +74,24 @@ webdriver.promise.Promise = function() {
 
 
 /**
+ * Cancels the computation of this promise's value, rejecting the promise in the
+ * process.
+ * @param {*} reason The reason this promise is being cancelled. While typically
+ *     an {@code Error}, any type is permissible.
+ * @export
+ */
+webdriver.promise.Promise.prototype.cancel = function(reason) {
+  throw new TypeError('Unimplemented function: "cancel"');
+};
+
+
+/** @return {boolean} Whether this promise's value is still being computed. */
+webdriver.promise.Promise.prototype.isPending = function() {
+  throw new TypeError('Unimplemented function: "isPending"');
+};
+
+
+/**
  * Registers listeners for when this instance is resolved. This function most
  * overridden by subtypes.
  *
@@ -184,15 +202,21 @@ webdriver.promise.Promise.prototype.addCallbacks = function(callback, errback,
  * registering callbacks, reserving the ability to resolve the deferred to the
  * producer.
  *
- * If this Defererd is rejected and there are no listeners registered before the
- * next turn of the event loop, the rejection will be passed to the
- * {@code webdriver.promise.Application} as an unhandled failure.
+ * <p>If this Defererd is rejected and there are no listeners registered before
+ * the next turn of the event loop, the rejection will be passed to the
+ * {@link webdriver.promise.Application} as an unhandled failure.
  *
+ * <p>If this Deferred is cancelled, the cancellation reason will be forward to
+ * the Deferred's canceller function (if provided). The canceller may return a
+ * truth-y value to override the reason provided for rejection.
+ *
+ * @param {function(*)=} opt_canceller Function to call when cancelling the
+ *     computation of this instance's value.
  * @constructor
  * @extends {webdriver.promise.Promise}
  * @export
  */
-webdriver.promise.Deferred = function() {
+webdriver.promise.Deferred = function(opt_canceller) {
   /* NOTE: This class's implementation diverges from the prototypical style
    * used in the rest of the atoms library. This was done intentionally to
    * protect the internal Deferred state from consumers, as outlined by
@@ -230,6 +254,11 @@ webdriver.promise.Deferred = function() {
    */
   var value;
 
+  /** @return {boolean} Whether this promise's value is still pending. */
+  function isPending() {
+    return state == webdriver.promise.Deferred.State.PENDING;
+  }
+
   /**
    * Notifies all of the listeners registered with this Deferred that its state
    * has changed. Will throw an error if this Deferred has already been
@@ -239,7 +268,7 @@ webdriver.promise.Deferred = function() {
    * @param {*} newValue The deferred's new value.
    */
   function notifyAll(newState, newValue) {
-    if (state != webdriver.promise.Deferred.State.PENDING) {
+    if (!isPending()) {
       throw new Error('This Deferred has already been resolved.');
     }
 
@@ -291,7 +320,7 @@ webdriver.promise.Deferred = function() {
     var listener = {
       callback: callback,
       errback: opt_errback,
-      deferred: new webdriver.promise.Deferred()
+      deferred: new webdriver.promise.Deferred(cancel)
     };
 
     if (state == webdriver.promise.Deferred.State.PENDING) {
@@ -302,14 +331,6 @@ webdriver.promise.Deferred = function() {
 
     return listener.deferred.promise;
   };
-
-  /**
-   * The consumer promise for this instance. Provides protected access to the
-   * callback registering functions.
-   * @type {!webdriver.promise.Promise}
-   */
-  var promise = new webdriver.promise.Promise();
-  promise.then = this.then;
 
   var self = this;
 
@@ -353,9 +374,40 @@ webdriver.promise.Deferred = function() {
     }
   }
 
-  // Export our public API.
-  this.promise = promise;
+  /**
+   * Cancels the computation of this promise's value and flags the promise as a
+   * rejected value.
+   * @param {*} reason The reason for cancelling this promise.
+   */
+  function cancel(reason) {
+    if (!isPending()) {
+      throw Error('This Deferred has already been resolved.');
+    }
+
+    if (opt_canceller) {
+      reason = opt_canceller(reason) || reason;
+    }
+
+    // Only reject this promise if it is still pending after calling its
+    // canceller function. This is because the user may have injected a
+    // canceller that directly rejects (or resolves) this promise's value. The
+    // more likely scenario, however, is that this promise is chained off
+    // another. Once the cancellation request reaches the root deferred, the
+    // subsequent rejection will trickle back down.
+    if (isPending()) {
+      reject(reason);
+    }
+  }
+
+  /**
+   * The consumer promise for this instance. Provides protected access to the
+   * callback registering functions.
+   * @type {!webdriver.promise.Promise}
+   */
+  this.promise = new webdriver.promise.Promise();
   this.promise.then = this.then;
+  this.promise.cancel = this.cancel = cancel;
+  this.promise.isPending = this.isPending = isPending;
   this.resolve = this.callback = resolve;
   this.reject = this.errback = reject;
 };
@@ -407,8 +459,11 @@ webdriver.promise.isPromise = function(value) {
  * @export
  */
 webdriver.promise.delayed = function(ms) {
-  var deferred = new webdriver.promise.Deferred();
-  setTimeout(deferred.resolve, ms);
+  var key;
+  var deferred = new webdriver.promise.Deferred(function() {
+    clearTimeout(key);
+  });
+  key = setTimeout(deferred.resolve, ms);
   return deferred.promise;
 };
 
@@ -452,7 +507,9 @@ webdriver.promise.rejected = function(reason) {
  * @export
  */
 webdriver.promise.checkedNodeCall = function(fn) {
-  var deferred = new webdriver.promise.Deferred();
+  var deferred = new webdriver.promise.Deferred(function() {
+    throw Error('This Deferred may not be cancelled');
+  });
   var resolved = false;
   try {
     fn(function(error, value) {
@@ -488,7 +545,9 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
     return value.then(opt_callback, opt_errback);
   }
 
-  var deferred = new webdriver.promise.Deferred();
+  var deferred = new webdriver.promise.Deferred(function() {
+    throw Error('This Deferred may not be cancelled');
+  });
   webdriver.promise.asap(value, deferred.resolve, deferred.reject);
   return deferred.then(opt_callback, opt_errback);
 };
@@ -610,9 +669,14 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
 
   var numResolved = 0;
   var rejected = false;
-  var deferred = new webdriver.promise.Deferred();
+  var wasCancelled = false;
+  var deferred = new webdriver.promise.Deferred(function() {
+    wasCancelled = true;
+  });
 
   forEachKey(obj, function(partialValue, key) {
+    if (wasCancelled) return;
+
     var type = goog.typeOf(partialValue);
     if (type != 'array' && type != 'object') {
       return maybeResolveValue();
@@ -624,14 +688,14 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
           maybeResolveValue();
         },
         function(err) {
-          if (!rejected) {
+          if (!rejected && !wasCancelled) {
             rejected = true;
             deferred.reject(err);
           }
         });
 
     function maybeResolveValue() {
-      if (++numResolved == numKeys) {
+      if (++numResolved == numKeys && !wasCancelled) {
         deferred.resolve(obj);
       }
     }
@@ -884,9 +948,17 @@ webdriver.promise.Application.prototype.scheduleAndWaitForIdle =
   }
   this.waitingForIdle_ = description;
 
-  var deferred = new webdriver.promise.Deferred();
   var self = this;
   var idleTimeoutId;
+  var deferred = new webdriver.promise.Deferred(function() {
+    self.waitingForIdle_ = null;
+    clearTimeout(idleTimeoutId);
+    self.removeListener(webdriver.promise.Application.EventType.IDLE, onIdle);
+    self.removeListener(webdriver.promise.Application.EventType.SCHEDULE_TASK,
+        onScheduled);
+    self.removeListener(
+        webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, onError);
+  });
 
   self.schedule(description, fn);
   self.once(webdriver.promise.Application.EventType.IDLE, onIdle);
@@ -1065,6 +1137,11 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
   // another turn of the execution loop, we can end up in here with no tasks
   // left. This is OK, just quietly return.
   var currentFrame = goog.array.peek(this.frames_);
+  if (!currentFrame) {
+    this.commenceShutdown_();
+    return;
+  }
+
   if (currentFrame.pendingTask) {
     return;
   }
@@ -1108,32 +1185,39 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
  *     once all tasks scheduled by the function have completed.
  */
 webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
-  // If this application is idle (no frames), or the current frame is inactive,
-  // it is safe to execute the function immediately.
-  var currentFrame = goog.array.peek(this.frames_);
-  if (!currentFrame || !currentFrame.isActive) {
-    try {
-      return fn();
-    } catch (ex) {
-      return webdriver.promise.rejected(ex);
+  var newFrame;
+  try {
+    var currentFrame = goog.array.peek(this.frames_);
+    if (!currentFrame || currentFrame.isActive) {
+      newFrame = new webdriver.promise.Application.Frame_();
+      this.frames_.push(newFrame);
     }
-  } else {
-    var frame = new webdriver.promise.Application.Frame_();
-    this.frames_.push(frame);
-    try {
-      var result = fn();
-      if (!frame.queue.length) {
-        this.frames_.pop();
-        return result;
-      } else {
-        return frame.then(function() {
-          return result;
-        });
-      }
-    } catch (ex) {
+
+    var result = fn();
+
+    if (!newFrame) {
+      return result;
+    }
+
+    if (!newFrame.queue.length) {
       this.frames_.pop();
-      return webdriver.promise.rejected(ex);
+      return result;
     }
+
+    return newFrame.then(function() {
+      return result;
+    }, function(e) {
+      if (result instanceof webdriver.promise.Promise && result.isPending()) {
+        result.cancel(e);
+        return result;
+      }
+      throw e;
+    });
+  } catch (ex) {
+    if (newFrame) {
+      this.frames_.pop();
+    }
+    return webdriver.promise.rejected(ex);
   }
 };
 

@@ -213,7 +213,7 @@ webdriver.test.testutil.callbackHelper = function(opt_fn) {
   };
 
   callback.assertNotCalled = function(opt_message) {
-    assertEquals(callback.getExpectedCallCountMessage(1, opt_message),
+    assertEquals(callback.getExpectedCallCountMessage(0, opt_message),
         0, callback.getCallCount());
   };
 
@@ -252,7 +252,7 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
     }
     if (pair.errback.getCallCount()) {
       message = goog.array.concat(message,
-          pair.callback.getExpectedCallCountMessage(0,
+          pair.errback.getExpectedCallCountMessage(0,
               'Did not expect errback to be called.', true));
     }
     if (message.length > 1) {

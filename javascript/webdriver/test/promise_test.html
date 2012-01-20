@@ -32,7 +32,10 @@ limitations under the License.
 var assertIsPromise = webdriver.test.testutil.assertIsPromise,
     assertNotPromise = webdriver.test.testutil.assertNotPromise,
     callbackHelper = webdriver.test.testutil.callbackHelper,
-    callbackPair = webdriver.test.testutil.callbackPair;
+    callbackPair = webdriver.test.testutil.callbackPair,
+    assertIsStubError = webdriver.test.testutil.assertIsStubError,
+    throwStubError = webdriver.test.testutil.throwStubError,
+    STUB_ERROR = webdriver.test.testutil.STUB_ERROR;
 
 var clock, uncaughtException;
 
@@ -1037,6 +1040,97 @@ function testCheckedNodeCall_functionThrowsAndReturns() {
   pair.reset();
   webdriver.test.testutil.consumeTimeouts();
   pair.assertNeither();
+}
+
+
+function testCancel_passesTheCancellationReasonToReject() {
+  var pair = callbackPair(null, assertIsStubError);
+  var d = new webdriver.promise.Deferred();
+  d.then(pair.callback, pair.errback);
+  d.cancel(STUB_ERROR);
+  pair.assertErrback();
+}
+
+
+function testCancel_invokesTheCancellerFunctionIfOneWasProvided() {
+  var pair = callbackPair(null, assertIsStubError);
+  var callback = callbackHelper();
+  var d = new webdriver.promise.Deferred(callback);
+  d.then(pair.callback, pair.errback);
+  d.cancel(STUB_ERROR);
+  pair.assertErrback();
+  callback.assertCalled();
+}
+
+
+function testCancel_canChangeRejectionReasonWithTruthyCancellerReturnValue() {
+  var pair = callbackPair(null, goog.partial(assertEquals, 'hello'));
+  var callback = callbackHelper(function() {
+    return 'hello';
+  });
+  var d = new webdriver.promise.Deferred(callback);
+  d.then(pair.callback, pair.errback);
+  d.cancel(STUB_ERROR);
+  pair.assertErrback();
+  callback.assertCalled();
+}
+
+
+function testCancel_canCancelADeferredFromAChainedPromise() {
+  var pair1 = callbackPair(null, assertIsStubError),
+      pair2 = callbackPair();
+
+  var d = new webdriver.promise.Deferred();
+  var p = d.then(pair1.callback, pair1.errback);
+  p.then(pair2.callback, pair2.errback);
+
+  p.cancel(STUB_ERROR);
+  pair1.assertErrback('The first errback should have fired.');
+  pair2.assertCallback();
+}
+
+
+function testCancel_canCancelATimeout() {
+  var pair = callbackPair(null, assertIsStubError);
+  var p = webdriver.promise.delayed(250).
+      then(pair.callback, pair.errback);
+  p.cancel(STUB_ERROR);
+  pair.assertErrback();
+  clock.tick(250);  // Just to make sure nothing happens.
+  pair.assertErrback();
+}
+
+
+function testCancel_cannotCancelACheckedNodeCall() {
+  var d = webdriver.promise.checkedNodeCall(goog.nullFunction);
+  assertThrows(d.cancel);
+}
+
+
+function testCancel_cancellerFunctionExplicityResolvesPromise() {
+  var pair = callbackPair(goog.partial(assertEquals, 123));
+  var canceller;
+  var d = new webdriver.promise.Deferred(
+      canceller = callbackHelper(function(e) {
+        assertIsStubError(e);
+        d.resolve(123);
+      }));
+  d.then(pair.callback, pair.errback);
+  d.cancel(STUB_ERROR);
+  canceller.assertCalled();
+  pair.assertCallback();
+}
+
+
+function testCancel_cannotCancelADeferredThatHasBeenResolved() {
+  var d = webdriver.promise.resolved(123);
+  assertThrows(d.cancel);
+}
+
+
+function testCancel_cancellerCanForbidCancellation() {
+  var d = new webdriver.promise.Deferred(throwStubError);
+  assertThrows(d.cancel);
 }
 
 </script>

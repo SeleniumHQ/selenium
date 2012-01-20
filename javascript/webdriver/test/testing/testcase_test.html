@@ -198,7 +198,7 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest(3);
+    runTest(2);
   }
 
   function testRecordsErrorsFromTearDown() {
@@ -225,14 +225,14 @@ limitations under the License.
 
   function testErrorFromTestFnAndTearDown() {
     mockTestCase.setUp();
-    mockTestCase.testFn().$does(throwStubError);
-    mockOnError(STUB_ERROR);
-    mockTestCase.tearDown().$does(throwStubError);
-    mockOnError(STUB_ERROR);
+    mockTestCase.testFn().$does(function() { throw 'error1' });
+    mockOnError('error1');
+    mockTestCase.tearDown().$does(function() { throw 'error2' });
+    mockOnError('error2');
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest(3);
+    runTest(2);
   }
 
   function testExpectationFailures_inSetup() {
@@ -287,7 +287,7 @@ limitations under the License.
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
-    runTest(3);
+    runTest(2);
   }
 
   function testExpectationFailures_inTearDown() {
