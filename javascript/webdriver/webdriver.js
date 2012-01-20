@@ -1510,7 +1510,7 @@ webdriver.WebElement.prototype.findElement = function(locator, var_args) {
     return this.driver_.findElement.apply(this.driver_, arguments);
   }
 
-  var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENT).
+  var command = new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENT).
       setParameter('using', locator.using).
       setParameter('value', locator.value);
   var id = this.schedule_(command, 'WebElement.findElement(' + locator + ')');
@@ -1564,9 +1564,10 @@ webdriver.WebElement.prototype.findElements = function(locator, var_args) {
   if (locator.using == 'js') {
     return this.driver_.findElements.apply(this.driver_, arguments);
   }
-  var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENTS).
-      setParameter('using', locator.using).
-      setParameter('value', locator.value);
+  var command =
+      new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENTS).
+          setParameter('using', locator.using).
+          setParameter('value', locator.value);
   return this.schedule_(command, 'WebElement.findElements(' + locator + ')');
 };
 
