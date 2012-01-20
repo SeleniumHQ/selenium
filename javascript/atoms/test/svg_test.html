@@ -58,6 +58,15 @@
       assertNull(bot.locators.findElement({tagName: 'TEXT'}, doc));
       assertNotNull(bot.locators.findElement({tagName: 'text'}, doc));
     }
+
+    function testGettingTextOfSvgElementDoesNotThrow() {
+      if (!SUPPORTS_SVG) {
+        return;
+      }
+
+      var doc = window.frames['chart'].document.documentElement;
+      bot.dom.getVisibleText(doc);
+    }
   </script>
 </head>
 <body>

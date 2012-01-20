@@ -574,7 +574,12 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
  */
 bot.dom.getElementSize_ = function(element) {
   if (goog.isFunction(element['getBBox'])) {
-    return element['getBBox']();
+    try {
+      return element['getBBox']();
+    } catch (e) {
+      // Firefox will always throw for certain SVG elements,
+      // even if the function exists.
+    }
   }
   return goog.style.getSize(element);
 };
