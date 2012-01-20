@@ -350,7 +350,7 @@ bot.dom.hasAttribute = function(element, attributeName) {
   if (element.hasAttribute) {
     return element.hasAttribute(attributeName);
   } else {
-    return !!(element.getAttribute(attributeName));
+    return element.attribute[attributeName].specified;
   }
 }
 
