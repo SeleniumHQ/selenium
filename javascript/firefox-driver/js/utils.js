@@ -1005,20 +1005,31 @@ Utils.getLocationRelativeToWindowHandle = function(element, browser, opt_onlyFir
 
 
 Utils.getBrowserSpecificOffset = function(inBrowser) {
-    // In Firefox 4, there's a shared window handle. We need to calculate an offset
-    // to add to the x and y locations.
-    var browserSpecificXOffset = 0;
-    var browserSpecificYOffset = 0;
+  // In Firefox 4, there's a shared window handle. We need to calculate an offset
+  // to add to the x and y locations.
+  var browserSpecificXOffset = 0;
+  var browserSpecificYOffset = 0;
 
-    if (bot.userAgent.isEngineVersion(4)) {
-      var rect = inBrowser.getBoundingClientRect();
-      browserSpecificYOffset += rect.top;
-      browserSpecificXOffset += rect.left;
-      fxdriver.Logger.dumpn("Browser-specific offset (X,Y): " + browserSpecificXOffset
-          + ", " + browserSpecificYOffset);
-    }
+  if (bot.userAgent.isEngineVersion(4)) {
+    var rect = inBrowser.getBoundingClientRect();
+    browserSpecificYOffset += rect.top;
+    browserSpecificXOffset += rect.left;
+    fxdriver.Logger.dumpn("Browser-specific offset (X,Y): " + browserSpecificXOffset
+        + ", " + browserSpecificYOffset);
+  }
 
   return {x: browserSpecificXOffset, y: browserSpecificYOffset};
+};
+
+
+/**
+ * Translates a coordinate from the viewport coordinate space to the window
+ * handle coordinate space in-place.
+ */
+Utils.translateByBrowserSpecificOffset = function(browser, coordinate) {
+  var browserSpecificOffset = Utils.getBrowserSpecificOffset(browser);
+  coordinate.x += browserSpecificOffset.x;
+  coordinate.y += browserSpecificOffset.y;
 };
 
 
