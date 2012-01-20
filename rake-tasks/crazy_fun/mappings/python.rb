@@ -167,7 +167,7 @@ module Python
       task Tasks.new.task_name(dir, args[:name]) do
         dest = Platform.path_for(args[:dest])
         pip_pkg = "pip install #{args[:packages].join(' ')}"
-        virtualenv = "virtualenv" + (windows? ? "" : " --no-site-packages") + " #{dest}"
+        virtualenv = "virtualenv --no-site-packages" + " #{dest}"
         sh virtualenv, :verbose => true do |ok, res|
           unless ok
             puts ""
@@ -182,7 +182,7 @@ module Python
         pip_install = python_dir + slash + pip_pkg
         sh pip_install, :verbose => true
 
-        sh "#{python_dir}#{slash}python setup.py build", :verbose => true
+        sh "#{python_dir}#{slash}python setup.py install", :verbose => true
       end
     end
   end
