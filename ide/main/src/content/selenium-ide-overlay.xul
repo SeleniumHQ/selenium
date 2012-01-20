@@ -26,19 +26,31 @@ limitations under the License.
     <stringbundle id="selenium-ide-strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
   </stringbundleset>
 
+  <commandset id="mainCommandSet">
+    <command id="openRecorder" oncommand="SeleniumIDE.Loader.openRecorder()"/>
+    <command id="openSidebarRecorder" oncommand="toggleSidebar('viewSeleniumIDESidebar')"/>
+  </commandset>
+
+  <keyset id="mainKeyset">
+    <key id="key_toggleIDE" modifiers="control alt" key="S"
+         command="openRecorder"/>
+    <key id="key_toggleSidebarIDE" modifiers="control shift" key="S"
+         command="openSidebarRecorder"/>
+  </keyset>
+
   <menupopup id="viewSidebarMenu">
-    <menuitem observes="viewSeleniumIDESidebar" />
+    <menuitem observes="viewSeleniumIDESidebar"/>
   </menupopup>
 
   <menupopup id="menu_ToolsPopup">
     <menuitem id="menuToolsSeleniumIDE"
               label="Selenium IDE"
-              oncommand="SeleniumIDE.Loader.openRecorder();"
+              key="key_toggleIDE"
+              command="openRecorder"
               insertbefore="sanitizeSeparator,prefSep"
               accesskey="N"
               class="menuitem-iconic"
-              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"
-              />
+              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
   </menupopup>
 
   <!-- Enh: Add Selenium IDE toolbar button -->
@@ -50,10 +62,10 @@ limitations under the License.
   <menupopup id="appmenu_webDeveloper_popup">
     <menuitem id="menuAppmenuSeleniumIDE"
               label="Selenium IDE"
-              oncommand="SeleniumIDE.Loader.openRecorder();"
+              key="key_toggleIDE"
+              command="openRecorder"
               class="menuitem-iconic"
-              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"
-              />
+              image="chrome://selenium-ide/content/images/selenium-ide-logo16.png"/>
   </menupopup>
 
   <popup id="contentAreaContextMenu">
@@ -65,9 +77,10 @@ limitations under the License.
          autoCheck="false"
          type="checkbox"
          group="sidebar"
+         key="key_toggleSidebarIDE"
          sidebarurl="chrome://selenium-ide/content/selenium-ide-sidebar.xul"
          sidebartitle="&selenium-ide.sidebar.title;"
-         oncommand="toggleSidebar('viewSeleniumIDESidebar');" />
+         command="openSidebarRecorder" />
   </broadcasterset>
 
   <!--
