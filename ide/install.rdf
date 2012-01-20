@@ -7,6 +7,7 @@
         <em:version>1.5.0</em:version>
         <em:creator>Adam Goucher</em:creator>
         <em:developer>Samit Badle</em:developer>
+        <em:developer>Dave Hunt</em:developer>
         <em:description>Selenium IDE</em:description>
         <em:type>32</em:type>
         <em:homepageURL>http://seleniumhq.org/projects/ide</em:homepageURL>

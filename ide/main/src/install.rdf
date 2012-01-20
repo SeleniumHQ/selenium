@@ -8,6 +8,7 @@
         <em:creator>Shinya Kasatani</em:creator>
         <em:developer>Adam Goucher</em:developer>
         <em:developer>Samit Badle</em:developer>
+        <em:developer>Dave Hunt</em:developer>
         <em:description>Record, edit and play Selenium tests</em:description>
         <em:type>2</em:type>
         <em:homepageURL>http://seleniumhq.org/projects/ide</em:homepageURL>
