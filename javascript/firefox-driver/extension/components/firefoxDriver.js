@@ -928,9 +928,6 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
 };
 
 function getElementFromLocation(mouseLocation, doc) {
-  fxdriver.Logger.dumpn('getElementFromLocation called with:');
-  fxdriver.Logger.dump(mouseLocation);
-
   var elementForNode = null;
 
   var locationX = Math.round(mouseLocation.x);
@@ -950,9 +947,9 @@ function getElementFromLocation(mouseLocation, doc) {
 function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, nodeForInteraction) {
   var nativeEventFailureCause = "Could not get node for element or native " +
       "events are not supported on the platform.";
-  if (!nativeEventsEnabled) {
+  if (! nativeEventsEnabled) {
     nativeEventFailureCause = "native events are disabled on this platform.";
-  } else if (!nativeEventsObj) {
+  } else if (! nativeEventsObj) {
     nativeEventFailureCause = "Could not load native events component.";
   } else {
     nativeEventFailureCause = "Could not get node for element - cannot interact.";
@@ -974,19 +971,8 @@ FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnVa
 }
 
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
-  // Coordinate spaces in use:
-  //   * Owner document space: Coordinates are relative to the top-left of the
-  //     top-level document contained by the window handle containing the
-  //     element. In FF <3.6 this is the containing frame. In FF >=3.6 this is
-  //     the top-level document.
-  //   * Window handle space: Coordinates are relative to the top-left of the
-  //     window handle (HWND/x-window) containing the element.
-  //   * Pre-scroll space: If the page scrolls while a mouse button is
-  //     pressed, firefox acts in the coordinate space before the scroll until
-  //     the mouse is released.
-
   var doc = respond.session.getDocument();
-
+  
   // Fast path first
   if (!this.enableNativeEvents) {
     var target = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
@@ -996,33 +982,41 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     return;
   }
-
+  
   var mouseMoveTo = function(coordinates, nativeEventsEnabled, jsTimer) {
     var elementForNode = null;
-    var clickPoint_ownerDocumentPreScroll; //toX
+    var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
 
     if (coordinates.auxiliary) {
-      elementForNode = fxdriver.moz.unwrap(coordinates.auxiliary);
-      clickPoint_ownerDocumentPreScroll = Utils.getLocation(elementForNode);
+      var element = fxdriver.moz.unwrap(coordinates.auxiliary);
+
+      // No need to scroll the element into view - calling getInViewLocation
+      // later on with the right coordinates will scroll properly.
+      var loc = Utils.getLocation(element);
+
+      toX = loc.x + coordinates.x;
+      toY = loc.y + coordinates.y;
+
+      elementForNode = element;
     } else {
       elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
-      clickPoint_ownerDocumentPreScroll = respond.session.getMousePosition();
+      var mousePosition = respond.session.getMousePosition();
+
+      toX = mousePosition.x + coordinates.x;
+      toY = mousePosition.y + coordinates.y;
     }
 
     // The function bot.dom.getInViewLocation does not work coordinates that are
     // not integers. The mouse positions can be doubles so we need to cut off
     // the decimals.
-    clickPoint_ownerDocumentPreScroll.x = Math.floor(clickPoint_ownerDocumentPreScroll.x + coordinates.x);
-    clickPoint_ownerDocumentPreScroll.y = Math.floor(clickPoint_ownerDocumentPreScroll.y + coordinates.y);
-
-    var clickPoint_ownerDocumentPostScroll; //to
+    var to;
     try {
-      clickPoint_ownerDocumentPostScroll = bot.dom.getInViewLocation(
-          clickPoint_ownerDocumentPreScroll, respond.session.getWindow());
+      to = bot.dom.getInViewLocation(
+          new goog.math.Coordinate(Math.floor(toX), Math.floor(toY)), respond.session.getWindow());
     } catch (ex) {
       if (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS) {
         respond.sendError(new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-          "Given coordinates (" + clickPoint_ownerDocumentPreScroll.x + ", " + clickPoint_ownerDocumentPreScroll.y + ") are outside the document. Error: " + ex));
+          "Given coordinates (" + toX + ", " + toY + ") are outside the document. Error: " + ex));
         return;
       }
       else {
@@ -1030,23 +1024,27 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       }
     }
 
-    var isMouseButtonPressed = respond.session.isMousePressed();
-    var mouseTarget_ownerDocument = isMouseButtonPressed ? clickPoint_ownerDocumentPreScroll : clickPoint_ownerDocumentPostScroll;
+    var storeX = to.x;
+    var storeY = to.y;
 
-    var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
-    var mouseTarget_ownerDocument_windowHandle = {x: mouseTarget_ownerDocument.x + browserOffset.x, y: mouseTarget_ownerDocument.y + browserOffset.y};
+    var isMouseButtonPressed = respond.session.isMousePressed();
+    if (isMouseButtonPressed) {
+      fxdriver.Logger.dumpn("Mouse button is pressed: using original coordinates: " +
+        toX + ", " + toY);
+      to.x = toX;
+      to.y = toY;
+    }
 
     var events = Utils.getNativeEvents();
     var node = Utils.getNodeForNativeEvents(elementForNode);
 
     if (nativeEventsEnabled && events && node) {
       var currentPosition = respond.session.getMousePosition();
-      var currentPosition_windowHandle = {x: currentPosition.x + browserOffset.x, y: currentPosition.y + browserOffset.y};
       fxdriver.Logger.dumpn("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
-        clickPoint_ownerDocumentPostScroll.x + ", " + clickPoint_ownerDocumentPostScroll.y + ")");
+        to.x + ", " + to.y + ")");
       events.mouseMove(node,
-          currentPosition_windowHandle.x, currentPosition_windowHandle.y,
-          mouseTarget_ownerDocument_windowHandle.x, mouseTarget_ownerDocument_windowHandle.y);
+          currentPosition.x + browserOffset.x, currentPosition.y + browserOffset.y,
+          to.x + browserOffset.x, to.y + browserOffset.y);
 
       var dummyIndicator = {
         wasUnloaded: false
@@ -1054,11 +1052,9 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
       Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, jsTimer);
 
-      fxdriver.Logger.dumpn('SETTING MOUSE POSITION TO: ' + clickPoint_ownerDocumentPostScroll.x + ', ' + clickPoint_ownerDocumentPostScroll.y);
-      respond.session.setMousePosition(clickPoint_ownerDocumentPostScroll.x, clickPoint_ownerDocumentPostScroll.y);
+      respond.session.setMousePosition(storeX, storeY);
       if (isMouseButtonPressed) {
-        fxdriver.Logger.dumpn('SETTING VIEWPORT MOUSE POSITION TO: ' + clickPoint_ownerDocumentPreScroll.x + ', ' + clickPoint_ownerDocumentPreScroll.y);
-        respond.session.setMouseViewportOffset(clickPoint_ownerDocumentPreScroll.x, clickPoint_ownerDocumentPreScroll.y);
+        respond.session.setMouseViewportOffset(toX, toY);
       }
     } else {
       throw generateErrorForNativeEvents(nativeEventsEnabled, events, node);
@@ -1080,9 +1076,9 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
     this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
-
+  
   var doc = respond.session.getDocument();
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);;  
 
   var events = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(elementForNode);
@@ -1116,10 +1112,8 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
-
+  
   var doc = respond.session.getDocument();
-  fxdriver.Logger.dumpn('IN MOUSE UP, MOUSE POSITION:');
-  fxdriver.Logger.dump(respond.session.getMousePosition);
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var events = Utils.getNativeEvents();
@@ -1149,7 +1143,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     respond.session.setMousePressed(false);
     respond.session.setMouseViewportOffset(0, 0);
   } else {
-    //throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
   }
 
   respond.send();

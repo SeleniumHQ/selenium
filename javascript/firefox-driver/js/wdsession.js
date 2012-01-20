@@ -304,13 +304,7 @@ wdSession.prototype.setScriptTimeout = function(timeout) {
  * @return {object} The current position of the mouse cursor.
  */
 wdSession.prototype.getMousePosition = function() {
-  // Make a defensive copy here, because changing this actual object can have
-  // really bad and confusing side-effects.
-  var toReturn = {};
-  for (var key in this.mousePosition_) {
-    toReturn[key] = this.mousePosition_[key];
-  }
-  return toReturn;
+  return this.mousePosition_;
 };
 
 /**
