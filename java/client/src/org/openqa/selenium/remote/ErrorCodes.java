@@ -154,6 +154,8 @@ public class ErrorCodes {
       return IME_ENGINE_ACTIVATION_FAILED;
     } else if (thrown instanceof NoAlertPresentException) {
       return NO_ALERT_PRESENT;
+    } else if (thrown instanceof UnhandledAlertException) {
+      return UNEXPECTED_ALERT_PRESENT;
     } else if (thrown instanceof MoveTargetOutOfBoundsException) {
       return MOVE_TARGET_OUT_OF_BOUNDS;
     } else {

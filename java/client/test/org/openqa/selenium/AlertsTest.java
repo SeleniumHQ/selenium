@@ -211,8 +211,6 @@ public class AlertsTest extends AbstractDriverTestCase {
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException e) {
       // this is expected
-    } finally {
-      driver.switchTo().alert().dismiss();
     }
 
     // But the next call should be good.

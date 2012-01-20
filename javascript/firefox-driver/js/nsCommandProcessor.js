@@ -30,6 +30,7 @@ goog.require('fxdriver.Logger');
 goog.require('fxdriver.Timer');
 goog.require('fxdriver.error');
 goog.require('fxdriver.moz');
+goog.require('fxdriver.modals');
 
 /**
  * When this component is loaded, load the necessary subscripts.
@@ -460,6 +461,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
         command.name != 'setAlertValue' &&
         command.name != 'acceptAlert' &&
         command.name != 'dismissAlert') {
+      fxdriver.modals.dismissAlert(driver);
       response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
           'Modal dialog present'));
       return;
