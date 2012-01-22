@@ -150,6 +150,7 @@ remote.ui.Client.prototype.init = function(opt_element) {
  * @private
  */
 remote.ui.Client.prototype.execute_ = function(command) {
+  this.banner_.setVisible(false);
   var fn = goog.bind(this.executor_.execute, this.executor_, command);
   return webdriver.promise.checkedNodeCall(fn).
       then(webdriver.error.checkResponse);
