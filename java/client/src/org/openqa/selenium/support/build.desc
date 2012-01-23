@@ -1,5 +1,8 @@
 
 java_library(name = "support",
+  srcs = [
+    "ThreadGuard.java",
+  ],
   deps = [
     ":page-factory",
     "//java/client/src/org/openqa/selenium/lift",
