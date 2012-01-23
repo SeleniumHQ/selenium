@@ -83,12 +83,15 @@
   <ItemGroup>
     <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
-    <Compile Include="Chrome\ChromeCommandExecutor.cs" />
+    <Compile Include="DriverServiceCommandExecutor.cs" />
+    <Compile Include="DriverServiceNotFoundException.cs" />
+    <Compile Include="DriverService.cs" />
     <Compile Include="Chrome\ChromeDriver.cs" />
     <Compile Include="Chrome\ChromeDriverService.cs" />
     <Compile Include="Chrome\ChromeOptions.cs" />
     <Compile Include="Chrome\ChromeWebElement.cs" />
     <Compile Include="Cookie.cs" />
+    <Compile Include="IE\InternetExplorerDriverService.cs" />
     <Compile Include="InvalidSelectorException.cs" />
     <Compile Include="ElementNotVisibleException.cs" />
     <Compile Include="Firefox\FirefoxBinary.cs" />

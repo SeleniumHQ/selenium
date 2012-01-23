@@ -50,8 +50,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>CODE_ANALYSIS</DefineConstants>
     <DocumentationFile>..\..\..\build\cli\Debug\ThoughtWorks.Selenium.Core.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
