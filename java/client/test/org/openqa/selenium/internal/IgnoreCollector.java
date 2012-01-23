@@ -15,7 +15,9 @@ public class IgnoreCollector implements IgnoredTestCallback {
 
   public void callback(Class clazz, String testName, Ignore ignore) {
     for (String name : getTestMethodsFor(clazz, testName)) {
-      tests.add(IgnoredTestCase.asMap(clazz.getName(), name, ignore));
+      if (ignore != null) {
+        tests.add(IgnoredTestCase.asMap(clazz.getName(), name, ignore));
+      }
     }
   }
 
