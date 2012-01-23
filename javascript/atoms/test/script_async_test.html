@@ -7,75 +7,194 @@
     goog.require('bot.script');
     goog.require('bot.userAgent');
     goog.require('goog.dom');
-    goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.MockClock');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.recordFunction');
     goog.require('goog.userAgent');
   </script>
 </head>
 <body>
-<iframe id="iframe" src="testdata/blank_page.html"></iframe>
+<!- This iframe is only for
+ -- testCanDetectPageUnloadEventsAndFailsTheScriptWhenTheyOccur
+ -->
+<iframe id="unloadFrame" src="testdata/blank_page.html" style="display:none">
+</iframe>
+<iframe id="iframe" src="testdata/mocked_clock.html"></iframe>
 <script type="text/javascript">
-  var TEST_CASE = goog.testing.AsyncTestCase.createAndInstall();
   var IFRAME = goog.dom.getElement('iframe');
+  var IFRAME_WIN = goog.dom.getFrameContentWindow(IFRAME);
 
   // These browsers cannot execute a script in a provided window context.
   var CANNOT_EXECUTE_IN_PROVIDED_CONTEXT =
-      (goog.userAgent.IE && !bot.userAgent.isEngineVersion(9)) ||
-      (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) ||
       // Excludes Android < 3, Chrome < 6, and Safari < 5.
       (goog.userAgent.WEBKIT && !bot.userAgent.isEngineVersion(534));
 
-  function executeScriptInFrame(script, onSuccess, onFailure) {
-    TEST_CASE.waitForAsync('waiting for bot.script.execute');
-    bot.script.execute(script, [], 250,
-        function(var_args) {
-          TEST_CASE.continueTesting();
-          onSuccess.apply(null, arguments);
-        },
-        function(var_args) {
-          TEST_CASE.continueTesting();
-          onFailure.apply(null, arguments);
-        },
-        goog.dom.getFrameContentWindow(IFRAME));
+  var expectedFailures = new goog.testing.ExpectedFailures();
+  var ourClock, frameClock, onSuccess, onFailure;
+
+  function setUp() {
+    ourClock = new goog.testing.MockClock();
+    ourClock.install();
+
+    frameClock = IFRAME_WIN.mockClock;
+    frameClock.install();
+
+    onSuccess = null;
+    onFailure = null;
   }
 
-  function testSynchronizesTimeoutsWithGivenWindow() {
-    var script = 'var callback = arguments[arguments.length - 1];' +
-                 'var count = 0;' +
-                 'window.setTimeout(function() {count += 1;}, 200);' +
-                 'window.setTimeout(function() {count += 2;}, 200);' +
-                 'window.setTimeout(function() {callback(count);}, 200);';
-
-    executeScriptInFrame(script,
-        function(count) {
-          assertEquals(3, count);
-        },
-        fail);
+  function tearDown() {
+    expectedFailures.handleTearDown();
+    ourClock.uninstall();
+    frameClock.uninstall();
+    frameClock.reset();
   }
 
+  function assertExpectationsSet() {
+    assertNotNull('onSuccess expectations not set', onSuccess);
+    assertNotNull('onFailure expectations not set', onFailure);
+  }
 
-  function testShouldExecuteInTheContextOfTheProvidedWindow() {
-    if (CANNOT_EXECUTE_IN_PROVIDED_CONTEXT) {
-      return;
+  function assertNeither() {
+    assertExpectationsSet();
+    assertEquals('Did not expect onSuccess to be invoked',
+        0, onSuccess.getCallCount());
+    assertEquals('Did not expect onFailure to be called',
+        0, onFailure.getCallCount());
+  }
+
+  function assertSuccess() {
+    assertExpectationsSet();
+    assertEquals('Expected onSuccess to be invoked once',
+        1, onSuccess.getCallCount());
+    var lastCall = onSuccess.getLastCall();
+    if (lastCall.getError()) {
+      throw lastCall.getError();
     }
 
-    executeScriptInFrame('arguments[arguments.length - 1](location);',
-        function(loc) {
-          assertContains(loc.pathname, IFRAME.src);
-        },
-        fail);
+    assertEquals('Did not expect onFailure to be called',
+        0, onFailure.getCallCount());
+  }
+
+  function assertFailure() {
+    assertExpectationsSet();
+    assertEquals('Did not expect onSuccess to be invoked',
+        0, onSuccess.getCallCount());
+
+    assertEquals('Expected onFailure to be invoked once',
+        1, onFailure.getCallCount());
+    var lastCall = onFailure.getLastCall();
+    if (lastCall.getError()) {
+      throw lastCall.getError();
+    }
+  }
+
+  function testSynchronizesTimeoutsWithGivenWindow_noTimeout() {
+    var script = 'var callback = arguments[arguments.length - 1];' +
+                 'window.setTimeout(function() {callback();}, 100);';
+
+    onSuccess = goog.testing.recordFunction();
+    onFailure = goog.testing.recordFunction();
+
+    expectedFailures.expectFailureFor(
+        CANNOT_EXECUTE_IN_PROVIDED_CONTEXT, 'Bug in Safari 4');
+    expectedFailures.run(function() {
+      bot.script.execute(script, [], 100, onSuccess, onFailure, IFRAME_WIN);
+      ourClock.tick(100);
+      assertNeither();
+
+      frameClock.tick(100);
+      assertSuccess();
+    });
+  }
+
+  function testSynchronizesTimeoutsWithGivenWindow_noTimeout_multiStep() {
+    var script = 'var callback = arguments[arguments.length - 1];' +
+                 'var count = 0;' +
+                 'window.setTimeout(function() {count += 1;}, 100);' +
+                 'window.setTimeout(function() {count += 2;}, 100);' +
+                 'window.setTimeout(function() {callback(count);}, 100);';
+
+    onSuccess = goog.testing.recordFunction(goog.partial(assertEquals, 3));
+    onFailure = goog.testing.recordFunction();
+
+    expectedFailures.expectFailureFor(
+        CANNOT_EXECUTE_IN_PROVIDED_CONTEXT, 'Bug in Safari 4');
+    expectedFailures.run(function() {
+      bot.script.execute(script, [], 100, onSuccess, onFailure, IFRAME_WIN);
+      ourClock.tick(100);
+      assertNeither();
+
+      frameClock.tick(100);
+      assertSuccess();
+    });
+  }
+
+  function testSynchronizesTimeoutsWithGivenWindow_timeout() {
+    var script = 'var callback = arguments[arguments.length - 1];' +
+                 'window.setTimeout(function() {callback();}, 150);';
+
+    onSuccess = goog.testing.recordFunction();
+    onFailure = goog.testing.recordFunction();
+
+    bot.script.execute(script, [], 100, onSuccess, onFailure, IFRAME_WIN);
+    ourClock.tick(100);
+    assertNeither();
+
+    frameClock.tick(100);
+    assertFailure();
+
+    // Tick out to 150, ensure the callback is never invoked.
+    frameClock.tick(50);
+    assertFailure();
+  }
+
+  function testShouldExecuteInTheContextOfTheProvidedWindow() {
+    onSuccess = goog.testing.recordFunction(function(clock) {
+      assertEquals('Returned the wrong clock reference', frameClock, clock);
+    });
+    onFailure = goog.testing.recordFunction();
+
+    expectedFailures.expectFailureFor(
+        CANNOT_EXECUTE_IN_PROVIDED_CONTEXT, 'Bug in Safari 4');
+    expectedFailures.run(function() {
+      bot.script.execute('arguments[arguments.length - 1](mockClock);', [], 0,
+          onSuccess, onFailure, IFRAME_WIN);
+      assertSuccess();
+      // We set a 0-based timeout; make sure nothing changes.
+      frameClock.tick(10);
+      assertSuccess();
+    });
   }
 
   function testCanDetectPageUnloadEventsAndFailsTheScriptWhenTheyOccur() {
-    if (CANNOT_EXECUTE_IN_PROVIDED_CONTEXT) {
-      return;
+    onSuccess = goog.testing.recordFunction();
+    onFailure = goog.testing.recordFunction(function(e) {
+      assertContains('Detected a page unload event;', e.message);
+    });
+
+    var frame = goog.dom.getElement('unloadFrame');
+    var frameWin = goog.dom.getFrameContentWindow(frame);
+
+    // Script doesn't need to actually do anything. Testing the infrastructure
+    // of bot.script.execute.
+    bot.script.execute('', [], 250, onSuccess, onFailure, frameWin);
+
+    // Avoid actually triggering an unload event and keep things as stable as
+    // possible. Unfortunately, we can't fire an unload event manually for IE,
+    // so we force one with doc.open/close.  See:
+    // http://msdn.microsoft.com/en-us/library/ms536973(v=vs.85).aspx
+    if (bot.userAgent.IE_DOC_PRE9) {
+      frameWin.document.open();
+      frameWin.document.close();
+    } else {
+      var event = frameWin.document.createEvent('HTMLEvents');
+      event.initEvent('unload', true, true);
+      frameWin.dispatchEvent(event);
     }
 
-    executeScriptInFrame('window.location = "' + IFRAME.src + '?x=y";',
-        goog.partial(fail, 'Expected to get an unload error'),
-        function(e) {
-          assertContains('Detected a page unload event;', e.message);
-        });
+    assertFailure();
   }
 </script>
 </body>
