@@ -47,22 +47,6 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Starts the <see cref="ChromeCommandExecutor"/>.
-        /// </summary>
-        public void Start()
-        {
-            this.service.Start();
-        }
-
-        /// <summary>
-        /// Stops the <see cref="ChromeCommandExecutor"/>.
-        /// </summary>
-        public void Stop()
-        {
-            this.service.Dispose();
-        }
-
-        /// <summary>
         /// Executes a command with the ChromeDriver.
         /// </summary>
         /// <param name="commandToExecute">The command you wish to execute</param>

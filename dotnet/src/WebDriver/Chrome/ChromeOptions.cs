@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -78,16 +79,16 @@ namespace OpenQA.Selenium.Chrome
         /// Gets the list of arguments appended to the Chrome command line as a string array.
         /// </summary>
         [JsonProperty("args")]
-        public string[] Arguments
+        public ReadOnlyCollection<string> Arguments
         {
-            get { return this.arguments.ToArray(); }
+            get { return this.arguments.AsReadOnly(); }
         }
 
         /// <summary>
         /// Gets the list of extensions to be installed as an array of base64-encoded strings.
         /// </summary>
         [JsonProperty("extensions")]
-        public string[] Extensions
+        public ReadOnlyCollection<string> Extensions
         {
             get
             {
@@ -99,7 +100,7 @@ namespace OpenQA.Selenium.Chrome
                     encodedExtensions.Add(encodedExtension);
                 }
 
-                return encodedExtensions.ToArray();
+                return encodedExtensions.AsReadOnly();
             }
         }
 
