@@ -222,6 +222,7 @@ namespace Selenium
                     throw new NotSupportedException(commandName + " is not supported\n" +
                         "Note: Start() must be called before any other methods may be called - make sure you've called Start().");
                 }
+
                 throw new NotSupportedException(commandName);
             }
 

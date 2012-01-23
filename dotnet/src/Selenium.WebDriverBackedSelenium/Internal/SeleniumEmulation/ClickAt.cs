@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
@@ -36,10 +37,10 @@ namespace Selenium.Internal.SeleniumEmulation
         {
             this.alert.ReplaceAlertMethod();
             IWebElement element = this.finder.FindElement(driver, locator);
-            String[] parts = value.Split(new Char[] { ',' });
-            int xOffset = Int32.Parse(parts[0]);
-            int yOffset = Int32.Parse(parts[1]);
-            new Actions(driver).MoveToElement(element, xOffset, yOffset).Click().Perform();
+            string[] parts = value.Split(new char[] { ',' });
+            int offsetX = int.Parse(parts[0], CultureInfo.InvariantCulture);
+            int offsetY = int.Parse(parts[1], CultureInfo.InvariantCulture);
+            new Actions(driver).MoveToElement(element, offsetX, offsetY).Click().Perform();
             return null;
         }
     }

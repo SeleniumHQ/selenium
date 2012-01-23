@@ -139,4 +139,3 @@ namespace Selenium.Internal.SeleniumEmulation
         }
     }
 }
-
