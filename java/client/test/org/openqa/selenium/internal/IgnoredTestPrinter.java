@@ -26,7 +26,7 @@ public class IgnoredTestPrinter {
 
     final File out = new File("ignores.json");
     Files.write(collector.toJson().getBytes(), out);
-    System.out.println("Wrote ignores to " + out.getPath());
+    System.out.println("Wrote ignores to " + out.getAbsolutePath());
   }
 
 }
