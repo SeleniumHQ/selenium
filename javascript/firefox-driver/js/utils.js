@@ -897,18 +897,6 @@ Utils.getLocationViaAccessibilityInterface = function(element) {
   };
 };
 
-/**
- * Gets the {x,y,width,height}-tuple for the passed element, relative to the
- * document element for the window handle which owns the element. In firefox
- * <3.6 this will be the containing frame. In firefox >=3.6, this will be the
- * top-level document. Does not account for any browser chrome.
- *
- * @param {!Element} element The element whose location to get.
- * @param {boolean=} opt_onlyFirstRect Whether the element should be treated as
- *     if it only has one client rect - useful for link tags, which may
- *     overflow, where clicking the middle of the tag may not actually click
- *     within any client rect for the tag.
- */
 Utils.getLocation = function(element, opt_onlyFirstRect) {
   try {
     element = element.wrappedJSObject ? element.wrappedJSObject : element;
