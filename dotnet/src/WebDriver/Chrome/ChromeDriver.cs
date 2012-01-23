@@ -151,8 +151,8 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        private ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
-            : base(new ChromeCommandExecutor(service, commandTimeout), options.ToCapabilities())
+        private ChromeDriver(DriverService service, ChromeOptions options, TimeSpan commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
         {
         }
 
@@ -162,8 +162,8 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
         /// <param name="capabilities">The desired capabilities of the Chrome driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        private ChromeDriver(ChromeDriverService service, ICapabilities capabilities, TimeSpan commandTimeout)
-            : base(new ChromeCommandExecutor(service, commandTimeout), capabilities)
+        private ChromeDriver(DriverService service, ICapabilities capabilities, TimeSpan commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), capabilities)
         {
         }
         #endregion

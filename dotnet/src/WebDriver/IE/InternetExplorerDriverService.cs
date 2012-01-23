@@ -1,4 +1,4 @@
-﻿// <copyright file="ChromeDriverService.cs" company="WebDriver Committers">
+﻿// <copyright file="InternetExplorerDriverService.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -23,21 +23,21 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace OpenQA.Selenium.Chrome
+namespace OpenQA.Selenium.IE
 {
     /// <summary>
     /// Exposes the service provided by the native ChromeDriver executable.
     /// </summary>
-    public sealed class ChromeDriverService : DriverService
+    public sealed class InternetExplorerDriverService : DriverService
     {
-        private const string ChromeDriverServiceFileName = "chromedriver.exe";
+        private const string InternetExplorerDriverServiceFileName = "InternetExplorerDriver.exe";
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriverService class.
+        /// Initializes a new instance of the InternetExplorerDriverService class.
         /// </summary>
-        /// <param name="executable">The full path to the ChromeDriver executable.</param>
-        /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
-        private ChromeDriverService(string executable, int port)
+        /// <param name="executable">The full path to the InternetExplorerDriver executable.</param>
+        /// <param name="port">The port on which the InternetExplorerDriver executable should listen.</param>
+        private InternetExplorerDriverService(string executable, int port)
             : base(executable, port)
         {
         }
@@ -47,14 +47,14 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         protected override string DriverServiceExecutableName
         {
-            get { return ChromeDriverServiceFileName; }
+            get { return InternetExplorerDriverServiceFileName; }
         }
 
         /// <summary>
-        /// Creates a default instance of the ChromeDriverService.
+        /// Creates a default instance of the InternetExplorerDriverService.
         /// </summary>
-        /// <returns>A ChromeDriverService that implements default settings.</returns>
-        public static ChromeDriverService CreateDefaultService()
+        /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
+        public static InternetExplorerDriverService CreateDefaultService()
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
             string currentDirectory = Path.GetDirectoryName(executingAssembly.Location);
@@ -71,24 +71,24 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable.
+        /// Creates a default instance of the InternetExplorerDriverService using a specified path to the ChromeDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
-        /// <returns>A ChromeDriverService using a random port.</returns>
-        public static ChromeDriverService CreateDefaultService(string driverPath)
+        /// <param name="driverPath">The directory containing the InternetExplorerDriver executable.</param>
+        /// <returns>A InternetExplorerDriverService using a random port.</returns>
+        public static InternetExplorerDriverService CreateDefaultService(string driverPath)
         {
             if (string.IsNullOrEmpty(driverPath))
             {
                 throw new ArgumentException("Path to locate driver executable cannot be null or empty.", "driverPath");
             }
 
-            string executablePath = Path.Combine(driverPath, ChromeDriverServiceFileName);
+            string executablePath = Path.Combine(driverPath, InternetExplorerDriverServiceFileName);
             if (!File.Exists(executablePath))
             {
                 throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist.", executablePath));
             }
 
-            return new ChromeDriverService(executablePath, FindFreePort());
+            return new InternetExplorerDriverService(executablePath, FindFreePort());
         }
     }
 }
