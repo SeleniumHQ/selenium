@@ -205,8 +205,8 @@ bot.dom.getProperty = function(element, propertyName) {
     return false;
   }
 
-  if (propertyName == 'value' && !bot.dom.hasAttribute(element, propertyName) &&
-      bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
+  if (propertyName == 'value' && bot.dom.isElement(element, goog.dom.TagName.OPTION) &&
+		  !bot.dom.hasAttribute(element, propertyName)) {
     // See http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
     // IE does not adhere to this behaviour, so we hack it in.
     value = goog.dom.getRawTextContent(element);
@@ -350,7 +350,11 @@ bot.dom.hasAttribute = function(element, attributeName) {
   if (element.hasAttribute) {
     return element.hasAttribute(attributeName);
   } else {
-    return element.attributes[attributeName].specified;
+    try {
+      return element.attributes[attributeName].specified;
+    } catch (e) {
+  	  return false;
+    }
   }
 }
 
