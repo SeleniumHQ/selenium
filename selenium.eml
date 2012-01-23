@@ -148,10 +148,10 @@
 	<lib name="jetty-servlet-7.2.0.v20101020.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-7.2.0.v20101020.jar!/"/>
 	</lib>
-	<lib name="guava-10.0.1.jar" scope="COMPILE">
-		<srcroot url="jar://$MODULE_DIR$/third_party/java/guava-libraries/guava-10.0.1-src.jar!/"/>
-		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-10.0.1-src.jar!/"/>
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-10.0.1.jar!/"/>
+	<lib name="guava-11.0.1.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/guava-libraries/guava-11.0.1-src.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-11.0.1-src.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/guava-libraries/guava-11.0.1.jar!/"/>
 	</lib>
 	<lib name="jasper-compiler-jdt-5.5.15.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jasper/jasper-compiler-jdt-5.5.15.jar!/"/>
