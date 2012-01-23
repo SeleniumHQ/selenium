@@ -79,14 +79,20 @@ bool ExtractResource(unsigned short resource_id,
 
 int GetPort(int argc, _TCHAR* argv[]) {
   int port = 5555;
-  if (argc >=3) {
-    std::wstring arg_name(argv[1]);
-    std::wstring arg_value(argv[2]);
-    if (arg_name == L"--port" ||
-        arg_name == L"-p" || 
-        arg_name == L"/port" || 
-        arg_name == L"/p") {
-      port = _wtoi(arg_value.c_str());
+  if (argc >= 2) {
+    for (int i = 1; i < argc; i++) {
+      std::wstring arg(argv[i]);
+      if (arg.find(L"--port=") == 0 ||
+          arg.find(L"-port=") == 0 ||
+          arg.find(L"/port=") == 0) {
+        int equal_pos = arg.find(L"=");
+        std::wstring port_string = arg.substr(equal_pos + 1);
+        int port_value = _wtoi(port_string.c_str());
+        if (port_value > 0) {
+          port = port_value;
+        }
+        break;
+      }
     }
   }
   return port;
@@ -125,6 +131,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
   int port = GetPort(argc, argv);
   start_server_proc(port);
+  std::cout << "Started InternetExplorerDriver" << std::endl;
   std::cout << "Listening on port " << port << std::endl;
 
   // Create the shutdown event and wait for it to be signaled.
