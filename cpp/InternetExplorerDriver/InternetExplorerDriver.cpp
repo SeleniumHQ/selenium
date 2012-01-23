@@ -135,10 +135,15 @@ int _tmain(int argc, _TCHAR* argv[]) {
   std::cout << "Listening on port " << port << std::endl;
 
   // Create the shutdown event and wait for it to be signaled.
+  DWORD process_id = ::GetCurrentProcessId();
+  vector<wchar_t> process_id_buffer(10);
+  _ltow_s(process_id, &process_id_buffer[0], process_id_buffer.size(), 10);
+  std::wstring process_id_string(&process_id_buffer[0]);
+  std::wstring event_name = IESERVER_SHUTDOWN_EVENT_NAME + process_id_string;
   HANDLE event_handle = ::CreateEvent(NULL,
                                       TRUE, 
                                       FALSE,
-                                      IESERVER_SHUTDOWN_EVENT_NAME);
+                                      event_name.c_str());
   ::WaitForSingleObject(event_handle, INFINITE);
   ::CloseHandle(event_handle);
   stop_server_proc();
