@@ -205,8 +205,9 @@ bot.dom.getProperty = function(element, propertyName) {
     return false;
   }
 
-  if (propertyName == 'value' && bot.dom.isElement(element, goog.dom.TagName.OPTION) &&
-		  !bot.dom.hasAttribute(element, propertyName)) {
+  if (propertyName == 'value' &&
+      bot.dom.isElement(element, goog.dom.TagName.OPTION) &&
+      !bot.dom.hasAttribute(element, propertyName)) {
     // See http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
     // IE does not adhere to this behaviour, so we hack it in.
     value = goog.dom.getRawTextContent(element);
@@ -342,7 +343,7 @@ bot.dom.getAttribute = function(element, attributeName) {
  *
  * @param {!Element} element The element to use.
  * @param {string} attributeName The name of the attribute.
- * @return {boolean} Whether the node is has the attribute, regardless of 
+ * @return {boolean} Whether the node is has the attribute, regardless of
  *     whether it is default value or user defined
  */
 bot.dom.hasAttribute = function(element, attributeName) {
@@ -353,7 +354,7 @@ bot.dom.hasAttribute = function(element, attributeName) {
     try {
       return element.attributes[attributeName].specified;
     } catch (e) {
-  	  return false;
+      return false;
     }
   }
 }
@@ -579,7 +580,10 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
 bot.dom.getElementSize_ = function(element) {
   if (goog.isFunction(element['getBBox'])) {
     try {
-      return element['getBBox']();
+      var bb = element['getBBox']();
+      if (bb) {
+        return bb;
+      }
     } catch (e) {
       // Firefox will always throw for certain SVG elements,
       // even if the function exists.
