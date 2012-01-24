@@ -33,7 +33,7 @@ import java.util.Map;
 public class CommandLine {
 
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
-  private UnixProcess process;
+  private OsProcess process;
 
   public CommandLine(String executable, String... args) {
     process = new UnixProcess(executable, args);
@@ -208,7 +208,6 @@ public class CommandLine {
 
   public void setInput(String allInput) {
     process.setInput(allInput);
-
   }
 
   @Override
@@ -219,5 +218,4 @@ public class CommandLine {
   public void copyOutputTo(OutputStream out) {
     process.copyOutputTo(out);
   }
-
 }

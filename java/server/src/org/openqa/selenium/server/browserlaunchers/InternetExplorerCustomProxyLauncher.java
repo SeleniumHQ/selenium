@@ -23,7 +23,7 @@ import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.os.win32.WindowsProcessGroup;
+import org.openqa.selenium.os.WindowsProcessGroup;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;

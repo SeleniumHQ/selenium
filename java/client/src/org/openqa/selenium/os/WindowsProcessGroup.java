@@ -23,6 +23,9 @@ import com.sun.jna.platform.win32.WinNT;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 
+import java.io.OutputStream;
+import java.util.Map;
+
 // This is a rewrite of
 // http://svn.openqa.org/svn/selenium-rc/trunk/killableprocess/killableprocess.cpp
 // in Java using JNA.
@@ -34,7 +37,7 @@ import org.openqa.selenium.WebDriverException;
  * children too. That sounds a bit more sinsiter than it actually is.
  */
 @Beta
-public class WindowsProcessGroup {
+public class WindowsProcessGroup implements OsProcess {
   private Kernel32 Kernel32;
   private String cmd;
   private WinNT.HANDLE hJob;
@@ -61,6 +64,22 @@ public class WindowsProcessGroup {
       return '"' + toQuote + '"';
     }
     return toQuote;
+  }
+
+  public Map<String, String> getEnvironment() {
+    throw new UnsupportedOperationException("getEnvironment");
+  }
+
+  public void setEnvironmentVariable(String name, String value) {
+    throw new UnsupportedOperationException("setEnvironmentVariable");
+  }
+
+  public void copyOutputTo(OutputStream out) {
+    throw new UnsupportedOperationException("copyOutputTo");
+  }
+
+  public void setInput(String allInput) {
+    throw new UnsupportedOperationException("setInput");
   }
 
   public void executeAsync() {
@@ -114,13 +133,27 @@ public class WindowsProcessGroup {
     Kernel32.CloseHandle(pi.hProcess);
   }
 
-  public void destroy() {
+  public void waitFor() throws InterruptedException {
+    // no-op
+  }
+
+  public int destroy() {
     if (hJob == null) {
-      return;
+      return 0; // Hard code the return value
     }
 
     // This seems a trifle brutal. Oh well. Brutal it is.
     Kernel32.TerminateJobObject(hJob, 666);
     hJob = null;
+
+    return 0;
+  }
+
+  public int getExitCode() {
+    return 0;
+  }
+
+  public String getStdOut() {
+    throw new UnsupportedOperationException("getStdOut");
   }
 }
