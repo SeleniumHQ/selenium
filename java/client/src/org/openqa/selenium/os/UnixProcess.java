@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class UnixProcess {
+class UnixProcess {
   private static final Logger log = Logger.getLogger(UnixProcess.class.getName());
 
   private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
