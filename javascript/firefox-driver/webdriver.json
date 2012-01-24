@@ -20,6 +20,7 @@
   "extensions.logging.enabled": true,
   "extensions.update.enabled": false,
   "extensions.update.notifyUser": false,
+  "focusmanager.testmode": true,
   "network.manage-offline-status": false,
   "network.http.max-connections-per-server": 10,
   "network.http.phishy-userpass-length": 255,
