@@ -273,6 +273,21 @@ LocatorBuilders.prototype.getCSSSubPath = function(e) {
     return e.nodeName.toLowerCase();
 };
 
+LocatorBuilders.prototype.preciseXPath = function(xpath, e){
+  //only create more precise xpath if needed
+  if (this.findElement(xpath) != e) {
+    var result = e.ownerDocument.evaluate(xpath, e.ownerDocument, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    //skip first element (result:0 xpath index:1)
+    for (var i=0, len=result.snapshotLength; i < len; i++) {
+      var newPath = 'xpath=(' +  xpath + ')[' + (i +1 )+']';
+      if ( this.findElement(newPath) == e ) {
+          return newPath ;
+      }
+    }
+  }
+  return xpath;
+}
+
 /*
  * ===== builders =====
  */
@@ -369,7 +384,7 @@ LocatorBuilders.add('xpath:link', function(e) {
   if (e.nodeName == 'A') {
     var text = e.textContent;
     if (!text.match(/^\s*$/)) {
-      return "//" + this.xpathHtmlElement("a") + "[contains(text(),'" + text.replace(/^\s+/, '').replace(/\s+$/, '') + "')]";
+      return this.preciseXPath("//" + this.xpathHtmlElement("a") + "[contains(text(),'" + text.replace(/^\s+/, '').replace(/\s+$/, '') + "')]", e);
     }
   }
   return null;
@@ -378,11 +393,11 @@ LocatorBuilders.add('xpath:link', function(e) {
 LocatorBuilders.add('xpath:img', function(e) {
   if (e.nodeName == 'IMG') {
     if (e.alt != '') {
-      return "//" + this.xpathHtmlElement("img") + "[@alt=" + this.attributeValue(e.alt) + "]";
+      return this.preciseXPath("//" + this.xpathHtmlElement("img") + "[@alt=" + this.attributeValue(e.alt) + "]", e);
     } else if (e.title != '') {
-      return "//" + this.xpathHtmlElement("img") + "[@title=" + this.attributeValue(e.title) + "]";
+      return this.preciseXPath("//" + this.xpathHtmlElement("img") + "[@title=" + this.attributeValue(e.title) + "]", e);
     } else if (e.src != '') {
-      return "//" + this.xpathHtmlElement("img") + "[contains(@src," + this.attributeValue(e.src) + ")]";
+      return this.preciseXPath("//" + this.xpathHtmlElement("img") + "[contains(@src," + this.attributeValue(e.src) + ")]", e);
     }
   }
   return null;
@@ -402,7 +417,7 @@ LocatorBuilders.add('xpath:attributes', function(e) {
       locator += '@' + attName + "=" + this.attributeValue(attributes[attName]);
     }
     locator += "]";
-    return locator;
+    return this.preciseXPath(locator, e);
   }
 
   if (e.attributes) {
@@ -438,7 +453,7 @@ LocatorBuilders.add('xpath:idRelative', function(e) {
           current.parentNode.getAttribute("id")) {
         return "//" + this.xpathHtmlElement(current.parentNode.nodeName.toLowerCase()) +
             "[@id=" + this.attributeValue(current.parentNode.id) + "]" +
-            path;
+            this.preciseXPath(path,e);
       }
     } else {
       return null;
@@ -452,10 +467,10 @@ LocatorBuilders.add('xpath:href', function(e) {
   if (e.attributes && e.hasAttribute("href")) {
     href = e.getAttribute("href");
     if (href.search(/^http?:\/\//) >= 0) {
-      return "//" + this.xpathHtmlElement("a") + "[@href=" + this.attributeValue(href) + "]";
+      return this.preciseXPath("//" + this.xpathHtmlElement("a") + "[@href=" + this.attributeValue(href) + "]", e);
     } else {
       // use contains(), because in IE getAttribute("href") will return absolute path
-      return "//" + this.xpathHtmlElement("a") + "[contains(@href, " + this.attributeValue(href) + ")]";
+      return this.preciseXPath("//" + this.xpathHtmlElement("a") + "[contains(@href, " + this.attributeValue(href) + ")]",e);
     }
   }
   return null;
