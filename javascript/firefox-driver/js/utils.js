@@ -998,7 +998,7 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
   var browserSpecificXOffset = 0;
   var browserSpecificYOffset = 0;
 
-  if (bot.userAgent.isEngineVersion(4)) {
+  if (bot.userAgent.isProductVersion(4)) {
     var rect = inBrowser.getBoundingClientRect();
     browserSpecificYOffset += rect.top;
     browserSpecificXOffset += rect.left;

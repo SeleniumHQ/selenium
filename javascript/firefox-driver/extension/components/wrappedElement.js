@@ -112,10 +112,11 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
       var currentPosition = respond.session.getMousePosition();
       Utils.translateByBrowserSpecificOffset(respond.session.getBrowser(), currentPosition);
 
-      var browserOffset = this.getBrowserSpecificOffset_(respond.session.getBrowser());
+      var destinationCoordinates = new goog.math.Coordinate(x, y);
+      Utils.translateByBrowserSpecificOffset(respond.session.getBrowser(), destinationCoordinates);
 
-      var adjustedX = x + browserOffset.x;
-      var adjustedY = y + browserOffset.y;
+      var adjustedX = destinationCoordinates.x;
+      var adjustedY = destinationCoordinates.y;
 
       nativeEvents.mouseMove(node,
                              currentPosition.x,
