@@ -70,7 +70,7 @@ public class WebDriverViewClient {
 
       // If it is a html fragment or the current url loaded, the page is
       // not reloaded and the onProgessChanged function is not called.
-      if (url.contains("#") && tmpUrl.equals(url.split("#")[0])) {
+      if (url != null && tmpUrl != null && url.contains("#") && tmpUrl.equals(url.split("#")[0])) {
         driver.notifyPageDoneLoading();
       }
     }
