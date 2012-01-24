@@ -54,19 +54,25 @@ public class WebDriverViewClient {
   }
 
   public void onPageStarted(WebView view, String url) {
-    driver.setLastUrlLoaded(url);
-    tmpUrl = url;
-    driver.notifyPageStartedLoading();
+    // To avoid blocking on background windows
+    if (driver.getWebView().equals(view)) {
+      driver.setLastUrlLoaded(url);
+      tmpUrl = url;
+      driver.notifyPageStartedLoading();
+    }
   }
 
 
   public void onPageFinished(WebView view, String url) {
-    driver.setLastUrlLoaded(url);
+  // To avoid blocking on background windows
+    if (driver.getWebView().equals(view)) {
+      driver.setLastUrlLoaded(url);
 
-    // If it is a html fragment or the current url loaded, the page is
-    // not reloaded and the onProgessChanged function is not called.
-    if (url.contains("#") && tmpUrl.equals(url.split("#")[0])) {
-      driver.notifyPageDoneLoading();
+      // If it is a html fragment or the current url loaded, the page is
+      // not reloaded and the onProgessChanged function is not called.
+      if (url.contains("#") && tmpUrl.equals(url.split("#")[0])) {
+        driver.notifyPageDoneLoading();
+      }
     }
   }
 }
