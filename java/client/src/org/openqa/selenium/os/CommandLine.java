@@ -1,6 +1,6 @@
 /*
 Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
+Copyright 2010 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,65 +13,44 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.os;
 
-import com.google.common.collect.Maps;
+import static org.openqa.selenium.Platform.WINDOWS;
 
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteWatchdog;
-import org.apache.commons.exec.Executor;
-import org.apache.commons.exec.PumpStreamHandler;
+import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.Platform.WINDOWS;
 
 public class CommandLine {
 
-  private static final Logger log = Logger.getLogger(CommandLine.class.getName());
   private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
-  private final ByteArrayOutputStream inputOut = new ByteArrayOutputStream();
-  private volatile String allInput;
-  private Map<String, String> env = new ConcurrentHashMap<String, String>();
-  private final DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler();
-  private final Executor executor = new DefaultExecutor();
-  private final org.apache.commons.exec.CommandLine cl;
-
-  private volatile OutputStream drainTo;
-  private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
+  private UnixProcess process;
 
   public CommandLine(String executable, String... args) {
-    cl = new org.apache.commons.exec.CommandLine(findExecutable(executable));
-    cl.addArguments(args, false);
+    process = new UnixProcess(executable, args);
   }
 
   public CommandLine(String[] cmdarray) {
     String executable = findExecutable(cmdarray[0]);
-    cl = new org.apache.commons.exec.CommandLine(executable);
-    for (int i = 1; i < cmdarray.length; i++) {
-      cl.addArgument(cmdarray[i], false);
-    }
+    int length = cmdarray.length - 1;
+    String[] args = new String[length];
+    System.arraycopy(cmdarray, 1, args, 0, length - 1);
+
+    process = new UnixProcess(executable, args);
   }
 
+  @VisibleForTesting
   Map<String, String> getEnvironment() {
-    return new HashMap<String, String>(env);
+    return process.getEnvironment();
   }
 
   /**
@@ -94,14 +73,7 @@ public class CommandLine {
    * @throws IllegalArgumentException if the value given is null (unsupported)
    */
   public void setEnvironmentVariable(String name, String value) {
-    if (name == null) {
-      throw new IllegalArgumentException("Cannot have a null environment variable name!");
-    }
-    if (value == null) {
-      throw new IllegalArgumentException("Cannot have a null value for environment variable " +
-                                         name);
-    }
-    env.put(name, value);
+    process.setEnvironmentVariable(name, value);
   }
 
   public void setDynamicLibraryPath(String newLibraryPath) {
@@ -172,44 +144,17 @@ public class CommandLine {
   }
 
   public void executeAsync() {
-    try {
-      final OutputStream outputStream = getOutputStream();
-      executeWatchdog.reset();
-      executor.setWatchdog(executeWatchdog);
-      executor.setStreamHandler(new PumpStreamHandler(
-          outputStream, outputStream, getInputStream()));
-      executor.execute(cl, getMergedEnv(), handler);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
+    process.executeAsync();
   }
 
   public void execute() {
-    try {
-      executeAsync();
-      handler.waitFor();
-    } catch (InterruptedException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
-  private OutputStream getOutputStream() {
-    return drainTo == null ? inputOut : new MultioutputStream(inputOut, drainTo);
-  }
-
-  private Map<String, String> getMergedEnv() {
-    HashMap<String, String> newEnv = Maps.newHashMap(System.getenv());
-    newEnv.putAll(env);
-    return newEnv;
-  }
-
-  private ByteArrayInputStream getInputStream() {
-    return allInput != null ? new ByteArrayInputStream(allInput.getBytes()) : null;
+    executeAsync();
+    waitFor();
   }
 
   public void waitFor() {
     try {
-      handler.waitFor();
+      process.waitFor();
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
     }
@@ -220,19 +165,11 @@ public class CommandLine {
   }
 
   public int getExitCode() {
-    if (!handler.hasResult()) {
-      throw new IllegalStateException(
-          "Cannot get exit code before executing command line: " + cl);
-    }
-    return handler.getExitValue();
+    return process.getExitCode();
   }
 
   public String getStdOut() {
-    if (!handler.hasResult()) {
-      throw new IllegalStateException(
-          "Cannot get output before executing command line: " + cl);
-    }
-    return new String(inputOut.toByteArray());
+    return process.getStdOut();
   }
 
   /**
@@ -241,24 +178,7 @@ public class CommandLine {
    * @return The exit code of the command.
    */
   public int destroy() {
-    SeleniumWatchDog watchdog = executeWatchdog;
-    watchdog.waitForProcessStarted();
-    watchdog.destroyProcess();
-    watchdog.waitForTerminationAfterDestroy(2, SECONDS);
-    if (handler.hasResult()) {
-      return getExitCode();
-    }
-
-    watchdog.destroyHarder();
-    watchdog.waitForTerminationAfterDestroy(1, SECONDS);
-    if (handler.hasResult()) {
-      return getExitCode();
-    }
-
-    log.severe(String.format("Unable to kill process with PID %s", watchdog.getPID()));
-    int exitCode = -1;
-    executor.setExitValue(exitCode);
-    return exitCode;
+    return process.destroy();
   }
 
   private static boolean canExecute(File file) {
@@ -287,102 +207,17 @@ public class CommandLine {
   }
 
   public void setInput(String allInput) {
-    this.allInput = allInput;
+    process.setInput(allInput);
+
   }
 
   @Override
   public String toString() {
-    return cl.toString();
+    return process.toString();
   }
 
   public void copyOutputTo(OutputStream out) {
-    drainTo = out;
+    process.copyOutputTo(out);
   }
 
-  class SeleniumWatchDog extends ExecuteWatchdog {
-
-    private volatile Process process;
-    private volatile boolean starting = true;
-
-    SeleniumWatchDog(long timeout) {
-      super(timeout);
-    }
-
-    @Override
-    public synchronized void start(Process process) {
-      this.process = process;
-      starting = false;
-      super.start(process);
-    }
-
-    public void reset() {
-      starting = true;
-    }
-
-    private String getPID() {
-      return this.process.toString();
-    }
-
-    private void waitForProcessStarted() {
-      while (starting) {
-        try {
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-          throw new WebDriverException(e);
-        }
-      }
-    }
-
-    private void waitForTerminationAfterDestroy(int duration, TimeUnit unit) {
-      long end = System.currentTimeMillis() + unit.toMillis(duration);
-      while (!handler.hasResult() && System.currentTimeMillis() < end) {
-        try {
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-          throw new WebDriverException(e);
-        }
-      }
-    }
-
-    private void destroyHarder() {
-      log.info("Command failed to close cleanly. Destroying forcefully (v2). " + this);
-      Process ourProc = process;
-      ProcessUtils.killProcess(ourProc);
-    }
-  }
-
-  class MultioutputStream extends OutputStream {
-
-    private final OutputStream mandatory;
-    private final OutputStream optional;
-
-    MultioutputStream(OutputStream mandatory, OutputStream optional) {
-      this.mandatory = mandatory;
-      this.optional = optional;
-    }
-
-    @Override
-    public void write(int b) throws IOException {
-      mandatory.write(b);
-      if (optional != null) {
-        optional.write(b);
-      }
-    }
-
-    @Override
-    public void flush() throws IOException {
-      mandatory.flush();
-      if (optional != null) {
-        optional.flush();
-      }
-    }
-
-    @Override
-    public void close() throws IOException {
-      mandatory.close();
-      if (optional != null) {
-        optional.close();
-      }
-    }
-  }
 }
