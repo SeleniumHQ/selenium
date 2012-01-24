@@ -177,3 +177,6 @@ js_binary(name = "session_store",
     "js/externs.js",
   ],
   deps = [ "//javascript/webdriver/atoms:deps" ])
+
+export_file(name = "webdriver_prefs",
+  srcs = [ "webdriver.json" ])
