@@ -130,7 +130,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   // Timeouts in milliseconds
   private static final long LOADING_TIMEOUT = 30000L;
   private static final long START_LOADING_TIMEOUT = 700L;
-  static final long RESPONSE_TIMEOUT = 10000L;
+  static final long RESPONSE_TIMEOUT = 15000L;
   private static final long FOCUS_TIMEOUT = 1000L;
   private static final long POLLING_INTERVAL = 50L;
   static final long UI_TIMEOUT = 3000L;
