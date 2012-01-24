@@ -304,8 +304,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
           throw new RuntimeException();
         }
       }
-    }
-    synchronized (syncObject) {
+
       long end = System.currentTimeMillis() + LOADING_TIMEOUT;
       while (!pageDoneLoading && pageStartedLoading && (System.currentTimeMillis() < end)) {
         try {
