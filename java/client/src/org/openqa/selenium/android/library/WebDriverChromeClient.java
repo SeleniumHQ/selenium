@@ -43,8 +43,8 @@ public class WebDriverChromeClient {
   }
 
   
-  public void onCreateWindow(Object newView) {
-    driver.getViewManager().addView(getViewAdapterFor(newView));
+  public void onCreateWindow(ViewAdapter newView) {
+    driver.getViewManager().addView(newView);
   }
 
   public void onProgressChanged(Object view, int newProgress) {
