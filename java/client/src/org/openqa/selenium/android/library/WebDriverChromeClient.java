@@ -39,7 +39,7 @@ public class WebDriverChromeClient {
   public void onCloseWindow(Object window) {
     // Dispose of unhandled alerts, if any.
     AlertManager.removeAlertForView(getViewAdapterFor(window));
-    driver.getViewManager().removeView(window);
+    driver.getViewManager().removeView(getViewAdapterFor(window));
   }
 
   
