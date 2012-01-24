@@ -4,6 +4,7 @@ module Selenium
       class Profile
         include ProfileHelper
 
+        VALID_PREFERENCE_TYPES   = [TrueClass, FalseClass, Integer, Float, String]
         WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
         WEBDRIVER_PREFS          = {
           :native_events    => 'webdriver_enable_native_events',
@@ -23,6 +24,12 @@ module Selenium
 
           def from_name(name)
             ini[name]
+          end
+
+          def default_preferences
+            @default_preferences ||= MultiJson.decode(
+              File.read(File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/prefs.json"))
+            )
           end
         end
 
@@ -83,17 +90,12 @@ module Selenium
         #
 
         def []=(key, value)
-          case value
-          when String
-            if Util.stringified?(value)
-              raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
-            end
+          unless VALID_PREFERENCE_TYPES.any? { |e| value.kind_of? e }
+            raise TypeError, "expected one of #{VALID_PREFERENCE_TYPES.inspect}, got #{value.inspect}:#{value.class}"
+          end
 
-            value = MultiJson.encode(value)
-          when TrueClass, FalseClass, Integer, Float
-            value = value.to_s
-          else
-            raise TypeError, "invalid preference: #{value.inspect}:#{value.class}"
+          if value.kind_of?(String) && Util.stringified?(value)
+            raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
           end
 
           @additional_prefs[key.to_s] = value
@@ -216,9 +218,9 @@ module Selenium
           path = File.join(directory, 'user.js')
           prefs = read_user_prefs(path)
 
-          prefs.merge! DEFAULT_PREFERENCES
+          prefs.merge! self.class.default_preferences.fetch 'mutable'
           prefs.merge! @additional_prefs
-          prefs.merge! FROZEN_PREFERENCES
+          prefs.merge! self.class.default_preferences.fetch 'frozen'
 
           prefs[WEBDRIVER_PREFS[:untrusted_certs]]  = !secure_ssl?
           prefs[WEBDRIVER_PREFS[:native_events]]    = native_events?
@@ -231,13 +233,12 @@ module Selenium
         end
 
         def read_user_prefs(path)
-          return {} unless File.exist?(path)
-
           prefs = {}
+          return prefs unless File.exist?(path)
 
           File.read(path).split("\n").each do |line|
             if line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
-              prefs[$1.strip] = $2.strip
+              prefs[$1.strip] = MultiJson.decode($2.strip)
             end
           end
 
@@ -247,67 +248,10 @@ module Selenium
         def write_prefs(prefs, path)
           File.open(path, "w") { |file|
             prefs.each do |key, value|
-              p key => value if $DEBUG
-              file.puts %{user_pref("#{key}", #{value});}
+              file.puts %{user_pref("#{key}", #{MultiJson.encode value});}
             end
           }
         end
-
-        DEFAULT_PREFERENCES = {
-          "browser.startup.page"     => '0',
-          "browser.startup.homepage" => '"about:blank"',
-          "dom.max_script_run_time"  => '30',
-        }.freeze
-
-
-        # Profile preferences that are essential to the Firefox driver operating
-        # correctly. Users are not permitted to override these values.
-
-        FROZEN_PREFERENCES = {
-          "app.update.auto"                           => 'false',
-          "app.update.enabled"                        => 'false',
-          "browser.download.manager.showWhenStarting" => 'false',
-          "browser.EULA.override"                     => 'true',
-          "browser.EULA.3.accepted"                   => 'true',
-          "browser.link.open_external"                => '2',
-          "browser.link.open_newwindow"               => '2',
-          "browser.safebrowsing.enabled"              => 'false',
-          "browser.safebrowsing.malware.enabled"      => 'false',
-          "browser.search.update"                     => 'false',
-          "browser.sessionstore.resume_from_crash"    => 'false',
-          "browser.shell.checkDefaultBrowser"         => 'false',
-          "browser.tabs.warnOnClose"                  => 'false',
-          "browser.tabs.warnOnOpen"                   => 'false',
-          "devtools.errorconsole.enabled"             => 'true',
-          "dom.disable_open_during_load"              => 'false',
-          "extensions.autoDisableScopes"              => '10',
-          "extensions.logging.enabled"                => 'true',
-          "extensions.update.enabled"                 => 'false',
-          "extensions.update.notifyUser"              => 'false',
-          "network.manage-offline-status"             => 'false',
-          "network.http.phishy-userpass-length"       => '255',
-          "network.http.max-connections-per-server"   => '10',
-          "offline-apps.allow_by_default"             => 'true',
-          "prompts.tab_modal.enabled"                 => "false",
-          "security.warn_entering_secure"             => 'false',
-          "security.warn_submit_insecure"             => 'false',
-          "security.warn_entering_secure.show_once"   => 'false',
-          "security.warn_entering_weak"               => 'false',
-          "security.warn_entering_weak.show_once"     => 'false',
-          "security.warn_leaving_secure"              => 'false',
-          "security.warn_leaving_secure.show_once"    => 'false',
-          "security.warn_submit_insecure"             => 'false',
-          "security.warn_viewing_mixed"               => 'false',
-          "security.warn_viewing_mixed.show_once"     => 'false',
-          "signon.rememberSignons"                    => 'false',
-          "toolkit.networkmanager.disable"            => 'true',
-          "toolkit.telemetry.prompted"                => '2',
-          "toolkit.telemetry.enabled"                 => 'false',
-          "toolkit.telemetry.rejected"                => 'true',
-          "javascript.options.showInConsole"          => 'true',
-          "browser.dom.window.dump.enabled"           => 'true',
-          "dom.report_all_js_exceptions"              => "true"
-        }.freeze
 
       end # Profile
     end # Firefox

@@ -34,7 +34,7 @@ module Selenium
         end
 
         it "should not let user override defaults" do
-          profile['app.update.enabled'] = 'true'
+          profile['app.update.enabled'] = true
 
           string = read_generated_prefs
           string.should include('user_pref("app.update.enabled", false)')
