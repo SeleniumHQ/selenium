@@ -40,7 +40,7 @@ public class CommandLine {
   }
 
   public CommandLine(String[] cmdarray) {
-    String executable = findExecutable(cmdarray[0]);
+    String executable = cmdarray[0];
     int length = cmdarray.length - 1;
     String[] args = new String[length];
     System.arraycopy(cmdarray, 1, args, 0, length - 1);

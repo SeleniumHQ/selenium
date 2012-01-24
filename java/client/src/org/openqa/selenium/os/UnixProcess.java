@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.os;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -57,9 +58,8 @@ class UnixProcess implements OsProcess {
   private final Map<String, String> env = new ConcurrentHashMap<String, String>();
 
   public UnixProcess(String executable, String... args) {
-    String actualExe = Preconditions
-        .checkNotNull(CommandLine.findExecutable(executable),
-            "Unable to find executable for: %s", executable);
+    String actualExe = checkNotNull(CommandLine.findExecutable(executable),
+        "Unable to find executable for: %s", executable);
     cl = new org.apache.commons.exec.CommandLine(actualExe);
     cl.addArguments(args, false);
   }
