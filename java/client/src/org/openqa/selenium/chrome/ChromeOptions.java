@@ -163,7 +163,7 @@ public class ChromeOptions {
   }
 
   /**
-   * Returns DesiredCapabiliites for Chrome with these options included as
+   * Returns DesiredCapabilites for Chrome with these options included as
    * capabilities. This does not copy the options. Further changes will be
    * reflected in the returned capabilities.
    *
