@@ -68,7 +68,7 @@ class AndroidKeys {
     put(Keys.DECIMAL, KeyEvent.KEYCODE_NUM);
   }};
   
-  public static int getKeyEventFromUnicodeKey(char key) {
+  /* package */ static int getKeyEventFromUnicodeKey(char key) {
     if (key == '\b') {
       return KeyEvent.KEYCODE_DEL;
     } else if (key == '\r') {

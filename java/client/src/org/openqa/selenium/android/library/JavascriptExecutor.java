@@ -30,7 +30,7 @@ class JavascriptExecutor {
    *
    * @param jsCode JavaScript code to execute.
    */
-  public static void executeJs(final ViewAdapter webview,
+  /* package */ static void executeJs(final ViewAdapter webview,
       JavascriptResultNotifier notifier, final String jsCode) {
     resNotifier = notifier;
     if (webview.getUrl() == null) {
@@ -44,7 +44,7 @@ class JavascriptExecutor {
    *
    * @param result Results (if returned) or an empty string.
    */
-  public void resultAvailable(String result) {
+  /* package */ void resultAvailable(String result) {
     resNotifier.notifyResultReady(result);
   }
 }

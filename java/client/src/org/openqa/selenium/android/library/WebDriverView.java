@@ -43,13 +43,15 @@ import com.google.common.base.Preconditions;
 
     this.viewc = viewc;
     this.chromec = chromec;
+    this.chromec.setWebDriverView(this);
+
     this.focusListener = focusListener == null ? new View.OnFocusChangeListener(){
       public void onFocusChange(View view, boolean b) {
       }
     } : focusListener;
   }
 
-  public ViewAdapter create() {
+  /* package */ ViewAdapter create() {
 
     //WebChromeClient chromeClient = new WebDriverChromeClient(driver, this, chromec);
     //WebViewClient viewClient = new DefaultViewClient(driver, viewc);

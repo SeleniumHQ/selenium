@@ -33,11 +33,11 @@ class EventSender {
   private static final Object syncObject = new Object();
   private static volatile boolean done;
 
-  public static MotionEvent getLastEvent() {
+  /* package */ static MotionEvent getLastEvent() {
     return lastSent;
   }
 
-  public static void sendMotion(final List<MotionEvent> events,
+  /* package */ static void sendMotion(final List<MotionEvent> events,
       final WebView view, Activity activity) {
 
     long timeout = System.currentTimeMillis() + AndroidWebDriver.RESPONSE_TIMEOUT;
@@ -90,7 +90,7 @@ class EventSender {
    * @param webview
    * @param text
    */
-  public static void sendKeys(final WebView webview,
+  /* package */ static void sendKeys(final WebView webview,
       Activity activity, final CharSequence... text) {
     final KeyCharacterMap characterMap =
         KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);

@@ -37,7 +37,7 @@ class AndroidTouchScreen implements TouchScreen {
 
   private final AndroidWebDriver driver;
 
-  public AndroidTouchScreen(AndroidWebDriver driver) {
+  /* package */ AndroidTouchScreen(AndroidWebDriver driver) {
     this.driver = driver;
   }
 

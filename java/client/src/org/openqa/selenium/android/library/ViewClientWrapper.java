@@ -39,7 +39,7 @@ import org.openqa.selenium.WebDriverException;
  * ViewClientWrapper viewWrapper = new ViewClientWrapper(
  *     "android.webkit.WebViewClient", new DefaultViewClient(myClient));
  */
-public class ViewClientWrapper {
+public class ViewClientWrapper implements DriverProvider {
   private final String className;
   private final Object client;
 
@@ -70,7 +70,7 @@ public class ViewClientWrapper {
     return client;
   }
 
-  /* package */ void setDriver(AndroidWebDriver driver) {
+  public void setDriver(AndroidWebDriver driver) {
     Class[] argsClass = {AndroidWebDriver.class};
     Object[] args = {driver};
     ReflexionHelper.invoke(client, "setDriver", argsClass, args);

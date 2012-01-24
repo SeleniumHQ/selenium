@@ -32,11 +32,11 @@ public class AndroidAlert implements Alert {
   private String textToSend = null;
   private final String defaultValue;
 
-  public AndroidAlert(String message, JsResult result) {
+  /* package */ AndroidAlert(String message, JsResult result) {
     this(message, result, null);
   }
 
-  public AndroidAlert(String message, JsResult result, String defaultValue) {
+  /* package */ AndroidAlert(String message, JsResult result, String defaultValue) {
     this.message = message;
     this.result = result;
     this.defaultValue = defaultValue;

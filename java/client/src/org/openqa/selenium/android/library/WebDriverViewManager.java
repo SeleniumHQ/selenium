@@ -34,18 +34,18 @@ class WebDriverViewManager implements JavascriptResultNotifier {
   private volatile String result;
   private Object syncObject = new Object();
 
-  public static ViewAdapter getViewAdapterFor(Object view) {
+  /* package */ static ViewAdapter getViewAdapterFor(Object view) {
     return views.get(view);
   }
 
-  public ViewAdapter getView(String nameOrHandle) {
+  /* package */ ViewAdapter getView(String nameOrHandle) {
     synchronized (syncObject) {
       ViewAdapter toReturn = searchForViewByHandle(nameOrHandle);
       return toReturn == null ? searchForViewByWindowName(nameOrHandle) : toReturn;
     }
   }
   
-  public void addView(ViewAdapter view) {
+  /* package */ void addView(ViewAdapter view) {
     synchronized (syncObject) {
       String u = UUID.randomUUID().toString();
       map.put(u, view);
@@ -53,14 +53,14 @@ class WebDriverViewManager implements JavascriptResultNotifier {
     }
   }
 
-  public ViewAdapter getNextView() {
+  /* package */ ViewAdapter getNextView() {
     synchronized (syncObject) {
       String key = map.keySet().iterator().next();
       return map.get(key);
     }
   }
 
-  public void removeView(String nameOrHandle) {
+  /* package */ void removeView(String nameOrHandle) {
     synchronized (syncObject) {
       ViewAdapter toRemove = searchForViewByHandle(nameOrHandle);
       toRemove = toRemove != null ? toRemove : searchForViewByWindowName(nameOrHandle);
@@ -68,14 +68,14 @@ class WebDriverViewManager implements JavascriptResultNotifier {
     }
   }
   
-  public void removeView(ViewAdapter view) {
+  /* package */ void removeView(ViewAdapter view) {
     synchronized (syncObject) {
       map.inverse().remove(view);
       views.inverse().remove(view);
     }
   }
 
-  public void removeView(Object viewImpl) {
+  /* package */ void removeView(Object viewImpl) {
     synchronized (syncObject) {
       for (ViewAdapter adapter : map.values()) {
         if (adapter.getClassForUnderlyingView().equals(viewImpl)) {
@@ -86,7 +86,7 @@ class WebDriverViewManager implements JavascriptResultNotifier {
     }
   }
   
-  public Set<String> getAllHandles() {
+  /* package */ Set<String> getAllHandles() {
     synchronized (syncObject) {
       return map.keySet();
     }
@@ -120,13 +120,13 @@ class WebDriverViewManager implements JavascriptResultNotifier {
     }
   }
 
-  public String getWindowHandle(ViewAdapter view) {
+  /* package */ String getWindowHandle(ViewAdapter view) {
     synchronized (syncObject) {
       return map.inverse().get(view);
     }
   }
 
-  public void closeAll() {
+  /* package */ void closeAll() {
     String s;
     for (Iterator<String> it = map.keySet().iterator(); it.hasNext(); ) {
       s = it.next();

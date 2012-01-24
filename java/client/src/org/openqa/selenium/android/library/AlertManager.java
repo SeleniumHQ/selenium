@@ -27,23 +27,23 @@ import com.google.common.collect.HashBiMap;
 public class AlertManager {
   private static BiMap<ViewAdapter, Alert> unhandledAlerts = HashBiMap.create();
 
-  public static void addAlertForView(ViewAdapter view, AndroidAlert alert) {
+  /* package */ static void addAlertForView(ViewAdapter view, AndroidAlert alert) {
     unhandledAlerts.put(view, alert);
   }
 
-  public static Alert getAlertForView(ViewAdapter view) {
+  /* package */ static Alert getAlertForView(ViewAdapter view) {
     return unhandledAlerts.get(view);
   }
 
-  public static void removeAllAlerts() {
+  /* package */ static void removeAllAlerts() {
     unhandledAlerts.clear();
   }
 
-  public static void removeAlertForView(ViewAdapter view) {
+  /* package */ static void removeAlertForView(ViewAdapter view) {
     unhandledAlerts.remove(view);
   }
 
-  public static void removeAlert(Alert alert) {
+  /* package */ static void removeAlert(Alert alert) {
     unhandledAlerts.inverse().remove(alert);
   }
 }

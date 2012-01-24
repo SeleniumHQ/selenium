@@ -20,15 +20,15 @@ package org.openqa.selenium.android.library;
 class DomWindow {
   private final String key;
 
-  public DomWindow(String key) {
+  /* package */ DomWindow(String key) {
     this.key = key;
   }
 
-  public String getKey() {
+  /* package */ String getKey() {
     return key;
   }
 
-  public String getJsObject() {
+  /* package */ String getJsObject() {
     return "{'WINDOW':'" + key + "'}";
   }
 }

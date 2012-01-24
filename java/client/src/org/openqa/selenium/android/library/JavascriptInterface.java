@@ -24,7 +24,7 @@ package org.openqa.selenium.android.library;
 final class JavascriptInterface {
   private final JavascriptExecutor executor;
 
-  public JavascriptInterface(JavascriptExecutor executor) {
+  /* package */ JavascriptInterface(JavascriptExecutor executor) {
     this.executor = executor;
   }
   

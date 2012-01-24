@@ -26,7 +26,7 @@ import java.util.Set;
 class AndroidLocalStorage implements LocalStorage {
   private final AndroidWebDriver driver;
 
-  public AndroidLocalStorage(AndroidWebDriver driver) {
+  /* package */ AndroidLocalStorage(AndroidWebDriver driver) {
     this.driver = driver;
   }
 

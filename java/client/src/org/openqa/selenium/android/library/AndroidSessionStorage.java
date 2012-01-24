@@ -26,7 +26,7 @@ import java.util.Set;
 class AndroidSessionStorage implements SessionStorage {
   private final AndroidWebDriver driver;
 
-  public AndroidSessionStorage(AndroidWebDriver driver) {
+  /* package */ AndroidSessionStorage(AndroidWebDriver driver) {
     this.driver = driver;
   }
 

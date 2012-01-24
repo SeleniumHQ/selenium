@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * The WebDriver atoms are used to ensure consistent behaviour cross-browser.
  */
-public enum AndroidAtoms {
+/* package */ enum AndroidAtoms {
 
   // AUTO GENERATED - DO NOT EDIT BY HAND
 

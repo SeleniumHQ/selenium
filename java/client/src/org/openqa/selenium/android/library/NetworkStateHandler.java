@@ -33,7 +33,7 @@ class NetworkStateHandler {
   private boolean isNetworkUp;
   private final ViewAdapter view;
   
-  public NetworkStateHandler(Activity activity, final ViewAdapter view) {
+  /* package */ NetworkStateHandler(Activity activity, final ViewAdapter view) {
     this.activity = activity;
     this.view = view;
     
@@ -73,7 +73,7 @@ class NetworkStateHandler {
     };
   }
 
-  public void onNetworkChange(boolean up) {
+  /* package */ void onNetworkChange(boolean up) {
     if (up == isNetworkUp) {
       return;
     } else if (up) {
@@ -87,20 +87,20 @@ class NetworkStateHandler {
     }
   }
   
-  public boolean isNetworkUp() {
+  /* package */ boolean isNetworkUp() {
     return isNetworkUp;
   }
   
-  public boolean isConnected() {
+  /* package */ boolean isConnected() {
     return isConnected;
   }
 
-  public void onPause() {
+  /* package */ void onPause() {
     // unregister network state listener
     activity.unregisterReceiver(receiver);
   }
 
-  public void onResume() {
+  /* package */ void onResume() {
     activity.registerReceiver(receiver, filter);
   }
 }

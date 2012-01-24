@@ -52,7 +52,7 @@ class SessionCookieManager {
    * @param domain Domain name to fetch cookies for
    * @return Set of cookie objects for given domain
    */
-  public List<Cookie> getCookies(String domain) {
+  /* package */ List<Cookie> getCookies(String domain) {
     cookieManager.removeExpiredCookie();
     String cookies = cookieManager.getCookie(domain);
     List<Cookie> result = new LinkedList<Cookie>();
@@ -74,7 +74,7 @@ class SessionCookieManager {
    * @param url
    * @return A string containing comma separated cookies
    */
-  public Set<Cookie> getAllCookies(String url) {
+  /* package */ Set<Cookie> getAllCookies(String url) {
     Set<Cookie> cookieSet = Sets.newHashSet();
     List<String> domains;
     try {
@@ -120,7 +120,7 @@ class SessionCookieManager {
    * @param name Cookie name to search
    * @return Cookie object (if found) or null
    */
-  public Cookie getCookie(String url, String name) {
+  /* package */ Cookie getCookie(String url, String name) {
     List<Cookie> cookies;
     try {
       cookies = getCookies(getDomainsFromUrl(new URL(url)).get(0));
@@ -143,7 +143,7 @@ class SessionCookieManager {
    * 
    * @param url to remove all the cookies for
    */
-  public void removeAllCookies(String url) {
+  /* package */ void removeAllCookies(String url) {
     // TODO(berrada): this removes all cookies, we should remove only cookies for
     // the current URL. Given that this is single session it is ok for now.
     cookieManager.removeAllCookie();
@@ -155,7 +155,7 @@ class SessionCookieManager {
    * @param url to remove cookie for
    * @param name of the cookie to remove
    */
-  public void remove(String url, String name) {
+  /* package */ void remove(String url, String name) {
     List<String> domains;
     try {
       domains = getDomainsFromUrl(new URL(url));
@@ -183,7 +183,7 @@ class SessionCookieManager {
    * @param url to add the cookie to
    * @param cookie Cookie to be added
    */
-  public void addCookie(String url, Cookie cookie) {
+  /* package */ void addCookie(String url, Cookie cookie) {
     URL urlObj;
     try {
       urlObj = new URL(url);

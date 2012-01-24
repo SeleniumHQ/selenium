@@ -48,7 +48,7 @@ import org.openqa.selenium.WebDriverException;
  * the DefaultChromeClient, you can write your own client under the condition
  * that your client calls all WebDriverChromeClient methods.
  */
-public class ChromeClientWrapper {
+public class ChromeClientWrapper implements DriverProvider, ViewProvider {
   private final String className;
   private final Object client;
 
@@ -78,9 +78,15 @@ public class ChromeClientWrapper {
     return client;
   }
 
-  /* package */void setDriver(AndroidWebDriver driver) {
+  public void setDriver(AndroidWebDriver driver) {
     Class[] argsClass = {AndroidWebDriver.class};
     Object[] args = {driver};
     ReflexionHelper.invoke(client, "setDriver", argsClass, args);
+  }
+
+  public void setWebDriverView(WebDriverView view) {
+    Class[] argsClass = {WebDriverView.class};
+    Object[] args = {view};
+    ReflexionHelper.invoke(client, "setWebDriverView", argsClass, args);
   }
 }
