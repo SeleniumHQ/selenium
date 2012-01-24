@@ -320,11 +320,27 @@ void IECommandExecutor::DispatchCommand() {
   if (found_iterator == this->command_handlers_.end()) {
     response.SetErrorResponse(501, "Command not implemented");
   } else {
-    CommandHandlerHandle command_handler = found_iterator->second;
-    command_handler->Execute(*this, this->current_command_, &response);
-
     BrowserHandle browser;
     int status_code = this->GetCurrentBrowser(&browser);
+    if (status_code == SUCCESS) {
+      HWND alert_handle = browser->GetActiveDialogWindowHandle();
+      int command_type = this->current_command_.command_type();
+      if (alert_handle != NULL &&
+          command_type != GetAlertText &&
+          command_type != SendKeysToAlert &&
+          command_type != AcceptAlert &&
+          command_type != DismissAlert) {
+        response.SetErrorResponse(EMODALDIALOGOPENED, "Modal dialog present");
+        ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
+        this->serialized_response_ = response.Serialize();
+        return;
+      }
+    }
+
+	CommandHandlerHandle command_handler = found_iterator->second;
+    command_handler->Execute(*this, this->current_command_, &response);
+
+    status_code = this->GetCurrentBrowser(&browser);
     if (status_code == SUCCESS) {
       this->is_waiting_ = browser->wait_required();
       if (this->is_waiting_) {
