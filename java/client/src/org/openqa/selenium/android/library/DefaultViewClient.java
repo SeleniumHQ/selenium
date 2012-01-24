@@ -33,7 +33,7 @@ import android.webkit.WebViewClient;
  * This class overrides WebView default behavior when loading new URL. It makes sure that the URL
  * is always loaded by the WebView.
  */
-class DefaultViewClient extends WebViewClient {
+class DefaultViewClient extends WebViewClient implements DriverProvider {
   private final WebViewClient delegate;
   private WebDriverViewClient wdViewClient;
 
@@ -59,7 +59,7 @@ class DefaultViewClient extends WebViewClient {
     }
   }
 
-  /* package */ void setDriver(AndroidWebDriver driver) {
+  public void setDriver(AndroidWebDriver driver) {
     this.wdViewClient = new WebDriverViewClient(driver);
   }
   

@@ -49,7 +49,8 @@ public class ViewClientWrapper {
    *     class name.
    * @param client the client to use. Typically this client will be a
    *     WebViewClient (or extend the latter). If not this client must have
-   *     the same API as WebViewClient.
+   *     the same API as WebViewClient. Additionally this client view must
+   *     implement the DriverProvider interface.
    */
   public ViewClientWrapper(String className, Object client) {
     this.className = className;

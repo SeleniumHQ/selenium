@@ -28,12 +28,15 @@ import java.lang.reflect.Method;
 
   private static Method getMethod(Object obj, String name, Class[] argsClazz) {
     try {
-      return obj.getClass().getDeclaredMethod(name, argsClazz);
+      return obj.getClass().getMethod(name, argsClazz);
     } catch (NoSuchMethodException e) {
+      try {
+        return obj.getClass().getDeclaredMethod(name, argsClazz);
+      } catch (NoSuchMethodException ex) {
       throw new WebDriverException(
-          "The rendering view you are using does not have "
-          + "a " + name + " method. Ensure your view has the same API as the Android WebView "
-          + "http://developer.android.com/reference/android/view/View.html.", e);
+          "The object you are using does not have "
+          + "a " + name + " method", ex);
+      }
     }
   }
 

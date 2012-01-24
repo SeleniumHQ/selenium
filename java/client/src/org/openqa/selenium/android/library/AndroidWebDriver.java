@@ -354,9 +354,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
           final ViewAdapter newView = wdview.create();
           view = newView;
           viewManager.addView(view);
-          if (view.getUnderlyingView() instanceof View) {
-            activity.setContentView((View) view.getUnderlyingView());
-          }
+          activity.setContentView((View) view.getUnderlyingView());
           done = true;
           syncObject.notify();
         }

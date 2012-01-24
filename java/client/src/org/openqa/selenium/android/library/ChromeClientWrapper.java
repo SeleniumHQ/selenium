@@ -57,7 +57,8 @@ public class ChromeClientWrapper {
    * @param className the fully qualified class name of the client's class.
    * @param client the client to use. Typically this client will be a
    *     WebChromeClient (or extend the latter). if not this client must have
-   *     the same API methods as WebChromeClient.
+   *     the same API methods as WebChromeClient. Additionally this chrome
+   *     client must implement the DriverProvider and ViewProvider interfaces.
    */
   public ChromeClientWrapper(String className, Object client) {
     this.className = className;

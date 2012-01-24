@@ -174,7 +174,7 @@ public class ViewAdapter {
   public void setOnFocusChangeListener(View.OnFocusChangeListener l) {
     Class[] argsType = {View.OnFocusChangeListener.class};
     Object[] args = {l};
-    invoke(view, "setNetworkAvailable", argsType, args);
+    invoke(view, "setOnFocusChangeListener", argsType, args);
   }
 
   public void addJavascriptInterface(Object obj, String interfaceName) {

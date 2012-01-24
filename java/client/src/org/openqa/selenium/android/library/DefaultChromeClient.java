@@ -36,8 +36,7 @@ import android.webkit.WebView;
  * onCreateWindow will create a new view using the ViewFactory provided
  * to WebDriver. onCloseWindow will destroy the view.
  */
-public class DefaultChromeClient extends WebChromeClient {
-  private AndroidWebDriver driver;
+public class DefaultChromeClient extends WebChromeClient implements DriverProvider, ViewProvider {
   private final WebChromeClient delegate;
   private WebDriverView wdView;
 
@@ -66,12 +65,11 @@ public class DefaultChromeClient extends WebChromeClient {
     }
   }
 
-  /* package */ void setDriver(AndroidWebDriver driver) {
-    this.driver = driver;
+  public void setDriver(AndroidWebDriver driver) {
     this.wdChromeClient = new WebDriverChromeClient(driver);
   }
 
-  /* package */ void setWebDriverView(WebDriverView view) {
+  public void setWebDriverView(WebDriverView view) {
     this.wdView = view;
   }
 
