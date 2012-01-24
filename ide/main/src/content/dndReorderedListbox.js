@@ -13,7 +13,7 @@
  */
 function DnDReorderedListbox(listBox, listItemsRa) {
   this.listBox = listBox;
-  this.listBoxDnD = new ListboxDnDReorder(this.listBox, 'application/x-' + listBox.id);
+  this.listBoxDnD = new ListboxDnDReorder(this.listBox, 'application/x-' + listBox.id.toLowerCase());
   this.listItems = listItemsRa;
   this.reload();
 }
