@@ -117,7 +117,10 @@ import com.google.common.base.Preconditions;
     settings.setMinimumLogicalFontSize(1);
     settings.setDefaultFontSize(16);
     settings.setDefaultFixedFontSize(13);
-    
+
+    // Flash settings
+    settings.setPluginState(WebSettings.PluginState.ON);
+
     view.setNetworkAvailable(true);
   }
 }
