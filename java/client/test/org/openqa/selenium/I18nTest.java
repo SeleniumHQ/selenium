@@ -92,7 +92,7 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX, OPERA, ANDROID},
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX, OPERA, ANDROID, IPHONE},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
@@ -153,7 +153,7 @@ public class I18nTest extends AbstractDriverTestCase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, OPERA, ANDROID},
+  @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, OPERA, ANDROID, IPHONE},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
   public void testShouldBeAbleToInputJapanese() {

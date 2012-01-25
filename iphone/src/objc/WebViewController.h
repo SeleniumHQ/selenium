@@ -63,6 +63,8 @@
 - (void)back:(NSDictionary*)ignored;
 - (void)refresh:(NSDictionary*)ignored;
 
+- (void)frame:(NSDictionary*)frameTarget;
+
 // Evaluate a javascript string and return the result.
 // Arguments can be passed in in NSFormatter (printf) style.
 //

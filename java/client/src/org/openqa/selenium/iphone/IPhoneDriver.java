@@ -100,36 +100,7 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
     return new IPhoneTargetLocator();
   }
 
-  private class IPhoneTargetLocator implements TargetLocator {
-
-    public WebDriver frame(int frameIndex) {
-      // is this even possible to do on the iphone?
-      throw new UnsupportedOperationException(
-          "Frame switching is not supported on the iPhone");
-    }
-
-    public WebDriver frame(String frameName) {
-      // is this even possible to do on the iphone?
-      throw new UnsupportedOperationException(
-          "Frame switching is not supported on the iPhone");
-    }
-
-    public WebDriver frame(WebElement frameElement) {
-      // is this even possible to do on the iphone?
-      throw new UnsupportedOperationException(
-          "Frame switching is not supported on the iPhone");
-    }
-
-    public WebDriver window(String windowName) {
-      throw new UnsupportedOperationException(
-          "Window switching is unsupported on the iPhone");
-    }
-
-    public WebDriver defaultContent() {
-      // The iphone driver does not support frame switching, so we're always
-      // focused on the default content.
-      return IPhoneDriver.this;
-    }
+  private class IPhoneTargetLocator extends RemoteTargetLocator {
 
     public WebElement activeElement() {
       return (WebElement) executeScript("return document.activeElement || document.body;");

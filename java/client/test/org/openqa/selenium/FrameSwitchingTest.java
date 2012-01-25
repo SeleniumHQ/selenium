@@ -17,28 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-@Ignore(value = {IPHONE},
-    reason = "iPhone: Frame switching not supported;\n" +
-        "Others: Implementation not updated to new frame-switching behavior")
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
 public class FrameSwitchingTest extends AbstractDriverTestCase {
   private static final int TIMEOUT = 4000;
 

@@ -41,6 +41,8 @@
 		40005B8B14AA80C6009763C2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 40005B8314AA80A1009763C2 /* DDFileLogger.m */; };
 		40005B8C14AA80C6009763C2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 40005B8514AA80A1009763C2 /* DDLog.m */; };
 		40005B8D14AA80C6009763C2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 40005B8714AA80A1009763C2 /* DDTTYLogger.m */; };
+		4003054714CA44F80080BF72 /* FrameContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 4003054614CA44F80080BF72 /* FrameContext.m */; };
+		4003054814CA44F80080BF72 /* FrameContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 4003054614CA44F80080BF72 /* FrameContext.m */; };
 		40597F1214AB78C80056C533 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 40005B7B14AA80A1009763C2 /* GCDAsyncSocket.m */; };
 		40597F1414AB78C80056C533 /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 40005B7F14AA80A1009763C2 /* DDAbstractDatabaseLogger.m */; };
 		40597F1614AB78C80056C533 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 40005B8114AA80A1009763C2 /* DDASLLogger.m */; };
@@ -256,6 +258,8 @@
 		40005B8514AA80A1009763C2 /* DDLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
 		40005B8614AA80A1009763C2 /* DDTTYLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DDTTYLogger.h; sourceTree = "<group>"; };
 		40005B8714AA80A1009763C2 /* DDTTYLogger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DDTTYLogger.m; sourceTree = "<group>"; };
+		4003054514CA44F80080BF72 /* FrameContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameContext.h; sourceTree = "<group>"; };
+		4003054614CA44F80080BF72 /* FrameContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameContext.m; sourceTree = "<group>"; };
 		409AF55C147BF8EB00554A6E /* NSObject+SBJson.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSObject+SBJson.m"; path = "../third_party/objc/json-framework/Classes/NSObject+SBJson.m"; sourceTree = "<group>"; };
 		409AF55D147BF8EB00554A6E /* SBJsonParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SBJsonParser.m; path = "../third_party/objc/json-framework/Classes/SBJsonParser.m"; sourceTree = "<group>"; };
 		409AF55E147BF8EB00554A6E /* SBJsonStreamParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SBJsonStreamParser.m; path = "../third_party/objc/json-framework/Classes/SBJsonStreamParser.m"; sourceTree = "<group>"; };
@@ -707,6 +711,8 @@
 				839049340F1ACEFD001A79B6 /* Attribute.m */,
 				73D14FCB1289B6540074E63B /* Database.h */,
 				73D14FCC1289B6540074E63B /* Database.m */,
+				4003054514CA44F80080BF72 /* FrameContext.h */,
+				4003054614CA44F80080BF72 /* FrameContext.m */,
 			);
 			name = "REST Service";
 			sourceTree = "<group>";
@@ -996,6 +1002,7 @@
 				64A2262E12C1828000537E73 /* NSData+Base64.m in Sources */,
 				648EB1FD137C63B800DEFD44 /* Css.m in Sources */,
 				40BE09AB147714580042C6DA /* Status.m in Sources */,
+				4003054714CA44F80080BF72 /* FrameContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1003,6 +1010,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4003054814CA44F80080BF72 /* FrameContext.m in Sources */,
 				40597F3414AB78E90056C533 /* HTTPAsyncFileResponse.m in Sources */,
 				40597F3614AB78E90056C533 /* HTTPDataResponse.m in Sources */,
 				40597F3814AB78E90056C533 /* HTTPDynamicFileResponse.m in Sources */,

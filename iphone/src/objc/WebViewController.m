@@ -17,21 +17,24 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#import "WebViewController.h"
+#import <objc/runtime.h>
+#import <QuartzCore/QuartzCore.h>
+#import <QuartzCore/CATransaction.h>
+
+#import "errorcodes.h"
+#import "FrameContext.h"
+#import "GeoLocation.h"
 #import "HTTPServerController.h"
+#import "NSObject+SBJson.h"
 #import "NSException+WebDriver.h"
 #import "NSURLRequest+IgnoreSSL.h"
+#import "RootViewController.h"
 #import "UIResponder+SimulateTouch.h"
+#import "WebDriverResponse.h"
 #import "WebDriverPreferences.h"
 #import "WebDriverRequestFetcher.h"
 #import "WebDriverUtilities.h"
-#import "NSObject+SBJson.h"
-#import <objc/runtime.h>
-#import "RootViewController.h"
-#import <QuartzCore/QuartzCore.h>
-#import <QuartzCore/CATransaction.h>
-#import "GeoLocation.h"
-#import "errorcodes.h"
+#import "WebViewController.h"
 
 static const NSString* kGeoLocationKey = @"location";
 static const NSString* kGeoLongitudeKey = @"longitude";
@@ -60,9 +63,9 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   // Creating a new session if auto-create is enabled
   if ([[RootViewController sharedInstance] isAutoCreateSession]) {
     [[HTTPServerController sharedInstance]
-     httpResponseForQuery:@"/hub/session"
+     httpResponseForQuery:@"/wd/hub/session"
      method:@"POST"
-     withData:[@"{\"browserName\":\"firefox\",\"platform\":\"ANY\","
+     withData:[@"{\"browserName\":\"safari\",\"platform\":\"iOS\","
                "\"javascriptEnabled\":false,\"version\":\"\"}"
                dataUsingEncoding:NSASCIIStringEncoding]];
   }
@@ -259,6 +262,9 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   [self performSelectorOnView:@selector(loadRequest:)
                    withObject:url
                 waitUntilLoad:YES];
+  // setting the URL happens on the main container, all
+  // switch_to's are reset.
+  [[FrameContext sharedInstance] removeAllObjects];
 }
 
 - (void)back:(NSDictionary*)ignored {
@@ -290,6 +296,69 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 
 -(NSArray*)windowHandles {
   return [[NSArray alloc] initWithObjects:@"1", nil];
+}
+
+-(void)window:(NSDictionary*)ignored {
+  // window switching isn't supported
+  return;
+}
+  
+- (void)frame:(NSDictionary*)frameTarget {
+  NSObject* ID = [frameTarget objectForKey:@"id"];
+  NSString* frameIndex = nil;
+  if ([ID isKindOfClass:[NSNull class]]) {
+    // Switch to default content
+    [self describeLastAction:@"switch frame to top"];
+    [[FrameContext sharedInstance] removeAllObjects];
+    return;
+  } else if ([ID isKindOfClass:[NSDictionary class]]) {
+    // A WebElement was passed in
+    [self describeLastAction:@"switching frame to provided web element"];
+    
+    // need to make a separate call to 'execute_script'
+    // in order to get the benefits of mapping the webelement to an actual
+    // dom element. Seemingly the easiest way is to spoof another external 
+    // call and process the result
+    WebDriverResponse* response = (WebDriverResponse*)
+      [[HTTPServerController sharedInstance]
+       httpResponseForQuery:[[NSString alloc] initWithFormat:@"/wd/hub/session/%@/execute", [frameTarget objectForKey:@"sessionId"]]
+       method:@"POST"
+       // example of what the data needs to look like
+       // {"sessionId": "%@", "args": [{"ELEMENT": "%@"}], "script": "return arguments[0]"}
+       withData:[[[NSDictionary dictionaryWithObjectsAndKeys:
+                [[NSArray alloc] initWithObjects:ID, nil], @"args", 
+                @"return (function(vs,v){for(var i=0;i<vs.length;i++){if(vs[i]==v)return String(i);}return '';})(window.frames,arguments[0].contentWindow)", @"script", nil] JSONRepresentation] 
+                 dataUsingEncoding:NSASCIIStringEncoding]
+       ];
+    
+    frameIndex = [response value];
+    
+  } else {
+    // We should have a string here which will either be the frame name,
+    // frame index or the id of the element. Let's try frame name / index first.
+    [self describeLastAction:@"switching frame by index/name"];
+    frameIndex = [self jsEval:[[NSString alloc]
+                               initWithFormat:@"(function(vs,v){for(var i=0;i<vs.length;i++){if(vs[i]==v)return String(i);}return '';})(window.frames,window.frames['%@'])",
+                               ID]];
+    if ([frameIndex isEqual:nil] || [frameIndex isEqualToString:@""]) {
+      // couldn't find the frame by name or index
+      // try to see if there's a frame with an id
+      [self describeLastAction:@"switching frame by id"];
+      frameIndex = [self jsEval:[[NSString alloc]
+                                 initWithFormat:@"(function(vs,v){for(var i=0;i<vs.length;i++){if(vs[i]==v)return String(i);}return '';})(window.frames,document.getElementById('%@').contentWindow)",
+                                 ID]];
+    }
+  }
+  if (![frameIndex isEqual:nil] && ![frameIndex isEqualToString:@""]) {
+    [[FrameContext sharedInstance] addObject:frameIndex];
+  } else {
+    [self describeLastAction:@"switch frame could not find frame"];
+    // NoSuchFrame Exception is 8
+    // according to http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
+    @throw [NSException webDriverExceptionWithMessage:
+            [NSString stringWithFormat:@"Could not find frame '%@' in the current window", ID]
+                                        andStatusCode:8];
+  }
 }
 
 - (id)visible {
@@ -340,6 +409,33 @@ static const NSString* kGeoAltitudeKey = @"altitude";
                       autorelease];
   va_end(argList);
   
+  if ([[FrameContext sharedInstance] count] > 0) {
+    // check first is the frames still exist, if any of them are gone
+    // automatically reset to default content
+    [self performSelectorOnMainThread:@selector(jsEvalInternal:)
+                           withObject:[NSString stringWithFormat:@"(function(){var w=window;var frameIndexes=%@;for(var i=0;i<frameIndexes.length;i++){if(!(w=w.frames[frameIndexes[i]]))return true;};return false;})()", 
+                                       [[FrameContext sharedInstance] JSONRepresentation]]
+                        waitUntilDone:YES];
+    if ([[[lastJSResult_ copy] autorelease] isEqualToString:@"true"]) {
+      // this means one of the frames no longer exists, switching back to default content.
+      [[FrameContext sharedInstance] removeAllObjects];
+    } else {
+      script = [[NSString alloc] 
+               initWithFormat:@"(function(){var win=(function(){var w=window;var frameIndexes=%@;for(var i=0;i<frameIndexes.length;i++){if(!(w=w.frames[frameIndexes[i]]))return window;};return w;})(); return win.eval('%@');})()", 
+               [[FrameContext sharedInstance] JSONRepresentation], 
+               // [script JSONRepresentation]
+               // It would have been so nice to just use the JSON serializer
+               // but as luck would have it, it fails to convert most of our
+               // atomized javascript code.
+               // So, resorting to a string replacement to escape certain characters
+               // to coerce into a javascript string for eval.
+               [[[[script stringByReplacingOccurrencesOfString:@"\\"    withString:@"\\\\"]
+                          stringByReplacingOccurrencesOfString:@"'"     withString:@"\\'"]
+                          stringByReplacingOccurrencesOfString:@"\\\\x" withString:@"\\x"]
+                          stringByReplacingOccurrencesOfString:@"\n"    withString:@""]
+               ];
+    }
+  }
   [self performSelectorOnMainThread:@selector(jsEvalInternal:)
                          withObject:script
                       waitUntilDone:YES];
@@ -348,7 +444,9 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 }
 
 - (NSString *)currentTitle {
-  return [self jsEval:@"document.title"];
+  // always return the 'visible' title which is on the top window
+  // not in the frameset
+  return [self jsEval:@"window.top.document.title"];
 }
 
 - (NSString *)source {

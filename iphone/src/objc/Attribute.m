@@ -22,7 +22,6 @@
 #import "WebDriverResponse.h"
 #import "HTTPVirtualDirectory+ExecuteScript.h"
 #import "HTTPStaticResource.h"
-#import "WebViewController.h"
 
 @implementation Attribute
 

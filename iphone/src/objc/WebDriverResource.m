@@ -186,6 +186,9 @@
   }
   
   NSDictionary *arguments = [self getArgumentDictionaryFromData:theData];
+  if (arguments != nil) {
+    [arguments setValue:session_ forKey:@"sessionId"];
+  }
   
   [[MainViewController sharedInstance]
    describeLastAction:NSStringFromSelector(selector)];

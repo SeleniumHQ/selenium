@@ -23,6 +23,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.FrameSwitchingTest;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.Browser;

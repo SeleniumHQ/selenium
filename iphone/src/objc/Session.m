@@ -123,6 +123,11 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   [self setResourceToViewMethodGET:@selector(windowHandles)
                               POST:NULL
                           withName:@"window_handles"];
+  
+  // switch to window
+  [self setResourceToViewMethodGET:NULL
+                              POST:@selector(window:)
+                          withName:@"window"];
 
   // HTML5 Local WebStorage
   [self setResource:[Storage storageWithType:LOCAL_STORAGE]
@@ -165,6 +170,11 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
   
   [self setResource:[Timeouts timeoutsForSession:self]
            withName:@"timeouts"];
+  
+  // switch to frame
+  [self setResourceToViewMethodGET:NULL
+                              POST:@selector(frame:)
+                          withName:@"frame"];
   
   [self cleanSessionStatus];
   

@@ -48,14 +48,13 @@ public class ClickTest extends AbstractDriverTestCase {
     super.tearDown();
   }
 
-  @Ignore(value = {IPHONE}, reason = "iPhone: Frame switching is unsupported")
   public void testCanClickOnALinkAndFollowIt() {
     driver.findElement(By.id("normal")).click();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
-  @Ignore(value = {IPHONE, CHROME, OPERA, SELENESE},
+  @Ignore(value = {CHROME, OPERA, SELENESE},
       reason = "Not tested on these browsers.")
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
@@ -75,8 +74,8 @@ public class ClickTest extends AbstractDriverTestCase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
-  @Ignore(value = {IPHONE, OPERA, ANDROID}, reason = "iPhone: Frame switching is unsupported"
-      + "Opera: Incorrect runtime retrieved, Android: A bug in emulator JSC egine on 2.2, "
+  @Ignore(value = {OPERA, ANDROID}, reason = 
+	  "Opera: Incorrect runtime retrieved, Android: A bug in emulator JSC egine on 2.2, "
       + "works on devices.")
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
@@ -88,9 +87,8 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID},
-      reason = "iPhone: Frame switching is unsupported"
-          + "Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
+  @Ignore(value = {SELENESE, OPERA, ANDROID}, reason = 
+  		"Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -105,9 +103,8 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, OPERA, ANDROID},
-      reason = "iPhone: Frame switching is unsupported"
-          + "Opera: Incorrect runtime retrieved, Android: Fails when running with other tests.")
+  @Ignore(value = {SELENESE, OPERA, ANDROID}, reason = 
+	"Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
   public void testJsLoactedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 

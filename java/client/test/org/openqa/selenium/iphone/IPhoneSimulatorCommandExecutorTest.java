@@ -27,6 +27,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.testing.Ignore;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
@@ -34,6 +35,7 @@ import org.openqa.selenium.io.FileHandler;
  */
 
 public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
+  @Ignore
   @NoDriverAfterTest
   public void testShouldDetectThatTheIPhoneSimulatorHasUnexpectedlyShutdown() throws Exception {
     if (!(driver instanceof IPhoneSimulatorDriver)) {
