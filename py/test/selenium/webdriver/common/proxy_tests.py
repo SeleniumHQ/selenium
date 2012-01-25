@@ -26,13 +26,15 @@ class ProxyTests(unittest.TestCase):
     def testCanAddToDesiredCapabilities(self):
         desired_capabilities = {}
         proxy = Proxy()
-        proxy.http_proxy = 'http://some.url:1234'
+        proxy.http_proxy = 'some.url:1234'
 
         proxy.add_to_capabilities(desired_capabilities)
 
         expected_capabilities = {
-            'proxyType': 'manual',
-            'httpProxy': 'http://some.url:1234'
+            'proxy': {
+                'proxyType': 'manual',
+                'httpProxy': 'some.url:1234'
+            }
         }
 
         self.assertEqual(expected_capabilities, desired_capabilities)

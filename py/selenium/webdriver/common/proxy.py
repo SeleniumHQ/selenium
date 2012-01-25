@@ -123,14 +123,16 @@ class Proxy(object):
 
 
     def add_to_capabilities(self, capabilities):
-        capabilities['proxyType'] = self.proxyType['string']
+        proxy_caps = {}
+        proxy_caps['proxyType'] = self.proxyType['string']
         if self.autodetect:
-            capabilities['autodetect'] = self.autodetect
+            proxy_caps['autodetect'] = self.autodetect
         if self.ftpProxy:
-            capabilities['ftpProxy'] = self.ftpProxy
+            proxy_caps['ftpProxy'] = self.ftpProxy
         if self.httpProxy:
-            capabilities['httpProxy'] = self.httpProxy
+            proxy_caps['httpProxy'] = self.httpProxy
         if self.proxyAutoconfigUrl:
-            capabilities['proxyAutoconfigUrl'] = self.proxyAutoconfigUrl
+            proxy_caps['proxyAutoconfigUrl'] = self.proxyAutoconfigUrl
         if self.sslProxy:
-            capabilities['sslProxy'] = self.sslProxy
+            proxy_caps['sslProxy'] = self.sslProxy
+        capabilities['proxy'] = proxy_caps
