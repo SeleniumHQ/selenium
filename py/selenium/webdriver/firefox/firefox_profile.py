@@ -21,7 +21,7 @@ import shutil
 import re
 import base64
 from cStringIO import StringIO
-from selenium.webdriver.common.proxy import Proxy
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
@@ -192,17 +192,17 @@ class FirefoxProfile(object):
         if proxy is None:
             raise ValueError("proxy can not be None")
 
-        if proxy.proxy_type is Proxy.ProxyType.UNSPECIFIED:
+        if proxy.proxy_type is ProxyType.UNSPECIFIED:
             return
 
-        self.set_preference("network.proxy.type", proxy.proxy_type)
+        self.set_preference("network.proxy.type", proxy.proxy_type['ff_value'])
 
-        if proxy.proxy_type is Proxy.ProxyType.MANUAL:
+        if proxy.proxy_type is ProxyType.MANUAL:
             self.set_preference("network.proxy.no_proxies_on", proxy.no_proxy)
             self._set_manual_proxy_preference("ftp", proxy.ftp_proxy)
             self._set_manual_proxy_preference("http", proxy.http_proxy)
             self._set_manual_proxy_preference("ssl", proxy.ssl_proxy)
-        elif proxy.proxy_type is Proxy.ProxyType.AUTODETECT:
+        elif proxy.proxy_type is ProxyType.AUTODETECT:
             self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
 
     #Private Methods

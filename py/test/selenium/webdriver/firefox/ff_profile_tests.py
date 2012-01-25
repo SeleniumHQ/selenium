@@ -22,22 +22,23 @@ import zipfile
 
 from cStringIO import StringIO
 from selenium import webdriver
+from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
 
 class TestFirefoxProfile:
-    
+
     def setup_method(self, method):
-        self.driver = webdriver.Firefox() 
+        self.driver = webdriver.Firefox()
         self.webserver = SimpleWebServer()
         self.webserver.start()
 
     def test_that_we_can_accept_a_profile(self):
         # The setup gave us a browser but we dont need it since we are doing our own thing
-        self.driver.quit() 
-        
+        self.driver.quit()
+
         self.profile1 = webdriver.FirefoxProfile()
-        self.profile1.set_preference("startup.homepage_welcome_url", 
+        self.profile1.set_preference("startup.homepage_welcome_url",
             "%s" % "http://localhost:%d/%s.html" % (self.webserver.port, "simpleTest"))
         self.profile1.update_preferences()
 
@@ -106,6 +107,17 @@ class TestFirefoxProfile:
         self.profile2 = webdriver.FirefoxProfile()
         # Default is true. Should remain so.
         assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] == 'true'
+
+    def test_sets_http_proxy(self):
+        self.driver.quit()
+
+        profile = webdriver.FirefoxProfile()
+        proxy = Proxy()
+        proxy.http_proxy = 'http://test.hostname:1234'
+        profile.set_proxy(proxy)
+        assert profile.default_preferences["network.proxy.type"] == str(ProxyType.MANUAL['ff_value'])
+        assert profile.default_preferences["network.proxy.http"] == '"test.hostname"'
+        assert profile.default_preferences["network.proxy.http_port"] == '1234'
 
     def teardown_method(self, method):
         try:
