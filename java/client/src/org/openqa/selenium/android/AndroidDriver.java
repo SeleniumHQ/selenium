@@ -29,6 +29,8 @@ import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.Location;
+import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CapabilityType;
@@ -37,6 +39,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocalStorage;
+import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteSessionStorage;
 
 import java.net.MalformedURLException;
@@ -46,11 +49,12 @@ import java.net.URL;
  * A driver for running tests on an Android device or emulator.
  */
 public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable,
-    BrowserConnection, HasTouchScreen, WebStorage {
+    BrowserConnection, HasTouchScreen, WebStorage, LocationContext {
 
   private TouchScreen touch;
   private RemoteLocalStorage localStorage;
   private RemoteSessionStorage sessionStorage;
+  private RemoteLocationContext locationContext;
 
   /**
    * The default constructor assumes the remote server is listening at http://localhost:8080/wd/hub
@@ -85,6 +89,7 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
     touch = new RemoteTouchScreen(getExecuteMethod());
     localStorage = new RemoteLocalStorage(getExecuteMethod());
     sessionStorage = new RemoteSessionStorage(getExecuteMethod());
+    locationContext = new RemoteLocationContext(getExecuteMethod());
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
@@ -138,5 +143,13 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
 
   public SessionStorage getSessionStorage() {
     return sessionStorage;
+  }
+
+  public Location location() {
+    return locationContext.location();
+  }
+
+  public void setLocation(Location loc) {
+    locationContext.setLocation(loc);
   }
 }

@@ -33,7 +33,9 @@ public class RemoteLocationContext implements LocationContext {
   }
   
   public Location location() {
-    return (Location) executeMethod.execute(DriverCommand.GET_LOCATION, null);
+    Map<String, Double> result = (Map<String, Double>) executeMethod.execute(
+        DriverCommand.GET_LOCATION, null);
+    return new Location(result.get("latitude"), result.get("longitude"), result.get("altitude"));
   }
 
   public void setLocation (Location location) {

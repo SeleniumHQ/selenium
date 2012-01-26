@@ -26,8 +26,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -87,10 +90,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
     TakesScreenshot, Rotatable, BrowserConnection, HasTouchScreen,
-    WebStorage, LocationContext {
+    WebStorage, LocationContext , LocationListener {
 
   private static final String ELEMENT_KEY = "ELEMENT";
   private static final String WINDOW_KEY = "WINDOW";
@@ -139,6 +143,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private volatile boolean pageStartedLoading;
   private boolean done = false;
 
+  private LocationManager locManager;
+  private String locationProvider;
+
   private JavascriptResultNotifier notifier = new JavascriptResultNotifier() {
      public void notifyResultReady(String updated) {
       synchronized (syncObject) {
@@ -181,6 +188,15 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     targetLocator = new AndroidTargetLocator();
     viewManager = new WebDriverViewManager();
     logs = new AndroidLogs();
+
+    Looper.prepare();
+    locationProvider = LocationManager.GPS_PROVIDER;
+    locManager = (LocationManager) activity.getSystemService(
+        Context.LOCATION_SERVICE);
+    locManager.setTestProviderEnabled(locationProvider, true);
+    locManager.addTestProvider(locationProvider,
+        true, true, true, true, true, true, true, 0, 5);
+    locManager.requestLocationUpdates(locationProvider, 0, 0, this);
   }
 
   private void initCookiesState() {
@@ -1097,14 +1113,34 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public Location location() {
-    return null;
+    android.location.Location loc = locManager.getLastKnownLocation(locationProvider);
+    return new Location(loc.getLatitude(), loc.getLongitude(), loc.getAltitude());
   }
 
   public void setLocation(Location loc) {
-    LocationManager locManager = (LocationManager) activity.getSystemService(
-        Context.LOCATION_SERVICE);
-    locManager.addTestProvider(LocationManager.GPS_PROVIDER,
-        false, false, false, false, true, true, true, 0, 5);
+    android.location.Location location =
+        new android.location.Location(locationProvider);
+    location.setLatitude(loc.getLatitude());
+    location.setLongitude(loc.getLongitude());
+    location.setAltitude(loc.getAltitude());
+    // set the time so it's not ignored!
+    location.setTime(System.currentTimeMillis());
+    locManager.setTestProviderLocation(locationProvider,
+        location);
+  }
+
+  public void onLocationChanged(android.location.Location location) {
+    Logger.log(Level.WARNING, AndroidWebDriver.class.getName(), "onLocationChanged",
+        "New location: " + location.toString());
+  }
+
+  public void onStatusChanged(String s, int i, Bundle bundle) {
+  }
+
+  public void onProviderEnabled(String s) {
+  }
+
+  public void onProviderDisabled(String s) {
   }
 
   private byte[] takeScreenshot() {
@@ -1236,7 +1272,6 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
         }
       });
       waitForPageLoadToComplete();
-
     }
 
     public void to(URL url) {

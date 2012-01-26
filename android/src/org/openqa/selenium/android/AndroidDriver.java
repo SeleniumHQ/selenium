@@ -35,13 +35,12 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.android.app.MainActivity;
-import org.openqa.selenium.logging.Logs;
 
 import java.util.List;
 import java.util.Set;
 
 public class AndroidDriver implements BrowserConnection, HasTouchScreen, JavascriptExecutor,
-    LocationContext, Rotatable, TakesScreenshot, WebDriver, WebStorage{
+    LocationContext, Rotatable, TakesScreenshot, WebDriver, WebStorage {
 
   private AndroidWebDriver driver;
 

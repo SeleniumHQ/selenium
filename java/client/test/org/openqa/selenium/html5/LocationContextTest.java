@@ -21,10 +21,15 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 
-public class LocationContextTest  extends AbstractDriverTestCase {
+import java.util.logging.Logger;
 
-    public void testShouldSetAndGetLocation() {
+public class LocationContextTest  extends AbstractDriverTestCase {
+  private static final Logger logger = Logger.getLogger(LocationContextTest.class.getName());
+
+  public void testShouldSetAndGetLocation() {
     if (!(driver instanceof LocationContext)) {
+      logger.info("Skipped LocationContextTest#testShouldSetAndGetLocation because driver"
+          + " does not implement LocationContext.");
       return;
     }
     driver.get(pages.html5Page);
