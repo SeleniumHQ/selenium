@@ -173,6 +173,7 @@ public class DefaultChromeClient extends WebChromeClient implements DriverProvid
   @Override
   public void onGeolocationPermissionsShowPrompt(String origin,
       GeolocationPermissions.Callback callback) {
+    wdChromeClient.onGeolocationPermissionsShowPrompt(origin, callback);
     delegate.onGeolocationPermissionsShowPrompt(origin, callback);
   }
 

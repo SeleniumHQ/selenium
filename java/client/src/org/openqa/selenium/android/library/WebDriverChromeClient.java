@@ -18,6 +18,7 @@ package org.openqa.selenium.android.library;
 
 import static org.openqa.selenium.android.library.WebDriverViewManager.getViewAdapterFor;
 
+import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 
@@ -66,6 +67,11 @@ public class WebDriverChromeClient {
       JsPromptResult result) {
     AlertManager.addAlertForView(getViewAdapterFor(view),
         new AndroidAlert(message, result, defaultValue));
+  }
+
+  public void onGeolocationPermissionsShowPrompt(String origin,
+      GeolocationPermissions.Callback callback) {
+    callback.invoke(origin, true, true);
   }
 
   public void onJsTimeout() {

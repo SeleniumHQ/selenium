@@ -121,6 +121,10 @@ import com.google.common.base.Preconditions;
     // Flash settings
     settings.setPluginState(WebSettings.PluginState.ON);
 
+    // Geo location settings
+    settings.setGeolocationEnabled(true);
+    settings.setGeolocationDatabasePath("/data/data/webdriver");
+
     view.setNetworkAvailable(true);
   }
 }
