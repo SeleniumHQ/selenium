@@ -157,7 +157,7 @@ fxdriver.debug.getLevelFromLogRecord_ = function(level) {
   }
   // Default return info
   return fxdriver.debug.LogLevel.OFF;
-}
+};
 
 /**
  * Adds a handler to the logger that will record of all statements logged
@@ -180,7 +180,7 @@ fxdriver.debug.addLogRecorderHandler_ = function(logger) {
       )
     }
   })
-}
+};
 
 
 /**
@@ -209,7 +209,7 @@ fxdriver.debug.writeToFile_ = function(path, toWrite) {
   converter.writeString(toWrite);
 
   converter.close();
-}
+};
 
 
 /**
