@@ -10,6 +10,7 @@ import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsProcessGroup;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -27,8 +28,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
   private String sessionId;
   private File dir;
   private String htaCommandPath;
-  private CommandLine htaProcess;
-  private CommandLine iexploreProcess;
+  private WindowsProcessGroup htaProcess;
+  private WindowsProcessGroup iexploreProcess;
   private RemoteControlConfiguration configuration;
   private Capabilities browserOptions;
 
@@ -66,13 +67,13 @@ public class HTABrowserLauncher implements BrowserLauncher {
     createHTAFiles();
     String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
     log.info("Launching Embedded Internet Explorer...");
-    iexploreProcess = new CommandLine(
+    iexploreProcess = new WindowsProcessGroup(
         new InternetExplorerLocator().findBrowserLocationOrFail().launcherFilePath(),
         "-Embedding");
     iexploreProcess.executeAsync();
     log.info("Launching Internet Explorer HTA...");
 
-    htaProcess = new CommandLine(htaCommandPath, hta, query);
+    htaProcess = new WindowsProcessGroup(htaCommandPath, hta, query);
     htaProcess.executeAsync();
   }
 
