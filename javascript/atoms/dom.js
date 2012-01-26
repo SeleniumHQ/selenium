@@ -1,6 +1,5 @@
 // Copyright 2012 Software Freedom Conservancy
 // Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -339,12 +338,12 @@ bot.dom.getAttribute = function(element, attributeName) {
 
 /**
  * Check if the DOM element has a particular attribute.
- * Convience method since IE6/7 do not supply it.
+ * Convenience method since IE6/7 do not supply it.
  *
  * @param {!Element} element The element to use.
  * @param {string} attributeName The name of the attribute.
- * @return {boolean} Whether the node is has the attribute, regardless of
- *     whether it is default value or user defined
+ * @return {boolean} Whether the node has the attribute, regardless of whether
+ *      it is the default value or user defined.
  */
 bot.dom.hasAttribute = function(element, attributeName) {
   attributeName = attributeName.toLowerCase();
@@ -582,6 +581,8 @@ bot.dom.getElementSize_ = function(element) {
     try {
       var bb = element['getBBox']();
       if (bb) {
+        // Opera will return an undefined bounding box for SVG elements.
+        // Which makes sense, but isn't useful.
         return bb;
       }
     } catch (e) {

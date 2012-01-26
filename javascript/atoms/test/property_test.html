@@ -65,7 +65,7 @@ limitations under the License.
       assertTrue(bot.dom.getProperty(disabled, 'disabled'));
     }
 
-    function testCanGetValueFromOptionViaPropertyWhenPropertyDoesntExist() {
+    function testGetsTextInsideOptionTagWhenValuePropertyIsNotDefined() {
       var e = bot.locators.findElement({id: 'novalue'});
       assertEquals('One', bot.dom.getProperty(e, 'value'));
     }
@@ -74,12 +74,12 @@ limitations under the License.
       var e = bot.locators.findElement({id: 'novalue-blank'});
       assertEquals('', bot.dom.getProperty(e, 'value'));
     }
-    
+
     function testCanGetValueFromOptionViaPropertyWhenPropertyIsEmptyString() {
       var e = bot.locators.findElement({id: 'value-empty'});
       assertEquals('', bot.dom.getProperty(e, 'value'));
     }
-    
+
     function testCanGetValueFromOptionViaProperty() {
       var e = bot.locators.findElement({id: 'chips'});
       assertEquals('chips', bot.dom.getProperty(e, 'value'));
