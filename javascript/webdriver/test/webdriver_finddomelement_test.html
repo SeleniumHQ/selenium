@@ -18,53 +18,22 @@ limitations under the License.
 <script src="test_bootstrap.js"></script>
 <script>
   goog.require('bot');
-  goog.require('bot.ErrorCode');
-  goog.require('bot.frame');
   goog.require('bot.inject');
-  goog.require('goog.array');
   goog.require('goog.dom');
   goog.require('goog.userAgent');
   goog.require('goog.userAgent.product');
   goog.require('goog.userAgent.product.isVersion');
-  goog.require('webdriver.Command');
-  goog.require('webdriver.CommandExecutor');
-  goog.require('webdriver.CommandName');
   goog.require('webdriver.WebDriver');
   goog.require('webdriver.Session');
-  goog.require('webdriver.error');
-  goog.require('webdriver.promise');
-  goog.require('webdriver.promise.Application');
-  goog.require('webdriver.promise.Deferred');
-  goog.require('webdriver.promise.Promise');
+  goog.require('webdriver.test.JsExecutor');
   goog.require('webdriver.test.testutil');
   goog.require('webdriver.testing.jsunit');
-</script>
-<script>
-
-  var NO_STRINGIFY_RESULTS = false;
-
-  var EXECUTOR = {
-    execute: function(command, callback) {
-      if (command.getName() !== webdriver.CommandName.EXECUTE_SCRIPT) {
-        throw Error('Unsupported command: ' + command.getName());
-      }
-      var error, result, parameters = command.getParameters();
-      try {
-        result = bot.inject.executeScript(
-            parameters['script'], parameters['args'],
-            NO_STRINGIFY_RESULTS, bot.getWindow());
-      } catch (ex) {
-        error = ex;
-      }
-      callback(error, result);
-    }
-  };
 </script>
 <body>
 <script>
   var DRIVER = new webdriver.WebDriver(
       new webdriver.Session('test_session_id', {}),
-      EXECUTOR);
+      new webdriver.test.JsExecutor);
 
   var bugsBunnyElement, iframeElement, iframeDoc, daffyDuckElement;
 

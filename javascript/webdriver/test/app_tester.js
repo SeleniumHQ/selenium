@@ -175,7 +175,9 @@ webdriver.test.AppTester.prototype.$assertAppHistory = function(var_args) {
   if (expectedHistory.length == 0) {
     expectedHistory = [''];
   }
-  assertArrayEquals(expectedHistory, this.app_.getHistory().split('\n'));
+  assertArrayEquals(
+      expectedHistory.join('\n') + '\n----\n' + this.app_.getHistory(),
+      expectedHistory, this.app_.getHistory().split('\n'));
 };
 
 

@@ -1066,6 +1066,11 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
   var self = this;
 
   return this.schedule(description, function() {
+    var waitDepth = self.frames_.length;
+    var indexWaitHistoryStartsAt = self.history_.length;
+    /** @type !{{value:string, count:number}} */
+    var lastSequence;
+
     var startTime = goog.now();
     var waitResult = new webdriver.promise.Deferred();
     var waitFrame = goog.array.peek(self.frames_);
@@ -1076,6 +1081,7 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
     function pollCondition() {
       var result = self.executeAsap_(condition);
       return webdriver.promise.when(result, function(value) {
+        optimizeAppHistory();
         var ellapsed = goog.now() - startTime;
         if (waitOnInverse != !!value) {
           waitFrame.isWaiting = false;
@@ -1086,7 +1092,31 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
         } else {
           setTimeout(pollCondition, sleep);
         }
-      }, waitResult.reject);
+      }, function(e) {
+        optimizeAppHistory();
+        waitResult.reject(e);
+      });
+    }
+
+    function optimizeAppHistory() {
+      if (self.history_.length == indexWaitHistoryStartsAt) {
+        return;
+      }
+
+      var loopHistory = loopHistory = goog.array.splice(self.history_,
+          indexWaitHistoryStartsAt).join('\n');
+      if (!lastSequence || loopHistory != lastSequence.value) {
+        lastSequence = {value:loopHistory, count: 1};
+        indexWaitHistoryStartsAt += 2;
+      } else {
+        self.history_.pop();
+        self.history_.pop();
+        lastSequence.count++;
+      }
+
+      var prefix = new Array(waitDepth).join('..');
+      self.history_.push(prefix + 'wait loop x' + lastSequence.count);
+      self.history_.push(loopHistory);
     }
   });
 };
@@ -1185,12 +1215,12 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
  *     once all tasks scheduled by the function have completed.
  */
 webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
-  var newFrame;
+  var newFrame, numFrames;
   try {
     var currentFrame = goog.array.peek(this.frames_);
-    if (!currentFrame || currentFrame.isActive) {
+    if (!currentFrame || currentFrame.isActive || currentFrame.isWaiting) {
       newFrame = new webdriver.promise.Application.Frame_();
-      this.frames_.push(newFrame);
+      numFrames = this.frames_.push(newFrame);
     }
 
     var result = fn();
@@ -1199,7 +1229,7 @@ webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
       return result;
     }
 
-    if (!newFrame.queue.length) {
+    if (!newFrame.queue.length && numFrames == this.frames_.length) {
       this.frames_.pop();
       return result;
     }

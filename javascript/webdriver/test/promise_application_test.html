@@ -723,6 +723,7 @@ limitations under the License.
     assertEquals(0, count);
 
     turnEventLoop();  // Runs scheduled task.
+    turnEventLoop();
     assertEquals(1, count);
 
     clock.tick(100);  // Advance clock for next polling pass.
@@ -732,16 +733,13 @@ limitations under the License.
 
     clock.tick(100);  // Advance clock for next polling pass.
     assertEquals(2, count);
-    turnEventLoop();
-    assertEquals(3, count);
 
     runApplication();
     assertEquals(3, count);
     assertAppHistory(
         'counting to 3',
-        '..increment count',
-        '..increment count',
-        '..increment count',
+        '..wait loop x3',
+        '....increment count',
         'post wait');
   }
 
@@ -758,9 +756,26 @@ limitations under the License.
     assertEquals(3, count);
     assertAppHistory(
         'counting to 3',
-        '..sub task',
-        '..sub task',
-        '..sub task',
+        '..wait loop x3',
+        '....sub task',
+        'post wait');
+  }
+
+
+  function testWaiting_cancelsWaitIfScheduledTaskFails() {
+    var pair = callbackPair(null, assertIsStubError);
+    appTester.scheduleWait('waiting to go boom', function() {
+      appTester.schedule('boom', throwStubError);
+      schedule('this should not run');
+      return true;
+    }, 200).then(pair.callback, pair.errback);
+    schedule('post wait');
+
+    runApplication();
+    assertAppHistory(
+        'waiting to go boom',
+        '..wait loop x1',
+        '....boom',
         'post wait');
   }
 
@@ -808,15 +823,46 @@ limitations under the License.
 
     clock.tick(100);  // Advance clock for next polling pass.
     assertEquals(1, count);
-    turnEventLoop();
-    assertEquals(2, count);
 
     runApplication();
     assertEquals(2, count);
     assertAppHistory(
         'waiting',
-        '..maybe throw',
-        '..maybe throw',
+        '..wait loop x2',
+        '....maybe throw',
+        'post wait');
+  }
+
+
+  function testWaiting_pollingLoopWaitsForAllScheduledTasksInCondition() {
+    var count = 0;
+    appTester.scheduleWait('counting to 3', function() {
+      appTester.schedule('increment count', function() { ++count; });
+      return count >= 3;
+    }, 300);
+    schedule('post wait');
+
+    turnEventLoop();
+    assertEquals(0, count);
+
+    turnEventLoop();  // Runs scheduled task.
+    turnEventLoop();
+    assertEquals(1, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(1, count);
+    turnEventLoop();
+    assertEquals(2, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(2, count);
+
+    runApplication();
+    assertEquals(4, count);
+    assertAppHistory(
+        'counting to 3',
+        '..wait loop x4',
+        '....increment count',
         'post wait');
   }
 
@@ -935,6 +981,54 @@ limitations under the License.
         'wait 3',
         'c',
         'wait 4');
+  }
+
+
+  function testWaiting_correctlyCondensesLoopSequencesInRecordedHistory() {
+    var count = 0;
+    appTester.scheduleWait('counting to 4', function() {
+      if (count < 2) {
+        return appTester.schedule('increment count (<2)', function() {
+          return ++count == 4;
+        });
+      } else {
+        return appTester.schedule('increment count (>2)', function() {
+          return ++count == 4;
+        });
+      }
+    }, 400);
+    schedule('post wait');
+
+    turnEventLoop();
+    assertEquals(0, count);
+
+    turnEventLoop();  // Runs scheduled task.
+    turnEventLoop();
+    assertEquals(1, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(1, count);
+    turnEventLoop();
+    assertEquals(2, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(2, count);
+    turnEventLoop();
+    turnEventLoop();
+    assertEquals(3, count);
+
+    clock.tick(100);  // Advance clock for next polling pass.
+    assertEquals(3, count);
+
+    runApplication();
+    assertEquals(4, count);
+    assertAppHistory(
+        'counting to 4',
+        '..wait loop x2',
+        '....increment count (<2)',
+        '..wait loop x2',
+        '....increment count (>2)',
+        'post wait');
   }
 
 

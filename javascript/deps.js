@@ -158,6 +158,7 @@ goog.addDependency("../../../javascript/webdriver/node/optparse.js", [], []);
 goog.addDependency("../../../javascript/webdriver/node/node.js", ['webdriver.node', 'webdriver.node.HttpClient'], ['webdriver.http.Response', 'webdriver.process']);
 goog.addDependency("../../../javascript/webdriver/test/testutil.js", ['webdriver.test.testutil'], ['goog.array', 'goog.json', 'goog.string', 'goog.testing.MockClock', 'goog.testing.recordFunction']);
 goog.addDependency("../../../javascript/webdriver/test/app_tester.js", ['webdriver.test.AppTester'], ['goog.testing.PropertyReplacer', 'webdriver.promise.Application', 'webdriver.test.testutil']);
+goog.addDependency("../../../javascript/webdriver/test/jsexecutor.js", ['webdriver.test.JsExecutor'], ['bot.action', 'bot.inject', 'bot.locators', 'webdriver.CommandName']);
 goog.addDependency("../../../javascript/webdriver/test/test_bootstrap.js", [], []);
 goog.addDependency("../../../javascript/webdriver/atoms/element.js", ['webdriver.atoms.element'], ['bot.dom', 'goog.dom', 'goog.dom.TagName', 'goog.math', 'goog.string', 'goog.style']);
 goog.addDependency("../../../javascript/webdriver/atoms/storage/session_storage.js", ['webdriver.atoms.storage.session'], ['bot.storage']);

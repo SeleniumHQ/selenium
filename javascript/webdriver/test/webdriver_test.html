@@ -1880,6 +1880,45 @@ limitations under the License.
     testHelper.execute();
     callback.assertCalled();
   }
+
+  function testWaiting_waitSucceeds() {
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([]).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([]).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([{'ELEMENT':'bar'}]).
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    driver.wait(function() {
+      return driver.isElementPresent(By.id('foo'));
+    }, 200);
+    testHelper.execute();
+  }
+
+
+  function testWaiting_waitTimesout() {
+    var testHelper = TestHelper.
+        expectingFailure(function(e) {
+          assertEquals('Wait timed out after ',
+              e.message.substring(0, 'Wait timed out after '.length));
+        }).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([]).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([]).
+        expect(CName.FIND_ELEMENTS, {'using':'id', 'value':'foo'}).
+        andReturnSuccess([]).
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    driver.wait(function() {
+      return driver.isElementPresent(By.id('foo'));
+    }, 200);
+    testHelper.execute();
+  }
   </script>
 </body>
 </html>
