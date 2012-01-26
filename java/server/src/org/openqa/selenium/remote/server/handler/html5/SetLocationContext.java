@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class SetLocationContext extends WebDriverHandler implements JsonParametersAware {
   private volatile Location location;
@@ -41,9 +42,9 @@ public class SetLocationContext extends WebDriverHandler implements JsonParamete
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     Map<Object, Object> map = (Map<Object, Object>) allParameters.get("location");
 
-    double latitude = Double.parseDouble((String) map.get("latitude"));
-    double longitude = Double.parseDouble((String) map.get("longitude"));
-    double altitude = Double.parseDouble((String) map.get("altitude"));
+    double latitude = (Double) map.get("latitude");
+    double longitude = (Double) map.get("longitude");
+    double altitude = (Double) map.get("altitude");
 
     location = new Location(latitude, longitude, altitude);
   }
