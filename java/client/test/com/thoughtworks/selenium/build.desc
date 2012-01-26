@@ -117,7 +117,7 @@ java_test(name = "firefox-singlewindow-rc-test",
 java_test(name = "ie-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*iexplore" },
+    { "selenium.browser" : "*iehta" },
   ],
   deps = [
     ":rc-tests",
