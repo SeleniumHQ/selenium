@@ -29,7 +29,8 @@ module Selenium
           [
             DriverExtensions::TakesScreenshot,
             DriverExtensions::Rotatable,
-            DriverExtensions::HasInputDevices
+            DriverExtensions::HasInputDevices,
+            DriverExtensions::HasWebStorage
           ]
         end
 

@@ -195,6 +195,10 @@ module Selenium
           execute :refresh
         end
 
+        #
+        # window handling
+        #
+
         def getWindowHandles
           execute :getWindowHandles
         end
@@ -230,6 +234,63 @@ module Selenium
           execute :screenshot
         end
 
+        #
+        # HTML 5
+        #
+
+        def getLocalStorageItem(key)
+          execute :getLocalStorageItem, :key => key
+        end
+
+        def removeLocalStorageItem(key)
+          execute :removeLocalStorageItem, :key => key
+        end
+
+        def getLocalStorageKeys
+          execute :getLocalStorageKeys
+        end
+
+        def setLocalStorageItem(key, value)
+          execute :setLocalStorageItem, {}, :key => key, :value => value
+        end
+
+        def clearLocalStorage
+          execute :clearLocalStorage
+        end
+
+        def getLocalStorageSize
+          execute :getLocalStorageSize
+        end
+
+        def getSessionStorageItem(key)
+          execute :getSessionStorageItem, :key => key
+        end
+
+        def removeSessionStorageItem(key)
+          execute :removeSessionStorageItem, :key => key
+        end
+
+        def getSessionStorageKeys
+          execute :getSessionStorageKeys
+        end
+
+        def setSessionStorageItem(key, value)
+          execute :setSessionStorageItem, {}, :key => key, :value => value
+        end
+
+        def clearSessionStorage
+          execute :clearSessionStorage
+        end
+
+        def getSessionStorageSize
+          execute :getSessionStorageSize
+        end
+
+
+        #
+        # javascript execution
+        #
+
         def executeScript(script, *args)
           assert_javascript_enabled
 
@@ -243,6 +304,10 @@ module Selenium
           result = execute :executeAsyncScript, {}, :script => script, :args => args
           unwrap_script_result result
         end
+
+        #
+        # cookies
+        #
 
         def addCookie(cookie)
           execute :addCookie, {}, :cookie => cookie
@@ -259,6 +324,10 @@ module Selenium
         def deleteAllCookies
           execute :deleteAllCookies
         end
+
+        #
+        # actions
+        #
 
         def clickElement(element)
           execute :clickElement, :id => element
@@ -298,6 +367,39 @@ module Selenium
           execute :sendKeysToActiveElement, {}, :value => key
         end
 
+        def sendKeysToElement(element, keys)
+          if @file_detector && local_file = @file_detector.call(keys)
+            keys = upload(local_file)
+          end
+
+          execute :sendKeysToElement, {:id => element}, {:value => Array(keys)}
+        end
+
+        def upload(local_file)
+          unless File.file?(local_file)
+            raise WebDriverError::Error, "you may only upload files: #{local_file.inspect}"
+          end
+
+          execute :uploadFile, {}, :file => Zipper.zip_file(local_file)
+        end
+
+        def clearElement(element)
+          execute :clearElement, :id => element
+        end
+
+
+        def submitElement(element)
+          execute :submitElement, :id => element
+        end
+
+        def dragElement(element, right_by, down_by)
+          execute :dragElement, {:id => element}, :x => right_by, :y => down_by
+        end
+
+        #
+        # element properties
+        #
+
         def getElementTagName(element)
           execute :getElementTagName, :id => element
         end
@@ -332,26 +434,6 @@ module Selenium
           Dimension.new data['width'], data['height']
         end
 
-        def sendKeysToElement(element, keys)
-          if @file_detector && local_file = @file_detector.call(keys)
-            keys = upload(local_file)
-          end
-
-          execute :sendKeysToElement, {:id => element}, {:value => Array(keys)}
-        end
-
-        def upload(local_file)
-          unless File.file?(local_file)
-            raise WebDriverError::Error, "you may only upload files: #{local_file.inspect}"
-          end
-
-          execute :uploadFile, {}, :file => Zipper.zip_file(local_file)
-        end
-
-        def clearElement(element)
-          execute :clearElement, :id => element
-        end
-
         def isElementEnabled(element)
           execute :isElementEnabled, :id => element
         end
@@ -363,26 +445,8 @@ module Selenium
         def isElementDisplayed(element)
           execute :isElementDisplayed, :id => element
         end
-
-        def submitElement(element)
-          execute :submitElement, :id => element
-        end
-
-        def setElementSelected(element)
-          execute :setElementSelected, :id => element
-        end
-
         def getElementValueOfCssProperty(element, prop)
           execute :getElementValueOfCssProperty, :id => element, :property_name => prop
-        end
-
-        def getActiveElement
-          Element.new self, element_id_from(execute(:getActiveElement))
-        end
-        alias_method :switchToActiveElement, :getActiveElement
-
-        def dragElement(element, right_by, down_by)
-          execute :dragElement, {:id => element}, :x => right_by, :y => down_by
         end
 
         def elementEquals(element, other)
@@ -392,6 +456,15 @@ module Selenium
             execute :elementEquals, :id => element.ref, :other => other.ref
           end
         end
+
+        #
+        # finding elements
+        #
+
+        def getActiveElement
+          Element.new self, element_id_from(execute(:getActiveElement))
+        end
+        alias_method :switchToActiveElement, :getActiveElement
 
         def find_element_by(how, what, parent = nil)
           if parent

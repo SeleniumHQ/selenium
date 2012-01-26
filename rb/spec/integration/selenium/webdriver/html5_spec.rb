@@ -1,21 +1,7 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-describe "Driver" do
+describe "Driver"do
   compliant_on :browser => :android do
-    context "local storage" do
-      it "can get and set items"
-      it "can get all keys"
-      it "can clear all items"
-      it "can delete an item"
-    end
-
-    context "session storage" do
-      it "can get and set items"
-      it "can get all keys"
-      it "can clear all items"
-      it "can delete an item"
-    end
-
     context "browser connection" do
       it "can set the browser offline"
       it "can set the browser online"

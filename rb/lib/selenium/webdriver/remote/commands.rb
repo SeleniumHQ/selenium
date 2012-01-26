@@ -98,7 +98,6 @@ class Selenium::WebDriver::Remote::Bridge
   command :getElementTagName,                      :get,     "session/:session_id/element/:id/name"
   command :clearElement,                           :post,    "session/:session_id/element/:id/clear"
   command :isElementSelected,                      :get,     "session/:session_id/element/:id/selected"
-  command :setElementSelected,                     :post,    "session/:session_id/element/:id/selected"
   command :isElementEnabled,                       :get,     "session/:session_id/element/:id/enabled"
   command :getElementAttribute,                    :get,     "session/:session_id/element/:id/attribute/:name"
   command :elementEquals,                          :get,     "session/:session_id/element/:id/equals/:other"
