@@ -20,9 +20,14 @@ package org.openqa.grid.selenium.proxy;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.TestSession;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 public class DefaultRemoteProxyTest {
 
@@ -47,5 +52,20 @@ public class DefaultRemoteProxyTest {
     req.setConfiguration(config);
 
     new DefaultRemoteProxy(req, Registry.newInstance());
+  }
+
+  @Test
+  public void proxyTimeout() throws InterruptedException {
+    Registry registry = Registry.newInstance();
+    registry.getConfiguration().getAllParams().put(RegistrationRequest.TIME_OUT, 1);
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA");
+    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, DefaultRemoteProxy.class.getName());
+
+    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    TestSession newSession = p.getNewSession(new HashMap<String, Object>());
+    assertNotNull(newSession );
+    Thread.sleep(2);
+    p.forceSlotCleanerRun();
+    assertTrue(p.getRegistry().getActiveSessions().isEmpty());
   }
 }

@@ -79,6 +79,7 @@ public class TestSession {
   private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<String, Object>());
   private volatile boolean ignoreTimeout = false;
   private final TimeSource timeSource;
+  private volatile boolean forwardingRequest;
 
   public String getInternalKey() {
     return internalKey;
@@ -203,52 +204,57 @@ public class TestSession {
                         ForwardConfiguration config) throws IOException {
     String res = null;
 
-    if (slot.getProxy() instanceof CommandListener) {
-      ((CommandListener) slot.getProxy()).beforeCommand(this, request, response);
-    }
-
-    lastActivity = timeSource.currentTimeInMillis();
-
-    HttpRequest proxyRequest = prepareProxyRequest(request, config);
-
-    HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
-
-    lastActivity = timeSource.currentTimeInMillis();
-
-    response.setStatus(proxyResponse.getStatusLine().getStatusCode());
-    processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
-
-    updateHubIfNewWebDriverSession(config, proxyResponse);
-
-    HttpEntity responseBody = proxyResponse.getEntity();
-    if (responseBody != null) {
-      try {
-        InputStream in = responseBody.getContent();
-
-        boolean isSeleniumNewSessionRequest =
-            config.isNewSessionRequest() && config.getProtocol() == SeleniumProtocol.Selenium;
-        if (config.isBodyHasToBeRead() || isSeleniumNewSessionRequest) {
-          res = getResponseUtf8Content(in);
-
-          if (isSeleniumNewSessionRequest) {
-            updateHubNewSeleniumSession(res);
-          }
-          in = new ByteArrayInputStream(res.getBytes("UTF-8"));
-        }
-
-        final byte[] bytes = drainInputStream(in);
-        writeRawBody(response, bytes);
-      } finally {
-        EntityUtils.consume(responseBody);
+    forwardingRequest = true;
+    try {
+      if (slot.getProxy() instanceof CommandListener) {
+        ((CommandListener) slot.getProxy()).beforeCommand(this, request, response);
       }
 
+      lastActivity = timeSource.currentTimeInMillis();
 
-    }
+      HttpRequest proxyRequest = prepareProxyRequest(request, config);
 
-    if (slot.getProxy() instanceof CommandListener) {
-      ((CommandListener) slot.getProxy()).afterCommand(this, request, response);
+      HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
+
+      lastActivity = timeSource.currentTimeInMillis();
+
+      response.setStatus(proxyResponse.getStatusLine().getStatusCode());
+      processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
+
+      updateHubIfNewWebDriverSession(config, proxyResponse);
+
+      HttpEntity responseBody = proxyResponse.getEntity();
+      if (responseBody != null) {
+        try {
+          InputStream in = responseBody.getContent();
+
+          boolean isSeleniumNewSessionRequest =
+              config.isNewSessionRequest() && config.getProtocol() == SeleniumProtocol.Selenium;
+          if (config.isBodyHasToBeRead() || isSeleniumNewSessionRequest) {
+            res = getResponseUtf8Content(in);
+
+            if (isSeleniumNewSessionRequest) {
+              updateHubNewSeleniumSession(res);
+            }
+            in = new ByteArrayInputStream(res.getBytes("UTF-8"));
+          }
+
+          final byte[] bytes = drainInputStream(in);
+          writeRawBody(response, bytes);
+        } finally {
+          EntityUtils.consume(responseBody);
+        }
+
+
+      }
+
+      if (slot.getProxy() instanceof CommandListener) {
+        ((CommandListener) slot.getProxy()).afterCommand(this, request, response);
+      }
+      return res;
+    } finally {
+      forwardingRequest = false;
     }
-    return res;
   }
 
 
@@ -342,9 +348,8 @@ public class TestSession {
         response.setIntHeader("Content-Length", rawBody.length);
       }
 
-
       out.write(rawBody);
-    } catch (IOException e){
+    } catch (IOException e) {
       throw new ClientGoneException(e);
     } finally {
       try {
@@ -492,4 +497,7 @@ public class TestSession {
 
   }
 
+  public boolean isForwardingRequest() {
+    return forwardingRequest;
+  }
 }

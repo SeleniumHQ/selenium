@@ -92,6 +92,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   private String id;
 
   private volatile boolean stop = false;
+  private CleanUpThread cleanUpThread;
 
 
   public List<TestSlot> getTestSlots() {
@@ -122,7 +123,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   public RemoteProxy(RegistrationRequest request, Registry registry) {
     this.request = request;
     this.registry = registry;
-    this.config = mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
+    this.config =
+        mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
 
     String url = (String) config.get(REMOTE_HOST);
     if (url == null) {
@@ -184,7 +186,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       try {
         protocol = SeleniumProtocol.valueOf(type);
       } catch (IllegalArgumentException e) {
-        throw new GridException(type + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);
+        throw new GridException(
+            type + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);
       }
     }
     return protocol;
@@ -207,10 +210,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   }
 
   public void setupTimeoutListener() {
+    cleanUpThread = null;
     if (this instanceof TimeoutListener) {
       if (cleanUpCycle > 0 && timeOut > 0) {
         log.fine("starting cleanup thread");
-        new Thread(new CleanUpThread(this), "RemoteProxy CleanUpThread").start(); // Thread safety reviewed (hopefully ;)
+        cleanUpThread = new CleanUpThread(this);
+        new Thread(cleanUpThread, "RemoteProxy CleanUpThread")
+            .start(); // Thread safety reviewed (hopefully ;)
       }
     }
   }
@@ -223,7 +229,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * @return The merged collection
    */
   private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
-      Map<String, Object> configuration2) {
+                                          Map<String, Object> configuration2) {
     Map<String, Object> res = new HashMap<String, Object>();
     res.putAll(configuration1);
 
@@ -252,7 +258,14 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     stop = true;
   }
 
-  private class CleanUpThread implements Runnable {
+  /**
+   * Internal use only
+   */
+  public void forceSlotCleanerRun() {
+    cleanUpThread.cleanUpAllSlots();
+  }
+
+  class CleanUpThread implements Runnable {
 
     private RemoteProxy proxy;
 
@@ -270,28 +283,47 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
           log.severe("clean up thread died. " + e.getMessage());
         }
 
-        for (TestSlot slot : testSlots) {
-          try {
-            TestSession session = slot.getSession();
-            if (session != null) {
-              long inactivity = session.getInactivityTime();
-              boolean hasTimedOut = inactivity > timeOut;
-              if (hasTimedOut) {
-                log.logp( Level.WARNING, "SessionCleanup", null, "session " + session + " has TIMED OUT and will be released" );
-                ((TimeoutListener) proxy).beforeRelease(session);
-                registry.terminate(session, SessionTerminationReason.TIMEOUT);
-              }
+        cleanUpAllSlots();
+      }
+    }
 
-              if (session.isOrphaned()) {
-                  log.logp( Level.WARNING, "SessionCleanup", null, "session " + session + " has been ORPHANED and will be released");
-                ((TimeoutListener) proxy).beforeRelease(session);
-                registry.terminate(session, SessionTerminationReason.ORPHAN);
-              }
-            }
-          } catch (Throwable t) {
-            log.warning("Error executing the timeout when cleaning up slot " + slot
-                + t.getMessage());
+    void cleanUpAllSlots() {
+      for (TestSlot slot : testSlots) {
+        try {
+          cleanUpSlot(slot);
+        } catch (Throwable t) {
+          log.warning("Error executing the timeout when cleaning up slot " + slot
+                      + t.getMessage());
+        }
+      }
+    }
+
+    private void cleanUpSlot(TestSlot slot) {
+      TestSession session = slot.getSession();
+      if (session != null) {
+        long inactivity = session.getInactivityTime();
+        boolean hasTimedOut = inactivity > timeOut;
+        if (hasTimedOut) {
+          if (session.isForwardingRequest()) {
+            URL remoteURL = session.getSlot().getRemoteURL();
+            log.logp(Level.WARNING, "SessionCleanup", null,
+                     "session " + session + " has TIMED OUT while being processed in node ("
+                     + remoteURL
+                     + ")and will be released.\nThe remote node or browser is probably in trouble");
+          } else {
+            log.logp(Level.WARNING, "SessionCleanup", null,
+                     "session " + session
+                     + " has TIMED OUT due to client inactivity and will be released.");
           }
+          ((TimeoutListener) proxy).beforeRelease(session);
+          registry.terminate(session, SessionTerminationReason.TIMEOUT);
+        }
+
+        if (session.isOrphaned()) {
+          log.logp(Level.WARNING, "SessionCleanup", null,
+                   "session " + session + " has been ORPHANED and will be released");
+          ((TimeoutListener) proxy).beforeRelease(session);
+          registry.terminate(session, SessionTerminationReason.ORPHAN);
         }
       }
     }
@@ -411,7 +443,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
    * @return a new instance built from the request.
    */
   @SuppressWarnings("unchecked")
-  public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request, Registry registry) {
+  public static <T extends RemoteProxy> T getNewInstance(RegistrationRequest request,
+                                                         Registry registry) {
     try {
       String proxyClass = request.getRemoteProxyClass();
       if (proxyClass == null) {
@@ -420,8 +453,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       }
       Class<?> clazz = Class.forName(proxyClass);
       log.fine("Using class " + clazz.getName());
-      Object[] args = new Object[] {request, registry};
-      Class<?>[] argsClass = new Class[] {RegistrationRequest.class, Registry.class};
+      Object[] args = new Object[]{request, registry};
+      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, Registry.class};
       Constructor<?> c = clazz.getConstructor(argsClass);
       Object proxy = c.newInstance(args);
       if (proxy instanceof RemoteProxy) {
@@ -511,7 +544,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   /**
    * the status of the node.
-   * @return
+   *
    * @throws GridException If the node if down or doesn't recognize the /wd/hub/status request.
    */
   public JSONObject getStatus() throws GridException {

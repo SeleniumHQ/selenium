@@ -103,6 +103,7 @@ public class RemoteProxyTest {
 
   }
 
+
   @Test
   public void proxyConfigOverWritesRegistryConfig() {
     Registry registry = Registry.newInstance();
