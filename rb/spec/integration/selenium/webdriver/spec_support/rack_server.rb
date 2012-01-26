@@ -12,7 +12,7 @@ module Selenium
           @path = path
           @app  = TestApp.new(path)
 
-          @host = "127.0.0.1"
+          @host = Platform.ip
           @port = Integer(port || PortProber.above(8180))
         end
 
