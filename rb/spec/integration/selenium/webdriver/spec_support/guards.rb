@@ -69,12 +69,12 @@ module Selenium
 
         def not_compliant_on(*opts, &blk)
           Guards.record(:not_compliant, opts, :file => caller.first)
-          yield unless Guards.env_matches?(opts)
+          yield if GlobalTestEnv.unguarded? || !Guards.env_matches?(opts)
         end
 
         def compliant_on(*opts, &blk)
           Guards.record(:compliant_on, opts, :file => caller.first)
-          yield if Guards.env_matches?(opts)
+          yield if GlobalTestEnv.unguarded? || Guards.env_matches?(opts)
         end
 
         alias_method :not_compliant_when, :not_compliant_on

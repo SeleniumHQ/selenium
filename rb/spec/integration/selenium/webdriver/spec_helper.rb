@@ -42,3 +42,4 @@ end
 WebDriver::Platform.exit_hook { GlobalTestEnv.quit }
 
 $stdout.sync = true
+GlobalTestEnv.unguarded = !!ENV['NOGUARDS']
