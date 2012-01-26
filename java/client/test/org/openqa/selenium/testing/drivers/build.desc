@@ -1,6 +1,7 @@
 
 java_library(name = "drivers",
   srcs = [
+    "BackedBy.java",
     "Browser.java",
     "Firebug.java",
     "SauceDriver.java",
