@@ -43,7 +43,7 @@ public class CommandLine {
     String executable = cmdarray[0];
     int length = cmdarray.length - 1;
     String[] args = new String[length];
-    System.arraycopy(cmdarray, 1, args, 0, length - 1);
+    System.arraycopy(cmdarray, 1, args, 0, length);
 
     process = new UnixProcess(executable, args);
   }

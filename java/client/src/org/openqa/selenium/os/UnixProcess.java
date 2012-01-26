@@ -155,7 +155,7 @@ SeleniumWatchDog watchdog = executeWatchdog;
 
   @Override
   public String toString() {
-    return cl.toString();
+    return cl.toString() + "[ " + env + "]";
   }
 
   public void copyOutputTo(OutputStream out) {
