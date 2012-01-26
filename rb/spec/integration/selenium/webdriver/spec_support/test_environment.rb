@@ -115,6 +115,8 @@ module Selenium
                        create_firefox_driver
                      when :chrome
                        create_chrome_driver
+                     when :iphone
+                       create_iphone_driver
                      else
                        WebDriver::Driver.for driver
                      end
@@ -178,6 +180,15 @@ module Selenium
           WebDriver::Driver.for :chrome,
                                 :native_events => native_events?
                                 # :http_client   => keep_alive_client || http_client
+        end
+
+        def create_iphone_driver
+          url = ENV['iphone_url']
+          if url
+            WebDriver::Driver.for :iphone, :url => url
+          else
+            WebDriver::Driver.for :iphone
+          end
         end
 
         def keep_alive_client
