@@ -286,6 +286,15 @@ module Selenium
           execute :getSessionStorageSize
         end
 
+        def getLocation
+          obj = execute(:getLocation) || {} # android returns null
+          Location.new obj['latitude'], obj['longitude'], obj['altitude']
+        end
+
+        def setLocation(lat, lon, alt)
+          loc = {:latitude => lat, :longitude => lon, :altitude => alt}
+          execute :setLocation, {}, :location => loc
+        end
 
         #
         # javascript execution

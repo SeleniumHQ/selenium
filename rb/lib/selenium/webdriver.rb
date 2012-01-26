@@ -10,6 +10,7 @@ module Selenium
   module WebDriver
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
+    Location  = Struct.new(:latitude, :longitude, :altitude)
 
     autoload :Android, 'selenium/webdriver/android'
     autoload :Chrome,  'selenium/webdriver/chrome'
