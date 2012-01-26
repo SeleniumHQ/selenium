@@ -37,9 +37,11 @@ RSpec.configure do |c|
   c.after(:suite) do
     GlobalTestEnv.quit_driver
   end
+
+  c.filter_run :focus => true if ENV['focus']
 end
 
 WebDriver::Platform.exit_hook { GlobalTestEnv.quit }
 
 $stdout.sync = true
-GlobalTestEnv.unguarded = !!ENV['NOGUARDS']
+GlobalTestEnv.unguarded = !!ENV['noguards']
