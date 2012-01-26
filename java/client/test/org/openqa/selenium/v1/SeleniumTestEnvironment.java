@@ -55,7 +55,9 @@ public class SeleniumTestEnvironment implements TestEnvironment {
           InProject
               .locate("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar");
       final String singlewindow = Boolean.getBoolean("singlewindow") ? "-singleWindow" : "";
-      String[] args = {"-jar", seleniumJar.getAbsolutePath(), "-port", "" + port, singlewindow};
+      final String browserSideLog = Boolean.getBoolean("webdriver.debug") ? "-browserSideLog" : "";
+      String[] args = {"-jar", seleniumJar.getAbsolutePath(),
+          "-port", "" + port, singlewindow, browserSideLog};
       if (extraArgs != null) {
         String[] allArgs = new String[args.length + extraArgs.length];
         System.arraycopy(args, 0, allArgs, 0, args.length);
