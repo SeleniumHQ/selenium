@@ -36,7 +36,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   private static final Logger log = Logger.getLogger(InternetExplorerCustomProxyLauncher.class
       .getName());
 
-  private String[] cmdarray;
+  private String exe;
+  private String[] args;
   private BrowserInstallation browserInstallation;
   private WindowsProcessGroup process;
   protected boolean customPACappropriate = true;
@@ -73,7 +74,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
     log.info("Launching Internet Explorer...");
 
-    process = new WindowsProcessGroup(cmdarray);
+    process = new WindowsProcessGroup(exe, args);
     process.executeAsync();
   }
 
@@ -83,15 +84,15 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
       if (!browserConfigurationOptions.is("honorSystemProxy")) {
         setupSystemProxy();
       }
-      cmdarray = new String[] {
-          browserInstallation.launcherFilePath(),
+      exe = browserInstallation.launcherFilePath();
+
+      args = new String[] {
           "-new",
           url
       };
     } else {
       // DGF IEs4Linux, perhaps? It could happen!
-      cmdarray = new String[] {
-          browserInstallation.launcherFilePath(),
+      args = new String[] {
           url
       };
     }

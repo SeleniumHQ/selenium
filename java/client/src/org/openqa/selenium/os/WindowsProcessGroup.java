@@ -42,18 +42,16 @@ public class WindowsProcessGroup implements OsProcess {
   private String cmd;
   private WinNT.HANDLE hJob;
 
-  public WindowsProcessGroup(String... executableAndArgs) {
+  public WindowsProcessGroup(String executable, String... args) {
     Kernel32 = Kernel32.INSTANCE;
 
     StringBuilder toExecute = new StringBuilder();
+    toExecute.append(executable);
 
     boolean first = true;
-    for (String arg : executableAndArgs) {
-      if (!first) {
-        toExecute.append(" ");
-      }
+    for (String arg : args) {
+      toExecute.append(" ");
       toExecute.append(quote(arg));
-      first = false;
     }
 
     cmd = toExecute.toString();
@@ -90,6 +88,8 @@ public class WindowsProcessGroup implements OsProcess {
     Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION jeli =
         new Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.ByReference();
     jeli.clear();
+
+    // Call SetHandleInformation. Take a look in SocketLock.cs
 
     hJob = Kernel32.CreateJobObject(null, null);
     if (hJob.getPointer() == null) {
@@ -144,6 +144,7 @@ public class WindowsProcessGroup implements OsProcess {
 
     // This seems a trifle brutal. Oh well. Brutal it is.
     Kernel32.TerminateJobObject(hJob, 666);
+    Kernel32.CloseHandle(hJob);
     hJob = null;
 
     return 0;
