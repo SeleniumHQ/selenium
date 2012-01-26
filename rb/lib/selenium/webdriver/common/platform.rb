@@ -149,6 +149,10 @@ module Selenium
         info[0][3]
       end
 
+      def ip
+        IPSocket.getaddress(Socket.gethostname)
+      end
+
     end # Platform
   end # WebDriver
 end # Selenium
@@ -162,5 +166,6 @@ if __FILE__ == $0
     :windows?  => Selenium::WebDriver::Platform.windows?,
     :home      => Selenium::WebDriver::Platform.home,
     :bitsize   => Selenium::WebDriver::Platform.bitsize,
-    :localhost => Selenium::WebDriver::Platform.localhost
+    :localhost => Selenium::WebDriver::Platform.localhost,
+    :ip        => Selenium::WebDriver::Platform.ip
 end
