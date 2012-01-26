@@ -207,7 +207,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   public void testSwitchingToMissingAlertThrows() throws Exception {
     try {
-      alertToBePresent(driver).call();
+      driver.switchTo().alert();
       fail("Expected exception");
     } catch (NoAlertPresentException expected) {
       // Expected
@@ -359,7 +359,11 @@ public class AlertsTest extends AbstractDriverTestCase {
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
     return new Callable<Alert>() {
       public Alert call() throws Exception {
-        return driver.switchTo().alert();
+        try {
+          return driver.switchTo().alert();
+        } catch (NoAlertPresentException e) {
+          return null;
+        }
       }
     };
   }
