@@ -23,6 +23,7 @@ import com.google.common.io.Closeables;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
@@ -31,6 +32,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -1214,11 +1216,17 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public boolean isOnline() {
-    return networkHandler.isConnected();
+    return Settings.System.getInt(getActivity().getContentResolver(),
+        Settings.System.AIRPLANE_MODE_ON, 0) != 1;
   }
 
   public void setOnline(boolean online) throws WebDriverException {
-    networkHandler.onNetworkChange(online);
+    Settings.System.putInt(getActivity().getContentResolver(),
+        Settings.System.AIRPLANE_MODE_ON, online ? 0 : 1);
+
+    Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+    intent.putExtra("state", online);
+    getActivity().sendBroadcast(intent);
   }
 
   public TouchScreen getTouch() {

@@ -20,23 +20,39 @@ package org.openqa.selenium.html5;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.TestWaiter;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
+
+import java.util.concurrent.Callable;
 
 public class BrowserConnectionTest extends AbstractDriverTestCase {
 
-  @Ignore(ANDROID)
   public void testShouldSetBrowserOffline() {
     if (!(driver instanceof BrowserConnection)) {
       return;
     }
     driver.get(pages.html5Page);
-    assertTrue("Browser is offline.", ((BrowserConnection) driver).isOnline());
-    ((BrowserConnection) driver).setOnline(false);
-    assertFalse("Failed to set browser offline.",
-        ((BrowserConnection) driver).isOnline());
-    ((BrowserConnection) driver).setOnline(true);
+    final BrowserConnection networkAwareDriver = (BrowserConnection) driver;
+    
+    networkAwareDriver.setOnline(false);
+
+    TestWaiter.waitFor(new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return !networkAwareDriver.isOnline();
+      }
+    });
+    assertFalse("Failed to set browser offline.", networkAwareDriver.isOnline());
+    networkAwareDriver.setOnline(true);
+
+    TestWaiter.waitFor(new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return networkAwareDriver.isOnline();
+      }
+    });
+        
     assertTrue("Failed to set browser online.",
-        ((BrowserConnection) driver).isOnline());
+        networkAwareDriver.isOnline());
   }
 
 }
