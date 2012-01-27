@@ -1,5 +1,19 @@
-2.18.0 (???)
-============
+2.18.0 (2012-01-27)
+===================
+
+* Fix for getting value attribute of option elements. (#3169)
+* Firefox and IE:
+  * Raise UnhandledAlertError if an alert is present during an operation. The unhandled alert is also dismissed to mitigate repeat exceptions.
+* Firefox:
+  * Better handling of getText invocations on SVG elements.
+  * Fix for Element#click in Firefox 4. (#3253)
+  * Fixed bug when deserializing user.js in Firefox::Profile.
+  * Default profile preferences now read from shared JSON blob.
+* Android and iPhone:
+  * Client support for the geolocation API (see Selenium::WebDriver::DriverExtensions::HasLocation)
+  * Client support for the web storage API (see Selenium::WebDriver::DriverExtensions::HasWebStorage)
+* iPhone:
+  * Server now supports frame switching (for frames in the same domain).
 
 2.17.0 (2012-01-16)
 ===================
