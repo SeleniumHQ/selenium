@@ -90,7 +90,7 @@
 
 <div class="viewcode-block" id="WebDriverWait.until"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until">[docs]</a>    <span class="k">def</span> <span class="nf">until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
-<span class="sd">        return value is not Falsy.&quot;&quot;&quot;</span>
+<span class="sd">        return value is not False.&quot;&quot;&quot;</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
         <span class="k">while</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -100,7 +100,21 @@
             <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="WebDriverWait.until_not"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until_not">[docs]</a>    <span class="k">def</span> <span class="nf">until_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+          <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
+<span class="sd">          return value is False.&quot;&quot;&quot;</span>
+          <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
+          <span class="k">while</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">):</span>
+              <span class="k">try</span><span class="p">:</span>
+                  <span class="n">value</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
+                  <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                      <span class="k">pass</span>
+              <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+                  <span class="k">return</span> <span class="bp">True</span>
+              <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll</span><span class="p">)</span>
+          <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

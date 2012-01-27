@@ -69,6 +69,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="kn">import</span> <span class="n">Proxy</span><span class="p">,</span> <span class="n">ProxyType</span>
 
 <span class="n">WEBDRIVER_EXT</span> <span class="o">=</span> <span class="s">&quot;webdriver.xpi&quot;</span>
 <span class="n">EXTENSION_NAME</span> <span class="o">=</span> <span class="s">&quot;fxdriver@googlecode.com&quot;</span>
@@ -120,7 +121,9 @@
         <span class="s">&quot;security.warn_viewing_mixed.show_once&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;signon.rememberSignons&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;toolkit.networkmanager.disable&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
+        <span class="s">&quot;toolkit.telemetry.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;toolkit.telemetry.prompted&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span>
+        <span class="s">&quot;toolkit.telemetry.rejected&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;javascript.options.showInConsole&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;browser.dom.window.dump.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
@@ -162,6 +165,8 @@
         <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
             <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;false&#39;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
             <span class="n">clean_value</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">clean_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
@@ -230,10 +235,35 @@
                 <span class="n">zipped</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filename</span><span class="p">[</span><span class="n">path_root</span><span class="p">:])</span>
         <span class="n">zipped</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">encodestring</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="FirefoxProfile.set_proxy"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.set_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">set_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proxy</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;proxy can not be None&quot;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span> <span class="ow">is</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">UNSPECIFIED</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.type&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span><span class="p">[</span><span class="s">&#39;ff_value&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span> <span class="ow">is</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.no_proxies_on&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">no_proxy</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;ftp&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">ftp_proxy</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;http&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">http_proxy</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;ssl&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">ssl_proxy</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span> <span class="ow">is</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.autoconfig_url&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_autoconfig_url</span><span class="p">)</span>
 
     <span class="c">#Private Methods</span>
 </div>
+    <span class="k">def</span> <span class="nf">_set_manual_proxy_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">setting</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">setting</span> <span class="ow">is</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">host_details</span> <span class="o">=</span> <span class="n">setting</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">,</span> <span class="n">host_details</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">host_details</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.</span><span class="si">%s</span><span class="s">_port&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">host_details</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
     <span class="k">def</span> <span class="nf">_create_tempfolder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a temp folder to store User.js and the extension</span>

@@ -1,3 +1,6 @@
+Selenium 2.18
+* Proxy capabilities passing
+
 Selenium 2.17
 * OperaDriver can now be invoked by webdriver.Opera()
 * Support has been added for ChomeOptions. This deprecates support passing in DesiredCapabilities
