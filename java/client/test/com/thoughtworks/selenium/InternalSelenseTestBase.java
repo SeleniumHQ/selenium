@@ -3,27 +3,40 @@ package com.thoughtworks.selenium;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.openqa.selenium.Build;
-import org.openqa.selenium.testing.DevMode;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.testing.DevMode;
+import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.testing.drivers.BackedBy;
+import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.testng.Assert;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX_CHROME;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX_PROXY;
+import static org.openqa.selenium.remote.BrowserType.GOOGLECHROME;
+import static org.openqa.selenium.remote.BrowserType.IEXPLORE;
+import static org.openqa.selenium.remote.BrowserType.IEXPLORE_PROXY;
+import static org.openqa.selenium.remote.BrowserType.IE_HTA;
+import static org.openqa.selenium.remote.DesiredCapabilities.chrome;
+import static org.openqa.selenium.remote.DesiredCapabilities.firefox;
+import static org.openqa.selenium.remote.DesiredCapabilities.internetExplorer;
 
 public class InternalSelenseTestBase extends SeleneseTestBase {
   private static final Logger log = Logger.getLogger(InternalSelenseTestBase.class.getName());
@@ -130,6 +143,75 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
     WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
     return "OperaDriver".equals(driver.getClass().getSimpleName());
+  }
+
+  protected boolean is(BackedBy backedBy, Browser browser) {
+    switch (backedBy) {
+      case rc:
+        return isRc(browser);
+
+      case webdriver:
+        return isWebDriver(browser);
+    }
+
+    return false;
+  }
+
+  private boolean isWebDriver(Browser browser) {
+    if (!(selenium instanceof WrapsDriver)) {
+      return false;
+    }
+
+    WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
+    Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
+    String browserName = capabilities.getBrowserName();
+
+    switch (browser) {
+      case chrome:
+        return chrome().getBrowserName().equals(browserName);
+
+      case ff :
+        return firefox().getBrowserName().equals(browserName);
+
+      case ie:
+        return internetExplorer().getBrowserName().equals(browserName);
+
+      default:
+        log.warning("Unknown browser: " + browser);
+    }
+
+    return false;
+  }
+
+  private boolean isRc(Browser browser) {
+    if (selenium instanceof WrapsDriver) {
+      return false;
+    }
+
+    String browserType = runtimeBrowserString();
+    if (browserType.startsWith("*")) {
+      browserType = browserType.substring(1);
+    }
+
+    switch (browser) {
+      case chrome:
+        return GOOGLECHROME.equals(browserType);
+
+      case ff :
+        return FIREFOX_PROXY.equals(browserType) ||
+            FIREFOX_CHROME.equals(browserType) ||
+            FIREFOX.equals(browserType);
+
+      case ie:
+        return IE_HTA.equals(browserType) ||
+            IEXPLORE.equals(browserType) ||
+            IEXPLORE_PROXY.equals(browserType);
+
+      default:
+        log.warning("Unknown browser: " + browser);
+    }
+
+    return false;
   }
 
   @Before
