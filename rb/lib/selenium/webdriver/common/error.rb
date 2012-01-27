@@ -97,7 +97,11 @@ module Selenium
       #
 
       class UnableToSetCookieError < WebDriverError; end         # 25
-      class UnexpectedAlertError < WebDriverError; end           # 26
+
+      #
+      # Raised when an alert dialog is present that has not been dealt with.
+      #
+      class UnhandledAlertError < WebDriverError; end            # 26
 
       #
       # Indicates that a user has tried to access an alert when one is not present.
@@ -172,7 +176,7 @@ module Selenium
         NoSuchWindowError,              # 23
         InvalidCookieDomainError,       # 24
         UnableToSetCookieError,         # 25
-        UnexpectedAlertError,           # 26
+        UnhandledAlertError,            # 26
         NoAlertPresentError,            # 27
         ScriptTimeOutError,             # 28
         InvalidElementCoordinatesError, # 29
