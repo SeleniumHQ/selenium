@@ -133,11 +133,14 @@ class Selenium::WebDriver::Remote::Bridge
   #
 
   command :executeSql,                             :post,   "session/:session_id/execute_sql"
+
   command :getLocation,                            :get,    "session/:session_id/location"
   command :setLocation,                            :post,   "session/:session_id/location"
+
   command :getAppCache,                            :get,    "session/:session_id/application_cache"
   command :getAppCacheStatus,                      :get,    "session/:session_id/application_cache/status"
   command :clearAppCache,                          :delete, "session/:session_id/application_cache/clear"
+
   command :isBrowserOnline,                        :get,    "session/:session_id/browser_connection"
   command :setBrowserOnline,                       :post,   "session/:session_id/browser_connection"
 

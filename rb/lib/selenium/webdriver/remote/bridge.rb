@@ -296,6 +296,14 @@ module Selenium
           execute :setLocation, {}, :location => loc
         end
 
+        def isBrowserOnline
+          execute :isBrowserOnline
+        end
+
+        def setBrowserOnline(bool)
+          execute :setBrowserOnline, {}, :state => bool
+        end
+
         #
         # javascript execution
         #

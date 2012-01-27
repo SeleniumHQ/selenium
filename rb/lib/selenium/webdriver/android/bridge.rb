@@ -31,7 +31,8 @@ module Selenium
             DriverExtensions::Rotatable,
             DriverExtensions::HasInputDevices,
             DriverExtensions::HasWebStorage,
-            DriverExtensions::HasLocation
+            DriverExtensions::HasLocation,
+            DriverExtensions::HasBrowserConnection
           ]
         end
 
