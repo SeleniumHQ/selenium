@@ -1,6 +1,6 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-describe "Driver", :focus => true do
+describe "Driver" do
   compliant_on :browser => [:iphone, :android] do
     context "location context" do
       let(:lat) { 40.714353  }
