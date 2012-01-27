@@ -1,3 +1,16 @@
+v2.18.0
+=======
+ * Updated .NET WebDriver.Support assembly to depend on Castle Windsor 3.0
+ * Updated to JSON.NET to 4.0r6
+ * Refactored ChromeDriverService to be a subclass of a base DriverService 
+   class, designed to allow any JSON Wire Protocol-compliant standalone server
+   executable to be used as a service. This adds all required work for the 
+   .NET bindings to begin using the standalone IE remote server.
+ * Enable CODE_ANALYSIS flag for Debug builds so that standalone FxCop can
+   take advantage of GlobalSuppressions.cs.
+ * Added help text to the exception message for WebDriverBackedSelenium, in
+   the case that the Start() method has not been called on the instance.
+
 v2.17.0
 =======
  * Reverted the .NET remote Command object to return an empty string
