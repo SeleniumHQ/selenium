@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Window
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.4
   
 </title>
 
@@ -100,6 +100,7 @@
 </div>
 <div class="tags">
   
+
 </div>
 
 
@@ -311,6 +312,7 @@ A new instance of Window
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -324,10 +326,9 @@ A new instance of Window
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 14</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -363,10 +364,10 @@ Equivalent to #position=, but accepts x and y arguments.
     
       <h4><div class='inline'></div></h4>
       <pre class="example code">
-<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='manage identifier id'>manage</span><span class='dot token'>.</span><span class='window identifier id'>window</span><span class='dot token'>.</span><span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='integer val'>300</span><span class='comma token'>,</span> <span class='integer val'>400</span><span class='rparen token'>)</span>
-</pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_manage'>manage</span><span class='period'>.</span><span class='id identifier rubyid_window'>window</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='int'>300</span><span class='comma'>,</span> <span class='int'>400</span><span class='rparen'>)</span></pre>
     
   </div>
+
 
 </div><table class="source_code">
   <tr>
@@ -381,10 +382,9 @@ Equivalent to #position=, but accepts x and y arguments.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 89</span>
 
-<span class='def def kw'>def</span> <span class='move_to identifier id'>move_to</span><span class='lparen token'>(</span><span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowPosition identifier id'>setWindowPosition</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='x identifier id'>x</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='y identifier id'>y</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setWindowPosition'>setWindowPosition</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -407,7 +407,8 @@ Get the position of the current window.
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -440,10 +441,9 @@ The position.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 64</span>
 
-<span class='def def kw'>def</span> <span class='position identifier id'>position</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getWindowPosition identifier id'>getWindowPosition</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_position'>position</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getWindowPosition'>getWindowPosition</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -488,6 +488,7 @@ The new position.
   
 </ul>
 
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -506,15 +507,14 @@ The new position.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 49</span>
 
-<span class='def def kw'>def</span> <span class='position= identifier id'>position=</span><span class='lparen token'>(</span><span class='point identifier id'>point</span><span class='rparen token'>)</span>
-  <span class='unless unless kw'>unless</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:x</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:y</span><span class='rparen token'>)</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected #{point.inspect}:#{point.class}&quot;</span> <span class='plus op'>+</span>
-                          <span class='string val'>&quot; to respond to #x and #y&quot;</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_position='>position=</span><span class='lparen'>(</span><span class='id identifier rubyid_point'>point</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:x</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:y</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span>
+                          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> to respond to #x and #y</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowPosition identifier id'>setWindowPosition</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='point identifier id'>point</span><span class='dot token'>.</span><span class='y identifier id'>y</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setWindowPosition'>setWindowPosition</span> <span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_y'>y</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -546,11 +546,11 @@ Maximize the window.
 </p>
 </div></h4>
       <pre class="example code">
-<span class='max_width identifier id'>max_width</span><span class='comma token'>,</span> <span class='max_height identifier id'>max_height</span> <span class='assign token'>=</span> <span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='execute_script identifier id'>execute_script</span><span class='lparen token'>(</span><span class='string val'>&quot;return [window.screen.availWidth, window.screen.availHeight];&quot;</span><span class='rparen token'>)</span>
-<span class='driver identifier id'>driver</span><span class='dot token'>.</span><span class='manage identifier id'>manage</span><span class='dot token'>.</span><span class='window identifier id'>window</span><span class='dot token'>.</span><span class='resize_to identifier id'>resize_to</span><span class='lparen token'>(</span><span class='max_width identifier id'>max_width</span><span class='comma token'>,</span> <span class='max_height identifier id'>max_height</span><span class='rparen token'>)</span>
-</pre>
+<span class='id identifier rubyid_max_width'>max_width</span><span class='comma'>,</span> <span class='id identifier rubyid_max_height'>max_height</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>return [window.screen.availWidth, window.screen.availHeight];</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_manage'>manage</span><span class='period'>.</span><span class='id identifier rubyid_window'>window</span><span class='period'>.</span><span class='id identifier rubyid_resize_to'>resize_to</span><span class='lparen'>(</span><span class='id identifier rubyid_max_width'>max_width</span><span class='comma'>,</span> <span class='id identifier rubyid_max_height'>max_height</span><span class='rparen'>)</span></pre>
     
   </div>
+
 
 </div><table class="source_code">
   <tr>
@@ -565,10 +565,9 @@ Maximize the window.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 77</span>
 
-<span class='def def kw'>def</span> <span class='resize_to identifier id'>resize_to</span><span class='lparen token'>(</span><span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowSize identifier id'>setWindowSize</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='width identifier id'>width</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='Integer constant id'>Integer</span><span class='lparen token'>(</span><span class='height identifier id'>height</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_resize_to'>resize_to</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='id identifier rubyid_height'>height</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setWindowSize'>setWindowSize</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_height'>height</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -591,7 +590,8 @@ Get the size of the current window.
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -624,10 +624,9 @@ The size.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 39</span>
 
-<span class='def def kw'>def</span> <span class='size identifier id'>size</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getWindowSize identifier id'>getWindowSize</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getWindowSize'>getWindowSize</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -672,6 +671,7 @@ The new size.
   
 </ul>
 
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -690,15 +690,14 @@ The new size.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 24</span>
 
-<span class='def def kw'>def</span> <span class='size= identifier id'>size=</span><span class='lparen token'>(</span><span class='dimension identifier id'>dimension</span><span class='rparen token'>)</span>
-  <span class='unless unless kw'>unless</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:width</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:height</span><span class='rparen token'>)</span>
-    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;expected #{dimension.inspect}:#{dimension.class}&quot;</span> <span class='plus op'>+</span>
-                          <span class='string val'>&quot; to respond to #width and #height&quot;</span>
-  <span class='end end kw'>end</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_size='>size=</span><span class='lparen'>(</span><span class='id identifier rubyid_dimension'>dimension</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:width</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:height</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span>
+                          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> to respond to #width and #height</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='setWindowSize identifier id'>setWindowSize</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='dimension identifier id'>dimension</span><span class='dot token'>.</span><span class='height identifier id'>height</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setWindowSize'>setWindowSize</span> <span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_height'>height</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -709,9 +708,9 @@ The new size.
 </div>
     
     <div id="footer">
-  Generated on Thu Jan  5 01:52:13 2012 by 
+  Generated on Fri Jan 27 18:02:01 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.4 (ruby-1.9.2).
 </div>
 
   </body>

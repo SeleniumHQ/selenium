@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Element
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.4
   
 </title>
 
@@ -288,6 +288,27 @@ Is the element displayed?.
 Is the element enabled?.
 </p>
 </div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#hash-instance_method" title="#hash (instance method)">- (Object) <strong>hash</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -644,6 +665,7 @@ Creates a new Element
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -657,10 +679,9 @@ Creates a new Element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 12</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='comma token'>,</span> <span class='@id ivar id'>@id</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span><span class='comma token'>,</span> <span class='id identifier id'>id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='comma'>,</span> <span class='ivar'>@id</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -697,10 +718,9 @@ Creates a new Element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 20</span>
 
-<span class='def def kw'>def</span> <span class='eq op'>==</span><span class='lparen token'>(</span><span class='other identifier id'>other</span><span class='rparen token'>)</span>
-  <span class='other identifier id'>other</span><span class='dot token'>.</span><span class='kind_of? fid id'>kind_of?</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='elementEquals identifier id'>elementEquals</span><span class='lparen token'>(</span><span class='self self kw'>self</span><span class='comma token'>,</span> <span class='other identifier id'>other</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_elementEquals'>elementEquals</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -729,6 +749,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -742,10 +763,9 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 243</span>
 
-<span class='def def kw'>def</span> <span class='as_json identifier id'>as_json</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='lbrace token'>{</span> <span class='symbol val'>:ELEMENT</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@id ivar id'>@id</span> <span class='rbrace token'>}</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='lbrace'>{</span> <span class='symbol'>:ELEMENT</span> <span class='op'>=&gt;</span> <span class='ivar'>@id</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -816,6 +836,7 @@ name
     </li>
   
 </ul>
+
 <h3>Returns:</h3>
 <ul class="return">
   
@@ -849,10 +870,9 @@ attribute value
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 73</span>
 
-<span class='def def kw'>def</span> <span class='attribute identifier id'>attribute</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementAttribute identifier id'>getElementAttribute</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='name identifier id'>name</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_attribute'>attribute</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementAttribute'>getElementAttribute</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -876,6 +896,7 @@ Clear this element
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -889,10 +910,9 @@ Clear this element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 110</span>
 
-<span class='def def kw'>def</span> <span class='clear identifier id'>clear</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='clearElement identifier id'>clearElement</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_clear'>clear</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_clearElement'>clearElement</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -916,6 +936,7 @@ Click the element
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -929,10 +950,9 @@ Click the element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 33</span>
 
-<span class='def def kw'>def</span> <span class='click identifier id'>click</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='clickElement identifier id'>clickElement</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_clickElement'>clickElement</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -955,7 +975,8 @@ Is the element displayed?
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -982,10 +1003,9 @@ Is the element displayed?
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 140</span>
 
-<span class='def def kw'>def</span> <span class='displayed? fid id'>displayed?</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementDisplayed identifier id'>isElementDisplayed</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_displayed?'>displayed?</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementDisplayed'>isElementDisplayed</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1008,7 +1028,8 @@ Is the element enabled?
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1035,10 +1056,37 @@ Is the element enabled?
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 120</span>
 
-<span class='def def kw'>def</span> <span class='enabled? fid id'>enabled?</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementEnabled identifier id'>isElementEnabled</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_enabled?'>enabled?</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementEnabled'>isElementEnabled</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="hash-instance_method">
+  
+    - (<tt>Object</tt>) <strong>hash</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 25</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_hash'>hash</span>
+  <span class='ivar'>@id</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span> <span class='op'>^</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1064,10 +1112,9 @@ Is the element enabled?
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 16</span>
 
-<span class='def def kw'>def</span> <span class='inspect identifier id'>inspect</span>
-  <span class='string val'>'#&lt;%s:0x%x id=%s&gt;'</span> <span class='mod op'>%</span> <span class='lbrack token'>[</span><span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='comma token'>,</span> <span class='hash identifier id'>hash</span><span class='mult op'>*</span><span class='integer val'>2</span><span class='comma token'>,</span> <span class='@id ivar id'>@id</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span><span class='rbrack token'>]</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
+  <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>#&lt;%s:0x%x id=%s&gt;</span><span class='tstring_end'>'</span></span> <span class='op'>%</span> <span class='lbracket'>[</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='op'>*</span><span class='int'>2</span><span class='comma'>,</span> <span class='ivar'>@id</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1090,7 +1137,8 @@ Get the location of this element.
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1117,10 +1165,9 @@ Get the location of this element.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 173</span>
 
-<span class='def def kw'>def</span> <span class='location identifier id'>location</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementLocation identifier id'>getElementLocation</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementLocation'>getElementLocation</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1144,7 +1191,8 @@ scrolled into view.
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1171,10 +1219,9 @@ scrolled into view.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 183</span>
 
-<span class='def def kw'>def</span> <span class='location_once_scrolled_into_view identifier id'>location_once_scrolled_into_view</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementLocationOnceScrolledIntoView identifier id'>getElementLocationOnceScrolledIntoView</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_location_once_scrolled_into_view'>location_once_scrolled_into_view</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1202,6 +1249,7 @@ for SearchContext and execute_script
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -1215,10 +1263,9 @@ for SearchContext and execute_script
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 222</span>
 
-<span class='def def kw'>def</span> <span class='ref identifier id'>ref</span>
-  <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
+  <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1241,7 +1288,8 @@ Is the element selected?
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1268,10 +1316,9 @@ Is the element selected?
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 130</span>
 
-<span class='def def kw'>def</span> <span class='selected? fid id'>selected?</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='isElementSelected identifier id'>isElementSelected</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_selected?'>selected?</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementSelected'>isElementSelected</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1297,10 +1344,9 @@ Send keystrokes to this element
 Examples:
 </p>
 <pre class="code">
-    <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span> <span class='string val'>&quot;foo&quot;</span>                     <span class='comment val'>#=&gt; value: 'foo'</span>
-    <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span> <span class='string val'>&quot;tet&quot;</span><span class='comma token'>,</span> <span class='symbol val'>:arrow_left</span><span class='comma token'>,</span> <span class='string val'>&quot;s&quot;</span>   <span class='comment val'>#=&gt; value: 'test'</span>
-    <span class='element identifier id'>element</span><span class='dot token'>.</span><span class='send_keys identifier id'>send_keys</span> <span class='lbrack token'>[</span><span class='symbol val'>:control</span><span class='comma token'>,</span> <span class='string val'>'a'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='symbol val'>:space</span>   <span class='comment val'>#=&gt; value: ' '</span>
-</pre>
+    <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>foo</span><span class='tstring_end'>&quot;</span></span>                     <span class='comment'>#=&gt; value: 'foo'
+</span>    <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>tet</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:arrow_left</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>s</span><span class='tstring_end'>&quot;</span></span>   <span class='comment'>#=&gt; value: 'test'
+</span>    <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span> <span class='lbracket'>[</span><span class='symbol'>:control</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>a</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:space</span>   <span class='comment'>#=&gt; value: ' '</span></pre>
 
 
   </div>
@@ -1322,6 +1368,7 @@ Examples:
   
 </ul>
 
+
   <h3>See Also:</h3>
   <ul class="see">
     
@@ -1342,10 +1389,9 @@ Examples:
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 101</span>
 
-<span class='def def kw'>def</span> <span class='send_keys identifier id'>send_keys</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='sendKeysToElement identifier id'>sendKeysToElement</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='Keys constant id'>Keys</span><span class='dot token'>.</span><span class='encode identifier id'>encode</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_sendKeysToElement'>sendKeysToElement</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='const'>Keys</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1368,7 +1414,8 @@ Get the size of this element
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1395,10 +1442,9 @@ Get the size of this element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 193</span>
 
-<span class='def def kw'>def</span> <span class='size identifier id'>size</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementSize identifier id'>getElementSize</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementSize'>getElementSize</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1429,6 +1475,7 @@ background-color) to access the desired values.
 </div>
 <div class="tags">
   
+
   <h3>See Also:</h3>
   <ul class="see">
     
@@ -1449,10 +1496,9 @@ background-color) to access the desired values.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 163</span>
 
-<span class='def def kw'>def</span> <span class='style identifier id'>style</span><span class='lparen token'>(</span><span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span> <span class='@id ivar id'>@id</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_style'>style</span><span class='lparen'>(</span><span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementValueOfCssProperty'>getElementValueOfCssProperty</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1476,6 +1522,7 @@ Submit this element
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -1489,10 +1536,9 @@ Submit this element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 148</span>
 
-<span class='def def kw'>def</span> <span class='submit identifier id'>submit</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='submitElement identifier id'>submitElement</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_submit'>submit</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_submitElement'>submitElement</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1515,7 +1561,8 @@ Get the tag name of this element
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1542,10 +1589,9 @@ Get the tag name of this element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 43</span>
 
-<span class='def def kw'>def</span> <span class='tag_name identifier id'>tag_name</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementTagName identifier id'>getElementTagName</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_tag_name'>tag_name</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementTagName'>getElementTagName</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1568,7 +1614,8 @@ Get the text content of this element
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -1595,10 +1642,9 @@ Get the text content of this element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 83</span>
 
-<span class='def def kw'>def</span> <span class='text identifier id'>text</span>
-  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getElementText identifier id'>getElementText</span> <span class='@id ivar id'>@id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_text'>text</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementText'>getElementText</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1626,6 +1672,7 @@ Convert to a WebElement JSON Object for transmission over the wire.
 </div>
 <div class="tags">
   
+
   <h3>See Also:</h3>
   <ul class="see">
     
@@ -1646,10 +1693,9 @@ Convert to a WebElement JSON Object for transmission over the wire.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 233</span>
 
-<span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
-  <span class='MultiJson constant id'>MultiJson</span><span class='dot token'>.</span><span class='encode identifier id'>encode</span> <span class='as_json identifier id'>as_json</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+  <span class='const'>MultiJson</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span> <span class='id identifier rubyid_as_json'>as_json</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1660,9 +1706,9 @@ Convert to a WebElement JSON Object for transmission over the wire.
 </div>
     
     <div id="footer">
-  Generated on Thu Jan  5 01:52:47 2012 by 
+  Generated on Fri Jan 27 18:02:02 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.4 (ruby-1.9.2).
 </div>
 
   </body>

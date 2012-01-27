@@ -24,6 +24,8 @@ h2 small { font-weight: normal; font-size: 0.7em; display: block; float: right; 
 .docstring h2 { font-size: 1.1em; }
 .docstring h3, .docstring h4 { font-size: 1em; border-bottom: 0; padding-top: 10px; }
 .summary_desc .object_link, .docstring .object_link { font-family: monospace; }
+.rdoc-term { padding-right: 25px; font-weight: bold; }
+.rdoc-list p { margin: 0; padding: 0; margin-bottom: 4px; }
 
 /* style for <ul> */
 #filecontents li > p, .docstring li > p { margin: 0px; }
@@ -161,7 +163,7 @@ p.signature .aliases .names { font-family: Monaco, Consolas, Courier, monospace;
 
 #content a:link, #content a:visited { text-decoration: none; color: #05a; }
 #content a:hover { background: #ffffa5; }
-.docstring { margin-right: 6em; }
+div.docstring, p.docstring { margin-right: 6em; }
 
 ul.summary {
   list-style: none;
@@ -292,7 +294,7 @@ li.r2 { background: #fafafa; }
 #filecontents pre.code, .docstring pre.code { display: block; }
 .source_code .lines { padding-right: 12px; color: #555; text-align: right; }
 #filecontents pre.code, .docstring pre.code, 
-.tags .example { padding: 5px 12px; margin-top: 4px; border: 1px solid #eef; background: #f5f5ff; }
+.tags pre.example { padding: 5px 12px; margin-top: 4px; border: 1px solid #eef; background: #f5f5ff; }
 pre.code { color: #000; }
 pre.code .info.file { color: #555; }
 pre.code .val { color: #036A07; }
@@ -300,21 +302,21 @@ pre.code .tstring_content,
 pre.code .heredoc_beg, pre.code .heredoc_end,
 pre.code .qwords_beg, pre.code .qwords_end,
 pre.code .tstring, pre.code .dstring { color: #036A07; }
-pre.code .fid, pre.code .id.new, pre.code .id.to_s, 
-pre.code .id.to_sym, pre.code .id.to_f, 
+pre.code .fid, pre.code .rubyid_new, pre.code .rubyid_to_s, 
+pre.code .rubyid_to_sym, pre.code .rubyid_to_f, 
 pre.code .dot + pre.code .id,
-pre.code .id.to_i pre.code .id.each { color: #0085FF; }
+pre.code .rubyid_to_i pre.code .rubyid_each { color: #0085FF; }
 pre.code .comment { color: #0066FF; }
 pre.code .const, pre.code .constant { color: #585CF6; }
 pre.code .symbol { color: #C5060B; }
 pre.code .kw, 
 pre.code .label,
-pre.code .id.require, 
-pre.code .id.extend,
-pre.code .id.include { color: #0000FF; }
+pre.code .rubyid_require, 
+pre.code .rubyid_extend,
+pre.code .rubyid_include { color: #0000FF; }
 pre.code .ivar { color: #318495; }
 pre.code .gvar, 
-pre.code .id.backref, 
-pre.code .id.nth_ref { color: #6D79DE; }
+pre.code .rubyid_backref, 
+pre.code .rubyid_nth_ref { color: #6D79DE; }
 pre.code .regexp, .dregexp { color: #036A07; }
 pre.code a { border-bottom: 1px dotted #bbf; }

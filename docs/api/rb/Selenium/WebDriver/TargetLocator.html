@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::TargetLocator
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.4
   
 </title>
 
@@ -281,6 +281,7 @@ A new instance of TargetLocator
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -294,10 +295,9 @@ A new instance of TargetLocator
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 9</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -327,7 +327,8 @@ get the active element
   </div>
 </div>
 <div class="tags">
-  <h3>Returns:</h3>
+  
+<h3>Returns:</h3>
 <ul class="return">
   
     <li>
@@ -354,10 +355,9 @@ get the active element
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 59</span>
 
-<span class='def def kw'>def</span> <span class='active_element identifier id'>active_element</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToActiveElement identifier id'>switchToActiveElement</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switchToActiveElement'>switchToActiveElement</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -382,6 +382,7 @@ instance
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -395,10 +396,9 @@ instance
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 75</span>
 
-<span class='def def kw'>def</span> <span class='alert identifier id'>alert</span>
-  <span class='Alert constant id'>Alert</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@bridge ivar id'>@bridge</span><span class='rparen token'>)</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_alert'>alert</span>
+  <span class='const'>Alert</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -423,6 +423,7 @@ page contains iframes.
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -436,10 +437,9 @@ page contains iframes.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 67</span>
 
-<span class='def def kw'>def</span> <span class='default_content identifier id'>default_content</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToDefaultContent identifier id'>switchToDefaultContent</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_default_content'>default_content</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switchToDefaultContent'>switchToDefaultContent</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -463,6 +463,7 @@ switch to the frame with the given id
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -476,10 +477,9 @@ switch to the frame with the given id
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 17</span>
 
-<span class='def def kw'>def</span> <span class='frame identifier id'>frame</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToFrame identifier id'>switchToFrame</span> <span class='id identifier id'>id</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_frame'>frame</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switchToFrame'>switchToFrame</span> <span class='id identifier rubyid_id'>id</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -528,6 +528,7 @@ A window handle, obtained through Driver#window_handles
   
 </ul>
 
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -559,28 +560,27 @@ A window handle, obtained through Driver#window_handles
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 31</span>
 
-<span class='def def kw'>def</span> <span class='window identifier id'>window</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='block_given? fid id'>block_given?</span>
-    <span class='original identifier id'>original</span> <span class='assign token'>=</span> <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
-    <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToWindow identifier id'>switchToWindow</span> <span class='id identifier id'>id</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
+    <span class='id identifier rubyid_original'>original</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getCurrentWindowHandle'>getCurrentWindowHandle</span>
+    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switchToWindow'>switchToWindow</span> <span class='id identifier rubyid_id'>id</span>
 
-    <span class='begin begin kw'>begin</span>
-      <span class='returned identifier id'>returned</span> <span class='assign token'>=</span> <span class='yield yield kw'>yield</span>
-    <span class='ensure ensure kw'>ensure</span>
-      <span class='current_handles identifier id'>current_handles</span> <span class='assign token'>=</span> <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='getWindowHandles identifier id'>getWindowHandles</span>
+    <span class='kw'>begin</span>
+      <span class='id identifier rubyid_returned'>returned</span> <span class='op'>=</span> <span class='kw'>yield</span>
+    <span class='kw'>ensure</span>
+      <span class='id identifier rubyid_current_handles'>current_handles</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getWindowHandles'>getWindowHandles</span>
 
-      <span class='if if kw'>if</span> <span class='current_handles identifier id'>current_handles</span><span class='dot token'>.</span><span class='size identifier id'>size</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
-        <span class='original identifier id'>original</span> <span class='assign token'>=</span> <span class='current_handles identifier id'>current_handles</span><span class='dot token'>.</span><span class='shift identifier id'>shift</span>
-      <span class='end end kw'>end</span>
+      <span class='kw'>if</span> <span class='id identifier rubyid_current_handles'>current_handles</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>==</span> <span class='int'>1</span>
+        <span class='id identifier rubyid_original'>original</span> <span class='op'>=</span> <span class='id identifier rubyid_current_handles'>current_handles</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span>
+      <span class='kw'>end</span>
 
-      <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToWindow identifier id'>switchToWindow</span> <span class='original identifier id'>original</span>
-      <span class='returned identifier id'>returned</span>
-    <span class='end end kw'>end</span>
-  <span class='else else kw'>else</span>
-    <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='switchToWindow identifier id'>switchToWindow</span> <span class='id identifier id'>id</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+      <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switchToWindow'>switchToWindow</span> <span class='id identifier rubyid_original'>original</span>
+      <span class='id identifier rubyid_returned'>returned</span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switchToWindow'>switchToWindow</span> <span class='id identifier rubyid_id'>id</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -591,9 +591,9 @@ A window handle, obtained through Driver#window_handles
 </div>
     
     <div id="footer">
-  Generated on Thu Jan  5 01:51:47 2012 by 
+  Generated on Fri Jan 27 18:02:04 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.4 (ruby-1.9.2).
 </div>
 
   </body>

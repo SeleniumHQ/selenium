@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::Rake::ServerTask
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.4
   
 </title>
 
@@ -106,45 +106,45 @@ server.
 Usage:
 </p>
 <pre class="code">
-  <span class='require identifier id'>require</span> <span class='string val'>'selenium/rake/server_task'</span>
+  <span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>selenium/rake/server_task</span><span class='tstring_end'>'</span></span>
 
-  <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Rake constant id'>Rake</span><span class='colon2 op'>::</span><span class='ServerTask constant id'>ServerTask</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='t identifier id'>t</span><span class='bitor op'>|</span>
-    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='jar identifier id'>jar</span> <span class='assign token'>=</span> <span class='string val'>&quot;/path/to/selenium-server-standalone.jar&quot;</span>
-    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='port identifier id'>port</span> <span class='assign token'>=</span> <span class='integer val'>4444</span>
-    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='dstring node'>%w[-some options]</span>
-  <span class='end end kw'>end</span>
+  <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_jar'>jar</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='int'>4444</span>
+    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>-some</span><span class='words_sep'> </span><span class='tstring_content'>options</span><span class='words_sep'>]</span>
+  <span class='kw'>end</span>
 </pre>
 <p>
 Alternatively, you can have the task download a specific version of the
 server:
 </p>
 <pre class="code">
-  <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Rake constant id'>Rake</span><span class='colon2 op'>::</span><span class='ServerTask constant id'>ServerTask</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='symbol val'>:server</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='t identifier id'>t</span><span class='bitor op'>|</span>
-    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='version identifier id'>version</span> <span class='assign token'>=</span> <span class='string val'>'2.6.0'</span>
-  <span class='end end kw'>end</span>
+  <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>end</span>
 </pre>
 <p>
 or the latest version
 </p>
 <pre class="code">
-  <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Rake constant id'>Rake</span><span class='colon2 op'>::</span><span class='ServerTask constant id'>ServerTask</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='symbol val'>:server</span><span class='rparen token'>)</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='t identifier id'>t</span><span class='bitor op'>|</span>
-    <span class='t identifier id'>t</span><span class='dot token'>.</span><span class='version identifier id'>version</span> <span class='assign token'>=</span> <span class='symbol val'>:latest</span>
-  <span class='end end kw'>end</span>
+  <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='symbol'>:latest</span>
+  <span class='kw'>end</span>
 </pre>
 <p>
 Tasks defined:
 </p>
 <pre class="code">
-  <span class='rake identifier id'>rake</span> <span class='selenium identifier id'>selenium</span><span class='symbol val'>:server</span><span class='symbol val'>:start</span>
-  <span class='rake identifier id'>rake</span> <span class='selenium identifier id'>selenium</span><span class='symbol val'>:server</span><span class='symbol val'>:stop</span>
-  <span class='rake identifier id'>rake</span> <span class='selenium identifier id'>selenium</span><span class='symbol val'>:server</span><span class='symbol val'>:restart</span>
-</pre>
+  rake selenium:server:start
+  rake selenium:server:stop
+  rake selenium:server:restart</pre>
 
 
   </div>
 </div>
 <div class="tags">
   
+
 </div>
 
   
@@ -406,7 +406,8 @@ A new instance of ServerTask
   </div>
 </div>
 <div class="tags">
-  <h3>Yields:</h3>
+  
+<h3>Yields:</h3>
 <ul class="yield">
   
     <li>
@@ -482,38 +483,37 @@ the object that the method was called on
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 99</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='prefix identifier id'>prefix</span> <span class='assign token'>=</span> <span class='string val'>&quot;selenium:server&quot;</span><span class='rparen token'>)</span>
-  <span class='@jar ivar id'>@jar</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
-  <span class='@prefix ivar id'>@prefix</span> <span class='assign token'>=</span> <span class='prefix identifier id'>prefix</span>
-  <span class='@port ivar id'>@port</span> <span class='assign token'>=</span> <span class='integer val'>4444</span>
-  <span class='@timeout ivar id'>@timeout</span> <span class='assign token'>=</span> <span class='integer val'>30</span>
-  <span class='@background ivar id'>@background</span> <span class='assign token'>=</span> <span class='true true kw'>true</span>
-  <span class='@log ivar id'>@log</span> <span class='assign token'>=</span> <span class='true true kw'>true</span>
-  <span class='@opts ivar id'>@opts</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
-  <span class='@version ivar id'>@version</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_prefix'>prefix</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium:server</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='ivar'>@jar</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@prefix</span> <span class='op'>=</span> <span class='id identifier rubyid_prefix'>prefix</span>
+  <span class='ivar'>@port</span> <span class='op'>=</span> <span class='int'>4444</span>
+  <span class='ivar'>@timeout</span> <span class='op'>=</span> <span class='int'>30</span>
+  <span class='ivar'>@background</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='ivar'>@log</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='ivar'>@opts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@version</span> <span class='op'>=</span> <span class='kw'>nil</span>
 
-  <span class='yield yield kw'>yield</span> <span class='self self kw'>self</span> <span class='if if_mod kw'>if</span> <span class='block_given? fid id'>block_given?</span>
+  <span class='kw'>yield</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
 
-  <span class='if if kw'>if</span> <span class='@version ivar id'>@version</span>
-    <span class='@jar ivar id'>@jar</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Server constant id'>Server</span><span class='dot token'>.</span><span class='download identifier id'>download</span><span class='lparen token'>(</span><span class='@version ivar id'>@version</span><span class='rparen token'>)</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>if</span> <span class='ivar'>@version</span>
+    <span class='ivar'>@jar</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_download'>download</span><span class='lparen'>(</span><span class='ivar'>@version</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
-  <span class='unless unless kw'>unless</span> <span class='@jar ivar id'>@jar</span>
-    <span class='raise identifier id'>raise</span> <span class='MissingJarFileError constant id'>MissingJarFileError</span><span class='comma token'>,</span> <span class='string val'>&quot;must provide path to the selenium server jar&quot;</span>
-  <span class='end end kw'>end</span>
+  <span class='kw'>unless</span> <span class='ivar'>@jar</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>MissingJarFileError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>must provide path to the selenium server jar</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
-  <span class='@server ivar id'>@server</span> <span class='assign token'>=</span> <span class='Selenium constant id'>Selenium</span><span class='colon2 op'>::</span><span class='Server constant id'>Server</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='@jar ivar id'>@jar</span><span class='comma token'>,</span> <span class='symbol val'>:port</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@port ivar id'>@port</span><span class='comma token'>,</span>
-                                       <span class='symbol val'>:timeout</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@timeout ivar id'>@timeout</span><span class='comma token'>,</span>
-                                       <span class='symbol val'>:background</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@background ivar id'>@background</span><span class='comma token'>,</span>
-                                       <span class='symbol val'>:log</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@log ivar id'>@log</span> <span class='rparen token'>)</span>
+  <span class='ivar'>@server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@jar</span><span class='comma'>,</span> <span class='symbol'>:port</span>       <span class='op'>=&gt;</span> <span class='ivar'>@port</span><span class='comma'>,</span>
+                                       <span class='symbol'>:timeout</span>    <span class='op'>=&gt;</span> <span class='ivar'>@timeout</span><span class='comma'>,</span>
+                                       <span class='symbol'>:background</span> <span class='op'>=&gt;</span> <span class='ivar'>@background</span><span class='comma'>,</span>
+                                       <span class='symbol'>:log</span>        <span class='op'>=&gt;</span> <span class='ivar'>@log</span> <span class='rparen'>)</span>
 
-  <span class='@server ivar id'>@server</span> <span class='lshft op'>&lt;&lt;</span> <span class='@opts ivar id'>@opts</span>
+  <span class='ivar'>@server</span> <span class='op'>&lt;&lt;</span> <span class='ivar'>@opts</span>
 
-  <span class='define_start_task identifier id'>define_start_task</span>
-  <span class='define_stop_task identifier id'>define_stop_task</span>
-  <span class='define_restart_task identifier id'>define_restart_task</span>
-<span class='end end kw'>end</span>
-</pre>
+  <span class='id identifier rubyid_define_start_task'>define_start_task</span>
+  <span class='id identifier rubyid_define_stop_task'>define_stop_task</span>
+  <span class='id identifier rubyid_define_restart_task'>define_restart_task</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -549,6 +549,7 @@ Whether we should detach from the server process. Default: true
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -562,10 +563,9 @@ Whether we should detach from the server process. Default: true
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 72</span>
 
-<span class='def def kw'>def</span> <span class='background identifier id'>background</span>
-  <span class='@background ivar id'>@background</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_background'>background</span>
+  <span class='ivar'>@background</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -592,6 +592,7 @@ Path to the selenium server jar
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -605,10 +606,9 @@ Path to the selenium server jar
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 50</span>
 
-<span class='def def kw'>def</span> <span class='jar identifier id'>jar</span>
-  <span class='@jar ivar id'>@jar</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_jar'>jar</span>
+  <span class='ivar'>@jar</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -630,7 +630,7 @@ Path to the selenium server jar
 Configure logging. Pass a log file path or a boolean. Default: true
 </p>
 <p>
-true - log to stdout/stderr false - no logging String - log to the
+true  - log to stdout/stderr false - no logging String - log to the
 specified file
 </p>
 
@@ -639,6 +639,7 @@ specified file
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -652,10 +653,9 @@ specified file
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 84</span>
 
-<span class='def def kw'>def</span> <span class='log identifier id'>log</span>
-  <span class='@log ivar id'>@log</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span>
+  <span class='ivar'>@log</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -682,6 +682,7 @@ Add additional options passed to the server jar.
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -695,10 +696,9 @@ Add additional options passed to the server jar.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 90</span>
 
-<span class='def def kw'>def</span> <span class='opts identifier id'>opts</span>
-  <span class='@opts ivar id'>@opts</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_opts'>opts</span>
+  <span class='ivar'>@opts</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -725,6 +725,7 @@ Port to use for the server. Default: 4444
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -738,10 +739,9 @@ Port to use for the server. Default: 4444
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 58</span>
 
-<span class='def def kw'>def</span> <span class='port identifier id'>port</span>
-  <span class='@port ivar id'>@port</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_port'>port</span>
+  <span class='ivar'>@port</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -768,6 +768,7 @@ Timeout in seconds for the server to start/stop. Default: 30
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -781,10 +782,9 @@ Timeout in seconds for the server to start/stop. Default: 30
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 65</span>
 
-<span class='def def kw'>def</span> <span class='timeout identifier id'>timeout</span>
-  <span class='@timeout ivar id'>@timeout</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span>
+  <span class='ivar'>@timeout</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -811,6 +811,7 @@ Specify the version of the server jar to download
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -824,10 +825,9 @@ Specify the version of the server jar to download
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/rake/server_task.rb', line 96</span>
 
-<span class='def def kw'>def</span> <span class='version identifier id'>version</span>
-  <span class='@version ivar id'>@version</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_version'>version</span>
+  <span class='ivar'>@version</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -839,9 +839,9 @@ Specify the version of the server jar to download
 </div>
     
     <div id="footer">
-  Generated on Thu Jan  5 01:52:34 2012 by 
+  Generated on Fri Jan 27 18:01:58 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.4 (ruby-1.9.2).
 </div>
 
   </body>

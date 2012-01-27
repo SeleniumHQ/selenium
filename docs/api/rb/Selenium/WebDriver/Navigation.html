@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Navigation
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.4
   
 </title>
 
@@ -251,6 +251,7 @@ A new instance of Navigation
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -264,10 +265,9 @@ A new instance of Navigation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 5</span>
 
-<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='bridge identifier id'>bridge</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span> <span class='assign token'>=</span> <span class='bridge identifier id'>bridge</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -298,6 +298,7 @@ Move back a single entry in the browser&#8217;s history.
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -311,10 +312,9 @@ Move back a single entry in the browser&#8217;s history.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 21</span>
 
-<span class='def def kw'>def</span> <span class='back identifier id'>back</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='goBack identifier id'>goBack</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_back'>back</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_goBack'>goBack</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -338,6 +338,7 @@ Move forward a single entry in the browser&#8217;s history.
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -351,10 +352,9 @@ Move forward a single entry in the browser&#8217;s history.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 29</span>
 
-<span class='def def kw'>def</span> <span class='forward identifier id'>forward</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='goForward identifier id'>goForward</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_forward'>forward</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_goForward'>goForward</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -378,6 +378,7 @@ Refresh the current page.
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -391,10 +392,9 @@ Refresh the current page.
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 37</span>
 
-<span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='refresh identifier id'>refresh</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_refresh'>refresh</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_refresh'>refresh</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -418,6 +418,7 @@ Navigate to the given URL
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -431,10 +432,9 @@ Navigate to the given URL
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/navigation.rb', line 13</span>
 
-<span class='def def kw'>def</span> <span class='to identifier id'>to</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
-  <span class='@bridge ivar id'>@bridge</span><span class='dot token'>.</span><span class='get identifier id'>get</span> <span class='url identifier id'>url</span>
-<span class='end end kw'>end</span>
-</pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_to'>to</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='id identifier rubyid_url'>url</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -445,9 +445,9 @@ Navigate to the given URL
 </div>
     
     <div id="footer">
-  Generated on Thu Jan  5 01:51:39 2012 by 
+  Generated on Fri Jan 27 18:02:03 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.4 (ruby-1.9.2).
 </div>
 
   </body>

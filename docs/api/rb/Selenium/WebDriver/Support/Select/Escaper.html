@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Support::Select::Escaper
   
-    &mdash; Documentation by YARD 0.7.2
+    &mdash; Documentation by YARD 0.7.4
   
 </title>
 
@@ -89,6 +89,7 @@
 </div>
 <div class="tags">
   
+
 </div>
 
 
@@ -151,6 +152,7 @@
 </div>
 <div class="tags">
   
+
 </div><table class="source_code">
   <tr>
     <td>
@@ -177,23 +179,22 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 272</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='escape identifier id'>escape</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
-  <span class='if if kw'>if</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='string val'>'&quot;'</span><span class='rparen token'>)</span> <span class='andop op'>&amp;&amp;</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='string val'>&quot;'&quot;</span><span class='rparen token'>)</span>
-    <span class='parts identifier id'>parts</span> <span class='assign token'>=</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>'&quot;'</span><span class='comma token'>,</span> <span class='integer val'>-1</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='part identifier id'>part</span><span class='bitor op'>|</span> <span class='dstring node'>%{&quot;#{part}&quot;}</span> <span class='rbrace token'>}</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_escape'>escape</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_str'>str</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_str'>str</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>'</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_parts'>parts</span> <span class='op'>=</span> <span class='id identifier rubyid_str'>str</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_part'>part</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>%{</span><span class='tstring_content'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_part'>part</span><span class='rbrace'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>}</span></span> <span class='rbrace'>}</span>
 
-    <span class='quoted identifier id'>quoted</span> <span class='assign token'>=</span> <span class='parts identifier id'>parts</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='string val'>%{, '&quot;', }</span><span class='rparen token'>)</span><span class='dot token'>.</span>
-                   <span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/^&quot;&quot;, |, &quot;&quot;$/</span><span class='comma token'>,</span> <span class='string val'>''</span><span class='rparen token'>)</span>
+    <span class='id identifier rubyid_quoted'>quoted</span> <span class='op'>=</span> <span class='id identifier rubyid_parts'>parts</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>%{</span><span class='tstring_content'>, '&quot;', </span><span class='tstring_end'>}</span></span><span class='rparen'>)</span><span class='period'>.</span>
+                   <span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^&quot;&quot;, |, &quot;&quot;$</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
 
-    <span class='dstring node'>&quot;concat(#{quoted})&quot;</span>
-  <span class='elsif elsif kw'>elsif</span> <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span><span class='string val'>'&quot;'</span><span class='rparen token'>)</span>
-    <span class='comment val'># escape string with just a quote into being single quoted: f&quot;oo -&gt; 'f&quot;oo'</span>
-    <span class='dstring node'>&quot;'#{str}'&quot;</span>
-  <span class='else else kw'>else</span>
-    <span class='comment val'># otherwise return the quoted string</span>
-    <span class='dstring node'>%{&quot;#{str}&quot;}</span>
-  <span class='end end kw'>end</span>
-<span class='end end kw'>end</span>
-</pre>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>concat(</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_quoted'>quoted</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_str'>str</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+    <span class='comment'># escape string with just a quote into being single quoted: f&quot;oo -&gt; 'f&quot;oo'
+</span>    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>'</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_str'>str</span><span class='rbrace'>}</span><span class='tstring_content'>'</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>else</span>
+    <span class='comment'># otherwise return the quoted string
+</span>    <span class='tstring'><span class='tstring_beg'>%{</span><span class='tstring_content'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_str'>str</span><span class='rbrace'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>}</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -204,9 +205,9 @@
 </div>
     
     <div id="footer">
-  Generated on Thu Jan  5 01:51:30 2012 by 
+  Generated on Fri Jan 27 18:02:02 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.2 (ruby-1.8.7).
+  0.7.4 (ruby-1.9.2).
 </div>
 
   </body>
