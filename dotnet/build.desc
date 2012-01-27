@@ -71,7 +71,7 @@ dotnet_library(name = "support",
     "System.Drawing.dll",
     "System.Xml.dll",
     ":dotnet",
-    "third_party/csharp/Castle.Core.2.5.2/Castle.Core.dll"
+    "third_party/csharp/Castle.Core.3.0.0/net35/Castle.Core.dll"
   ],
   keyfile = "WebDriver.snk",
   out = "WebDriver.Support.dll"
@@ -86,7 +86,7 @@ dotnet_library(name = "support4",
     "System.Drawing.dll",
     "System.Xml.dll",
     ":dotnet4",
-    "third_party/csharp/Castle.Core.2.5.2/Castle.Core.dll"
+    "third_party/csharp/Castle.Core.3.0.0/net40/Castle.Core.dll"
   ],
   framework_ver = "net40",
   keyfile = "WebDriver.snk",
@@ -105,7 +105,7 @@ dotnet_package(name = "support-package",
   tags = "Selenium WebDriver browser automation support",
   packagedeps = [
     {":dotnet-package" : ""},
-    {"Castle.Core" : "2.5.2"}
+    {"Castle.Core" : "3.0.0"}
   ],
   assemblies = [
     {"System.Drawing" : ""}

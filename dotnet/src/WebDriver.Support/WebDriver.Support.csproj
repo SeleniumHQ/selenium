@@ -101,7 +101,7 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\csharp\Castle.Core.2.5.2\Castle.Core.dll</HintPath>
+      <HintPath>..\..\..\third_party\csharp\Castle.Core.3.0.0\net35\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
