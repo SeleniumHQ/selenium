@@ -18,13 +18,14 @@ module Selenium
         # @api public
         #
 
-        def rotate(orientation)
+        def rotation=(orientation)
           unless ORIENTATIONS.include?(orientation)
             raise ArgumentError, "expected #{ORIENTATIONS.inspect}, got #{orientation.inspect}"
           end
 
           bridge.setScreenOrientation(orientation.to_s.upcase)
         end
+        alias_method :rotate, :rotation=
 
         #
         # Get the current screen orientation

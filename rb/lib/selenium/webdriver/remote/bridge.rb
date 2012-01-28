@@ -413,6 +413,52 @@ module Selenium
           execute :dragElement, {:id => element}, :x => right_by, :y => down_by
         end
 
+        def touchSingleTap(element)
+          execute :touchSingleTap, {}, :element => element
+        end
+
+        def touchDoubleTap(element)
+          execute :touchDoubleTap, {}, :element => element
+        end
+
+        def touchLongPress(element)
+          execute :touchLongPress, {}, :element => element
+        end
+
+        def touchDown(x, y)
+          execute :touchDown, {}, :x => x, :y => y
+        end
+
+        def touchUp(x, y)
+          execute :touchUp, {}, :x => x, :y => y
+        end
+
+        def touchMove(x, y)
+          execute :touchMove, {}, :x => x, :y => y
+        end
+
+        def touchScroll(element, x, y)
+          if element
+            execute :touchScroll, {}, :xoffset => x, :yoffset => y
+          else
+            execute :touchScroll, {}, :element => element,
+                                      :xoffset => x,
+                                      :yoffset => y
+          end
+        end
+
+        def touchFlick(xspeed, yspeed)
+          execute :touchFlick, {}, :xspeed => xspeed, :yspeed => yspeed
+        end
+
+        def touchElementFlick(element, right_by, down_by, speed)
+          execute :touchFlick, {}, :element => element,
+                                   :xoffset => right_by,
+                                   :yoffset => down_by,
+                                   :speed   => speed
+
+        end
+
         #
         # element properties
         #
