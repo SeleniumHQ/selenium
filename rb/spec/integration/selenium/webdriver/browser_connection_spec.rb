@@ -1,7 +1,7 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-describe "Driver" do
-  context "browser connection" do
+module Selenium::WebDriver::DriverExtensions
+  describe HasBrowserConnection do
 
     compliant_on :browser => nil do
       it "can set the browser offline and online" do

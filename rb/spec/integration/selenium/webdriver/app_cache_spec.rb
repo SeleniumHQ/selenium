@@ -1,7 +1,8 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-describe "Driver" do
-  context "app cache" do
+
+module Selenium::WebDriver::DriverExtensions
+  describe "HasApplicationCache" do
 
     compliant_on :browser => nil do
       it "gets the app cache status" do
@@ -27,7 +28,11 @@ describe "Driver" do
         # dependant on spec above?!
 
         driver.get url_for("html5Page")
-        driver.application_cache.each do |e|
+
+        entries = driver.application_cache.to_a
+        entries.size.should > 2
+
+        entries.each do |e|
           case e.url
           when /red\.jpg/
             e.type.value.should == :master
