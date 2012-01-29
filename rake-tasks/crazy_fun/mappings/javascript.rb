@@ -419,15 +419,18 @@ module Javascript
         atom_task = task_name(dir, atom)
         atom_file = Rake::Task[atom_task].out
       end
-      raise StandardError,
-          "#{atom_file} is not a JavaScript file" unless atom_file =~ /\.js$/
+
+      raise "#{atom_file} is not a JavaScript file" unless atom_file =~ /\.js$/
 
       puts "Generating header for #{atom_file}"
-
       atom_name = get_atom_name_from_file(dir, atom_file)
 
       # Each fragment file should be small (<= 20KB), so just read it all in.
       contents = IO.read(atom_file).strip
+
+      if contents.empty?
+        raise "refuse to generate header from empty JavaScript file: #{atom_file.inspect}"
+      end
 
       # Escape the contents of the file so it can be stored as a literal.
       contents.gsub!(/\\/, "\\\\\\")
@@ -748,7 +751,7 @@ module Javascript
             if (ENV['debug'])
               ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005")
             end
-                        
+
             test_dir = File.join(dir, 'test')
             ant.sysproperty :key => 'js.test.dir', :value => test_dir
             ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
