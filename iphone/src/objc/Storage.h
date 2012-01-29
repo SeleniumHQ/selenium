@@ -45,9 +45,7 @@
   NSString *key_;
 }
 
-- (id)initWithKey:(NSString *)key andType:(NSString *)type;
-
-+ (KeyedStorage *)keyedStorage:(NSString *)key andType:(NSString *)type;
+- (id)initWithType:(NSString *)type;
 
 - (NSString *)getItem;
 - (NSString *)removeItem;

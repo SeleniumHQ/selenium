@@ -36,9 +36,14 @@
                                PUTAction:NULL
                             DELETEAction:@selector(clearStorage)]];
 	
-  [self setMyWebDriverHandlerWithGETAction:@selector(storageSize) 
-                                POSTAction:NULL 
-                                  withName:@"size"];
+  [self setResource:[WebDriverResource resourceWithTarget:self
+                                                GETAction:@selector(storageSize) 
+                                               POSTAction:NULL]
+           withName:@"size"];
+  
+  [self setResource:[[[KeyedStorage alloc] initWithType:type] autorelease]
+           withName:@"key"];
+  
   return self;
 }
 
@@ -47,13 +52,17 @@
 }
 
 
-- (NSString *)storageSize {
+- (NSNumber *)storageSize {
   NSString *size = [[self viewController] jsEval:[NSString stringWithFormat:
                                                   @"%@.length", storageType_]];
   if ([size isEqualToString:@""]) {
     size = @"0";
   }
-  return size;
+  NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
+  [f setNumberStyle:NSNumberFormatterDecimalStyle];
+  NSNumber * sizeN = [f numberFromString:size];
+  [f release];
+  return sizeN;
 }
 
 - (NSArray *)keySet {
@@ -84,18 +93,6 @@
                                  @"%@.clear()", storageType_]];
 }
 
-- (id<HTTPResource>)elementWithQuery:(NSString *)query {
-  if ([query length] > 0) {
-    NSString *storageKey = [query substringFromIndex:1];
-    id<HTTPResource> resource = [contents objectForKey:storageKey];
-    if (resource == nil && storageKey != @"size") {
-      [self setResource:[KeyedStorage keyedStorage:storageKey andType:storageType_]
-               withName:storageKey];
-    }
-  }  
-  return [super elementWithQuery:query];
-}
-
 - (void)dealloc {
   [storageType_ release];
   [super dealloc];
@@ -105,11 +102,11 @@
 
 @implementation KeyedStorage
 
-- (id)initWithKey:(NSString *)key andType:(NSString *)type {
+- (id)initWithType:(NSString *)type {
   if (![super init]) {
     return nil;
   }
-  key_ = key;
+  key_ = nil;
   storageType_ = type;
   [self setIndex:
    [WebDriverResource resourceWithTarget:self
@@ -120,24 +117,33 @@
   return self;
 }
 
-+ (KeyedStorage *)keyedStorage:(NSString *)key andType:(NSString *)type {
-  return [[[KeyedStorage alloc] initWithKey:key andType:type] autorelease];
-}
-
 - (NSString *)getItem {
-  return [[self viewController] jsEval:[NSString stringWithFormat:
+  NSString* item = [[self viewController] jsEval:[NSString stringWithFormat:
                                         @"%@.getItem('%@')",
                                         storageType_, key_]];
+  key_ = nil;
+  return item;
 }
 
 - (NSString *)removeItem {
-  return [[self viewController] jsEval:[NSString stringWithFormat:
+  NSString* item = [[self viewController] jsEval:[NSString stringWithFormat:
            @"(function(key) {\n"
             "  var temp=%@.getItem(key);\n"
             "  %@.removeItem(key);\n"
             "  return temp;\n"
             "})('%@')",
            storageType_, storageType_,	key_]];
+  key_ = nil;
+  return item;
+}
+
+- (id<HTTPResource>)elementWithQuery:(NSString*) key {
+  if  ([key characterAtIndex:0] == '/') {
+    key_ = [key substringFromIndex:1];
+  } else {
+    key_ = key;
+  }
+  return [super elementWithQuery:@""];
 }
 
 @end

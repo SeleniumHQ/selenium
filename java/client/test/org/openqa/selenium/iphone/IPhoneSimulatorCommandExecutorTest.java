@@ -27,7 +27,6 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.testing.Ignore;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
@@ -35,7 +34,6 @@ import org.openqa.selenium.testing.Ignore;
  */
 
 public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
-  @Ignore
   @NoDriverAfterTest
   public void testShouldDetectThatTheIPhoneSimulatorHasUnexpectedlyShutdown() throws Exception {
     if (!(driver instanceof IPhoneSimulatorDriver)) {
@@ -68,6 +66,9 @@ public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
       Executor executor = new DefaultExecutor();
       executor.setStreamHandler(new PumpStreamHandler(null, null));
       executor.execute(killCommandLine);
+      // need to wait for the port to free up
+      // TODO same as needs to be done in IPhoneSimulatorBinary
+      Thread.sleep(5000);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

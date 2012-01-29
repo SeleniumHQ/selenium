@@ -1,4 +1,5 @@
 /*
+Copyright 2012 Software Freedom Conservancy
 Copyright 2007-2010 WebDriver committers
 Copyright 2007-2010 Google Inc.
 
@@ -17,18 +18,25 @@ limitations under the License.
 
 package org.openqa.selenium.iphone;
 
+import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.SessionStorage;
+import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.URL;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone, iPad and iPod Touch.
@@ -36,7 +44,7 @@ import java.net.URL;
  * The driver uses WebDriver's remote REST interface to communicate with the iphone. The iphone (or
  * iphone simulator) must be running the iWebDriver app.
  */
-public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
+public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot, WebStorage {
 
   /**
    * This is the default port and URL for iWebDriver. Eventually it would be nice to use DNS-SD to
@@ -44,6 +52,8 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    */
   protected static final String DEFAULT_IWEBDRIVER_URL =
       "http://localhost:3001/wd/hub";
+  
+  public enum STORAGE_TYPE { local, session };
 
   /**
    * Create an IPhoneDriver that will use the given {@code executor} to communicate with the
@@ -116,5 +126,57 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
     String png = new String(base64Png);
     // ... and convert it.
     return target.convertFromBase64Png(png);
+  }
+
+  public LocalStorage getLocalStorage() {
+    return new IPhoneStorage(STORAGE_TYPE.local);
+  }
+
+  public SessionStorage getSessionStorage() {
+    return new IPhoneStorage(STORAGE_TYPE.session);
+  }
+
+  private class IPhoneStorage implements LocalStorage, SessionStorage {
+
+	private STORAGE_TYPE t;
+	
+	public IPhoneStorage(STORAGE_TYPE type) {
+		t = type;
+	}
+	
+	public String getItem(String key) {
+		return (String) execute(t==STORAGE_TYPE.local?
+				DriverCommand.GET_LOCAL_STORAGE_ITEM : DriverCommand.GET_SESSION_STORAGE_ITEM, 
+				ImmutableMap.of("key", key)).getValue();
+	}
+
+	@SuppressWarnings("unchecked")
+	public Set<String> keySet() {
+		return new HashSet<String>((List<String>) execute(t==STORAGE_TYPE.local?
+				DriverCommand.GET_LOCAL_STORAGE_KEYS : DriverCommand.GET_SESSION_STORAGE_KEYS).getValue());
+	}
+
+	public void setItem(String key, String value) {
+		execute(t==STORAGE_TYPE.local?
+				DriverCommand.SET_LOCAL_STORAGE_ITEM : DriverCommand.SET_SESSION_STORAGE_ITEM, 
+				ImmutableMap.of("key", key, "value", value));
+	}
+
+	public String removeItem(String key) {
+		return (String) execute(t==STORAGE_TYPE.local?
+				DriverCommand.REMOVE_LOCAL_STORAGE_ITEM : DriverCommand.REMOVE_SESSION_STORAGE_ITEM, 
+				ImmutableMap.of("key", key)).getValue();
+	}
+
+	public void clear() {
+		execute(t==STORAGE_TYPE.local?
+				DriverCommand.CLEAR_LOCAL_STORAGE : DriverCommand.CLEAR_SESSION_STORAGE);
+	}
+
+	public int size() {
+		return ((Number) execute(t==STORAGE_TYPE.local?
+				DriverCommand.GET_LOCAL_STORAGE_SIZE : DriverCommand.GET_SESSION_STORAGE_SIZE).getValue()).intValue();
+	}
+	  
   }
 }

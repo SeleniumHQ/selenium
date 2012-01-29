@@ -23,7 +23,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.FrameSwitchingTest;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -39,6 +38,7 @@ public class IPhoneDriverTestSuite extends TestSuite {
         .create();
   }
 
+  // this is being magically used in ReflectionBackedDriverSupplier
   public static class TestIPhoneSimulatorDriver extends IPhoneSimulatorDriver {
     public TestIPhoneSimulatorDriver(Capabilities ignore) throws Exception {
       super(locateSimulatorBinary());

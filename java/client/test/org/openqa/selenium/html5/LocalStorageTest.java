@@ -94,4 +94,32 @@ public class LocalStorageTest extends AbstractDriverTestCase {
     assertEquals(0, local.size());
     local.clear();
   }
+  
+  public void testLocalAndSessionStorageDontInterfereWithEachOther() {
+    if (!(driver instanceof WebStorage)) {
+      return;
+    }
+    driver.get(pages.html5Page);
+
+    LocalStorage local = ((WebStorage) driver).getLocalStorage();
+    SessionStorage session = ((WebStorage) driver).getSessionStorage();
+    local.clear();
+    session.clear();
+    local.setItem("FOO", "BAR_LOCAL");
+    session.setItem("FOO", "BAR_SESSION");
+    assertEquals(1, local.size());
+    assertEquals(1, session.size());
+    assertEquals("BAR_LOCAL", local.getItem("FOO"));
+    assertEquals("BAR_SESSION", session.getItem("FOO"));
+    String removedItemValue = session.removeItem("FOO");
+    assertEquals("BAR_SESSION", removedItemValue);
+    assertEquals(1, local.size());
+    assertEquals(0, session.size());
+    removedItemValue = local.removeItem("FOO");
+    assertEquals("BAR_LOCAL", removedItemValue);
+    assertEquals(0, local.size());
+    assertEquals(0, session.size());
+    local.clear();
+    session.clear();
+  }
 }

@@ -26,6 +26,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -62,6 +63,8 @@ public class IPhoneSimulatorBinary {
    * @throws IOException If an I/O error occurs.
    */
   public IPhoneSimulatorBinary(File iWebDriverApp) {
+	  System.out.println(String.format(
+      "%s launch %s", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
     this.commandLine = CommandLine.parse(String.format(
       "%s launch %s", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
   }
@@ -113,6 +116,15 @@ public class IPhoneSimulatorBinary {
       getOutputIgnoringExecutor().execute(killCommandLine);
     } catch (Exception ignored) {
     }
+    // Wait until the process really quits (nothing is bound to port 3001)
+    // TODO something other than Thread.sleep
+    // client = new HttpClientFactory().getHttpClient();
+    try {
+		Thread.sleep(5000);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     exitCode = null;
   }
 

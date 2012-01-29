@@ -1,14 +1,15 @@
 package org.openqa.selenium.iphone;
 
 import org.openqa.selenium.AbstractDriverTestCase;
+import org.openqa.selenium.NoDriverAfterTest;
 
 public class CreateIPhoneDriverTest extends AbstractDriverTestCase {
   public void testCreateDriver() throws Exception {
     new IPhoneDriver();
   }
 
+  @NoDriverAfterTest
   public void testDeleteSession() throws Exception {
-    IPhoneDriver driver = new IPhoneDriver();
     driver.quit();
   }
 
