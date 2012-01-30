@@ -1281,6 +1281,13 @@ location for correctly generating native events.''').
       AddJsonParameter('ySpeed', '{number}', 'The y speed in pixels per '
                       'second.'))
 
+  resources.append(
+      SessionResource('/session/:sessionId/location').
+      Get('Get the current geo location.').
+      SetReturnType('{latitude: number, longitude: number, altitude: number}', 'The current geo location.').
+      Post('Set the current geo location.').
+      AddJsonParameter('location', '{latitude: number, longitude: number, altitude: number}', 'The new location.'))
+
   logging.info('Generating %s', wiki_path)
   f = open(wiki_path, 'w')
   try:
