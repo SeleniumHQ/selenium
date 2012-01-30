@@ -104,7 +104,7 @@ public class ChromeDriverService {
         "The path to the chromedriver executable must be set by the %s system property;"
             + " for more information, see http://code.google.com/p/selenium/wiki/ChromeDriver. "
             + "The latest version can be downloaded from "
-            + "http://code.google.com/p/chromium/downloads/list", CHROME_DRIVER_EXE_PROPERTY);
+            + "http://code.google.com/p/chromedriver/downloads/list", CHROME_DRIVER_EXE_PROPERTY);
 
     File exe = new File(exePath);
     checkState(exe.exists(),

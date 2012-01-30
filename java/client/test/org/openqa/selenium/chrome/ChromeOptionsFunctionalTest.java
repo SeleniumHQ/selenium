@@ -55,7 +55,7 @@ public class ChromeOptionsFunctionalTest extends AbstractDriverTestCase {
         String.format(
             "This test requires chromedriver 17.0.963.0 or newer. You appear " +
                 "to be using %s; please download the latest chromedriver from" +
-                " http://code.google.com/p/chromium/downloads/list",
+                " http://code.google.com/p/chromedriver/downloads/list",
             chromeDriverVersion),
         "foo;bar", userAgent);
   }
