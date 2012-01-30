@@ -5,7 +5,7 @@ module Selenium
     describe Window do
       let(:window) { driver.manage.window }
 
-      compliant_on :browser => :firefox do
+      compliant_on :browser => [:firefox, :chrome] do
         it "gets the size of the current window" do
           size = window.size
 
