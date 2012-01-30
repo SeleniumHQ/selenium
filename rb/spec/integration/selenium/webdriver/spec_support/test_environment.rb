@@ -177,6 +177,16 @@ module Selenium
         end
 
         def create_chrome_driver
+          binary = ENV['chrome_binary']
+          if binary
+            WebDriver::Chrome.path = binary
+          end
+
+          server = ENV['chromedriver'] || ENV['chrome_server']
+          if server
+            WebDriver::Chrome.driver_path = server
+          end
+
           WebDriver::Driver.for :chrome,
                                 :native_events => native_events?
                                 # :http_client   => keep_alive_client || http_client
