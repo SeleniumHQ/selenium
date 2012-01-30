@@ -431,7 +431,9 @@ task :py_install => :py_prep_for_install_release do
 end
 
 task :py_release => :py_prep_for_install_release do
-    sh "python setup.py sdist upload"
+    sh "grep -v test setup.py > setup_release.py"
+    sh "python setup_release.py sdist upload"
+    sh "rm setup_release.py"
 end
 
 
