@@ -27,9 +27,11 @@ import java.lang.annotation.Target;
  * in a chain as described in {@link org.openqa.selenium.support.pagefactory.ByChained}
  * 
  * Eg:
- * 
- * @FindBys({@FindBy(how = How.ID, using = "foo"),
- * @FindBy(how = How.CLASS_NAME, using = "bar")})
+ *
+ * <pre class="code">
+ * &#64;FindBys({&#64;FindBy(id = "foo"),
+ *           &#64;FindBy(className = "bar")})
+ * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

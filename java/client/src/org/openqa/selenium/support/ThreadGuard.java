@@ -32,7 +32,9 @@ import java.util.Set;
  *
  * Wrap WebDriver instances as follows:
  *
- *      WebDriver driver = ThreadGuard.protect(new FirefoxDriver());
+ * <pre class="code">
+ * WebDriver driver = ThreadGuard.protect(new FirefoxDriver());
+ * </pre>
  *
  * Threading issues related to incorrect client threading may have mysterious and hard to diagnose
  * errors. Using this wrapper prevents this category of errors. It is recommended for all

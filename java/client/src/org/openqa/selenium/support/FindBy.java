@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
  * element or a list of elements. Used in conjunction with
- * {@link org.openqa.selenium.support.PageFactory#proxyElement(org.openqa.selenium.WebDriver, Object, java.lang.reflect.Field)}
+ * {@link org.openqa.selenium.support.PageFactory}
  * this allows users to quickly and easily create PageObjects.
  * 
  * <p>
@@ -36,15 +36,15 @@ import java.lang.annotation.Target;
  * For example, these two annotations point to the same element:
  * 
  * <pre class="code">
- * @FindBy(id = "foobar") WebElement foobar;
- * @FindBy(how = How.ID, using = "foobar") WebElement foobar;
+ * &#64;FindBy(id = "foobar") WebElement foobar;
+ * &#64;FindBy(how = How.ID, using = "foobar") WebElement foobar;
  * </pre>
  * 
  * and these two annotations point to the same list of elements:
  * 
  * <pre class="code">
- * @FindBy(tagName = "a") List<WebElement> links;
- * @FindBy(how = How.TAG_NAME, using = "a") List<WebElement> links;
+ * &#64;FindBy(tagName = "a") List<WebElement> links;
+ * &#64;FindBy(how = How.TAG_NAME, using = "a") List<WebElement> links;
  * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
