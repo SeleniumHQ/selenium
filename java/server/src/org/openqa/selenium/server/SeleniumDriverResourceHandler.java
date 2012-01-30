@@ -99,7 +99,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   public SeleniumDriverResourceHandler(SeleniumServer remoteControl) {
     this.remoteControl = remoteControl;
-
   }
 
   /**

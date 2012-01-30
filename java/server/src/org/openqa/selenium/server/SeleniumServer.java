@@ -45,6 +45,7 @@ import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
+import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
@@ -341,11 +342,16 @@ public class SeleniumServer implements SslCertificateGenerator {
     context.addHandler(new CachedContentTestHandler());
     server.addContext(context);
 
-    server.addContext(createDriverContextWithSeleniumDriverResourceHandler(context));
-    server.addContext(createWebDriverRemoteContext());
+    // Both the selenium and webdriver contexts must be able to share sessions
+    DefaultDriverSessions webdriverSessions = new DefaultDriverSessions();
+
+    server.addContext(createDriverContextWithSeleniumDriverResourceHandler(
+        context, webdriverSessions));
+    server.addContext(createWebDriverRemoteContext(webdriverSessions));
   }
 
-  private HttpContext createDriverContextWithSeleniumDriverResourceHandler(HttpContext context) {
+  private HttpContext createDriverContextWithSeleniumDriverResourceHandler(
+      HttpContext context, DriverSessions webdriverSessions) {
     // Associate the SeleniumDriverResourceHandler with the /selenium-server/driver context
     HttpContext driverContext = new HttpContext();
     driverContext.setContextPath("/selenium-server/driver");
@@ -354,9 +360,9 @@ public class SeleniumServer implements SslCertificateGenerator {
     return driverContext;
   }
 
-  private HttpContext createWebDriverRemoteContext() {
+  private HttpContext createWebDriverRemoteContext(DriverSessions webdrDriverSessions) {
     HttpContext webdriverContext = new HttpContext();
-    webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, new DefaultDriverSessions());
+    webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, webdrDriverSessions);
     webdriverContext.setContextPath("/wd");
     ServletHandler handler = new ServletHandler();
     handler.addServlet("WebDriver remote server", "/hub/*", DriverServlet.class.getName());
