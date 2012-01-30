@@ -30,7 +30,7 @@ import org.openqa.jetty.log.LogFactory;
 /** Abstract resource class.
  *
  * @version $Id: URLResource.java,v 1.9 2005/08/13 00:01:28 gregwilkins Exp $
- * @author Nuno Preguiça
+ * @author Nuno PreguiÃ§a
  * @author Greg Wilkins (gregw)
  */
 public class URLResource extends Resource

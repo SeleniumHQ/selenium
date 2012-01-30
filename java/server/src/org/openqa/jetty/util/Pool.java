@@ -25,7 +25,7 @@ import org.openqa.jetty.log.LogFactory;
 /** A pool of Objects.
  * <p>
  * @version $Id: Pool.java,v 1.13 2005/08/13 00:01:28 gregwilkins Exp $
- * @author Juancarlo Añez <juancarlo@modelistica.com>
+ * @author Juancarlo AÅ„ez <juancarlo@modelistica.com>
  * @author Greg Wilkins <gregw@mortbay.com>
  */
 public class Pool

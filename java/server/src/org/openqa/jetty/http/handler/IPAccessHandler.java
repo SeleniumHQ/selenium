@@ -1,6 +1,6 @@
 // ========================================================================
 // Author : Gosta Jonasson
-// Copyright (c) 2002 Gösta Jonasson gosta@kth.se. All rights reserved.
+// Copyright (c) 2002 GÃ¶sta Jonasson gosta@kth.se. All rights reserved.
 // Permission to use, copy, modify and distribute this software
 // for non-commercial or commercial purposes and without fee is
 // hereby granted provided that this copyright notice appears in
@@ -39,7 +39,7 @@ import org.openqa.jetty.http.HttpResponse;
  * 192.168.0.103.
  * 
  * @version v0.1 2002/03/20
- * @author Gösta Jonasson <a href="mailto:gosta@kth.se">gosta@kth.se </a>
+ * @author GÃ¶sta Jonasson <a href="mailto:gosta@kth.se">gosta@kth.se </a>
  */
 public class IPAccessHandler extends AbstractHttpHandler
 {

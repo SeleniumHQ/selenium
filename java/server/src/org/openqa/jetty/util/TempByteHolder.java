@@ -44,7 +44,7 @@ import java.io.RandomAccessFile;
  * This class can hold up to 2GB of data.
  * <br><br>
  * <i>SECURITY NOTE:</i> As data may be written to disk, don't use this for sensitive information.
- * @author  Jan Hlavatý &lt;hlavac AT code.cz&gt;
+ * @author  Jan HlavatÃ½ &lt;hlavac AT code.cz&gt;
  */
 public class TempByteHolder {
     

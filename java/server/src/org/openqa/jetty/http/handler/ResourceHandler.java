@@ -47,7 +47,7 @@ import org.openqa.jetty.util.URI;
  * HTTP/1.1 ranges are supported.
  * 
  * @version $Id: ResourceHandler.java,v 1.66 2005/08/24 08:18:17 gregwilkins Exp $
- * @author Nuno Preguiça
+ * @author Nuno PreguiÃ§a
  * @author Greg Wilkins
  */
 public class ResourceHandler extends AbstractHttpHandler
