@@ -1288,6 +1288,48 @@ location for correctly generating native events.''').
       Post('Set the current geo location.').
       AddJsonParameter('location', '{latitude: number, longitude: number, altitude: number}', 'The new location.'))
 
+  resources.append(
+      SessionResource('/session/:sessionId/local_storage').
+      Get('Get all keys of the storage.').
+      SetReturnType('{Array.<string>}', 'The list of keys.').
+      Post('Set the storage item for the given key.').
+      AddJsonParameter('key', '{string}', 'The key to set.').
+      AddJsonParameter('value', '{string}', 'The value to set.').
+      Delete('Clear the storage.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/local_storage/key/:key').
+      Get('Get the storage item for the given key.').
+      AddUrlParameter(':key', 'The key to get.').
+      Delete('Remove the storage item for the given key.').
+      AddUrlParameter(':key', 'The key to remove.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/local_storage/size').
+      Get('Get the number of items in the storage.').
+      SetReturnType('{number}', 'The number of items in the storage.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/session_storage').
+      Get('Get all keys of the storage.').
+      SetReturnType('{Array.<string>}', 'The list of keys.').
+      Post('Set the storage item for the given key.').
+      AddJsonParameter('key', '{string}', 'The key to set.').
+      AddJsonParameter('value', '{string}', 'The value to set.').
+      Delete('Clear the storage.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/session_storage/key/:key').
+      Get('Get the storage item for the given key.').
+      AddUrlParameter(':key', 'The key to get.').
+      Delete('Remove the storage item for the given key.').
+      AddUrlParameter(':key', 'The key to remove.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/session_storage/size').
+      Get('Get the number of items in the storage.').
+      SetReturnType('{number}', 'The number of items in the storage.'))
+
   logging.info('Generating %s', wiki_path)
   f = open(wiki_path, 'w')
   try:
