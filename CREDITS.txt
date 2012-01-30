@@ -4,7 +4,7 @@ Credits
 The following people have offered help, support and/or code to
 WebDriver. If you feel that you should be on this list but aren't,
 then please feel free to raise a ticket on the project site
-(http://selenium.googlecode.com) or send an email directly to one of
+(https://selenium.googlecode.com) or send an email directly to one of
 the project's maintainers.
 
 Cast
