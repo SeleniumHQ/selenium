@@ -75,7 +75,7 @@ class SessionResource(Resource):
             AddUrlParameter(':sessionId',
                             'ID of the session to route the command to.'))
 
-    
+
 class ElementResource(SessionResource):
   def AddMethod(self, method):
     return (SessionResource.AddMethod(self, method).
@@ -84,12 +84,12 @@ class ElementResource(SessionResource):
             AddError('StaleElementReference',
                      'If the element referenced by `:id` is no longer attached '
                      'to the page\'s DOM.'))
-  
+
   def RequiresVisibility(self):
     return self.AddError('ElementNotVisible',
                          'If the referenced element is not visible on the page '
                          '(either is hidden by CSS, has 0-width, or has 0-height)')
-                         
+
   def RequiresEnabledState(self):
     return self.AddError('InvalidElementState',
                          'If the referenced element is disabled.')
@@ -117,7 +117,7 @@ class Method(object):
         'type': type,
         'desc': description})
     return self.parent
-  
+
   def AddError(self, type, summary):
     self.errors[type] = {'type': type, 'summary': summary}
     return self.parent
@@ -203,7 +203,7 @@ class Method(object):
     return '|| %s || [#%s_%s %s] || %s ||\n' % (
         self.method, self.method, self.parent.path, self.parent.path,
         self.summary[:self.summary.find('.') + 1].replace('\n', '').strip())
-        
+
 
 class ErrorCode(object):
   def __init__(self, code, summary, detail):
@@ -386,11 +386,11 @@ def main():
                     default=default_path,
                     help='Which file to write to. Defaults to %default')
   (options, args) = parser.parse_args()
-  
+
   wiki_path = options.wiki
   if wiki_path is not default_path:
     wiki_path = os.path.abspath(wiki_path)
-  
+
   if not os.path.exists(wiki_path):
     logging.error('Unable to locate wiki file: %s', wiki_path)
     parser.print_help()
@@ -467,7 +467,7 @@ started.'),
       ErrorCode(32, 'InvalidSelector', 'Argument was an invalid selector \
 (e.g. XPath/CSS).')
   ]
-  
+
   error_checker = ErrorCodeChecker() \
   .using(JavaErrorCodeGatherer('java/client/src/org/openqa/selenium/remote/ErrorCodes.java')) \
   .using(JavascriptErrorCodeGatherer('javascript/atoms/error.js', 'Javascript atoms')) \
@@ -476,13 +476,13 @@ started.'),
   .using(PythonErrorCodeGatherer('py/selenium/webdriver/remote/errorhandler.py')) \
   .using(CErrorCodeGatherer('cpp/webdriver-interactions/errorcodes.h')) \
   .using(CSharpErrorCodeGatherer('dotnet/src/WebDriver/WebDriverResult.cs'))
-  
+
   if (not error_checker.check_error_codes_are_consistent(error_codes)
       and options.check_errors):
     sys.exit(1)
 
   resources = []
- 
+
   resources.append(Resource('/status').
       Get('''
 Query the server\'s current status.  The server should respond with a general \
@@ -508,7 +508,7 @@ currently running on: "windows", "linux", etc. ||
 ''').
       SetReturnType('{object}',
                     'An object describing the general status of the server.'))
- 
+
   resources.append(
       Resource('/session').
       Post('''
@@ -565,7 +565,7 @@ elements, the driver
 should poll the page until at least one element is found or the timeout \
 expires, at which point
 it should return an empty list.
-      
+
 If this command is never sent, the driver should default to an implicit wait of\
  0ms.''').
       AddJsonParameter('ms', '{number}',
@@ -838,7 +838,7 @@ partially matches the search value. ||
       SetReturnType('{Array.<{ELEMENT:string}>}',
                     'A list of WebElement JSON objects for the located elements.').
       AddError('XPathLookupError', 'If using XPath and the input expression is invalid.'))
-  
+
   resources.append(
       SessionResource('/session/:sessionId/element/active').
       Post('Get the element on the page that currently has focus. The element will be returned as '
@@ -1399,7 +1399,7 @@ the browser's connectivity and disable it if desired. ||
 || cssSelectorsEnabled || boolean || Whether the session supports CSS \
 selectors when searching for elements. ||
 || webStorageEnabled || boolean || Whether the session supports interactions \
-with [http://www.w3.org/TR/2009/WD-webstorage-20091029/ storage objects]. || 
+with [http://www.w3.org/TR/2009/WD-webstorage-20091029/ storage objects]. ||
 || rotatable || boolean || Whether the session can rotate the current page's \
 current layout between portrait and landscape orientations (only applies to \
 mobile platforms). ||
