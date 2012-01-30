@@ -16,14 +16,16 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -41,7 +43,8 @@ public class BrowserLauncherFactory {
   private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*?custom( .*)?$");
 
   private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers =
-      new HashMap<String, Class<? extends BrowserLauncher>>();
+      Maps.newHashMap();
+  private final DriverSessions webdriverSessions;
 
   static {
     supportedBrowsers.put(BrowserType.FIREFOX_PROXY, FirefoxCustomProfileLauncher.class);
@@ -66,6 +69,11 @@ public class BrowserLauncherFactory {
   }
 
   public BrowserLauncherFactory() {
+    this(null);
+  }
+
+  public BrowserLauncherFactory(DriverSessions webdriverSessions) {
+    this.webdriverSessions = webdriverSessions;
   }
 
   /**

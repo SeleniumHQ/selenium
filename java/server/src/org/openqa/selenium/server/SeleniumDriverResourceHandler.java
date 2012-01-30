@@ -24,6 +24,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
@@ -93,11 +94,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
   private Map<String, String> domainsBySessionId = new HashMap<String, String>();
   private StringBuffer logMessagesBuffer = new StringBuffer();
 
-  private BrowserLauncherFactory browserLauncherFactory = new BrowserLauncherFactory();
-  private final BrowserSessionFactory browserSessionFactory =
-      new BrowserSessionFactory(browserLauncherFactory);
+  private BrowserLauncherFactory browserLauncherFactory;
+  private final BrowserSessionFactory browserSessionFactory;
 
-  public SeleniumDriverResourceHandler(SeleniumServer remoteControl) {
+  public SeleniumDriverResourceHandler(
+      SeleniumServer remoteControl, DriverSessions webdriverSessions) {
+    browserLauncherFactory = new BrowserLauncherFactory(webdriverSessions);
+    browserSessionFactory = new BrowserSessionFactory(browserLauncherFactory);
     this.remoteControl = remoteControl;
   }
 
@@ -907,6 +910,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     return browserLauncherFactory;
   }
 
+  /**
+   * This method will soon be removed.
+   *
+   * @param browserLauncherFactory To use when creating new browser sessions.
+   * @deprecated
+   */
+  @Deprecated
   public void setBrowserLauncherFactory(
       BrowserLauncherFactory browserLauncherFactory) {
     this.browserLauncherFactory = browserLauncherFactory;

@@ -69,7 +69,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
     configuration.setTimeoutInSeconds(3);
     SeleniumServer server = new SeleniumServer(false, configuration);
     server.start();
-    SeleniumDriverResourceHandler sdrh = new SeleniumDriverResourceHandler(server);
+    SeleniumDriverResourceHandler sdrh = new SeleniumDriverResourceHandler(server, null);
     try {
       sdrh.getNewBrowserSession("*mock", null, "", BrowserOptions.newBrowserOptions());
       fail("Launch should have failed");
@@ -90,7 +90,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
     final SeleniumServer server = createMock(SeleniumServer.class);
     final FrameGroupCommandQueueSet queueSet = createMock(FrameGroupCommandQueueSet.class);
 
-    SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server) {
+    SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server, null) {
       @Override
       protected FrameGroupCommandQueueSet getQueueSet(String sessionId) {
         return queueSet;
@@ -134,7 +134,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
     HttpResponse response = createNiceMock(HttpResponse.class);
     OutputStream stream = createNiceMock(OutputStream.class);
 
-    SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server);
+    SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server, null);
 
 
     expect(response.getOutputStream()).andReturn(stream);
@@ -155,7 +155,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
   public void commandResultsLogMessageForARandomCommand() {
     final SeleniumDriverResourceHandler handler;
 
-    handler = new SeleniumDriverResourceHandler(null);
+    handler = new SeleniumDriverResourceHandler(null, null);
     assertEquals("Got result: the results on session a_session_id",
         handler.commandResultsLogMessage("a command", "a_session_id", "the results"));
   }
@@ -164,7 +164,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
   public void commandResultsLogMessageForCaptureScreenshotToStringCommand() {
     final SeleniumDriverResourceHandler handler;
 
-    handler = new SeleniumDriverResourceHandler(null);
+    handler = new SeleniumDriverResourceHandler(null, null);
     assertEquals("Got result: [base64 encoded PNG] on session a_session_id",
         handler.commandResultsLogMessage(CaptureScreenshotToStringCommand.ID, "a_session_id",
             "the results"));
@@ -174,7 +174,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
   public void commandResultsLogMessageForCaptureEntirePageScreenshotToStringCommand() {
     final SeleniumDriverResourceHandler handler;
 
-    handler = new SeleniumDriverResourceHandler(null);
+    handler = new SeleniumDriverResourceHandler(null, null);
     assertEquals("Got result: [base64 encoded PNG] on session a_session_id",
         handler.commandResultsLogMessage(CaptureEntirePageScreenshotToStringCommand.ID,
             "a_session_id", "the results"));
@@ -184,7 +184,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
   public void commandResultsLogMessageForCaptureEntirePageScreenshotCommand() {
     final SeleniumDriverResourceHandler handler;
 
-    handler = new SeleniumDriverResourceHandler(null);
+    handler = new SeleniumDriverResourceHandler(null, null);
     assertEquals("Got result: [base64 encoded PNG] on session a_session_id",
         handler.commandResultsLogMessage(SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID,
             "a_session_id", "the results"));
@@ -194,7 +194,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
   public void commandResultsLogMessageForRetrieveLastRemoteControlLogsCommandWhenResultsAreAShortString() {
     final SeleniumDriverResourceHandler handler;
 
-    handler = new SeleniumDriverResourceHandler(null);
+    handler = new SeleniumDriverResourceHandler(null, null);
     assertEquals("Got result:the results... on session a_session_id",
         handler.commandResultsLogMessage(RetrieveLastRemoteControlLogsCommand.ID, "a_session_id",
             "the results"));
@@ -204,7 +204,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
   public void commandResultsLogMessageForRetrieveLastRemoteControlLogsCommandWhenResultsIsA30CharacterString() {
     final SeleniumDriverResourceHandler handler;
 
-    handler = new SeleniumDriverResourceHandler(null);
+    handler = new SeleniumDriverResourceHandler(null, null);
     assertEquals("Got result:123456789012345678901234567890... on session a_session_id",
         handler.commandResultsLogMessage(RetrieveLastRemoteControlLogsCommand.ID, "a_session_id",
             "123456789012345678901234567890"));
@@ -214,7 +214,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
   public void commandResultsLogMessageForRetrieveLastRemoteControlLogsCommandTruncatesWhenResultsIsALongString() {
     final SeleniumDriverResourceHandler handler;
 
-    handler = new SeleniumDriverResourceHandler(null);
+    handler = new SeleniumDriverResourceHandler(null, null);
     assertEquals("Got result:a very very very very very ver... on session a_session_id",
         handler.commandResultsLogMessage(RetrieveLastRemoteControlLogsCommand.ID, "a_session_id",
             "a very very very very very very very very very  long result"));

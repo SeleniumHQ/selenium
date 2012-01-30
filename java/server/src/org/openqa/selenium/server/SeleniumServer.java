@@ -355,7 +355,7 @@ public class SeleniumServer implements SslCertificateGenerator {
     // Associate the SeleniumDriverResourceHandler with the /selenium-server/driver context
     HttpContext driverContext = new HttpContext();
     driverContext.setContextPath("/selenium-server/driver");
-    driver = new SeleniumDriverResourceHandler(this);
+    driver = new SeleniumDriverResourceHandler(this, webdriverSessions);
     context.addHandler(driver);
     return driverContext;
   }
