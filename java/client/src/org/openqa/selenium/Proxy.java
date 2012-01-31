@@ -86,8 +86,12 @@ public class Proxy {
     if (this.autodetect == autodetect) {
       return this;
     }
-    verifyProxyTypeCompatilibily(ProxyType.AUTODETECT);
-    this.proxyType = ProxyType.AUTODETECT;
+    if (autodetect) {
+      verifyProxyTypeCompatilibily(ProxyType.AUTODETECT);
+      this.proxyType = ProxyType.AUTODETECT;
+    } else {
+      this.proxyType = ProxyType.UNSPECIFIED;
+    }
     this.autodetect = autodetect;
     return this;
   }
