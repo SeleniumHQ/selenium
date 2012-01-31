@@ -31,6 +31,7 @@ namespace OpenQA.Selenium.IE
     public sealed class InternetExplorerDriverService : DriverService
     {
         private const string InternetExplorerDriverServiceFileName = "InternetExplorerDriver.exe";
+        private const string InternetExplorerDriverDownloadUrl = "http://code.google.com/p/selenium/downloads/list";
 
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriverService class.
@@ -85,7 +86,7 @@ namespace OpenQA.Selenium.IE
             string executablePath = Path.Combine(driverPath, InternetExplorerDriverServiceFileName);
             if (!File.Exists(executablePath))
             {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist.", executablePath));
+                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, InternetExplorerDriverDownloadUrl));
             }
 
             return new InternetExplorerDriverService(executablePath, FindFreePort());
