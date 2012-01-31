@@ -294,6 +294,8 @@ webdriver.WebDriver.prototype.getCapability = function(name) {
  * Schedules a command to quit the current session. After calling quit, this
  * instance will be invalidated and may no longer be used to issue commands
  * against the browser.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the command has completed.
  * @export
  */
 webdriver.WebDriver.prototype.quit = function() {
@@ -302,7 +304,7 @@ webdriver.WebDriver.prototype.quit = function() {
       'WebDriver.quit()');
   // Delete our session ID when the quit command finishes; this will allow us to
   // throw an error when attemnpting to use a driver post-quit.
-  result.addBoth(function() {
+  return result.addBoth(function() {
     delete this.session_;
   }, this);
 };
