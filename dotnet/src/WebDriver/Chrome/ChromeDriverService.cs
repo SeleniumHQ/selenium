@@ -31,6 +31,7 @@ namespace OpenQA.Selenium.Chrome
     public sealed class ChromeDriverService : DriverService
     {
         private const string ChromeDriverServiceFileName = "chromedriver.exe";
+        private const string ChromeDriverDownloadUrl = "http://code.google.com/p/chromium/downloads/list";
 
         /// <summary>
         /// Initializes a new instance of the ChromeDriverService class.
@@ -85,7 +86,7 @@ namespace OpenQA.Selenium.Chrome
             string executablePath = Path.Combine(driverPath, ChromeDriverServiceFileName);
             if (!File.Exists(executablePath))
             {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist.", executablePath));
+                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, ChromeDriverDownloadUrl));
             }
 
             return new ChromeDriverService(executablePath, FindFreePort());
