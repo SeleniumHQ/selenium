@@ -30,6 +30,8 @@ java_library(name = "rc-tests",
      "//java/client/src/com/thoughtworks/selenium",
      "//java/server/src/org/openqa/selenium/server:server-with-tests:uber",
      "//java/client/test/com/thoughtworks/selenium/corebased",
+     "//java/client/src/org/openqa/selenium/remote",
+     "//java/client/test/org/openqa/selenium/v1:environment",
      "//third_party/java/easymock",
    ])
 
