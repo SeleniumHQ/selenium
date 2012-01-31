@@ -1,7 +1,7 @@
 require File.expand_path("../spec_helper", __FILE__)
 
 module Selenium::WebDriver::DriverExtensions
-  describe HasWebStorage, :focus => true do
+  describe HasWebStorage do
 
     compliant_on :browser => [:android] do
       shared_examples_for 'web storage' do

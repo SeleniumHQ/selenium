@@ -147,10 +147,10 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => [:chrome, :ie, :opera, :iphone] do
+    not_compliant_on :browser => [:ie, :opera, :iphone] do
       it "raises NoAlertOpenError if no alert is present" do
         lambda { driver.switch_to.alert }.should raise_error(
-          Selenium::WebDriver::Error::NoAlertOpenError, /alert/i)
+          Selenium::WebDriver::Error::NoAlertOpenError, /alert|modal dialog/i)
       end
     end
 
@@ -161,7 +161,7 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
 
-        driver.title.should == "Testing Alerts"
+        driver.title.should == "Testing Alerts" # :chrome does not auto-dismiss the alert
       end
     end
 
