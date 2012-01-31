@@ -105,7 +105,18 @@ webdriver.FirefoxDomExecutor.prototype.execute = function(command, callback) {
 
   var parameters = command.getParameters();
 
-  if (parameters['id'] && parameters['id']['ELEMENT']) {
+  // There are two means for communicating with the FirefoxDriver: via
+  // HTTP using WebDriver's wire protocol and over the DOM using a custom
+  // JSON protocol. This class uses the latter. When the FirefoxDriver receives
+  // commands over HTTP, it builds a parameters object from the URL parameters.
+  // When an element ID is sent in the URL, it'll be decoded as just id:string
+  // instead of id:{ELEMENT:string}. When switching to a frame by element,
+  // however, the element ID is not sent through the URL, so we must make sure
+  // to encode that parameter properly here. It would be nice if we unified
+  // the two protocols used by the FirefoxDriver...
+  if (parameters['id'] &&
+      parameters['id']['ELEMENT'] &&
+      command.getName() != webdriver.CommandName.SWITCH_TO_FRAME) {
     parameters['id'] = parameters['id']['ELEMENT'];
   }
 
