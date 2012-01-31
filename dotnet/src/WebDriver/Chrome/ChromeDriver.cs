@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Chrome
         /// Initializes a new instance of the ChromeDriver class.
         /// </summary>
         public ChromeDriver()
-            : this(ChromeDriverService.CreateDefaultService(), new ChromeOptions(), TimeSpan.FromSeconds(60))
+            : this(new ChromeOptions())
         {
         }
 
