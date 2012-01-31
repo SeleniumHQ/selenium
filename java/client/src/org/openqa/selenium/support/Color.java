@@ -34,7 +34,7 @@ public class Color {
   }
 
   public String asHex() {
-    return String.format("#%02X%02X%02X", red, green, blue);
+    return String.format("#%02x%02x%02x", red, green, blue);
   }
 
   private static abstract class Converter {
