@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -31,6 +33,12 @@ public class GetSessionCapabilities extends ResponseAwareWebDriverHandler {
   public ResultType call() {
     Session session = getSession();
     Map<String, Object> capabilities = (Map<String, Object>) session.getCapabilities().asMap();
+    capabilities = Maps.newHashMap(capabilities);
+
+    // Only servers implementing the server-side webdriver-backed selenium need
+    // to return this particular value
+    capabilities.put("webdriver.remote.sessionid", session.getSessionId().toString());
+
     response.setValue(describeSession(capabilities));
 
     return ResultType.SUCCESS;
