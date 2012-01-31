@@ -30,12 +30,7 @@ public class GetSessionCapabilities extends ResponseAwareWebDriverHandler {
 
   public ResultType call() {
     Session session = getSession();
-
     Map<String, Object> capabilities = (Map<String, Object>) session.getCapabilities().asMap();
-    // To facilitate the server-side selenium emulation, put the session ID
-    // into the capabilities.
-    capabilities.put("webdriver.remote.sessionid", session.getSessionId().toString());
-
     response.setValue(describeSession(capabilities));
 
     return ResultType.SUCCESS;
