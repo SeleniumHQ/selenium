@@ -64,7 +64,6 @@
           var mouseTarget = bot.locators.findElement({id: 'location'});
           var clickLocation = goog.style.getBounds(mouseTarget);
 
-
           var fired = false;
           goog.events.listenOnce(mouseTarget, goog.events.EventType.MOUSEUP, function(e) {
             fired = true;
@@ -78,12 +77,26 @@
         }
 
         function testCanOverrideTheValueOfAnInputElement() {
-            var expected = "i like cheese";
-            core.events.setValue("id=location", expected);
+          var expected = "i like cheese";
+          core.events.setValue("id=location", expected);
 
           var element = bot.locators.findElement({id: 'location'});
           assertEquals(expected, element.value);
-        }
+	}
+
+        function testSettingValueFiresChangeEvent() {
+	  var element = bot.locators.findElement({id: 'location'});
+	  var expected = "something different";
+
+          var fired = false;
+          goog.events.listenOnce(element, goog.events.EventType.CHANGE, function(e) {
+            fired = true;
+	  });
+
+	  core.events.setValue("id=location", expected);
+
+	  assertTrue(fired);
+	}
     </script>
 </head>
 <body>
