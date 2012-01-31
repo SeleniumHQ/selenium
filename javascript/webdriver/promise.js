@@ -1103,8 +1103,9 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
         return;
       }
 
-      var loopHistory = loopHistory = goog.array.splice(self.history_,
-          indexWaitHistoryStartsAt).join('\n');
+      var loopHistory = goog.array.splice(self.history_,
+          indexWaitHistoryStartsAt,
+          self.history_.length - indexWaitHistoryStartsAt).join('\n');
       if (!lastSequence || loopHistory != lastSequence.value) {
         lastSequence = {value:loopHistory, count: 1};
         indexWaitHistoryStartsAt += 2;

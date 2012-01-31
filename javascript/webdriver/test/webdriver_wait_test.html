@@ -17,6 +17,7 @@ limitations under the License.
 <title>webdriver_wait_test.html</title>
 <script src="test_bootstrap.js"></script>
 <script>
+  goog.require('goog.dom');
   goog.require('webdriver.WebDriver');
   goog.require('webdriver.Session');
   goog.require('webdriver.test.JsExecutor');
@@ -33,11 +34,10 @@ limitations under the License.
   }
 
   function removeFoo() {
-    var foos = document.body.getElementsByClassName('foo');
-    if (!foos.length) return;
-
     setTimeout(function() {
-      document.body.removeChild(foos[foos.length - 1]);
+      var foos = goog.dom.getElementsByTagNameAndClass('DIV', 'foo');
+      if (foos.length)
+        document.body.removeChild(foos[foos.length - 1]);
     }, 750);
   }
 </script>
