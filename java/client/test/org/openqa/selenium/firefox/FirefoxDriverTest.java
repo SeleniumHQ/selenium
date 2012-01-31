@@ -460,11 +460,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   public void testMultipleFirefoxDriversRunningConcurrently() throws Exception {
     // Unfortunately native events on linux mean mucking around with the
     // window's focus. this breaks multiple drivers.
-    boolean nativeEventsEnabled =
-        (Boolean) ((RemoteWebDriver) driver).getCapabilities().getCapability(
-            CapabilityType.HAS_NATIVE_EVENTS);
-
-    if (nativeEventsEnabled && Platform.getCurrent().is(Platform.LINUX)) {
+    if (TestUtilities.isNativeEventsEnabled(driver) &&
+        Platform.getCurrent().is(Platform.LINUX)) {
       return;
     }
 

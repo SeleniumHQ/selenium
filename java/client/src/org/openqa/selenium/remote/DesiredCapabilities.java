@@ -168,12 +168,12 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     capabilities.put(capabilityName, value);
   }
 
-  public Map<String, ?> asMap() {
-    return Collections.unmodifiableMap(capabilities);
-  }
-
   public void setCapability(String key, Object value) {
     capabilities.put(key, value);
+  }
+
+  public Map<String, ?> asMap() {
+    return Collections.unmodifiableMap(capabilities);
   }
 
   public static DesiredCapabilities android() {
