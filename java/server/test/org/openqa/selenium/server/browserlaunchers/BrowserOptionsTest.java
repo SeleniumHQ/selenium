@@ -21,6 +21,8 @@ package org.openqa.selenium.server.browserlaunchers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import org.junit.Test;
@@ -40,7 +42,6 @@ public class BrowserOptionsTest {
     assertEquals(expected, seen);
   }
 
-
   @Test
   public void shouldConvertStringToFile() {
     DesiredCapabilities caps = new DesiredCapabilities();
@@ -52,4 +53,21 @@ public class BrowserOptionsTest {
     assertEquals("cheese", seen.getName());
   }
 
+  @Test
+  public void shouldPopulateCapabilitiesFromSemiColonSeparatedList() {
+    Capabilities caps = BrowserOptions.newBrowserOptions("name1=value1;name2=value2");
+    
+    assertEquals("value1", caps.getCapability("name1"));
+    assertEquals("value2", caps.getCapability("name2"));
+  }
+
+  @Test
+  public void shouldPopulateCapabilitiesFromAJsonifiedCapabilitiesObject() {
+    DesiredCapabilities caps = DesiredCapabilities.firefox();
+    String converted = new BeanToJsonConverter().convert(caps);
+
+    Capabilities seen = BrowserOptions.newBrowserOptions(converted);
+    
+    assertEquals(caps.getBrowserName(), seen.getBrowserName());
+  }
 }

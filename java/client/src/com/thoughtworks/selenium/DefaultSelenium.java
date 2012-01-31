@@ -17,6 +17,8 @@
 
 package com.thoughtworks.selenium;
 
+import org.openqa.selenium.Capabilities;
+
 /**
  * The default implementation of the Selenium interface; <i>end users will primarily interact with
  * this object.</i>
@@ -125,7 +127,11 @@ public class DefaultSelenium implements Selenium {
   }
 
   public void start(Object optionsObject) {
-    start(optionsObject.toString());
+    if (optionsObject instanceof Capabilities) {
+      start(((Capabilities) optionsObject).asMap().toString());
+    } else {
+      start(optionsObject.toString());
+    }
   }
 
   public void stop() {

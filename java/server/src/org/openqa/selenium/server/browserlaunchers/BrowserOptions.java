@@ -20,6 +20,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.io.File;
 
@@ -37,12 +38,25 @@ public class BrowserOptions {
   }
 
   public static Capabilities newBrowserOptions(String browserConfiguration) {
-    DesiredCapabilities caps = new DesiredCapabilities();
+    DesiredCapabilities caps;
 
+    // Attempt to build the capabilities directly from the browserConfiguration
+    caps = rehydrateCapabilitiesFromJson(browserConfiguration);
+    if (caps == null) {
+      caps = buildFromSemiColonSeparatedOptions(browserConfiguration);
+    }
+
+    Capabilities toReturn = Proxies.setProxyRequired(caps, true);
+    return toReturn;
+  }
+
+  private static DesiredCapabilities buildFromSemiColonSeparatedOptions(
+      String browserConfiguration) {
+    DesiredCapabilities caps = new DesiredCapabilities();
     // "name=value;name=value"
     String[] optionsPairList = browserConfiguration.split(";");
-    for (int i = 0; i < optionsPairList.length; i++) {
-      String[] option = optionsPairList[i].split("=", 2);
+    for (String anOptionsPairList : optionsPairList) {
+      String[] option = anOptionsPairList.split("=", 2);
       if (2 == option.length) {
         String optionsName = option[0].trim();
         String optionValue = option[1].trim();
@@ -51,8 +65,19 @@ public class BrowserOptions {
       }
     }
 
-    Capabilities toReturn = Proxies.setProxyRequired(caps, true);
-    return toReturn;
+    return caps;
+  }
+
+  private static DesiredCapabilities rehydrateCapabilitiesFromJson(String browserConfiguration) {
+    try {
+      Capabilities hydrated =
+          new JsonToBeanConverter().convert(Capabilities.class, browserConfiguration);
+      return new DesiredCapabilities(hydrated);
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      // Well, that didn't work.
+    }
+    return null;
   }
 
   public static boolean isSingleWindow(Capabilities capabilities) {
