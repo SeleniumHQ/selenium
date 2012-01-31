@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
+import com.google.common.base.Splitter;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 
 import com.thoughtworks.selenium.BrowserConfigurationOptions;
 import com.thoughtworks.selenium.DefaultSelenium;
@@ -38,6 +40,8 @@ import org.openqa.selenium.os.CommandLine;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
@@ -51,20 +55,30 @@ public class SeleniumTestEnvironment implements TestEnvironment {
         new Build().of("//java/server/test/org/openqa/selenium:server-with-tests:uber").go();
       }
 
-      File seleniumJar =
-          InProject
-              .locate("build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar");
-      final String singlewindow = Boolean.getBoolean("singlewindow") ? "-singleWindow" : "";
-      final String browserSideLog = Boolean.getBoolean("webdriver.debug") ? "-browserSideLog" : "";
-      String[] args = {"-jar", seleniumJar.getAbsolutePath(),
-          "-port", "" + port, singlewindow, browserSideLog};
-      if (extraArgs != null) {
-        String[] allArgs = new String[args.length + extraArgs.length];
-        System.arraycopy(args, 0, allArgs, 0, args.length);
-        System.arraycopy(extraArgs, 0, allArgs, args.length, extraArgs.length);
-        args = allArgs;
+      File seleniumJar = InProject.locate(
+          "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar");
+
+      ArrayList<Object> args = Lists.newArrayList();
+      if (Boolean.getBoolean("webdriver.debug")) {
+        args.add("-Xdebug");
+        args.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005");
       }
-      command = new CommandLine("java", args);
+      
+      args.add("-jar");
+      args.add(seleniumJar.getAbsolutePath());
+      args.add("-port");
+      args.add(String.valueOf(port));
+      
+      if (Boolean.getBoolean("singlewindow")) {
+        args.add("singlewindow");
+      }
+      if (Boolean.getBoolean("webdriver.debug")) {
+        args.add("-browserSideLog");
+      }
+      
+      args.addAll(Arrays.asList(extraArgs));
+
+      command = new CommandLine("java", args.toArray(new String[args.size()]));
       command.copyOutputTo(System.out);
       command.executeAsync();
 
