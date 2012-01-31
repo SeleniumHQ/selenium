@@ -37,6 +37,8 @@ import static org.openqa.selenium.remote.BrowserType.IE_HTA;
 import static org.openqa.selenium.remote.DesiredCapabilities.chrome;
 import static org.openqa.selenium.remote.DesiredCapabilities.firefox;
 import static org.openqa.selenium.remote.DesiredCapabilities.internetExplorer;
+import static org.openqa.selenium.remote.DesiredCapabilities.opera;
+import static org.openqa.selenium.testing.drivers.BackedBy.webdriver;
 
 public class InternalSelenseTestBase extends SeleneseTestBase {
   private static final Logger log = Logger.getLogger(InternalSelenseTestBase.class.getName());
@@ -130,19 +132,10 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       selenium.selectWindow("");
     } catch (SeleniumException e) {
       // TODO(simon): Window switching in Opera is picky.
-      if (!isOperaDriver(selenium)) {
+      if (!is(webdriver, Browser.opera)) {
         throw e;
       }
     }
-  }
-
-  private boolean isOperaDriver(Selenium selenium) {
-    if (!(selenium instanceof WrapsDriver)) {
-      return false;
-    }
-
-    WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
-    return "OperaDriver".equals(driver.getClass().getSimpleName());
   }
 
   protected boolean is(BackedBy backedBy, Browser browser) {
@@ -175,6 +168,9 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
       case ie:
         return internetExplorer().getBrowserName().equals(browserName);
+
+      case opera:
+        return opera().getBrowserName().equals(browserName);
 
       default:
         log.warning("Unknown browser: " + browser);
