@@ -1,6 +1,7 @@
 
 java_library(name = "support",
   srcs = [
+    "Color.java",
     "ThreadGuard.java",
   ],
   deps = [
