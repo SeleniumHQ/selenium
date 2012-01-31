@@ -26,7 +26,9 @@ limitations under the License.
 <iframe name="testFrame" id="testFame" src="javascript:void(0)"></iframe>
 <script>
   var testFrameWindow = window.frames[0];
-  testFrameWindow.document.designMode = 'on';
+  if (testFrameWindow) {
+    testFrameWindow.document.designMode = 'on';
+  }
 </script>
 <div id="editable" contenteditable="true"
     style="border:1px solid black; height:20px; width: 100%;"></div>
@@ -35,6 +37,11 @@ limitations under the License.
       webdriver.Key.COMMAND : webdriver.Key.CONTROL;
 
   var driver;
+
+  function setUpPage() {
+    var testFrameWindow = window.frames[0];
+    testFrameWindow.document.designMode = 'on';
+  }
 
   function setUp() {
     driver = new webdriver.Builder().build();

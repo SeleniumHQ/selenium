@@ -61,7 +61,7 @@ limitations under the License.
     var length = butter.innerHTML.substring('Updating'.length).length;
     if (length != 10) {
       butter.innerHTML += '.';
-      setTimeout(tick, 500);
+      setTimeout(tick, 100);
     } else {
       enableForm();
       var div = document.createElement('div');
@@ -87,7 +87,7 @@ limitations under the License.
             butter.innerHTML = 'Exception seen: ' + e;
           }
         }
-      }, 500);
+      }, 100);
     }
   }
 </script>
