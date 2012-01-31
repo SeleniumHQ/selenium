@@ -172,7 +172,7 @@ public interface Selenium {
   public void start(String optionsString);
 
   /** Starts a new Selenium testing session with a configuration options object */
-  public void start(Object optionsObject);
+  void start(Object optionsObject);
 
   /** Ends the test session, killing the browser */
   void stop();
