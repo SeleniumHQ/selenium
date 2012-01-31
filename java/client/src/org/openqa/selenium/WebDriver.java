@@ -119,11 +119,12 @@ public interface WebDriver extends SearchContext {
 
   /**
    * Get the source of the last loaded page. If the page has been modified after loading (for
-   * example, by Javascript) there is no guarentee that the returned text is that of the modified
+   * example, by Javascript) there is no guarantee that the returned text is that of the modified
    * page. Please consult the documentation of the particular driver being used to determine whether
    * the returned text reflects the current state of the page or the text last sent by the web
    * server. The page source returned is a representation of the underlying DOM: do not expect it to
-   * be formatted or escaped in the same way as the response sent from the web server.
+   * be formatted or escaped in the same way as the response sent from the web server. Think of it as
+   * an artist's impression.
    * 
    * @return The source of the current page
    */

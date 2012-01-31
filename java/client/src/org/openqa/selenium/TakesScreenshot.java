@@ -37,10 +37,12 @@ public interface TakesScreenshot {
    *
    * <p>For WebDriver extending TakesScreenshot, this makes a best effort
    * depending on the browser to return the following in order of preference:
-   *   - Entire page
-   *   - Current window
-   *   - Visible portion of the current frame
-   *   - The screenshot of the entire display containing the browser
+   * <ul>
+   *   <li>Entire page</li>
+   *   <li>Current window</li>
+   *   <li>Visible portion of the current frame</li>
+   *   <li>The screenshot of the entire display containing the browser</li>
+   * </ul>
    *
    * <p>For WebElement extending TakesScreenshot, this makes a best effort
    * depending on the browser to return the following in order of preference:
