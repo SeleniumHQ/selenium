@@ -46,7 +46,7 @@ public class SendKeys extends ElementFunction<Void> {
           "(function() { "
           + "var e = selenium.browserbot.findElement('%s');"
           // Do a check to see if we're in an extension
-          + "if (Components && Components['classes'] && XPCNativeWrapper) {"
+          + "if (bot.userAgent.FIREFOX_EXTENSION && Components && Components['classes'] && XPCNativeWrapper) {"
           + "  e = core.firefox.unwrap(e);"
           + "}"
           + "bot.action.type(e, '%s');})();",
