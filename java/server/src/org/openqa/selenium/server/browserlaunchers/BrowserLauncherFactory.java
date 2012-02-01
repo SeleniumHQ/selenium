@@ -66,6 +66,7 @@ public class BrowserLauncherFactory {
     supportedBrowsers.put(BrowserType.KONQUEROR, KonquerorLauncher.class);
     supportedBrowsers.put(BrowserType.MOCK, MockBrowserLauncher.class);
     supportedBrowsers.put(BrowserType.GOOGLECHROME, GoogleChromeLauncher.class);
+    supportedBrowsers.put("webdriver", DrivenSeleniumLauncher.class);
   }
 
   public BrowserLauncherFactory() {
@@ -161,6 +162,10 @@ public class BrowserLauncherFactory {
             String.class, String.class);
         browserLauncher =
             ctor.newInstance(browserOptions, configuration, sessionId, browserStartCommand);
+
+        if (browserLauncher instanceof DrivenSeleniumLauncher) {
+          ((DrivenSeleniumLauncher) browserLauncher).setDriverSessions(webdriverSessions);
+        }
 
         return browserLauncher;
       } catch (InvocationTargetException e) {
