@@ -32,12 +32,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.google.common.io.Closeables.closeQuietly;
 
 public class ServerHttpChannel implements Runnable {
 
@@ -46,7 +49,7 @@ public class ServerHttpChannel implements Runnable {
   private final CommandProcessor processor;
   private final ProcessorCommands commands = new ProcessorCommands();
   private int sequenceNumber;
-  private URLConnection connection;
+  private HttpURLConnection connection;
   private volatile boolean carryOn = true;
 
   public ServerHttpChannel(String sessionId, int serverPort,
@@ -149,20 +152,30 @@ public class ServerHttpChannel implements Runnable {
       fullMessage = "OK" + (message == null ? "" : "," + message);
     }
 
-    StringBuilder builder = new StringBuilder(serverUrl)
-        .append("&sessionId=").append(sessionId);
+    StringBuilder builder = new StringBuilder(serverUrl).append("&sessionId=").append(sessionId);
     if (sequenceNumber == 0) {
       builder.append("&seleniumStart=true");
     }
     builder.append("&sequenceNumber=").append(sequenceNumber++);
     builder.append("&postedData=").append(encode(fullMessage));
+    
+    String toSend = builder.toString();
 
-    connection = new URL(builder.toString()).openConnection();
-
+    connection = (HttpURLConnection) new URL(serverUrl).openConnection();
+    connection.setUseCaches(false);
     connection.setDoOutput(true);
+    connection.setRequestMethod("POST");
+    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF8");
+    byte[] bytes = toSend.getBytes(Charsets.UTF_8);
+    connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+
     OutputStream out = connection.getOutputStream();
-    out.write(fullMessage.getBytes());
-    out.flush();
+    try {
+      out.write(bytes);
+      out.flush();
+    } finally {
+      closeQuietly(out);
+    }
   }
 
   private String encode(String message) {
@@ -176,7 +189,7 @@ public class ServerHttpChannel implements Runnable {
   public String read() throws IOException {
     InputStream input = connection.getInputStream();
     byte[] bytes = ByteStreams.toByteArray(input);
-    Closeables.closeQuietly(input);
+    closeQuietly(input);
     connection = null;
     return new String(bytes, Charsets.UTF_8);
   }
