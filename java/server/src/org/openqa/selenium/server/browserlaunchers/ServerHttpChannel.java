@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -77,6 +78,10 @@ public class ServerHttpChannel implements Runnable {
       }
 
       send("OK", null);
+    } catch (ConnectException e) {
+      log.warning("Unable to connect to server. Assuming shutdown.");
+      // And fall out the bottom of the run method. Don't clean up, just in
+      // case.
     } catch (IOException e) {
       Throwables.propagate(e);
     }

@@ -113,11 +113,11 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
     session.close();
     sessions.deleteSession(webdriverSessionId);
     channel.kill();
-//    try {
-//      serverThread.join();
-//    } catch (InterruptedException e) {
-//      Throwables.propagate(e);
-//    }
+    try {
+      serverThread.join();
+    } catch (InterruptedException e) {
+      Throwables.propagate(e);
+    }
   }
 
   @VisibleForTesting
