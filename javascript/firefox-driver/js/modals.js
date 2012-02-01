@@ -156,8 +156,9 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
   if (driver && driver.response_) {
     fxdriver.modals.setFlag(driver, text);
     var res = driver.response_;
-    res.value = text;
-    res.statusCode = bot.ErrorCode.MODAL_DIALOG_OPENED;
+    res.status = bot.ErrorCode.MODAL_DIALOG_OPENED;
+    res.value = 'Unexpected modal dialog (text: ' + text + ')';
     res.send();
+    fxdriver.modals.isModalPresent(function() { fxdriver.modals.dismissAlert(driver) }, 2000);
   }
 };
