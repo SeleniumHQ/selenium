@@ -180,14 +180,6 @@ public class ServerHttpChannel implements Runnable {
     }
   }
 
-  private String encode(String message) {
-    try {
-      return URLEncoder.encode(message, Charsets.UTF_8.toString());
-    } catch (UnsupportedEncodingException e) {
-      throw Throwables.propagate(e);
-    }
-  }
-
   public String read() throws IOException {
     InputStream input = connection.getInputStream();
     byte[] bytes = ByteStreams.toByteArray(input);
