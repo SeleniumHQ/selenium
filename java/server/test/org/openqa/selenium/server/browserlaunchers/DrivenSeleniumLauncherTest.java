@@ -21,11 +21,18 @@ import static org.junit.Assert.assertEquals;
 
 import com.thoughtworks.selenium.SeleniumException;
 
+import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.MockTestBase;
 
 import java.util.UUID;
@@ -71,7 +78,7 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
   }
 
   @Test(expected = SeleniumException.class)
-  public void testShouldRequireSessionExistsInKnownSessionsWhenLaunching() {
+  public void shouldRequireSessionExistsInKnownSessionsWhenLaunching() {
     TestSessions sessions = new TestSessions(context);
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
@@ -79,5 +86,84 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
     launcher.setDriverSessions(sessions);
 
     launcher.launchRemoteSession("http://www.example.com");
+  }
+
+  @Test
+  public void closeShouldCallQuitOnTheDriver() {
+    final DriverSessions sessions = mock(DriverSessions.class);
+    final SessionId id = new SessionId("1234");
+    final Session session = mock(Session.class);
+    final WebDriver driver = mock(WebDriver.class);
+    caps.setCapability("webdriver.remote.sessionid", id.toString());
+
+    checking(new Expectations() {{
+      one(sessions).get(id);
+      will(returnValue(session));
+      one(session).getDriver();
+      will(returnValue(driver));
+      one(driver).quit();
+      one(session).close();
+    }});
+
+    DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
+        caps, rcConfig, id.toString(), null);
+    launcher.setDriverSessions(sessions);
+    launcher.close();
+  }
+
+  @Test
+  public void closeShouldSurviveIfTheSessionIsNotPresent() {
+    final DriverSessions sessions = mock(DriverSessions.class);
+    final SessionId id = new SessionId("1234");
+    caps.setCapability("webdriver.remote.sessionid", id.toString());
+
+    checking(new Expectations() {{
+      one(sessions).get(id); will(returnValue(null));
+    }});
+
+    DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
+        caps, rcConfig, id.toString(), null);
+    launcher.setDriverSessions(sessions);
+    launcher.close();
+  }
+
+  @Test
+  public void closeShouldSurviveIfThereIsNoWebDriverInstance() {
+    final DriverSessions sessions = mock(DriverSessions.class);
+    final SessionId id = new SessionId("1234");
+    final Session session = mock(Session.class);
+    caps.setCapability("webdriver.remote.sessionid", id.toString());
+
+    checking(new Expectations() {{
+      one(sessions).get(id); will(returnValue(session));
+      one(session).getDriver(); will(returnValue(null));
+      one(session).close();
+    }});
+
+    DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
+        caps, rcConfig, id.toString(), null);
+    launcher.setDriverSessions(sessions);
+    launcher.close();
+  }
+
+  @Test
+  public void closeShouldSurviveQuitThrowingAnException() {
+    final DriverSessions sessions = mock(DriverSessions.class);
+    final SessionId id = new SessionId("1234");
+    final Session session = mock(Session.class);
+    final WebDriver driver = mock(WebDriver.class);
+    caps.setCapability("webdriver.remote.sessionid", id.toString());
+
+    checking(new Expectations() {{
+      one(sessions).get(id); will(returnValue(session));
+      one(session).getDriver(); will(returnValue(driver));
+      one(driver).quit(); will(throwException(new WebDriverException("boom")));
+      one(session).close();
+    }});
+
+    DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
+        caps, rcConfig, id.toString(), null);
+    launcher.setDriverSessions(sessions);
+    launcher.close();
   }
 }

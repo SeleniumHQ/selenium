@@ -22,13 +22,19 @@ import com.google.common.annotations.VisibleForTesting;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class DrivenSeleniumLauncher implements BrowserLauncher {
+  private static final Logger log = Logger.getLogger(DrivenSeleniumLauncher.class.getName());
 
   private final SessionId webdriverSessionId;
   private int port;
@@ -39,13 +45,14 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
       String sessionId, String browserStartPath) {
 
     String raw = null;
-    Object value = capabilities.getCapability("webdriver.remote.sessionid");
-    if (value != null) {
-      raw = String.valueOf(value);
+
+    if (null != browserStartPath && !browserStartPath.equals("")) {
+      raw = browserStartPath;
     }
 
-    if (null == raw && null != browserStartPath && !browserStartPath.equals("")) {
-      raw = browserStartPath;
+    Object value = capabilities.getCapability("webdriver.remote.sessionid");
+    if (value != null && raw == null) {
+      raw = String.valueOf(value);
     }
 
     if (null == raw) {
@@ -76,7 +83,21 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
   }
 
   public void close() {
-    throw new UnsupportedOperationException("close");
+    Session session = sessions.get(webdriverSessionId);
+    if (session == null) {
+      return;
+    }
+
+    WebDriver driver = session.getDriver();
+    if (driver != null) {
+      try {
+        driver.quit();
+      } catch (WebDriverException e) {
+        log.log(Level.WARNING, "Cannot quit session", e);
+      }
+    }
+
+    session.close();
   }
 
   @VisibleForTesting
