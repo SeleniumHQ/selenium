@@ -103,6 +103,7 @@ remote.ui.SessionContainer = function() {
 
   this.addChild(this.tabBar_);
   this.addChild(this.view_);
+  this.setEnabled(false);
 
   goog.events.listen(this.createButton_, goog.events.EventType.CLICK,
       goog.bind(this.createSessionDialog_.setVisible, this.createSessionDialog_,
@@ -148,6 +149,20 @@ remote.ui.SessionContainer.prototype.createFieldSetDom = function() {
           this.createButton_, this.refreshButton_),
       this.tabBar_.getElement(),
       this.view_.getElement());
+};
+
+
+/**
+ * @param {boolean} enabled Whether this container should be enabled.
+ */
+remote.ui.SessionContainer.prototype.setEnabled = function(enabled) {
+  if (enabled) {
+    this.createButton_.removeAttribute('disabled');
+    this.refreshButton_.removeAttribute('disabled');
+  } else {
+    this.createButton_.setAttribute('disabled', 'disabled');
+    this.refreshButton_.setAttribute('disabled', 'disabled');
+  }
 };
 
 

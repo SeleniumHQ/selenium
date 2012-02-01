@@ -182,8 +182,7 @@ remote.ui.SessionView.prototype.createDom = function() {
   this.sessionIdSpan_ = dom.createElement(goog.dom.TagName.SPAN);
 
   // TODO(jleyba): What more to add?
-  this.todoBlock_ = dom.createDom(goog.dom.TagName.DIV, 'todo',
-      'More coming soon...');
+  this.todoBlock_ = dom.createDom(goog.dom.TagName.DIV, 'todo', '\xa0');
   this.todoBlock_.disabled = true;
 
   this.viewElement_ = dom.createDom(goog.dom.TagName.DIV, 'goog-tab-content',

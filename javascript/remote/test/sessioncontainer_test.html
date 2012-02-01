@@ -253,10 +253,18 @@ limitations under the License.
     assertSessions(SESSIONS[1], SESSIONS[2]);
   }
 
-  function testRefreshButtonTriggersRefreshEvent() {
+  function testRefreshButton() {
     var onRefresh = goog.testing.recordFunction();
     goog.events.listen(container, remote.ui.Event.Type.REFRESH,
         onRefresh);
+
+    container.setEnabled(false);
+    assertFalse(bot.dom.isEnabled(container.refreshButton_));
+    bot.action.click(container.refreshButton_);
+    assertEquals(0, onRefresh.getCallCount());
+
+    container.setEnabled(true);
+    assertTrue(bot.dom.isEnabled(container.refreshButton_));
     bot.action.click(container.refreshButton_);
     assertEquals(1, onRefresh.getCallCount());
   }
@@ -305,16 +313,22 @@ limitations under the License.
         SESSIONS[0], session);
   }
 
-  function testCreateButtonOpensDialog() {
-    bot.action.click(container.createButton_);
-    assertTrue(container.createSessionDialog_.isVisible());
-  }
-
-  function testFiresCreateEventToSignalNewSessionCreation() {
+  function testCreateButton() {
     var onCreate = goog.testing.recordFunction();
     goog.events.listen(container, remote.ui.Event.Type.CREATE, onCreate);
 
+    container.setEnabled(false);
+    assertFalse(bot.dom.isEnabled(container.createButton_));
     bot.action.click(container.createButton_);
+    assertFalse(container.createSessionDialog_.isVisible());
+    assertEquals(0, onCreate.getCallCount());
+
+    container.setEnabled(true);
+    assertTrue(bot.dom.isEnabled(container.createButton_));
+    bot.action.click(container.createButton_);
+    assertTrue(container.createSessionDialog_.isVisible());
+    assertEquals(0, onCreate.getCallCount());
+
     container.createSessionDialog_.browserSelect_.selectedIndex = 3;
     bot.action.click(
         container.createSessionDialog_.getButtonSet().getButton('ok'));

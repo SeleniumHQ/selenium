@@ -137,8 +137,11 @@ remote.ui.Client.prototype.init = function(opt_element) {
   this.banner_.setVisible(false);
   this.sessionContainer_.render(opt_element);
   this.serverInfo_.render(opt_element);
-  this.updateServerInfo_();
-  this.onRefresh_();
+  return this.updateServerInfo_().
+      addCallback(function() {
+        this.sessionContainer_.setEnabled(true);
+        this.onRefresh_();
+      }, this);
 };
 
 
@@ -172,10 +175,14 @@ remote.ui.Client.prototype.logError_ = function(msg, e) {
 
 /**
  * Queries the server for its build info.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ *     server build info.
  * @private
  */
 remote.ui.Client.prototype.updateServerInfo_ = function() {
-  this.execute_(new webdriver.Command(webdriver.CommandName.GET_SERVER_STATUS)).
+  this.log_.info('Retrieving server status...');
+  return this.execute_(
+      new webdriver.Command(webdriver.CommandName.GET_SERVER_STATUS)).
       addCallback(function(response) {
         var value = response['value'] || {};
         var os = value['os'];
