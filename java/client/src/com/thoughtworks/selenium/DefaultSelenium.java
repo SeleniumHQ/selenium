@@ -128,7 +128,8 @@ public class DefaultSelenium implements Selenium {
 
   public void start(Object optionsObject) {
     if (optionsObject instanceof Capabilities) {
-      start(((Capabilities) optionsObject).asMap().toString());
+      Object id = ((Capabilities) optionsObject).getCapability("webdriver.remote.sessionid");
+      start("webdriver.remote.sessionid=" + id);
     } else {
       start(optionsObject.toString());
     }

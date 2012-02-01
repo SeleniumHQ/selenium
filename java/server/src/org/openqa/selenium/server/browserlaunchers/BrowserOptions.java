@@ -38,13 +38,8 @@ public class BrowserOptions {
   }
 
   public static Capabilities newBrowserOptions(String browserConfiguration) {
-    DesiredCapabilities caps;
-
     // Attempt to build the capabilities directly from the browserConfiguration
-    caps = rehydrateCapabilitiesFromJson(browserConfiguration);
-    if (caps == null) {
-      caps = buildFromSemiColonSeparatedOptions(browserConfiguration);
-    }
+    DesiredCapabilities caps = buildFromSemiColonSeparatedOptions(browserConfiguration);
 
     Capabilities toReturn = Proxies.setProxyRequired(caps, true);
     return toReturn;
@@ -66,18 +61,6 @@ public class BrowserOptions {
     }
 
     return caps;
-  }
-
-  private static DesiredCapabilities rehydrateCapabilitiesFromJson(String browserConfiguration) {
-    try {
-      Capabilities hydrated =
-          new JsonToBeanConverter().convert(Capabilities.class, browserConfiguration);
-      return new DesiredCapabilities(hydrated);
-    } catch (RuntimeException e) {
-      e.printStackTrace();
-      // Well, that didn't work.
-    }
-    return null;
   }
 
   public static boolean isSingleWindow(Capabilities capabilities) {
