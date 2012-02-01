@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertEquals;
@@ -66,7 +65,6 @@ public class StartTest {
   }
   
   @Test
-  @Ignore
   public void shouldBeAbleToCreateAWebDriverBackedSeleniumInstance() throws MalformedURLException {
     URL wdServer = new URL(String.format("http://%s:%d/wd/hub", url.getHost(), url.getPort()));
     WebDriver driver = new RemoteWebDriver(wdServer, DesiredCapabilities.firefox());
@@ -85,7 +83,8 @@ public class StartTest {
       assertEquals(title, seleniumTitle);
     } finally {
       selenium.stop();
-      driver.quit();
+      // This isn't handled elegantly yet
+//      driver.quit();
     }
   }
 }

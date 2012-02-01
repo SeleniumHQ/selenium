@@ -77,7 +77,7 @@ public abstract class WebDriverHandler implements Handler, Callable<ResultType> 
   }
 
   protected SessionId getRealSessionId() {
-    return session.getSessionId();
+    return session == null ? new SessionId("unknown") : session.getSessionId();
   }
 
   protected BySelector newBySelector() {

@@ -19,6 +19,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.server.log.LoggingManager;
@@ -34,7 +35,13 @@ public class DeleteSession extends WebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    getDriver().quit();
+
+    WebDriver driver = getDriver();
+    if (driver == null) {
+      return ResultType.SUCCESS;
+    }
+
+    driver.quit();
 
     // Yes, this is funky. See javadocs on PerSessionLogHandler#clearThreadTempLogs for details.
     final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();

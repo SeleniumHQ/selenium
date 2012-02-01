@@ -56,6 +56,8 @@ java_library(name = "base",
   ],
   deps = [
     ":logging",
+    "//java/client/src/org/openqa/selenium:selenium-api",
+    "//java/client/src/org/openqa/selenium/internal:codecs",
     "//java/client/src/org/openqa/selenium/internal:codecs",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/support",

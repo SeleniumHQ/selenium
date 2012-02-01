@@ -18,11 +18,14 @@ limitations under the License.
 package org.openqa.selenium.server.browserlaunchers;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
 
+import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverCommandProcessor;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.SessionId;
@@ -40,6 +43,8 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
   private int port;
   private String seleniumSessionId;
   private DriverSessions sessions;
+  private ServerHttpChannel channel;
+  private Thread serverThread;
 
   public DrivenSeleniumLauncher(Capabilities capabilities, RemoteControlConfiguration rcConfig,
       String sessionId, String browserStartPath) {
@@ -72,10 +77,18 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
     Session session = sessions.get(webdriverSessionId);
 
     if (session == null) {
-      throw new SeleniumException("Unable to locate webdriver session: " + webdriverSessionId);
+      throw new SeleniumException(
+          "Unable to locate webdriver session: " + webdriverSessionId);
     }
 
-    throw new SeleniumException("This is not fully implemented!");
+    WebDriver driver = session.getDriver();
+    CommandProcessor processor = new WebDriverCommandProcessor(url, driver);
+
+    channel = new ServerHttpChannel(seleniumSessionId, port, processor);
+    serverThread = new Thread(channel);
+    serverThread.setName("WebDriver-backed Selenium for " + seleniumSessionId);
+
+    serverThread.start();
   }
 
   public void launchHTMLSuite(String suiteUrl, String baseUrl) {
@@ -98,6 +111,13 @@ public class DrivenSeleniumLauncher implements BrowserLauncher {
     }
 
     session.close();
+    sessions.deleteSession(webdriverSessionId);
+    channel.kill();
+//    try {
+//      serverThread.join();
+//    } catch (InterruptedException e) {
+//      Throwables.propagate(e);
+//    }
   }
 
   @VisibleForTesting
