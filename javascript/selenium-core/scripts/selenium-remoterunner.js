@@ -273,7 +273,7 @@ objectExtend(RemoteRunner.prototype, {
     commandError : function(message) {
         postResult = "ERROR: " + message;
         this.commandNode.style.backgroundColor = errorColor;
-        this.commandNode.titcle = message;
+        this.commandNode.title = message;
     },
 
     testComplete : function() {
