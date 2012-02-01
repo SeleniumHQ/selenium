@@ -39,11 +39,13 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import static com.google.common.io.Closeables.closeQuietly;
 
 public class ServerHttpChannel implements Runnable {
-
+  private final static Logger log = Logger.getLogger(ServerHttpChannel.class.getName());
+  
   private final String serverUrl;
   private final String sessionId;
   private final CommandProcessor processor;
@@ -63,15 +65,18 @@ public class ServerHttpChannel implements Runnable {
 
   public void run() {
     try {
-      send(true, "OK");
+      send("OK," + sessionId, null);
       while (carryOn) {
         String raw = read();
+
+        log.fine("read complete: " + raw);
+
         if (carryOn) {
           carryOn = execute(processor, raw);
         }
       }
 
-      send(true, null);
+      send("OK", null);
     } catch (IOException e) {
       Throwables.propagate(e);
     }
@@ -97,24 +102,22 @@ public class ServerHttpChannel implements Runnable {
     String commandName = command.get("command");
 
     if ("retryLast".equals(commandName)) {
-      send(true, "OK");
+      send("RETRY", "retry=true");
       return true;
     }
 
-    boolean okay = true;
-    String value;
+    StringBuilder value = new StringBuilder();
     try {
-      value = commands.execute(processor, commandName, args);
+      String result = commands.execute(processor, commandName, args);
+      value.append("OK");
+      if (result != null) {
+        value.append(",").append(result);
+      }
     } catch (Throwable e) {
-      value = e.getMessage();
-      okay = false;
+      value.append("ERROR,").append(e.getMessage());
     }
 
-    if (value != null) {
-      send(okay, value);
-    } else {
-      send(okay, null);
-    }
+    send(value.toString(), null);
 
     return true;
   }
@@ -144,34 +147,33 @@ public class ServerHttpChannel implements Runnable {
     carryOn = false;
   }
 
-  public void send(boolean okay, String message) throws IOException {
-    String fullMessage;
-    if (!okay) {
-      fullMessage = message;
-    } else {
-      fullMessage = "OK" + (message == null ? "" : "," + message);
-    }
-
+  public void send(String postedData, String urlParams) throws IOException {
+    log.fine("Sending a response: " + postedData);
+    
     StringBuilder builder = new StringBuilder(serverUrl).append("&sessionId=").append(sessionId);
     if (sequenceNumber == 0) {
       builder.append("&seleniumStart=true");
     }
     builder.append("&sequenceNumber=").append(sequenceNumber++);
-    builder.append("&postedData=").append(encode(fullMessage));
-    
-    String toSend = builder.toString();
+    if (urlParams != null) {
+      builder.append("&").append(urlParams);
+    }
 
-    connection = (HttpURLConnection) new URL(serverUrl).openConnection();
+    StringBuilder response = new StringBuilder("postedData=");
+    response.append(postedData);
+    
+    byte[] toSend = response.toString().getBytes(Charsets.UTF_8);
+
+    connection = (HttpURLConnection) new URL(builder.toString()).openConnection();
     connection.setUseCaches(false);
     connection.setDoOutput(true);
     connection.setRequestMethod("POST");
     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF8");
-    byte[] bytes = toSend.getBytes(Charsets.UTF_8);
-    connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+    connection.setRequestProperty("Content-Length", String.valueOf(toSend.length));
 
     OutputStream out = connection.getOutputStream();
     try {
-      out.write(bytes);
+      out.write(toSend);
       out.flush();
     } finally {
       closeQuietly(out);
