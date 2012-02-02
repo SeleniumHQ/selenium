@@ -1,8 +1,6 @@
 package org.openqa.selenium;
 
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -283,40 +281,6 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
         .executeAsyncScript(script, pages.sleepingPage + "?time=2");
     assertThat(response.trim(),
         equalTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>"));
-  }
-  
-  @JavascriptEnabled
-  @Test
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
-  @NeedsLocalEnvironment(reason = "Relies on timing")
-  public void throwsIfScriptTriggersAlert() {
-    driver.get(pages.simpleTestPage);
-    driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
-    try {
-      ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); });");
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException expected) {
-      // Expected exception
-    }
-    // Shouldn't throw
-    driver.getTitle();
-  }
-
-  @JavascriptEnabled
-  @Test
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
-  @NeedsLocalEnvironment(reason = "Relies on timing")
-  public void throwsIfAlertHappensDuringScript() {
-    driver.get(appServer.whereIs("slowLoadingAlert.html"));
-    driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
-    try {
-      ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(arguments[0], 1000);");
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException expected) {
-      //Expected exception
-    }
-    // Shouldn't throw
-    driver.getTitle();
   }
 
   private long getNumDivElements() {
