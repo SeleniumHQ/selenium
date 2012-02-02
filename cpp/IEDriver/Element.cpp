@@ -331,7 +331,30 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     return EUNHANDLEDERROR;
   }
 
-  if (!RectHasNonZeroDimensions(rect)) { return EELEMENTNOTDISPLAYED; }
+  if (!RectHasNonZeroDimensions(rect)) {
+    CComPtr<IHTMLDOMNode> node;
+    element2->QueryInterface(&node);
+    CComPtr<IDispatch> childrenDispatch;
+    node->get_childNodes(&childrenDispatch);
+    CComQIPtr<IHTMLDOMChildrenCollection> children = childrenDispatch;
+    if (!!children) {
+      long childrenCount = 0;
+      children->get_length(&childrenCount);
+      for (long i = 0; i < childrenCount; ++i) {
+        CComPtr<IDispatch> childDispatch;
+        children->item(i, &childDispatch);
+        CComPtr<IHTMLElement> child;
+        childDispatch->QueryInterface(&child);
+        Element childElement(child, this->containing_window_handle_);
+        int result = childElement.GetLocation(x, y, width, height);
+        if (SUCCEEDED(result)) {
+          return result;
+        }
+      }
+    }
+
+    return EELEMENTNOTDISPLAYED;
+  }
 
   long top = 0, bottom = 0, left = 0, right = 0;
 

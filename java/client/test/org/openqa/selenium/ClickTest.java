@@ -222,4 +222,10 @@ public class ClickTest extends AbstractDriverTestCase {
       fail("Should not be out of bounds: " + e.getMessage());
     }
   }
+
+ public void testClicksASurroundingStrongTag() {
+   driver.get(appServer.whereIs("ClickTest_testClicksASurroundingStrongTag.html"));
+   driver.findElement(By.tagName("a")).click();
+   waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+ }
 }
