@@ -201,14 +201,24 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     }
   }
 
+  var self = this;
+
   var docBodyLoadTimeOut = function() {
-    respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
-        "waiting for doc.body failed"));
+    if (!self.modalOpen) {
+      // The modal detection code in modals.js deals with throwing an
+      // exception, in the other case.
+      respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
+          "waiting for doc.body failed"));
+    }
   };
 
   var scriptLoadTimeOut = function() {
-    respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
-        "waiting for evaluate.js load failed"));
+    if (!self.modalOpen) {
+      // The modal detection code in modals.js deals with throwing an
+      // exception, in the other case.
+      respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
+          "waiting for evaluate.js load failed"));
+    }
   };
 
   var checkScriptLoaded = function() {
@@ -224,6 +234,12 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
 
     var handler = function(event) {
         doc.removeEventListener('webdriver-evaluate-response', handler, true);
+        
+        if (self.modalOpen) {
+          // The modal detection code in modals.js deals with throwing an
+          // exception, in this case.
+          return;
+        }
 
         var unwrapped = fxdriver.moz.unwrap(doc);
         var result = unwrapped.getUserData('webdriver-evaluate-result');

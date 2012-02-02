@@ -32,7 +32,10 @@ goog.require('fxdriver.utils');
 fxdriver.modals.isModalPresent = function(callback, timeout) {
   var timer = new fxdriver.Timer();
   timer.runWhenTrue(
-    function() { return fxdriver.modals.find_() },
+    function() {
+      var modal = fxdriver.modals.find_();
+      return modal && modal.document;
+    },
     function() { callback(true) },
     timeout,
     function() { callback(false) });
@@ -156,8 +159,41 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
   if (driver && driver.response_) {
     fxdriver.modals.setFlag(driver, text);
     var res = driver.response_;
-    res.value = text;
-    res.statusCode = bot.ErrorCode.MODAL_DIALOG_OPENED;
-    res.send();
+    if (driver.response_.name == 'executeAsyncScript') {
+      // Special case handling. If a modal is open when executeAsyncScript
+      // tries to respond with a result, it doesn't do anything, so that this
+      // codepath can be followed.
+      fxdriver.modals.isModalPresent(function(present) {
+        res.status = bot.ErrorCode.MODAL_DIALOG_OPENED;
+        res.value = 'Unexpected modal dialog (text: ' + text + ')';
+        if (present) {
+          try {
+            fxdriver.modals.dismissAlert(driver);
+          } catch (e) {
+            res.value +=
+                ' The alert could not be closed. The browser may be in a ' +
+                'wildly inconsistent state, and the alert may still be ' +
+                'open. This is not good. If you can reliably reproduce this' +
+                ', please report a new issue at ' +
+                'https://code.google.com/p/selenium/issues/entry ' +
+                'with reproduction steps. Exception message: ' + e;
+          }
+        } else {
+          res.value += ' The alert disappeared before it could be closed.';
+        }
+        res.send();
+      }, 2000);
+    } else {
+      // We hope that modals can only be opened by actions which don't pay
+      // attention to the results of the command. Given this, the only ways we
+      // can get to this code path are:
+      //   * The command being executed was a getAlertText command, in which
+      //     case we expect the text of the alert to be returned
+      //   * The command being executed was an action which caused the alert
+      //     to be displayed, but we ignore the results of actions, so the
+      //     value will be ignored.
+      res.value = text;
+      res.send();
+    }
   }
 };
