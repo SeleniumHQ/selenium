@@ -3,17 +3,17 @@ module Selenium
 
     class JavascriptExpressionBuilder
       attr_reader :script
-	
+
       def initialize(javascript_framework_name=nil)
-        @framework = javascript_framework_for(javascript_framework_name) if javascript_framework_name       
+        @framework = javascript_framework_for(javascript_framework_name) if javascript_framework_name
         @script = ""
       end
-	    
+
 	    def append(text)
 	      @script << text
 	      self
 	    end
-  
+
       def no_pending_ajax_requests
         append window_script("#{@framework.ajax_request_tracker} == 0")
       end
@@ -29,7 +29,7 @@ module Selenium
       def not_visible(locator)
         append "!selenium.isVisible('#{quote_escaped(locator)}')"
       end
-      
+
       def find_element(locator)
         append  <<-EOS
           var element;
@@ -41,7 +41,7 @@ module Selenium
           }
         EOS
       end
-   
+
       def element_value_is(expected_value)
         append "(element != null && element.value == '#{quote_escaped(expected_value)}')"
       end
@@ -71,7 +71,7 @@ module Selenium
           var text_match;
           text_match = (null != selenium.browserbot.getCurrentWindow().document.body.innerHTML.match(#{js_regexp}));
         EOS
-        
+
       end
 
       def find_text_in_element(pattern, options)
@@ -80,7 +80,7 @@ module Selenium
           var text_match;
           text_match = (element != null && #{text_match(pattern)});
         EOS
-        
+
         self
       end
 

@@ -1,6 +1,6 @@
 module Selenium
   module Client
-    
+
 		# Provide a more idiomatic API than the generated Ruby driver.
 		#
 		# Work in progress...
@@ -8,7 +8,7 @@ module Selenium
 
       # Return the text content of an HTML element (rendered text shown to
       # the user). Works for any HTML element that contains text.
-      # 
+      #
       #
       # This command uses either the textContent (Mozilla-like browsers)
       # or the innerText (IE-like browsers) of the element, which is the
@@ -20,7 +20,7 @@ module Selenium
         string_command "getText", [locator,]
       end
       alias :text_content :text
-      
+
       # Return the title of the current HTML page.
       def title
         string_command "getTitle"
@@ -32,17 +32,17 @@ module Selenium
       end
 
       # Waits for a new page to load.
-      # 
-      # Selenium constantly keeps track of new pages loading, and sets a 
-      # "newPageLoaded" flag when it first notices a page load. Running 
-      # any other Selenium command after turns the flag to false. Hence, 
-      # if you want to wait for a page to load, you must wait immediately 
+      #
+      # Selenium constantly keeps track of new pages loading, and sets a
+      # "newPageLoaded" flag when it first notices a page load. Running
+      # any other Selenium command after turns the flag to false. Hence,
+      # if you want to wait for a page to load, you must wait immediately
       # after a Selenium command that caused a page-load.
-      # 
-      # * 'timeout_in_seconds' is a timeout in seconds, after which this 
+      #
+      # * 'timeout_in_seconds' is a timeout in seconds, after which this
       #   command will return with an error
       def wait_for_page(timeout_in_seconds=nil)
-        remote_control_command "waitForPageToLoad", 
+        remote_control_command "waitForPageToLoad",
             [actual_timeout_in_milliseconds(timeout_in_seconds),]
       end
       alias_method :wait_for_page_to_load, :wait_for_page
@@ -52,7 +52,7 @@ module Selenium
       # window_id is the JavaScript window "name" of the window that will appear (not the text of the title bar)
       # timeout_in_seconds is a timeout in seconds, after which the action will return with an error
       def wait_for_popup(window_id, timeout_in_seconds=nil)
-        remote_control_command "waitForPopUp", 
+        remote_control_command "waitForPopUp",
             [window_id, actual_timeout_in_milliseconds(timeout_in_seconds) ,]
       end
 
@@ -110,7 +110,7 @@ module Selenium
 	          wait_for_condition options[:javascript], options[:timeout_in_seconds]
         end
       end
-	
+
       # Gets the entire text of the page.
       def body_text
         string_command "getBodyText"
@@ -118,9 +118,9 @@ module Selenium
 
       # Clicks on a link, button, checkbox or radio button.
       #
-      # 'locator' is an element locator      
-      # 
-      # Using 'options' you can automatically wait for an event to happen after the 
+      # 'locator' is an element locator
+      #
+      # Using 'options' you can automatically wait for an event to happen after the
       # click. e.g.
       #
       # * click "a_locator", :wait_for => :page                                                      # will wait for a new page to load
@@ -175,9 +175,9 @@ module Selenium
          boolean_command "isVisible", [locator,]
       end
 
-      # Gets the (whitespace-trimmed) value of an input field 
+      # Gets the (whitespace-trimmed) value of an input field
       # (or anything else with a value parameter).
-      # For checkbox/radio elements, the value will be "on" or "off" 
+      # For checkbox/radio elements, the value will be "on" or "off"
       # depending on whether the element is checked or not.
       #
       # * 'locator' is an element locator
@@ -185,12 +185,12 @@ module Selenium
         string_command "getValue", [locator,]
       end
 
-      # Alias for +field+ 
+      # Alias for +field+
       def value(locator)
 	      field locator
       end
 
-      # Returns whether a toggle-button (checkbox/radio) is checked. 
+      # Returns whether a toggle-button (checkbox/radio) is checked.
       # Fails if the specified element doesn't exist or isn't a toggle-button.
       #
       # * 'locator' is an element locator pointing to a checkbox or radio button
@@ -203,9 +203,9 @@ module Selenium
         boolean_command "isAlertPresent"
       end
 
-      # Retrieves the message of a JavaScript alert generated during the previous action, 
+      # Retrieves the message of a JavaScript alert generated during the previous action,
       # or fail if there were no alerts.
-      # 
+      #
       # Getting an alert has the same effect as manually clicking OK. If an
       # alert is generated but you do not consume it with getAlert, the next Selenium action
       # will fail.
@@ -216,11 +216,11 @@ module Selenium
       # Selenium does NOT support JavaScript alerts that are generated in a
       # page's onload() event handler. In this case a visible dialog WILL be
       # generated and Selenium will hang until someone manually clicks OK.
-      # 
+      #
       def alert
         string_command "getAlert"
       end
-      
+
       # Whether a confirmation has been auto-acknoledged (i.e. confirm() been called)
       def confirmation?
         boolean_command "isConfirmationPresent"
@@ -228,17 +228,17 @@ module Selenium
 
       # Retrieves the message of a JavaScript confirmation dialog generated during
       # the previous action.
-      # 
+      #
       # By default, the confirm function will return true, having the same effect
       # as manually clicking OK. This can be changed by prior execution of the
-      # chooseCancelOnNextConfirmation command. 
-      # 
+      # chooseCancelOnNextConfirmation command.
+      #
       # If an confirmation is generated but you do not consume it with getConfirmation,
       # the next Selenium action will fail.
-      # 
+      #
       # NOTE: under Selenium, JavaScript confirmations will NOT pop up a visible
       # dialog.
-      # 
+      #
       # NOTE: Selenium does NOT support JavaScript confirmations that are
       # generated in a page's onload() event handler. In this case a visible
       # dialog WILL be generated and Selenium will hang until you manually click
@@ -254,7 +254,7 @@ module Selenium
 
       # Retrieves the message of a JavaScript question prompt dialog generated during
       # the previous action.
-      # 
+      #
       # Successful handling of the prompt requires prior execution of the
       # answerOnNextPrompt command. If a prompt is generated but you
       # do not get/verify it, the next Selenium action will fail.
@@ -271,14 +271,14 @@ module Selenium
 
       # Returns the result of evaluating the specified JavaScript snippet whithin the browser.
       #  The snippet may have multiple lines, but only the result of the last line will be returned.
-      # 
+      #
       # Note that, by default, the snippet will run in the context of the "selenium"
       # object itself, so <tt>this</tt> will refer to the Selenium object.  Use <tt>window</tt> to
       # refer to the window of your application, e.g. <tt>window.document.getElementById('foo')</tt>
       # If you need to use
       # a locator to refer to a single element in your application page, you can
       # use <tt>this.browserbot.findElement("id=foo")</tt> where "id=foo" is your locator.
-      # 
+      #
       # * 'script' is the JavaScript snippet to run
       def js_eval(script)
         string_command "getEval", [script,]
@@ -286,7 +286,7 @@ module Selenium
 
       # Set the Remote Control timeout (as opposed to the client side driver timeout).
       # This timout specifies the amount of time that Selenium Core will wait for actions to complete.
-      # 
+      #
       # The default timeout is 30 seconds.
       # 'timeout' is a timeout in seconds, after which the action will return with an error
       #
@@ -306,22 +306,22 @@ module Selenium
       # Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
       # The snippet may have multiple lines, but only the result of the last line
       # will be considered.
-      # 
+      #
       # Note that, by default, the snippet will be run in the runner's test window, not in the window
       # of your application.  To get the window of your application, you can use
       # the JavaScript snippet <tt>selenium.browserbot.getCurrentWindow()</tt>, and then
       # run your JavaScript in there
-      # 
+      #
       #
       # * 'script' is the JavaScript snippet to run
       # * 'timeout_in_seconds' is a timeout in seconds, after which this command will return with an error
       def wait_for_condition(script, timeout_in_seconds = nil)
-        remote_control_command "waitForCondition", 
+        remote_control_command "waitForCondition",
             [script, actual_timeout_in_milliseconds(timeout_in_seconds),]
       end
 
       # Simulates the user clicking the "back" button on their browser.
-      # Using 'options' you can automatically wait for an event to happen after the 
+      # Using 'options' you can automatically wait for an event to happen after the
       # click. e.g.
       #
       # * go_back :wait_for => :page                                                      # will wait for a new page to load
@@ -387,7 +387,7 @@ module Selenium
       # need to delete it using the exact same path and domain that were used to create the cookie.
       # If the path is wrong, or the domain is wrong, the cookie simply won't be deleted.  Also
       # note that specifying a domain that isn't a subset of the current domain will usually fail.
-      # 
+      #
       # Since there's no way to discover at runtime the original path and domain of a given cookie,
       # we've added an option called 'recurse' to try all sub-domains of the current domain with
       # all paths that are a subset of the current path.  Beware; this option can be slow.  In
@@ -428,15 +428,15 @@ module Selenium
       #
       # The network traffic is returned in the format it was requested. Valid
       # values are: :json, :xml, or :plain.
-      # 
-      # Warning: For browser_network_traffic to work you need to start your 
-      # browser session with the option "captureNetworkTraffic=true", which 
+      #
+      # Warning: For browser_network_traffic to work you need to start your
+      # browser session with the option "captureNetworkTraffic=true", which
       # will force ALL traffic to go to the Remote Control proxy even for
       # more efficient browser modes like `*firefox` and `*safari`.
       def browser_network_traffic(format = :plain)
         raise "format must be :plain, :json, or :xml"   \
             unless [:plain, :json, :xml].include?(format)
-              
+
         remote_control_command "captureNetworkTraffic", [format.to_s]
       end
 
@@ -462,8 +462,8 @@ module Selenium
         js_eval "selenium.browserbot.shouldHighlightLocatedElement = #{boolean}"
       end
 
-      # Get execution delay in milliseconds, i.e. a pause delay following 
-      # each selenium operation. By default, there is no such delay 
+      # Get execution delay in milliseconds, i.e. a pause delay following
+      # each selenium operation. By default, there is no such delay
       # (value is 0).
       def execution_delay
         string_command "getSpeed"
@@ -478,7 +478,7 @@ module Selenium
       end
 
       def actual_timeout_in_milliseconds(timeout_in_seconds)
-        actual_timeout = (timeout_in_seconds || 
+        actual_timeout = (timeout_in_seconds ||
                           default_timeout_in_seconds).to_i
         actual_timeout * 1000
       end

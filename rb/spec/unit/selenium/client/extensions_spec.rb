@@ -4,9 +4,9 @@ describe Selenium::Client::Extensions do
   class ExtensionsClient
     include Selenium::Client::Extensions
   end
-  
+
   let(:client) { ExtensionsClient.new }
-  
+
   describe "#wait_for_text" do
     it "waits for the innerHTML content of an element when a locator is provided" do
       client.should_receive(:wait_for_condition).with(/findElement\('a_locator'\)/, anything)

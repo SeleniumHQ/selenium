@@ -1,9 +1,9 @@
 module Selenium
   module Client
-    class CommandError < RuntimeError 
+    class CommandError < RuntimeError
     end
-  
-    class ProtocolError < RuntimeError 
+
+    class ProtocolError < RuntimeError
     end
   end
 end

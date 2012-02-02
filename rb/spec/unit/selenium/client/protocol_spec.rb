@@ -4,7 +4,7 @@ describe Selenium::Client::Protocol do
   class ProtocolClient
     include Selenium::Client::Protocol
   end
-  
+
   let(:client) { ProtocolClient.new }
 
   describe "#remote_control_command" do

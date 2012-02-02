@@ -4,7 +4,7 @@ describe Selenium::Client::Idiomatic do
   class IdiomaticClient
     include Selenium::Client::Idiomatic
   end
-  
+
   let(:client) { IdiomaticClient.new }
 
   it "has #text is an alias for get_text" do

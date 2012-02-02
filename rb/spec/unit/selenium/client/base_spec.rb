@@ -1,11 +1,11 @@
 require File.expand_path("../spec_helper", __FILE__)
 
 describe Selenium::Client::Base do
-  
-  class BaseClient 
+
+  class BaseClient
     include Selenium::Client::Base
   end
-  
+
   describe "#initialize with hash" do
     it "sets the host" do
       client = BaseClient.new :host => "the.host.com"

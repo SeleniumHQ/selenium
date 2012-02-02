@@ -5,6 +5,6 @@ module Selenium
     class Driver
       include Selenium::Client::Base
     end
-  
+
   end
 end
