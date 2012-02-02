@@ -59,7 +59,6 @@ namespace OpenQA.Selenium.IE
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Race condition can cause test to occasionally hang")]
         public void ShouldHandleShowModalDialogWindows()
         {
             driver.Url = alertsPage;
@@ -67,14 +66,9 @@ namespace OpenQA.Selenium.IE
             IWebElement element = driver.FindElement(By.Id("dialog"));
             element.Click();
 
-            DateTime end = DateTime.Now.Add(TimeSpan.FromSeconds(5));
+            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+
             ReadOnlyCollection<string> windowHandles = driver.WindowHandles;
-            while (windowHandles.Count < 2 && DateTime.Now < end)
-            {
-                System.Threading.Thread.Sleep(100);
-                windowHandles = driver.WindowHandles;
-            }
-            
             Assert.AreEqual(2, windowHandles.Count);
             
             string dialogHandle = string.Empty;
@@ -92,15 +86,10 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(dialogHandle);
             IWebElement closeElement = driver.FindElement(By.Id("close"));
             closeElement.Click();
-            
-            end = DateTime.Now.Add(TimeSpan.FromSeconds(5));
+
+            WaitFor(() => { return driver.WindowHandles.Count == 1; });
+
             windowHandles = driver.WindowHandles;
-            while (windowHandles.Count > 1 && DateTime.Now < end)
-            {
-                System.Threading.Thread.Sleep(100);
-                windowHandles = driver.WindowHandles;
-            }
-            
             Assert.AreEqual(1, windowHandles.Count);
             driver.SwitchTo().Window(originalWindowHandle);
         }
