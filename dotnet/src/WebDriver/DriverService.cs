@@ -41,8 +41,8 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Initializes a new instance of the DriverService class.
         /// </summary>
-        /// <param name="executable">The full path to the ChromeDriver executable.</param>
-        /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
+        /// <param name="executable">The full path to the executable providing the service to drive the browser.</param>
+        /// <param name="port">The port on which the driver executable should listen.</param>
         protected DriverService(string executable, int port)
         {
             this.driverServicePath = executable;
@@ -148,7 +148,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Stops the ChromeDriverService.
+        /// Stops the DriverService.
         /// </summary>
         [SecurityPermission(SecurityAction.Demand)]
         private void Stop()
