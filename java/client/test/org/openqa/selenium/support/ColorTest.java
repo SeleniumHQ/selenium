@@ -20,20 +20,20 @@ public class ColorTest {
 
   @Test
   public void hexToHex() {
-    String hex = "#FF00A0";
+    String hex = "#ff00a0";
     assertEquals(hex, Color.fromString(hex).asHex());
   }
 
   @Test
   public void hexToRgb() {
-    String hex = "#01FF03";
+    String hex = "#01Ff03";
     String rgb = "rgb(1, 255, 3)";
     assertEquals(rgb, Color.fromString(hex).asRgb());
   }
 
   @Test
   public void rgbToHex() {
-    String hex = "#01FF03";
+    String hex = "#01ff03";
     String rgb = "rgb(1, 255, 3)";
     assertEquals(hex, Color.fromString(rgb).asHex());
   }
