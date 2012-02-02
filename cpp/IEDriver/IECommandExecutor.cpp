@@ -323,9 +323,19 @@ void IECommandExecutor::DispatchCommand() {
     BrowserHandle browser;
     int status_code = this->GetCurrentBrowser(&browser);
     if (status_code == SUCCESS) {
+      bool alert_is_active = false;
       HWND alert_handle = browser->GetActiveDialogWindowHandle();
+      if (alert_handle != NULL) {
+        // Found a window handle, make sure it's an actual alert,
+        // and not a showModalDialog() window.
+        vector<char> window_class_name(34);
+        ::GetClassNameA(alert_handle, &window_class_name[0], 34);
+        if (strcmp("#32770", &window_class_name[0]) == 0) {
+          alert_is_active = true;
+        }
+      }
       int command_type = this->current_command_.command_type();
-      if (alert_handle != NULL &&
+      if (alert_is_active &&
           command_type != GetAlertText &&
           command_type != SendKeysToAlert &&
           command_type != AcceptAlert &&
