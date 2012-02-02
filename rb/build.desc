@@ -275,6 +275,7 @@ ruby_test(name = "rc-client-integration",
   ],
   deps = [
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    ":rc-client"
+    ":rc-client",
+    ":remote"
   ]
 )

@@ -41,18 +41,29 @@ class SeleniumClientTestEnvironment
     end
   end
 
+  def server_host
+    ENV['SELENIUM_RC_HOST'] || "localhost"
+  end
+
+  def server_port
+    ENV['SELENIUM_RC_PORT'] || 4444
+  end
+
+  def app_url
+    application_host = ENV['SELENIUM_APPLICATION_HOST'] || "localhost"
+    application_port = ENV['SELENIUM_APPLICATION_PORT'] || "4567"
+
+    "http://#{application_host}:#{application_port}"
+  end
+
   private
 
   def new_driver_with_session
-    application_host = ENV['SELENIUM_APPLICATION_HOST'] || "localhost"
-    application_port = ENV['SELENIUM_APPLICATION_PORT'] || "4567"
-    url              = "http://#{application_host}:#{application_port}"
-
-    driver = Selenium::Client::Driver.new :host               => (ENV['SELENIUM_RC_HOST'] || "localhost"),
-                                          :port               => (ENV['SELENIUM_RC_PORT'] || 4444),
+    driver = Selenium::Client::Driver.new :host               => server_host,
+                                          :port               => server_port,
                                           :browser            => (ENV['SELENIUM_BROWSER'] || "*firefox"),
                                           :timeout_in_seconds => (ENV['SELENIUM_RC_TIMEOUT'] || 20),
-                                          :url                => url
+                                          :url                => app_url
 
     driver.start_new_browser_session
     driver.set_context self.class.name
@@ -63,7 +74,7 @@ class SeleniumClientTestEnvironment
   def start_server
     @server = Selenium::Server.new(@jar, :background => true,
                                          :timeout    => 3*60,
-                                         :port       => 4444,
+                                         :port       => server_port,
                                          :log        => true)
 
     @server << "-singleWindow"
@@ -91,6 +102,9 @@ end # SeleniumClientTestEnvironment
 
 
 RSpec.configure do |config|
+  if ENV['focus']
+    config.filter_run :focus => true
+  end
 
   config.after(:suite) do
     $selenium_client_test_environment && $selenium_client_test_environment.stop
