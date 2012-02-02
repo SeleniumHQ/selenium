@@ -186,6 +186,24 @@ visualc_library(name = "ie_x64_dll",
   out = "x64/Release/IEDriver.dll"
 )
 
+visualc_library(name = "ie_win32_exe",
+  deps = [
+    ":ie_win32_dll"
+  ],
+  platform = "Win32",
+  project = "InternetExplorerDriver/InternetExplorerDriver.vcxproj",
+  out = "Win32/Release/InternetExplorerDriver.exe"
+)
+
+visualc_library(name = "ie_x64_exe",
+  deps = [
+    ":ie_x64_dll"
+  ],
+  platform = "x64",
+  project = "InternetExplorerDriver/InternetExplorerDriver.vcxproj",
+  out = "x64/Release/InternetExplorerDriver.exe"
+)
+
 js_fragment_header(name = "atoms",
   deps = [
     "//javascript/webdriver/atoms:click:ie",
