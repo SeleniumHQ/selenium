@@ -85,7 +85,7 @@ int GetPort(int argc, _TCHAR* argv[]) {
       if (arg.find(L"--port=") == 0 ||
           arg.find(L"-port=") == 0 ||
           arg.find(L"/port=") == 0) {
-        int equal_pos = arg.find(L"=");
+        size_t equal_pos = arg.find(L"=");
         std::wstring port_string = arg.substr(equal_pos + 1);
         int port_value = _wtoi(port_string.c_str());
         if (port_value > 0) {
