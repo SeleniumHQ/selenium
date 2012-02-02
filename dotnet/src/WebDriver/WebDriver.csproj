@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
+    <Compile Include="IE\InternetExplorerOptions.cs" />
     <Compile Include="Remote\DriverServiceCommandExecutor.cs" />
     <Compile Include="DriverServiceNotFoundException.cs" />
     <Compile Include="DriverService.cs" />

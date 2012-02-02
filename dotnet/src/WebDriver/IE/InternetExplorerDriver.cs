@@ -69,10 +69,12 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// The name of the ICapabilities setting to use to ignore Protected Mode settings.
         /// </summary>
+        [Obsolete("This constant will be removed in a future version. Use InternetExplorerOptions instead.")]
         public static readonly string IntroduceInstabilityByIgnoringProtectedModeSettings = "ignoreProtectedModeSettings";
 
         private static int serverPort;
-        private InternetExplorerDriverServer server = new InternetExplorerDriverServer();
+        private static bool useLegacyServer;
+        private InternetExplorerDriverServer server;
 
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriver class.
@@ -87,7 +89,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="port">The port to use to communicate with the IE server.</param>
         public InternetExplorerDriver(int port)
-            : this(port, DesiredCapabilities.InternetExplorer())
+            : this(port, new InternetExplorerOptions())
         {
         }
 
@@ -95,8 +97,18 @@ namespace OpenQA.Selenium.IE
         /// Initializes a new instance of the InternetExplorerDriver class with the desired capabilities.
         /// </summary>
         /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
+        [Obsolete("Deprecated. Please use constructors using InternetExplorerOptions.")]
         public InternetExplorerDriver(ICapabilities desiredCapabilities)
             : this(0, desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class with the desired options.
+        /// </summary>
+        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        public InternetExplorerDriver(InternetExplorerOptions options)
+            : this(0, options)
         {
         }
 
@@ -105,8 +117,19 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="port">The port to use to communicate with the IE server.</param>
         /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
+        [Obsolete("Deprecated. Please use constructors using InternetExplorerOptions.")]
         public InternetExplorerDriver(int port, ICapabilities desiredCapabilities)
             : this(port, desiredCapabilities, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class for the specified port and desired capabilities.
+        /// </summary>
+        /// <param name="port">The port to use to communicate with the IE server.</param>
+        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        public InternetExplorerDriver(int port, InternetExplorerOptions options)
+            : this(port, options, TimeSpan.FromSeconds(60))
         {
         }
 
@@ -116,8 +139,61 @@ namespace OpenQA.Selenium.IE
         /// <param name="port">The port to use to communicate with the IE server.</param>
         /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        [Obsolete("Deprecated. Please use constructors using InternetExplorerOptions.")]
         public InternetExplorerDriver(int port, ICapabilities desiredCapabilities, TimeSpan commandTimeout)
-            : base(CreateServerUri(port), desiredCapabilities, commandTimeout)
+            : base(GetCommandExecutor(port, desiredCapabilities, commandTimeout), desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class for the specified port, options, and command timeout.
+        /// </summary>
+        /// <param name="port">The port to use to communicate with the IE server.</param>
+        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public InternetExplorerDriver(int port, InternetExplorerOptions options, TimeSpan commandTimeout)
+            : base(GetCommandExecutor(port, options.ToCapabilities(), commandTimeout), options.ToCapabilities())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing InternetExplorerDriver.exe.
+        /// </summary>
+        /// <param name="internetExplorerDriverDirectory">The full path to the directory containing InternetExplorerDriver.exe.</param>
+        public InternetExplorerDriver(string internetExplorerDriverDirectory)
+            : this(internetExplorerDriverDirectory, new InternetExplorerOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing InternetExplorerDriver.exe and command timeout.
+        /// </summary>
+        /// <param name="internetExplorerDriverDirectory">The full path to the directory containing InternetExplorerDriver.exe.</param>
+        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        public InternetExplorerDriver(string internetExplorerDriverDirectory, InternetExplorerOptions options)
+            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverDirectory), options, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing InternetExplorerDriver.exe and command timeout.
+        /// </summary>
+        /// <param name="internetExplorerDriverDirectory">The full path to the directory containing InternetExplorerDriver.exe.</param>
+        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public InternetExplorerDriver(string internetExplorerDriverDirectory, InternetExplorerOptions options, TimeSpan commandTimeout)
+            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverDirectory), options, commandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the InternetExplorerDriver class using the specified <see cref="DriverService"/>.
+        /// </summary>
+        /// <param name="service">The <see cref="DriverService"/> to use.</param>
+        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        private InternetExplorerDriver(DriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
         {
         }
 
@@ -137,14 +213,51 @@ namespace OpenQA.Selenium.IE
         }
         #endregion
 
+        private static ICommandExecutor GetCommandExecutor(int port, ICapabilities capabilities, TimeSpan commandTimeout)
+        {
+            // This method should be completely removed when the standalone server
+            // is in widespread use.
+            ICommandExecutor executor = null;
+            if (capabilities.HasCapability("useLegacyInternalServer"))
+            {
+                useLegacyServer = (bool)capabilities.GetCapability("useLegacyInternalServer");
+                executor = new HttpCommandExecutor(CreateServerUri(port), commandTimeout);
+            }
+            else
+            {
+                useLegacyServer = false;
+                try
+                {
+                    executor = new DriverServiceCommandExecutor(InternetExplorerDriverService.CreateDefaultService(), commandTimeout);
+                }
+                catch (DriverServiceNotFoundException ex)
+                {
+                    throw new WebDriverException("You will need to use add InternetExplorerDriver.UseLegacyInternalServer to the desired capabilities to use the internal native code server library. This functionality will be deprecated in favor of the standalone InternetExplorerDriver.exe server.", ex);
+                }
+            }
+
+            return executor;
+        }
+
         /// <summary>
         /// Starts the command executor, enabling communication with the browser.
         /// </summary>
         protected override void StartClient()
         {
-            if (!InternetExplorerDriverServer.IsRunning)
+            if (useLegacyServer)
             {
-                this.server.Start(serverPort);
+                if (this.server == null)
+                {
+                    this.server = new InternetExplorerDriverServer();
+                }
+
+                if (this.server != null)
+                {
+                    if (!InternetExplorerDriverServer.IsRunning)
+                    {
+                        this.server.Start(serverPort);
+                    }
+                }
             }
         }
 
@@ -153,9 +266,12 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         protected override void StopClient()
         {
-            // StopClient is called by RemoteWebDriver.Dispose, so we should be
-            // okay calling lib.Dispose() here.
-            this.server.Dispose();
+            if (this.server != null)
+            {
+                // StopClient is called by RemoteWebDriver.Dispose, so we should be
+                // okay calling lib.Dispose() here.
+                this.server.Dispose();
+            }
         }
 
         private static Uri CreateServerUri(int port)
