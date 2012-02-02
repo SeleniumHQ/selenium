@@ -98,6 +98,64 @@ int GetPort(int argc, _TCHAR* argv[]) {
   return port;
 }
 
+std::string GetProcessArchitectureDescription() {
+  std::string arch_description = "32-bit";
+  SYSTEM_INFO system_info;
+  ::GetNativeSystemInfo(&system_info);
+  if (system_info.wProcessorArchitecture != 0) {
+    BOOL is_emulated;
+    HANDLE process_handle = ::GetCurrentProcess();
+    ::IsWow64Process(process_handle, &is_emulated);
+    if (!is_emulated) {
+      arch_description = "64-bit";
+    }
+    ::CloseHandle(process_handle);
+  }
+
+  return arch_description;
+}
+
+std::string GetExecutableVersion() {
+  struct LANGANDCODEPAGE {
+    WORD language;
+    WORD code_page;
+  } *lang_info;
+
+  // get the filename of the executable containing the version resource
+  std::vector<char> file_name_buffer(MAX_PATH + 1);
+  ::GetModuleFileNameA(NULL, &file_name_buffer[0], MAX_PATH);
+
+  DWORD dummy;
+  DWORD length = ::GetFileVersionInfoSizeA(&file_name_buffer[0],
+                                           &dummy);
+  std::vector<BYTE> version_buffer(length);
+  ::GetFileVersionInfoA(&file_name_buffer[0],
+                       dummy,
+                       length,
+                       &version_buffer[0]);
+
+  UINT page_count;
+  BOOL query_result = ::VerQueryValueA(&version_buffer[0],
+                                      "\\VarFileInfo\\Translation",
+                                      reinterpret_cast<void**>(&lang_info),
+                                      &page_count);
+    
+  char sub_block[MAX_PATH];
+  _snprintf_s(sub_block,
+               MAX_PATH,
+               MAX_PATH,
+               "\\StringFileInfo\\%04x%04x\\FileVersion",
+               lang_info->language,
+               lang_info->code_page);
+  LPVOID value = NULL;
+  UINT size;
+  query_result = ::VerQueryValueA(&version_buffer[0],
+                                 sub_block,
+                                 &value,
+                                 &size);
+  return static_cast<char*>(value);
+}
+
 int _tmain(int argc, _TCHAR* argv[]) {
   vector<TCHAR> temp_file_name_buffer(MAX_PATH);
   vector<TCHAR> temp_path_buffer(MAX_PATH);
@@ -131,7 +189,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
   int port = GetPort(argc, argv);
   start_server_proc(port);
-  std::cout << "Started InternetExplorerDriver" << std::endl;
+  std::cout << "Started InternetExplorerDriver server"
+            << " (" << GetProcessArchitectureDescription() << ")"
+            << std::endl;
+  std::cout << GetExecutableVersion()
+            << std::endl;
   std::cout << "Listening on port " << port << std::endl;
 
   // Create the shutdown event and wait for it to be signaled.
@@ -152,4 +214,3 @@ int _tmain(int argc, _TCHAR* argv[]) {
   ::DeleteFile(temp_file_name.c_str());
   return 0;
 }
-
