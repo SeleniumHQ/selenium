@@ -352,6 +352,23 @@ public class ExecutingAsyncJavascriptTest extends AbstractDriverTestCase {
     driver.getTitle();
   }
 
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
+  @NeedsLocalEnvironment(reason = "Relies on timing")
+  public void includesAlertInUnhandledAlertException() {
+    driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
+    String alertText = "Look! An alert!";
+    try {
+      ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('" + alertText + "'); }, 50);");
+      fail("Expected UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      Alert alert = e.getAlert();
+      assertNotNull(alert);
+      assertEquals(alertText, alert.getText());
+    }
+  }
+
   private long getNumDivElements() {
     // Selenium does not support "findElements" yet, so we have to do this through a script.
     return (Long) ((JavascriptExecutor) driver).executeScript(

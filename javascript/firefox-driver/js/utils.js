@@ -34,9 +34,10 @@ goog.require('goog.style');
  * @param {!number} code The error code.
  * @param {!string|Error} messageOrError The error message, or another Error to
  *     propagate.
+ * @param {!Object=} additional Additional fields bearing useful information.
  * @constructor
  */
-WebDriverError = function(code, messageOrError) {
+WebDriverError = function(code, messageOrError, additional) {
 
   var message;
   var stack;
@@ -48,6 +49,15 @@ WebDriverError = function(code, messageOrError) {
     stack = Error(message).stack.split('\n');
     stack.shift();
     stack = stack.join('\n');
+  }
+
+  this.additionalFields = [];
+
+  if (!!additional) {
+    for (var field in additional) {
+      this.additionalFields.push(field);
+      this[field] = additional[field];
+    }
   }
 
   /**

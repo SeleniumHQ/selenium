@@ -19,7 +19,51 @@ limitations under the License.
 package org.openqa.selenium;
 
 public class UnhandledAlertException extends WebDriverException {
+  
+  private final Alert locallyStoredAlert;
+
   public UnhandledAlertException(String commandName) {
+    this(commandName, null);
+  }
+  
+  public UnhandledAlertException(String commandName, String alertText) {
     super(commandName);
+    this.locallyStoredAlert = alertText == null ? null : new LocallyStoredAlert(alertText);
+  }
+
+  /*
+   * Returns null if alert text could not be retrieved.
+   */
+  public Alert getAlert() {
+    return this.locallyStoredAlert;
+  }
+  
+  private static class LocallyStoredAlert implements Alert {
+
+    private final String alertText;
+
+    public LocallyStoredAlert(String alertText) {
+      this.alertText = alertText;
+    }
+
+    public void dismiss() {
+      throwAlreadyDismissed();
+    }
+
+    public void accept() {
+      throwAlreadyDismissed();
+    }
+
+    public String getText() {
+      return this.alertText;
+    }
+
+    public void sendKeys(String keysToSend) {
+      throwAlreadyDismissed();
+    }
+    
+    private void throwAlreadyDismissed() {
+      throw new UnsupportedOperationException("Alert was already dismissed");
+    }
   }
 }

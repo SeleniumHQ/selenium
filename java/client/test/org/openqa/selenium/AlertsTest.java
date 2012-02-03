@@ -356,6 +356,20 @@ public class AlertsTest extends AbstractDriverTestCase {
     }
   }
 
+  @JavascriptEnabled
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
+  public void testIncludesAlertInUnhandledAlertException() {
+    driver.findElement(By.id("alert")).click();
+    try {
+      driver.getTitle();
+      fail("Expected UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      Alert alert = e.getAlert();
+      assertNotNull(alert);
+      assertEquals("cheese", alert.getText());
+    }
+  }
+
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
     return new Callable<Alert>() {
       public Alert call() throws Exception {

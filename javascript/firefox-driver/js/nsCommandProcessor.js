@@ -474,9 +474,11 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
         command.name != 'setAlertValue' &&
         command.name != 'acceptAlert' &&
         command.name != 'dismissAlert') {
+      var modalText = driver.modalOpen;
       fxdriver.modals.dismissAlert(driver);
+      fxdriver.Logger.dumpn('Sending error with alertText: ' + modalText);
       response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
-          'Modal dialog present'));
+          'Modal dialog present', {alertText: modalText}));
       return;
     }
   }

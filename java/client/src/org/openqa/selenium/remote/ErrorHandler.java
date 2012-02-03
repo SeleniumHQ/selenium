@@ -3,6 +3,8 @@ package org.openqa.selenium.remote;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
@@ -109,10 +111,24 @@ public class ErrorHandler {
     if (message != null && message.indexOf(duration1) == -1) {
       message = message + duration1;
     }
+    
+    Throwable toThrow = null;
+    
+    if (outerErrorType.equals(UnhandledAlertException.class)
+        && value instanceof Map) {
+      Map<String, Object> rawErrorData = (Map<String, Object>) value;
+      if (rawErrorData.containsKey("alertText")) {
+        toThrow = createThrowable(outerErrorType,
+            new Class<?>[] {String.class, String.class},
+            new Object[] {message, rawErrorData.get("alertText")});
+      }
+    }
 
-    Throwable toThrow = createThrowable(outerErrorType,
-        new Class<?>[] {String.class, Throwable.class},
-        new Object[] {message, cause});
+    if (toThrow == null) {
+      toThrow = createThrowable(outerErrorType,
+          new Class<?>[] {String.class, Throwable.class},
+          new Object[] {message, cause});
+    }
 
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,

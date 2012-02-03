@@ -46,5 +46,11 @@ fxdriver.error.toJSON = function(ex) {
     }
   }
 
+  if (ex['additionalFields'] && ex.additionalFields.length) {
+    for (var i = 0; i < ex.additionalFields.length; ++i) {
+      json[ex.additionalFields[i]] = ex[ex.additionalFields[i]];
+    }
+  }
+
   return json;
 };

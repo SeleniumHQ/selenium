@@ -164,13 +164,12 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
       // tries to respond with a result, it doesn't do anything, so that this
       // codepath can be followed.
       fxdriver.modals.isModalPresent(function(present) {
-        res.status = bot.ErrorCode.MODAL_DIALOG_OPENED;
-        res.value = 'Unexpected modal dialog (text: ' + text + ')';
+	var errorMessage = 'Unexpected modal dialog (text: ' + text + ')';
         if (present) {
           try {
             fxdriver.modals.dismissAlert(driver);
           } catch (e) {
-            res.value +=
+            errorMessage +=
                 ' The alert could not be closed. The browser may be in a ' +
                 'wildly inconsistent state, and the alert may still be ' +
                 'open. This is not good. If you can reliably reproduce this' +
@@ -179,9 +178,10 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
                 'with reproduction steps. Exception message: ' + e;
           }
         } else {
-          res.value += ' The alert disappeared before it could be closed.';
+          errorMessage += ' The alert disappeared before it could be closed.';
         }
-        res.send();
+        res.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
+            errorMessage, {alertText: text}));
       }, 2000);
     } else {
       // We hope that modals can only be opened by actions which don't pay
