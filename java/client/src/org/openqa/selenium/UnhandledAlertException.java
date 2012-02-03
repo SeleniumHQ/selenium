@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.io.Serializable;
+
 public class UnhandledAlertException extends WebDriverException {
   
   private final Alert locallyStoredAlert;
@@ -38,7 +40,8 @@ public class UnhandledAlertException extends WebDriverException {
     return this.locallyStoredAlert;
   }
   
-  private static class LocallyStoredAlert implements Alert {
+  private static class LocallyStoredAlert implements Alert, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final String alertText;
 
