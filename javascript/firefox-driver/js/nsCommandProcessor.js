@@ -32,6 +32,9 @@ goog.require('fxdriver.error');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.modals');
 
+
+var loadStrategy_ = 'conservative';
+
 /**
  * When this component is loaded, load the necessary subscripts.
  */
@@ -60,6 +63,12 @@ goog.require('fxdriver.modals');
 
     var fileName = fileProtocolHandler.getURLSpecFromFile(file);
     loader.loadSubScript(fileName);
+  }
+
+  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces["nsIPrefBranch"]);
+
+  if (prefs.prefHasUserValue('webdriver.load.strategy')) {
+    loadStrategy_ = prefs.getCharPref('webdriver.load.strategy');
   }
 })();
 
@@ -212,6 +221,10 @@ DelayedCommand.prototype.execute = function(ms) {
  *     command for a pending request in the current window's nsILoadGroup.
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
+  if ('unstable' == loadStrategy_) {
+    return false;
+  }
+
   if (this.loadGroup_.isPending()) {
     var hasOnLoadBlocker = false;
     var numPending = 0;
