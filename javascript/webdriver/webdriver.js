@@ -99,7 +99,8 @@ webdriver.WebDriver = function(session, executor) {
 webdriver.WebDriver.attachToSession = function(executor, sessionId) {
   return webdriver.WebDriver.acquireSession_(executor,
       new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
-          setParameter('sessionId', sessionId));
+          setParameter('sessionId', sessionId),
+      'WebDriver.attachToSession()');
 };
 
 
@@ -115,7 +116,8 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
 webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
   return webdriver.WebDriver.acquireSession_(executor,
       new webdriver.Command(webdriver.CommandName.NEW_SESSION).
-          setParameter('desiredCapabilities', desiredCapabilities));
+          setParameter('desiredCapabilities', desiredCapabilities),
+      'WebDriver.createSession()');
 };
 
 
@@ -127,15 +129,20 @@ webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
  *     querying for session details.
  * @param {!webdriver.Command} command The command to send to fetch the session
  *     details.
+ * @param {string} description A descriptive debug label for this action.
  * @return {!webdriver.WebDriver} A new WebDriver client for the session.
  * @private
  */
-webdriver.WebDriver.acquireSession_ = function(executor, command) {
+webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
   var fn = goog.bind(executor.execute, executor, command);
-  var session = webdriver.promise.checkedNodeCall(fn).then(function(response) {
-    webdriver.error.checkResponse(response);
-    return new webdriver.Session(response['sessionId'], response['value']);
-  });
+  var session = webdriver.promise.Application.getInstance().schedule(
+      description, function() {
+        return webdriver.promise.checkedNodeCall(fn).then(function(response) {
+          webdriver.error.checkResponse(response);
+          return new webdriver.Session(response['sessionId'],
+                                       response['value']);
+        });
+      });
   return new webdriver.WebDriver(session, executor);
 };
 

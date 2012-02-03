@@ -101,7 +101,7 @@ limitations under the License.
 
 
   TestHelper = function() {
-    this.executor_ = mockControl.createStrictMock(webdriver.CommandExecutor);
+    this.executor = mockControl.createStrictMock(webdriver.CommandExecutor);
     this.execute = function() {
       fail('Expectations not set!');
     };
@@ -151,14 +151,16 @@ limitations under the License.
     this.helper_ = testHelper;
     this.name_ = commandName;
     this.toDo_ = null;
-    this.sessionId_ = this.name_ == CName.NEW_SESSION ? null : SESSION_ID;
+    this.sessionId_ = SESSION_ID;
     this.withParameters(opt_parameters || {});
   };
 
 
   TestHelper.Command.prototype.withParameters = function(parameters) {
     this.parameters_ = parameters;
-    this.parameters_['sessionId'] = this.sessionId_;
+    if (this.name_ !== CName.NEW_SESSION) {
+      this.parameters_['sessionId'] = this.sessionId_;
+    }
     return this;
   };
 
@@ -166,7 +168,7 @@ limitations under the License.
   TestHelper.Command.prototype.buildExpectation_ = function() {
     var commandMatcher = createCommandMatcher(this.name_, this.parameters_);
     assertNotNull(this.toDo_);
-    this.helper_.executor_.
+    this.helper_.executor.
         execute(commandMatcher, goog.testing.mockmatchers.isFunction).
         $does(this.toDo_);
   };
@@ -221,7 +223,7 @@ limitations under the License.
    */
   TestHelper.prototype.createDriver = function(opt_session) {
     var session = opt_session || new webdriver.Session(SESSION_ID, {});
-    return new webdriver.WebDriver(session, this.executor_);
+    return new webdriver.WebDriver(session, this.executor);
   };
 
 
@@ -232,115 +234,87 @@ limitations under the License.
   //////////////////////////////////////////////////////////////////////////////
 
   function testAttachToSession_sessionIsAvailable() {
-    var commandMatcher = createCommandMatcher(CName.DESCRIBE_SESSION, {
-      'sessionId': 'foo'
-    });
-
-    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
-    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
-        $does(function(command, callback) {
-          callback(null, {
-            'status': bot.ErrorCode.SUCCESS,
-            'sessionId': 'foo',
-            'value': { 'browserName': 'firefox' }
-          });
-        });
-    mockControl.$replayAll();
-
-    var driver = webdriver.WebDriver.attachToSession(executor, 'foo');
-    verifyAll();
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.DESCRIBE_SESSION).
+        withParameters({'sessionId': SESSION_ID}).
+        andReturnSuccess({'browserName': 'firefox'}).
+        replayAll();
 
     var callback;
+    var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
+        SESSION_ID);
     driver.getSession().then(callback = callbackHelper(function(session) {
-      assertEquals('foo', session.getId());
+      webdriver.test.testutil.assertObjectEquals({
+        'value':'test_session_id'
+      }, session.getId());
       assertEquals('firefox', session.getCapability('browserName'));
     }));
+    testHelper.execute();
     callback.assertCalled();
   }
 
 
   function testAttachToSession_failsToGetSessionInfo() {
-    var commandMatcher = createCommandMatcher(CName.DESCRIBE_SESSION, {
-      'sessionId': 'foo'
-    });
-
-    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
-    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
-        $does(function(command, callback) {
-          callback(null, {
-            'status': bot.ErrorCode.UNKNOWN_ERROR,
-            'value': { 'message': 'boom' }
-          });
-        });
-    mockControl.$replayAll();
-
-    var driver = webdriver.WebDriver.attachToSession(executor, 'foo');
-    verifyAll();
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.DESCRIBE_SESSION).
+        withParameters({'sessionId': SESSION_ID}).
+        andReturnError(ECode.UNKNOWN_ERROR, {'message': 'boom'}).
+        replayAll();
 
     var errback;
+    var driver = webdriver.WebDriver.attachToSession(testHelper.executor,
+        SESSION_ID);
     driver.getSession().then(null, errback = callbackHelper(function(e) {
       assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
       assertEquals('boom', e.message);
     }));
+    testHelper.execute();
     errback.assertCalled();
   }
 
 
   function testCreateSession_happyPath() {
-    var commandMatcher = createCommandMatcher(CName.NEW_SESSION, {
-      'desiredCapabilities': {'browserName': 'firefox'}
-    });
-
-    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
-    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
-        $does(function(command, callback) {
-          callback(null, {
-            'status': bot.ErrorCode.SUCCESS,
-            'sessionId': 'foo',
-            'value': { 'browserName': 'firefox' }
-          });
-        });
-    mockControl.$replayAll();
-
-    var driver = webdriver.WebDriver.createSession(executor, {
-      'browserName': 'firefox'
-    });
-    verifyAll();
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.NEW_SESSION).
+        withParameters({
+          'desiredCapabilities': {'browserName': 'firefox'}
+        }).
+        andReturnSuccess({'browserName': 'firefox'}).
+        replayAll();
 
     var callback;
+    var driver = webdriver.WebDriver.createSession(testHelper.executor, {
+      'browserName': 'firefox'
+    });
     driver.getSession().then(callback = callbackHelper(function(session) {
-      assertEquals('foo', session.getId());
+      webdriver.test.testutil.assertObjectEquals({
+        'value':'test_session_id'
+      }, session.getId());
       assertEquals('firefox', session.getCapability('browserName'));
     }));
+    testHelper.execute();
     callback.assertCalled();
   }
 
 
   function testCreateSession_failsToCreateSession() {
-    var commandMatcher = createCommandMatcher(CName.NEW_SESSION, {
-      'desiredCapabilities': {'browserName': 'firefox'}
-    });
-
-    var executor = mockControl.createStrictMock(webdriver.CommandExecutor);
-    executor.execute(commandMatcher, goog.testing.mockmatchers.isFunction).
-        $does(function(command, callback) {
-          callback(null, {
-            'status': bot.ErrorCode.UNKNOWN_ERROR,
-            'value': { 'message': 'boom' }
-          });
-        });
-    mockControl.$replayAll();
-
-    var driver = webdriver.WebDriver.createSession(executor, {
-      'browserName': 'firefox'
-    });
-    verifyAll();
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.NEW_SESSION).
+        withParameters({
+          'desiredCapabilities': {'browserName': 'firefox'}
+        }).
+        andReturnError(ECode.UNKNOWN_ERROR, {'message': 'boom'}).
+        replayAll();
 
     var errback;
+    var driver = webdriver.WebDriver.createSession(testHelper.executor, {
+      'browserName': 'firefox'
+    });
     driver.getSession().then(null, errback = callbackHelper(function(e) {
       assertEquals(bot.ErrorCode.UNKNOWN_ERROR, e.code);
       assertEquals('boom', e.message);
     }));
+    testHelper.execute();
     errback.assertCalled();
   }
 
