@@ -41,7 +41,7 @@ public class Proxy {
 
   public Proxy(Map<String, ?> raw) {
     if (raw.containsKey("proxyType") && raw.get("proxyType") != null) {
-      setProxyType(ProxyType.valueOf((String) raw.get("proxyType")));
+      setProxyType(ProxyType.valueOf(((String) raw.get("proxyType")).toUpperCase()));
     }
     if (raw.containsKey("ftpProxy") && raw.get("ftpProxy") != null) {
       setFtpProxy((String) raw.get("ftpProxy"));
