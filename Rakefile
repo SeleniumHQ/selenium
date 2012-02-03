@@ -345,7 +345,7 @@ GeckoSDKs.new do |sdks|
            '9ce89327cab356bc133675e5307cbdd3'
 
   sdks.add 'third_party/gecko-10/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk/xulrunner-8.0.en-US.linux-x86_64.sdk.tar.bz2',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.linux-x86_64.sdk.tar.bz2',
            '251cd1529050aa656a633a26883f12ac'
 
 end
