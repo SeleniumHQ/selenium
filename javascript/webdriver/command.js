@@ -27,6 +27,7 @@ goog.provide('webdriver.CommandResponse');
  * Describes a command to be executed by the WebDriverJS framework.
  * @param {!webdriver.CommandName} name The name of this command.
  * @constructor
+ * @export
  */
 webdriver.Command = function(name) {
 
@@ -48,6 +49,7 @@ webdriver.Command = function(name) {
 
 /**
  * @return {!webdriver.CommandName} This command's name.
+ * @export
  */
 webdriver.Command.prototype.getName = function() {
   return this.name_;
@@ -59,6 +61,7 @@ webdriver.Command.prototype.getName = function() {
  * @param {string} name The parameter name.
  * @param {*} value The parameter value.
  * @return {!webdriver.Command} A self reference.
+ * @export
  */
 webdriver.Command.prototype.setParameter = function(name, value) {
   this.parameters_[name] = value;
@@ -70,6 +73,7 @@ webdriver.Command.prototype.setParameter = function(name, value) {
  * Sets the parameters for this command.
  * @param {!Object.<*>} parameters The command parameters.
  * @return {!webdriver.Command} A self reference.
+ * @export
  */
 webdriver.Command.prototype.setParameters = function(parameters) {
   this.parameters_ = parameters;
@@ -81,6 +85,7 @@ webdriver.Command.prototype.setParameters = function(parameters) {
  * Returns a named command parameter.
  * @param {string} key The parameter key to look up.
  * @return {*} The parameter value, or undefined if it has not been set.
+ * @export
  */
 webdriver.Command.prototype.getParameter = function(key) {
   return this.parameters_[key];
@@ -89,6 +94,7 @@ webdriver.Command.prototype.getParameter = function(key) {
 
 /**
  * @return {Object.<*>} The parameters to send with this command.
+ * @export
  */
 webdriver.Command.prototype.getParameters = function() {
   return this.parameters_;
@@ -100,6 +106,7 @@ webdriver.Command.prototype.getParameters = function() {
  * will support. Implemented as a map so the enumeration can be properly
  * exported as part of WebDriver's public API.
  * @type {!Object.<string>}
+ * @export
  */
 // TODO(jleyba): Delete obsolete command names.
 webdriver.CommandName = {
