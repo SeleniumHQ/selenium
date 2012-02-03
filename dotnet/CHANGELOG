@@ -1,3 +1,7 @@
+v2.18.1
+=======
+ * NuGet dependency release. No functional changes to the project.
+
 v2.18.0
 =======
  * Updated .NET WebDriver.Support assembly to depend on Castle Windsor 3.0

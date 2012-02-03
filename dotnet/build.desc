@@ -105,7 +105,7 @@ dotnet_package(name = "support-package",
   tags = "Selenium WebDriver browser automation support",
   packagedeps = [
     {":dotnet-package" : ""},
-    {"Castle.Core" : "3.0.0"}
+    {"Castle.Core" : "3.0.0.4001"}
   ],
   assemblies = [
     {"System.Drawing" : ""}
