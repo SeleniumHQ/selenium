@@ -51,12 +51,12 @@ binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff4.
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff5.so ABI=Linux_x86_64-gcc3 appversion=5.0.1 appversion=5.0
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff6.so ABI=Linux_x86_64-gcc3 appversion=6.0 appversion=6.0.1 appversion=6.0.2
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff7.so ABI=Linux_x86_64-gcc3 appversion=7.0 appversion=7.0.1
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-ff8.so ABI=Linux_x86_64-gcc3 appversion=8.0 appversion=8.0.1
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86_64-gcc3 appversion>=9.0
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86_64-gcc3 appversion=9.0 appversion=9.0.1
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86_64-gcc3 appversion>=10.0
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff3.so ABI=Linux_x86-gcc3 appversion<4
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff4.so ABI=Linux_x86-gcc3 appversion=4.0.1 appversion=4.0+
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff5.so ABI=Linux_x86-gcc3 appversion=5.0.1 appversion=5.0
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff6.so ABI=Linux_x86-gcc3 appversion=6.0 appversion=6.0.1 appversion=6.0.2
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff7.so ABI=Linux_x86-gcc3 appversion=7.0 appversion=7.0.1
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff8.so ABI=Linux_x86-gcc3 appversion=8.0 appversion=8.0.1
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86-gcc3 appversion>=9.0
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86-gcc3 appversion=9.0 appversion=9.0.1
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86-gcc3 appversion>=10.0
