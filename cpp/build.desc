@@ -29,14 +29,14 @@ visualc_library(name = "firefox7_dll",
 visualc_library(name = "firefoxprevious_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-previous.vcxproj",
-  file_deps = "third_party/gecko-8/win32",
+  file_deps = "third_party/gecko-9/win32",
   out = "Win32/Release/webdriver-firefox-previous.dll"
 )
 
 visualc_library(name = "firefoxlatest_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-latest.vcxproj",
-  file_deps = "third_party/gecko-9/win32",
+  file_deps = "third_party/gecko-10/win32",
   out = "Win32/Release/webdriver-firefox-latest.dll"
 )
 
