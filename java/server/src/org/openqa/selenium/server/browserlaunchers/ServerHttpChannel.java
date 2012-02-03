@@ -189,6 +189,7 @@ public class ServerHttpChannel implements Runnable {
     InputStream input = connection.getInputStream();
     byte[] bytes = ByteStreams.toByteArray(input);
     closeQuietly(input);
+    connection.disconnect();
     connection = null;
     return new String(bytes, Charsets.UTF_8);
   }
