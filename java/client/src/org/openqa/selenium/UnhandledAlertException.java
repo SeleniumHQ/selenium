@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 public class UnhandledAlertException extends WebDriverException {
   
-  private final Alert locallyStoredAlert;
+  private final String alertText;
 
   public UnhandledAlertException(String commandName) {
     this(commandName, null);
@@ -30,14 +30,14 @@ public class UnhandledAlertException extends WebDriverException {
   
   public UnhandledAlertException(String commandName, String alertText) {
     super(commandName);
-    this.locallyStoredAlert = alertText == null ? null : new LocallyStoredAlert(alertText);
+    this.alertText = alertText;
   }
 
   /*
    * Returns null if alert text could not be retrieved.
    */
   public Alert getAlert() {
-    return this.locallyStoredAlert;
+    return new LocallyStoredAlert(alertText);
   }
   
   private static class LocallyStoredAlert implements Alert, Serializable {

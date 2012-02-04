@@ -478,7 +478,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       fxdriver.modals.dismissAlert(driver);
       fxdriver.Logger.dumpn('Sending error with alertText: ' + modalText);
       response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
-          'Modal dialog present', {alertText: modalText}));
+          'Modal dialog present', {alert: {text: modalText}}));
       return;
     }
   }

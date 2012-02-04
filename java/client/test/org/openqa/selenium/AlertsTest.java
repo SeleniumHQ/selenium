@@ -360,6 +360,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
   public void testIncludesAlertInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
+    waitFor(alertToBePresent(driver));
     try {
       driver.getTitle();
       fail("Expected UnhandledAlertException");

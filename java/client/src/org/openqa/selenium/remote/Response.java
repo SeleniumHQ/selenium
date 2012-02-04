@@ -56,6 +56,6 @@ public class Response {
 
   @Override
   public String toString() {
-    return String.format("(%s %s: %s)", getSessionId(), getStatus(), getValue());
+    return String.format("(Response: SessionID: %s, Status: %s, Value: %s)", getSessionId(), getStatus(), getValue());
   }
 }

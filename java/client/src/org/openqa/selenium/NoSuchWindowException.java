@@ -27,4 +27,8 @@ public class NoSuchWindowException extends NotFoundException {
     super(reason);
   }
 
+  public NoSuchWindowException(String reason, Throwable cause) {
+    super(reason, cause);
+  }
+
 }

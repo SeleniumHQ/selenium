@@ -111,19 +111,14 @@ public class ErrorHandler {
     if (message != null && message.indexOf(duration1) == -1) {
       message = message + duration1;
     }
-    
+
     Throwable toThrow = null;
     
     if (outerErrorType.equals(UnhandledAlertException.class)
         && value instanceof Map) {
-      Map<String, Object> rawErrorData = (Map<String, Object>) value;
-      if (rawErrorData.containsKey("alertText")) {
-        toThrow = createThrowable(outerErrorType,
-            new Class<?>[] {String.class, String.class},
-            new Object[] {message, rawErrorData.get("alertText")});
-      }
+      toThrow = createUnhandledAlertException(value);
     }
-
+    
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,
           new Class<?>[] {String.class, Throwable.class},
@@ -145,6 +140,18 @@ public class ErrorHandler {
     } else {
       throw new WebDriverException(toThrow);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private Throwable createUnhandledAlertException(Object value) {
+    Map<String, Object> rawErrorData = (Map<String, Object>) value;
+    if (rawErrorData.containsKey("alert")) {
+      Map<String, Object> alert = (Map<String, Object>) rawErrorData.get("alert");
+      return createThrowable(UnhandledAlertException.class,
+          new Class<?>[] {String.class, String.class},
+          new Object[] {rawErrorData.get("message"), alert.get("text")});
+    }
+    return null;
   }
 
   private String duration(long duration) {
@@ -189,7 +196,9 @@ public class ErrorHandler {
       String className = (String) rawErrorData.get(CLASS);
       try {
         Class clazz = Class.forName(className);
-        if (Throwable.class.isAssignableFrom(clazz)) {
+        if (clazz.equals(UnhandledAlertException.class)) {
+          toReturn = createUnhandledAlertException(rawErrorData);
+        } else if (Throwable.class.isAssignableFrom(clazz)) {
           @SuppressWarnings({"unchecked"})
           Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
           toReturn = createThrowable(throwableType, new Class<?>[] {String.class},
