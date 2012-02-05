@@ -433,7 +433,7 @@ public class CertificateCreator {
     // Set validity period
     v3CertGen.setNotBefore(new Date(System.currentTimeMillis() - 12 /* months */*
         (1000L * 60 * 60 * 24 * 30)));
-    v3CertGen.setNotAfter(new Date(System.currentTimeMillis() + 48 /* months */*
+    v3CertGen.setNotAfter(new Date(System.currentTimeMillis() + 240 /* months */*
         (1000L * 60 * 60 * 24 * 30)));
 
     // Set signature algorithm & public key
