@@ -334,7 +334,7 @@ WDAPI.Element.prototype.submit = function() {
 };
 
 WDAPI.Element.prototype.select = function(label) {
-  return "new SelectElement(" + this.ref + ").SelectByVisibleText(" + xlateArgument(label) + ")";
+  return "new SelectElement(" + this.ref + ").SelectByText(" + xlateArgument(label) + ")";
 };
 
 WDAPI.ElementList = function(ref) {
