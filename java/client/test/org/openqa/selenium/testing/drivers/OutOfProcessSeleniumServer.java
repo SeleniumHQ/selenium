@@ -48,7 +48,7 @@ public class OutOfProcessSeleniumServer {
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
-    command = new CommandLine("java", "-jar", path, "-port", String.valueOf((port)));
+    command = new CommandLine("java", "-jar", path, "-port", String.valueOf((port)), "-browserSideLog");
     command.executeAsync();
 
     try {
