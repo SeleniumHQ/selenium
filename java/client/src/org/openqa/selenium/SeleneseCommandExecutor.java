@@ -162,7 +162,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
   private void prepareCommands() {
     FindElement findElement = new FindElement();
     FindElements findElements = new FindElements();
-    SelenseTimeouts timeouts = new SelenseTimeouts(
+    SeleneseTimeouts timeouts = new SeleneseTimeouts(
         findElement.implicitlyWait(), findElements.implicitlyWait());
     ExecuteAsyncScript executeAsyncScript = new ExecuteAsyncScript();
 
@@ -231,10 +231,10 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     return "";
   }
 
-  private class SelenseTimeouts implements SeleneseFunction<Void> {
+  private class SeleneseTimeouts implements SeleneseFunction<Void> {
     private final SeleneseFunction<Object>[] functions;
 
-    public SelenseTimeouts(SeleneseFunction<Object>... functions) {
+    public SeleneseTimeouts(SeleneseFunction<Object>... functions) {
       this.functions = functions;
     }
 
