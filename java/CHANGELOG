@@ -12,7 +12,8 @@ WebDriver:
   * Renamed the experimental "fast" page loaded strategy "unstable"
     and disable queuing of commands when it's enabled.
   * Corrections to javadocs.
-
+  * Disabled native events for Firefox 8 as it's deprecated by
+    Mozilla.
 
 RC:
   * Update cybervillains certificate (thanks to Ivan De Marino and
