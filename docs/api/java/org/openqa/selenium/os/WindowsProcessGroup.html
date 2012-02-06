@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-FindBy
+WindowsProcessGroup
 </TITLE>
 
 
@@ -13,7 +13,7 @@ FindBy
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="FindBy";
+        parent.document.title="WindowsProcessGroup";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/support/Color.html" title="class in org.openqa.selenium.support"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/support/FindBys.html" title="annotation in org.openqa.selenium.support"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/os/ProcessUtils.ProcessStillAliveException.html" title="class in org.openqa.selenium.os"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/support/FindBy.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="FindBy.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/os/WindowsProcessGroup.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WindowsProcessGroup.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;REQUIRED&nbsp;|&nbsp;<A HREF="#annotation_type_optional_element_summary">OPTIONAL</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#annotation_type_element_detail">ELEMENT</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -85,294 +85,297 @@ DETAIL:&nbsp;<A HREF="#annotation_type_element_detail">ELEMENT</A></FONT></TD>
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.support</FONT>
+org.openqa.selenium.os</FONT>
 <BR>
-Annotation Type FindBy</H2>
+Class WindowsProcessGroup</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.os.WindowsProcessGroup</B>
+</PRE>
 <HR>
 <DL>
-<DT><PRE><FONT SIZE="-1">@Retention(value=RUNTIME)
-@Target(value=FIELD)
-</FONT>public @interface <B>FindBy</B></DL>
+<DT><PRE><FONT SIZE="-1"><A HREF="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</A>
+</FONT>public class <B>WindowsProcessGroup</B><DT>extends java.lang.Object</DL>
 </PRE>
 
 <P>
-Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
- element or a list of elements. Used in conjunction with
- <A HREF="../../../../org/openqa/selenium/support/PageFactory.html" title="class in org.openqa.selenium.support"><CODE>PageFactory</CODE></A>
- this allows users to quickly and easily create PageObjects.
- 
- <p>
- You can either use this annotation by specifying both "how" and "using" or by specifying one of
- the location strategies (eg: "id") with an appropriate value to use. Both options will delegate
- down to the matching <A HREF="../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium"><CODE>By</CODE></A> methods in By class.
- 
- For example, these two annotations point to the same element:
- 
- <pre class="code">
- &#64;FindBy(id = "foobar") WebElement foobar;
- &#64;FindBy(how = How.ID, using = "foobar") WebElement foobar;
- </pre>
- 
- and these two annotations point to the same list of elements:
- 
- <pre class="code">
- &#64;FindBy(tagName = "a") List<WebElement> links;
- &#64;FindBy(how = How.TAG_NAME, using = "a") List<WebElement> links;
- </pre>
+Utility class for grouping a set of processes into a process group on
+ Windows. This is primarily used for processes that spawn child processes and
+ then disconnect from them: killing the parent process should kill the
+ children too. That sounds a bit more sinsiter than it actually is.
 <P>
 
 <P>
 <HR>
 
 <P>
-<!-- =========== ANNOTATION TYPE OPTIONAL MEMBER SUMMARY =========== -->
 
-<A NAME="annotation_type_optional_element_summary"><!-- --></A>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Optional Element Summary</B></FONT></TH>
+<B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#className()">className</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#css()">css</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/support/How.html" title="enum in org.openqa.selenium.support">How</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#how()">how</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#id()">id</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#linkText()">linkText</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#name()">name</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#partialLinkText()">partialLinkText</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#tagName()">tagName</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#using()">using</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html#xpath()">xpath</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#WindowsProcessGroup(java.lang.String, java.lang.String...)">WindowsProcessGroup</A></B>(java.lang.String&nbsp;executable,
+                    java.lang.String...&nbsp;args)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
 &nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#copyOutputTo(java.io.OutputStream)">copyOutputTo</A></B>(java.io.OutputStream&nbsp;out)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#destroy()">destroy</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#executeAsync()">executeAsync</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#getEnvironment()">getEnvironment</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#getExitCode()">getExitCode</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#getStdOut()">getStdOut</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#setEnvironmentVariable(java.lang.String, java.lang.String)">setEnvironmentVariable</A></B>(java.lang.String&nbsp;name,
+                       java.lang.String&nbsp;value)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#setInput(java.lang.String)">setInput</A></B>(java.lang.String&nbsp;allInput)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html#waitFor()">waitFor</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
 <P>
-<A NAME="how()"><!-- --></A><H3>
-how</H3>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="WindowsProcessGroup(java.lang.String, java.lang.String...)"><!-- --></A><H3>
+WindowsProcessGroup</H3>
 <PRE>
-public abstract <A HREF="../../../../org/openqa/selenium/support/How.html" title="enum in org.openqa.selenium.support">How</A> <B>how</B></PRE>
+public <B>WindowsProcessGroup</B>(java.lang.String&nbsp;executable,
+                           java.lang.String...&nbsp;args)</PRE>
+<DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="getEnvironment()"><!-- --></A><H3>
+getEnvironment</H3>
+<PRE>
+public java.util.Map&lt;java.lang.String,java.lang.String&gt; <B>getEnvironment</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>org.openqa.selenium.support.How.ID</DD>
-</DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="using()"><!-- --></A><H3>
-using</H3>
+<A NAME="setEnvironmentVariable(java.lang.String, java.lang.String)"><!-- --></A><H3>
+setEnvironmentVariable</H3>
 <PRE>
-public abstract java.lang.String <B>using</B></PRE>
+public void <B>setEnvironmentVariable</B>(java.lang.String&nbsp;name,
+                                   java.lang.String&nbsp;value)</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="id()"><!-- --></A><H3>
-id</H3>
+<A NAME="copyOutputTo(java.io.OutputStream)"><!-- --></A><H3>
+copyOutputTo</H3>
 <PRE>
-public abstract java.lang.String <B>id</B></PRE>
+public void <B>copyOutputTo</B>(java.io.OutputStream&nbsp;out)</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="name()"><!-- --></A><H3>
-name</H3>
+<A NAME="setInput(java.lang.String)"><!-- --></A><H3>
+setInput</H3>
 <PRE>
-public abstract java.lang.String <B>name</B></PRE>
+public void <B>setInput</B>(java.lang.String&nbsp;allInput)</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="className()"><!-- --></A><H3>
-className</H3>
+<A NAME="executeAsync()"><!-- --></A><H3>
+executeAsync</H3>
 <PRE>
-public abstract java.lang.String <B>className</B></PRE>
+public void <B>executeAsync</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="css()"><!-- --></A><H3>
-css</H3>
+<A NAME="waitFor()"><!-- --></A><H3>
+waitFor</H3>
 <PRE>
-public abstract java.lang.String <B>css</B></PRE>
+public void <B>waitFor</B>()
+             throws java.lang.InterruptedException</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
-</DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.InterruptedException</CODE></DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="tagName()"><!-- --></A><H3>
-tagName</H3>
+<A NAME="destroy()"><!-- --></A><H3>
+destroy</H3>
 <PRE>
-public abstract java.lang.String <B>tagName</B></PRE>
+public int <B>destroy</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="linkText()"><!-- --></A><H3>
-linkText</H3>
+<A NAME="getExitCode()"><!-- --></A><H3>
+getExitCode</H3>
 <PRE>
-public abstract java.lang.String <B>linkText</B></PRE>
+public int <B>getExitCode</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
+</DD>
 </DL>
 <HR>
 
-<A NAME="partialLinkText()"><!-- --></A><H3>
-partialLinkText</H3>
+<A NAME="getStdOut()"><!-- --></A><H3>
+getStdOut</H3>
 <PRE>
-public abstract java.lang.String <B>partialLinkText</B></PRE>
+public java.lang.String <B>getStdOut</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
 </DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
-</DL>
-<HR>
-
-<A NAME="xpath()"><!-- --></A><H3>
-xpath</H3>
-<PRE>
-public abstract java.lang.String <B>xpath</B></PRE>
-<DL>
-<DD><DL>
-</DL>
 </DD>
-<DD><DL>
-</DL>
-<DL>
-<DT><B>Default:</B><DD>""</DD>
-</DL>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
@@ -404,11 +407,11 @@ public abstract java.lang.String <B>xpath</B></PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/support/Color.html" title="class in org.openqa.selenium.support"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/support/FindBys.html" title="annotation in org.openqa.selenium.support"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/os/ProcessUtils.ProcessStillAliveException.html" title="class in org.openqa.selenium.os"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/support/FindBy.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="FindBy.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/os/WindowsProcessGroup.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WindowsProcessGroup.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -425,9 +428,9 @@ public abstract java.lang.String <B>xpath</B></PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;REQUIRED&nbsp;|&nbsp;<A HREF="#annotation_type_optional_element_summary">OPTIONAL</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#annotation_type_element_detail">ELEMENT</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

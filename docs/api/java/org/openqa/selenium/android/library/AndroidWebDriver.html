@@ -93,11 +93,11 @@ java.lang.Object
   <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.AndroidWebDriver</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD>android.location.LocationListener, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>AndroidWebDriver</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></DL>
+<DT><PRE>public class <B>AndroidWebDriver</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, android.location.LocationListener</DL>
 </PRE>
 
 <P>
@@ -140,24 +140,24 @@ java.lang.Object
  the Android browser.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient)">AndroidWebDriver</A></B>(android.app.Activity&nbsp;activity,
-                 <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
-                 android.webkit.WebViewClient&nbsp;viewClient,
-                 android.webkit.WebChromeClient&nbsp;chromeClient)</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.ViewFactory, org.openqa.selenium.android.library.ViewClientWrapper, org.openqa.selenium.android.library.ChromeClientWrapper)">AndroidWebDriver</A></B>(android.app.Activity&nbsp;activity,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/ViewFactory.html" title="interface in org.openqa.selenium.android.library">ViewFactory</A>&nbsp;viewFactory,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html" title="class in org.openqa.selenium.android.library">ViewClientWrapper</A>&nbsp;viewClient,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library">ChromeClientWrapper</A>&nbsp;chromeClient)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this constructor to use WebDriver with a custom WebView.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this constructor to use WebDriver with a custom view.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient, android.view.View.OnFocusChangeListener)">AndroidWebDriver</A></B>(android.app.Activity&nbsp;activity,
-                 <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
-                 android.webkit.WebViewClient&nbsp;viewClient,
-                 android.webkit.WebChromeClient&nbsp;chromeClient,
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.ViewFactory, org.openqa.selenium.android.library.ViewClientWrapper, org.openqa.selenium.android.library.ChromeClientWrapper, android.view.View.OnFocusChangeListener)">AndroidWebDriver</A></B>(android.app.Activity&nbsp;activity,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/ViewFactory.html" title="interface in org.openqa.selenium.android.library">ViewFactory</A>&nbsp;viewFactory,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html" title="class in org.openqa.selenium.android.library">ViewClientWrapper</A>&nbsp;viewClient,
+                 <A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library">ChromeClientWrapper</A>&nbsp;chromeClient,
                  android.view.View.OnFocusChangeListener&nbsp;focusListener)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this constructor to use WebDriver with a custom WebView and a custom
- View.OnFocusChangeListener for that WebView..</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this constructor to use WebDriver with a custom view and a custom
+ View.OnFocusChangeListener for that view..</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -309,6 +309,14 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.Object</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getView()">getView</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;android.webkit.WebView</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getWebView()">getWebView</A></B>()</CODE>
 
@@ -372,6 +380,40 @@ java.lang.Object
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An abstraction allowing the driver to access the browser's history and to navigate to a given
  URL.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#onLocationChanged(android.location.Location)">onLocationChanged</A></B>(android.location.Location&nbsp;location)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#onProviderDisabled(java.lang.String)">onProviderDisabled</A></B>(java.lang.String&nbsp;s)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#onProviderEnabled(java.lang.String)">onProviderEnabled</A></B>(java.lang.String&nbsp;s)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#onStatusChanged(java.lang.String, int, android.os.Bundle)">onStatusChanged</A></B>(java.lang.String&nbsp;s,
+                int&nbsp;i,
+                android.os.Bundle&nbsp;bundle)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -474,47 +516,39 @@ public <B>AndroidWebDriver</B>(android.app.Activity&nbsp;activity)</PRE>
 </DL>
 <HR>
 
-<A NAME="AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient)"><!-- --></A><H3>
+<A NAME="AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.ViewFactory, org.openqa.selenium.android.library.ViewClientWrapper, org.openqa.selenium.android.library.ChromeClientWrapper)"><!-- --></A><H3>
 AndroidWebDriver</H3>
 <PRE>
 public <B>AndroidWebDriver</B>(android.app.Activity&nbsp;activity,
-                        <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
-                        android.webkit.WebViewClient&nbsp;viewClient,
-                        android.webkit.WebChromeClient&nbsp;chromeClient)</PRE>
+                        <A HREF="../../../../../org/openqa/selenium/android/library/ViewFactory.html" title="interface in org.openqa.selenium.android.library">ViewFactory</A>&nbsp;viewFactory,
+                        <A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html" title="class in org.openqa.selenium.android.library">ViewClientWrapper</A>&nbsp;viewClient,
+                        <A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library">ChromeClientWrapper</A>&nbsp;chromeClient)</PRE>
 <DL>
-<DD>Use this constructor to use WebDriver with a custom WebView.
+<DD>Use this constructor to use WebDriver with a custom view.
 <P>
 <DL>
-<DT><B>Parameters:</B><DD><CODE>activity</CODE> - the activity context where the WebView will be created.<DD><CODE>viewFactory</CODE> - a implementation of the WebViewFactory interface. WebDriver will
-     use this creation mechanism to create WebViews when needed (when clicking on a link
-     that opens a new window for instance).<DD><CODE>viewClient</CODE> - the WebViewClient used by the custom WebView. WebDriver will instrument
-     the WebViewClient used by the custom WebView to detect certain events.<DD><CODE>chromeClient</CODE> - the WebChromeClient used by the custom WebView. WebDriver will
-     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
-     WebDriver will take care of the Window creation and destruction, so it is not advised
-     to override onCloseWindow and onCreateWindow to do window management.</DL>
+<DT><B>Parameters:</B><DD><CODE>activity</CODE> - the activity context where the view will be displayed.<DD><CODE>viewFactory</CODE> - a implementation of the ViewFactory interface. WebDriver will
+     use this creation mechanism to create views when needed (e.g. when clicking on a link
+     that opens a new window).<DD><CODE>viewClient</CODE> - the ViewClientWrapper used by the custom WebView.<DD><CODE>chromeClient</CODE> - the ChromeClientWrapper used by the custom WebView.</DL>
 </DL>
 <HR>
 
-<A NAME="AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.WebViewFactory, android.webkit.WebViewClient, android.webkit.WebChromeClient, android.view.View.OnFocusChangeListener)"><!-- --></A><H3>
+<A NAME="AndroidWebDriver(android.app.Activity, org.openqa.selenium.android.library.ViewFactory, org.openqa.selenium.android.library.ViewClientWrapper, org.openqa.selenium.android.library.ChromeClientWrapper, android.view.View.OnFocusChangeListener)"><!-- --></A><H3>
 AndroidWebDriver</H3>
 <PRE>
 public <B>AndroidWebDriver</B>(android.app.Activity&nbsp;activity,
-                        <A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A>&nbsp;viewFactory,
-                        android.webkit.WebViewClient&nbsp;viewClient,
-                        android.webkit.WebChromeClient&nbsp;chromeClient,
+                        <A HREF="../../../../../org/openqa/selenium/android/library/ViewFactory.html" title="interface in org.openqa.selenium.android.library">ViewFactory</A>&nbsp;viewFactory,
+                        <A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html" title="class in org.openqa.selenium.android.library">ViewClientWrapper</A>&nbsp;viewClient,
+                        <A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library">ChromeClientWrapper</A>&nbsp;chromeClient,
                         android.view.View.OnFocusChangeListener&nbsp;focusListener)</PRE>
 <DL>
-<DD>Use this constructor to use WebDriver with a custom WebView and a custom
- View.OnFocusChangeListener for that WebView..
+<DD>Use this constructor to use WebDriver with a custom view and a custom
+ View.OnFocusChangeListener for that view..
 <P>
 <DL>
-<DT><B>Parameters:</B><DD><CODE>activity</CODE> - the activity context where the WebView will be created.<DD><CODE>viewFactory</CODE> - a implementation of the WebViewFactory interface. WebDriver will
-     use this creation mechanism to create WebViews when needed (when clicking on a link
-     that opens a new window for instance).<DD><CODE>viewClient</CODE> - the WebViewClient used by the custom WebView. WebDriver will instrument
-     the WebViewClient used by the custom WebView to detect certain events.<DD><CODE>chromeClient</CODE> - the WebChromeClient used by the custom WebView. WebDriver will
-     instrument WebChromeClient used by the custom WebView to detect certain events. Notably
-     WebDriver will take care of the Window creation and destruction, so it is not advised
-     to override onCloseWindow and onCreateWindow to do window management.<DD><CODE>focusListener</CODE> - the listener used by the WebView that will be created by the viewFactory.</DL>
+<DT><B>Parameters:</B><DD><CODE>activity</CODE> - the activity context where the view will be displayed.<DD><CODE>viewFactory</CODE> - a implementation of the ViewFactory interface. WebDriver will
+     use this creation mechanism to create views when needed (e.g. when clicking on a link
+     that opens a new window).<DD><CODE>viewClient</CODE> - the ViewClientWrapper used by the custom WebView.<DD><CODE>chromeClient</CODE> - the ChromeClientWrapper used by the custom WebView.<DD><CODE>focusListener</CODE> - the listener used by the view that will be created by the viewFactory.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -559,6 +593,20 @@ public boolean <B>getAcceptSslCerts</B>()</PRE>
 getWebView</H3>
 <PRE>
 public android.webkit.WebView <B>getWebView</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getView()"><!-- --></A><H3>
+getView</H3>
+<PRE>
+public java.lang.Object <B>getView</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -650,11 +698,12 @@ public java.lang.String <B>getPageSource</B>()</PRE>
 <DL>
 <DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getPageSource()">WebDriver</A></CODE></B></DD>
 <DD>Get the source of the last loaded page. If the page has been modified after loading (for
- example, by Javascript) there is no guarentee that the returned text is that of the modified
+ example, by Javascript) there is no guarantee that the returned text is that of the modified
  page. Please consult the documentation of the particular driver being used to determine whether
  the returned text reflects the current state of the page or the text last sent by the web
  server. The page source returned is a representation of the underlying DOM: do not expect it to
- be formatted or escaped in the same way as the response sent from the web server.
+ be formatted or escaped in the same way as the response sent from the web server. Think of it as
+ an artist's impression.
 <P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html#getPageSource()">getPageSource</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></CODE></DL>
@@ -1069,6 +1118,64 @@ public void <B>setLocation</B>(<A HREF="../../../../../org/openqa/selenium/html5
 </DL>
 <HR>
 
+<A NAME="onLocationChanged(android.location.Location)"><!-- --></A><H3>
+onLocationChanged</H3>
+<PRE>
+public void <B>onLocationChanged</B>(android.location.Location&nbsp;location)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>onLocationChanged</CODE> in interface <CODE>android.location.LocationListener</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onStatusChanged(java.lang.String, int, android.os.Bundle)"><!-- --></A><H3>
+onStatusChanged</H3>
+<PRE>
+public void <B>onStatusChanged</B>(java.lang.String&nbsp;s,
+                            int&nbsp;i,
+                            android.os.Bundle&nbsp;bundle)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>onStatusChanged</CODE> in interface <CODE>android.location.LocationListener</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onProviderEnabled(java.lang.String)"><!-- --></A><H3>
+onProviderEnabled</H3>
+<PRE>
+public void <B>onProviderEnabled</B>(java.lang.String&nbsp;s)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>onProviderEnabled</CODE> in interface <CODE>android.location.LocationListener</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onProviderDisabled(java.lang.String)"><!-- --></A><H3>
+onProviderDisabled</H3>
+<PRE>
+public void <B>onProviderDisabled</B>(java.lang.String&nbsp;s)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>onProviderDisabled</CODE> in interface <CODE>android.location.LocationListener</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="getScreenshotAs(org.openqa.selenium.OutputType)"><!-- --></A><H3>
 getScreenshotAs</H3>
 <PRE>
@@ -1080,10 +1187,12 @@ public &lt;X&gt; X <B>getScreenshotAs</B>(<A HREF="../../../../../org/openqa/sel
 
  <p>For WebDriver extending TakesScreenshot, this makes a best effort
  depending on the browser to return the following in order of preference:
-   - Entire page
-   - Current window
-   - Visible portion of the current frame
-   - The screenshot of the entire display containing the browser
+ <ul>
+   <li>Entire page</li>
+   <li>Current window</li>
+   <li>Visible portion of the current frame</li>
+   <li>The screenshot of the entire display containing the browser</li>
+ </ul>
 
  <p>For WebElement extending TakesScreenshot, this makes a best effort
  depending on the browser to return the following in order of preference:

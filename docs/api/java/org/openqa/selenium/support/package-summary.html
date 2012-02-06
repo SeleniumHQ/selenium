@@ -90,6 +90,10 @@ Package org.openqa.selenium.support
 <TD>&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/Color.html" title="class in org.openqa.selenium.support">Color</A></B></TD>
+<TD>&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
 <TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/PageFactory.html" title="class in org.openqa.selenium.support">PageFactory</A></B></TD>
 <TD>Factory class to make using Page Objects simpler and easier.</TD>
 </TR>
@@ -137,7 +141,11 @@ Package org.openqa.selenium.support
 <TD>Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
  in a chain as described in <A HREF="../../../../org/openqa/selenium/support/pagefactory/ByChained.html" title="class in org.openqa.selenium.support.pagefactory"><CODE>ByChained</CODE></A>
  
- Eg:</TD>
+ Eg:
+
+ <pre class="code">
+ &#64;FindBys({&#64;FindBy(id = "foo"),
+           &#64;FindBy(className = "bar")})</TD>
 </TR>
 </TABLE>
 &nbsp;

@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-WebViewFactory
+DriverProvider
 </TITLE>
 
 
@@ -13,7 +13,7 @@ WebViewFactory
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="WebViewFactory";
+        parent.document.title="DriverProvider";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/Logger.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DefaultWebViewFactory.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/Logger.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/WebViewFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WebViewFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/DriverProvider.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DriverProvider.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -87,19 +87,17 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 <FONT SIZE="-1">
 org.openqa.selenium.android.library</FONT>
 <BR>
-Interface WebViewFactory</H2>
+Interface DriverProvider</H2>
 <DL>
-<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../org/openqa/selenium/android/library/DefaultWebViewFactory.html" title="class in org.openqa.selenium.android.library">DefaultWebViewFactory</A></DD>
+<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library">ChromeClientWrapper</A>, <A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html" title="class in org.openqa.selenium.android.library">DefaultChromeClient</A>, <A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html" title="class in org.openqa.selenium.android.library">ViewClientWrapper</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public interface <B>WebViewFactory</B></DL>
+<DT><PRE>public interface <B>DriverProvider</B></DL>
 </PRE>
 
 <P>
-This interface should be implemented when using WebDriver with custom WebViews.
- WebDriver will call the createNewView method to create new WebViews when needed,
- for instance when cliking on a link that opens a new window.
+The chrome and view clients need to implement this interface.
 <P>
 
 <P>
@@ -117,8 +115,8 @@ This interface should be implemented when using WebDriver with custom WebViews.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;android.webkit.WebView</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html#createNewView(android.app.Activity)">createNewView</A></B>(android.app.Activity&nbsp;activity)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html#setDriver(org.openqa.selenium.android.library.AndroidWebDriver)">setDriver</A></B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -137,10 +135,10 @@ This interface should be implemented when using WebDriver with custom WebViews.
 </TR>
 </TABLE>
 
-<A NAME="createNewView(android.app.Activity)"><!-- --></A><H3>
-createNewView</H3>
+<A NAME="setDriver(org.openqa.selenium.android.library.AndroidWebDriver)"><!-- --></A><H3>
+setDriver</H3>
 <PRE>
-android.webkit.WebView <B>createNewView</B>(android.app.Activity&nbsp;activity)</PRE>
+void <B>setDriver</B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -176,11 +174,11 @@ android.webkit.WebView <B>createNewView</B>(android.app.Activity&nbsp;activity)<
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/Logger.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DefaultWebViewFactory.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/Logger.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/WebViewFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WebViewFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/DriverProvider.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DriverProvider.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

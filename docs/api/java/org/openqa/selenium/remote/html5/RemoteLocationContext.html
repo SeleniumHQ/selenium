@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-Logger
+RemoteLocationContext
 </TITLE>
 
 
@@ -13,7 +13,7 @@ Logger
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Logger";
+        parent.document.title="RemoteLocationContext";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/remote/html5/RemoteLocationContext.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="RemoteLocationContext.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -85,16 +85,19 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.android.library</FONT>
+org.openqa.selenium.remote.html5</FONT>
 <BR>
-Class Logger</H2>
+Class RemoteLocationContext</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.Logger</B>
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.html5.RemoteLocationContext</B>
 </PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></DD>
+</DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>Logger</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>RemoteLocationContext</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></DL>
 </PRE>
 
 <P>
@@ -111,7 +114,7 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#Logger()">Logger</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/html5/RemoteLocationContext.html#RemoteLocationContext(org.openqa.selenium.remote.ExecuteMethod)">RemoteLocationContext</A></B>(<A HREF="../../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -128,38 +131,19 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.util.logging.Logger</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#getLogger()">getLogger</A></B>()</CODE>
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/html5/RemoteLocationContext.html#location()">location</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the physical location of the browser.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)">log</A></B>(java.util.logging.Level&nbsp;value,
-    java.lang.String&nbsp;className,
-    java.lang.String&nbsp;methodName,
-    java.lang.String&nbsp;message)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/html5/RemoteLocationContext.html#setLocation(org.openqa.selenium.html5.Location)">setLocation</A></B>(<A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A>&nbsp;location)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setDebugMode(boolean)">setDebugMode</A></B>(boolean&nbsp;enabled)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setLevel(java.util.logging.Level)">setLevel</A></B>(java.util.logging.Level&nbsp;level)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the logging level for this logger.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the physical location.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -184,10 +168,10 @@ java.lang.Object
 </TR>
 </TABLE>
 
-<A NAME="Logger()"><!-- --></A><H3>
-Logger</H3>
+<A NAME="RemoteLocationContext(org.openqa.selenium.remote.ExecuteMethod)"><!-- --></A><H3>
+RemoteLocationContext</H3>
 <PRE>
-public <B>Logger</B>()</PRE>
+public <B>RemoteLocationContext</B>(<A HREF="../../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod)</PRE>
 <DL>
 </DL>
 
@@ -201,51 +185,38 @@ public <B>Logger</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="setLevel(java.util.logging.Level)"><!-- --></A><H3>
-setLevel</H3>
+<A NAME="location()"><!-- --></A><H3>
+location</H3>
 <PRE>
-public static void <B>setLevel</B>(java.util.logging.Level&nbsp;level)</PRE>
+public <A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A> <B>location</B>()</PRE>
 <DL>
-<DD>Sets the logging level for this logger.
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#location()">LocationContext</A></CODE></B></DD>
+<DD>Gets the physical location of the browser.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>level</CODE> - </DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#location()">location</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>A <A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5"><CODE>Location</CODE></A> containing the location information. Returns null if the location is
+         not available</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)"><!-- --></A><H3>
-log</H3>
+<A NAME="setLocation(org.openqa.selenium.html5.Location)"><!-- --></A><H3>
+setLocation</H3>
 <PRE>
-public static void <B>log</B>(java.util.logging.Level&nbsp;value,
-                       java.lang.String&nbsp;className,
-                       java.lang.String&nbsp;methodName,
-                       java.lang.String&nbsp;message)</PRE>
+public void <B>setLocation</B>(<A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</A>&nbsp;location)</PRE>
 <DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">LocationContext</A></CODE></B></DD>
+<DD>Sets the physical location.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">setLocation</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A></CODE></DL>
 </DD>
-</DL>
-<HR>
-
-<A NAME="setDebugMode(boolean)"><!-- --></A><H3>
-setDebugMode</H3>
-<PRE>
-public static void <B>setDebugMode</B>(boolean&nbsp;enabled)</PRE>
-<DL>
 <DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getLogger()"><!-- --></A><H3>
-getLogger</H3>
-<PRE>
-public static java.util.logging.Logger <B>getLogger</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>location</CODE> - A <A HREF="../../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5"><CODE>Location</CODE></A> containing the new location information</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -278,11 +249,11 @@ public static java.util.logging.Logger <B>getLogger</B>()</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/html5/RemoteLocalStorage.html" title="class in org.openqa.selenium.remote.html5"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/remote/html5/RemoteLocationContext.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="RemoteLocationContext.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

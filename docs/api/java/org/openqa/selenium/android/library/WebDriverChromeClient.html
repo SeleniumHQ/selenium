@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-Logger
+WebDriverChromeClient
 </TITLE>
 
 
@@ -13,7 +13,7 @@ Logger
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Logger";
+        parent.document.title="WebDriverChromeClient";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/WebDriverViewClient.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/WebDriverChromeClient.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WebDriverChromeClient.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -87,15 +87,22 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <FONT SIZE="-1">
 org.openqa.selenium.android.library</FONT>
 <BR>
-Class Logger</H2>
+Class WebDriverChromeClient</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.Logger</B>
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.WebDriverChromeClient</B>
 </PRE>
 <HR>
 <DL>
-<DT><PRE>public class <B>Logger</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>WebDriverChromeClient</B><DT>extends java.lang.Object</DL>
 </PRE>
+
+<P>
+This class provides methods that must be called by a custom chrome client
+ if you decide not to use the DefaultChromeClient.
+
+ If you are using this class you should really know what you are doing.
+<P>
 
 <P>
 <HR>
@@ -111,7 +118,7 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#Logger()">Logger</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#WebDriverChromeClient(org.openqa.selenium.android.library.AndroidWebDriver)">WebDriverChromeClient</A></B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -128,38 +135,76 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.util.logging.Logger</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#getLogger()">getLogger</A></B>()</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onCloseWindow(java.lang.Object)">onCloseWindow</A></B>(java.lang.Object&nbsp;window)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)">log</A></B>(java.util.logging.Level&nbsp;value,
-    java.lang.String&nbsp;className,
-    java.lang.String&nbsp;methodName,
-    java.lang.String&nbsp;message)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onCreateWindow(org.openqa.selenium.android.library.ViewAdapter)">onCreateWindow</A></B>(<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library">ViewAdapter</A>&nbsp;newView)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setDebugMode(boolean)">setDebugMode</A></B>(boolean&nbsp;enabled)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onGeolocationPermissionsShowPrompt(java.lang.String, android.webkit.GeolocationPermissions.Callback)">onGeolocationPermissionsShowPrompt</A></B>(java.lang.String&nbsp;origin,
+                                   android.webkit.GeolocationPermissions.Callback&nbsp;callback)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setLevel(java.util.logging.Level)">setLevel</A></B>(java.util.logging.Level&nbsp;level)</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onJsAlert(java.lang.Object, java.lang.String, android.webkit.JsResult)">onJsAlert</A></B>(java.lang.Object&nbsp;view,
+          java.lang.String&nbsp;message,
+          android.webkit.JsResult&nbsp;result)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the logging level for this logger.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onJsConfirm(java.lang.Object, java.lang.String, android.webkit.JsResult)">onJsConfirm</A></B>(java.lang.Object&nbsp;view,
+            java.lang.String&nbsp;message,
+            android.webkit.JsResult&nbsp;result)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onJsPrompt(java.lang.Object, java.lang.String, java.lang.String, android.webkit.JsPromptResult)">onJsPrompt</A></B>(java.lang.Object&nbsp;view,
+           java.lang.String&nbsp;message,
+           java.lang.String&nbsp;defaultValue,
+           android.webkit.JsPromptResult&nbsp;result)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onJsTimeout()">onJsTimeout</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html#onProgressChanged(java.lang.Object, int)">onProgressChanged</A></B>(java.lang.Object&nbsp;view,
+                  int&nbsp;newProgress)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -184,10 +229,10 @@ java.lang.Object
 </TR>
 </TABLE>
 
-<A NAME="Logger()"><!-- --></A><H3>
-Logger</H3>
+<A NAME="WebDriverChromeClient(org.openqa.selenium.android.library.AndroidWebDriver)"><!-- --></A><H3>
+WebDriverChromeClient</H3>
 <PRE>
-public <B>Logger</B>()</PRE>
+public <B>WebDriverChromeClient</B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</PRE>
 <DL>
 </DL>
 
@@ -201,26 +246,10 @@ public <B>Logger</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="setLevel(java.util.logging.Level)"><!-- --></A><H3>
-setLevel</H3>
+<A NAME="onCloseWindow(java.lang.Object)"><!-- --></A><H3>
+onCloseWindow</H3>
 <PRE>
-public static void <B>setLevel</B>(java.util.logging.Level&nbsp;level)</PRE>
-<DL>
-<DD>Sets the logging level for this logger.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>level</CODE> - </DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)"><!-- --></A><H3>
-log</H3>
-<PRE>
-public static void <B>log</B>(java.util.logging.Level&nbsp;value,
-                       java.lang.String&nbsp;className,
-                       java.lang.String&nbsp;methodName,
-                       java.lang.String&nbsp;message)</PRE>
+public void <B>onCloseWindow</B>(java.lang.Object&nbsp;window)</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -228,10 +257,10 @@ public static void <B>log</B>(java.util.logging.Level&nbsp;value,
 </DL>
 <HR>
 
-<A NAME="setDebugMode(boolean)"><!-- --></A><H3>
-setDebugMode</H3>
+<A NAME="onCreateWindow(org.openqa.selenium.android.library.ViewAdapter)"><!-- --></A><H3>
+onCreateWindow</H3>
 <PRE>
-public static void <B>setDebugMode</B>(boolean&nbsp;enabled)</PRE>
+public void <B>onCreateWindow</B>(<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library">ViewAdapter</A>&nbsp;newView)</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -239,10 +268,74 @@ public static void <B>setDebugMode</B>(boolean&nbsp;enabled)</PRE>
 </DL>
 <HR>
 
-<A NAME="getLogger()"><!-- --></A><H3>
-getLogger</H3>
+<A NAME="onProgressChanged(java.lang.Object, int)"><!-- --></A><H3>
+onProgressChanged</H3>
 <PRE>
-public static java.util.logging.Logger <B>getLogger</B>()</PRE>
+public void <B>onProgressChanged</B>(java.lang.Object&nbsp;view,
+                              int&nbsp;newProgress)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsAlert(java.lang.Object, java.lang.String, android.webkit.JsResult)"><!-- --></A><H3>
+onJsAlert</H3>
+<PRE>
+public void <B>onJsAlert</B>(java.lang.Object&nbsp;view,
+                      java.lang.String&nbsp;message,
+                      android.webkit.JsResult&nbsp;result)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsConfirm(java.lang.Object, java.lang.String, android.webkit.JsResult)"><!-- --></A><H3>
+onJsConfirm</H3>
+<PRE>
+public void <B>onJsConfirm</B>(java.lang.Object&nbsp;view,
+                        java.lang.String&nbsp;message,
+                        android.webkit.JsResult&nbsp;result)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsPrompt(java.lang.Object, java.lang.String, java.lang.String, android.webkit.JsPromptResult)"><!-- --></A><H3>
+onJsPrompt</H3>
+<PRE>
+public void <B>onJsPrompt</B>(java.lang.Object&nbsp;view,
+                       java.lang.String&nbsp;message,
+                       java.lang.String&nbsp;defaultValue,
+                       android.webkit.JsPromptResult&nbsp;result)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onGeolocationPermissionsShowPrompt(java.lang.String, android.webkit.GeolocationPermissions.Callback)"><!-- --></A><H3>
+onGeolocationPermissionsShowPrompt</H3>
+<PRE>
+public void <B>onGeolocationPermissionsShowPrompt</B>(java.lang.String&nbsp;origin,
+                                               android.webkit.GeolocationPermissions.Callback&nbsp;callback)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsTimeout()"><!-- --></A><H3>
+onJsTimeout</H3>
+<PRE>
+public void <B>onJsTimeout</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>
@@ -278,11 +371,11 @@ public static java.util.logging.Logger <B>getLogger</B>()</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/WebDriverViewClient.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/WebDriverChromeClient.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="WebDriverChromeClient.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

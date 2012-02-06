@@ -53,7 +53,7 @@ function windowTitle()
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 &nbsp;<A HREF="../../../../org/openqa/selenium/net/package-tree.html"><B>PREV</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/os/win32/package-tree.html"><B>NEXT</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/package-tree.html"><B>NEXT</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?org/openqa/selenium/os/package-tree.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-tree.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
@@ -89,7 +89,12 @@ Class Hierarchy
 </H2>
 <UL>
 <LI TYPE="circle">java.lang.Object<UL>
-<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os"><B>CommandLine</B></A><LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html" title="class in org.openqa.selenium.os"><B>ProcessUtils</B></A><LI TYPE="circle">java.lang.Throwable (implements java.io.Serializable)
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os"><B>CommandLine</B></A><LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/ProcessUtils.html" title="class in org.openqa.selenium.os"><B>ProcessUtils</B></A><LI TYPE="circle">com.sun.jna.Structure<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.IO_COUNTERS.html" title="class in org.openqa.selenium.os"><B>Kernel32.IO_COUNTERS</B></A><LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.JOBJECT_BASIC_LIMIT_INFORMATION.html" title="class in org.openqa.selenium.os"><B>Kernel32.JOBJECT_BASIC_LIMIT_INFORMATION</B></A><LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.html" title="class in org.openqa.selenium.os"><B>Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION</B></A><UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.ByReference.html" title="class in org.openqa.selenium.os"><B>Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.ByReference</B></A> (implements com.sun.jna.Structure.ByReference)
+</UL>
+</UL>
+<LI TYPE="circle">java.lang.Throwable (implements java.io.Serializable)
 <UL>
 <LI TYPE="circle">java.lang.Exception<UL>
 <LI TYPE="circle">java.lang.RuntimeException<UL>
@@ -98,7 +103,107 @@ Class Hierarchy
 </UL>
 </UL>
 </UL>
-<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html" title="class in org.openqa.selenium.os"><B>WindowsUtils</B></A></UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/WindowsProcessGroup.html" title="class in org.openqa.selenium.os"><B>WindowsProcessGroup</B></A><LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html" title="class in org.openqa.selenium.os"><B>WindowsUtils</B></A></UL>
+</UL>
+<H2>
+Interface Hierarchy
+</H2>
+<UL>
+<LI TYPE="circle">com.sun.jna.AltCallingConvention<UL>
+<LI TYPE="circle">com.sun.jna.win32.StdCall<UL>
+<LI TYPE="circle">com.sun.jna.win32.StdCallLibrary (also extends com.sun.jna.Library)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.BaseTSD<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinBase (also extends com.sun.jna.win32.StdCallLibrary, com.sun.jna.platform.win32.WinDef)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.WinBase, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinBase (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinDef<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinBase (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.win32.StdCallLibrary)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinBase, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+</UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.Library<UL>
+<LI TYPE="circle">com.sun.jna.win32.StdCallLibrary (also extends com.sun.jna.win32.StdCall)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.BaseTSD<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinBase (also extends com.sun.jna.win32.StdCallLibrary, com.sun.jna.platform.win32.WinDef)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.WinBase, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinBase (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinDef<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinBase (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.win32.StdCallLibrary)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinDef, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinBase, com.sun.jna.platform.win32.WinError)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
+</UL>
+</UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinError<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.WinNT (also extends com.sun.jna.platform.win32.BaseTSD, com.sun.jna.platform.win32.WinBase, com.sun.jna.platform.win32.WinDef)
+<UL>
+<LI TYPE="circle">com.sun.jna.platform.win32.Kernel32<UL>
+<LI TYPE="circle">org.openqa.selenium.os.<A HREF="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os"><B>Kernel32</B></A></UL>
+</UL>
+</UL>
 </UL>
 <HR>
 
@@ -130,7 +235,7 @@ Class Hierarchy
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 &nbsp;<A HREF="../../../../org/openqa/selenium/net/package-tree.html"><B>PREV</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/os/win32/package-tree.html"><B>NEXT</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/package-tree.html"><B>NEXT</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?org/openqa/selenium/os/package-tree.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-tree.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;

@@ -86,8 +86,17 @@ Package org.openqa.selenium.android.library
 <B>Interface Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/WebViewFactory.html" title="interface in org.openqa.selenium.android.library">WebViewFactory</A></B></TD>
-<TD>This interface should be implemented when using WebDriver with custom WebViews.</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library">DriverProvider</A></B></TD>
+<TD>The chrome and view clients need to implement this interface.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/ViewFactory.html" title="interface in org.openqa.selenium.android.library">ViewFactory</A></B></TD>
+<TD>This interface should be implemented when using WebDriver with custom Views
+ (typically a custom WebView).</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/ViewProvider.html" title="interface in org.openqa.selenium.android.library">ViewProvider</A></B></TD>
+<TD>This should be implemented by the chrome client provided to AndroidWebDriver.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -98,6 +107,14 @@ Package org.openqa.selenium.android.library
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Class Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/AlertManager.html" title="class in org.openqa.selenium.android.library">AlertManager</A></B></TD>
+<TD>This tracks manages all alerts and pop-up windows opened by the current views.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidAlert.html" title="class in org.openqa.selenium.android.library">AndroidAlert</A></B></TD>
+<TD>This class represents an Android alert.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidLogs.html" title="class in org.openqa.selenium.android.library">AndroidLogs</A></B></TD>
@@ -112,26 +129,41 @@ Package org.openqa.selenium.android.library
 <TD>Represents an Android HTML element.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library">ChromeClientWrapper</A></B></TD>
+<TD>This class wraps a chrome client that must have the *same* API as
+ WebChromeClient.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html" title="class in org.openqa.selenium.android.library">DefaultChromeClient</A></B></TD>
+<TD>Default implementation for WebDriver's chrome client.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
 <TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultWebViewFactory.html" title="class in org.openqa.selenium.android.library">DefaultWebViewFactory</A></B></TD>
-<TD>&nbsp;</TD>
+<TD>Provides a default ViewAdapter to be used by WebDriver.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html" title="class in org.openqa.selenium.android.library">Logger</A></B></TD>
 <TD>&nbsp;</TD>
 </TR>
-</TABLE>
-&nbsp;
-
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Enum Summary</B></FONT></TH>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library">ViewAdapter</A></B></TD>
+<TD>Adapter class to allow WebDriver to work with any View that has the same
+ API as WebView.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidAtoms.html" title="enum in org.openqa.selenium.android.library">AndroidAtoms</A></B></TD>
-<TD>The WebDriver atoms are used to ensure consistent behaviour cross-browser.</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html" title="class in org.openqa.selenium.android.library">ViewClientWrapper</A></B></TD>
+<TD>This class wraps a view client that must have the *same* API as
+ WebViewClient.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverChromeClient.html" title="class in org.openqa.selenium.android.library">WebDriverChromeClient</A></B></TD>
+<TD>This class provides methods that must be called by a custom chrome client
+ if you decide not to use the DefaultChromeClient.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../../org/openqa/selenium/android/library/WebDriverViewClient.html" title="class in org.openqa.selenium.android.library">WebDriverViewClient</A></B></TD>
+<TD>This class provides methods that must be called by a custom view client
+ if you decide not to use the DefaultViewClient.</TD>
 </TR>
 </TABLE>
 &nbsp;

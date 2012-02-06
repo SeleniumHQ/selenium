@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-Logger
+AlertManager
 </TITLE>
 
 
@@ -13,7 +13,7 @@ Logger
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Logger";
+        parent.document.title="AlertManager";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidAlert.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/AlertManager.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AlertManager.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_java.lang.Object">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -87,15 +87,19 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <FONT SIZE="-1">
 org.openqa.selenium.android.library</FONT>
 <BR>
-Class Logger</H2>
+Class AlertManager</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.Logger</B>
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.AlertManager</B>
 </PRE>
 <HR>
 <DL>
-<DT><PRE>public class <B>Logger</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>AlertManager</B><DT>extends java.lang.Object</DL>
 </PRE>
+
+<P>
+This tracks manages all alerts and pop-up windows opened by the current views.
+<P>
 
 <P>
 <HR>
@@ -111,7 +115,7 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#Logger()">Logger</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AlertManager.html#AlertManager()">AlertManager</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -125,41 +129,6 @@ java.lang.Object
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.util.logging.Logger</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#getLogger()">getLogger</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)">log</A></B>(java.util.logging.Level&nbsp;value,
-    java.lang.String&nbsp;className,
-    java.lang.String&nbsp;methodName,
-    java.lang.String&nbsp;message)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setDebugMode(boolean)">setDebugMode</A></B>(boolean&nbsp;enabled)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setLevel(java.util.logging.Level)">setLevel</A></B>(java.util.logging.Level&nbsp;level)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the logging level for this logger.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -184,69 +153,11 @@ java.lang.Object
 </TR>
 </TABLE>
 
-<A NAME="Logger()"><!-- --></A><H3>
-Logger</H3>
+<A NAME="AlertManager()"><!-- --></A><H3>
+AlertManager</H3>
 <PRE>
-public <B>Logger</B>()</PRE>
+public <B>AlertManager</B>()</PRE>
 <DL>
-</DL>
-
-<!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="setLevel(java.util.logging.Level)"><!-- --></A><H3>
-setLevel</H3>
-<PRE>
-public static void <B>setLevel</B>(java.util.logging.Level&nbsp;level)</PRE>
-<DL>
-<DD>Sets the logging level for this logger.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>level</CODE> - </DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)"><!-- --></A><H3>
-log</H3>
-<PRE>
-public static void <B>log</B>(java.util.logging.Level&nbsp;value,
-                       java.lang.String&nbsp;className,
-                       java.lang.String&nbsp;methodName,
-                       java.lang.String&nbsp;message)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setDebugMode(boolean)"><!-- --></A><H3>
-setDebugMode</H3>
-<PRE>
-public static void <B>setDebugMode</B>(boolean&nbsp;enabled)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getLogger()"><!-- --></A><H3>
-getLogger</H3>
-<PRE>
-public static java.util.logging.Logger <B>getLogger</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
@@ -278,11 +189,11 @@ public static java.util.logging.Logger <B>getLogger</B>()</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidAlert.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/AlertManager.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AlertManager.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -299,9 +210,9 @@ public static java.util.logging.Logger <B>getLogger</B>()</PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_java.lang.Object">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

@@ -1,0 +1,925 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<TITLE>
+DefaultChromeClient
+</TITLE>
+
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="DefaultChromeClient";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DefaultWebViewFactory.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/DefaultChromeClient.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DefaultChromeClient.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;<A HREF="#nested_classes_inherited_from_class_android.webkit.WebChromeClient">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+org.openqa.selenium.android.library</FONT>
+<BR>
+Class DefaultChromeClient</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by ">android.webkit.WebChromeClient
+      <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.DefaultChromeClient</B>
+</PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library">DriverProvider</A>, <A HREF="../../../../../org/openqa/selenium/android/library/ViewProvider.html" title="interface in org.openqa.selenium.android.library">ViewProvider</A></DD>
+</DL>
+<HR>
+<DL>
+<DT><PRE>public class <B>DefaultChromeClient</B><DT>extends android.webkit.WebChromeClient<DT>implements <A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library">DriverProvider</A>, <A HREF="../../../../../org/openqa/selenium/android/library/ViewProvider.html" title="interface in org.openqa.selenium.android.library">ViewProvider</A></DL>
+</PRE>
+
+<P>
+Default implementation for WebDriver's chrome client. This chrome client
+ allows WebDriver to listen to interesting events on the page.
+
+ Note that this class handles the creation and destruction of new windows.
+ onCreateWindow will create a new view using the ViewFactory provided
+ to WebDriver. onCloseWindow will destroy the view.
+<P>
+
+<P>
+<HR>
+
+<P>
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+
+<A NAME="nested_class_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Nested Class Summary</B></FONT></TH>
+</TR>
+</TABLE>
+&nbsp;<A NAME="nested_classes_inherited_from_class_android.webkit.WebChromeClient"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Nested classes/interfaces inherited from class android.webkit.WebChromeClient</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>android.webkit.WebChromeClient.CustomViewCallback</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#DefaultChromeClient()">DefaultChromeClient</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default chrome client.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#DefaultChromeClient(android.webkit.WebChromeClient)">DefaultChromeClient</A></B>(android.webkit.WebChromeClient&nbsp;client)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this constructor if the WebView you are using with WebDriver does
+ have custom setting defined in the WebChromeClient.</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;android.graphics.Bitmap</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#getDefaultVideoPoster()">getDefaultVideoPoster</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;android.view.View</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#getVideoLoadingProgressView()">getVideoLoadingProgressView</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#getVisitedHistory(android.webkit.ValueCallback)">getVisitedHistory</A></B>(android.webkit.ValueCallback&lt;java.lang.String[]&gt;&nbsp;callback)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onCloseWindow(android.webkit.WebView)">onCloseWindow</A></B>(android.webkit.WebView&nbsp;window)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onConsoleMessage(android.webkit.ConsoleMessage)">onConsoleMessage</A></B>(android.webkit.ConsoleMessage&nbsp;consoleMessage)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onConsoleMessage(java.lang.String, int, java.lang.String)">onConsoleMessage</A></B>(java.lang.String&nbsp;message,
+                 int&nbsp;lineNumber,
+                 java.lang.String&nbsp;sourceID)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onCreateWindow(android.webkit.WebView, boolean, boolean, android.os.Message)">onCreateWindow</A></B>(android.webkit.WebView&nbsp;view,
+               boolean&nbsp;dialog,
+               boolean&nbsp;userGesture,
+               android.os.Message&nbsp;resultMsg)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onExceededDatabaseQuota(java.lang.String, java.lang.String, long, long, long, android.webkit.WebStorage.QuotaUpdater)">onExceededDatabaseQuota</A></B>(java.lang.String&nbsp;url,
+                        java.lang.String&nbsp;databaseIdentifier,
+                        long&nbsp;currentQuota,
+                        long&nbsp;estimatedSize,
+                        long&nbsp;totalUsedQuota,
+                        android.webkit.WebStorage.QuotaUpdater&nbsp;quotaUpdater)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onGeolocationPermissionsHidePrompt()">onGeolocationPermissionsHidePrompt</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onGeolocationPermissionsShowPrompt(java.lang.String, android.webkit.GeolocationPermissions.Callback)">onGeolocationPermissionsShowPrompt</A></B>(java.lang.String&nbsp;origin,
+                                   android.webkit.GeolocationPermissions.Callback&nbsp;callback)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onHideCustomView()">onHideCustomView</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onJsAlert(android.webkit.WebView, java.lang.String, java.lang.String, android.webkit.JsResult)">onJsAlert</A></B>(android.webkit.WebView&nbsp;view,
+          java.lang.String&nbsp;url,
+          java.lang.String&nbsp;message,
+          android.webkit.JsResult&nbsp;result)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onJsBeforeUnload(android.webkit.WebView, java.lang.String, java.lang.String, android.webkit.JsResult)">onJsBeforeUnload</A></B>(android.webkit.WebView&nbsp;view,
+                 java.lang.String&nbsp;url,
+                 java.lang.String&nbsp;message,
+                 android.webkit.JsResult&nbsp;result)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onJsConfirm(android.webkit.WebView, java.lang.String, java.lang.String, android.webkit.JsResult)">onJsConfirm</A></B>(android.webkit.WebView&nbsp;view,
+            java.lang.String&nbsp;url,
+            java.lang.String&nbsp;message,
+            android.webkit.JsResult&nbsp;result)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onJsPrompt(android.webkit.WebView, java.lang.String, java.lang.String, java.lang.String, android.webkit.JsPromptResult)">onJsPrompt</A></B>(android.webkit.WebView&nbsp;view,
+           java.lang.String&nbsp;url,
+           java.lang.String&nbsp;message,
+           java.lang.String&nbsp;defaultValue,
+           android.webkit.JsPromptResult&nbsp;result)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onJsTimeout()">onJsTimeout</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onProgressChanged(android.webkit.WebView, int)">onProgressChanged</A></B>(android.webkit.WebView&nbsp;view,
+                  int&nbsp;newProgress)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onReachedMaxAppCacheSize(long, long, android.webkit.WebStorage.QuotaUpdater)">onReachedMaxAppCacheSize</A></B>(long&nbsp;spaceNeeded,
+                         long&nbsp;totalUsedQuota,
+                         android.webkit.WebStorage.QuotaUpdater&nbsp;quotaUpdater)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onReceivedIcon(android.webkit.WebView, android.graphics.Bitmap)">onReceivedIcon</A></B>(android.webkit.WebView&nbsp;view,
+               android.graphics.Bitmap&nbsp;icon)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onReceivedTitle(android.webkit.WebView, java.lang.String)">onReceivedTitle</A></B>(android.webkit.WebView&nbsp;view,
+                java.lang.String&nbsp;title)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onReceivedTouchIconUrl(android.webkit.WebView, java.lang.String, boolean)">onReceivedTouchIconUrl</A></B>(android.webkit.WebView&nbsp;view,
+                       java.lang.String&nbsp;url,
+                       boolean&nbsp;precomposed)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onRequestFocus(android.webkit.WebView)">onRequestFocus</A></B>(android.webkit.WebView&nbsp;view)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onShowCustomView(android.view.View, int, android.webkit.WebChromeClient.CustomViewCallback)">onShowCustomView</A></B>(android.view.View&nbsp;view,
+                 int&nbsp;requestedOrientation,
+                 android.webkit.WebChromeClient.CustomViewCallback&nbsp;callback)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#onShowCustomView(android.view.View, android.webkit.WebChromeClient.CustomViewCallback)">onShowCustomView</A></B>(android.view.View&nbsp;view,
+                 android.webkit.WebChromeClient.CustomViewCallback&nbsp;callback)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#setDriver(org.openqa.selenium.android.library.AndroidWebDriver)">setDriver</A></B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/DefaultChromeClient.html#setWebDriverView(org.openqa.selenium.android.library.WebDriverView)">setWebDriverView</A></B>(org.openqa.selenium.android.library.WebDriverView&nbsp;view)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="DefaultChromeClient()"><!-- --></A><H3>
+DefaultChromeClient</H3>
+<PRE>
+public <B>DefaultChromeClient</B>()</PRE>
+<DL>
+<DD>Default chrome client. Use this if the WebView you are using does not
+ have custom settings in the WebChromeClient.
+<P>
+</DL>
+<HR>
+
+<A NAME="DefaultChromeClient(android.webkit.WebChromeClient)"><!-- --></A><H3>
+DefaultChromeClient</H3>
+<PRE>
+public <B>DefaultChromeClient</B>(android.webkit.WebChromeClient&nbsp;client)</PRE>
+<DL>
+<DD>Use this constructor if the WebView you are using with WebDriver does
+ have custom setting defined in the WebChromeClient.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>client</CODE> - the WebChromeClient used by the WebView that WebDriver
+     is driving.</DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="setDriver(org.openqa.selenium.android.library.AndroidWebDriver)"><!-- --></A><H3>
+setDriver</H3>
+<PRE>
+public void <B>setDriver</B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html#setDriver(org.openqa.selenium.android.library.AndroidWebDriver)">setDriver</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library">DriverProvider</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setWebDriverView(org.openqa.selenium.android.library.WebDriverView)"><!-- --></A><H3>
+setWebDriverView</H3>
+<PRE>
+public void <B>setWebDriverView</B>(org.openqa.selenium.android.library.WebDriverView&nbsp;view)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/android/library/ViewProvider.html#setWebDriverView(org.openqa.selenium.android.library.WebDriverView)">setWebDriverView</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/android/library/ViewProvider.html" title="interface in org.openqa.selenium.android.library">ViewProvider</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onCloseWindow(android.webkit.WebView)"><!-- --></A><H3>
+onCloseWindow</H3>
+<PRE>
+public void <B>onCloseWindow</B>(android.webkit.WebView&nbsp;window)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onCloseWindow</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onCreateWindow(android.webkit.WebView, boolean, boolean, android.os.Message)"><!-- --></A><H3>
+onCreateWindow</H3>
+<PRE>
+public boolean <B>onCreateWindow</B>(android.webkit.WebView&nbsp;view,
+                              boolean&nbsp;dialog,
+                              boolean&nbsp;userGesture,
+                              android.os.Message&nbsp;resultMsg)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onCreateWindow</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onRequestFocus(android.webkit.WebView)"><!-- --></A><H3>
+onRequestFocus</H3>
+<PRE>
+public void <B>onRequestFocus</B>(android.webkit.WebView&nbsp;view)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onRequestFocus</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onProgressChanged(android.webkit.WebView, int)"><!-- --></A><H3>
+onProgressChanged</H3>
+<PRE>
+public void <B>onProgressChanged</B>(android.webkit.WebView&nbsp;view,
+                              int&nbsp;newProgress)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onProgressChanged</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onReceivedTitle(android.webkit.WebView, java.lang.String)"><!-- --></A><H3>
+onReceivedTitle</H3>
+<PRE>
+public void <B>onReceivedTitle</B>(android.webkit.WebView&nbsp;view,
+                            java.lang.String&nbsp;title)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onReceivedTitle</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onReceivedIcon(android.webkit.WebView, android.graphics.Bitmap)"><!-- --></A><H3>
+onReceivedIcon</H3>
+<PRE>
+public void <B>onReceivedIcon</B>(android.webkit.WebView&nbsp;view,
+                           android.graphics.Bitmap&nbsp;icon)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onReceivedIcon</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onReceivedTouchIconUrl(android.webkit.WebView, java.lang.String, boolean)"><!-- --></A><H3>
+onReceivedTouchIconUrl</H3>
+<PRE>
+public void <B>onReceivedTouchIconUrl</B>(android.webkit.WebView&nbsp;view,
+                                   java.lang.String&nbsp;url,
+                                   boolean&nbsp;precomposed)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onReceivedTouchIconUrl</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onShowCustomView(android.view.View, android.webkit.WebChromeClient.CustomViewCallback)"><!-- --></A><H3>
+onShowCustomView</H3>
+<PRE>
+public void <B>onShowCustomView</B>(android.view.View&nbsp;view,
+                             android.webkit.WebChromeClient.CustomViewCallback&nbsp;callback)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onShowCustomView</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onShowCustomView(android.view.View, int, android.webkit.WebChromeClient.CustomViewCallback)"><!-- --></A><H3>
+onShowCustomView</H3>
+<PRE>
+public void <B>onShowCustomView</B>(android.view.View&nbsp;view,
+                             int&nbsp;requestedOrientation,
+                             android.webkit.WebChromeClient.CustomViewCallback&nbsp;callback)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onShowCustomView</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onHideCustomView()"><!-- --></A><H3>
+onHideCustomView</H3>
+<PRE>
+public void <B>onHideCustomView</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onHideCustomView</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsAlert(android.webkit.WebView, java.lang.String, java.lang.String, android.webkit.JsResult)"><!-- --></A><H3>
+onJsAlert</H3>
+<PRE>
+public boolean <B>onJsAlert</B>(android.webkit.WebView&nbsp;view,
+                         java.lang.String&nbsp;url,
+                         java.lang.String&nbsp;message,
+                         android.webkit.JsResult&nbsp;result)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onJsAlert</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsConfirm(android.webkit.WebView, java.lang.String, java.lang.String, android.webkit.JsResult)"><!-- --></A><H3>
+onJsConfirm</H3>
+<PRE>
+public boolean <B>onJsConfirm</B>(android.webkit.WebView&nbsp;view,
+                           java.lang.String&nbsp;url,
+                           java.lang.String&nbsp;message,
+                           android.webkit.JsResult&nbsp;result)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onJsConfirm</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsPrompt(android.webkit.WebView, java.lang.String, java.lang.String, java.lang.String, android.webkit.JsPromptResult)"><!-- --></A><H3>
+onJsPrompt</H3>
+<PRE>
+public boolean <B>onJsPrompt</B>(android.webkit.WebView&nbsp;view,
+                          java.lang.String&nbsp;url,
+                          java.lang.String&nbsp;message,
+                          java.lang.String&nbsp;defaultValue,
+                          android.webkit.JsPromptResult&nbsp;result)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onJsPrompt</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsBeforeUnload(android.webkit.WebView, java.lang.String, java.lang.String, android.webkit.JsResult)"><!-- --></A><H3>
+onJsBeforeUnload</H3>
+<PRE>
+public boolean <B>onJsBeforeUnload</B>(android.webkit.WebView&nbsp;view,
+                                java.lang.String&nbsp;url,
+                                java.lang.String&nbsp;message,
+                                android.webkit.JsResult&nbsp;result)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onJsBeforeUnload</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onExceededDatabaseQuota(java.lang.String, java.lang.String, long, long, long, android.webkit.WebStorage.QuotaUpdater)"><!-- --></A><H3>
+onExceededDatabaseQuota</H3>
+<PRE>
+public void <B>onExceededDatabaseQuota</B>(java.lang.String&nbsp;url,
+                                    java.lang.String&nbsp;databaseIdentifier,
+                                    long&nbsp;currentQuota,
+                                    long&nbsp;estimatedSize,
+                                    long&nbsp;totalUsedQuota,
+                                    android.webkit.WebStorage.QuotaUpdater&nbsp;quotaUpdater)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onExceededDatabaseQuota</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onReachedMaxAppCacheSize(long, long, android.webkit.WebStorage.QuotaUpdater)"><!-- --></A><H3>
+onReachedMaxAppCacheSize</H3>
+<PRE>
+public void <B>onReachedMaxAppCacheSize</B>(long&nbsp;spaceNeeded,
+                                     long&nbsp;totalUsedQuota,
+                                     android.webkit.WebStorage.QuotaUpdater&nbsp;quotaUpdater)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onReachedMaxAppCacheSize</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onGeolocationPermissionsShowPrompt(java.lang.String, android.webkit.GeolocationPermissions.Callback)"><!-- --></A><H3>
+onGeolocationPermissionsShowPrompt</H3>
+<PRE>
+public void <B>onGeolocationPermissionsShowPrompt</B>(java.lang.String&nbsp;origin,
+                                               android.webkit.GeolocationPermissions.Callback&nbsp;callback)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onGeolocationPermissionsShowPrompt</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onGeolocationPermissionsHidePrompt()"><!-- --></A><H3>
+onGeolocationPermissionsHidePrompt</H3>
+<PRE>
+public void <B>onGeolocationPermissionsHidePrompt</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onGeolocationPermissionsHidePrompt</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onJsTimeout()"><!-- --></A><H3>
+onJsTimeout</H3>
+<PRE>
+public boolean <B>onJsTimeout</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onJsTimeout</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onConsoleMessage(java.lang.String, int, java.lang.String)"><!-- --></A><H3>
+onConsoleMessage</H3>
+<PRE>
+public void <B>onConsoleMessage</B>(java.lang.String&nbsp;message,
+                             int&nbsp;lineNumber,
+                             java.lang.String&nbsp;sourceID)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onConsoleMessage</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="onConsoleMessage(android.webkit.ConsoleMessage)"><!-- --></A><H3>
+onConsoleMessage</H3>
+<PRE>
+public boolean <B>onConsoleMessage</B>(android.webkit.ConsoleMessage&nbsp;consoleMessage)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>onConsoleMessage</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getDefaultVideoPoster()"><!-- --></A><H3>
+getDefaultVideoPoster</H3>
+<PRE>
+public android.graphics.Bitmap <B>getDefaultVideoPoster</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>getDefaultVideoPoster</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getVideoLoadingProgressView()"><!-- --></A><H3>
+getVideoLoadingProgressView</H3>
+<PRE>
+public android.view.View <B>getVideoLoadingProgressView</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>getVideoLoadingProgressView</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getVisitedHistory(android.webkit.ValueCallback)"><!-- --></A><H3>
+getVisitedHistory</H3>
+<PRE>
+public void <B>getVisitedHistory</B>(android.webkit.ValueCallback&lt;java.lang.String[]&gt;&nbsp;callback)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>getVisitedHistory</CODE> in class <CODE>android.webkit.WebChromeClient</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DefaultWebViewFactory.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/DefaultChromeClient.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DefaultChromeClient.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;<A HREF="#nested_classes_inherited_from_class_android.webkit.WebChromeClient">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+
+</BODY>
+</HTML>

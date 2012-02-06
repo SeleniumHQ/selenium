@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-Logger
+ViewClientWrapper
 </TITLE>
 
 
@@ -13,7 +13,7 @@ Logger
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Logger";
+        parent.document.title="ViewClientWrapper";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewFactory.html" title="interface in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/ViewClientWrapper.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ViewClientWrapper.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -87,15 +87,40 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <FONT SIZE="-1">
 org.openqa.selenium.android.library</FONT>
 <BR>
-Class Logger</H2>
+Class ViewClientWrapper</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.Logger</B>
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.ViewClientWrapper</B>
 </PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library">DriverProvider</A></DD>
+</DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>Logger</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>ViewClientWrapper</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library">DriverProvider</A></DL>
 </PRE>
+
+<P>
+This class wraps a view client that must have the *same* API as
+ WebViewClient. The underlying client will be used by WebDriver to listen to
+ interesting events on the page.
+
+ <p/>Sample usage:
+ // If the underlying view is a WebView you can use WebDriver's default
+ // view client DefaultViewClient as follow.
+ ViewClientWrapper viewWrapper = new ViewClientWrapper(
+     "android.webkit.WebViewClient", new DefaultViewClient());
+
+ // If the underlying view is a WebView and it has custom WebViewClient
+ // settings, use the DefaultViewClient as follow:
+ class MyCustomClient extends WebViewClient {
+   ...
+ }
+
+ MyCustomClient myClient = new MyCustomClient();
+ ViewClientWrapper viewWrapper = new ViewClientWrapper(
+     "android.webkit.WebViewClient", new DefaultViewClient(myClient));
+<P>
 
 <P>
 <HR>
@@ -111,7 +136,8 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#Logger()">Logger</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html#ViewClientWrapper(java.lang.String, java.lang.Object)">ViewClientWrapper</A></B>(java.lang.String&nbsp;className,
+                  java.lang.Object&nbsp;client)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -128,38 +154,11 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.util.logging.Logger</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#getLogger()">getLogger</A></B>()</CODE>
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/ViewClientWrapper.html#setDriver(org.openqa.selenium.android.library.AndroidWebDriver)">setDriver</A></B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)">log</A></B>(java.util.logging.Level&nbsp;value,
-    java.lang.String&nbsp;className,
-    java.lang.String&nbsp;methodName,
-    java.lang.String&nbsp;message)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setDebugMode(boolean)">setDebugMode</A></B>(boolean&nbsp;enabled)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/Logger.html#setLevel(java.util.logging.Level)">setLevel</A></B>(java.util.logging.Level&nbsp;level)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the logging level for this logger.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -184,11 +183,18 @@ java.lang.Object
 </TR>
 </TABLE>
 
-<A NAME="Logger()"><!-- --></A><H3>
-Logger</H3>
+<A NAME="ViewClientWrapper(java.lang.String, java.lang.Object)"><!-- --></A><H3>
+ViewClientWrapper</H3>
 <PRE>
-public <B>Logger</B>()</PRE>
+public <B>ViewClientWrapper</B>(java.lang.String&nbsp;className,
+                         java.lang.Object&nbsp;client)</PRE>
 <DL>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>className</CODE> - the fully qualified class name of the client's 
+     class name.<DD><CODE>client</CODE> - the client to use. Typically this client will be a
+     WebViewClient (or extend the latter). If not this client must have
+     the same API as WebViewClient. Additionally this client view must
+     implement the DriverProvider interface.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -201,49 +207,14 @@ public <B>Logger</B>()</PRE>
 </TR>
 </TABLE>
 
-<A NAME="setLevel(java.util.logging.Level)"><!-- --></A><H3>
-setLevel</H3>
+<A NAME="setDriver(org.openqa.selenium.android.library.AndroidWebDriver)"><!-- --></A><H3>
+setDriver</H3>
 <PRE>
-public static void <B>setLevel</B>(java.util.logging.Level&nbsp;level)</PRE>
-<DL>
-<DD>Sets the logging level for this logger.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>level</CODE> - </DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log(java.util.logging.Level, java.lang.String, java.lang.String, java.lang.String)"><!-- --></A><H3>
-log</H3>
-<PRE>
-public static void <B>log</B>(java.util.logging.Level&nbsp;value,
-                       java.lang.String&nbsp;className,
-                       java.lang.String&nbsp;methodName,
-                       java.lang.String&nbsp;message)</PRE>
+public void <B>setDriver</B>(<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</A>&nbsp;driver)</PRE>
 <DL>
 <DD><DL>
-</DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html#setDriver(org.openqa.selenium.android.library.AndroidWebDriver)">setDriver</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library">DriverProvider</A></CODE></DL>
 </DD>
-</DL>
-<HR>
-
-<A NAME="setDebugMode(boolean)"><!-- --></A><H3>
-setDebugMode</H3>
-<PRE>
-public static void <B>setDebugMode</B>(boolean&nbsp;enabled)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getLogger()"><!-- --></A><H3>
-getLogger</H3>
-<PRE>
-public static java.util.logging.Logger <B>getLogger</B>()</PRE>
-<DL>
 <DD><DL>
 </DL>
 </DD>
@@ -278,11 +249,11 @@ public static java.util.logging.Logger <B>getLogger</B>()</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/DriverProvider.html" title="interface in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/ViewFactory.html" title="interface in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/Logger.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Logger.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/ViewClientWrapper.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ViewClientWrapper.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
