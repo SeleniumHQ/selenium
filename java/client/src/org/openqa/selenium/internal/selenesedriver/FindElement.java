@@ -27,9 +27,9 @@ public class FindElement extends AbstractElementFinder<Map<String, String>> {
 
   private final static String SCRIPT =
       "var by = {}; by['%s'] = '%s'; " +
-          "var e = bot.locators.findElement(by, %s);" +
-          "e = core.firefox.unwrap(e); " +
-          "bot.inject.cache.addElement(e);";
+      "var e = bot.locators.findElement(by, %s);" +
+      "e = core.firefox.unwrap(e); " +
+      "bot.inject.cache.addElement(e);";
 
   @Override
   protected Map<String, String> executeFind(Selenium selenium, String how, String using,
