@@ -26,6 +26,10 @@ WebDriverJS:
     users may register callbacks.
   * Small tweaks so WebDriverJs works as expected in IE7/8.
 
+Known Issues:
+  * Holding down a modifier key and clicking with Firefox 10 on
+    Windows does not work reliably when using native events.
+
 
 v2.18.0
 ========
