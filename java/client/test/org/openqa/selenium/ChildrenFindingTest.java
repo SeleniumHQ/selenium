@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
@@ -25,11 +27,12 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.thoughtworks.selenium.Selenium;
+
 import java.util.List;
 
 
 public class ChildrenFindingTest extends AbstractDriverTestCase {
-  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testFindElementByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -37,7 +40,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("id"), is("2"));
   }
 
-  @Ignore(value = SELENESE, reason = "Filtering not happening as expected")
+  @Ignore(value = SELENESE, reason = "Apparently Selenium is filtering results")
   public void testFindingElementsOnElementByXPathShouldFindTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
@@ -46,7 +49,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals(allPs.size(), children.size());
   }
 
-  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testFindingDotSlashElementsOnElementByXPathShouldFindNotTopLevelElements() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("multiline"));
@@ -55,7 +57,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertEquals("A div containing", children.get(0).getText());
   }
 
-  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testFindElementByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
 
@@ -68,7 +69,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testfindElementsByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
@@ -78,7 +78,6 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(children.get(1).getText(), is("Two"));
   }
 
-  @Ignore(value = SELENESE, reason = "Selenium expects xpaths to start with a leading //")
   public void testfindElementsByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));

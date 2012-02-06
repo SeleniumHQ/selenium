@@ -34,7 +34,7 @@ public class NewSession implements SeleneseFunction<Map<String, Object>> {
     selenium.start(getBrowserConfigurationOptions(capabilities));
 
     // Emulate behaviour of webdriver
-    selenium.useXpathLibrary("javascript-xpath");
+    selenium.useXpathLibrary("native");
     selenium.allowNativeXpath("true");
 
     Map<String, Object> seenCapabilities = new HashMap<String, Object>();
