@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 WebDriver committers
+Copyright 2007-2012 WebDriver committers
 Copyright 2007-2009 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,14 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Mechanism used to locate elements within a document using a series of other lookups. This class
- * will find all DOM elements that much each of the locators in sequence, eg.
+ * Mechanism used to locate elements within a document using a series of other lookups.  This class
+ * will find all DOM elements that matches each of the locators in sequence, e.g.
  * 
  * <pre>
  * driver.findElements(new ByChained(by1, by2))
  * </pre>
  * 
- * will find all elements that match by2 and appear under an element that matches by1.
+ * will find all elements that match <var>by2</var> and appear under an element that matches
+ * <var>by1</var>.
  */
 public class ByChained extends By {
 
@@ -87,4 +88,5 @@ public class ByChained extends By {
     stringBuilder.append("})");
     return stringBuilder.toString();
   }
+
 }
