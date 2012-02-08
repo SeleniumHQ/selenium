@@ -214,7 +214,7 @@
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="c">### This part is hard-coded in the XSL</span>
+    <span class="c">### This part is hard-coded in the XSL</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">browserStartCommand</span><span class="p">,</span> <span class="n">browserURL</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
@@ -226,10 +226,13 @@
     <span class="k">def</span> <span class="nf">setExtensionJs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extensionJs</span><span class="p">):</span>
 <div class="viewcode-block" id="selenium.setExtensionJs"><a class="viewcode-back" href="../../selenium/selenium.selenium.html#selenium.selenium.selenium.setExtensionJs">[docs]</a>        <span class="bp">self</span><span class="o">.</span><span class="n">extensionJs</span> <span class="o">=</span> <span class="n">extensionJs</span>
         
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">browserConfigurationOptions</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">browserConfigurationOptions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
 <div class="viewcode-block" id="selenium.start"><a class="viewcode-back" href="../../selenium/selenium.selenium.html#selenium.selenium.selenium.start">[docs]</a>        <span class="n">start_args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">browserStartCommand</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">browserURL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extensionJs</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">browserConfigurationOptions</span><span class="p">:</span>
           <span class="n">start_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">browserConfigurationOptions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">driver</span><span class="p">:</span>
+          <span class="nb">id</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">desired_capabilities</span><span class="p">[</span><span class="s">&#39;webdriver.remote.sessionid&#39;</span><span class="p">]</span>
+          <span class="n">start_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;webdriver.remote.sessionid=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s">&quot;getNewBrowserSession&quot;</span><span class="p">,</span> <span class="n">start_args</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sessionId</span> <span class="o">=</span> <span class="n">result</span>
