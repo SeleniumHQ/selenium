@@ -359,7 +359,7 @@ Saves the entire contents of the current window canvas to a PNG file.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Downloads a screenshot of the browser current window canvas to a  based 64
+Downloads a screenshot of the browser current window canvas to a based 64
 encoded PNG file.
 </p>
 </div></span>
@@ -3030,7 +3030,7 @@ commands.
   
     <span class="summary_desc"><div class='inline'><p>
 Creates a new &#8220;script&#8221; tag in the body of the current test
-window, and  adds the specified text into the body of the command.
+window, and adds the specified text into the body of the command.
 </p>
 </div></span>
   
@@ -3645,7 +3645,7 @@ Resize currently selected window to take up the entire screen.
 Defines a new function for Selenium to locate elements on the page. For
 example, if you define the strategy &#8220;foo&#8221;, and someone runs
 click(&#8220;foo=blah&#8221;), we&#8217;ll run your function, passing you
-the string &#8220;blah&#8221;, and click on the element  that your function
+the string &#8220;blah&#8221;, and click on the element that your function
 returns, or throw an &#8220;Element not found&#8221; error if your function
 returns null.
 </p>
@@ -4160,7 +4160,7 @@ dimension to fail and a black background is exposed
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Downloads a screenshot of the browser current window canvas to a  based 64
+Downloads a screenshot of the browser current window canvas to a based 64
 encoded PNG file. The <em>entire</em> windows canvas is captured, including
 parts rendered outside of the current view port.
 </p>
@@ -4345,7 +4345,7 @@ By default, Selenium&#8217;s overridden window.confirm() function will
 return true, as if the user had manually clicked OK; after running this
 command, the next call to confirm() will return false, as if the user had
 clicked Cancel.  Selenium will then resume using the default behavior for
-future confirmations, automatically returning  true (OK) unless/until you
+future confirmations, automatically returning true (OK) unless/until you
 explicitly call this command for each confirmation.
 </p>
 <p>
@@ -4397,7 +4397,7 @@ automatically return true, as if the user had manually clicked OK, so you
 shouldn&#8217;t need to use this command unless for some reason you need to
 change your mind prior to the next confirmation.  After any confirmation,
 Selenium will resume using the default behavior for future confirmations,
-automatically returning  true (OK) unless/until you explicitly call
+automatically returning true (OK) unless/until you explicitly call
 chooseCancelOnNextConfirmation for each confirmation.
 </p>
 <p>
@@ -5696,7 +5696,7 @@ the previous action.
 <p>
 By default, the confirm function will return true, having the same effect
 as manually clicking OK. This can be changed by prior execution of the
-chooseCancelOnNextConfirmation command. 
+chooseCancelOnNextConfirmation command.
 </p>
 <p>
 If an confirmation is generated but you do not consume it with
@@ -9114,7 +9114,7 @@ rollup expands into commands
   <div class="discussion">
     <p>
 Creates a new &#8220;script&#8221; tag in the body of the current test
-window, and  adds the specified text into the body of the command.  Scripts
+window, and adds the specified text into the body of the command.  Scripts
 run in this way can often be debugged more easily than scripts executed
 using Selenium&#8217;s &#8220;getEval&#8221; command.  Beware that JS
 exceptions thrown in these script tags aren&#8217;t managed by Selenium, so
@@ -9421,7 +9421,7 @@ just pick one.
 </ul>
 <p>
 Finds the window using its internal JavaScript &#8220;name&#8221; property.
-This is the second  parameter &#8220;windowName&#8221; passed to the
+This is the second parameter &#8220;windowName&#8221; passed to the
 JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
 (which Selenium intercepts).
 </p>
@@ -9878,7 +9878,7 @@ Kills the running Selenium Server and all browser sessions.  After you run
 this command, you will no longer be able to send commands to the server;
 you can&#8217;t remotely start the server once it has been stopped. 
 Normally you should prefer to run the &#8220;stop&#8221; command, which
-terminates the current browser session, rather than  shutting down the
+terminates the current browser session, rather than shutting down the
 entire server.
 </p>
 
@@ -10219,8 +10219,8 @@ error
 Waits for a new frame to load.
 </p>
 <p>
-Selenium constantly keeps track of new pages and frames loading,  and sets
-a &#8220;newPageLoaded&#8221; flag when it first notices a page load.
+Selenium constantly keeps track of new pages and frames loading, and sets a
+&#8220;newPageLoaded&#8221; flag when it first notices a page load.
 </p>
 <p>
 See waitForPageToLoad for more information.
@@ -10448,7 +10448,7 @@ Resize currently selected window to take up the entire screen
 </div>
     
     <div id="footer">
-  Generated on Fri Jan 27 18:01:59 2012 by 
+  Generated on Wed Feb  8 17:38:18 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>

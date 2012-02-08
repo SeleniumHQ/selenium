@@ -232,7 +232,7 @@ Delegates to @selenium on method missing
 
 <span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_method_name'>method_name</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>super</span> <span class='kw'>unless</span> <span class='ivar'>@selenium</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='id identifier rubyid_method_name'>method_name</span><span class='rparen'>)</span>
-  
+
   <span class='ivar'>@selenium</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_method_name'>method_name</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -372,7 +372,7 @@ Overrides default type method to actually delegates to @selenium
 </div>
     
     <div id="footer">
-  Generated on Fri Jan 27 18:02:00 2012 by 
+  Generated on Wed Feb  8 17:38:19 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>

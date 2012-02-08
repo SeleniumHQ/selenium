@@ -518,7 +518,7 @@ A new instance of JavascriptExpressionBuilder
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/javascript_expression_builder.rb', line 7</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_javascript_framework_name'>javascript_framework_name</span><span class='op'>=</span><span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@framework</span> <span class='op'>=</span> <span class='id identifier rubyid_javascript_framework_for'>javascript_framework_for</span><span class='lparen'>(</span><span class='id identifier rubyid_javascript_framework_name'>javascript_framework_name</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_javascript_framework_name'>javascript_framework_name</span>       
+  <span class='ivar'>@framework</span> <span class='op'>=</span> <span class='id identifier rubyid_javascript_framework_for'>javascript_framework_for</span><span class='lparen'>(</span><span class='id identifier rubyid_javascript_framework_name'>javascript_framework_name</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_javascript_framework_name'>javascript_framework_name</span>
   <span class='ivar'>@script</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
@@ -792,7 +792,7 @@ Returns the value of attribute script
 <span class='tstring_content'>    var text_match;
 </span><span class='embexpr_beg'>    text_match = (null != selenium.browserbot.getCurrentWindow().document.body.innerHTML.match(#{</span><span class='id identifier rubyid_js_regexp'>js_regexp</span><span class='rbrace'>}</span><span class='tstring_content'>));
 </span><span class='heredoc_end'>  EOS
-</span>  
+</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -831,7 +831,7 @@ Returns the value of attribute script
 <span class='tstring_content'>    var text_match;
 </span><span class='embexpr_beg'>    text_match = (element != null &amp;&amp; #{</span><span class='id identifier rubyid_text_match'>text_match</span><span class='lparen'>(</span><span class='id identifier rubyid_pattern'>pattern</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>);
 </span><span class='heredoc_end'>  EOS
-</span>  
+</span>
   <span class='kw'>self</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1092,7 +1092,7 @@ Returns the value of attribute script
 </div>
     
     <div id="footer">
-  Generated on Fri Jan 27 18:02:04 2012 by 
+  Generated on Wed Feb  8 17:38:23 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>

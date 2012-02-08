@@ -2089,6 +2089,195 @@ Returns the current session ID.
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#touchDoubleTap-instance_method" title="#touchDoubleTap (instance method)">- (Object) <strong>touchDoubleTap</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchDown-instance_method" title="#touchDown (instance method)">- (Object) <strong>touchDown</strong>(x, y) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchElementFlick-instance_method" title="#touchElementFlick (instance method)">- (Object) <strong>touchElementFlick</strong>(element, right_by, down_by, speed) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchFlick-instance_method" title="#touchFlick (instance method)">- (Object) <strong>touchFlick</strong>(xspeed, yspeed) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchLongPress-instance_method" title="#touchLongPress (instance method)">- (Object) <strong>touchLongPress</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchMove-instance_method" title="#touchMove (instance method)">- (Object) <strong>touchMove</strong>(x, y) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchScroll-instance_method" title="#touchScroll (instance method)">- (Object) <strong>touchScroll</strong>(element, x, y) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchSingleTap-instance_method" title="#touchSingleTap (instance method)">- (Object) <strong>touchSingleTap</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#touchUp-instance_method" title="#touchUp (instance method)">- (Object) <strong>touchUp</strong>(x, y) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#upload-instance_method" title="#upload (instance method)">- (Object) <strong>upload</strong>(local_file) </a>
     
 
@@ -3320,16 +3509,16 @@ actions
       <pre class="lines">
 
 
-469
-470
-471
-472
-473
-474
-475</pre>
+515
+516
+517
+518
+519
+520
+521</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 469</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 515</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_elementEquals'>elementEquals</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
@@ -3466,18 +3655,18 @@ javascript execution
       <pre class="lines">
 
 
-486
-487
-488
-489
-490
-491
-492
-493
-494</pre>
+532
+533
+534
+535
+536
+537
+538
+539
+540</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 486</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 532</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_parent'>parent</span>
@@ -3519,18 +3708,18 @@ javascript execution
       <pre class="lines">
 
 
-496
-497
-498
-499
-500
-501
-502
-503
-504</pre>
+542
+543
+544
+545
+546
+547
+548
+549
+550</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 496</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 542</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_parent'>parent</span>
@@ -3620,12 +3809,12 @@ finding elements
       <pre class="lines">
 
 
-481
-482
-483</pre>
+527
+528
+529</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 481</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 527</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getActiveElement'>getActiveElement</span>
   <span class='const'>Element</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:getActiveElement</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3910,12 +4099,12 @@ alerts
       <pre class="lines">
 
 
-424
-425
-426</pre>
+470
+471
+472</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 424</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 470</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementAttribute'>getElementAttribute</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementAttribute</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_name'>name</span>
@@ -3951,14 +4140,14 @@ alerts
       <pre class="lines">
 
 
-436
-437
-438
-439
-440</pre>
+482
+483
+484
+485
+486</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 436</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 482</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementLocation'>getElementLocation</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementLocation</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -3996,14 +4185,14 @@ alerts
       <pre class="lines">
 
 
-442
-443
-444
-445
-446</pre>
+488
+489
+490
+491
+492</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 442</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 488</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementLocationOnceScrolledIntoView</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4041,14 +4230,14 @@ alerts
       <pre class="lines">
 
 
-448
-449
-450
-451
-452</pre>
+494
+495
+496
+497
+498</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 448</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 494</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementSize'>getElementSize</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementSize</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4089,12 +4278,12 @@ element properties
       <pre class="lines">
 
 
-420
-421
-422</pre>
+466
+467
+468</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 420</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 466</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementTagName'>getElementTagName</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementTagName</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4130,12 +4319,12 @@ element properties
       <pre class="lines">
 
 
-432
-433
-434</pre>
+478
+479
+480</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 432</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 478</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementText'>getElementText</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementText</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4171,12 +4360,12 @@ element properties
       <pre class="lines">
 
 
-428
-429
-430</pre>
+474
+475
+476</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 428</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 474</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementValue'>getElementValue</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementValue</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4212,12 +4401,12 @@ element properties
       <pre class="lines">
 
 
-465
-466
-467</pre>
+511
+512
+513</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 465</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 511</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementValueOfCssProperty'>getElementValueOfCssProperty</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementValueOfCssProperty</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='symbol'>:property_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_prop'>prop</span>
@@ -4969,12 +5158,12 @@ navigation
       <pre class="lines">
 
 
-462
-463
-464</pre>
+508
+509
+510</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 462</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 508</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_isElementDisplayed'>isElementDisplayed</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:isElementDisplayed</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -5010,12 +5199,12 @@ navigation
       <pre class="lines">
 
 
-454
-455
-456</pre>
+500
+501
+502</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 454</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 500</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_isElementEnabled'>isElementEnabled</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:isElementEnabled</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -5051,12 +5240,12 @@ navigation
       <pre class="lines">
 
 
-458
-459
-460</pre>
+504
+505
+506</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 458</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 504</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_isElementSelected'>isElementSelected</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:isElementSelected</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -6086,6 +6275,395 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
+  <p class="signature " id="touchDoubleTap-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchDoubleTap</strong>(element) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+420
+421
+422</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 420</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchDoubleTap'>touchDoubleTap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchDoubleTap</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchDown-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchDown</strong>(x, y) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+428
+429
+430</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 428</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchDown'>touchDown</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchDown</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:x</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='symbol'>:y</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_y'>y</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchElementFlick-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchElementFlick</strong>(element, right_by, down_by, speed) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+454
+455
+456
+457
+458
+459
+460</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 454</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchElementFlick'>touchElementFlick</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='id identifier rubyid_speed'>speed</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchFlick</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span>
+                           <span class='symbol'>:xoffset</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span>
+                           <span class='symbol'>:yoffset</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span>
+                           <span class='symbol'>:speed</span>   <span class='op'>=&gt;</span> <span class='id identifier rubyid_speed'>speed</span>
+
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchFlick-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchFlick</strong>(xspeed, yspeed) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+450
+451
+452</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 450</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchFlick'>touchFlick</span><span class='lparen'>(</span><span class='id identifier rubyid_xspeed'>xspeed</span><span class='comma'>,</span> <span class='id identifier rubyid_yspeed'>yspeed</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchFlick</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:xspeed</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_xspeed'>xspeed</span><span class='comma'>,</span> <span class='symbol'>:yspeed</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_yspeed'>yspeed</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchLongPress-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchLongPress</strong>(element) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+424
+425
+426</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 424</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchLongPress'>touchLongPress</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchLongPress</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchMove-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchMove</strong>(x, y) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+436
+437
+438</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 436</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchMove'>touchMove</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchMove</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:x</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='symbol'>:y</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_y'>y</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchScroll-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchScroll</strong>(element, x, y) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+440
+441
+442
+443
+444
+445
+446
+447
+448</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 440</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchScroll'>touchScroll</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
+    <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchScroll</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:xoffset</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='symbol'>:yoffset</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_y'>y</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchScroll</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span>
+                              <span class='symbol'>:xoffset</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span>
+                              <span class='symbol'>:yoffset</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_y'>y</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchSingleTap-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchSingleTap</strong>(element) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+416
+417
+418</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 416</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchSingleTap'>touchSingleTap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchSingleTap</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="touchUp-instance_method">
+  
+    - (<tt>Object</tt>) <strong>touchUp</strong>(x, y) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+432
+433
+434</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 432</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_touchUp'>touchUp</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touchUp</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:x</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='symbol'>:y</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_y'>y</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <p class="signature " id="upload-instance_method">
   
     - (<tt>Object</tt>) <strong>upload</strong>(local_file) 
@@ -6139,7 +6717,7 @@ Returns the current session ID.
 </div>
     
     <div id="footer">
-  Generated on Fri Jan 27 18:02:02 2012 by 
+  Generated on Wed Feb  8 17:38:20 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>

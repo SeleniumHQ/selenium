@@ -155,9 +155,11 @@ Get the current screen orientation.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#rotate-instance_method" title="#rotate (instance method)">- (Object) <strong>rotate</strong>(orientation) </a>
+      <a href="#rotation%3D-instance_method" title="#rotation= (instance method)">- (Object) <strong>rotation=</strong>(orientation) </a>
     
 
+    
+      (also: #rotate)
     
   </span>
   
@@ -229,12 +231,12 @@ orientation
       <pre class="lines">
 
 
-37
 38
-39</pre>
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/rotatable.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/rotatable.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_orientation'>orientation</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getScreenOrientation'>getScreenOrientation</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
@@ -245,11 +247,15 @@ orientation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="rotate-instance_method">
+  <p class="signature " id="rotation=-instance_method">
   
-    - (<tt>Object</tt>) <strong>rotate</strong>(orientation) 
+    - (<tt>Object</tt>) <strong>rotation=</strong>(orientation) 
   
 
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='rotate-instance_method'>rotate</span></span>
+    </span>
   
 </p><div class="docstring">
   <div class="discussion">
@@ -295,7 +301,7 @@ Change the screen orientation
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/rotatable.rb', line 21</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_rotate'>rotate</span><span class='lparen'>(</span><span class='id identifier rubyid_orientation'>orientation</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_rotation='>rotation=</span><span class='lparen'>(</span><span class='id identifier rubyid_orientation'>orientation</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='const'>ORIENTATIONS</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_orientation'>orientation</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'>ORIENTATIONS</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_orientation'>orientation</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
@@ -312,7 +318,7 @@ Change the screen orientation
 </div>
     
     <div id="footer">
-  Generated on Fri Jan 27 18:02:04 2012 by 
+  Generated on Wed Feb  8 17:38:23 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>

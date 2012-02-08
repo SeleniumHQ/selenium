@@ -450,7 +450,7 @@ Create a new client driver.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#start-instance_method" title="#start (instance method)">- (Object) <strong>start</strong> </a>
+      <a href="#start-instance_method" title="#start (instance method)">- (Object) <strong>start</strong>(opts = {}) </a>
     
 
     
@@ -485,7 +485,7 @@ Create a new client driver.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Starts a new browser session (launching a new browser matching 
+Starts a new browser session (launching a new browser matching
 configuration provided at driver creation time).
 </p>
 </div></span>
@@ -904,12 +904,12 @@ Returns the value of attribute port
       <pre class="lines">
 
 
-106
-107
-108</pre>
+120
+121
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_chrome_backend?'>chrome_backend?</span>
   <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*chrome</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*firefox</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*firefox2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*firefox3</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='ivar'>@browser_string</span><span class='rparen'>)</span>
@@ -932,13 +932,13 @@ Returns the value of attribute port
       <pre class="lines">
 
 
-93
-94
-95
-96</pre>
+107
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 93</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close_current_browser_session'>close_current_browser_session</span>
   <span class='id identifier rubyid_remote_control_command'>remote_control_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>testComplete</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@session_id</span>
@@ -1086,12 +1086,12 @@ Selenium::Client::Driver.new \
       <pre class="lines">
 
 
-110
-111
-112</pre>
+124
+125
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_javascript_extension='>javascript_extension=</span><span class='lparen'>(</span><span class='id identifier rubyid_new_javascript_extension'>new_javascript_extension</span><span class='rparen'>)</span>
   <span class='ivar'>@extension_js</span> <span class='op'>=</span> <span class='id identifier rubyid_new_javascript_extension'>new_javascript_extension</span>
@@ -1154,7 +1154,7 @@ Selenium::Client::Driver.new \
       <div class="method_details ">
   <p class="signature " id="start-instance_method">
   
-    - (<tt>Object</tt>) <strong>start</strong> 
+    - (<tt>Object</tt>) <strong>start</strong>(opts = {}) 
   
 
   
@@ -1164,15 +1164,15 @@ Selenium::Client::Driver.new \
       <pre class="lines">
 
 
-98
-99
-100</pre>
+112
+113
+114</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 112</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
-  <span class='id identifier rubyid_start_new_browser_session'>start_new_browser_session</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_start_new_browser_session'>start_new_browser_session</span> <span class='id identifier rubyid_opts'>opts</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1189,7 +1189,7 @@ Selenium::Client::Driver.new \
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Starts a new browser session (launching a new browser matching 
+Starts a new browser session (launching a new browser matching
 configuration provided at driver creation time).
 </p>
 <p>
@@ -1218,18 +1218,46 @@ Browser session specific option can also be provided. e.g.
 88
 89
 90
-91</pre>
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_new_browser_session'>start_new_browser_session</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_options_as_string'>options_as_string</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getNewBrowserSession</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='ivar'>@browser_string</span><span class='comma'>,</span> <span class='ivar'>@browser_url</span><span class='comma'>,</span> <span class='ivar'>@extension_js</span><span class='comma'>,</span> <span class='id identifier rubyid_options_as_string'>options_as_string</span><span class='rbracket'>]</span>
-  <span class='ivar'>@session_id</span> <span class='op'>=</span> <span class='id identifier rubyid_result'>result</span>
+  <span class='id identifier rubyid_start_args'>start_args</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='ivar'>@browser_string</span><span class='comma'>,</span> <span class='ivar'>@browser_url</span><span class='comma'>,</span> <span class='ivar'>@extension_js</span><span class='rbracket'>]</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_driver'>driver</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_expected_browser_string'>expected_browser_string</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*webdriver</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>unless</span> <span class='ivar'>@browser_string</span> <span class='op'>==</span> <span class='id identifier rubyid_expected_browser_string'>expected_browser_string</span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can't use :driver unless the browser string is </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_expected_browser_string'>expected_browser_string</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'> (got </span><span class='embexpr_beg'>#{</span><span class='ivar'>@browser_string</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+
+    <span class='id identifier rubyid_sid'>sid</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>webdriver.remote.sessionid</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_sid'>sid</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>This driver can not be wrapped in the RC API.</span><span class='tstring_end'>&quot;</span></span>
+
+    <span class='id identifier rubyid_start_args'>start_args</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>webdriver.remote.sessionid=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_sid'>sid</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_start_args'>start_args</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_collect'>collect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>;</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+
+  <span class='ivar'>@session_id</span> <span class='op'>=</span> <span class='id identifier rubyid_string_command'>string_command</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>getNewBrowserSession</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_start_args'>start_args</span>
   <span class='comment'># Consistent timeout on the remote control and driver side.
 </span>  <span class='comment'># Intuitive and this is what you want 90% of the time
-</span>  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_remote_control_timeout_in_seconds'>remote_control_timeout_in_seconds</span> <span class='op'>=</span> <span class='ivar'>@default_timeout_in_seconds</span>         
+</span>  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_remote_control_timeout_in_seconds'>remote_control_timeout_in_seconds</span> <span class='op'>=</span> <span class='ivar'>@default_timeout_in_seconds</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_highlight_located_element'>highlight_located_element</span> <span class='op'>=</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_highlight_located_element_by_default'>highlight_located_element_by_default</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1250,12 +1278,12 @@ Browser session specific option can also be provided. e.g.
       <pre class="lines">
 
 
-102
-103
-104</pre>
+116
+117
+118</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/client/base.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
  <span class='id identifier rubyid_close_current_browser_session'>close_current_browser_session</span>
@@ -1270,7 +1298,7 @@ Browser session specific option can also be provided. e.g.
 </div>
     
     <div id="footer">
-  Generated on Fri Jan 27 18:01:58 2012 by 
+  Generated on Wed Feb  8 17:38:16 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>
