@@ -21,6 +21,8 @@ import shutil
 import re
 import base64
 from cStringIO import StringIO
+from xml.dom import minidom
+from distutils import dir_util
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 WEBDRIVER_EXT = "webdriver.xpi"
@@ -244,48 +246,102 @@ class FirefoxProfile(object):
             # The profile given hasn't had any changes made, i.e no users.js
             pass
 
-    def _install_extension(self, extension):
-        tempdir = tempfile.mkdtemp()
-        ext_dir = ""
+    def _install_extension(self, addon, unpack=True):
+        """
+            Installs addon from a filepath, url
+            or directory of addons in the profile.
+            - path: url, path to .xpi, or directory of addons
+            - unpack: whether to unpack unless specified otherwise in the install.rdf
+        """
+        if addon == WEBDRIVER_EXT:
+            addon = os.path.join(os.path.dirname(__file__), WEBDRIVER_EXT)
 
-        if extension == WEBDRIVER_EXT:
-            extension = os.path.join(os.path.dirname(__file__), WEBDRIVER_EXT)
-            ext_dir = os.path.join(self.extensionsDir, EXTENSION_NAME)
+        tmpdir = None
+        xpifile = None
+        if addon.endswith('.xpi'):
+            tmpdir = tempfile.mkdtemp(suffix = '.' + os.path.split(addon)[-1])
+            compressed_file = zipfile.ZipFile(addon, 'r')
+            for name in compressed_file.namelist():
+                if name.endswith('/'):
+                    os.makedirs(os.path.join(tmpdir, name))
+                else:
+                    if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
+                        os.makedirs(os.path.dirname(os.path.join(tmpdir, name)))
+                    data = compressed_file.read(name)
+                    f = open(os.path.join(tmpdir, name), 'wb')
+                    f.write(data)
+                    f.close()
+            xpifile = addon
+            addon = tmpdir
 
-        xpi = zipfile.ZipFile(extension)
+        # determine the addon id
+        addon_details = self._addon_details(addon)
+        addon_id = addon_details.get('id')
+        assert addon_id, 'The addon id could not be found: %s' % addon
 
-        #Get directories ready
-        for file_in_xpi in xpi.namelist():
-            name = file_in_xpi.replace("\\", os.path.sep).replace(
-                "/", os.path.sep)
-            dest = os.path.join(tempdir, name)
-            if (name.endswith(os.path.sep) and not os.path.exists(dest)):
-                os.makedirs(dest)
+        # copy the addon to the profile
+        extensions_path = os.path.join(self.profile_dir, 'extensions')
+        addon_path = os.path.join(extensions_path, addon_id)
+        if not unpack and not addon_details['unpack'] and xpifile:
+            if not os.path.exists(extensions_path):
+                os.makedirs(extensions_path)
+            shutil.copy(xpifile, addon_path + '.xpi')
+        else:
+            dir_util.copy_tree(addon, addon_path, preserve_symlinks=1)
 
-        #Copy files
-        for file_in_xpi in xpi.namelist():
-            name = file_in_xpi.replace("\\", os.path.sep).replace(
-                "/", os.path.sep)
-            dest = os.path.join(tempdir, name)
-            if not (name.endswith(os.path.sep)):
-                outfile = open(dest, 'wb')
-                outfile.write(xpi.read(file_in_xpi))
-                outfile.close()
+        # remove the temporary directory, if any
+        if tmpdir:
+            dir_util.remove_tree(tmpdir)
 
-        if ext_dir == "":
-            installrdfpath = os.path.join(tempdir,"install.rdf")
-            ext_dir = os.path.join(
-                self.extensionsDir, self._read_id_from_install_rdf(
-                  installrdfpath))
-        if os.path.exists(ext_dir):
-            shutil.rmtree(ext_dir)
-        shutil.copytree(tempdir, ext_dir)
-        shutil.rmtree(tempdir)
+    def _addon_details(self, addon_path):
+        """
+            returns a dictionary of details about the addon
+            - addon_path : path to the addon directory
+            Returns:
+            {'id': u'rainbow@colors.org', # id of the addon
+            'version': u'1.4', # version of the addon
+            'name': u'Rainbow', # name of the addon
+            'unpack': False } # whether to unpack the addon
+        """
 
-    def _read_id_from_install_rdf(self, installrdfpath):
-        from rdflib import Graph
-        rdf = Graph()
-        installrdf = rdf.parse(file=file(installrdfpath))
-        for i in installrdf.all_nodes():
-            if re.search(".*@.*\..*", i):
-                return i.decode()
+        # TODO: We don't use the unpack variable yet, but we should: bug 662683
+        details = {
+            'id': None,
+            'name': None,
+            'unpack': True,
+            'version': None
+        }
+
+        def get_namespace_id(doc, url):
+            attributes = doc.documentElement.attributes
+            namespace = ""
+            for i in range(attributes.length):
+                if attributes.item(i).value == url:
+                    if ":" in attributes.item(i).name:
+                        # If the namespace is not the default one remove 'xlmns:'
+                        namespace = attributes.item(i).name.split(':')[1] + ":"
+                        break
+            return namespace
+
+        def get_text(element):
+            """Retrieve the text value of a given node"""
+            rc = []
+            for node in element.childNodes:
+                if node.nodeType == node.TEXT_NODE:
+                    rc.append(node.data)
+            return ''.join(rc).strip()
+
+        doc = minidom.parse(os.path.join(addon_path, 'install.rdf'))
+
+        # Get the namespaces abbreviations
+        em = get_namespace_id(doc, "http://www.mozilla.org/2004/em-rdf#")
+        rdf = get_namespace_id(doc, "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+
+        description = doc.getElementsByTagName(rdf + "Description").item(0)
+        for node in description.childNodes:
+            # Remove the namespace prefix from the tag for comparison
+            entry = node.nodeName.replace(em, "")
+            if entry in details.keys():
+                details.update({ entry: get_text(node) })
+
+        return details

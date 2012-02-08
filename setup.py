@@ -106,7 +106,6 @@ setup(
             ('selenium/webdriver/firefox/x86', ['py/selenium/webdriver/firefox/x86/x_ignore_nofocus.so']),
             ('selenium/webdriver/firefox/amd64', ['py/selenium/webdriver/firefox/amd64/x_ignore_nofocus.so'])],
     include_package_data=True,
-    install_requires=['rdflib==3.1.0'],
     zip_safe=False,
 
 )
