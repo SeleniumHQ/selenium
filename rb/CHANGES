@@ -1,3 +1,19 @@
+2.19.0 (2012-02-08)
+===================
+
+* RC client supports server-side WebDriver-backed Selenium.
+* Touch APIs implemented in the Ruby client (Android only)
+* Firefox:
+  * Fix deserialization of user.js in Firefox::Profile
+  * Native events implemented for Firefox 10.
+  * Renamed the experimental "fast" page loaded strategy "unstable"
+    and disable queuing of commands when it's enabled.
+  * Disabled native events for Firefox 8 as it's deprecated by Mozilla.
+  * Fix for exceptions thrown when an alert occurs during script execution.
+* Chrome:
+  * New download link for the server component:
+    http://code.google.com/p/chromedriver/downloads/list
+
 2.18.0 (2012-01-27)
 ===================
 
