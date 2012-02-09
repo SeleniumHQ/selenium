@@ -66,7 +66,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     HasInputDevices, HasCapabilities {
 
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
-  private static Level level = Level.FINE;
+  private Level level = Level.FINE;
 
   private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -396,13 +396,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Sets the RemoteWebDriver's client log level. Logs at a level lower than the
-   * given level will be discarded.
+   * Sets the RemoteWebDriver's client log level.
    * 
-   * @param level 
+   * @param level The log level to use.
    */
-  public static void setLogLevel(Level level) {
-    RemoteWebDriver.level = level;
+  public void setLogLevel(Level level) {
+    this.level = level;
   }
 
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
@@ -464,7 +463,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    */
   protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
     if (when == When.BEFORE) {
-      logger.log(RemoteWebDriver.level, "Executing: " + commandName);
+      logger.log(level, "Executing: " + commandName);
     }
   }
 

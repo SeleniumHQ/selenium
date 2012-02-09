@@ -67,9 +67,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     try {
       setLogLevel = driver.getClass().getMethod("setLogLevel", args);
 
-      String value = System.getProperty("selenium.browser.log_level", "OFF");
-      Level level = LogLevel.find(value);
-      setLogLevel.invoke(driver.getClass(), level);
+      String value = System.getProperty("selenium.browser.log_level", "INFO");
+      LogLevel level = LogLevel.valueOf(value);
+      setLogLevel.invoke(driver, level.getLevel());
     } catch (NoSuchMethodException e) {
       return;
     } catch (InvocationTargetException e) {
@@ -169,7 +169,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     WARNING("WARNING", Level.WARNING),
     ERROR("ERROR", Level.SEVERE);
 
-
     private final String value;
     private final Level level;
 
@@ -178,13 +177,8 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       this.level = level;
     }
 
-    static Level find(String value) {
-      for (LogLevel l : LogLevel.values()) {
-        if (l.value.equalsIgnoreCase(value)) {
-          return l.level;
-        }
-      }
-      throw new IllegalArgumentException("Could not find: " + value);
+    public Level getLevel() {
+      return level;
     }
   }
 }
