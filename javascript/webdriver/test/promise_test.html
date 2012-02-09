@@ -1133,6 +1133,59 @@ function testCancel_cancellerCanForbidCancellation() {
   assertThrows(d.cancel);
 }
 
+
+function testCallbackRegistersAnotherListener_callbacksConfiguredPreResolve() {
+  var messages = [];
+  var d = new webdriver.promise.Deferred();
+  d.then(function() {
+    messages.push('a');
+    d.then(function() {
+      messages.push('c');
+    });
+  });
+  d.then(function() {
+    messages.push('b');
+  });
+  d.resolve();
+  assertArrayEquals(['a', 'c', 'b'], messages);
+}
+
+
+function testCallbackRegistersAnotherListener_callbacksConfiguredPostResolve() {
+  var messages = [];
+  var d = webdriver.promise.resolved();
+  d.then(function() {
+    messages.push('a');
+    d.then(function() {
+      messages.push('c');
+    });
+  });
+  d.then(function() {
+    messages.push('b');
+  });
+  assertArrayEquals(['a', 'c', 'b'], messages);
+}
+
+
+function testCallbackRegistersAnotherListener_recursiveCallbacks() {
+  var messages = [];
+  var start = 97;  // 'a'
+
+  var p = webdriver.promise.resolved();
+  p.then(push).then(function() {
+    messages.push('done');
+  });
+
+  function push() {
+    messages.push(String.fromCharCode(start++));
+    if (start != 101) {  // 'd'
+      p.then(push);
+    }
+  }
+
+  assertArrayEquals(['a', 'b', 'c', 'd', 'done'], messages);
+}
+
 </script>
 </body>
 </html>

@@ -133,7 +133,7 @@ webdriver.test.AppTester.prototype.$runApplication = function(
   function assertIsDone() {
     // Shutdown is done in one extra turn of the event loop.
     self.clock_.tick();
-    if (!isDone && !app.frames_.length) {
+    if (!isDone && !app.activeFrame_) {
       // Not done yet, but there are no frames left.  This can happen if the
       // very first scheduled task was scheduled inside of a promise callback.
       // Turn the event loop one more time; the app should detect that it is now
@@ -142,15 +142,11 @@ webdriver.test.AppTester.prototype.$runApplication = function(
       self.$turnEventLoop();
       self.clock_.tick();
     }
-    assertTrue(
-        'Should be done now:' +
-            '\n# frames: ' + app.frames_.length +
-            '\nschedule: ' + app.getSchedule(),
-        isDone);
+    assertTrue('Should be done now: ' + app.getSchedule(), isDone);
   }
 
   function determineIfShouldBeDone() {
-    shouldBeDone = !app.frames_.length;
+    shouldBeDone = !app.activeFrame_;
   }
 };
 

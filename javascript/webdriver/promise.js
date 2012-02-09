@@ -284,7 +284,7 @@ webdriver.promise.Deferred = function(opt_canceller) {
       setTimeout(function() {
         app.pendingRejections_ -= 1;
         if (!handled) {
-          app.abortCurrentFrame_(value);
+          app.abortFrame_(value);
         }
       }, 0);
     }
@@ -300,7 +300,7 @@ webdriver.promise.Deferred = function(opt_canceller) {
         listener.callback : listener.errback;
     if (func) {
       var app = webdriver.promise.Application.getInstance();
-      var result = app.executeAsap_(goog.partial(func, value));
+      var result = app.runInNewFrame_(goog.partial(func, value));
       webdriver.promise.asap(result,
           listener.deferred.resolve,
           listener.deferred.reject);
@@ -567,11 +567,11 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
 webdriver.promise.asap = function(value, callback, opt_errback) {
   if (webdriver.promise.isPromise(value)) {
     value.then(callback, opt_errback);
-  // Maybe a Dojo-like deferred object?
+    // Maybe a Dojo-like deferred object?
   } else if (!!value && goog.isObject(value) &&
       goog.isFunction(value.addCallbacks)) {
     value.addCallbacks(callback, opt_errback);
-  // A raw value, return a resolved promise.
+    // A raw value, return a resolved promise.
   } else if (callback) {
     callback(value);
   }
@@ -725,9 +725,9 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
  *
  * <p>Tasks and each callback registered on a {@link webdriver.promise.Deferred}
  * will be run in their own Application frame.  Any tasks scheduled within a
- * frame will take precedence over previously scheduled tasks. Furthermore, if
+ * frame will have priority over previously scheduled tasks. Furthermore, if
  * any of the tasks in the frame fails, the remainder of the tasks in that frame
- * will be discarded and the failure will be propagated to user through the
+ * will be discarded and the failure will be propagated to the user through the
  * callback/task's promised result.
  *
  * <p>Each time an application empties its task queue, it will fire an
@@ -744,14 +744,6 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
  */
 webdriver.promise.Application = function() {
   webdriver.EventEmitter.call(this);
-
-  /**
-   * Frame stack for this application. Upon each turn of the event loop, the
-   * task to execute will be pulled from the queue of the topmost frame.
-   * @type {!Array.<!webdriver.promise.Application.Frame_>}
-   * @private
-   */
-  this.frames_ = [];
 
   /**
    * A history of commands executed by this Application.
@@ -792,6 +784,28 @@ webdriver.promise.Application.EventType = {
  * @const
  */
 webdriver.promise.Application.EVENT_LOOP_FREQUENCY = 10;
+
+
+/**
+ * Tracks the active execution frame for this application. Lazily initialized
+ * when the first task is scheduled.
+ * @type {webdriver.promise.Application.Frame}
+ * @private
+ */
+webdriver.promise.Application.prototype.activeFrame_ = null;
+
+
+/**
+ * A reference to the frame in which new tasks should be scheduled. If
+ * {@code null}, tasks will be scheduled within the active frame. When forcing
+ * a function to run in the context of a new frame, this pointer is used to
+ * ensure tasks are scheduled within the newly created frame, even though it
+ * won't be active yet.
+ * @type {webdriver.promise.Application.Frame}
+ * @private
+ * @see {#runInNewFrame_}
+ */
+webdriver.promise.Application.prototype.schedulingFrame_ = null;
 
 
 /**
@@ -845,10 +859,19 @@ webdriver.promise.Application.prototype.pendingRejections_ = 0;
 
 
 /**
+ * The number of currently pending tasks. Task N+1 is considered a sub-task of
+ * task N.
+ * @type {number}
+ * @private
+ */
+webdriver.promise.Application.prototype.pendingTasks_ = 0;
+
+
+/**
  * Resets this instance, clearing its queue and removing all event listeners.
  */
 webdriver.promise.Application.prototype.reset = function() {
-  this.frames_ = [];
+  this.activeFrame_ = null;
   this.clearHistory();
   this.removeAllListeners();
   this.cancelShutdown_();
@@ -876,16 +899,7 @@ webdriver.promise.Application.prototype.clearHistory = function() {
  * @return {string} The scheduled tasks still pending with this application.
  */
 webdriver.promise.Application.prototype.getSchedule = function() {
-  var schedule = [];
-  goog.array.forEach(this.frames_, function(frame) {
-    schedule.push([
-      '[',
-      goog.array.map(frame.queue, function(task) {
-        return task.description;
-      }).join(', '),
-      ']'].join(''));
-  });
-  return schedule.join('');
+  return this.activeFrame_ ? this.activeFrame_.getRoot().toString() : '[]';
 };
 
 
@@ -904,16 +918,13 @@ webdriver.promise.Application.prototype.getSchedule = function() {
 webdriver.promise.Application.prototype.schedule = function(description, fn) {
   this.cancelShutdown_();
 
-  var currentFrame = goog.array.peek(this.frames_);
-  if (!currentFrame) {
-    currentFrame = new webdriver.promise.Application.Frame_();
-    currentFrame.then(goog.bind(this.commenceShutdown_, this),
-                      goog.bind(this.abortNow_, this));
-    this.frames_.push(currentFrame);
+  if (!this.activeFrame_) {
+    this.activeFrame_ = new webdriver.promise.Application.Frame();
   }
 
-  var task = new webdriver.promise.Application.Task_(fn, description);
-  currentFrame.queue.push(task);
+  var task = new webdriver.promise.Application.Task(fn, description);
+  var scheduleIn = this.schedulingFrame_ || this.activeFrame_;
+  scheduleIn.addChild(task);
 
   this.emit(webdriver.promise.Application.EventType.SCHEDULE_TASK);
 
@@ -1066,22 +1077,16 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
   var self = this;
 
   return this.schedule(description, function() {
-    var waitDepth = self.frames_.length;
-    var indexWaitHistoryStartsAt = self.history_.length;
-    /** @type !{{value:string, count:number}} */
-    var lastSequence;
-
     var startTime = goog.now();
     var waitResult = new webdriver.promise.Deferred();
-    var waitFrame = goog.array.peek(self.frames_);
+    var waitFrame = self.activeFrame_;
     waitFrame.isWaiting = true;
     pollCondition();
     return waitResult.promise;
 
     function pollCondition() {
-      var result = self.executeAsap_(condition);
+      var result = self.runInNewFrame_(condition);
       return webdriver.promise.when(result, function(value) {
-        optimizeAppHistory();
         var ellapsed = goog.now() - startTime;
         if (waitOnInverse != !!value) {
           waitFrame.isWaiting = false;
@@ -1092,32 +1097,7 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
         } else {
           setTimeout(pollCondition, sleep);
         }
-      }, function(e) {
-        optimizeAppHistory();
-        waitResult.reject(e);
-      });
-    }
-
-    function optimizeAppHistory() {
-      if (self.history_.length == indexWaitHistoryStartsAt) {
-        return;
-      }
-
-      var loopHistory = goog.array.splice(self.history_,
-          indexWaitHistoryStartsAt,
-          self.history_.length - indexWaitHistoryStartsAt).join('\n');
-      if (!lastSequence || loopHistory != lastSequence.value) {
-        lastSequence = {value:loopHistory, count: 1};
-        indexWaitHistoryStartsAt += 2;
-      } else {
-        self.history_.pop();
-        self.history_.pop();
-        lastSequence.count++;
-      }
-
-      var prefix = new Array(waitDepth).join('..');
-      self.history_.push(prefix + 'wait loop x' + lastSequence.count);
-      self.history_.push(loopHistory);
+      }, waitResult.reject);
     }
   });
 };
@@ -1167,71 +1147,153 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
   // If the app aborts due to an unhandled exception after we've scheduled
   // another turn of the execution loop, we can end up in here with no tasks
   // left. This is OK, just quietly return.
-  var currentFrame = goog.array.peek(this.frames_);
-  if (!currentFrame) {
+  if (!this.activeFrame_) {
     this.commenceShutdown_();
     return;
   }
 
-  if (currentFrame.pendingTask) {
+  var task;
+  if (this.activeFrame_.getPendingTask() || !(task = this.getNextTask_())) {
+    // Either the current frame is blocked on a pending task, or we don't have
+    // a task to finish because we've completed a frame. When completing a
+    // frame, we must abort the event loop to allow the frame's promise's
+    // callbacks to execute.
     return;
   }
 
-  var task = currentFrame.queue.shift();
-  if (!task) {
-    if (currentFrame.isWaiting) {
-      currentFrame.isActive = false;
-      return;
-    }
-    this.frames_.pop();
-    currentFrame.resolve();
-    return;
-  }
-
-  var prefix = new Array(this.frames_.length).join('..');
+  var prefix = new Array(this.pendingTasks_ + 1).join('..');
   this.history_.push(prefix + task.description);
 
-  currentFrame.isActive = true;
-  currentFrame.pendingTask = task;
-  var result = this.executeAsap_(task.execute);
+  var activeFrame = this.activeFrame_;
+  activeFrame.setPendingTask(task);
+  var markTaskComplete = goog.bind(function() {
+    this.pendingTasks_--;
+    activeFrame.setPendingTask(null);
+  }, this);
+
+  this.pendingTasks_++;
+  var result = this.runInNewFrame_(task.execute, true);
   webdriver.promise.asap(result, function(result) {
-    currentFrame.pendingTask = null;
+    markTaskComplete();
     task.resolve(result);
   }, function(error) {
-    currentFrame.pendingTask = null;
+    markTaskComplete();
     task.reject(error);
   });
 };
 
 
 /**
- * Executes a function as soon as possible.
+ * @return {webdriver.promise.Application.Task} The next task to execute, or
+ *     {@code null} if a frame was resolved.
+ */
+webdriver.promise.Application.prototype.getNextTask_ = function() {
+  var firstChild = this.activeFrame_.getFirstChild();
+  if (!firstChild) {
+    if (!this.activeFrame_.isWaiting) {
+      this.resolveFrame_(this.activeFrame_);
+    }
+    return null;
+  }
+
+  if (firstChild instanceof webdriver.promise.Application.Frame) {
+    this.activeFrame_ = firstChild;
+    return this.getNextTask_();
+  }
+
+  firstChild.getParent().removeChild(firstChild);
+  return firstChild;
+};
+
+
+/**
+ * @param {!webdriver.promise.Application.Frame} frame The frame to resolve.
+ * @private
+ */
+webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
+  if (this.activeFrame_ === frame) {
+    this.activeFrame_ = frame.getParent();
+  }
+
+  if (frame.getParent()) {
+    frame.getParent().removeChild(frame);
+  }
+  frame.resolve();
+
+  if (!this.activeFrame_) {
+    this.commenceShutdown_();
+  }
+};
+
+
+/**
+ * Aborts the current frame. The frame, and all of the tasks scheduled within it
+ * will be discarded. If this application does not have an active frame, it will
+ * immediately terminate all execution.
+ * @param {*} error The reason the frame is being aborted; typically either
+ *     an Error or string.
+ * @private
+ */
+webdriver.promise.Application.prototype.abortFrame_ = function(error) {
+  if (!this.activeFrame_) {
+    return this.abortNow_(error);
+  }
+
+  var parent = this.activeFrame_.getParent();
+  if (parent) {
+    parent.removeChild(this.activeFrame_);
+  }
+
+  var frame = this.activeFrame_;
+  this.activeFrame_ = parent;
+  frame.reject(error);
+};
+
+
+/**
+ * Executes a function in a new frame. If the function does not schedule any new
+ * tasks, the frame will be discarded and the function's result returned
+ * immediately. Otherwise, a promise will be returned. This promise will be
+ * resolved with the function's result once all of the tasks scheduled within
+ * the function have been completed. If the function's frame is aborted, the
+ * returned promise will be rejected.
  *
- * Ensures that any tasks scheduled with this application by the function are
- * given precedence over those currently scheduled. This function is guaranteed
- * to return a rejected promise instead of ever throwing.
+ * <p>When executing a {@link webdriver.promise.Application.Task}, this
+ * application's active frame will be updated to the newly created frame to
+ * permit tasks to schedule sub-tasks.
  *
  * @param {!Function} fn The function to execute.
+ * @param {boolean=} opt_isTask Whether the function is a task's
+ *     {@link webdriver.promise.Application.Task#execute execute} function.
  * @return {*} The function's return value, or a promise that will be resolved
  *     once all tasks scheduled by the function have completed.
  */
-webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
-  var newFrame, numFrames;
+webdriver.promise.Application.prototype.runInNewFrame_ = function(fn,
+                                                                  opt_isTask) {
+  var newFrame = new webdriver.promise.Application.Frame(),
+      self = this,
+      oldFrame = this.activeFrame_;
   try {
-    var currentFrame = goog.array.peek(this.frames_);
-    if (!currentFrame || currentFrame.isActive || currentFrame.isWaiting) {
-      newFrame = new webdriver.promise.Application.Frame_();
-      numFrames = this.frames_.push(newFrame);
+    if (!this.activeFrame_) {
+      this.activeFrame_ = newFrame;
+    } else {
+      this.activeFrame_.addChild(newFrame);
     }
 
-    var result = fn();
-
-    if (!newFrame) {
-      return result;
+    if (opt_isTask) {
+      this.activeFrame_ = newFrame;
     }
 
-    if (!newFrame.queue.length && numFrames == this.frames_.length) {
-      this.frames_.pop();
+    try {
+      this.schedulingFrame_ = newFrame;
+      var result = fn();
+    } finally {
+      this.schedulingFrame_ = null;
+    }
+    newFrame.lockFrame();
+
+    if (!newFrame.children_.length) {
+      removeNewFrame();
       return result;
     }
 
@@ -1245,10 +1307,16 @@ webdriver.promise.Application.prototype.executeAsap_ = function(fn) {
       throw e;
     });
   } catch (ex) {
-    if (newFrame) {
-      this.frames_.pop();
-    }
+    removeNewFrame();
     return webdriver.promise.rejected(ex);
+  }
+
+  function removeNewFrame() {
+    var parent = newFrame.getParent();
+    if (parent) {
+      parent.removeChild(newFrame);
+    }
+    self.activeFrame_ = oldFrame;
   }
 };
 
@@ -1303,7 +1371,7 @@ webdriver.promise.Application.prototype.cancelShutdown_ = function() {
  * @private
  */
 webdriver.promise.Application.prototype.abortNow_ = function(error) {
-  this.frames_ = [];
+  this.activeFrame_ = null;
   this.cancelShutdown_();
   this.cancelEventLoop_();
 
@@ -1321,83 +1389,227 @@ webdriver.promise.Application.prototype.abortNow_ = function(error) {
 
 
 /**
- * Aborts the current frame. The frame will be removed from the stack and its
- * promised result will be rejected. These errors will bubble up the stack
- * until handled by a task's errback, or the application is aborted.
- * @param {*} error The reason the frame is being aborted; typically either
- *     an Error or string.
+ * A single node in an {@link webdriver.promise.Application}'s task tree.
+ * @constructor
+ * @extends {webdriver.promise.Deferred}
+ */
+webdriver.promise.Application.Node = function() {
+  webdriver.promise.Deferred.call(this);
+};
+goog.inherits(webdriver.promise.Application.Node, webdriver.promise.Deferred);
+
+
+/**
+ * This node's parent.
+ * @type {webdriver.promise.Application.Node}
  * @private
  */
-webdriver.promise.Application.prototype.abortCurrentFrame_ = function(error) {
-  var frame = this.frames_.pop();
-  if (frame) {
-    try {
-      frame.reject(error);
-    } catch (ex) {
-      throw ex;
-    }
-  } else {
-    this.abortNow_(error);
-  }
+webdriver.promise.Application.Node.prototype.parent_ = null;
+
+
+/** @return {webdriver.promise.Application.Node} This node's parent. */
+webdriver.promise.Application.Node.prototype.getParent = function() {
+  return this.parent_;
 };
 
 
 /**
- * Maintains a queue of scheduled {@code webdriver.promise.Application.Tasks_}
- * for a single execution frame in a {@code webdriver.promise.Application}.
- * @constructor
- * @extends {webdriver.promise.Deferred}
+ * @param {webdriver.promise.Application.Node} parent This node's new parent.
+ */
+webdriver.promise.Application.Node.prototype.setParent = function(parent) {
+  this.parent_ = parent;
+};
+
+
+/**
+ * @return {!webdriver.promise.Application.Node} The root of this node's tree.
+ */
+webdriver.promise.Application.Node.prototype.getRoot = function() {
+  var root = this;
+  while (root.parent_) {
+    root = root.parent_;
+  }
+  return root;
+};
+
+
+/**
+ * An execution frame within a {@link webdriver.promise.Application}.  Each
+ * frame represents the execution context for either a
+ * {@link webdriver.promise.Application.Task} or a callback on a
+ * {@link webdriver.promise.Deferred}.
+ *
+ * <p>Each frame may contain sub-frames.  If child N is a sub-frame, then the
+ * items queued within it are given priority over child N+1.
+ *
+ * @extends {webdriver.promise.Application.Node}
  * @private
  */
-webdriver.promise.Application.Frame_ = function() {
-  webdriver.promise.Deferred.call(this);
+webdriver.promise.Application.Frame = function() {
+  webdriver.promise.Application.Node.call(this);
 
   /**
-   * This frame's task queue.
-   * @type {!Array.<!webdriver.promise.Application.Task_>}
+   * @type {!Array.<!(webdriver.promise.Application.Frame|
+   *                  webdriver.promise.Application.Task)>}
+   * @private
    */
-  this.queue = [];
+  this.children_ = [];
 };
-goog.inherits(webdriver.promise.Application.Frame_, webdriver.promise.Deferred);
+goog.inherits(webdriver.promise.Application.Frame,
+    webdriver.promise.Application.Node);
 
 
 /**
  * The task currently being executed within this frame.
- * @type {webdriver.promise.Application.Task_}
+ * @type {webdriver.promise.Application.Task}
+ * @private
  */
-webdriver.promise.Application.Frame_.prototype.pendingTask = null;
+webdriver.promise.Application.Frame.prototype.pendingTask_ = null;
 
 
 /**
- * Whether this frame is currently blocked on a waiting task. Each time a
- * frame blocked on waiting empties its queue, it will be marked as inactive,
- * but left on the stack for future polling attempts for the wait condition.
+ * Whether this frame is active. A frame is considered active once one of its
+ * descendants has been removed for execution.
+ *
+ * Adding a sub-frame as a child to an active frame is an indication that
+ * a callback to a {@link webdriver.promise.Deferred} is being invoked and any
+ * tasks scheduled within it should have priority over previously scheduled
+ * tasks:
+ * <code><pre>
+ *   var app = webdriver.promise.Application.getInstance();
+ *   app.schedule('start here', goog.nullFunction).then(function() {
+ *     app.schedule('this should execute 2nd', goog.nullFunction);
+ *   });
+ *   app.schedule('this should execute last', goog.nullFunction);
+ * </pre></code>
+ *
  * @type {boolean}
+ * @private
  */
-webdriver.promise.Application.Frame_.prototype.isWaiting = false;
+webdriver.promise.Application.Frame.prototype.isActive_ = false;
 
 
 /**
- * Whether this frame is active. A frame is considered active as soon as one of
- * its tasks has been executed.
+ * Whether this frame is currently locked. A locked frame represents a callback
+ * or task function which has run to completion and scheduled all of its tasks.
+ *
+ * <p>Once a frame becomes {@link #isActive_ active}, any new frames which are
+ * added represent callbacks on a {@link webdriver.promise.Deferred}, whose
+ * tasks must be given priority over previously scheduled tasks.
+ *
  * @type {boolean}
+ * @private
  */
-webdriver.promise.Application.Frame_.prototype.isActive = false;
+webdriver.promise.Application.Frame.prototype.isLocked_ = false;
 
 
 /**
- * A task to be executed by a {@code webdriver.promise.Application}.
+ * A reference to the last node inserted in this frame.
+ * @type {webdriver.promise.Application.Node}
+ * @private
+ */
+webdriver.promise.Application.Frame.prototype.lastInsertedChild_ = null;
+
+
+/**
+ * @return {webdriver.promise.Application.Task} The task currently executing
+ *     within this frame, if any.
+ */
+webdriver.promise.Application.Frame.prototype.getPendingTask = function() {
+  return this.pendingTask_;
+};
+
+
+/**
+ * @param {webdriver.promise.Application.Task} task The task currently executing
+ *     within this frame, if any.
+ */
+webdriver.promise.Application.Frame.prototype.setPendingTask = function(task) {
+  this.pendingTask_ = task;
+};
+
+
+/** Locks this frame. */
+webdriver.promise.Application.Frame.prototype.lockFrame = function() {
+  this.isLocked_ = true;
+};
+
+
+/**
+ * Adds a new node to this frame.
+ * @param {!(webdriver.promise.Application.Frame|
+ *           webdriver.promise.Application.Task)} node The node to insert.
+ */
+webdriver.promise.Application.Frame.prototype.addChild = function(node) {
+  if (this.lastInsertedChild_ &&
+      this.lastInsertedChild_ instanceof webdriver.promise.Application.Frame &&
+      !this.lastInsertedChild_.isLocked_) {
+    return this.lastInsertedChild_.addChild(node);
+  }
+
+  node.setParent(this);
+
+  if (this.isActive_ && node instanceof webdriver.promise.Application.Frame) {
+    var index = 0;
+    if (this.lastInsertedChild_ instanceof webdriver.promise.Application.Frame) {
+      index = goog.array.indexOf(this.children_, this.lastInsertedChild_) + 1;
+    }
+    goog.array.insertAt(this.children_, node, index);
+    this.lastInsertedChild_ = node;
+    return;
+  }
+
+  this.lastInsertedChild_ = node;
+  this.children_.push(node);
+};
+
+
+/**
+ * @return {(webdriver.promise.Application.Frame|
+ *           webdriver.promise.Application.Task)} This frame's fist child.
+ */
+webdriver.promise.Application.Frame.prototype.getFirstChild = function() {
+  this.isActive_ = true;
+  return this.children_[0];
+};
+
+
+/**
+ * Removes a child from this frame.
+ * @param {!(webdriver.promise.Application.Frame|
+ *           webdriver.promise.Application.Task)} child The child to remove.
+ */
+webdriver.promise.Application.Frame.prototype.removeChild = function(child) {
+  var index = goog.array.indexOf(this.children_, child);
+  child.setParent(null);
+  goog.array.removeAt(this.children_, index);
+  if (this.lastInsertedChild_ === child) {
+    this.lastInsertedChild_ = null;
+  }
+};
+
+
+/** @override */
+webdriver.promise.Application.Frame.prototype.toString = function() {
+  return '[' + goog.array.map(this.children_, function(child) {
+    return child.toString();
+  }).join(',') + ']';
+};
+
+
+/**
+ * A task to be executed by a {@link webdriver.promise.Application}.
  *
  * @param {!Function} fn The function to call when the task executes. If it
  *     returns a {@code webdriver.promise.Promise}, the application will wait
  *     for it to be resolved before starting the next task.
  * @param {string=} opt_description A description of the task for debugging.
  * @constructor
- * @extends {webdriver.promise.Deferred}
+ * @extends {webdriver.promise.Application.Node}
  * @private
  */
-webdriver.promise.Application.Task_ = function(fn, opt_description) {
-  webdriver.promise.Deferred.call(this);
+webdriver.promise.Application.Task = function(fn, opt_description) {
+  webdriver.promise.Application.Node.call(this);
 
   /**
    * Executes this task.
@@ -1411,4 +1623,11 @@ webdriver.promise.Application.Task_ = function(fn, opt_description) {
    */
   this.description = opt_description || '(anonymous task)';
 };
-goog.inherits(webdriver.promise.Application.Task_, webdriver.promise.Deferred);
+goog.inherits(webdriver.promise.Application.Task,
+    webdriver.promise.Application.Node);
+
+
+/** @override */
+webdriver.promise.Application.Task.prototype.toString = function() {
+  return this.description;
+};
