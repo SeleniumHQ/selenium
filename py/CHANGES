@@ -1,3 +1,7 @@
+Selenium 2.19
+* WebDriverBackedSelenium is now avalaible to all languages
+* Addon installation fixes
+
 Selenium 2.18
 * Proxy capabilities passing
 
