@@ -1256,16 +1256,6 @@ limitations under the License.
   }
 
 
-  function testWaiting_onInverseOfConditionThatIsAlwaysFalse() {
-    var errorMessage = '', waitNot = true;
-
-    appTester.scheduleWait('waiting on !false', function() { return false;}, 0,
-        errorMessage, waitNot);
-    runApplication();
-    assertAppHistory('waiting on !false');
-  }
-
-
   function testWaiting_aSimpleCountingCondition() {
     var count = 0;
     appTester.scheduleWait('counting to 3', function() {

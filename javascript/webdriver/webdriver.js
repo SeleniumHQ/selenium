@@ -486,39 +486,18 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
  * will be allowed to propagate.
  * @param {function():boolean} fn The function to evaluate as a wait condition.
  * @param {number} timeout How long to wait for the condition to be true.
- * @param {Object=} opt_scope The object in whose scope to evaluate the wait.
  * @param {string=} opt_message An optional message to use if the wait times
  *     out.
- * @param {boolean=} opt_waitNot Whether to wait for the inverse of the
- *     condition.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     wait condition has been satisfied.
  * @export
  */
-webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_scope,
-                                              opt_message, opt_waitNot) {
+webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_message) {
   var fnName = fn.name || '<anonymous function>';
   var suffix = opt_message ? ' (' + opt_message + ')' : '';
   return webdriver.promise.Application.getInstance().scheduleWait(
       'WebDriver.wait(' + fnName + ')' + suffix,
-      goog.bind(fn, opt_scope), timeout, opt_message, opt_waitNot);
-};
-
-
-/**
- * Schedules a command to wait for the inverse of a user specified condition.
- * @param {function():boolean} fn The function to evaluate as a wait condition.
- * @param {number} timeout How long to wait for the condition to be true.
- * @param {Object=} opt_scope The object in whose scope to evaluate the wait.
- * @param {string=} opt_message An optional message to use if the wait times
- *     out.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     wait condition has been satisfied.
- * @export
- */
-webdriver.WebDriver.prototype.waitNot = function(fn, timeout, opt_scope,
-                                                 opt_message) {
-  return this.wait(fn, timeout, opt_scope, opt_message, true);
+      fn, timeout, opt_message);
 };
 
 

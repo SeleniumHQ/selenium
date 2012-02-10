@@ -1060,8 +1060,6 @@ webdriver.promise.Application.prototype.scheduleTimeout = function(description,
  *     to hold before timing out.
  * @param {string=} opt_message An optional error message to include if the
  *     wait times out; defaults to the empty string.
- * @param {boolean=} opt_waitNot Whether to wait for the inverse of the
- *     provided condition; defaults to {@code false}.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     condition has been satisified. The promise shall be rejected if the wait
  *     times out waiting for the condition.
@@ -1070,10 +1068,8 @@ webdriver.promise.Application.prototype.scheduleTimeout = function(description,
 webdriver.promise.Application.prototype.scheduleWait = function(description,
                                                                 condition,
                                                                 timeout,
-                                                                opt_message,
-                                                                opt_waitNot) {
+                                                                opt_message) {
   var sleep = Math.min(timeout, 100);
-  var waitOnInverse = !!opt_waitNot;
   var self = this;
 
   return this.schedule(description, function() {
@@ -1088,9 +1084,9 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
       var result = self.runInNewFrame_(condition);
       return webdriver.promise.when(result, function(value) {
         var ellapsed = goog.now() - startTime;
-        if (waitOnInverse != !!value) {
+        if (!!value) {
           waitFrame.isWaiting = false;
-          waitResult.resolve();
+          waitResult.resolve(value);
         } else if (ellapsed >= timeout) {
           waitResult.reject(new Error((opt_message ? opt_message + '\n' : '') +
               'Wait timed out after ' + ellapsed + 'ms'));
