@@ -358,19 +358,21 @@ LocatorBuilders.prototype.findDomFormLocator = function(form) {
 LocatorBuilders.add('dom:name', function(e) {
   if (e.form && e.name) {
     var formLocator = this.findDomFormLocator(e.form);
-    var candidates = [formLocator + "." + e.name,
-      formLocator + ".elements['" + e.name + "']"];
-    for (var c = 0; c < candidates.length; c++) {
-      var locator = candidates[c];
-      var found = this.findElement(locator);
-      if (found) {
-        if (found == e) {
-          return locator;
-        } else if (found instanceof NodeList) {
-          // multiple elements with same name
-          for (var i = 0; i < found.length; i++) {
-            if (found[i] == e) {
-              return locator + "[" + i + "]";
+    if (formLocator) {
+      var candidates = [formLocator + "." + e.name,
+        formLocator + ".elements['" + e.name + "']"];
+      for (var c = 0; c < candidates.length; c++) {
+        var locator = candidates[c];
+        var found = this.findElement(locator);
+        if (found) {
+          if (found == e) {
+            return locator;
+          } else if (found instanceof NodeList) {
+            // multiple elements with same name
+            for (var i = 0; i < found.length; i++) {
+              if (found[i] == e) {
+                return locator + "[" + i + "]";
+              }
             }
           }
         }
@@ -451,9 +453,9 @@ LocatorBuilders.add('xpath:idRelative', function(e) {
       path = this.relativeXPathFromParent(current) + path;
       if (1 == current.parentNode.nodeType && // ELEMENT_NODE
           current.parentNode.getAttribute("id")) {
-        return "//" + this.xpathHtmlElement(current.parentNode.nodeName.toLowerCase()) +
-            "[@id=" + this.attributeValue(current.parentNode.id) + "]" +
-            this.preciseXPath(path,e);
+        return this.preciseXPath("//" + this.xpathHtmlElement(current.parentNode.nodeName.toLowerCase()) +
+            "[@id=" + this.attributeValue(current.parentNode.getAttribute('id')) + "]" +
+            path, e);
       }
     } else {
       return null;
@@ -479,10 +481,12 @@ LocatorBuilders.add('xpath:href', function(e) {
 LocatorBuilders.add('dom:index', function(e) {
   if (e.form) {
     var formLocator = this.findDomFormLocator(e.form);
-    var elements = e.form.elements;
-    for (var i = 0; i < elements.length; i++) {
-      if (elements[i] == e) {
-        return formLocator + ".elements[" + i + "]";
+    if (formLocator) {
+      var elements = e.form.elements;
+      for (var i = 0; i < elements.length; i++) {
+        if (elements[i] == e) {
+          return formLocator + ".elements[" + i + "]";
+        }
       }
     }
   }
