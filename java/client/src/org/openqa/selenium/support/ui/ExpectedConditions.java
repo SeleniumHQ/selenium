@@ -18,7 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -314,6 +316,18 @@ public class ExpectedConditions {
           WebElement element = from.findElement(locator);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
+          return null;
+        }
+      }
+    };
+  }
+
+  public static ExpectedCondition<Alert> alertIsPresent() {
+    return new ExpectedCondition<Alert>() {
+      public Alert apply(WebDriver input) {
+        try {
+          return input.switchTo().alert();
+        } catch (NoAlertPresentException e) {
           return null;
         }
       }
