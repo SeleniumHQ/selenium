@@ -192,7 +192,7 @@ function formatComment(comment) {
   });
 }
 
-function getDefaultExtension() {
+function defaultExtension() {
   return this.options.defaultExtension;
 }
 
@@ -233,7 +233,7 @@ this.options = {
           '    unittest.main()\n',
   indent:  '4',
   initialIndents: '2',
-  defaultExtension: "java"
+  defaultExtension: "py"
 };
 
 this.configForm =

@@ -18,7 +18,7 @@ Equals.prototype.verify = function() {
 
 options.superClass = "SeleneseTestNgHelper";
 
-function getDefaultExtension() {
+function defaultExtension() {
   return this.options.defaultExtension;
 }
 

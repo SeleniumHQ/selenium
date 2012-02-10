@@ -194,7 +194,7 @@ function formatSuite(testSuite, filename) {
   return result;
 }
 
-function getDefaultExtension() {
+function defaultExtension() {
   return this.options.defaultExtension;
 }
 

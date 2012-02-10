@@ -155,7 +155,7 @@ function formatComment(comment) {
   });
 }
 
-function getDefaultExtension() {
+function defaultExtension() {
   return this.options.defaultExtension;
 }
 

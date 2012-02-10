@@ -303,7 +303,7 @@ function format(testCase, name) {
 	return testText;
 }
 
-function getDefaultExtension() {
+function defaultExtension() {
   return this.options.defaultExtension;
 }
 

@@ -251,7 +251,7 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
     try {
         var defaultExtension = null;
         try {
-          defaultExtension = this.getFormatter().getDefaultExtension();
+          defaultExtension = this.getFormatter().defaultExtension();
         } catch (err) {}
 
         var file = null;
