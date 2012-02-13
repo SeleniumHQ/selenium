@@ -30,7 +30,7 @@ public class SingleTestSuite extends TestSuite {
     Browser browser = Browser.ff;
 
     System.setProperty("selenium.browser.remote", "false");
-    System.setProperty("selenium.browser.selenium", "true");
+    System.setProperty("selenium.browser.selenium", "false");
 
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
@@ -43,7 +43,7 @@ public class SingleTestSuite extends TestSuite {
         .using(browser)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ChildrenFindingTest")
+        .onlyRun("PageLoadingTest")
 //        .method("testFindingElementsOnElementByXPathShouldFindTopLevelElements")
         .outputTestNames()
         .leaveRunning()

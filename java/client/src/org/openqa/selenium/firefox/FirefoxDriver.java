@@ -66,10 +66,13 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
+
   // Accept untrusted SSL certificates.
+  @Deprecated
   public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
   // Assume that the untrusted certificates will come from untrusted issuers
   // or will be self signed.
+  @Deprecated
   public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
 
   protected FirefoxBinary binary;

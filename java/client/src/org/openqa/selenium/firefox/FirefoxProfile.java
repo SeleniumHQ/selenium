@@ -13,21 +13,17 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.firefox;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
-import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
-import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
-
-import com.google.common.collect.ImmutableMap;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.Closeables;
+import com.google.common.io.Resources;
 
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.WebDriverException;
@@ -37,79 +33,25 @@ import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.URL;
 import java.util.Map;
+
+import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
+import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
+import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
 
 
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
 
-  /**
-   * Profile preferences that are essential to the FirefoxDriver operating correctly. Users are not
-   * permitted to override these values.
-   */
-  private static final ImmutableMap<String, Object> FROZEN_PREFERENCES =
-      ImmutableMap.<String, Object>builder()
-          .put("app.update.auto", false)
-          .put("app.update.enabled", false)
-          .put("browser.download.manager.showWhenStarting", false)
-          .put("browser.EULA.override", true)
-          .put("browser.EULA.3.accepted", true)
-          .put("browser.link.open_external", 2)
-          .put("browser.link.open_newwindow", 2)
-          .put("browser.offline", false)
-          .put("browser.safebrowsing.enabled", false)
-          .put("browser.safebrowsing.malware.enabled", false)
-          .put("browser.search.update", false)
-          .put("browser.sessionstore.resume_from_crash", false)
-          .put("browser.shell.checkDefaultBrowser", false)
-          .put("browser.tabs.warnOnClose", false)
-          .put("browser.tabs.warnOnOpen", false)
-          .put("devtools.errorconsole.enabled", true)
-          .put("dom.disable_open_during_load", false)
-          .put("extensions.autoDisableScopes", 10)
-          .put("extensions.logging.enabled", true)
-          .put("extensions.update.enabled", false)
-          .put("extensions.update.notifyUser", false)
-          .put("network.manage-offline-status", false)
-          .put("network.http.max-connections-per-server", 10)
-          .put("network.http.phishy-userpass-length", 255)
-          .put("offline-apps.allow_by_default", true)
-          .put("prompts.tab_modal.enabled", false)
-          .put("security.fileuri.origin_policy", 3)
-          .put("security.fileuri.strict_origin_policy", false)
-          .put("security.warn_entering_secure", false)
-          .put("security.warn_entering_secure.show_once", false)
-          .put("security.warn_entering_weak", false)
-          .put("security.warn_entering_weak.show_once", false)
-          .put("security.warn_leaving_secure", false)
-          .put("security.warn_leaving_secure.show_once", false)
-          .put("security.warn_submit_insecure", false)
-          .put("security.warn_viewing_mixed", false)
-          .put("security.warn_viewing_mixed.show_once", false)
-          .put("signon.rememberSignons", false)
-          .put("toolkit.networkmanager.disable", true)
-          .put("toolkit.telemetry.prompted", 2)
-          .put("toolkit.telemetry.enabled", false)
-          .put("toolkit.telemetry.rejected", true)
-          .build();
-
-  /**
-   * The maximum amount of time scripts should be permitted to run. The user may increase this
-   * timeout, but may not set it below the default value.
-   */
-  private static final String MAX_SCRIPT_RUN_TIME_KEY = "dom.max_script_run_time";
-  private static final int DEFAULT_MAX_SCRIPT_RUN_TIME = 30;
-
-  private Preferences additionalPrefs = new Preferences() {
-    {
-      setPreference(MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
-    }
-  };
+  private static final String defaultPrefs = "/org/openqa/selenium/firefox/webdriver.json";
+  private Preferences additionalPrefs;
 
   private Map<String, Extension> extensions = Maps.newHashMap();
   private boolean enableNativeEvents;
@@ -134,18 +76,32 @@ public class FirefoxProfile {
    * @param profileDir The profile directory to use as a model.
    */
   public FirefoxProfile(File profileDir) {
+    this(null, profileDir);
+  }
+
+  @VisibleForTesting
+  @Beta
+  protected FirefoxProfile(Reader defaultsReader, File profileDir) {
+    if (defaultsReader == null) {
+      defaultsReader = onlyOverrideThisIfYouKnowWhatYouAreDoing();
+    }
+
+    additionalPrefs = new Preferences(defaultsReader);
+
     model = profileDir;
     verifyModel(model);
 
     File prefsInModel = new File(model, "user.js");
     if (prefsInModel.exists()) {
-      Preferences existingPrefs = new Preferences(prefsInModel);
+      StringReader reader = new StringReader("{\"frozen\": {}, \"mutable\": {}}");
+      Preferences existingPrefs = new Preferences(reader, prefsInModel);
       enableNativeEvents = getBooleanPreference(existingPrefs, ENABLE_NATIVE_EVENTS_PREF,
-          DEFAULT_ENABLE_NATIVE_EVENTS);
+                                                DEFAULT_ENABLE_NATIVE_EVENTS);
       acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF,
-          ACCEPT_UNTRUSTED_CERTIFICATES);
+                                                  ACCEPT_UNTRUSTED_CERTIFICATES);
       untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF,
-          ASSUME_UNTRUSTED_ISSUER);
+                                                 ASSUME_UNTRUSTED_ISSUER);
+      existingPrefs.addTo(additionalPrefs);
     } else {
       enableNativeEvents = DEFAULT_ENABLE_NATIVE_EVENTS;
       acceptUntrustedCerts = ACCEPT_UNTRUSTED_CERTIFICATES;
@@ -155,6 +111,21 @@ public class FirefoxProfile {
     // This is not entirely correct but this is not stored in the profile
     // so for now will always be set to false.
     loadNoFocusLib = false;
+
+    Closeables.closeQuietly(defaultsReader);
+  }
+
+  /**
+   * <strong>Internal method. This is liable to change at a moment's notice.</strong>
+   */
+  @Beta
+  protected Reader onlyOverrideThisIfYouKnowWhatYouAreDoing() {
+    URL resource = Resources.getResource(FirefoxProfile.class, defaultPrefs);
+    try {
+      return new InputStreamReader(resource.openStream());
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   private boolean getBooleanPreference(Preferences prefs, String key, boolean defaultValue) {
@@ -240,7 +211,6 @@ public class FirefoxProfile {
    * @param value The new value.
    */
   public void setPreference(String key, String value) {
-    checkPreference(key, value);
     additionalPrefs.setPreference(key, value);
   }
 
@@ -251,7 +221,6 @@ public class FirefoxProfile {
    * @param value The new value.
    */
   public void setPreference(String key, boolean value) {
-    checkPreference(key, value);
     additionalPrefs.setPreference(key, value);
   }
 
@@ -262,29 +231,7 @@ public class FirefoxProfile {
    * @param value The new value.
    */
   public void setPreference(String key, int value) {
-    checkPreference(key, value);
     additionalPrefs.setPreference(key, value);
-  }
-
-  private static void checkPreference(String key, Object value) {
-    checkNotNull(value);
-    checkArgument(!FROZEN_PREFERENCES.containsKey(key) ||
-      (FROZEN_PREFERENCES.containsKey(key) && value.equals(FROZEN_PREFERENCES.get(key))),
-        "Preference %s may not be overridden: frozen value=%s, requested value=%s",
-        key, FROZEN_PREFERENCES.get(key), value);
-    if (MAX_SCRIPT_RUN_TIME_KEY.equals(key)) {
-      int n;
-      if (value instanceof String) {
-        n = Integer.parseInt((String) value);
-      } else if (value instanceof Integer) {
-        n = (Integer) value;
-      } else {
-        throw new IllegalArgumentException(String.format(
-            "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
-      }
-      checkArgument(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
-          "%s must be == 0 || >= %s", MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
-    }
   }
 
   /**
@@ -335,7 +282,7 @@ public class FirefoxProfile {
   }
 
   public void updateUserPrefs(File userPrefs) {
-    Preferences prefs = new Preferences();
+    Preferences prefs = new Preferences(onlyOverrideThisIfYouKnowWhatYouAreDoing());
 
     // Allow users to override these settings
     prefs.setPreference("browser.startup.homepage", "about:blank");
@@ -344,16 +291,13 @@ public class FirefoxProfile {
     prefs.setPreference("browser.startup.page", 0);
 
     if (userPrefs.exists()) {
-      prefs = new Preferences(userPrefs);
+      prefs = new Preferences(onlyOverrideThisIfYouKnowWhatYouAreDoing(), userPrefs);
       if (!userPrefs.delete()) {
         throw new WebDriverException("Cannot delete existing user preferences");
       }
     }
 
     additionalPrefs.addTo(prefs);
-
-    // Normal settings to facilitate testing
-    prefs.putAll(FROZEN_PREFERENCES);
 
     // Should we use native events?
     prefs.setPreference(ENABLE_NATIVE_EVENTS_PREF, enableNativeEvents);
@@ -362,18 +306,6 @@ public class FirefoxProfile {
     prefs.setPreference(ACCEPT_UNTRUSTED_CERTS_PREF, acceptUntrustedCerts);
 
     prefs.setPreference(ASSUME_UNTRUSTED_ISSUER_PREF, untrustedCertIssuer);
-
-
-    // Settings to facilitate debugging the driver
-
-    // Logs errors in chrome files to the Error Console.
-    prefs.setPreference("javascript.options.showInConsole", true);
-
-    // Enables the use of the dump() statement
-    prefs.setPreference("browser.dom.window.dump.enabled", true);
-
-    // Log exceptions from inner frames (i.e. setTimeout)
-    prefs.setPreference("dom.report_all_js_exceptions", true);
 
     // If the user sets the home page, we should also start up there
     Object homePage = prefs.getPreference("browser.startup.homepage");

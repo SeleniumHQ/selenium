@@ -24,17 +24,25 @@ import java.io.StringReader;
 
 public class PreferencesTest extends TestCase {
 
+  private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
+  private StringReader defaults;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp(); 
+    defaults = new StringReader(emptyDefaults);
+  }
+
   public void testStringifyVsStringFormat() {
     assertEquals("\"stringifyMe\"", String.format("\"%s\"", "stringifyMe"));
   }
-
 
   public void testStringFormatOfStringify() {
     assertEquals("\"\"stringifyMe\"\"", String.format("\"%s\"", "\"stringifyMe\""));
   }
 
   public void testDetectStringification() {
-    Preferences a = new Preferences();
+    Preferences a = new Preferences(defaults);
 
     assertFalse("Empty String", canSet(a, "\"\""));
     assertFalse("Valid stringified string", canSet(a, ("\"Julian\"")));
@@ -50,16 +58,16 @@ public class PreferencesTest extends TestCase {
 
   public void testParsePreferences_boolean() {
     StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
-    Preferences prefs = new Preferences(lines);
+    Preferences prefs = new Preferences(defaults, lines);
 
     assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));
   }
 
   public void testParsePreferences_integer() {
-    StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 30);");
-    Preferences prefs = new Preferences(lines);
+    StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 34);");
+    Preferences prefs = new Preferences(defaults, lines);
 
-    assertEquals(30, prefs.getPreference("dom.max_script_run_time"));
+    assertEquals(34, prefs.getPreference("dom.max_script_run_time"));
   }
 
   public void testParsePreferences_string() {
@@ -70,7 +78,7 @@ public class PreferencesTest extends TestCase {
     Reader lines = new StringReader(
         "user_pref(\"general.useragent.override\", \"" + prefWithComma + "\");\n" +
             "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
-    Preferences prefs = new Preferences(lines);
+    Preferences prefs = new Preferences(defaults, lines);
 
     assertEquals(prefWithComma, prefs.getPreference("general.useragent.override"));
     assertEquals(prefWithQuotes, prefs.getPreference("print.print_command"));
@@ -79,13 +87,49 @@ public class PreferencesTest extends TestCase {
   public void testParsePreferences_multiline() {
     Reader lines = new StringReader(
         "user_pref(\"extensions.update.notifyUser\", false);\n" +
-            "user_pref(\"dom.max_script_run_time\", 30);");
-    Preferences prefs = new Preferences(lines);
+            "user_pref(\"dom.max_script_run_time\", 32);");
+    Preferences prefs = new Preferences(defaults, lines);
 
     assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));
-    assertEquals(30, prefs.getPreference("dom.max_script_run_time"));
+    assertEquals(32, prefs.getPreference("dom.max_script_run_time"));
   }
 
+  public void testCannotOverrideAFozenPrefence() {
+    StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
+    Preferences preferences = new Preferences(reader);
+
+    try {
+      preferences.setPreference("frozen.pref", false);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals(
+          "Preference frozen.pref may not be overridden: frozen value=true, requested value=false",
+          expected.getMessage());
+    }
+  }
+
+  public void testCanOverrideAFrozenPreferenceWithTheFrozenValue() throws Exception {
+    StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
+    Preferences preferences = new Preferences(reader);
+
+    preferences.setPreference("frozen.pref", true);
+
+    assertEquals(preferences.getPreference("frozen.pref"), true);
+  }
+
+  public void testCanOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
+    Preferences preferences = new Preferences(defaults);
+
+    try {
+      preferences.setPreference("dom.max_script_run_time", 29);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals("dom.max_script_run_time must be == 0 || >= 30", expected.getMessage());
+    }
+
+    preferences.setPreference("dom.max_script_run_time", 31);
+    preferences.setPreference("dom.max_script_run_time", 0);
+  }
 
   private boolean canSet(Preferences pref, String value) {
     try {

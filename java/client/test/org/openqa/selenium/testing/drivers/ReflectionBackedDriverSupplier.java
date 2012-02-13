@@ -19,6 +19,7 @@ package org.openqa.selenium.testing.drivers;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
+import com.google.common.io.Files;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
@@ -26,7 +27,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.InProject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
@@ -51,6 +55,10 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       }
 
       if (DesiredCapabilities.firefox().getBrowserName().equals(toUse.getBrowserName())) {
+        if (isInDevMode()) {
+          copyFirefoxDriverDefaultsToOutputDir();
+        }
+
         FirefoxProfile profile = new FirefoxProfile();
         boolean enableNativeEvents = Boolean.getBoolean("selenium.browser.native_events") ||
                                Platform.getCurrent().is( WINDOWS);
@@ -62,6 +70,13 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
+  }
+
+  private void copyFirefoxDriverDefaultsToOutputDir() throws IOException {
+    File defaults = InProject.locate("javascript/firefox-driver/webdriver.json");
+    File out = InProject.locate("out/production/selenium/org/openqa/selenium/firefox/FirefoxProfile.class").getParentFile();
+    out = new File(out, "webdriver.json");
+    Files.copy(defaults, out);
   }
 
   // Cover your eyes

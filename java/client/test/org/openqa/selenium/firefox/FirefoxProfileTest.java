@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,40 +165,6 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue(FileHandler.readAsString(prefs).contains("i.like.cheese"));
   }
 
-  public void testCannotOverrideAFozenPrefence() {
-    FirefoxProfile profile = new FirefoxProfile();
-
-    try {
-      profile.setPreference("browser.EULA.3.accepted", "foo-bar-baz");
-      fail();
-    } catch (IllegalArgumentException expected) {
-      assertEquals(
-          "Preference browser.EULA.3.accepted may not be overridden: frozen value=true, " +
-              "requested value=foo-bar-baz",
-          expected.getMessage());
-    }
-  }
-  
-  public void testCanOverrideAFrozenPreferenceWithTheFrozenValue() throws Exception {
-    profile.setPreference("app.update.auto", false);
-    
-    assertPreferenceValueEquals("app.update.auto", false);
-  }
-
-  public void testCanOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
-    FirefoxProfile profile = new FirefoxProfile();
-
-    try {
-      profile.setPreference("dom.max_script_run_time", 29);
-      fail();
-    } catch (IllegalArgumentException expected) {
-      assertEquals("dom.max_script_run_time must be == 0 || >= 30", expected.getMessage());
-    }
-
-    profile.setPreference("dom.max_script_run_time", 31);
-    profile.setPreference("dom.max_script_run_time", 0);
-  }
-
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
     File generatedProfile = profile.layoutOnDisk();
 
@@ -255,6 +222,6 @@ public class FirefoxProfileTest extends TestCase {
     File directory = profile.layoutOnDisk();
     File userPrefs = new File(directory, "user.js");
     FileReader reader = new FileReader(userPrefs);
-    return new Preferences(userPrefs);
+    return new Preferences(new StringReader("{\"mutable\": {}, \"frozen\": {}}"), reader);
   }
 }
