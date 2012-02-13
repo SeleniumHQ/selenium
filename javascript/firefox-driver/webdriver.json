@@ -45,8 +45,13 @@
     "toolkit.telemetry.rejected": true
   },
   "mutable": {
+    "browser.dom.window.dump.enabled": true,
     "browser.startup.page": 0,
     "browser.startup.homepage": "about:blank",
-    "dom.max_script_run_time": 30
+    "dom.max_script_run_time": 30,
+    "dom.report_all_js_exceptions": true,
+    "javascript.options.showInConsole": true,
+    "webdriver_accept_untrusted_certs": true,
+    "webdriver_assume_untrusted_issuer": true
   }
 }
