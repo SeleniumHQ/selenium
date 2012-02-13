@@ -13,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import copy
-import tempfile
-import os
-import zipfile
-import shutil
-import re
 import base64
+import copy
+import os
+import re
+import shutil
+import sys
+import tempfile
+import zipfile
 from cStringIO import StringIO
 from xml.dom import minidom
 from distutils import dir_util
@@ -29,6 +30,11 @@ WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
 
 class FirefoxProfile(object):
+
+    if sys.platform == "darwin":
+        native_events = "false"
+    else:
+        native_events = "true"
 
     ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = {
@@ -81,7 +87,7 @@ class FirefoxProfile(object):
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
-        "webdriver_enable_native_events": "true",
+        "webdriver_enable_native_events": native_events
         "dom.max_script_run_time": "30",
         }
 
