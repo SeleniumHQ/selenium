@@ -95,7 +95,6 @@ class Preferences {
   private void readDefaultPreferences(Reader defaultsReader) {
     try {
       String rawJson = CharStreams.toString(defaultsReader);
-//      System.out.println("rawJson = " + rawJson);
       JSONObject jsonPrefs = new JSONObject(rawJson);
 
       JSONObject frozen = jsonPrefs.getJSONObject("frozen");
@@ -103,8 +102,8 @@ class Preferences {
       while (keys.hasNext()) {
         String key = (String) keys.next();
         Object value = frozen.get(key);
-        immutablePrefs.put(key, value);
         setPreference(key, value);
+        immutablePrefs.put(key, value);
       }
 
       JSONObject mutable = jsonPrefs.getJSONObject("mutable");
@@ -125,7 +124,7 @@ class Preferences {
     if (value instanceof String) {
       setPreference(key, (String) value);
     } else if (value instanceof Boolean) {
-      setPreference(key, (Boolean) value);
+      setPreference(key, ((Boolean) value).booleanValue());
     } else {
       setPreference(key, ((Number) value).intValue());
     }
