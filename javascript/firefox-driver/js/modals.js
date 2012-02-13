@@ -159,12 +159,12 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
   if (driver && driver.response_) {
     fxdriver.modals.setFlag(driver, text);
     var res = driver.response_;
-    if (driver.response_.name == 'executeAsyncScript') {
+    if (driver.response_.name == 'executeAsyncScript' && !driver.response_.responseSent_) {
       // Special case handling. If a modal is open when executeAsyncScript
       // tries to respond with a result, it doesn't do anything, so that this
       // codepath can be followed.
       fxdriver.modals.isModalPresent(function(present) {
-	var errorMessage = 'Unexpected modal dialog (text: ' + text + ')';
+        var errorMessage = 'Unexpected modal dialog (text: ' + text + ')';
         if (present) {
           try {
             fxdriver.modals.dismissAlert(driver);
