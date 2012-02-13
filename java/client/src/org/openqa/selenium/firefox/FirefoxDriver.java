@@ -18,10 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -46,6 +43,12 @@ import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 
 /**
@@ -144,6 +147,30 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
         return new FirefoxWebElement(FirefoxDriver.this);
       }
     });
+  }
+
+  @Override
+  public Options manage() {
+    return new RemoteWebDriverOptions() {
+      @Override
+      public Timeouts timeouts() {
+        return new Timeouts() {
+          public Timeouts implicitlyWait(long time, TimeUnit unit) {
+            execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
+                "type", "implicit",
+                "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+            return this;
+          }
+
+          public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+            execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
+                "type", "script",
+                "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+            return this;
+          }
+        };
+      }
+    };
   }
 
   @Override

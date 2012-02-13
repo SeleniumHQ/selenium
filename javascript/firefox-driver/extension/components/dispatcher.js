@@ -144,6 +144,9 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('getSpeed')).
       on(Request.Method.POST, Dispatcher.executeAs('setSpeed'));
 
+  this.bind_('/session/:sessionId/timeouts').
+    on(Request.Method.POST, Dispatcher.executeAs('setTimeout'));
+
   this.bind_('/session/:sessionId/timeouts/implicit_wait').
       on(Request.Method.POST, Dispatcher.executeAs('implicitlyWait'));
   this.bind_('/session/:sessionId/timeouts/async_script').

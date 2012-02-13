@@ -43,7 +43,7 @@ public class SingleTestSuite extends TestSuite {
         .using(browser)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("PageLoadingTest")
+        .onlyRun("ImplicitWaitTest")
 //        .method("testFindingElementsOnElementByXPathShouldFindTopLevelElements")
         .outputTestNames()
         .leaveRunning()

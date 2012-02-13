@@ -546,6 +546,20 @@ returned as a list of JSON objects with the following keys:
       Delete('Delete the session.'))
 
   resources.append(
+      SessionResource('/session/:sessionId/timeouts').
+      Post('''
+Configure the amount of time that a particular type of operation can execute \
+for before they are aborted and a |Timeout| error is returned to the \
+client.''').
+      AddJsonParameter('type', '{string}',
+					   'The type of operation to set the timeout for. Valid \
+values are: "script" for script timeouts and "implicit" for modifying the \
+implicit wait timeout.').
+      AddJsonParameter('ms', '{number}',
+                       'The amount of time, in milliseconds, that time-limited'
+                       ' commands are permitted to run.'))
+
+  resources.append(
       SessionResource('/session/:sessionId/timeouts/async_script').
       Post('''Set the amount of time, in milliseconds, that asynchronous \
 scripts executed by `/session/:sessionId/execute_async` are permitted to run \

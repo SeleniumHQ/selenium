@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.server.handler.ChangeUrl;
 import org.openqa.selenium.remote.server.handler.ClearElement;
 import org.openqa.selenium.remote.server.handler.ClickElement;
 import org.openqa.selenium.remote.server.handler.CloseWindow;
+import org.openqa.selenium.remote.server.handler.ConfigureTimeout;
 import org.openqa.selenium.remote.server.handler.DeleteCookie;
 import org.openqa.selenium.remote.server.handler.DeleteNamedCookie;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
@@ -374,6 +375,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/window/:windowHandle/position", SetWindowPosition.class)
         .on(ResultType.SUCCESS, emptyResponse);
 
+    postMapper.bind("/session/:sessionId/timeouts", ConfigureTimeout.class)
+        .on(ResultType.SUCCESS, emptyResponse);
     postMapper.bind("/session/:sessionId/timeouts/implicit_wait", ImplicitlyWait.class)
         .on(ResultType.SUCCESS, emptyResponse);
     postMapper.bind("/session/:sessionId/timeouts/async_script", SetScriptTimeout.class)

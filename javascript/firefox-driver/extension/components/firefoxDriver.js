@@ -783,6 +783,23 @@ FirefoxDriver.prototype.deleteAllCookies = function(respond) {
 };
 
 
+FirefoxDriver.prototype.setTimeout = function(respond, parameters) {
+  switch (parameters.type) {
+    case 'implicit':
+      respond.session.setImplicitWait(parameters.ms);
+      break;
+
+    case 'script':
+      respond.session.setScriptTimeout(parameters.ms);
+      break;
+
+    default:
+      break;
+  }
+  respond.send();
+};
+
+
 FirefoxDriver.prototype.implicitlyWait = function(respond, parameters) {
   respond.session.setImplicitWait(parameters.ms);
   respond.send();
