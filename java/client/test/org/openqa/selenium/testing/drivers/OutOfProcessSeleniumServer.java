@@ -49,6 +49,9 @@ public class OutOfProcessSeleniumServer {
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
     command = new CommandLine("java", "-jar", path, "-port", String.valueOf((port)), "-browserSideLog");
+    if (Boolean.getBoolean("webdriver.development")) {
+      command.copyOutputTo(System.err);
+    }
     command.executeAsync();
 
     try {
