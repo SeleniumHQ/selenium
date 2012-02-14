@@ -15,6 +15,11 @@
  limitations under the License.
  */
 
+goog.provide('Request');
+
+goog.require('Utils');
+
+
 /**
  * Encapsulates information describing an HTTP request.
  * @param {Request.Method} method The HTTP method used to make the request.
@@ -24,7 +29,7 @@
  *     not permit a message body.
  * @constructor
  */
-function Request(request) {
+Request = function(request) {
 
   this.request_ = request;
 
@@ -34,7 +39,7 @@ function Request(request) {
    * @private
    */
   this.attributes_ = {};
-}
+};
 
 
 /**

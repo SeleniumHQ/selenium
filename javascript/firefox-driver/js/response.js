@@ -15,6 +15,8 @@
  limitations under the License.
  */
 
+goog.provide('Response');
+
 /**
  * Encapsulates the information for a HTTP response.
  * @param {?Request} request The request this is a response to. May be null if
@@ -22,7 +24,7 @@
  * @param {nsIOutputStream} outputStream The stream to write responses to.
  * @constructor
  */
-function Response(response, outputStream) {
+Response = function(response, outputStream) {
 
   /**
    * The request this is a response to.
@@ -39,7 +41,7 @@ function Response(response, outputStream) {
   this.body_ = '';
 
   this.committed_ = false;
-}
+};
 
 
 Response.CONTINUE = 100;
@@ -116,7 +118,7 @@ Response.prototype.setHeader = function(name, value) {
 /**
  * Sets the value of this response's Content-Type header. Responses are always
  * sent as UTF-8, so the content type value need not specify a charset.
- * @param {string} The new content type.
+ * @param {string} type The new content type.
  */
 Response.prototype.setContentType = function(type) {
   this.setHeader('Content-Type', type + '; charset=UTF-8');
