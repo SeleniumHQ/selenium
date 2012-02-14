@@ -87,7 +87,7 @@ class FirefoxProfile(object):
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
-        "webdriver_enable_native_events": native_events
+        "webdriver_enable_native_events": native_events,
         "dom.max_script_run_time": "30",
         }
 
