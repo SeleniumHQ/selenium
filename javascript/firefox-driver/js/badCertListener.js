@@ -81,7 +81,7 @@ WdCertOverrideService = function() {
 
   this.origListener_ =
       originalService.QueryInterface(
-        Components.interfaces.nsICertOverrideService);
+        CI['nsICertOverrideService']);
 };
 
 // Constants needed since WdCertOverrideService implements
@@ -220,13 +220,13 @@ WdCertOverrideService.prototype.rememberValidityOverride = function(
 };
 
 WdCertOverrideService.prototype.QueryInterface = function(aIID) {
-  if (aIID.equals(Components.interfaces.nsICertOverrideService) ||
-      aIID.equals(Components.interfaces.nsIInterfaceRequestor) ||
-      aIID.equals(Components.interfaces.nsISupports)) {
+  if (aIID.equals(CI['nsICertOverrideService']) ||
+      aIID.equals(CI['nsIInterfaceRequestor']) ||
+      aIID.equals(CI['nsISupports'])) {
     return this;
   }
 
-  throw Components.results.NS_ERROR_NO_INTERFACE;
+  throw CR['NS_ERROR_NO_INTERFACE'];
 };
 
 // Service contract ID which we override
@@ -240,7 +240,7 @@ var service = undefined;
 var WDCertOverrideFactory = {
   createInstance: function (aOuter, aIID) {
     if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
+      throw CR['NS_ERROR_NO_AGGREGATION'];
     if (service == undefined) {
       service = new WdCertOverrideService();
     }
@@ -257,12 +257,12 @@ WDBadCertListenerModule.prototype.registerSelf = function(
 
   if (this.firstTime_) {
     this.firstTime_ = false;
-    throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
+    throw CR['NS_ERROR_FACTORY_REGISTER_AGAIN'];
   }
 
   fxdriver.Logger.dumpn("Registering Override Certificate service.");
   aCompMgr = aCompMgr.QueryInterface(
-      Components.interfaces.nsIComponentRegistrar);
+      CI['nsIComponentRegistrar']);
   aCompMgr.registerFactoryLocation(
       DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, "badCertListener",
       CERTOVERRIDE_CONTRACT_ID, aFileSpec, aLocation, aType);
@@ -272,14 +272,14 @@ WDBadCertListenerModule.prototype.unregisterSelf = function(
     aCompMgr, aLocation, aType) {
   fxdriver.Logger.dumpn("Un-registering Override Certificate service.");
   aCompMgr =
-  aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+  aCompMgr.QueryInterface(CI['nsIComponentRegistrar']);
   aCompMgr.unregisterFactoryLocation(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, aLocation);
 };
 
 /** @const */ var FACTORY = {
   createInstance: function (aOuter, aIID) {
     if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
+      throw CR['NS_ERROR_NO_AGGREGATION'];
 
     if (service != undefined) {
       return service;
@@ -303,14 +303,14 @@ WdCertOverrideService.prototype._xpcom_factory = FACTORY;
 
 WDBadCertListenerModule.prototype.getClassObject = function(
     aCompMgr, aCID, aIID) {
-  if (!aIID.equals(Components.interfaces.nsIFactory))
-    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+  if (!aIID.equals(CI['nsIFactory']))
+    throw CR['NS_ERROR_NOT_IMPLEMENTED'];
 
   if (aCID.equals(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID)) {
     return FACTORY;
   }
 
-  throw Components.results.NS_ERROR_NO_INTERFACE;
+  throw CR['NS_ERROR_NO_INTERFACE'];
 };
 
 WDBadCertListenerModule.prototype.canUnload = function(aCompMgr) {
@@ -318,13 +318,7 @@ WDBadCertListenerModule.prototype.canUnload = function(aCompMgr) {
 };
 
 function NSGetModule(comMgr, fileSpec) {
-  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-    getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-    getService(Components.interfaces.nsIVersionComparator);
-  if (versionChecker.compare(appInfo.version, '3.0') >= 0) {
-    return new WDBadCertListenerModule();
-  }
+  return new WDBadCertListenerModule();
 }
 
 
