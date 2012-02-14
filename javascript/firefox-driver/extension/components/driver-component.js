@@ -31,7 +31,6 @@ var ExternalScripts = [
   "request.js",
   "response.js",
   "webdriverserver.js",
-  "webLoadingListener.js",
   "wrappedElement.js",
 ];
 

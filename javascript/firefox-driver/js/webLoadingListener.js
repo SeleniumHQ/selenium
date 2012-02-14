@@ -16,6 +16,9 @@
  limitations under the License.
  */
 
+goog.provide('WebLoadingListener');
+
+
 var STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
 
 function DoNothing(browser, onComplete, opt_window) {
@@ -126,10 +129,10 @@ function buildHandler(browser, toCall, opt_window) {
   return new PatientListener(browser, toCall, opt_window);
 }
 
-function WebLoadingListener(browser, toCall, opt_window) {
+WebLoadingListener = function(browser, toCall, opt_window) {
   this.handler = buildHandler(browser, toCall, opt_window);
   browser.addProgressListener(this.handler);
-}
+};
 
 WebLoadingListener.removeListener = function(browser, listener) {
   browser.removeProgressListener(listener.handler);
