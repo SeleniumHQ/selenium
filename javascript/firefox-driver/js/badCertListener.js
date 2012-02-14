@@ -23,31 +23,23 @@
  * of them.
  */
 
-const CC = Components.classes;
-const CI = Components.interfaces;
+goog.provide('WdCertOverrideService');
 
-const CONSOLE = CC["@mozilla.org/consoleservice;1"].
-                  getService(CI["nsIConsoleService"]);
+goog.require('fxdriver.Logger');
+goog.require('fxdriver.moz');
 
-function localdump(message) {
-  try {
-    CONSOLE.logStringMessage(message + "\n");
-  } catch (e) {
-    dump(message + "\n");
-  }
-}
 
 function getPreferenceFromProfile(prefName, prefDefaultValue) {
   var prefs =
       CC["@mozilla.org/preferences-service;1"].getService(CI["nsIPrefBranch"]);
 
   if (!prefs.prefHasUserValue(prefName)) {
-    localdump(prefName + ' not set; defaulting to ' + prefDefaultValue);
+    fxdriver.Logger.dumpn(prefName + ' not set; defaulting to ' + prefDefaultValue);
     return prefDefaultValue;
   }
 
   var prefValue = prefs.getBoolPref(prefName);
-  localdump("Found preference for " + prefName + ": " + prefValue);
+  fxdriver.Logger.dumpn("Found preference for " + prefName + ": " + prefValue);
 
   return prefValue;
 }
@@ -60,7 +52,7 @@ function shouldAssumeUntrustedIssuer() {
   return getPreferenceFromProfile("webdriver_assume_untrusted_issuer", true);
 }
 
-function WdCertOverrideService() {
+WdCertOverrideService = function() {
   // Defaults to true - accepting untrusted certificates.
   // This puts the module into effect - setting it to false
   // will delegate all calls to the original service.
@@ -78,7 +70,7 @@ function WdCertOverrideService() {
     this.default_bits = 0;
   }
 
-  localdump("Accept untrusted certificates: " + this.acceptAll);
+  fxdriver.Logger.dumpn("Accept untrusted certificates: " + this.acceptAll);
 
   // UUID of the original implementor of this service.
   var ORIGINAL_OVERRIDE_SERVICE_ID = "{67ba681d-5485-4fff-952c-2ee337ffdcd6}";
@@ -104,12 +96,12 @@ WdCertOverrideService.prototype = {
 WdCertOverrideService.prototype.certificateExpiredBit_ = function
   (theCert, verification_result) {
   if ((verification_result & theCert.CERT_EXPIRED) != 0) {
-    localdump("Certificate expired.");
+    fxdriver.Logger.dumpn("Certificate expired.");
     return this.ERROR_TIME;
   }
 
   return 0;
-}
+};
 
 // Returns the bit needed to mask untrusted issuers, 0 otherwise.
 // Note that this bit is already set by default in default_bits
@@ -119,17 +111,17 @@ WdCertOverrideService.prototype.certificateIssuerUntrusted_ = function
       ((verification_result & theCert.ISSUER_NOT_TRUSTED) != 0) ||
       ((verification_result & theCert.CERT_NOT_TRUSTED) != 0) ||
       ((verification_result & theCert.INVALID_CA) != 0)) {
-    localdump("Certificate issuer unknown.");
-    localdump("Unknown: " + (theCert.ISSUER_UNKNOWN & verification_result));
-    localdump("Issuer not trusted: " + (theCert.ISSUER_NOT_TRUSTED & verification_result));
-    localdump("Cert not trusted: " + (theCert.CERT_NOT_TRUSTED & verification_result));
-    localdump("Invalid CA: " + (theCert.INVALID_CA & verification_result));
+    fxdriver.Logger.dumpn("Certificate issuer unknown.");
+    fxdriver.Logger.dumpn("Unknown: " + (theCert.ISSUER_UNKNOWN & verification_result));
+    fxdriver.Logger.dumpn("Issuer not trusted: " + (theCert.ISSUER_NOT_TRUSTED & verification_result));
+    fxdriver.Logger.dumpn("Cert not trusted: " + (theCert.CERT_NOT_TRUSTED & verification_result));
+    fxdriver.Logger.dumpn("Invalid CA: " + (theCert.INVALID_CA & verification_result));
 
     return this.ERROR_UNTRUSTED;
   }
 
   return 0;
-}
+};
 
 // Returns the bit needed to mask mismatch between actual hostname
 // and the hostname the certificate was issued for, 0 otherwise.
@@ -137,12 +129,12 @@ WdCertOverrideService.prototype.certificateHostnameMismatch_ = function
   (theCert, aHost) {
   var commonNameRE = new RegExp("^" + theCert.commonName.replace('*', '[\\w|\-]+') + "$", "i");
   if (aHost.match(commonNameRE) === null) {
-    localdump("Host name mismatch: cert: " + theCert.commonName + " get: " + aHost);
+    fxdriver.Logger.dumpn("Host name mismatch: cert: " + theCert.commonName + " get: " + aHost);
     return this.ERROR_MISMATCH;
   }
 
   return 0;
-}
+};
 
 // Given a certificate and the host it was received for, fill in the bits
 // needed to accept this certificate for this host, even though the 
@@ -156,7 +148,7 @@ WdCertOverrideService.prototype.fillNeededBits = function(aCert, aHost) {
   var verification_bits = aCert.verifyForUsage(aCert.CERT_USAGE_SSLClient);
   var return_bits = this.default_bits;
 
-  localdump("Certificate verification results: " + verification_bits);
+  fxdriver.Logger.dumpn("Certificate verification results: " + verification_bits);
 
   return_bits = return_bits | this.certificateExpiredBit_(
       aCert, verification_bits);
@@ -168,12 +160,12 @@ WdCertOverrideService.prototype.fillNeededBits = function(aCert, aHost) {
   // It has been observed that if there's a host name mismatch then it
   // may not be required to check the trust status of the certificate issuer.
   if (return_bits == 0) {
-    localdump("Checking issuer since certificate has not expired or has a host name mismatch.");
+    fxdriver.Logger.dumpn("Checking issuer since certificate has not expired or has a host name mismatch.");
     return_bits = return_bits | this.certificateIssuerUntrusted_(
         aCert, verification_bits);
   }
 
-  localdump("return_bits now: " + return_bits);
+  fxdriver.Logger.dumpn("return_bits now: " + return_bits);
   return return_bits;
 };
 
@@ -183,12 +175,12 @@ WdCertOverrideService.prototype.hasMatchingOverride = function(
   var retval = false;
 
   if (this.acceptAll === true) {
-    localdump("Allowing certificate from site: " + aHostName + ":" + aPort);
+    fxdriver.Logger.dumpn("Allowing certificate from site: " + aHostName + ":" + aPort);
     retval = true;
     aIsTemporary.value = false;
 
     aOverrideBits.value = this.fillNeededBits(aCert, aHostName);
-    localdump("Override Bits: " + aOverrideBits.value);
+    fxdriver.Logger.dumpn("Override Bits: " + aOverrideBits.value);
   } else {
     retval = this.origListener_.hasMatchingOverride(aHostName, aPort,
               aCert, aOverrideBits, aIsTemporary);
@@ -238,9 +230,9 @@ WdCertOverrideService.prototype.QueryInterface = function(aIID) {
 };
 
 // Service contract ID which we override
-const CERTOVERRIDE_CONTRACT_ID = "@mozilla.org/security/certoverride;1";
+/** @const */ var CERTOVERRIDE_CONTRACT_ID = "@mozilla.org/security/certoverride;1";
 // UUID for this instance specifically.
-const DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID =
+/** @const */ var DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID =
   Components.ID('{c8fffaba-9b7a-41aa-872d-7e7366c16715}');
 
 var service = undefined;
@@ -268,7 +260,7 @@ WDBadCertListenerModule.prototype.registerSelf = function(
     throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
   }
 
-  localdump("Registering Override Certificate service.");
+  fxdriver.Logger.dumpn("Registering Override Certificate service.");
   aCompMgr = aCompMgr.QueryInterface(
       Components.interfaces.nsIComponentRegistrar);
   aCompMgr.registerFactoryLocation(
@@ -278,13 +270,13 @@ WDBadCertListenerModule.prototype.registerSelf = function(
 
 WDBadCertListenerModule.prototype.unregisterSelf = function(
     aCompMgr, aLocation, aType) {
-  localdump("Un-registering Override Certificate service.");
+  fxdriver.Logger.dumpn("Un-registering Override Certificate service.");
   aCompMgr =
   aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, aLocation);
 };
 
-const FACTORY = {
+/** @const */ var FACTORY = {
   createInstance: function (aOuter, aIID) {
     if (aOuter != null)
       throw Components.results.NS_ERROR_NO_AGGREGATION;
@@ -337,7 +329,7 @@ function NSGetModule(comMgr, fileSpec) {
 
 
 WdCertOverrideService.prototype.classID = DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID;
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
 if (XPCOMUtils.generateNSGetFactory) {
-  const NSGetFactory = XPCOMUtils.generateNSGetFactory([WdCertOverrideService]);
+  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([WdCertOverrideService]);
 }

@@ -23,7 +23,6 @@ mozilla_extension(name = "webdriver",
     "extension/content/fx4driver.xul",
   ],
   components = [
-    "extension/components/badCertListener.js",
     "extension/components/dispatcher.js",
     "extension/components/driver-component.js",
     "extension/components/firefoxDriver.js",
@@ -36,6 +35,7 @@ mozilla_extension(name = "webdriver",
     "extension/components/webLoadingListener.js",
     "extension/components/webdriverserver.js",
     "extension/components/wrappedElement.js",
+    ":bad_cert_listener",
     ":command_processor",
     ":command_processor_xpt",
     ":coordinates_xpt",
@@ -107,6 +107,20 @@ js_binary(name = "atoms",
     "js/preconditions.js",
     "js/timer.js",
     "js/utils.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [ "//javascript/webdriver/atoms:deps" ])
+
+js_binary(name = "bad_cert_listener",
+  srcs = [
+    "js/badCertListener.js",
+    "js/logging.js",
+    "js/moz.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",
