@@ -33,7 +33,6 @@ var ExternalScripts = [
   "webdriverserver.js",
   "webLoadingListener.js",
   "wrappedElement.js",
-  "screenshooter.js"
 ];
 
 

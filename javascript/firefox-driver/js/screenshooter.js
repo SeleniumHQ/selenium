@@ -16,11 +16,12 @@
  */
 
 
-function Screenshooter() {
-}
+goog.provide('fxdriver.screenshot');
+
+goog.require('fxdriver.moz');
 
 
-Screenshooter.grab = function(window) {
+fxdriver.screenshot.grab = function(window) {
   var document = window.document;
   var documentElement = document.documentElement;
   var canvas = document.getElementById('fxdriver-screenshot-canvas');
@@ -42,7 +43,7 @@ Screenshooter.grab = function(window) {
 };
 
 
-Screenshooter.toBase64 = function(canvas) {
+fxdriver.screenshot.toBase64 = function(canvas) {
   var dataUrl = canvas.toDataURL('image/png');
   var index = dataUrl.indexOf('base64,');
   if (index == -1) {
@@ -53,27 +54,25 @@ Screenshooter.toBase64 = function(canvas) {
 };
 
 
-Screenshooter.save = function(canvas, filepath) {
-  var cc = Components.classes;
-  var ci = Components.interfaces;
+fxdriver.screenshot.save = function(canvas, filepath) {
   var dataUrl = canvas.toDataURL('image/png');
-  var ioService = cc['@mozilla.org/network/io-service;1'].
-      getService(ci.nsIIOService);
+  var ioService = CC['@mozilla.org/network/io-service;1'].
+      getService(CI['nsIIOService']);
   var dataUri = ioService.newURI(dataUrl, 'UTF-8', null);
   var channel = ioService.newChannelFromURI(dataUri);
-  var file = cc['@mozilla.org/file/local;1'].createInstance(ci.nsILocalFile);
+  var file = CC['@mozilla.org/file/local;1'].createInstance(CI['nsILocalFile']);
   file.initWithPath(filepath);
   var inputStream = channel.open();
-  var binaryInputStream = cc['@mozilla.org/binaryinputstream;1'].
-      createInstance(ci.nsIBinaryInputStream);
+  var binaryInputStream = CC['@mozilla.org/binaryinputstream;1'].
+      createInstance(CI['nsIBinaryInputStream']);
   binaryInputStream.setInputStream(inputStream);
-  var fileOutputStream = cc['@mozilla.org/network/safe-file-output-stream;1'].
-      createInstance(ci.nsIFileOutputStream);
+  var fileOutputStream = CC['@mozilla.org/network/safe-file-output-stream;1'].
+      createInstance(CI['nsIFileOutputStream']);
   fileOutputStream.init(file, -1, -1, null);
   var n = binaryInputStream.available();
   var bytes = binaryInputStream.readBytes(n);
   fileOutputStream.write(bytes, n);
-  if (fileOutputStream instanceof ci.nsISafeOutputStream) {
+  if (fileOutputStream instanceof CI['nsISafeOutputStream']) {
     fileOutputStream.finish();
   } else {
     fileOutputStream.close();

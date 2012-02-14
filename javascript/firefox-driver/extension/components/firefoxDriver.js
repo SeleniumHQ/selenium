@@ -815,9 +815,9 @@ FirefoxDriver.prototype.setScriptTimeout = function(respond, parameters) {
 FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
   var window = respond.session.getBrowser().contentWindow;
   try {
-    var canvas = Screenshooter.grab(window);
+    var canvas = fxdriver.screenshot.grab(window);
     try {
-      Screenshooter.save(canvas, pngFile);
+      fxdriver.screenshot.save(canvas, pngFile);
     } catch(e) {
       throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
           'Could not save screenshot to ' + pngFile + ' - ' + e);
@@ -833,8 +833,8 @@ FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
 FirefoxDriver.prototype.screenshot = function(respond) {
   var window = respond.session.getBrowser().contentWindow;
   try {
-    var canvas = Screenshooter.grab(window);
-    respond.value = Screenshooter.toBase64(canvas);
+    var canvas = fxdriver.screenshot.grab(window);
+    respond.value = fxdriver.screenshot.toBase64(canvas);
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Could not take screenshot of current page - ' + e);
