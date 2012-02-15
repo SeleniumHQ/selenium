@@ -96,6 +96,12 @@ class WebDriverWaitTest(unittest.TestCase):
         finally:
             self.driver.implicitly_wait(0)
 
+    def testShouldWaitAtLeastOnce(self):
+        self._loadPage("simpleTest")
+        elements_exists = lambda driver: driver.find_elements_by_tag_name('h1')
+        elements = WebDriverWait(self.driver, 0).until(elements_exists)
+        self.assertTrue(len(elements) >= 1)
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
 

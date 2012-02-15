@@ -44,7 +44,7 @@ class WebDriverWait(object):
         """Calls the method provided with the driver as an argument until the \
         return value is not False."""
         end_time = time.time() + self._timeout
-        while(time.time() < end_time):
+        while(True):
             try:
                 value = method(self._driver)
                 if value:
@@ -52,13 +52,15 @@ class WebDriverWait(object):
             except NoSuchElementException:
                 pass
             time.sleep(self._poll)
+            if(time.time() > end_time):
+                break
         raise TimeoutException()
 
     def until_not(self, method):
           """Calls the method provided with the driver as an argument until the \
           return value is False."""
           end_time = time.time() + self._timeout
-          while(time.time() < end_time):
+          while(True):
               try:
                   value = method(self._driver)
                   if value:
@@ -66,4 +68,6 @@ class WebDriverWait(object):
               except NoSuchElementException:
                   return True
               time.sleep(self._poll)
+              if(time.time() > end_time):
+                  break
           raise TimeoutException()
