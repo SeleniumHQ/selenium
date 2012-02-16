@@ -191,7 +191,7 @@ function formatSuite(testSuite, filename) {
       formattedSuite += 'require "' + testFile + '"\n';
     }
   }
-  return result;
+  return formattedSuite;
 }
 
 function defaultExtension() {
