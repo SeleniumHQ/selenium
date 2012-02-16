@@ -42,9 +42,6 @@ function decodeText(text) {
 		text = text.replace(/^\$\{/g, '$$$${'); // replace ^${...} with $${...}
 		text = text.replace(/\\\$\{/g, '$${'); // replace \${...} with ${...}
 	}
-    // trim spaces
-	text = text.replace(/^\s+/, "");
-	text = text.replace(/\s+$/, "");
 	return text;
 }
 
