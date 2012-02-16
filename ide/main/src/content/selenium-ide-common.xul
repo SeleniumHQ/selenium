@@ -146,7 +146,7 @@ limitations under the License.
       <menuitem label="&saveTestCmd.label;" command="cmd_save" key="save-key" accesskey="S"/>
       <menuitem label="&saveTestAsCmd.label;" oncommand="window.editor.saveNewTestCase();" accesskey="A"/>
       <menu label="&exportCmd.label;" accesskey="E">
-        <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))">
+        <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this, 'exportTestCase')" oncommand="window.editor.exportTestCaseWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))">
         </menupopup>
       </menu>
       <menu label="&recentTestCmd.label;">
@@ -161,7 +161,7 @@ limitations under the License.
       <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
       <menuitem label="&saveSuiteAsCmd.label;" command="cmd_save_suite_as" />
       <menu label="&exportSuiteCmd.label;" accesskey="X">
-        <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestSuiteWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))" />
+        <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this, 'exportTestSuite')" oncommand="window.editor.exportTestSuiteWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))" />
       </menu>
       <menu label="&recentSuiteCmd.label;">
         <menupopup id="popup_recent_suites" onpopupshowing="window.editor.app.recentTestSuites.populateMenu(this)" oncommand="window.editor.loadRecentSuite(event.target.getAttribute('value'))" /><!-- Samit: Enh: Prompt to save first -->
@@ -213,7 +213,7 @@ limitations under the License.
         </menupopup>
       </menu>
       <menu id="clipboardFormatMenu" label="&clipboardFormatCmd.label;" insertbefore="menu-reset-window">
-        <menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, window.editor.app.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
+        <menupopup id="popup_clipboard_formats" onpopupshowing="window.editor.populateFormatsPopup(this, 'switchClipboardFormat', window.editor.app.clipboardFormat)" oncommand="window.editor.app.setClipboardFormat(window.editor.app.formats.selectFormat(event.target.getAttribute('value')))">
         </menupopup>
       </menu>
       <menuitem id="internalTestsMenu" label="&internalTestsMenu.label;" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />

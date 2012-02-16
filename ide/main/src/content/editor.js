@@ -672,7 +672,7 @@ Editor.prototype.updateExperimentalFeatures = function(show) {
 
 Editor.prototype.showFormatsPopup = function(e) {
     if (this.app.getBooleanOption('enableExperimentalFeatures')) {
-        this.populateFormatsPopup(e, this.app.getCurrentFormat());
+        this.populateFormatsPopup(e, 'switchFormat', this.app.getCurrentFormat());
     } else {
         XulUtils.clearChildren(e);
         XulUtils.appendMenuItem(e, {
@@ -871,13 +871,17 @@ Editor.prototype.onPopupOptions = function() {
 	document.getElementById("internalTestsMenu").setAttribute("hidden", this.getOptions().showInternalTestsMenu == null);
 }
 
-Editor.prototype.populateFormatsPopup = function(e, format) {
+Editor.prototype.populateFormatsPopup = function(e, action, format) {
     XulUtils.clearChildren(e);
 	var formats = this.app.getFormats().formats;
 	for (var i = 0; i < formats.length; i++) {
+            if (formats[i].id == "default" && action.indexOf("export") != -1)
+                continue;
+            if (action == "exportTestSuite" && typeof(formats[i].getFormatter().formatSuite) != 'function')
+                continue;
         XulUtils.appendMenuItem(e, {
                     type: "radio",
-                    name: "formats",
+                    name: action + "Formats",
                     label: formats[i].name,
                     value: formats[i].id,
                     checked: (format && format.id == formats[i].id) ? true : null});

@@ -302,11 +302,6 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
  */
 Format.prototype.saveSuiteAsNew = function(testSuite, exportTest) {
     var formatter = this.getFormatter();
-    if (typeof(formatter.formatSuite) != 'function') {
-        var name = formatter.name ? formatter.name : 'default'
-        alert('Suite export not implemented for the ' + name + ' formatter');
-        return false
-    }
     
     try {
         var file = null;
