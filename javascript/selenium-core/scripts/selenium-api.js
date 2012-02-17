@@ -2550,6 +2550,9 @@ Selenium.prototype.replaceVariables = function(str) {
         var variable = match[i]; // The replacement variable, with ${}
         var name = variable.substring(2, variable.length - 1); // The replacement variable without ${}
         var replacement = storedVars[name];
+        if (replacement.indexOf('$') != -1) {
+            replacement = replacement.replace(/\$/g, '$$$$'); //double up on $'s because of the special meaning these have in 'replace'
+        }
         if (replacement != undefined) {
             stringResult = stringResult.replace(variable, replacement);
         }
