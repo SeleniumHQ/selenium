@@ -94,6 +94,7 @@ public class RegistrationRequest {
   public static final String HUB_PORT = "hubPort";
 
   public static final String SERVLETS = "servlets";
+  public static final String ID = "id";
 
   public RegistrationRequest() {
     args = new String[0];

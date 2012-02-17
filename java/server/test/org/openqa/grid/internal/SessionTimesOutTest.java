@@ -31,6 +31,7 @@ import java.util.Map;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
+import static org.openqa.grid.common.RegistrationRequest.ID;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
 public class SessionTimesOutTest {
@@ -51,6 +52,8 @@ public class SessionTimesOutTest {
 
     // every 0.5 sec, the proxy check is something has timed out.
     config.put(CLEAN_UP_CYCLE, 400);
+    
+    config.put(ID, "abc");
 
     req.setConfiguration(config);
   }
@@ -232,6 +235,7 @@ public class SessionTimesOutTest {
 
         config.put(TIME_OUT, timeout);
         config.put(CLEAN_UP_CYCLE, cycle);
+        config.put(ID, "abc");
 
         req.setConfiguration(config);
 

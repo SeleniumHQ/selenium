@@ -117,6 +117,33 @@ public class RemoteProxyTest {
     Assert.assertEquals("A2", p.getConfig().get("A"));
 
   }
+  
+  @Test
+  public void proxyTakesRemoteAsIdIfIdNotSpecified() {
+    String remoteHost ="http://machine1:5555";
+    Registry registry = Registry.newInstance();
+    
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost);
+    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+
+    Assert.assertEquals(remoteHost, p.getId());
+
+  }
+  
+  @Test
+  public void proxyWithIdSpecified() {
+    String remoteHost ="http://machine1:5555";
+    Registry registry = Registry.newInstance();
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc");
+    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+
+    Assert.assertEquals("abc", p.getId());
+
+  }
+  
+  
 
   @AfterClass
   public static void teardown() {

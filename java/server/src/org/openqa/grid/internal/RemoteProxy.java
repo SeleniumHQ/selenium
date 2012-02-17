@@ -89,7 +89,7 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
 
   private volatile CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
 
-  private String id;
+  private final String id;
 
   private volatile boolean stop = false;
   private CleanUpThread cleanUpThread;
@@ -127,24 +127,30 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
 
     String url = (String) config.get(REMOTE_HOST);
-    if (url == null) {
-      // no URL isn't always a problem.
-      // The remote proxy only knows where the remote is if the remote
-      // itself initiate the registration process. In a virtual
-      // environment for instance, the IP of the host where the remote is
-      // will only be available after the host has been started.
-      this.remoteHost = null;
-      log.warning("URL was null. Not a problem if you set a meaningful ID.");
-    } else {
+    String id = (String) config.get(RegistrationRequest.ID);
+    
+    if (url == null && id == null){
+      throw new GridException(
+          "The registration request needs to specify either the remote host, or a valid id.");
+    }
+    
+    if (url != null){
       try {
         this.remoteHost = new URL(url);
-        this.id = remoteHost.toExternalForm();
       } catch (MalformedURLException e) {
         // should only happen when a bad config is sent.
         throw new GridException("Not a correct url to register a remote : " + url);
       }
     }
-
+    
+    // if id was provided in the request, use that
+    if (id !=null){
+      this.id = id;
+    }else {
+      // otherwise assign the remote host as id. 
+      this.id = remoteHost.toExternalForm();
+    }
+ 
     maxConcurrentSession = (Integer) this.config.get(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = (Integer) this.config.get(RegistrationRequest.CLEAN_UP_CYCLE);
     timeOut = (Integer) this.config.get(RegistrationRequest.TIME_OUT);

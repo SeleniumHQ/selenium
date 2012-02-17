@@ -36,6 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
+import static org.openqa.grid.common.RegistrationRequest.ID;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
@@ -64,6 +65,7 @@ public class SessionListenerTest {
   public static void prepare() {
     app1.put(APP, "app1");
     Map<String, Object> config = new HashMap<String, Object>();
+    config.put(ID, "abc");
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
@@ -259,6 +261,8 @@ public class SessionListenerTest {
     config.put(TIME_OUT, 1);
     config.put(CLEAN_UP_CYCLE, 1);
     config.put(MAX_SESSION, 2);
+    config.put(ID, "abc");
+
 
     req.addDesiredCapability(cap);
     req.setConfiguration(config);

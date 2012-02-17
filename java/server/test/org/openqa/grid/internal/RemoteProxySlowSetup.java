@@ -1,5 +1,12 @@
 package org.openqa.grid.internal;
 
+import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
+import static org.openqa.grid.common.RegistrationRequest.ID;
+import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -19,8 +26,17 @@ public class RemoteProxySlowSetup {
     registry = Registry.newInstance();
     // create 2 proxy that are equal and have a slow onRegistration
     // p1.equals(p2) = true
-    p1 = new SlowRemoteSetup(registry);
-    p2 = new SlowRemoteSetup(registry);
+    RegistrationRequest req1 = new RegistrationRequest();
+    Map<String, Object> config1 = new HashMap<String, Object>();
+    config1.put(ID, "abc");
+    req1.setConfiguration(config1);
+    p1 = new SlowRemoteSetup(req1,registry);
+    
+    RegistrationRequest req2 = new RegistrationRequest();
+    Map<String, Object> config2 = new HashMap<String, Object>();
+    config2.put(ID, "abc2");
+    req2.setConfiguration(config2);
+    p2 = new SlowRemoteSetup(req2,registry);
   }
 
   // the first onRegistration should be executed, but the 2nd shouldn't.
@@ -66,8 +82,8 @@ class SlowRemoteSetup extends RemoteProxy implements RegistrationListener {
     flag = true;
   }
 
-  public SlowRemoteSetup(Registry registry) {
-    super(new RegistrationRequest(), registry);
+  public SlowRemoteSetup(RegistrationRequest req,Registry registry) {
+    super(req, registry);
   }
 
   public void beforeRegistration() {

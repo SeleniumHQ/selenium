@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.ID;
 import static org.openqa.grid.common.RegistrationRequest.PROXY_CLASS;
 
 
@@ -45,6 +46,7 @@ public class RemoteProxyInheritanceTest {
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
+    config.put(ID, "abc");
 
 
     req.addDesiredCapability(app1);
@@ -66,6 +68,7 @@ public class RemoteProxyInheritanceTest {
 
     config.put("Custom1", "A");
     config.put("Custom2", "B");
+    config.put(ID, "abc");
 
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
