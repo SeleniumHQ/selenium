@@ -89,7 +89,6 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     // If we don't throw, we're good
   }
   
-  @Ignore(value = ALL, issues = 3391)
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
     driver.get(appServer.whereIs("scroll5.html"));
     driver.findElement(By.id("inner")).click();

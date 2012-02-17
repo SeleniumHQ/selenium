@@ -649,6 +649,10 @@ bot.action.scrollIntoView = function(element, opt_coords) {
       }
     }
   }
+  if (opt_coords) {
+    var rect = new goog.math.Rect(opt_coords.x, opt_coords.y, 1, 1);
+    bot.dom.scrollElementRegionIntoClientView_(element, rect);
+  }
   var isInView = bot.dom.isScrolledIntoView(element, opt_coords);
   if (!isInView && opt_coords) {
     // It's possible that the element has been scrolled in to view, but the
