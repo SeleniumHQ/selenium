@@ -36,7 +36,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   private static final String GRID_TOKEN = "_";
 
   // temporary fix to only check to most meaningful desiredCapability params
-  private static List<String> toConsider = new ArrayList<String>();
+  private final List<String> toConsider = new ArrayList<String>();
 
   public DefaultCapabilityMatcher() {
     toConsider.add(CapabilityType.PLATFORM);
