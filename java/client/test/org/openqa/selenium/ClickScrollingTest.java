@@ -3,6 +3,7 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -86,6 +87,13 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     driver.get(appServer.whereIs("scroll4.html"));
     driver.findElement(By.id("radio")).click();
     // If we don't throw, we're good
+  }
+  
+  @Ignore(value = ALL, issues = 3391)
+  public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
+    driver.get(appServer.whereIs("scroll5.html"));
+    driver.findElement(By.id("inner")).click();
+    assertEquals("clicked", driver.findElement(By.id("clicked")).getText());
   }
 
   private long getScrollTop() {
