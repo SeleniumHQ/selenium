@@ -76,7 +76,7 @@ public class GridHubConfiguration {
   /**
    * to specify how new request and nodes will be matched.
    */
-  private CapabilityMatcher matcher;
+  private CapabilityMatcher matcher = new DefaultCapabilityMatcher();
 
   /**
    * true by default.If true, the hub will throw exception as soon as a request not supported by the

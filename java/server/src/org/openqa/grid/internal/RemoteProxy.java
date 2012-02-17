@@ -87,7 +87,6 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
   private final int maxConcurrentSession;
   private final Registry registry;
 
-  private volatile CapabilityMatcher capabilityHelper = new DefaultCapabilityMatcher();
 
   private final String id;
 
@@ -103,13 +102,15 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     return registry;
   }
 
+  /**
+   * all the capability matchers of a grid instance have to be the same.
+   * for consistency, so this can only be set at the registry level.
+   * @return
+   */
   public CapabilityMatcher getCapabilityHelper() {
-    return capabilityHelper;
+    return registry.getCapabilityMatcher();
   }
 
-  public void setCapabilityHelper(CapabilityMatcher capabilityHelper) {
-    this.capabilityHelper = capabilityHelper;
-  }
 
   /**
    * Create the proxy from the info sent by the remote. <p/> If maxSession is not specified, default

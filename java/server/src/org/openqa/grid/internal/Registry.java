@@ -24,6 +24,7 @@ import net.jcip.annotations.ThreadSafe;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
+import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
@@ -61,7 +62,7 @@ public class Registry {
   private final NewSessionRequestQueue newSessionQueue;
   private final Matcher matcherThread = new Matcher();
   private final List<RemoteProxy> registeringProxies = new CopyOnWriteArrayList<RemoteProxy>();
-
+  private final CapabilityMatcher capabilityMatcher;
 
   private volatile boolean stop = false;
   // The following three variables need to be volatile because we expose a public setters
@@ -71,6 +72,7 @@ public class Registry {
 
   private Registry(Hub hub, GridHubConfiguration config) {
     this.hub = hub;
+    this.capabilityMatcher = config.getCapabilityMatcher();
     this.newSessionWaitTimeout = config.getNewSessionWaitTimeout();
     this.prioritizer = config.getPrioritizer();
     this.newSessionQueue = new NewSessionRequestQueue();
@@ -79,6 +81,7 @@ public class Registry {
     proxies = new ProxySet(config.isThrowOnCapabilityNotPresent());
     this.matcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler());
   }
+  
 
   @SuppressWarnings({"NullableProblems"})
   public static Registry newInstance() {
@@ -465,6 +468,8 @@ public class Registry {
       log.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
     }
   }
-
+  public CapabilityMatcher getCapabilityMatcher() {
+    return capabilityMatcher;
+  }
 
 }

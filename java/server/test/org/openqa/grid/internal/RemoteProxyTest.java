@@ -59,11 +59,6 @@ public class RemoteProxyTest {
 
 
   @Test
-  public void callSetterBecauseItsUnusedButPartOfPublicApi(){
-      p1.setCapabilityHelper(  null );
-  }
-
-  @Test
   public void testEqual() {
     Assert.assertTrue(p1.equals(p1));
     Assert.assertFalse(p1.equals(p2));
