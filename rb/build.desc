@@ -34,7 +34,8 @@ rubygem(
   files = [
     "lib/**/*",
     "CHANGES",
-    "README"
+    "README",
+    "COPYING"
   ]
 )
 
@@ -57,6 +58,9 @@ ruby_library(name = "common",
     "lib/selenium-webdriver.rb",
     "CHANGES",
     "README"
+  ],
+  resources = [
+    { "../COPYING" : "rb/COPYING" }
   ]
 )
 
