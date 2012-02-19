@@ -86,8 +86,9 @@ bot.html5.IS_ANDROID_FROYO_ = goog.userAgent.product.ANDROID &&
  * @type {boolean}
  * @const
  */
-bot.html5.IS_SAFARI5_WINDOWS_ = goog.userAgent.WINDOWS &&
-    goog.userAgent.product.SAFARI && bot.userAgent.isProductVersion(5) &&
+bot.html5.IS_SAFARI_WINDOWS_ = goog.userAgent.WINDOWS &&
+    goog.userAgent.product.SAFARI &&
+    (bot.userAgent.isProductVersion(4)) &&
     !bot.userAgent.isProductVersion(6);
 
 
@@ -126,9 +127,9 @@ bot.html5.isSupported = function(api, opt_window) {
       return goog.isDefAndNotNull(win.openDatabase);
 
     case bot.html5.API.GEOLOCATION:
-      // Safari 5 on Windows does not support geolocation, see:
+      // Safari 4,5 on Windows do not support geolocation, see:
       // https://discussions.apple.com/thread/3547900
-      if (bot.html5.IS_SAFARI5_WINDOWS_) {
+      if (bot.html5.IS_SAFARI_WINDOWS_) {
         return false;
       }
       return goog.isDefAndNotNull(win.navigator) &&
