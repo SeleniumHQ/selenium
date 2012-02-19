@@ -1106,9 +1106,8 @@ bot.dom.scrollElementRegionIntoContainerView_ = function(elem, elemRegion,
  * @param {!Element} elem The element to use.
  * @param {!goog.math.Rect} elemRegion The region relative to the element to be
  *     scrolled into view.
- * @private
  */
-bot.dom.scrollElementRegionIntoClientView_ = function(elem, elemRegion) {
+bot.dom.scrollElementRegionIntoClientView = function(elem, elemRegion) {
   var doc = goog.dom.getOwnerDocument(elem);
 
   // Scroll the containers.
@@ -1156,7 +1155,7 @@ bot.dom.getLocationInView = function(elem, opt_elemRegion) {
   } else {
     elemRegion = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
   }
-  bot.dom.scrollElementRegionIntoClientView_(elem, elemRegion);
+  bot.dom.scrollElementRegionIntoClientView(elem, elemRegion);
 
   // This is needed for elements that are split across multiple lines.
   var rect = elem.getClientRects ? elem.getClientRects()[0] : null;

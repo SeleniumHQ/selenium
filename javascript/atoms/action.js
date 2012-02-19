@@ -39,6 +39,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
+goog.require('goog.math.Rect');
 goog.require('goog.math.Vec2');
 goog.require('goog.userAgent');
 
@@ -571,7 +572,7 @@ bot.action.scrollIntoView = function(element, opt_coords) {
   }
   if (opt_coords) {
     var rect = new goog.math.Rect(opt_coords.x, opt_coords.y, 1, 1);
-    bot.dom.scrollElementRegionIntoClientView_(element, rect);
+    bot.dom.scrollElementRegionIntoClientView(element, rect);
   }
   var isInView = bot.dom.isScrolledIntoView(element, opt_coords);
   if (!isInView && opt_coords) {
