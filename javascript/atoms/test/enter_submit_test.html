@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>enter_submit_test</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.Keyboard');
+  goog.require('bot.Keyboard.Key');
+  goog.require('bot.dom');
+  goog.require('goog.dom');
+  goog.require('goog.events');
+  goog.require('goog.events.EventType');
+  goog.require('goog.testing.AsyncTestCase');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script type="text/javascript">
+  var asyncTestCase = null;
+
+  // In Opera 11.5+, synthetic keypresses currently exhibit flaky failures:
+  // http://code.google.com/p/selenium/issues/detail?id=3068
+  // Test methods below are skipped for these versions.
+  var BROKEN_KEYPRESS = goog.userAgent.OPERA &&
+    bot.userAgent.isEngineVersion(11.5);
+
+  var submitFired;
+  var wasSubmitted;
+
+  function submitted() {
+    wasSubmitted = true;
+    asyncTestCase.continueTesting();
+  }
+
+  function setUp() {
+    submitFired = false;
+    wasSubmitted = false;
+  }
+
+  function tearDown() {
+    goog.events.removeAll();
+  }
+
+  function submitForm(formName, opt_cancelSubmit) {
+    var target = document.getElementById(formName + 'text1');
+    var keyboard = new bot.Keyboard();
+    keyboard.moveCursor(target);
+    goog.events.listen(document.getElementById(formName),
+        goog.events.EventType.SUBMIT, function(e) {
+          submitFired = true;
+          if (opt_cancelSubmit) {
+            e.preventDefault();
+          }
+        });
+    keyboard.pressKey(bot.Keyboard.Keys.ENTER);
+  }
+
+  function testTwoTextboxesAndOneSubmitIsSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    asyncTestCase.waitForAsync('if this times out, the form did not submit');
+    submitForm('form1');
+    assertTrue(submitFired);
+  }
+
+  function testOneTextboxesAndOneSubmitIsSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    asyncTestCase.waitForAsync('if this times out, the form did not submit');
+    submitForm('form2');
+    assertTrue(submitFired);
+  }
+
+  function testTwoTextboxesAndNoSubmitIsNotSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    // Form is only submitted on Safari 4 or prior versions.
+    var submitExpected = goog.userAgent.WEBKIT &&
+        !bot.userAgent.isEngineVersion(534);
+    if (submitExpected) {
+      asyncTestCase.waitForAsync('if this times out, the form did not submit');
+    }
+    submitForm('form3');
+    assertEquals(submitExpected, submitFired);
+    if (!submitExpected) {
+      assertFalse(wasSubmitted);
+    }
+  }
+
+  function testOneTextboxesAndNoSubmitIsSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    asyncTestCase.waitForAsync('if this times out, the form did not submit');
+    submitForm('form4');
+    assertTrue(submitFired);
+  }
+
+  function testTwoTextboxesAndTwoSubmitsIsSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    asyncTestCase.waitForAsync('if this times out, the form did not submit');
+    submitForm('form5');
+    assertTrue(submitFired);
+  }
+
+  function testKeyDownCancelNotSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    submitForm('form6');
+    assertFalse(submitFired);
+    assertFalse(wasSubmitted);
+  }
+
+  function testKeyPressCancelNotSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    submitForm('form7');
+    assertFalse(submitFired);
+    assertFalse(wasSubmitted);
+  }
+
+  function testKeyUpCancelSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    asyncTestCase.waitForAsync('if this times out, the form did not submit');
+    submitForm('form8');
+    assertTrue(submitFired);
+  }
+
+  function testCancelSubmitFiredNotSubmitted() {
+    if (BROKEN_KEYPRESS) {
+      return;
+    }
+    submitForm('form9', true);
+    assertTrue(submitFired);
+  }
+</script>
+<form id="form1" action="javascript:submitted()">
+  <input type="text" id="form1text1"></input><br/>
+  <input type="text" id="form1text2"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form2" action="javascript:submitted()">
+  <input type="text" id="form2text1"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form3" action="javascript:submitted()">
+  <input type="text" id="form3text1"></input><br/>
+  <input type="text" id="form3text2"></input><br/>
+</form>
+<form id="form4" action="javascript:submitted()">
+  <input type="text" id="form4text1"></input><br/>
+</form>
+<form id="form5" action="javascript:submitted()">
+  <input type="text" id="form5text1"></input><br/>
+  <input type="text" id="form5text2"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form6" action="javascript:submitted()">
+  <input type="text" id="form6text1" onkeydown="return false"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form7" action="javascript:submitted()">
+  <input type="text" id="form7text1" onkeypress="return false"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form8" action="javascript:submitted()">
+  <input type="text" id="form8text1" onkeyup="return false"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form9" action="javascript:submitted()">
+  <input type="text" id="form9text1"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<script type="text/javascript">
+  asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+</script>
+</body>
+</html>

@@ -174,81 +174,18 @@ bot.action.type = function(element, var_args) {
 
 
 /**
- * @param {Node} node The node to test.
- * @return {boolean} Whether the node is a FORM element.
- * @private
- */
-bot.action.isForm_ = function(node) {
-  return bot.dom.isElement(node, goog.dom.TagName.FORM);
-};
-
-
-/**
  * Submits the form containing the given element. Note this function triggers
  * the submit action, but does not simulate user input (a click or key press).
- * To trigger a submit from user action, dispatch the desired event on the
- * appropriate element using {@code bot.events.fire}.
  * @param {!Element} element The element to submit.
- * @see bot.events.fire
+ * @deprecated Click on a submit button or type ENTER in a text box instead.
  */
 bot.action.submit = function(element) {
-  // TODO(user): This should find first submittable element in the form and
-  // submit that instead of going directly for the FORM.
-  var form = (/** @type {Element} */ goog.dom.getAncestor(element,
-      bot.action.isForm_, /*includeNode=*/true));
+  var form = bot.action.LegacyDevice_.findAncestorForm(element);
   if (!form) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        'Element was not in a form, so could not submit.');
+                        'Element was not in a form, so could not submit.');
   }
-  bot.action.submitForm_(form);
-};
-
-
-/**
- * Submits the specified form. Unlike the public function, it expects to be
- * given a <form> element and fails if it is not.
- * @param {!Element} form The form to submit.
- * @private
- */
-bot.action.submitForm_ = function(form) {
-  if (!bot.action.isForm_(form)) {
-    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-        'Element was not in a form, so could not submit.');
-  }
-  if (bot.events.fire(form, bot.events.EventType.SUBMIT)) {
-    // When a form has an element with an id or name exactly equal to "submit"
-    // (not uncommon) it masks the form.submit function. We  can avoid this by
-    // calling the prototype's submit function, except in IE < 8, where DOM id
-    // elements don't let you reference their prototypes. For IE < 8, can change
-    // the id and names of the elements and revert them back, but they must be
-    // reverted before the submit call, because the onsubmit handler might rely
-    // on their being correct, and the HTTP request might otherwise be left with
-    // incorrect value names. Fortunately, saving the submit function and
-    // calling it after reverting the ids and names works! Oh, and goog.typeOf
-    // (and thus goog.isFunction) doesn't work for form.submit in IE < 8.
-    if (!bot.dom.isElement(form.submit)) {
-      form.submit();
-    } else if (!goog.userAgent.IE || bot.userAgent.isEngineVersion(8)) {
-      (/** @type {Function} */ form.constructor.prototype.submit).call(form);
-    } else {
-      var idMasks = bot.locators.findElements({'id': 'submit'}, form);
-      var nameMasks = bot.locators.findElements({'name': 'submit'}, form);
-      goog.array.forEach(idMasks, function(m) {
-        m.removeAttribute('id');
-      });
-      goog.array.forEach(nameMasks, function(m) {
-        m.removeAttribute('name');
-      });
-      var submitFunction = form.submit;
-      goog.array.forEach(idMasks, function(m) {
-        m.setAttribute('id', 'submit');
-      });
-      goog.array.forEach(nameMasks, function(m) {
-        m.setAttribute('name', 'submit');
-      });
-      submitFunction();
-    }
-  }
+  bot.action.LegacyDevice_.submitForm(element, form);
 };
 
 
@@ -621,6 +558,29 @@ bot.action.LegacyDevice_.focusOnElement = function(element) {
   var instance = bot.action.LegacyDevice_.getInstance();
   instance.setElement(element);
   return instance.focusOnElement();
+};
+
+
+/**
+ * Submit the form for the element.  See {@link bot.device.submit}.
+ * @param {!Element} element The element to submit a form on.
+ * @param {!Element} form The form to submit.
+ */
+bot.action.LegacyDevice_.submitForm = function(element, form) {
+  var instance = bot.action.LegacyDevice_.getInstance();
+  instance.setElement(element);
+  instance.submitForm(form);
+};
+
+
+/**
+ * Find FORM element that is an ancestor of the passed in element.  See
+ * {@link bot.device.findAncestorForm}.
+ * @param {!Element} element The element to find an ancestor form.
+ * @return {Element} form The ancestor form, or null if none.
+ */
+bot.action.LegacyDevice_.findAncestorForm = function(element) {
+  return bot.Device.findAncestorForm(element);
 };
 
 

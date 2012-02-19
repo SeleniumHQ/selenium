@@ -289,7 +289,7 @@ bot.Device.prototype.clickElement = function(coord, button) {
       if (bot.dom.isElement(e, goog.dom.TagName.A)) {
         targetLink = /**@type {!Element}*/ (e);
         break;
-      } else if (bot.Device.isFormSubmitElement_(e)) {
+      } else if (bot.Device.isFormSubmitElement(e)) {
         targetButton = e;
         break;
       }
@@ -441,9 +441,9 @@ bot.Device.SYNTHESISED_EVENTS_CAN_OPEN_JAVASCRIPT_WINDOWS_ =
 /**
  * @param {Node} element The element to check.
  * @return {boolean} Whether the element is a submit element in form.
- * @private
+ * @protected
  */
-bot.Device.isFormSubmitElement_ = function(element) {
+bot.Device.isFormSubmitElement = function(element) {
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var type = element.type.toLowerCase();
     if (type == 'submit' || type == 'image') {
@@ -570,6 +570,76 @@ bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasSelected) {
   // Only Opera versions < 11 do not fire the change event themselves.
   if (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) {
     bot.events.fire(this.element_, bot.events.EventType.CHANGE);
+  }
+};
+
+
+/**
+ * Find FORM element that is an ancestor of the passed in element.
+ * @param {Node} node The node to find a FORM for.
+ * @return {Element} The ancestor FORM element if it exists.
+ * @protected
+ */
+bot.Device.findAncestorForm = function(node) {
+  return (/** @type {Element} */ goog.dom.getAncestor(
+      node, bot.Device.isForm_, /*includeNode=*/true));
+};
+
+
+/**
+ * @param {Node} node The node to test.
+ * @return {boolean} Whether the node is a FORM element.
+ * @private
+ */
+bot.Device.isForm_ = function(node) {
+  return bot.dom.isElement(node, goog.dom.TagName.FORM);
+};
+
+
+/**
+ * Submits the specified form. Unlike the public function, it expects to be
+ * given a <form> element and fails if it is not.
+ * @param {!Element} form The form to submit.
+ * @protected
+ */
+bot.Device.prototype.submitForm = function(form) {
+  if (!bot.Device.isForm_(form)) {
+    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+                        'Element was not in a form, so could not submit.');
+  }
+  if (bot.events.fire(form, bot.events.EventType.SUBMIT)) {
+    // When a form has an element with an id or name exactly equal to "submit"
+    // (not uncommon) it masks the form.submit function. We  can avoid this by
+    // calling the prototype's submit function, except in IE < 8, where DOM id
+    // elements don't let you reference their prototypes. For IE < 8, can change
+    // the id and names of the elements and revert them back, but they must be
+    // reverted before the submit call, because the onsubmit handler might rely
+    // on their being correct, and the HTTP request might otherwise be left with
+    // incorrect value names. Fortunately, saving the submit function and
+    // calling it after reverting the ids and names works! Oh, and goog.typeOf
+    // (and thus goog.isFunction) doesn't work for form.submit in IE < 8.
+    if (!bot.dom.isElement(form.submit)) {
+      form.submit();
+    } else if (!goog.userAgent.IE || bot.userAgent.isEngineVersion(8)) {
+      (/** @type {Function} */ form.constructor.prototype.submit).call(form);
+    } else {
+      var idMasks = bot.locators.findElements({'id': 'submit'}, form);
+      var nameMasks = bot.locators.findElements({'name': 'submit'}, form);
+      goog.array.forEach(idMasks, function(m) {
+        m.removeAttribute('id');
+      });
+      goog.array.forEach(nameMasks, function(m) {
+        m.removeAttribute('name');
+      });
+      var submitFunction = form.submit;
+      goog.array.forEach(idMasks, function(m) {
+        m.setAttribute('id', 'submit');
+      });
+      goog.array.forEach(nameMasks, function(m) {
+        m.setAttribute('name', 'submit');
+      });
+      submitFunction();
+    }
   }
 };
 

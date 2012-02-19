@@ -367,23 +367,10 @@ bot.Keyboard.prototype.pressKey = function(key) {
     if (!this.requiresKeyPress_(key) ||
         this.fireKeyEvent_(
             bot.events.EventType.KEYPRESS, key, !performDefault)) {
-      if (this.editable_ && performDefault) {
-        if (key.character) {
-          this.updateOnCharacter_(key);
-        } else {
-          switch (key) {
-            case bot.Keyboard.Keys.ENTER:
-              this.updateOnEnter_();
-              break;
-            case bot.Keyboard.Keys.BACKSPACE:
-            case bot.Keyboard.Keys.DELETE:
-              this.updateOnBackspaceOrDelete_(key);
-              break;
-            case bot.Keyboard.Keys.LEFT:
-            case bot.Keyboard.Keys.RIGHT:
-              this.updateOnLeftOrRight_(key);
-              break;
-          }
+      if (performDefault) {
+        this.maybeSubmitForm_(key);
+        if (this.editable_) {
+          this.maybeEditText_(key);
         }
       }
     }
@@ -426,12 +413,72 @@ bot.Keyboard.prototype.requiresKeyPress_ = function(key) {
 
 
 /**
+ * Maybe submit a form if the ENTER key is released.  On non-FF browsers, firing
+ * the keyPress and keyRelease events for the ENTER key does not result in a
+ * form being submitted so we have to fire the form submit event as well.
+ *
+ * @param {bot.Keyboard.Key} key Key.
+ * @private
+ */
+bot.Keyboard.prototype.maybeSubmitForm_ = function(key) {
+  if (key != bot.Keyboard.Keys.ENTER) {
+    return;
+  }
+  if (goog.userAgent.GECKO ||
+      !bot.dom.isElement(this.getElement(), goog.dom.TagName.INPUT)) {
+    return;
+  }
+
+  var form = bot.Device.findAncestorForm(this.getElement());
+  if (form) {
+    var inputs = form.getElementsByTagName('input');
+    var hasSubmit = goog.array.some(inputs, function(e) {
+      return bot.Device.isFormSubmitElement(e);
+    });
+    // The second part of this if statement will always include forms on Safari
+    // version < 5.
+    if (hasSubmit || inputs.length == 1 ||
+        (goog.userAgent.WEBKIT && !bot.userAgent.isEngineVersion(534))) {
+      this.submitForm(form);
+    }
+  }
+};
+
+
+/**
+ * Maybe edit text when a key is pressed in an editable form.
+ *
+ * @param {!bot.Keyboard.Key} key Key that was pressed.
+ * @private
+ */
+bot.Keyboard.prototype.maybeEditText_ = function(key) {
+  if (key.character) {
+    this.updateOnCharacter_(key);
+  } else {
+    switch (key) {
+      case bot.Keyboard.Keys.ENTER:
+        this.updateOnEnter_();
+        break;
+      case bot.Keyboard.Keys.BACKSPACE:
+      case bot.Keyboard.Keys.DELETE:
+        this.updateOnBackspaceOrDelete_(key);
+        break;
+      case bot.Keyboard.Keys.LEFT:
+      case bot.Keyboard.Keys.RIGHT:
+        this.updateOnLeftOrRight_(key);
+        break;
+    }
+  }
+};
+
+
+/**
  * Releases the given key on the keyboard. Releasing a key that is not
  * pressed results in an exception.
  *
  * @param {!bot.Keyboard.Key} key Key to release.
  */
-bot.Keyboard.prototype.releaseKey = function(key) {;
+bot.Keyboard.prototype.releaseKey = function(key) {
   if (!this.isPressed(key)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot release a key that is not pressed.');
