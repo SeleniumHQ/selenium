@@ -156,6 +156,63 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
 
 
 /**
+ * Fires a touch event given the state of the deive and the given arguments.
+ *
+ * @param {bot.events.EventType} type Event type.
+ * @param {number} id The touch identifier.
+ * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
+ * @param {number=} opt_id2 The touch identifier of the second finger.
+ * @param {!goog.math.Coordinate=} opt_coord2 The coordinate of the second
+ *    finger, if any.
+ * @return {boolean} Whether the event fired successfully or was cancelled.
+ * @protected
+ */
+bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
+                                               opt_coord2) {
+  var args = {
+    touches: [],
+    targetTouches: [],
+    changedTouches: [],
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    metaKey: false,
+    relatedTarget: null,
+    scale: 0,
+    rotation: 0
+  };
+
+  function addTouch(identifier, coords) {
+    // Android devices leave identifier to zero.
+    var id = goog.userAgent.product.ANDROID ? 0 : identifier;
+    var touch = {
+      identifier: identifier,
+      screenX: coords.x,
+      screenY: coords.y,
+      clientX: coords.x,
+      clientY: coords.y,
+      pageX: coords.x,
+      pageY: coords.y
+    };
+
+    args.changedTouches.push(touch);
+    if (type == bot.events.EventType.TOUCHSTART ||
+        type == bot.events.EventType.TOUCHMOVE) {
+      args.touches.push(touch);
+      args.targetTouches.push(touch);
+    }
+  }
+
+  addTouch(id, coord);
+  if (goog.isDef(opt_id2)) {
+    addTouch(opt_id2, opt_coord2);
+  }
+
+  return bot.events.fire(this.element_, type, args);
+};
+
+
+/**
  * A mouse event fired "on" an <option> element, doesn't always fire on the
  * <option> element itself. Sometimes it fires on the parent <select> element
  * and sometimes not at all, depending on the browser and event type. This

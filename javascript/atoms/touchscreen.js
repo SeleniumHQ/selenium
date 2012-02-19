@@ -61,20 +61,6 @@ goog.inherits(bot.Touchscreen, bot.Device);
 
 
 /**
- * @type {Element}
- * @private
- */
-bot.Touchscreen.prototype.elementPressed_ = null;
-
-
-/**
- * @type {boolean}
- * @private
- */
-bot.Touchscreen.prototype.secondPressed_ = false;
-
-
-/**
  * @type {boolean}
  * @private
  */
@@ -99,7 +85,7 @@ bot.Touchscreen.prototype.touchIdentifier2_ = 0;
  * @type {number}
  * @private
  */
-bot.Touchscreen.prototype.touchCounter_ = 0;
+bot.Touchscreen.prototype.touchCounter_ = 1;
 
 
 /**
@@ -111,19 +97,14 @@ bot.Touchscreen.prototype.touchCounter_ = 0;
  *     pressed.
  */
 bot.Touchscreen.prototype.press = function(opt_press2) {
-  if (this.elementPressed_) {
+  if (this.isPressed()) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot press touchscreen when already pressed.');
   }
 
-  // Keep track of the element where the press originated because Touchend
-  // events must be fired on element where the TouchStart event was fired.
-  this.elementPressed_ = this.getElement();
   this.hasMovedAfterPress_ = false;
   this.touchIdentifier_ = this.touchCounter_++;
-
   if (opt_press2) {
-    this.secondPressed_ = true;
     this.touchIdentifier2_ = this.touchCounter_++;
   }
 
@@ -136,7 +117,7 @@ bot.Touchscreen.prototype.press = function(opt_press2) {
  * pressed results in an exception.
  */
 bot.Touchscreen.prototype.release = function() {
-  if (!this.elementPressed_) {
+  if (!this.isPressed()) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot release touchscreen when not already pressed.');
   }
@@ -148,22 +129,22 @@ bot.Touchscreen.prototype.release = function() {
   // after the touch events have been fired. The click button should be zero
   // and only one mousemove should fire.
   if (!this.hasMovedAfterPress_) {
-    this.fireMouseEvent_(bot.events.EventType.MOUSEMOVE);
-    var performFocus = this.fireMouseEvent_(bot.events.EventType.MOUSEDOWN);
-
+    this.fireMouseEvent(bot.events.EventType.MOUSEMOVE, this.clientXY_, 0);
+    var performFocus = this.fireMouseEvent(bot.events.EventType.MOUSEDOWN,
+                                           this.clientXY_, 0);
     // Element gets focus after the mousedown event only if the mousedown was
     // not cancelled.
     if (performFocus) {
       this.focusOnElement();
     }
 
-    this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
+    this.fireMouseEvent(bot.events.EventType.MOUSEUP, this.clientXY_, 0);
 
     // Special click logic to follow links and to perform form actions.
     this.clickElement(this.clientXY_, /* button value */ 0);
   }
-  this.elementPressed_ = null;
-  this.secondPressed_ = false;
+  this.touchIdentifier_ = 0;
+  this.touchIdentifier2_ = 0;
 };
 
 
@@ -177,7 +158,11 @@ bot.Touchscreen.prototype.release = function() {
  *   currentElement.
  */
 bot.Touchscreen.prototype.move = function(element, coords, opt_coords2) {
-  this.setElement(element);
+  // The target element for touch actions is the original element. Hence, the
+  // element is set only when the touchscreen is not currently being pressed.
+  if (!this.isPressed()) {
+    this.setElement(element);
+  }
 
   var pos = goog.style.getClientPosition(element);
   this.clientXY_.x = coords.x + pos.x;
@@ -188,7 +173,7 @@ bot.Touchscreen.prototype.move = function(element, coords, opt_coords2) {
     this.clientXY2_.y = opt_coords2.y + pos.y;
   }
 
-  if (this.elementPressed_) {
+  if (this.isPressed()) {
     this.hasMovedAfterPress_ = true;
     this.fireTouchEvent_(bot.events.EventType.TOUCHMOVE);
   }
@@ -201,7 +186,7 @@ bot.Touchscreen.prototype.move = function(element, coords, opt_coords2) {
  * @return {boolean} Whether the touchscreen is pressed.
  */
 bot.Touchscreen.prototype.isPressed = function() {
-  return !!this.elementPressed_;
+  return !!this.touchIdentifier_;
 };
 
 
@@ -213,78 +198,16 @@ bot.Touchscreen.prototype.isPressed = function() {
  * @private
  */
 bot.Touchscreen.prototype.fireTouchEvent_ = function(type) {
-  if (!this.elementPressed_) {
+  if (!this.isPressed()) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Should never fire event when touchscreen is not pressed.');
   }
-  var args = {
-    touches: [],
-    targetTouches: [],
-    changedTouches: [],
-    altKey: false,
-    ctrlKey: false,
-    shiftKey: false,
-    metaKey: false,
-    relatedTarget: null,
-    scale: 0,
-    rotation: 0
-  };
-  bot.Touchscreen.addTouch_(type, args, this.touchIdentifier_, this.clientXY_);
-
-  if (this.secondPressed_) {
-    bot.Touchscreen.addTouch_(type, args, this.touchIdentifier2_,
-                              this.clientXY2_);
+  var touchIdentifier2;
+  var coords2;
+  if (this.touchIdentifier2_) {
+    touchIdentifier2 = this.touchIdentifier2_;
+    coords2 = this.clientXY2_;
   }
-
-  // TODO(user): Store the value of the pressed element in this.element,
-  // and add a fireTouchEvent function to bot.Device to fire the event.
-  return bot.events.fire(this.elementPressed_, type, args);
-};
-
-
-/**
- * A helper function to add a touch event to the TouchArgs.
- *
- * @param {!bot.events.EventType} type Event type.
- * @param {!bot.events.TouchArgs} touchArgs Arguments for touch.
- * @param {number} identifier Unique identifier for the touch.
- * @param {!goog.math.Coordinate} coords Coordinates of the touch.
- * @private
- */
-bot.Touchscreen.addTouch_ = function(type, touchArgs, identifier, coords) {
-  // Android devices leave identifier to zero.
-  var id = goog.userAgent.product.ANDROID ? 0 : identifier;
-  var touch = {
-    identifier: id,
-    screenX: coords.x,
-    screenY: coords.y,
-    clientX: coords.x,
-    clientY: coords.y,
-    pageX: coords.x,
-    pageY: coords.y
-  };
-
-  touchArgs.changedTouches.push(touch);
-  if (type == bot.events.EventType.TOUCHSTART ||
-      type == bot.events.EventType.TOUCHMOVE) {
-    touchArgs.touches.push(touch);
-    touchArgs.targetTouches.push(touch);
-  }
-};
-
-
-/**
- * Fire a mouse event.
- *
- * @param {bot.events.EventType} type Type of mouse event.
- * @return {boolean} Whether the event was fired successfully or was cancelled.
- * @private
-*/
-bot.Touchscreen.prototype.fireMouseEvent_ = function(type) {
-  if (!this.elementPressed_) {
-    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'Should never fire a mouse event when touchscreen is not pressed.');
-  }
-  // All supported mobile browsers (android, iOS) set the button to zero.
-  return this.fireMouseEvent(type, this.clientXY_, 0);
+  return this.fireTouchEvent(type, this.touchIdentifier_, this.clientXY_,
+                             touchIdentifier2, coords2);
 };
