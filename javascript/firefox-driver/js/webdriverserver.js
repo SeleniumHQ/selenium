@@ -26,10 +26,6 @@ goog.require('fxdriver.moz');
  * @constructor
  */
 WebDriverServer = function() {
-  // We do this here to work around an issue in the import function:
-  // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
-  Components.utils.import('resource://fxdriver/modules/atoms.js');
-
   this.wrappedJSObject = this;
   this.serverSocket =
   Components.classes["@mozilla.org/network/server-socket;1"].
