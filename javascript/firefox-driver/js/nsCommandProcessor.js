@@ -24,7 +24,9 @@
  */
 
 
+goog.require('FirefoxDriver');
 goog.require('Utils');
+goog.require('WebElement');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.Timer');
@@ -311,7 +313,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
       var startTime = new Date().getTime();
       var endTime = startTime + this.response_.session.getImplicitWait();
       var name = this.command_.name;
-      var driverFunction = this.driver_[name];
+      var driverFunction = this.driver_[name] || WebElement[name];
       var parameters = this.command_.parameters;
 
       fxdriver.Logger.dumpn('Executing: ' + name);
@@ -463,7 +465,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  if (typeof driver[command.name] != 'function') {
+  if (typeof driver[command.name] != 'function' && typeof WebElement[command.name] != 'function') {
     response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
         'Unrecognised command: ' + command.name));
     return;

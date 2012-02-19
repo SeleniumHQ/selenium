@@ -17,12 +17,22 @@
  */
 
 
-Components.utils.import('resource://fxdriver/modules/atoms.js');
+goog.provide('WebElement');
 
-var FirefoxDriver = FirefoxDriver || function(){};
+goog.require('Utils');
+goog.require('WebLoadingListener');
+goog.require('bot.ErrorCode');
+goog.require('bot.action');
+goog.require('bot.dom');
+goog.require('fxdriver.Logger');
+goog.require('fxdriver.moz');
+goog.require('fxdriver.preconditions');
+goog.require('goog.dom');
+goog.require('goog.dom.selection');
+goog.require('webdriver.atoms.element');
 
 
-FirefoxDriver.prototype.elementEquals = function(respond, parameters) {
+WebElement.elementEquals = function(respond, parameters) {
   try {
     var elementA = Utils.getElementAt(parameters.id,
                                       respond.session.getDocument());
@@ -41,7 +51,7 @@ FirefoxDriver.prototype.elementEquals = function(respond, parameters) {
   respond.send();
 };
 
-FirefoxDriver.prototype.clickElement = function(respond, parameters) {
+WebElement.clickElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -169,11 +179,11 @@ FirefoxDriver.prototype.clickElement = function(respond, parameters) {
   respond.status = res.status;
   respond.value = res.message;
 };
-FirefoxDriver.prototype.clickElement.preconditions =
+WebElement.clickElement.preconditions =
     [ fxdriver.preconditions.visible ];
 
 
-FirefoxDriver.prototype.getElementText = function(respond, parameters) {
+WebElement.getElementText = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -187,7 +197,7 @@ FirefoxDriver.prototype.getElementText = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.getElementValue = function(respond, parameters) {
+WebElement.getElementValue = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -208,7 +218,7 @@ FirefoxDriver.prototype.getElementValue = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
+WebElement.sendKeysToElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -271,22 +281,22 @@ FirefoxDriver.prototype.sendKeysToElement = function(respond, parameters) {
     respond.send();
   }, 0);
 };
-FirefoxDriver.prototype.sendKeysToElement.preconditions =
+WebElement.sendKeysToElement.preconditions =
     [ fxdriver.preconditions.visible, fxdriver.preconditions.enabled ];
 
 
-FirefoxDriver.prototype.clearElement = function(respond, parameters) {
+WebElement.clearElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
   bot.setWindow(respond.session.getWindow());
   bot.action.clear(element);
   respond.send();
 };
-FirefoxDriver.prototype.clearElement.preconditions =
+WebElement.clearElement.preconditions =
     [ fxdriver.preconditions.visible, fxdriver.preconditions.enabled, fxdriver.preconditions.writable ];
 
 
-FirefoxDriver.prototype.getElementTagName = function(respond, parameters) {
+WebElement.getElementTagName = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -295,7 +305,7 @@ FirefoxDriver.prototype.getElementTagName = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.getElementAttribute = function(respond, parameters) {
+WebElement.getElementAttribute = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                   respond.session.getDocument());
   var attributeName = parameters.name;
@@ -305,7 +315,7 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.isElementEnabled = function(respond, parameters) {
+WebElement.isElementEnabled = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
   respond.value = Utils.isEnabled(element);
@@ -313,7 +323,7 @@ FirefoxDriver.prototype.isElementEnabled = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.submitElement = function(respond, parameters) {
+WebElement.submitElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -343,7 +353,7 @@ FirefoxDriver.prototype.submitElement = function(respond, parameters) {
   }
 };
 
-FirefoxDriver.prototype.isElementSelected = function(respond, parameters) {
+WebElement.isElementSelected = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -370,7 +380,7 @@ FirefoxDriver.prototype.isElementSelected = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.isElementDisplayed = function(respond, parameters) {
+WebElement.isElementDisplayed = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
   respond.value = bot.dom.isShown(element);
@@ -378,7 +388,7 @@ FirefoxDriver.prototype.isElementDisplayed = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.getElementLocation = function(respond, parameters) {
+WebElement.getElementLocation = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -393,7 +403,7 @@ FirefoxDriver.prototype.getElementLocation = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.getElementSize = function(respond, parameters) {
+WebElement.getElementSize = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
@@ -407,7 +417,7 @@ FirefoxDriver.prototype.getElementSize = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.getElementValueOfCssProperty = function(respond,
+WebElement.getElementValueOfCssProperty = function(respond,
                                                                 parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
@@ -416,7 +426,7 @@ FirefoxDriver.prototype.getElementValueOfCssProperty = function(respond,
 };
 
 
-FirefoxDriver.prototype.getElementLocationOnceScrolledIntoView = function(
+WebElement.getElementLocationOnceScrolledIntoView = function(
     respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());

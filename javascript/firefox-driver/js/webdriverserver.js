@@ -18,7 +18,9 @@
 
 goog.provide('WebDriverServer');
 
+goog.require('FirefoxDriver');
 goog.require('Utils');
+goog.require('WebElement');
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.moz');
 

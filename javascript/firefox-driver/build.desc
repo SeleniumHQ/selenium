@@ -23,10 +23,8 @@ mozilla_extension(name = "webdriver",
     "extension/content/fx4driver.xul",
   ],
   components = [
-    "extension/components/firefoxDriver.js",
     "extension/components/httpd.js",
     "extension/components/json2.js",
-    "extension/components/wrappedElement.js",
     ":bad_cert_listener",
     ":command_processor",
     ":command_processor_xpt",
@@ -64,6 +62,7 @@ mozilla_extension(name = "webdriver",
     { "//cpp:webdriver_firefox_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so" },
     { "//cpp:webdriver_firefox_latest_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so" },
     { ":atoms" : "resource/modules/atoms.js" },
+    { ":web_element_cache" : "resource/modules/web_element_cache.js" },
     { "js/timer.js" : "resource/modules/timer.js" },
     { "js/evaluate.js" : "resource/evaluate.js" },
     { "//third_party/js/sizzle" : "resource/sizzle.js" }
@@ -88,7 +87,9 @@ js_binary(name = "synthetic_mouse",
 js_binary(name = "driver_component",
   srcs = [
     "js/driver-component.js",
+    "js/firefoxDriver.js",
     "js/webdriverserver.js",
+    "js/wrappedElement.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",
@@ -149,11 +150,13 @@ js_binary(name = "bad_cert_listener",
 js_binary(name = "command_processor",
   srcs = [
     "js/error.js",
+    "js/firefoxDriver.js",
     "js/logging.js",
     "js/moz.js",
     "js/nsCommandProcessor.js",
     "js/timer.js",
     "js/utils.js",
+    "js/wrappedElement.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_GECKO=true",
@@ -207,6 +210,22 @@ js_binary(name = "session_store",
     "js/externs.js",
   ],
   deps = [ "//javascript/webdriver/atoms:deps" ])
+
+js_binary(name = "web_element_cache",
+  srcs = [
+    "js/element_cache.js",
+    "js/logging.js",
+    "js/moz.js",
+    "js/utils.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [ "//javascript/webdriver/atoms:deps" ])
+
 
 export_file(name = "webdriver_prefs",
   srcs = [ "webdriver.json" ])

@@ -18,6 +18,7 @@
 
 
 goog.require('WebDriverServer');
+goog.require('WebElement');
 
 // constants
 /** @const */ var nsISupports = Components.interfaces.nsISupports;
@@ -29,8 +30,6 @@ goog.require('WebDriverServer');
 // Its copyrights belong to its original author.
 
 var ExternalScripts = [
-  "firefoxDriver.js",
-  "wrappedElement.js"
 ];
 
 

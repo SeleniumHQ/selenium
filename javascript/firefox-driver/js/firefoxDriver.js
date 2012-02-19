@@ -16,8 +16,24 @@
  limitations under the License.
  */
 
+goog.provide('FirefoxDriver');
 
-function FirefoxDriver(server, enableNativeEvents, win) {
+goog.require('Utils');
+goog.require('WebLoadingListener');
+goog.require('bot.ErrorCode');
+goog.require('bot.dom');
+goog.require('bot.locators');
+goog.require('bot.userAgent');
+goog.require('bot.window');
+goog.require('fxdriver.Timer');
+goog.require('fxdriver.preconditions');
+goog.require('goog.array');
+goog.require('goog.dom.selection');
+goog.require('goog.math');
+goog.require('goog.userAgent');
+
+
+FirefoxDriver = function(server, enableNativeEvents, win) {
   this.server = server;
   this.enableNativeEvents = enableNativeEvents;
   this.window = win;
@@ -28,21 +44,16 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   this.currentX = 0;
   this.currentY = 0;
 
-  // We do this here to work around an issue in the import function:
-  // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
-  var atoms = {};
-  Components.utils.import('resource://fxdriver/modules/atoms.js', atoms);
-  
   // This really shouldn't be here, but the firefoxdriver isn't compiled with closure, so the atoms
   // aren't exported into global scope
   FirefoxDriver.prototype.dismissAlert.preconditions =
-      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
+      [ function() { fxdriver.preconditions.alertPresent(this) } ];
   FirefoxDriver.prototype.acceptAlert.preconditions =
-      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
+      [ function() { fxdriver.preconditions.alertPresent(this) } ];
   FirefoxDriver.prototype.getAlertText.preconditions =
-      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
+      [ function() { fxdriver.preconditions.alertPresent(this) } ];
   FirefoxDriver.prototype.setAlertValue.preconditions =
-      [ function() { atoms.fxdriver.preconditions.alertPresent(this) } ];
+      [ function() { fxdriver.preconditions.alertPresent(this) } ];
 
 
   goog.userAgent.GECKO = true;
@@ -53,7 +64,7 @@ function FirefoxDriver(server, enableNativeEvents, win) {
   this.mouse = Utils.newInstance("@googlecode.com/webdriver/syntheticmouse;1", "wdIMouse");
   // Current state of modifier keys (for synthenized events).
   this.modifierKeysState = undefined;
-}
+};
 
 
 FirefoxDriver.prototype.__defineGetter__("id", function() {
