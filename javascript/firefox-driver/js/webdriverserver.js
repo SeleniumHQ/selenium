@@ -16,8 +16,16 @@
  limitations under the License.
  */
 
+goog.provide('WebDriverServer');
 
-function WebDriverServer() {
+goog.require('Utils');
+goog.require('fxdriver.Logger');
+goog.require('fxdriver.moz');
+
+/**
+ * @constructor
+ */
+WebDriverServer = function() {
   // We do this here to work around an issue in the import function:
   // https://groups.google.com/group/mozilla.dev.apps.firefox/browse_thread/thread/e178d41afa2ccc87?hl=en&pli=1#
   Components.utils.import('resource://fxdriver/modules/atoms.js');
@@ -46,7 +54,7 @@ function WebDriverServer() {
     response.processAsync();
     dispatcher_.dispatch(new Request(request), new Response(response));
   }});
-}
+};
 
 
 WebDriverServer.prototype.newDriver = function(window) {

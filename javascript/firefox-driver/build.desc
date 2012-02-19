@@ -23,16 +23,15 @@ mozilla_extension(name = "webdriver",
     "extension/content/fx4driver.xul",
   ],
   components = [
-    "extension/components/driver-component.js",
     "extension/components/firefoxDriver.js",
     "extension/components/httpd.js",
     "extension/components/json2.js",
-    "extension/components/webdriverserver.js",
     "extension/components/wrappedElement.js",
     ":bad_cert_listener",
     ":command_processor",
     ":command_processor_xpt",
     ":coordinates_xpt",
+    ":driver_component",
     ":httpd_xpt",
     ":mouse_xpt",
     ":prompt_service",
@@ -85,6 +84,25 @@ js_binary(name = "synthetic_mouse",
     "js/externs.js",
   ],
   deps = [ "//javascript/webdriver/atoms:deps" ])
+
+js_binary(name = "driver_component",
+  srcs = [
+    "js/driver-component.js",
+    "js/webdriverserver.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  flags = [
+    "--language_in=ECMASCRIPT5",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":atoms",
+    "//javascript/webdriver/atoms:deps",
+  ])
 
 # Needed because the closure library doesn't have the EXPORTED_SYMBOLS variable
 # required by the loader in firefox

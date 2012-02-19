@@ -16,19 +16,21 @@
  limitations under the License.
  */
 
+
+goog.require('WebDriverServer');
+
 // constants
-const nsISupports = Components.interfaces.nsISupports;
-const CLASS_ID = Components.ID("{1C0E8D86-B661-40d0-AE3D-CA012FADF170}");
-const CLASS_NAME = "firefoxWebDriver";
-const CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
+/** @const */ var nsISupports = Components.interfaces.nsISupports;
+/** @const */ var CLASS_ID = Components.ID("{1C0E8D86-B661-40d0-AE3D-CA012FADF170}");
+/** @const */ var CLASS_NAME = "firefoxWebDriver";
+/** @const */ var CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
 
 // The following code is derived from https://addons.mozilla.org/en-US/firefox/files/browse/3682/
 // Its copyrights belong to its original author.
 
 var ExternalScripts = [
   "firefoxDriver.js",
-  "webdriverserver.js",
-  "wrappedElement.js",
+  "wrappedElement.js"
 ];
 
 
