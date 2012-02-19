@@ -26,45 +26,6 @@ goog.require('WebElement');
 /** @const */ var CLASS_NAME = "firefoxWebDriver";
 /** @const */ var CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
 
-// The following code is derived from https://addons.mozilla.org/en-US/firefox/files/browse/3682/
-// Its copyrights belong to its original author.
-
-var ExternalScripts = [
-];
-
-
-(function() {
-  var self;
-  var fileProtocolHandler = Components.
-      classes['@mozilla.org/network/protocol;1?name=file'].
-      createInstance(Components.interfaces.nsIFileProtocolHandler);
-  self = __LOCATION__;
-
-  var parent = self.parent;
-  // the directory this file is in
-  var loader = Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
-      createInstance(Components.interfaces.mozIJSSubScriptLoader);
-
-  // Firefox 3.5+ has native JSON support; prefer that over our script from
-  // www.json.org, which may be slower.
-  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-      getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-      getService(Components.interfaces.nsIVersionComparator);
-  if (versionChecker.compare(appInfo.version, '3.5') < 0) {
-    ExternalScripts.push('json2.js');
-  }
-
-  for (var index in ExternalScripts) {
-    var child = parent.clone();
-    child.append(ExternalScripts[index]);
-    // child is a nsILocalFile of the file we want to load
-    var childname = fileProtocolHandler.getURLSpecFromFile(child);
-    loader.loadSubScript(childname);
-  }
-})();
-
-
 // This code has been derived from the example code at
 // http://developer-stage.mozilla.org/en/docs/How_to_Build_an_XPCOM_Component_in_Javascript
 // Its copyrights belong to the original author

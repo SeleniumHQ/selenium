@@ -28,11 +28,14 @@ goog.require('FirefoxDriver');
 goog.require('Utils');
 goog.require('WebElement');
 goog.require('bot.ErrorCode');
+goog.require('bot.locators');
+goog.require('bot.userAgent');
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.Timer');
 goog.require('fxdriver.error');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.modals');
+goog.require('goog.dom');
 
 
 var loadStrategy_ = 'conservative';
@@ -41,37 +44,6 @@ var loadStrategy_ = 'conservative';
  * When this component is loaded, load the necessary subscripts.
  */
 (function() {
-  var scripts = [];
-
-  // Firefox 3.5+ has native JSON support; prefer that over our script from
-  // www.json.org, which may be slower.
-  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-      getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-      getService(Components.interfaces.nsIVersionComparator);
-  if (versionChecker.compare(appInfo.version, '3.5') < 0) {
-    scripts.push('json2.js');
-  }
-
-  var fileProtocolHandler = Components.
-      classes['@mozilla.org/network/protocol;1?name=file'].
-      createInstance(Components.interfaces.nsIFileProtocolHandler);
-  var loader = Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
-      createInstance(Components.interfaces.mozIJSSubScriptLoader);
-
-  for (var script in scripts) {
-    var file = __LOCATION__.parent.clone();
-    file.append(scripts[script]);
-
-    var fileName = fileProtocolHandler.getURLSpecFromFile(file);
-    loader.loadSubScript(fileName);
-  }
-
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces["nsIPrefBranch"]);
-
-  if (prefs.prefHasUserValue('webdriver.load.strategy')) {
-    loadStrategy_ = prefs.getCharPref('webdriver.load.strategy');
-  }
 })();
 
 
@@ -360,6 +332,49 @@ DelayedCommand.prototype.executeInternal_ = function() {
  * @constructor
  */
 var nsCommandProcessor = function() {
+  // Since we only support 3.0+, this check is enough to see if we're on 3.0
+  if (!bot.userAgent.isProductVersion('3.5')) {
+    Components.utils['import']('resource://fxdriver/json2.js');
+
+    fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
+    var cssSelectorFunction = (function() {
+      var sizzle = [
+        'var originalSizzle = window.Sizzle;',
+        Utils.loadUrl('resource://fxdriver/sizzle.js') + ';',
+        'var results = Sizzle(arguments[0], arguments[1]);',
+        'window.Sizzle = originalSizzle;'
+      ].join('\n');
+
+      function compileScript(script, root) {
+        var win = goog.dom.getOwnerDocument(root).defaultView;
+        win = fxdriver.moz.unwrap(win);
+        return new win.Function(script);
+      }
+
+      return {
+        single: function(target, root) {
+          var fn = compileScript(sizzle + ' return results[0] || null;', root);
+          root = fxdriver.moz.unwrap(root);
+          return fn.call(null, target, root);
+        },
+        many: function(target, root) {
+          var fn = compileScript(sizzle + ' return results;', root);
+          root = fxdriver.moz.unwrap(root);
+          return fn.call(null, target, root);
+        }
+      };
+    })();
+    bot.locators.add('css', cssSelectorFunction);
+    bot.locators.add('css selector', cssSelectorFunction);
+//    Utils.loadUrl('resource://fxdriver/json2.js');
+  }
+
+  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces["nsIPrefBranch"]);
+
+  if (prefs.prefHasUserValue('webdriver.load.strategy')) {
+    loadStrategy_ = prefs.getCharPref('webdriver.load.strategy');
+  }
+
   this.wrappedJSObject = this;
   this.wm = Components.classes['@mozilla.org/appshell/window-mediator;1'].
       getService(Components.interfaces.nsIWindowMediator);
