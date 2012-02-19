@@ -16,23 +16,29 @@
  */
 
 
+goog.provide('Dispatcher');
+goog.provide('Resource');
+
+goog.require('Response');
+goog.require('Request');
+goog.require('bot.ErrorCode');
+goog.require('fxdriver.error');
+
 /**
  * Dispatches commands received by the WebDriver server.
  * @constructor
  */
-function Dispatcher() {
-  Components.utils.import('resource://fxdriver/modules/atoms.js');
-
+Dispatcher = function() {
   this.resources_ = [];
   this.init_();
-}
+};
 
 
 /**
  * Utility function used to respond to a command that is recognised, but not
  * implemented. Returns a 501.
- * @param {Request} The request to respond to.
- * @param {Response} Class used to send the response.
+ * @param {Request} request The request to respond to.
+ * @param {Response} response Class used to send the response.
  */
 Dispatcher.notImplemented = function(request, response) {
   response.sendError(Response.NOT_IMPLEMENTED, 'Unsupported command',
@@ -374,8 +380,9 @@ Dispatcher.prototype.dispatch = function(request, response) {
  * unique to a resource. For example, in the path "/session/:sessionId",
  * ":sessionId" is a variable that can be changed to specify different sessions.
  * @param {!string} path The path that this resource is accessible from.
+ * @constructor
  */
-function Resource(path) {
+Resource = function(path) {
 
   /**
    * The request pattern that this resource is located at.
@@ -496,7 +503,7 @@ Resource.prototype.handle = function(request, response) {
   if (!this.isResourceFor(request.getPathInfo())) {
     throw Error('Request does not map to this resource:' +
         '\n  requestPath:  ' + request.getPathInfo() +
-        '\n  resourcePath: ' + this.path_);;
+        '\n  resourcePath: ' + this.path_);
   }
 
   var requestMethod = request.getMethod();

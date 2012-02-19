@@ -23,7 +23,6 @@ mozilla_extension(name = "webdriver",
     "extension/content/fx4driver.xul",
   ],
   components = [
-    "extension/components/dispatcher.js",
     "extension/components/driver-component.js",
     "extension/components/firefoxDriver.js",
     "extension/components/httpd.js",
