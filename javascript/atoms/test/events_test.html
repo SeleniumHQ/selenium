@@ -199,6 +199,29 @@ limitations under the License.
       }
     });
   }
+
+  function testMousePixelScrollFiresCorrectlyOnlyOnFirefox() {
+    var args = {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      wheelDelta: 15
+    };
+
+    if (goog.userAgent.GECKO) {
+      fireAndTest(bot.events.EventType.MOUSEPIXELSCROLL, args, function(event) {
+        assertEquals(15, event.getBrowserEvent().detail);
+      });
+    } else {
+      assertThrows(function() {
+        bot.events.fire(target, bot.events.EventType.MOUSEPIXELSCROLL, args);
+      });
+    }
+  }
 </script>
 </body>
 </html>

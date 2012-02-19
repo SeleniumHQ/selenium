@@ -208,6 +208,12 @@ goog.inherits(bot.events.MouseEventFactory_, bot.events.EventFactory_);
  * @inheritDoc
  */
 bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
+  // Only Gecko supports the mouse pixel scroll event.
+  if (!goog.userAgent.GECKO && this == bot.events.EventType.MOUSEPIXELSCROLL) {
+    throw new bot.Error(bot.ErrorCode.UNSUPPORTED_OPERATION,
+        'Browser does not support a mouse pixel scroll event.');
+  }
+
   var args = (/** @type {!bot.events.MouseArgs} */ opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var event;
@@ -265,13 +271,13 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
   } else {
     var view = goog.dom.getWindow(doc);
     event = doc.createEvent('MouseEvents');
+    var detail = 1;
 
     // All browser but Firefox provide the wheelDelta value in the event.
     // Firefox provides the scroll amount in the detail field, where it has the
     // opposite polarity of the wheelDelta (upward scroll is negative) and is a
     // factor of 40 less than the wheelDelta value. Opera provides both values.
     // The wheelDelta value is normally some multiple of 40.
-    var detail = 1;
     if (this == bot.events.EventType.MOUSEWHEEL) {
       if (!goog.userAgent.GECKO) {
         event.wheelDelta = args.wheelDelta;
@@ -279,6 +285,12 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
       if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
         detail = args.wheelDelta / -40;
       }
+    }
+
+    // Only Gecko supports a mouse pixel scroll event, so we use it as the
+    // "standard" and pass it along as is as the "detail" of the event.
+    if (goog.userAgent.GECKO && this == bot.events.EventType.MOUSEPIXELSCROLL) {
+      detail = args.wheelDelta;
     }
 
     event.initMouseEvent(this.type_, this.bubbles_, this.cancelable_, view,
@@ -486,6 +498,8 @@ bot.events.EventType = {
   MOUSEUP: new bot.events.MouseEventFactory_('mouseup', true, true),
   MOUSEWHEEL: new bot.events.MouseEventFactory_(
       goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel', true, true),
+  MOUSEPIXELSCROLL: new bot.events.MouseEventFactory_(
+      'MozMousePixelScroll', true, true),
 
   // Keyboard events.
   KEYDOWN: new bot.events.KeyboardEventFactory_('keydown', true, true),
