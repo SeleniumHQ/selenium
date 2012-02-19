@@ -61,9 +61,10 @@ bot.action.checkShown_ = function(element) {
 
 
 /**
- * Throws an exception if an element is not interactable.
+ * Throws an exception if the given element cannot be interacted with.
  *
  * @param {!Element} element The element to check.
+ * @throws {bot.Error} If the element cannot be interacted with.
  * @see bot.dom.isInteractable.
  * @private
  */
@@ -77,12 +78,10 @@ bot.action.checkInteractable_ = function(element) {
 
 
 /**
- * Clears a textual form field.
- *
- * <p/>Throws an exception if the element is not shown, disabled, or not
- * editable.
+ * Clears the given {@code element} if it is a editable text field.
  *
  * @param {!Element} element The element to clear.
+ * @throws {bot.Error} If the element is not an editable text field.
  */
 bot.action.clear = function(element) {
   bot.action.checkInteractable_(element);
@@ -108,7 +107,7 @@ bot.action.clear = function(element) {
 
 /**
  * Focuses on the given element if it is not already the active element.
- * Delegates to {@link bot.Device.focusOnElement}
+ *
  * @param {!Element} element The element to focus on.
  */
 bot.action.focusOnElement = function(element) {
@@ -118,19 +117,20 @@ bot.action.focusOnElement = function(element) {
 
 
 /**
- * Types keys on an element.
+ * Types keys on the given {@code element} with a virtual keyboard.
  *
- * Callers can pass in either strings or members of bot.Keyboard.Key. If a
+ * <p>Callers can pass in either strings or members of bot.Keyboard.Key. If a
  * modifier key is provided, it is pressed but not released, until it is either
  * is listed again or the function ends.
  *
- * Example:
+ * <p>Example:
  *   bot.keys.type(element, 'ab', bot.Keyboard.Key.LEFT,
  *                 bot.Keyboard.Key.DELETE, bot.Keyboard.Key.SHIFT, 'cd');
  *
  * @param {!Element} element The element receiving the event.
  * @param {...(string|!bot.Keyboard.Key)} var_args Values to type on the
  *    element, either strings or members of bot.Keyboard.Key.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.type = function(element, var_args) {
   bot.action.checkShown_(element);
@@ -174,8 +174,11 @@ bot.action.type = function(element, var_args) {
 
 
 /**
- * Submits the form containing the given element. Note this function triggers
- * the submit action, but does not simulate user input (a click or key press).
+ * Submits the form containing the given {@code element}.
+ *
+ * <p>Note this function submits the form, but does not simulate user input
+ * (a click or key press).
+ *
  * @param {!Element} element The element to submit.
  * @deprecated Click on a submit button or type ENTER in a text box instead.
  */
@@ -190,27 +193,12 @@ bot.action.submit = function(element) {
 
 
 /**
- * Simulates a click sequence on the given {@code element}. A click sequence
- * is defined as the following events:
- * <ol>
- * <li>mouseover</li>
- * <li>mousemove</li>
- * <li>mousedown</li>
- * <li>blur[1]</li>
- * <li>focus[1]</li>
- * <li>mouseup</li>
- * <li>click</li>
- * </ol>
- *
- * <p/>[1] The "blur" and "focus" events are only generated if the {@code
- * element} does not already have focus. The blur event will be fired on the
- * currently focused element, and the focus event on the click target.
- *
- * <p/>Throws an exception if the element is not shown or is disabled.
+ * Clicks on the given {@code element} with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   target.
+ *   element.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.click = function(element, opt_coords) {
   var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
@@ -220,27 +208,12 @@ bot.action.click = function(element, opt_coords) {
 
 
 /**
- * Simulates a right click sequence on the given {@code element}. A click
- * sequence is defined as the following events:
- * <ol>
- * <li>mouseover</li>
- * <li>mousemove</li>
- * <li>mousedown</li>
- * <li>blur[1]</li>
- * <li>focus[1]</li>
- * <li>mouseup</li>
- * <li>contextmenu</li>
- * </ol>
- *
- * <p/>[1] The "blur" and "focus" events are only generated if the {@code
- * element} does not already have focus. The blur event will be fired on the
- * currently focused element, and the focus event on the click target.
- *
- * <p/>Throws an exception if the element is not shown or is disabled.
+ * Right-clicks on the given {@code element} with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   target.
+ *   element.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.rightClick = function(element, opt_coords) {
   var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
@@ -250,31 +223,12 @@ bot.action.rightClick = function(element, opt_coords) {
 
 
 /**
- * Simulates a double click sequence on the given {@code element}. A double
- * click sequence is defined as the following events:
- * <ol>
- * <li>mouseover</li>
- * <li>mousemove</li>
- * <li>mousedown</li>
- * <li>blur[1]</li>
- * <li>focus[1]</li>
- * <li>mouseup</li>
- * <li>click</li>
- * <li>mousedown</li>
- * <li>mouseup</li>
- * <li>click</li>
- * <li>doubleclick</li>
- * </ol>
- *
- * <p/>[1] The "blur" and "focus" events are only generated if the {@code
- * element} does not already have focus. The blur event will be fired on the
- * currently focused element, and the focus event on the click target.
- *
- * <p/>Throws an exception if the element is not shown or is disabled.
+ * Double-clicks on the given {@code element} with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
- *   target.
+ *   element.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.doubleClick = function(element, opt_coords) {
   var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
@@ -289,7 +243,7 @@ bot.action.doubleClick = function(element, opt_coords) {
 
 /**
  * A helper function which prepares the mouse for a click action. It checks if
- * the the element is shown, scrolls the element into few, sets the
+ * the the {@code element} is shown, scrolls the element into few, sets the
  * {@code opt_coords} if they are undefined, and moves the mouse to the right
  * position.
  *
@@ -329,7 +283,7 @@ bot.action.prepareMouseForClick_ = function(element, opt_coords) {
 
 
 /**
- * A helper function which triggers a mousePress and a mouseRelease event.
+ * A helper function which triggers a mouse press and mouse release.
  *
  * @param {!bot.Mouse} mouse The object which is used to trigger the mouse
  * events.
@@ -345,13 +299,14 @@ bot.action.pressAndReleaseButton_ = function(mouse, element, button) {
 
 
 /**
- * Drags the element by (dx, dy).
+ * Drags the given {@code element} by (dx, dy) with a virtual mouse.
  *
  * @param {!Element} element The element to drag.
  * @param {number} dx Increment in x coordinate.
  * @param {number} dy Increment in y coordinate.
  * @param {goog.math.Coordinate=} opt_coords Drag start position relative to the
  *   element.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.drag = function(element, dx, dy, opt_coords) {
   bot.action.checkShown_(element);
@@ -382,13 +337,12 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
 
 
 /**
- * Simulates a tap sequence on the given {@code element}.
- *
- * <p/>Throws an exception if the element is not shown or is disabled.
+ * Taps on the given {@code element} with a virtual touch screen.
  *
  * @param {!Element} element The element to tap.
  * @param {goog.math.Coordinate=} opt_coords Finger position relative to the
  *   target.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.tap = function(element, opt_coords) {
   bot.action.checkShown_(element);
@@ -405,13 +359,14 @@ bot.action.tap = function(element, opt_coords) {
 
 
 /**
- * A touch gesture that starts on the element followed by a (dx, dy) touchmove.
+ * Swipes the given {@code element} by (dx, dy) with a virtual touch screen.
  *
  * @param {!Element} element The element to swipe.
  * @param {number} dx Increment in x coordinate.
  * @param {number} dy Increment in y coordinate.
  * @param {goog.math.Coordinate=} opt_coords swipe start position relative to
  *   the element.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.swipe = function(element, dx, dy, opt_coords) {
   bot.action.checkInteractable_(element);
@@ -475,10 +430,11 @@ bot.action.scale_ = function(element, isZoom) {
 
 
 /**
- * A touch gesture that starts on the element followed by a pinching motion to
- * the center of the element.
+ * Pinches the given {@code element} (moves fingers inward to its center) with a
+ * virtual touch screen.
  *
  * @param {!Element} element The element to pinch.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.pinch = function(element) {
   bot.action.scale_(element, /* isZoom */ false);
@@ -486,10 +442,11 @@ bot.action.pinch = function(element) {
 
 
 /**
- * A touch gesture that starts on the element followed by a zoom motion away
- * from the center of the element.
+ * Zooms the given {@code element} (moves fingers outward to its edge) with a
+ * virtual touch screen.
  *
  * @param {!Element} element The element to zoom.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.zoom = function(element) {
   bot.action.scale_(element, /* isZoom */ true);
@@ -497,11 +454,13 @@ bot.action.zoom = function(element) {
 
 
 /**
- * A touch gesture that starts on the element followed by a rotation movement.
+ * Rotates the given {@code element} (moves fingers along a circular arc) with a
+ * virtual touch screen by the given rotation {@code angle}.
  *
  * @param {!Element} element The element to rotate.
  * @param {number} angle The degrees of rotation between -180 and 180.  A
  *   positve number indicates a clockwise rotation.
+ * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.rotate = function(element, angle) {
   bot.action.checkInteractable_(element);
@@ -585,8 +544,9 @@ bot.action.LegacyDevice_.findAncestorForm = function(element) {
 
 
 /**
- * Scrolls the element in to the current viewport. Aims to do the minimum
- * scrolling necessary, but prefers too much scrolling to too little.
+ * Scrolls the given {@code element} in to the current viewport. Aims to do the
+ * minimum scrolling necessary, but prefers too much scrolling to too little.
+ *
  * @param {!Element} element The element to scroll in to view.
  * @param {!goog.math.Coordinate=} opt_coords Offset relative to the top-left
  *     corner of the element, to ensure is scrolled in to view.
