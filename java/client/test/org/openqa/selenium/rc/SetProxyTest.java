@@ -105,8 +105,7 @@ public class SetProxyTest {
     if (!autoConfUrl.startsWith("file://")) {
       autoConfUrl = autoConfUrl.replace("file:/", "file://");
     }
-    System.out.println("autoConfUrl = " + autoConfUrl);
-    
+
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl(autoConfUrl);
 
