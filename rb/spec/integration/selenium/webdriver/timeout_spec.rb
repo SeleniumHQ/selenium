@@ -53,4 +53,11 @@ describe "Timeouts" do
     driver.find_elements(:class_name => "redbox").should be_empty
   end
 
+  compliant_on :browser => :firefox do
+    it "should be able to set the page load timeout" do
+      driver.manage.timeouts.page_load = 2
+      # TODO: actually test something
+    end
+  end
+
 end

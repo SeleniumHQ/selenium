@@ -24,6 +24,15 @@ module Selenium
         @bridge.setScriptTimeout Integer(seconds * 1000)
       end
 
+      #
+      # Sets the amount of time to wait for a page load to complete before throwing an error.
+      # If the timeout is negative, page loads can be indefinite.
+      #
+
+      def page_load=(seconds)
+        @bridge.setTimeout 'page load', Integer(seconds * 1000)
+      end
+
     end # Timeouts
   end # WebDriver
 end # Selenium

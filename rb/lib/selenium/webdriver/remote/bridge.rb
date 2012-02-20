@@ -111,6 +111,10 @@ module Selenium
           execute :setScriptTimeout, {}, :ms => milliseconds
         end
 
+        def setTimeout(type, milliseconds)
+          execute :setTimeout, {}, :type => type, :ms => milliseconds
+        end
+
         #
         # alerts
         #
