@@ -1,6 +1,7 @@
 package org.openqa.selenium.rc;
 
 import com.google.common.base.Throwables;
+import com.google.common.io.Files;
 
 import org.json.JSONObject;
 import org.junit.After;
@@ -16,6 +17,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.os.CommandLine;
@@ -25,6 +27,10 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
@@ -79,6 +85,39 @@ public class SetProxyTest {
 
     driver.get(pages.simpleTestPage);
     driver.quit();
+
+    assertTrue(instance.hasBeenCalled());
+  }
+
+  @Test
+  public void shouldAllowProxyToBeConfiguredAsAPac() throws IOException {
+    String pac = String.format(
+        "function FindProxyForURL(url, host) {\n" +
+        "  return 'PROXY http://%s:%d';\n" +
+        "}", new NetworkUtils().getPrivateLocalAddress(), instance.port);
+    File tempDir = new File(System.getProperty("java.io.tmpdir"));
+    TemporaryFilesystem tempFs = TemporaryFilesystem.getTmpFsBasedOn(tempDir);
+    File pacFile = new File(tempDir, "proxy.pac");
+    // Use the default platform charset because otherwise IE gets upset. Apparently.
+    Files.write(pac, pacFile, Charset.defaultCharset());
+
+    String autoConfUrl = pacFile.toURI().toString();
+    if (!autoConfUrl.startsWith("file://")) {
+      autoConfUrl = autoConfUrl.replace("file:/", "file://");
+    }
+    System.out.println("autoConfUrl = " + autoConfUrl);
+    
+    Proxy proxy = new Proxy();
+    proxy.setProxyAutoconfigUrl(autoConfUrl);
+
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(PROXY, proxy);
+
+    WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
+
+    driver.get(pages.simpleTestPage);
+    driver.quit();
+    tempFs.deleteTemporaryFiles();
 
     assertTrue(instance.hasBeenCalled());
   }
