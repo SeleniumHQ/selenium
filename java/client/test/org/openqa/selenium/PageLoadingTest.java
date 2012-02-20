@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -31,10 +33,14 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import java.util.concurrent.TimeUnit;
 
 public class PageLoadingTest extends AbstractDriverTestCase {
 
@@ -197,17 +203,42 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   public void testShouldNotWaitIndefinitelyIfAnExternalResourceFailsToLoad() {
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
+    Capabilities current = ((HasCapabilities) driver).getCapabilities();
+    DesiredCapabilities caps = new DesiredCapabilities(current);
+    caps.setCapability("webdriver.loading.strategy", "unstable");
+    WebDriver testDriver = new WebDriverBuilder().setCapabilities(caps).get();
+
     long start = System.currentTimeMillis();
-    driver.get(slowPage);
-    System.out.println("Proceeding: " + (System.currentTimeMillis() - start));
+    testDriver.get(slowPage);
     // We discard the element, but want a check to make sure the GET actually
     // completed.
-    driver.findElement(By.id("peas"));
-    long end = System.currentTimeMillis();
+    testDriver.findElement(By.id("peas"));
 
+    long end = System.currentTimeMillis();
     // The slow loading resource on that page takes 6 seconds to return. If we
     // waited for it, our load time should be over 6 seconds.
     long duration = end - start;
+
+    testDriver.quit(); // Clean up before making assertions
+
     assertTrue("Took too long to load page: " + duration, duration < 5*1000);
+  }
+
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA}, reason = "Not implemented")
+  @NeedsLocalEnvironment
+  public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
+    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+
+    try {
+      // Get the sleeping servlet with a pause of 5 seconds
+      String slowPage = appServer.whereIs("sleep?time=5");
+      
+      driver.get(slowPage);
+      
+      fail("I should have timed out");
+    } catch (TimeoutException expected) {
+    } finally {
+      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+    }
   }
 }

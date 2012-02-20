@@ -102,6 +102,14 @@ wdSession.prototype.inputSpeed_ = 1;
 wdSession.prototype.implicitWait_ = 0;
 
 /**
+ * The amount of time in milliseconds to wait for a page to load before timing
+ * out. A value less than 0 means that waits will be indefinite.
+ * @type {number}
+ * @private
+ */
+wdSession.prototype.pageLoadTimeout_ = -1;
+
+/**
  * Current position of the mouse cursor, in X,Y coordinates.
  */
 wdSession.prototype.mousePosition_ = {
@@ -266,6 +274,24 @@ wdSession.prototype.setImplicitWait = function(wait) {
   this.implicitWait_ = Math.max(wait, 0);
 };
 
+
+/**
+ * @return {number} The current timeout for page loads.
+ */
+wdSession.prototype.getPageLoadTimeout = function() {
+  return this.pageLoadTimeout_;
+};
+
+
+/**
+ * Set the timeout allowed before a page load throws an exception. Setting to a
+ * negative number makes the timeout indefinite.
+ *
+ * @param {number} timeout The new timeout.
+ */
+wdSession.prototype.setPageLoadTimeout = function(timeout) {
+  this.pageLoadTimeout_ = timeout;
+};
 
 /**
  * @return {number} the amount of time, in milliseconds, that asynchronous

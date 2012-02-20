@@ -90,3 +90,14 @@ fxdriver.Timer.prototype.runWhenTrue = function(condition, callback, timeout, on
   };
   timed();
 };
+
+
+/**
+ * Allow an existing timer to be cancelled. Calling without a timer having been
+ * started is a no-op.
+ */
+fxdriver.Timer.prototype.cancel = function() {
+  if (this.timer) {
+    this.timer.cancel();
+  }
+};

@@ -99,6 +99,7 @@ public class ErrorCodes {
       case XPATH_LOOKUP_ERROR:
         return XPathLookupException.class;
       case ASYNC_SCRIPT_TIMEOUT:
+      case TIMEOUT:
         return TimeoutException.class;
       case INVALID_ELEMENT_COORDINATES:
         return InvalidCoordinatesException.class;

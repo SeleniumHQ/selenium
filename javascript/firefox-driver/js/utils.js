@@ -1174,7 +1174,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   var browser = respond.session.getBrowser();
   var currentWindow = respond.session.getWindow();
 
-  var clickListener = new WebLoadingListener(browser, function(webProgress) {
+  var clickListener = new WebLoadingListener(browser, function(timedOut) {
     fxdriver.Logger.dumpn('New page loading.');
     // currentWindow.closed is only reliable for top-level windows,
     // not frames/iframes
@@ -1187,8 +1187,12 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
                            'frame to new top window.');
      respond.session.setWindow(browser.contentWindow);
     }
+    if (timedOut) {
+      respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
+          'Timed out waiting for page load.'));
+    }
     respond.send();
-  }, currentWindow);
+  }, respond.session.getPageLoadTimeout(), currentWindow);
 
   var contentWindow = browser.contentWindow;
 

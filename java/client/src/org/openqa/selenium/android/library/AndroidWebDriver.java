@@ -1112,6 +1112,10 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
       //asyncScriptTimeout = TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
       return this;
     }
+
+    public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
+      throw new UnsupportedOperationException("pageLoadTimeout");
+    }
   }
 
   public Location location() {

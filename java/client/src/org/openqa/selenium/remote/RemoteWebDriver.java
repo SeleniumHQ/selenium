@@ -585,6 +585,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
             ImmutableMap.of("ms", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
       }
+
+      public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
+        execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
+            "type", "page load",
+            "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+        return this;
+      }
     } // timeouts class.
 
     @Beta

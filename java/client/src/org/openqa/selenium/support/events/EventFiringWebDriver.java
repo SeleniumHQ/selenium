@@ -548,6 +548,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       timeouts.setScriptTimeout(time, unit);
       return this;
     }
+
+    public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
+      timeouts.pageLoadTimeout(time, unit);
+      return this;
+    }
   }
 
   private class EventFiringTargetLocator implements TargetLocator {

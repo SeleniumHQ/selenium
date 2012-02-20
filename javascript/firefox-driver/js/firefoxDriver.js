@@ -104,13 +104,17 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   }
 
   if (loadEventExpected) {
-    new WebLoadingListener(respond.session.getBrowser(), function() {
-      var responseText = "";
+    new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
       // Focus on the top window.
       respond.session.setWindow(respond.session.getBrowser().contentWindow);
-      respond.value = responseText;
-      respond.send();
-    }, respond.session.getWindow());
+      if (timedOut) {
+        respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
+            'Timed out waiting for page load.'));
+      } else {
+        respond.value = "";
+        respond.send();
+      }
+    }, respond.session.getPageLoadTimeout(), respond.session.getWindow());
   }
 
   respond.session.getBrowser().loadURI(url);
@@ -647,11 +651,16 @@ FirefoxDriver.prototype.refresh = function(respond) {
   var browser = respond.session.getBrowser();
   browser.contentWindow.location.reload(true);
   // Wait for the reload to finish before sending the response.
-  new WebLoadingListener(respond.session.getBrowser(), function() {
+  new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
     // Reset to the top window.
     respond.session.setWindow(browser.contentWindow);
-    respond.send();
-  });
+    if (timedOut) {
+      respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
+          'Timed out waiting for page load.'));
+    } else {
+      respond.send();
+    }
+  }, respond.session.getPageLoadTimeout());
 };
 
 
@@ -798,6 +807,10 @@ FirefoxDriver.prototype.setTimeout = function(respond, parameters) {
   switch (parameters.type) {
     case 'implicit':
       respond.session.setImplicitWait(parameters.ms);
+      break;
+
+    case 'page load':
+      respond.session.setPageLoadTimeout(parameters.ms);
       break;
 
     case 'script':

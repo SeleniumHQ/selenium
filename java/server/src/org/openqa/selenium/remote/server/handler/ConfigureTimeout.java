@@ -42,6 +42,8 @@ public class ConfigureTimeout extends WebDriverHandler implements JsonParameters
   public ResultType call() throws Exception {
     if ("implicit".equals(type)) {
       getDriver().manage().timeouts().implicitlyWait(millis, TimeUnit.MILLISECONDS);
+    } else if ("page load".equals(type)) {
+      getDriver().manage().timeouts().pageLoadTimeout(millis, TimeUnit.MILLISECONDS);
     } else if ("script".equals(type)) {
       getDriver().manage().timeouts().setScriptTimeout(millis, TimeUnit.MILLISECONDS);
     } else {

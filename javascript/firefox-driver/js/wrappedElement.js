@@ -333,9 +333,14 @@ WebElement.submitElement = function(respond, parameters) {
     }
     if (element.tagName && element.tagName.toLowerCase() == "form") {
       if (Utils.fireHtmlEvent(element, "submit")) {
-        new WebLoadingListener(respond.session.getBrowser(), function() {
+        new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
+          if (timedOut) {
+            respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
+                'Timed out waiting for page load.'));
+          } else {
           respond.send();
-        }, respond.session.getWindow());
+          }
+        }, respond.session.getPageLoadTimeout(), respond.session.getWindow());
         element.submit();
         return;
       } else {

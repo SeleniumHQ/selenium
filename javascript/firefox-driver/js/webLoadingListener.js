@@ -18,6 +18,8 @@
 
 goog.provide('WebLoadingListener');
 
+goog.require('fxdriver.Timer');
+
 
 var STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
 
@@ -68,7 +70,7 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
       if (bot.userAgent.isProductVersion('4')) {
         WebLoadingListener.removeListener(this.browser, this);
       }
-      this.onComplete(webProgress);
+      this.onComplete();
     }
   }
   return 0;
@@ -111,7 +113,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
     if (bot.userAgent.isProductVersion('4')) {
       WebLoadingListener.removeListener(this.browser, listener);
     }
-    this.onComplete(webProgress || this.browserProgress);
+    this.onComplete();
   }
 
   return 0;
@@ -129,10 +131,23 @@ function buildHandler(browser, toCall, opt_window) {
   return new PatientListener(browser, toCall, opt_window);
 }
 
-WebLoadingListener = function(browser, toCall, opt_window) {
-  this.handler = buildHandler(browser, toCall, opt_window);
+
+WebLoadingListener = function(browser, toCall, timeout, opt_window) {
+  var timer = new fxdriver.Timer();
+  var func = function(timedOut) { timer.cancel(); toCall(timedOut); };
+
+  this.handler = buildHandler(browser, func, opt_window);
   browser.addProgressListener(this.handler);
+  var handler = this.handler;
+  if (timeout > 0) {
+    this.handler.timer = timer; // Keep a reference to avoid the GC
+    timer.setTimeout(function() {
+      func(true);
+      WebLoadingListener.removeListener(browser, handler);
+    }, timeout);
+  }
 };
+
 
 WebLoadingListener.removeListener = function(browser, listener) {
   browser.removeProgressListener(listener.handler);

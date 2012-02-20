@@ -1205,6 +1205,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       HtmlUnitDriver.this.scriptTimeout = TimeUnit.MILLISECONDS.convert(time, unit);
       return this;
     }
+
+    public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
+      throw new UnsupportedOperationException("pageLoadTimeout");
+    }
   }
 
   public WebElement findElementByPartialLinkText(String using) {

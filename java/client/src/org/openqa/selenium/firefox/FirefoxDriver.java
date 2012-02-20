@@ -154,7 +154,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
     return new RemoteWebDriverOptions() {
       @Override
       public Timeouts timeouts() {
-        return new Timeouts() {
+        return new RemoteTimeouts() {
           public Timeouts implicitlyWait(long time, TimeUnit unit) {
             execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
                 "type", "implicit",

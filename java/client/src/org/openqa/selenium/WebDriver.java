@@ -289,6 +289,16 @@ public interface WebDriver extends SearchContext {
      * @see JavascriptExecutor#executeAsyncScript(String, Object...)
      */
     Timeouts setScriptTimeout(long time, TimeUnit unit);
+
+    /**
+     * Sets the amount of time to wait for a page load to complete before throwing an error.
+     * If the timeout is negative, page loads can be indefinite.
+     *
+     * @param time The timeout value.
+     * @param unit The unit of time.
+     * @return
+     */
+    Timeouts pageLoadTimeout(long time, TimeUnit unit);
   }
 
   /**
