@@ -155,14 +155,15 @@ module Selenium
       # Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
       # margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
       # in accordance with the DOM CSS2 specification - you should directly access the longhand
-      # properties (e.g. background-color) to access the desired values. 
-      # 
+      # properties (e.g. background-color) to access the desired values.
+      #
       # @see http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration
-      # 
+      #
 
-      def style(prop)
+      def css_value(prop)
         bridge.getElementValueOfCssProperty @id, prop
       end
+      alias_method :style, :css_value
 
       #
       # Get the location of this element.

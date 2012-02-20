@@ -137,9 +137,12 @@ describe "Element" do
   not_compliant_on :browser => [:android] do # android returns 'green'
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
-      style = driver.find_element(:id, "green-parent").style("background-color")
+      element = driver.find_element(:id, "green-parent")
 
-      ["rgb(0, 128, 0)", "#008000"].should include(style)
+      style1 = element.css_value("background-color")
+      style2 = element.style("background-color") # backwards compatibility
+
+      ["rgb(0, 128, 0)", "#008000"].should include(style1, style2)
     end
   end
 
