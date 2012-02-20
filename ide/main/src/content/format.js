@@ -305,7 +305,7 @@ Format.prototype.saveSuiteAsNew = function(testSuite, exportTest) {
     
     try {
         var file = null;
-        file = showFilePicker(window, Editor.getString("exportTestSuitAs"),
+        file = showFilePicker(window, Editor.getString("exportTestSuiteAs"),
             Components.interfaces.nsIFilePicker.modeSave,
             TestSuite.TEST_SUITE_DIRECTORY_PREF,
             function(fp) {return fp.file;});
