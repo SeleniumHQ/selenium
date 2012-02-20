@@ -65,6 +65,9 @@ public class Type extends SeleneseCommand<Void> {
     }
 
     if (!"input".equals(tagName.toLowerCase())) {
+      if (driver instanceof JavascriptExecutor) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value = '';", element);
+      }
       element.sendKeys(valueToUse);
       return null;
     }
