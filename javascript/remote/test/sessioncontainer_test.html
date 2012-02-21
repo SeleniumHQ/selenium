@@ -41,7 +41,11 @@ limitations under the License.
   var container;
 
   function setUp() {
-    container = new remote.ui.SessionContainer();
+    container = new remote.ui.SessionContainer([
+        'chrome',
+        'firefox',
+        'internet explorer'
+    ]);
     container.render(document.getElementById('renderTarget'));
   }
 
@@ -253,6 +257,16 @@ limitations under the License.
     assertSessions(SESSIONS[1], SESSIONS[2]);
   }
 
+  function testRemove_removePendingTab() {
+    container.addPendingTab_();
+    assertEquals(1, container.pendingTabs_.length);
+    assertEquals(1, container.tabBar_.getChildCount());
+
+    container.removeSession(null);
+    assertEquals(0, container.pendingTabs_.length);
+    assertEquals(0, container.tabBar_.getChildCount());
+  }
+
   function testRefreshButton() {
     var onRefresh = goog.testing.recordFunction();
     goog.events.listen(container, remote.ui.Event.Type.REFRESH,
@@ -288,31 +302,6 @@ limitations under the License.
         SESSIONS[0], session);
   }
 
-  function testAllowsLoadEventToBubble() {
-    container.addSession(SESSIONS[0]);
-
-    var onViewLoad = goog.testing.recordFunction();
-    goog.events.listen(container.view_, remote.ui.Event.Type.LOAD,
-        onViewLoad);
-
-    bot.action.click(container.view_.loadScriptButton_.getElement());
-    bot.action.type(container.view_.openScriptDialog_.input_.getElement(),
-        'http://www.google.com');
-    bot.action.click(
-        container.view_.openScriptDialog_.getButtonSet().getButton('ok'));
-    assertEquals(1, onViewLoad.getCallCount());
-
-    var args = onViewLoad.getLastCall().getArguments();
-    assertEquals(1, args.length);
-    assertEquals('http://www.google.com', args[0].data);
-
-    var session = container.getSelectedSession();
-    assertNotNull('No session selected?', session);
-    assertEquals(
-        'Expected ' + SESSIONS[0].getId() + ', but was ' + session.getId(),
-        SESSIONS[0], session);
-  }
-
   function testCreateButton() {
     var onCreate = goog.testing.recordFunction();
     goog.events.listen(container, remote.ui.Event.Type.CREATE, onCreate);
@@ -329,7 +318,7 @@ limitations under the License.
     assertTrue(container.createSessionDialog_.isVisible());
     assertEquals(0, onCreate.getCallCount());
 
-    container.createSessionDialog_.browserSelect_.selectedIndex = 3;
+    container.createSessionDialog_.browserSelect_.selectedIndex = 2;
     bot.action.click(
         container.createSessionDialog_.getButtonSet().getButton('ok'));
     assertEquals(1, onCreate.getCallCount());

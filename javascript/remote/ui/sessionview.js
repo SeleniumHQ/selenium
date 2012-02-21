@@ -23,10 +23,10 @@ goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Button');
 goog.require('goog.ui.Dialog');
+goog.require('remote.ui.ControlBlock');
 goog.require('remote.ui.Event');
 goog.require('remote.ui.JsonTooltip');
 goog.require('remote.ui.OpenScriptDialog');
-goog.require('remote.ui.createControlBlock');
 
 
 /**
@@ -36,28 +36,13 @@ goog.require('remote.ui.createControlBlock');
  */
 remote.ui.SessionView = function() {
   goog.base(this);
-
+  
   /**
-   * Dialog used to load a script for the current session.
-   * @type {!remote.ui.OpenScriptDialog}
+   * @type {!remote.ui.ControlBlock}
    * @private
    */
-  this.openScriptDialog_ = new remote.ui.OpenScriptDialog();
-
-  goog.events.listen(this.openScriptDialog_, goog.ui.Component.EventType.ACTION,
-      this.onLoadScript_, false, this);
-
-  /**
-   * Button for opening the load script dialog.
-   * @type {!goog.ui.Button}
-   * @private
-   */
-  this.loadScriptButton_ = new goog.ui.Button('Load Script');
-
-  this.addChild(this.loadScriptButton_);
-  goog.events.listen(this.loadScriptButton_, goog.ui.Component.EventType.ACTION,
-      goog.bind(this.openScriptDialog_.setVisible, this.openScriptDialog_,
-          true));
+  this.controlBlock_ = new remote.ui.ControlBlock();
+  this.addChild(this.controlBlock_);
 
   /**
    * A basic confirmation dialog.
@@ -149,17 +134,15 @@ remote.ui.SessionView.prototype.todoBlock_;
 /** @override */
 remote.ui.SessionView.prototype.disposeInternal = function() {
   this.capabilitiesTooltip_.dispose();
-  this.openScriptDialog_.dispose();
   this.confirmDialog_.dispose();
 
+  delete this.controlBlock_;
   delete this.emptyViewElement_;
   delete this.viewElement_;
   delete this.sessionIdSpan_;
-  delete this.openScriptDialog_;
   delete this.confirmDialog_;
   delete this.capabilitiesTooltip_;
   delete this.screenshotButton_;
-  delete this.loadScriptButton_;
   delete this.deleteSessionButton_;
   delete this.todoBlock_;
 
@@ -170,8 +153,8 @@ remote.ui.SessionView.prototype.disposeInternal = function() {
 /** @override */
 remote.ui.SessionView.prototype.createDom = function() {
   this.screenshotButton_.createDom();
-  this.loadScriptButton_.createDom();
   this.deleteSessionButton_.createDom();
+  this.controlBlock_.createDom();
 
   var capabilities;
   var dom = this.getDomHelper();
@@ -184,16 +167,16 @@ remote.ui.SessionView.prototype.createDom = function() {
   // TODO(jleyba): What more to add?
   this.todoBlock_ = dom.createDom(goog.dom.TagName.DIV, 'todo', '\xa0');
   this.todoBlock_.disabled = true;
+  
+  this.controlBlock_.addElement(this.sessionIdSpan_);
+  this.controlBlock_.addElement(
+      capabilities = dom.createDom(goog.dom.TagName.SPAN,
+        'session-capabilities', 'Capabilities'));
+  this.controlBlock_.addElement(this.screenshotButton_.getElement());
+  this.controlBlock_.addElement(this.deleteSessionButton_.getElement());
 
   this.viewElement_ = dom.createDom(goog.dom.TagName.DIV, 'goog-tab-content',
-      remote.ui.createControlBlock(dom,
-          this.sessionIdSpan_,
-          capabilities = dom.createDom(goog.dom.TagName.SPAN,
-              'session-capabilities', 'Capabilities'),
-          this.screenshotButton_.getElement(),
-          this.loadScriptButton_.getElement(),
-          this.deleteSessionButton_.getElement()),
-      this.todoBlock_);
+      this.controlBlock_.getElement(), this.todoBlock_);
 
   var div = dom.createDom(goog.dom.TagName.DIV, null,
       this.emptyViewElement_,
@@ -203,7 +186,6 @@ remote.ui.SessionView.prototype.createDom = function() {
 
   this.update(null);
   this.capabilitiesTooltip_.attach(capabilities);
-
 };
 
 
@@ -213,6 +195,14 @@ remote.ui.SessionView.prototype.createDom = function() {
 remote.ui.SessionView.prototype.setHeight = function(height) {
   goog.style.setStyle(this.emptyViewElement_, 'height', height + 'px');
   goog.style.setStyle(this.viewElement_, 'height', height + 'px');
+};
+
+
+/**
+ * @param {!Element} element The element to add.
+ */
+remote.ui.SessionView.prototype.addControlElement = function(element) {
+  this.controlBlock_.addElement(element);
 };
 
 
@@ -236,19 +226,6 @@ remote.ui.SessionView.prototype.update = function(session) {
       this.screenshotButton_.setTooltip('');
     }
   }
-};
-
-
-/**
- * Callback for when the user has made a selection in a
- * {@link remote.ui.OpenScriptDialog}. Dispatches a
- * {@link remote.ui.Event.Type.LOAD} event with the URL ot load as data.
- * @private
- */
-remote.ui.SessionView.prototype.onLoadScript_ = function() {
-  var event = new remote.ui.Event(remote.ui.Event.Type.LOAD, this,
-      this.openScriptDialog_.getUserSelection());
-  this.dispatchEvent(event);
 };
 
 

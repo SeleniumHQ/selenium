@@ -78,25 +78,6 @@ limitations under the License.
     assertFalse(bot.dom.isShown(view.viewElement_));
   }
 
-  function testHandlesLoadScriptAction() {
-    var onLoadScript = goog.testing.recordFunction();
-    goog.events.listen(view, remote.ui.Event.Type.LOAD,
-        onLoadScript);
-
-    viewSession(SESSION);
-    bot.action.click(view.loadScriptButton_.getElement());
-    assertTrue(view.openScriptDialog_.isVisible());
-    bot.action.type(view.openScriptDialog_.input_.getElement(), 'my script',
-        bot.Keyboard.Keys.ENTER);
-    assertFalse(view.openScriptDialog_.isVisible());
-    assertEquals(1, onLoadScript.getCallCount());
-
-    var lastCall = onLoadScript.getLastCall();
-    var args = lastCall.getArguments();
-    assertEquals(1, args.length);
-    assertEquals('my script', args[0].data);
-  }
-
   function testDoesNotFireDeleteEventIfActionCanceled() {
     var onDelete = goog.testing.recordFunction();
     goog.events.listen(view, remote.ui.Event.Type.DELETE, onDelete);

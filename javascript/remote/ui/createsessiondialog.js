@@ -15,6 +15,7 @@
 
 goog.provide('remote.ui.CreateSessionDialog');
 
+goog.require('goog.array');
 goog.require('goog.dom.TagName');
 goog.require('goog.ui.Component.EventType');
 goog.require('remote.ui.ActionDialog');
@@ -22,11 +23,20 @@ goog.require('remote.ui.ActionDialog');
 
 /**
  * Dialog used to configure a new session request.
+ * @param {!Array.<string>} browsers List of possible browsers to create
+ *     sessions for.
  * @constructor
  * @extends {remote.ui.ActionDialog}
  */
-remote.ui.CreateSessionDialog = function() {
+remote.ui.CreateSessionDialog = function(browsers) {
   goog.base(this, 'Create a New Session');
+
+  /**
+   * @type {!Array.<string>}
+   * @private
+   */
+  this.browsers_ = browsers;
+
   goog.events.listen(this, goog.ui.Component.EventType.SHOW,
       this.onShow_, false, this);
 };
@@ -44,6 +54,7 @@ remote.ui.CreateSessionDialog.prototype.browserSelect_ = null;
 
 /** @override */
 remote.ui.CreateSessionDialog.prototype.disposeInternal = function() {
+  delete this.browsers_;
   delete this.browserSelect_;
   goog.base(this, 'disposeInternal');
 };
@@ -52,16 +63,13 @@ remote.ui.CreateSessionDialog.prototype.disposeInternal = function() {
 /** @override */
 remote.ui.CreateSessionDialog.prototype.createContentDom = function() {
   var dom = this.getDomHelper();
+  this.browserSelect_ = dom.createDom(goog.dom.TagName.SELECT, null,
+      createOption(''));
+  goog.array.forEach(this.browsers_, function(browser) {
+    goog.dom.appendChild(this.browserSelect_, createOption(browser));
+  }, this);
   return dom.createDom(goog.dom.TagName.LABEL, null,
-      'Browser:\xa0',
-      this.browserSelect_ = dom.createDom(goog.dom.TagName.SELECT, null,
-          createOption(''),
-          createOption('android'),
-          createOption('chrome'),
-          createOption('firefox'),
-          createOption('internet explorer'),
-          createOption('iphone'),
-          createOption('opera')));
+      'Browser:\xa0', this.browserSelect_);
 
   function createOption(value) {
     return dom.createDom(goog.dom.TagName.OPTION, {'value': value},

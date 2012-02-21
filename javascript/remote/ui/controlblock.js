@@ -13,11 +13,79 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+goog.provide('remote.ui.ControlBlock');
 goog.provide('remote.ui.createControlBlock');
+goog.provide('remote.ui.updateControlBlock');
 
+goog.require('goog.ui.Component');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+
+
+/**
+ * Organizes a horizontal collection of elements.
+ * @constructor
+ * @extends {goog.ui.Component}
+ */
+remote.ui.ControlBlock = function() {
+  goog.base(this);
+};
+goog.inherits(remote.ui.ControlBlock, goog.ui.Component);
+
+
+/**
+ * @type {string}
+ * @private
+ */
+remote.ui.ControlBlock.SEPARATOR_TEXT_ = '\xa0\xa0|\xa0\xa0';
+
+
+/**
+ * @type {Array.<!Element>}
+ * @private
+ */
+remote.ui.ControlBlock.prototype.elementsToAdd_ = null;
+
+
+/** @override */
+remote.ui.ControlBlock.prototype.disposeInternal = function() {
+  delete this.elementsToAdd_;
+
+  goog.base(this, 'disposeInternal');
+};
+
+
+/** @override */
+remote.ui.ControlBlock.prototype.createDom = function() {
+  var dom = this.getDomHelper();
+  var div = dom.createDom(goog.dom.TagName.DIV, 'control-block');
+  this.setElementInternal(div);
+  
+  if (this.elementsToAdd_) {
+    goog.array.forEach(this.elementsToAdd_, this.addElement, this);
+    this.elementsToAdd_ = null;
+  }
+};
+
+
+/** @param {!Element} element The element to add. */
+remote.ui.ControlBlock.prototype.addElement = function(element) {
+  var parent = this.getElement();
+  if (!parent) {
+    if (!this.elementsToAdd_) {
+      this.elementsToAdd_ = [];
+    }
+    this.elementsToAdd_.push(element);
+    return;
+  }
+
+  if (parent.childNodes.length) {
+    goog.dom.appendChild(parent, this.getDomHelper().createTextNode(
+        remote.ui.ControlBlock.SEPARATOR_TEXT_));
+  }
+  goog.dom.appendChild(parent, element);
+};
 
 
 /**
@@ -29,12 +97,25 @@ goog.require('goog.dom.TagName');
  */
 remote.ui.createControlBlock = function(domHelper, var_args) {
   var div = domHelper.createDom(goog.dom.TagName.DIV, 'control-block');
-  var elements = goog.array.slice(arguments, 1);
+  var args = goog.array.slice(arguments, 0);
+  goog.array.splice(args, 0, 0, div);
+  remote.ui.updateControlBlock.apply(null, args);
+  return div;
+};
+
+
+/**
+ * Updates a control block by adding additional children.
+ * @param {!Element} div The control block to update.
+ * @param {!goog.dom.DomHelper} domHelper DOM helper to use.
+ * @param {...Element} var_args Elements to insert into the block.
+ */
+remote.ui.updateControlBlock = function(div, domHelper, var_args) {
+  var elements = goog.array.slice(arguments, 2);
   goog.array.forEach(elements, function(element, i) {
     goog.dom.appendChild(div, element);
     if (i + 1 < elements.length) {
       goog.dom.appendChild(div, domHelper.createTextNode('\xa0\xa0|\xa0\xa0'));
     }
   });
-  return div;
 };

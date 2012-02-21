@@ -26,20 +26,22 @@ goog.require('goog.style');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Tab');
 goog.require('goog.ui.TabBar');
+goog.require('remote.ui.ControlBlock');
 goog.require('remote.ui.CreateSessionDialog');
 goog.require('remote.ui.Event');
 goog.require('remote.ui.FieldSet');
 goog.require('remote.ui.SessionView');
-goog.require('remote.ui.createControlBlock');
 
 
 /**
  * A fieldset for displaying information about the active sessions on the
  * server.
+ * @param {!Array.<string>} browsers List of potential browsers for new
+ *     sessions.
  * @constructor
  * @extends {remote.ui.FieldSet}
  */
-remote.ui.SessionContainer = function() {
+remote.ui.SessionContainer = function(browsers) {
   goog.base(this, 'Sessions');
 
   /**
@@ -61,7 +63,7 @@ remote.ui.SessionContainer = function() {
    * @type {!remote.ui.CreateSessionDialog}
    * @private
    */
-  this.createSessionDialog_ = new remote.ui.CreateSessionDialog();
+  this.createSessionDialog_ = new remote.ui.CreateSessionDialog(browsers);
 
   /**
    * Button that opens the {@link remote.ui.CreateSessionDialog}.
@@ -80,12 +82,11 @@ remote.ui.SessionContainer = function() {
       goog.dom.TagName.BUTTON, null, 'Refresh Sessions');
 
   /**
-   * List of buttons belonging to this component with event listeners that must
-   * be removed upon disposal.
-   * @type {!Array.<!Element>}
-   */
-  this.buttons_ = [];
-
+   * @type {!remote.ui.ControlBlock}
+   * @private
+   */      
+  this.controlBlock_ = new remote.ui.ControlBlock();
+  
   /**
    * Tracks any tabs for pending new sessions that are descendants of this
    * component.
@@ -103,7 +104,12 @@ remote.ui.SessionContainer = function() {
 
   this.addChild(this.tabBar_);
   this.addChild(this.view_);
+  this.addChild(this.controlBlock_);
+
   this.setEnabled(false);
+
+  this.controlBlock_.addElement(this.createButton_);
+  this.controlBlock_.addElement(this.refreshButton_);
 
   goog.events.listen(this.createButton_, goog.events.EventType.CLICK,
       goog.bind(this.createSessionDialog_.setVisible, this.createSessionDialog_,
@@ -129,8 +135,8 @@ remote.ui.SessionContainer.prototype.disposeInternal = function() {
   delete this.createSessionDialog_;
   delete this.tabBar_;
   delete this.view_;
+  delete this.controlBlock_;
   delete this.pendingTabs_;
-  delete this.buttons_;
   delete this.updateKey_;
 
   goog.base(this, 'disposeInternal');
@@ -141,12 +147,12 @@ remote.ui.SessionContainer.prototype.disposeInternal = function() {
 remote.ui.SessionContainer.prototype.createFieldSetDom = function() {
   this.tabBar_.createDom();
   this.view_.createDom();
+  this.controlBlock_.createDom();
 
   var dom = this.getDomHelper();
   return dom.createDom(goog.dom.TagName.DIV,
       'session-container',
-      remote.ui.createControlBlock(dom,
-          this.createButton_, this.refreshButton_),
+      this.controlBlock_.getElement(),
       this.tabBar_.getElement(),
       this.view_.getElement());
 };
@@ -163,6 +169,14 @@ remote.ui.SessionContainer.prototype.setEnabled = function(enabled) {
     this.createButton_.setAttribute('disabled', 'disabled');
     this.refreshButton_.setAttribute('disabled', 'disabled');
   }
+};
+
+
+/**
+ * @param {!Element} element The element to add.
+ */
+remote.ui.SessionContainer.prototype.addControlElement = function(element) {
+  this.view_.addControlElement(element);
 };
 
 
@@ -227,6 +241,19 @@ remote.ui.SessionContainer.prototype.addPendingTab_ = function() {
 
 
 /**
+ * Removes a "pending" session tab.
+ * @private
+ */
+remote.ui.SessionContainer.prototype.removePendingTab_ = function() {
+  var tab = this.pendingTabs_.shift();
+  if (tab) {
+    this.tabBar_.removeChild(tab, true);
+    this.adjustSessionViewSize_();
+  }
+};
+
+
+/**
  * Adds a new session to this container. The new session will be selected for
  * viewing.
  * @param {!webdriver.Session} session The new session.
@@ -251,9 +278,15 @@ remote.ui.SessionContainer.prototype.addSession = function(session) {
 
 /**
  * Removes a session from this container.
- * @param {!webdriver.Session} session The session to remove.
+ * @param {webdriver.Session} session The session to remove, or {@code null} if
+ *     a pending tab should be removed.
  */
 remote.ui.SessionContainer.prototype.removeSession = function(session) {
+  if (!session) {
+    this.removePendingTab_();
+    return;
+  }
+
   var selectedTab = this.tabBar_.getSelectedTab();
   var tabToRemove;
   var n = this.tabBar_.getChildCount();

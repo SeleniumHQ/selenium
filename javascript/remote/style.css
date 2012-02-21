@@ -94,6 +94,7 @@ fieldset,
 
 .session-capabilities:hover { text-decoration: underline; }
 
+.goog-modalpopup-bg,
 .modal-dialog-bg {
   background: #555;
   position: absolute;

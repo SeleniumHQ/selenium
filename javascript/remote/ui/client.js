@@ -27,6 +27,7 @@ goog.require('remote.ui.Event.Type');
 goog.require('remote.ui.ServerInfo');
 goog.require('remote.ui.SessionContainer');
 goog.require('remote.ui.ScreenshotDialog');
+goog.require('remote.ui.WebDriverScriptButton');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Session');
@@ -87,7 +88,14 @@ remote.ui.Client = function(url, executor) {
    * @type {!remote.ui.SessionContainer}
    * @private
    */
-  this.sessionContainer_ = new remote.ui.SessionContainer();
+  this.sessionContainer_ = new remote.ui.SessionContainer([
+      'android',
+      'chrome',
+      'firefox',
+      'internet explorer',
+      'iphone',
+      'opera'
+  ]);
 
   /**
    * @type {!remote.ui.ScreenshotDialog}
@@ -95,16 +103,22 @@ remote.ui.Client = function(url, executor) {
    */
   this.screenshotDialog_ = new remote.ui.ScreenshotDialog();
 
+  /**
+   * @type {!remote.ui.WebDriverScriptButton}
+   * @private
+   */  
+  this.scriptButton_ = new remote.ui.WebDriverScriptButton();
+
   goog.events.listen(this.sessionContainer_, remote.ui.Event.Type.CREATE,
       this.onCreate_, false, this);
   goog.events.listen(this.sessionContainer_, remote.ui.Event.Type.DELETE,
       this.onDelete_, false, this);
   goog.events.listen(this.sessionContainer_, remote.ui.Event.Type.REFRESH,
       this.onRefresh_, false, this);
-  goog.events.listen(this.sessionContainer_, remote.ui.Event.Type.LOAD,
-      this.onLoad_, false, this);
   goog.events.listen(this.sessionContainer_, remote.ui.Event.Type.SCREENSHOT,
       this.onScreenshot_, false, this);
+  goog.events.listen(this.scriptButton_,
+      remote.ui.WebDriverScriptButton.LOAD_SCRIPT, this.onLoad_, false, this);
 };
 goog.inherits(remote.ui.Client, goog.Disposable);
 
@@ -114,6 +128,7 @@ remote.ui.Client.prototype.disposeInternal = function() {
   this.banner_.dispose();
   this.sessionContainer_.dispose();
   this.screenshotDialog_.dispose();
+  this.scriptButton_.dispose();
   this.logConsole_.setCapturing(false);
 
   delete this.log_;
@@ -122,6 +137,7 @@ remote.ui.Client.prototype.disposeInternal = function() {
   delete this.sessionContainer_;
   delete this.banner_;
   delete this.screenshotDialog_;
+  delete this.scriptButton_;
 
   goog.base(this, 'disposeInternal');
 };
@@ -137,11 +153,19 @@ remote.ui.Client.prototype.init = function(opt_element) {
   this.banner_.setVisible(false);
   this.sessionContainer_.render(opt_element);
   this.serverInfo_.render(opt_element);
+  this.scriptButton_.render();
+  this.sessionContainer_.addControlElement(this.scriptButton_.getElement());
   return this.updateServerInfo_().
       addCallback(function() {
         this.sessionContainer_.setEnabled(true);
         this.onRefresh_();
       }, this);
+};
+
+
+/** @return {!remote.ui.SessionContainer} The session container. */
+remote.ui.Client.prototype.getSessionContainer = function() {
+  return this.sessionContainer_;
 };
 
 
@@ -235,6 +259,7 @@ remote.ui.Client.prototype.onCreate_ = function(e) {
       }, this).
       addErrback(function(e) {
         this.logError_('Unable to create new session.', e);
+        this.sessionContainer_.removeSession(null);
       }, this);
 };
 
@@ -266,7 +291,7 @@ remote.ui.Client.prototype.onDelete_ = function() {
 
 
 /**
- * Event handler for {@link remote.ui.Event.Type.LOAD} events.
+ * Event handler for {@link remote.ui.WebDriverScriptButton.LOAD_SCRIPT} events.
  * @param {!remote.ui.Event} e The event.
  * @private
  */

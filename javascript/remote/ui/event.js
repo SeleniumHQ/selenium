@@ -46,7 +46,6 @@ goog.inherits(remote.ui.Event, goog.events.Event);
 remote.ui.Event.Type = {
   CREATE: 'create',
   DELETE: 'delete',
-  LOAD: 'load',
   REFRESH: 'refresh',
   SCREENSHOT: 'screenshot'
 };

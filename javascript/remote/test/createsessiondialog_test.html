@@ -33,7 +33,11 @@ limitations under the License.
   var dialog;
 
   function setUp() {
-    dialog = new remote.ui.CreateSessionDialog;
+    dialog = new remote.ui.CreateSessionDialog([
+        'chrome',
+        'firefox',
+        'internet explorer'
+    ])
   }
 
   function tearDown() {
