@@ -49,8 +49,8 @@ webdriver.Builder = function() {
    * @type {string}
    * @private
    */
-  this.serverUrl_ =
-      webdriver.process.getEnv(webdriver.Builder.SERVER_URL_ENV);
+  this.serverUrl_ = webdriver.process.getEnv(
+      webdriver.Builder.SERVER_URL_ENV, webdriver.Builder.DEFAULT_SERVER_URL);
 
   /**
    * ID of an existing WebDriver session that new clients should use.
@@ -97,6 +97,16 @@ webdriver.Builder.SESSION_ID_ENV = 'wdsid';
  * @export
  */
 webdriver.Builder.SERVER_URL_ENV = 'wdurl';
+
+
+/**
+ * The default URL of the WebDriver server to use if
+ * {@link webdriver.Builder.SERVER_URL_ENV} is not set.
+ * @type {string}
+ * @const
+ * @export
+ */
+webdriver.Builder.DEFAULT_SERVER_URL = 'http://localhost:4444/wd/hub';
 
 
 /**
@@ -151,11 +161,6 @@ webdriver.Builder.prototype.build = function() {
     executor = new webdriver.FirefoxDomExecutor();
     return webdriver.WebDriver.createSession(executor, this.capabilities_);
   } else {
-    if (!this.serverUrl_) {
-      throw new Error(
-          'The remote WebDriver server URL has not been specified.');
-    }
-
     var clientCtor = webdriver.process.isNative() ?
         webdriver.node.HttpClient :
         webdriver.http.CorsClient;
