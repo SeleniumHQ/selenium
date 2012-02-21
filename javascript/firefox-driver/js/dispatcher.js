@@ -21,8 +21,10 @@ goog.provide('Resource');
 
 goog.require('Response');
 goog.require('Request');
+goog.require('Utils');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.error');
+
 
 /**
  * Dispatches commands received by the WebDriver server.
@@ -98,6 +100,11 @@ Dispatcher.executeAs = function(name) {
  * request understood by the legacy nsICommandProcessor.
  */
 Dispatcher.translateNewSession = function() {
+  if (!bot.userAgent.isProductVersion('3.5')) {
+    // Smooth
+    eval(Utils.loadUrl('resource://fxdriver/json2.js'));
+  }
+
   return function(request, response) {
     var callback = function(jsonResponseString) {
       var jsonResponse = JSON.parse(jsonResponseString);

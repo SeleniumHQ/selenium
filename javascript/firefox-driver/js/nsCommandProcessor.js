@@ -38,6 +38,7 @@ goog.require('fxdriver.modals');
 goog.require('goog.dom');
 
 
+var JSON;
 var loadStrategy_ = 'conservative';
 
 /**
@@ -334,8 +335,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
 var nsCommandProcessor = function() {
   // Since we only support 3.0+, this check is enough to see if we're on 3.0
   if (!bot.userAgent.isProductVersion('3.5')) {
-    Components.utils['import']('resource://fxdriver/json2.js');
-
+    eval(Utils.loadUrl('resource://fxdriver/json2.js'));
     fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
     var cssSelectorFunction = (function() {
       var sizzle = [

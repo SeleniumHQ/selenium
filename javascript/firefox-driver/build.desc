@@ -64,7 +64,7 @@ mozilla_extension(name = "webdriver",
     { ":web_element_cache" : "resource/modules/web_element_cache.js" },
     { "js/timer.js" : "resource/modules/timer.js" },
     { "js/evaluate.js" : "resource/evaluate.js" },
-    { "js/json2.js" : "resources/json2.js" },
+    { "js/json2.js" : "resource/json2.js" },
     { "//third_party/js/sizzle" : "resource/sizzle.js" }
   ],
   chrome = "extension/chrome.manifest",
@@ -86,6 +86,7 @@ js_binary(name = "synthetic_mouse",
 
 js_binary(name = "driver_component",
   srcs = [
+    "js/dispatcher.js",
     "js/driver-component.js",
     "js/firefoxDriver.js",
     "js/webdriverserver.js",
