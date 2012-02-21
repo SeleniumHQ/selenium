@@ -173,31 +173,28 @@ limitations under the License.
       wheelDelta: 0
     };
 
+    function fireMouseWheelAndTestWheelDeltaAndDetail(wheelDelta, detail) {
+      fireAndTest(bot.events.EventType.MOUSEWHEEL, args, function(event) {
+        var nativeEvent = event.getBrowserEvent();
+        if ((goog.userAgent.IE && Object.defineProperty) ||
+             goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
+          assertEquals(wheelDelta, nativeEvent.wheelDelta);
+        } else if (goog.userAgent.IE && !Object.defineProperty) {
+          assertEquals(wheelDelta, nativeEvent.detail);
+        }
+        if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
+          assertEquals(detail, nativeEvent.detail);
+        }
+      });
+    }
+
     // Test a positive delta wheel scroll.
     args.wheelDelta = 120;
-    fireAndTest(bot.events.EventType.MOUSEWHEEL, args, function(event) {
-      var nativeEvent = event.getBrowserEvent();
-      if ((goog.userAgent.IE && Object.defineProperty) ||
-          goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
-        assertEquals(120, nativeEvent.wheelDelta);
-      }
-      if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
-        assertEquals(-3, nativeEvent.detail);
-      }
-    });
+    fireMouseWheelAndTestWheelDeltaAndDetail(120, -3);
 
     // Test a negative delta wheel scroll.
     args.wheelDelta = -80;
-    fireAndTest(bot.events.EventType.MOUSEWHEEL, args, function(event) {
-      var nativeEvent = event.getBrowserEvent();
-      if ((goog.userAgent.IE && Object.defineProperty) ||
-          goog.userAgent.WEBKIT || goog.userAgent.OPERA) {
-        assertEquals(-80, nativeEvent.wheelDelta);
-      }
-      if (goog.userAgent.GECKO || goog.userAgent.OPERA) {
-        assertEquals(2, nativeEvent.detail);
-      }
-    });
+    fireMouseWheelAndTestWheelDeltaAndDetail(-80, 2);
   }
 
   function testMousePixelScrollFiresCorrectlyOnlyOnFirefox() {

@@ -263,10 +263,15 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
       }
     }
 
-    // IE does not allow the wheelDelta property to be set directly,
-    // so we can only do it where defineProperty is supported.
-    if (this == bot.events.EventType.MOUSEWHEEL && Object.defineProperty) {
-      setEventProperty('wheelDelta', args.wheelDelta);
+    // IE does not allow the wheelDelta property to be set directly, so we can
+    // only do it where defineProperty is supported; otherwise store the wheel
+    // delta in the event "detail" as a last resort in case the app looks there.
+    if (this == bot.events.EventType.MOUSEWHEEL) {
+      if (Object.defineProperty) {
+        setEventProperty('wheelDelta', args.wheelDelta);
+      } else {
+        event.detail = args.wheelDelta;
+      }
     }
   } else {
     var view = goog.dom.getWindow(doc);
