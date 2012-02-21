@@ -17,16 +17,15 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
+import junit.framework.Assert;
+import org.junit.Test;
+import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
@@ -73,7 +72,7 @@ public class GridShutdownTest {
     for (Thread thread : threads) {
       thread.join();
     }
-    Assert.assertEquals(before , getCurrentThreadCount());
+    Assert.assertTrue(getCurrentThreadCount() <= before);
   }
 
   private int getCurrentThreadCount() {
