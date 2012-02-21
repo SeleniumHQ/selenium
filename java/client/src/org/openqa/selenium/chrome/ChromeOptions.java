@@ -20,17 +20,15 @@ package org.openqa.selenium.chrome;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.internal.Base64Encoder;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -154,8 +152,8 @@ public class ChromeOptions {
     List<String> extensions = Lists.newArrayListWithExpectedSize(
         extensionFiles.size());
     for (File path : extensionFiles) {
-      byte[] data = Base64.encodeBase64(Files.toByteArray(path));
-      extensions.add(new String(data, Charsets.US_ASCII));
+      String encoded = new Base64Encoder().encode(Files.toByteArray(path));
+      extensions.add(encoded);
     }
     options.put("extensions", extensions);
 
