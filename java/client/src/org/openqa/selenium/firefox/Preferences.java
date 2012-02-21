@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
@@ -38,8 +41,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 class Preferences {
 
@@ -235,7 +236,9 @@ class Preferences {
             "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
       }
       checkArgument(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
-                    "%s must be == 0 || >= %s", MAX_SCRIPT_RUN_TIME_KEY, DEFAULT_MAX_SCRIPT_RUN_TIME);
+                    "%s must be == 0 || >= %s",
+                    MAX_SCRIPT_RUN_TIME_KEY,
+                    DEFAULT_MAX_SCRIPT_RUN_TIME);
     }
   }
 
