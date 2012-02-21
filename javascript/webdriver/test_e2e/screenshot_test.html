@@ -20,33 +20,32 @@ limitations under the License.
   goog.require('webdriver.Builder');
   goog.require('webdriver.testing.asserts');
   goog.require('webdriver.testing.jsunit');
-
-  function addFoo() {
-    var div = document.createElement('DIV');
-    div.id = 'foo_div';
-    div.innerHTML = 'FOO!';
-    setTimeout(function() {
-      document.body.appendChild(div);
-    }, 250);
-  }
 </script>
-<input id="addFoo" type="button" value="Add foo!" onclick="addFoo();"/>
+<iframe src="ajaxy_page.html" width="100%" height="300px"></iframe>
 <script>
   function testTakingScreenshots() {
     var driver = new webdriver.Builder().build();
+    driver.switchTo().frame(0);
 
-    G_testRunner.takeScreenshot(driver, 'pre-click-and-find');
+    var typer = driver.findElement(By.name('typer'));
+    typer.sendKeys('bob');
+    assertThat(typer.getAttribute('value'), equals('bob'));
 
-    driver.findElement(By.id('addFoo')).click();
-    driver.manage().timeouts().implicitlyWait(500);
-    var isPresent = driver.isElementPresent({id: 'foo_div'});
+    driver.findElement(By.id('red')).click();
 
-    G_testRunner.takeScreenshot(driver, 'post-click-and-find').
-        then(function() {
-          // Check the result of isPresent in a callback to ensure our second
-          // screenshot is taken.
-          isPresent.addCallback(
-              goog.partial(assertTrue, 'foo_div should be present now'));
+    var screenshot1 = G_testRunner.takeScreenshot(driver, 'before-update');
+
+    driver.findElement(By.name('submit')).click();
+    driver.manage().timeouts().setScriptTimeout(15 * 1000);
+    driver.executeAsyncScript(
+        'window.registerListener(arguments[arguments.length - 1]);'),
+
+    G_testRunner.takeScreenshot(driver, 'post-update').
+        then(function(screenshot2) {
+          screenshot1.then(function(screenshot1) {
+            assertNotEquals('The two screenshots should differ!',
+                screenshot1, screenshot2);
+          });
         });
   }
 </script>

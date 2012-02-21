@@ -1197,7 +1197,7 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
   return this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.SWITCH_TO_WINDOW).
           setParameter('name', nameOrHandle),
-      'WebDriver.switchTo().frame(' + nameOrHandle + ')');
+      'WebDriver.switchTo().window(' + nameOrHandle + ')');
 };
 
 

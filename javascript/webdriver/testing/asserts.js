@@ -189,12 +189,28 @@ webdriver.testing.asserts.not = function(matcher) {
 
 
 /**
+ * Creates a logical union of two matchers.
+ * @param {!webdriver.testing.asserts.Matcher} a The first matcher in the union.
+ * @param {!webdriver.testing.asserts.Matcher} b The second matcher in the
+ *     union.
+ * @return {!webdriver.testing.asserts.Matcher} The new matcher.
+ */
+webdriver.testing.asserts.or = function(a, b) {
+  return new webdriver.testing.asserts.Matcher(
+      a.description + ' or ' + b.description,
+      function(value) {
+        return a.predicate(value) || b.predicate(value);
+      });
+};
+
+
+/**
  * Creates a matcher that does a strict equality (===) check.
  * @param {*} expected The expected value.
  * @return {!webdriver.testing.asserts.Matcher} The new matcher.
  */
 webdriver.testing.asserts.equalTo = function(expected) {
-  return new webdriver.testing.asserts.Matcher('' +
+  return new webdriver.testing.asserts.Matcher(
       'to equal ' + expected + webdriver.testing.asserts.typeOf_(expected),
       function(actual) {
         return expected === actual;
@@ -249,4 +265,5 @@ goog.exportSymbol('equals', webdriver.testing.asserts.equalTo);
 goog.exportSymbol('is', webdriver.testing.asserts.equalTo);
 goog.exportSymbol('matchesRegex', webdriver.testing.asserts.matchesRegex);
 goog.exportSymbol('not', webdriver.testing.asserts.not);
+goog.exportSymbol('or', webdriver.testing.asserts.or);
 goog.exportSymbol('startsWith', webdriver.testing.asserts.startsWith);

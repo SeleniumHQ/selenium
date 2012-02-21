@@ -567,11 +567,11 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
 webdriver.promise.asap = function(value, callback, opt_errback) {
   if (webdriver.promise.isPromise(value)) {
     value.then(callback, opt_errback);
-    // Maybe a Dojo-like deferred object?
+  // Maybe a Dojo-like deferred object?
   } else if (!!value && goog.isObject(value) &&
       goog.isFunction(value.addCallbacks)) {
     value.addCallbacks(callback, opt_errback);
-    // A raw value, return a resolved promise.
+  // A raw value, return a resolved promise.
   } else if (callback) {
     callback(value);
   }
@@ -1182,6 +1182,7 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
 /**
  * @return {webdriver.promise.Application.Task} The next task to execute, or
  *     {@code null} if a frame was resolved.
+ * @private
  */
 webdriver.promise.Application.prototype.getNextTask_ = function() {
   var firstChild = this.activeFrame_.getFirstChild();
@@ -1232,7 +1233,8 @@ webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
  */
 webdriver.promise.Application.prototype.abortFrame_ = function(error) {
   if (!this.activeFrame_) {
-    return this.abortNow_(error);
+    this.abortNow_(error);
+    return;
   }
 
   var parent = this.activeFrame_.getParent();
@@ -1540,14 +1542,16 @@ webdriver.promise.Application.Frame.prototype.addChild = function(node) {
   if (this.lastInsertedChild_ &&
       this.lastInsertedChild_ instanceof webdriver.promise.Application.Frame &&
       !this.lastInsertedChild_.isLocked_) {
-    return this.lastInsertedChild_.addChild(node);
+    this.lastInsertedChild_.addChild(node);
+    return;
   }
 
   node.setParent(this);
 
   if (this.isActive_ && node instanceof webdriver.promise.Application.Frame) {
     var index = 0;
-    if (this.lastInsertedChild_ instanceof webdriver.promise.Application.Frame) {
+    if (this.lastInsertedChild_ instanceof
+        webdriver.promise.Application.Frame) {
       index = goog.array.indexOf(this.children_, this.lastInsertedChild_) + 1;
     }
     goog.array.insertAt(this.children_, node, index);

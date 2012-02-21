@@ -87,15 +87,16 @@ webdriver.testing.jsunit.TestRunner.prototype.writeLog = function(log) {
     var line = lines[i];
     var color;
     var isFailOrError = /FAILED/.test(line) || /ERROR/.test(line);
+    var isScreenshot = / \[SCREENSHOT\] /.test(line);
     if (/PASSED/.test(line)) {
       color = 'darkgreen';
     } else if (isFailOrError) {
       color = 'darkred';
+    } else if (isScreenshot) {
+      color = 'darkblue';
     } else {
       color = '#333';
     }
-
-    var isScreenshot = / \[SCREENSHOT\] /.test(line);
 
     var div = document.createElement('div');
     if (line.substr(0, 2) == '> ') {

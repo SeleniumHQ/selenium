@@ -81,10 +81,10 @@ function testSimpleResolveScenario() {
   var callback = callbackHelper(function(value) {
     assertEquals(123, value);
   });
-  
+
   var deferred = new webdriver.promise.Deferred();
   deferred.then(callback);
-  
+
   callback.assertNotCalled();
   deferred.resolve(123);
   callback.assertCalled();

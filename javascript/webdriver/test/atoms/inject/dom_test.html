@@ -76,13 +76,17 @@ limitations under the License.
     }
 
     function testGetValueOfCssProperty() {
-        var e = webdriver.atoms.inject.locators.findElement('id', 'after');
-        var prop = getValueFromJSONObject(
-                webdriver.atoms.inject.dom.getValueOfCssProperty(
-                        getValueFromJSONObject(e), "background-color"));
+      var e = webdriver.atoms.inject.locators.findElement('id', 'after');
+      var prop = getValueFromJSONObject(
+              webdriver.atoms.inject.dom.getValueOfCssProperty(
+                      getValueFromJSONObject(e), "background-color"));
 
-        var expected = ['green', 'rgb(0, 128, 0)'];
-        assert(goog.array.contains(expected, prop));
+      // Depending on the browser, we get different values back.
+      var expected = ['green', 'rgb(0, 128, 0)', '#008000'];
+      assertTrue(
+          'Expected to be one of [' + expected.join(', ') + '], but was: ' +
+              prop,
+          goog.array.contains(expected, prop));
     }
 
     function testIsEnabled() {

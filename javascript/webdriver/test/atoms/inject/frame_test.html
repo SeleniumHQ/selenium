@@ -43,7 +43,7 @@ limitations under the License.
           }
 
           var wrappedWindow =
-              {"WINDOW": bot.inject.cache.addElement(window.frames[1])}
+              {"WINDOW": bot.inject.cache.addElement(window.frames[1])};
           var res2 = webdriver.atoms.inject.frame.findFrameByIdOrName("iframe1", wrappedWindow);
           assertEquals(window.frames[1].frames[0], getWindowFromCache(res2));
         }
@@ -62,7 +62,7 @@ limitations under the License.
             return;
           }
 
-          var wrappedWindow = {"ELEMENT": bot.inject.cache.addElement(window.frames[1])}
+          var wrappedWindow = {"ELEMENT": bot.inject.cache.addElement(window.frames[1])};
           var win = webdriver.atoms.inject.frame.findFrameByIndex(0, wrappedWindow);
           assertEquals(window.frames[1].frames[0], getWindowFromCache(win));
         }
@@ -93,8 +93,8 @@ limitations under the License.
         }
     </script>
 </head>
-<frameset cols="*,*">
-    <frame src="nested_frames.html" id="first"></frame>
-    <frame src="nested_iframes.html" id="second"></frame>
-</frameset>
+<body>
+<iframe src="nested_frames.html" id="first"></iframe>
+<iframe src="nested_iframes.html" id="second"></iframe>
+</body>
 </html>
