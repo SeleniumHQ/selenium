@@ -20,7 +20,6 @@
  * script from another language (e.g. C++).
  *
  * TODO(user): Add an example
- *
  */
 
 goog.provide('bot.inject');

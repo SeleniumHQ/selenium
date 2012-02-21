@@ -48,7 +48,7 @@ class SessionCookieManager {
 
   /**
    * Gets all cookies for a given domain name
-   * 
+   *
    * @param domain Domain name to fetch cookies for
    * @return Set of cookie objects for given domain
    */
@@ -67,10 +67,10 @@ class SessionCookieManager {
     }
     return result;
   }
-    
+
   /**
    * Gets all cookies associated to a URL.
-   * 
+   *
    * @param url
    * @return A string containing comma separated cookies
    */
@@ -82,7 +82,7 @@ class SessionCookieManager {
     } catch (MalformedURLException e) {
       throw new WebDriverException("Error while adding cookie. " + e);
     }
-    
+
     for (String domain : domains) {
       cookieSet.addAll(getCookies(domain));
     }
@@ -91,7 +91,7 @@ class SessionCookieManager {
 
   /**
    * Gets the list of domains associated to a URL.
-   * 
+   *
    * @param url
    * @return List of domains as strings
    */
@@ -115,7 +115,7 @@ class SessionCookieManager {
 
   /**
    * Gets a cookie with specific name for a URL.
-   * 
+   *
    * @param url
    * @param name Cookie name to search
    * @return Cookie object (if found) or null
@@ -140,7 +140,7 @@ class SessionCookieManager {
 
   /**
    * Removes all cookies for a given URL.
-   * 
+   *
    * @param url to remove all the cookies for
    */
   /* package */ void removeAllCookies(String url) {
@@ -151,7 +151,7 @@ class SessionCookieManager {
 
   /**
    * Removes cookie by name for a URL.
-   * 
+   *
    * @param url to remove cookie for
    * @param name of the cookie to remove
    */
@@ -179,7 +179,7 @@ class SessionCookieManager {
 
   /**
    * Adds a cookie to a URL domain.
-   * 
+   *
    * @param url to add the cookie to
    * @param cookie Cookie to be added
    */
@@ -196,7 +196,7 @@ class SessionCookieManager {
     }
     cookieManager.setCookie(domain, stringifyCookie(cookie));
   }
-  
+
   private String stringifyCookie(Cookie cookie) {
     return String.format("%s=%s", cookie.getName(), cookie.getValue());
   }

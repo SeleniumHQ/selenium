@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Functions to do with firing and simulating events.
- *
  */
 
 

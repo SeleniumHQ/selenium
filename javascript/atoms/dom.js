@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview DOM manipulation and querying routines.
- *
  */
 
 goog.provide('bot.dom');

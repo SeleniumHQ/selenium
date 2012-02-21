@@ -38,7 +38,7 @@
   // window.open will cause a dialog prompt that will cause load failure.
   // For these browsers, we test history in an iframe instead of a popup,
   // which limits the history properties we can reliably check.
-  // TODO (user): Use popups on all browsers once these bugs are fixed.
+  // TODO (gdennis): Use popups on all browsers once these bugs are fixed.
   if (bot.test.isSeleniumBacked() || goog.userAgent.product.ANDROID ||
       (goog.userAgent.OPERA && bot.userAgent.isEngineVersion(11.5))) {
     // A bug in prior versions of WebKit (persisting into Safari 5) causes the

@@ -16,7 +16,6 @@
 
 /**
  * @fileoverview Atoms for simulating user actions against the browser window.
- *
  */
 
 goog.provide('bot.window');

@@ -29,7 +29,6 @@
  * </ol>
  *
  * TODO(user): Add support for browsers without native xpath
- *
  */
 
 goog.provide('bot.locators.xpath');

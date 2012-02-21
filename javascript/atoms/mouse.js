@@ -16,7 +16,6 @@
 /**
  * @fileoverview The file contains an abstraction of a mouse for
  * simulating the mouse actions.
- *
  */
 
 goog.provide('bot.Mouse');
@@ -164,7 +163,7 @@ bot.Mouse.prototype.fireMousedown_ = function() {
   // On some browsers, a mouse down event on an OPTION or SELECT element cause
   // the SELECT to open, blocking further JS execution. This is undesirable,
   // and so needs to be detected. We always focus in this case.
-  // TODO(user): This is a nasty way to avoid locking the browser
+  // TODO(simon): This is a nasty way to avoid locking the browser
   var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isProductVersion(4);
   var blocksOnMousedown = (goog.userAgent.WEBKIT || isFirefox3) &&
       (bot.dom.isElement(this.getElement(), goog.dom.TagName.OPTION) ||

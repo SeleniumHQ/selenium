@@ -16,7 +16,6 @@
 /**
  * @fileoverview The file contains an abstraction of a touch screen
  * for simulating atomic touchscreen actions.
- *
  */
 
 goog.provide('bot.Touchscreen');

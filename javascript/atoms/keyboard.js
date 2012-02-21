@@ -16,7 +16,6 @@
 /**
  * @fileoverview The file contains an abstraction of a keyboad
  * for simulating the presing and releasing of keys.
- *
  */
 
 goog.provide('bot.Keyboard');

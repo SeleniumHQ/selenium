@@ -16,7 +16,6 @@
 /**
  * @fileoverview The file contains the base class for input devices such as
  * the keyboard, mouse, and touchscreen.
- *
  */
 
 goog.provide('bot.Device');
