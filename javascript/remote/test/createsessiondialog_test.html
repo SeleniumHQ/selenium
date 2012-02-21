@@ -113,7 +113,7 @@ limitations under the License.
     dialog.setVisible(true);
     assertFalse(dialog.hasUserSelection());
 
-    dialog.browserSelect_.selectedIndex = 3;
+    dialog.browserSelect_.selectedIndex = 2;
     assertTrue(dialog.hasUserSelection());
     assertEquals('firefox', dialog.getUserSelection()['browserName']);
 
@@ -127,7 +127,7 @@ limitations under the License.
     goog.events.listen(dialog, goog.ui.Component.EventType.ACTION, onAction);
 
     dialog.setVisible(true);
-    dialog.getBrowserSelectElement().selectedIndex = 3;
+    dialog.getBrowserSelectElement().selectedIndex = 2;
     bot.action.click(dialog.getButtonSet().getButton('ok'));
     assertDialogNotVisible();
     assertEquals('firefox', dialog.getUserSelection()['browserName']);
