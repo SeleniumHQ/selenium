@@ -194,6 +194,19 @@ bot.action.submit = function(element) {
 
 
 /**
+ * Moves the mouse over the given {@code element} with a virtual mouse.
+ *
+ * @param {!Element} element The element to click.
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
+ *   element.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.mouseOver = function(element, opt_coords) {
+  bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+};
+
+
+/**
  * Clicks on the given {@code element} with a virtual mouse.
  *
  * @param {!Element} element The element to click.
@@ -202,9 +215,8 @@ bot.action.submit = function(element) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.click = function(element, opt_coords) {
-  var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
-  bot.action.pressAndReleaseButton_(
-      mouse, element, bot.Mouse.Button.LEFT);
+  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
 };
 
 
@@ -217,9 +229,8 @@ bot.action.click = function(element, opt_coords) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.rightClick = function(element, opt_coords) {
-  var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
-  bot.action.pressAndReleaseButton_(
-      mouse, element, bot.Mouse.Button.RIGHT);
+  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.RIGHT);
 };
 
 
@@ -232,29 +243,56 @@ bot.action.rightClick = function(element, opt_coords) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.doubleClick = function(element, opt_coords) {
-  var mouse = bot.action.prepareMouseForClick_(element, opt_coords);
-
-  bot.action.pressAndReleaseButton_(
-      mouse, element, bot.Mouse.Button.LEFT);
-
-  bot.action.pressAndReleaseButton_(
-      mouse, element, bot.Mouse.Button.LEFT);
+  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
+  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
 };
 
 
 /**
- * A helper function which prepares the mouse for a click action. It checks if
- * the the {@code element} is shown, scrolls the element into few, sets the
- * {@code opt_coords} if they are undefined, and moves the mouse to the right
- * position.
+ * Drags the given {@code element} by (dx, dy) with a virtual mouse.
+ *
+ * @param {!Element} element The element to drag.
+ * @param {number} dx Increment in x coordinate.
+ * @param {number} dy Increment in y coordinate.
+ * @param {goog.math.Coordinate=} opt_coords Drag start position relative to the
+ *   element.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.drag = function(element, dx, dy, opt_coords) {
+  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  mouse.pressButton(bot.Mouse.Button.LEFT);
+
+  // Fire two mousemoves (middle and destination) to trigger a drag action.
+  var initPos = goog.style.getClientPosition(element);
+  var midXY = new goog.math.Coordinate(opt_coords.x + Math.floor(dx / 2),
+                                       opt_coords.y + Math.floor(dy / 2));
+  mouse.move(element, midXY);
+
+  var midPos = goog.style.getClientPosition(element);
+  var finalXY = new goog.math.Coordinate(
+      initPos.x + opt_coords.x + dx - midPos.x,
+      initPos.y + opt_coords.y + dy - midPos.y);
+  mouse.move(element, finalXY);
+
+  mouse.releaseButton();
+};
+
+
+/**
+ * A helper function which prepares a virtual mouse for an action on the given
+ * {@code element}. It checks if the the element is shown, scrolls the element
+ * into view, and moves the mouse to the given {@code opt_coords} if provided;
+ * if not provided, the mouse is moved to the center of the element.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   target.
  * @return {!bot.Mouse} The mouse object used for the click.
+ * @throws {bot.Error} If the element cannot be interacted with.
  * @private
  */
-bot.action.prepareMouseForClick_ = function(element, opt_coords) {
+bot.action.mouseOverAndReturnMouse_ = function(element, opt_coords) {
   bot.action.checkShown_(element);
 
   // Unlike element.scrollIntoView(), this scrolls the minimal amount
@@ -295,44 +333,6 @@ bot.action.prepareMouseForClick_ = function(element, opt_coords) {
  */
 bot.action.pressAndReleaseButton_ = function(mouse, element, button) {
   mouse.pressButton(button);
-  mouse.releaseButton();
-};
-
-
-/**
- * Drags the given {@code element} by (dx, dy) with a virtual mouse.
- *
- * @param {!Element} element The element to drag.
- * @param {number} dx Increment in x coordinate.
- * @param {number} dy Increment in y coordinate.
- * @param {goog.math.Coordinate=} opt_coords Drag start position relative to the
- *   element.
- * @throws {bot.Error} If the element cannot be interacted with.
- */
-bot.action.drag = function(element, dx, dy, opt_coords) {
-  bot.action.checkShown_(element);
-
-  var mouse = new bot.Mouse();
-  if (!opt_coords) {
-    var size = goog.style.getSize(element);
-    opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
-  }
-  mouse.move(element, opt_coords);
-
-  mouse.pressButton(bot.Mouse.Button.LEFT);
-
-  // Fire two mousemoves (middle and destination) to trigger a drag action.
-  var initPos = goog.style.getClientPosition(element);
-  var midXY = new goog.math.Coordinate(opt_coords.x + Math.floor(dx / 2),
-                                       opt_coords.y + Math.floor(dy / 2));
-  mouse.move(element, midXY);
-
-  var midPos = goog.style.getClientPosition(element);
-  var finalXY = new goog.math.Coordinate(
-      initPos.x + opt_coords.x + dx - midPos.x,
-      initPos.y + opt_coords.y + dy - midPos.y);
-  mouse.move(element, finalXY);
-
   mouse.releaseButton();
 };
 
