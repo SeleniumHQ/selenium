@@ -26,8 +26,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * A wrapper around temporary filesystem behaviour.
- *
- * @author gblock@google.com (Gregory Block)
  */
 public class TemporaryFilesystem {
 

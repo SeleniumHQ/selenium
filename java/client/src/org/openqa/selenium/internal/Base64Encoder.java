@@ -27,8 +27,6 @@ import java.io.StringReader;
  * other Base64 tools to manipulate the data.</p>
  *
  * Original code from <a href="http://xstream.codehaus.org/">XStream</a>
- *
- * @author Joe Walnes
  */
 public class Base64Encoder {
 

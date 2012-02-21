@@ -94,7 +94,7 @@ public class ChromeDriverService {
    * this configuration, the service will use the chromedriver executable identified by the
    * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
    * be configured to use a free port on the current system.
-   * 
+   *
    * @return A new ChromeDriverService using the default configuration.
    */
   public static ChromeDriverService createDefaultService() {
@@ -123,7 +123,7 @@ public class ChromeDriverService {
 
   /**
    * Checks whether the chromedriver child proces is currently running.
-   * 
+   *
    * @return Whether the chromedriver child process is still running.
    */
   public boolean isRunning() {
@@ -144,7 +144,7 @@ public class ChromeDriverService {
   /**
    * Starts this service if it is not already running. This method will block until the server has
    * been fully started and is ready to handle commands.
-   * 
+   *
    * @throws IOException If an error occurs while spawning the child process.
    * @see #stop()
    */
@@ -172,7 +172,7 @@ public class ChromeDriverService {
   /**
    * Stops this service is it is currently running. This method will attempt to block until the
    * server has been fully shutdown.
-   * 
+   *
    * @see #start()
    */
   public void stop() {
@@ -205,7 +205,7 @@ public class ChromeDriverService {
 
     /**
      * Sets which chromedriver executable the builder will use.
-     * 
+     *
      * @param file The executable to use.
      * @return A self reference.
      */
@@ -224,7 +224,7 @@ public class ChromeDriverService {
     /**
      * Sets which port the chromedriver server should be started on. A value of 0 indicates that any
      * free port may be used.
-     * 
+     *
      * @param port The port to use; must be non-negative.
      * @return A self reference.
      */
@@ -236,7 +236,7 @@ public class ChromeDriverService {
 
     /**
      * Configures the chromedriver server to start on any available port.
-     * 
+     *
      * @return A self reference.
      */
     public Builder usingAnyFreePort() {
@@ -264,7 +264,7 @@ public class ChromeDriverService {
      * builder will check that either the user defined the location of the chromedriver executable
      * through {@link #usingChromeDriverExecutable(File) the API} or with the
      * {@code webdriver.chrome.driver} system property.
-     * 
+     *
      * @return The new binary.
      */
     public ChromeDriverService build() {

@@ -60,8 +60,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
- * 
- * @author Michael Tamm
  */
 public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
     WrapsDriver, HasInputDevices, HasTouchScreen {
@@ -546,11 +544,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
       timeouts.setScriptTimeout(time, unit);
-      return this;
-    }
-
-    public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-      timeouts.pageLoadTimeout(time, unit);
       return this;
     }
   }

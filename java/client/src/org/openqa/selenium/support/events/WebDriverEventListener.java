@@ -21,9 +21,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-/**
- * @author Michael Tamm
- */
 public interface WebDriverEventListener {
 
   /**
@@ -65,7 +62,7 @@ public interface WebDriverEventListener {
    * Called before {@link WebDriver#findElement WebDriver.findElement(...)}, or
    * {@link WebDriver#findElements WebDriver.findElements(...)}, or {@link WebElement#findElement
    * WebElement.findElement(...)}, or {@link WebElement#findElement WebElement.findElements(...)}.
-   * 
+   *
    * @param element will be <code>null</code>, if a find method of <code>WebDriver</code> is called.
    */
   void beforeFindBy(By by, WebElement element, WebDriver driver);
@@ -74,7 +71,7 @@ public interface WebDriverEventListener {
    * Called after {@link WebDriver#findElement WebDriver.findElement(...)}, or
    * {@link WebDriver#findElements WebDriver.findElements(...)}, or {@link WebElement#findElement
    * WebElement.findElement(...)}, or {@link WebElement#findElement WebElement.findElements(...)}.
-   * 
+   *
    * @param element will be <code>null</code>, if a find method of <code>WebDriver</code> is called.
    */
   void afterFindBy(By by, WebElement element, WebDriver driver);

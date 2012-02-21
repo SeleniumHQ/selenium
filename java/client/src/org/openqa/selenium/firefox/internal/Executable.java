@@ -15,11 +15,9 @@ import java.util.Map;
 
 /**
  * Wrapper around our runtime environment requirements. Performs discovery of firefox instances.
- * 
+ *
  * <p>
  * NOTE: System and platform binaries will only be discovered at class initialization.
- * 
- * @author gregory.block@google.com (Gregory Block)
  */
 public class Executable {
   private static final File SYSTEM_BINARY = locateFirefoxBinaryFromSystemProperty();
@@ -174,7 +172,7 @@ public class Executable {
 
   /**
    * Retrieve an env var; if no var is set, returns the default
-   * 
+   *
    * @param name the name of the variable
    * @param defaultValue the default value of the variable
    * @return the env var
@@ -190,7 +188,7 @@ public class Executable {
   /**
    * Walk a PATH to locate binaries with a specified name. Binaries will be searched for in the
    * order they are provided.
-   * 
+   *
    * @param binaryNames the binary names to search for
    * @return the first binary found matching that name.
    */
