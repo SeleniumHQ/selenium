@@ -15,9 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-/**
- *
- */
 package org.openqa.selenium.lift.find;
 
 import org.hamcrest.Matcher;
@@ -25,9 +22,6 @@ import org.hamcrest.SelfDescribing;
 
 import java.util.Collection;
 
-/**
- * @author rchatley (Robert Chatley)
- */
 public interface Finder<S, T> extends SelfDescribing {
   Collection<S> findFrom(T context);
 

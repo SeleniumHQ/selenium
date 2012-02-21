@@ -28,8 +28,6 @@ import org.hamcrest.Factory;
 
 /**
  * A {@link Finder} for HTML title tags.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class PageTitleFinder extends HtmlTagFinder {
 

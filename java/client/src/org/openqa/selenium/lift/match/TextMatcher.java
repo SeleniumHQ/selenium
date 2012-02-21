@@ -26,8 +26,6 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * {@link Matcher} for matching text content within {@link WebElement}s.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class TextMatcher extends TypeSafeMatcher<WebElement> {
 

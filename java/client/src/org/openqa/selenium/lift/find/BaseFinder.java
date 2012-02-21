@@ -28,8 +28,6 @@ import java.util.List;
 /**
  * Base class for {@link Finder}s. These allow the creation of a specification to be applied to
  * objects of type T, to identify and return a Collection of any contained objects of type S.
- * 
- * @author rchatley (Robert Chatley)
  */
 public abstract class BaseFinder<S, T> implements Finder<S, T> {
 

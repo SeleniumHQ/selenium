@@ -26,8 +26,6 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * hamcrest matcher for attributes of {@link WebElement}s.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
 

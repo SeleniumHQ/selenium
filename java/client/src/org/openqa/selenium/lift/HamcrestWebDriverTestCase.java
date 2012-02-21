@@ -29,8 +29,6 @@ import org.hamcrest.Matcher;
 
 /**
  * Base class for tests using the LiFT style API to driver WebDriver.
- * 
- * @author rchatley (Robert Chatley)
  */
 public abstract class HamcrestWebDriverTestCase extends TestCase {
 
@@ -81,7 +79,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   /**
    * Cause the browser to navigate to the given URL
-   * 
+   *
    * @param url
    */
   protected void goTo(String url) {
@@ -90,7 +88,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 
   /**
    * Type characters into an element of the page, typically an input field
-   * 
+   *
    * @param text - characters to type
    * @param inputFinder - specification for the page element
    */

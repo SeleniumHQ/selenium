@@ -25,8 +25,6 @@ import org.hamcrest.Matcher;
 
 /**
  * Interface for objects that provide a context (maintaining any state) for web tests.
- * 
- * @author rchatley (Robert Chatley)
  */
 public interface TestContext {
 

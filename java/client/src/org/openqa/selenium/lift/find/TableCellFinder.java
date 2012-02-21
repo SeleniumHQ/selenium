@@ -21,8 +21,6 @@ import org.hamcrest.Factory;
 
 /**
  * A {@link Finder} for HTML table cell "td" tags.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class TableCellFinder extends HtmlTagFinder {
 

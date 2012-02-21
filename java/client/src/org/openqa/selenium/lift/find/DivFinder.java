@@ -25,8 +25,6 @@ import org.hamcrest.Factory;
 
 /**
  * {@link Finder} for HTML div tags.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class DivFinder extends HtmlTagFinder {
 

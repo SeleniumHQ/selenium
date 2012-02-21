@@ -25,8 +25,6 @@ import org.hamcrest.Matcher;
 
 /**
  * Various numerical hamcrest {@link Matcher}s.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class NumericalMatchers {
 

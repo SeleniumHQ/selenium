@@ -39,8 +39,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Gives the context for a test, holds page state, and interacts with the {@link WebDriver}.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class WebDriverTestContext implements TestContext {
 

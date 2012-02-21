@@ -26,9 +26,6 @@ import java.util.Collection;
 
 /**
  * A {@link Finder} for elements using XPath expressions
- * 
- * @author James Strachan
- * @version $Revision: 1.1 $
  */
 public class XPathFinder extends BaseFinder<WebElement, WebDriver> {
   private final String xpath;

@@ -19,8 +19,6 @@ package org.openqa.selenium.lift.find;
 
 /**
  * A {@link Finder} for HTML anchor tags, "links".
- * @author rchatley (Robert Chatley)
- *
  */
 
 import static org.openqa.selenium.lift.match.TextMatcher.text;

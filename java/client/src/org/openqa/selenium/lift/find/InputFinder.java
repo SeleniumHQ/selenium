@@ -26,8 +26,6 @@ import org.hamcrest.Factory;
 
 /**
  * {@link Finder} for HTML input tags.
- * 
- * @author rchatley (Robert Chatley)
  */
 public class InputFinder extends HtmlTagFinder {
 
