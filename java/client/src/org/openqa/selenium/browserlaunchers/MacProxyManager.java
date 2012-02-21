@@ -30,15 +30,12 @@ import java.util.regex.Pattern;
 /**
  * Class to manage the proxy server on OS X. It uses the 'networksetup' tool to do its magic; it
  * also depends on 'scutil' to read some settings we need to interact with 'networksetup.'
- * 
+ *
  * <p>
  * 'networksetup' seems to come in a great many varieties depending on different versions of OS X
  * (and different architectures: PPC vs Intel), so we've taken some care to write this class very
  * defensively.
  * </p>
- * 
- * @author Dan Fabulich
- * 
  */
 public class MacProxyManager {
   static Logger log = Logger.getLogger(MacProxyManager.class.getName());
@@ -342,7 +339,7 @@ public class MacProxyManager {
 
   /**
    * Copy OS X network settings into Java's per-user persistent preference store
-   * 
+   *
    * @see Preferences
    * */
   public void backupNetworkSettings() {

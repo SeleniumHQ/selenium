@@ -19,14 +19,12 @@ package org.openqa.selenium.browserlaunchers;
 
 /**
  * Primitives for sleeping
- * 
- * @author dfabulich
  */
 public class Sleeper {
 
   /**
    * Sleeps without explicitly throwing an InterruptedException
-   * 
+   *
    * @param timeoutInSeconds Sleep time in seconds.
    * @throws RuntimeException wrapping an InterruptedException if one gets thrown
    */
@@ -36,7 +34,7 @@ public class Sleeper {
 
   /**
    * Sleeps without explicitly throwing an InterruptedException
-   * 
+   *
    * @param timeout the amout of time to sleep
    * @throws RuntimeException wrapping an InterruptedException if one gets thrown
    */

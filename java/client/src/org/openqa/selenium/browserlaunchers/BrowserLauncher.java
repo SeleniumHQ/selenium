@@ -20,9 +20,6 @@ package org.openqa.selenium.browserlaunchers;
 
 /**
  * The launcher interface for classes that will start/stop the browser process.
- * 
- * @author Paul Hammant
- * @version $Revision: 732 $
  */
 public interface BrowserLauncher {
 
@@ -34,7 +31,7 @@ public interface BrowserLauncher {
 
   /**
    * Start the browser in Selenese mode, auto-running the specified HTML suite
-   * 
+   *
    * @param suiteUrl the url of the HTML suite to launch
    * @param baseUrl the url within which to initiate the session (if needed)
    */
