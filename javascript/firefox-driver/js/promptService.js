@@ -342,12 +342,12 @@ PromptServiceSpoofModule.prototype.canUnload = function(aCompMgr) {
   return true;
 };
 
-function NSGetModule(comMgr, fileSpec) {
+NSGetModule = function(comMgr, fileSpec) {
   return new PromptServiceSpoofModule();
-}
+};
 
 DrivenPromptService.prototype.classID = DRIVEN_PROMPT_SERVICE_CLASS_ID;
 fxdriver.moz.load('resource://gre/modules/XPCOMUtils.jsm');
 if (XPCOMUtils.generateNSGetFactory) {
-  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([DrivenPromptService]);
+  /** @const */ NSGetFactory = XPCOMUtils.generateNSGetFactory([DrivenPromptService]);
 }

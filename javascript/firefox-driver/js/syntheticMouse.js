@@ -244,7 +244,6 @@ SyntheticMouse.prototype.contractID = '@googlecode.com/webdriver/syntheticmouse;
 SyntheticMouse.prototype.classID = Components.ID('{E8F9FEFE-C513-4097-98BE-BE00A41D3645}');
 
 /** @const */ var components = [SyntheticMouse];
-var NSGetFactory, NSGetModule;
 
 fxdriver.moz.load('resource://gre/modules/XPCOMUtils.jsm');
 

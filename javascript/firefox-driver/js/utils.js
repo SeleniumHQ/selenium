@@ -176,9 +176,6 @@ Utils.isEnabled = function(element) {
 };
 
 
-var global_element_cache = {};
-
-
 Utils.addToKnownElements = function(element) {
   var cache = {};
   Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);

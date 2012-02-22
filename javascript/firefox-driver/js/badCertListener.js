@@ -17,7 +17,7 @@
  */
 
 /**
- * @fileOverview Contains a Javascript implementation for
+ * @fileoverview Contains a Javascript implementation for
  * a custom nsICertOverrideService. This class will forward requests to the
  * original certificate override service - unless it was told to accept all
  * of them.
@@ -198,7 +198,7 @@ WdCertOverrideService.prototype.clearValidityOverride = function(aHostName,
 
 WdCertOverrideService.prototype.getAllOverrideHostsWithPorts = function(
     aCount, aHostsWithPortsArray) {
-  this.origListener_.getAllOverrideHostsWithPorts(aCert, aHostsWithPortsArray);
+  this.origListener_.getAllOverrideHostsWithPorts(aCount, aHostsWithPortsArray);
 };
 
 WdCertOverrideService.prototype.getValidityOverride = function(
@@ -317,13 +317,13 @@ WDBadCertListenerModule.prototype.canUnload = function(aCompMgr) {
   return true;
 };
 
-function NSGetModule(comMgr, fileSpec) {
+NSGetModule = function(comMgr, fileSpec) {
   return new WDBadCertListenerModule();
-}
+};
 
 
 WdCertOverrideService.prototype.classID = DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID;
 fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
 if (XPCOMUtils.generateNSGetFactory) {
-  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([WdCertOverrideService]);
+  /** @const */ NSGetFactory = XPCOMUtils.generateNSGetFactory([WdCertOverrideService]);
 }

@@ -431,13 +431,13 @@ wdSessionModule.prototype.canUnload = function() {
 /**
  * Module initialization.
  */
-function NSGetModule() {
+NSGetModule = function() {
   return new wdSessionModule();
-}
+};
 
 wdSession.prototype.classID = wdSession.CLASS_ID
 fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
 if (XPCOMUtils.generateNSGetFactory) {
-  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSession]);
+  /** @const */ NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSession]);
 }
 

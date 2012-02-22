@@ -1016,7 +1016,7 @@ function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, node
       "Cannot perform native interaction: " + nativeEventFailureCause);
 }
 
-getBrowserSpecificOffset_ = function(inBrowser) {
+var getBrowserSpecificOffset_ = function(inBrowser) {
     // In Firefox 4, there's a shared window handle. We need to calculate an offset
     // to add to the x and y locations.
     var browserSpecificXOffset = 0;
@@ -1047,7 +1047,7 @@ FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnVa
     respond['value'] = { message: mouseReturnValue['message'] };
     respond.send();
   }
-}
+};
 
 FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   // Coordinate spaces in use:

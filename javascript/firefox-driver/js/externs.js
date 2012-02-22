@@ -34,6 +34,8 @@ Components.utils;
 Components.utils['import'];
 
 var NetUtil;
+var NSGetFactory;
+var NSGetModule;
 
 var XPCNativeWrapper;
 

@@ -111,7 +111,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
     // subsequent listeners to be skipped. Favouring a memory leak over
     // not working properly.
     if (bot.userAgent.isProductVersion('4')) {
-      WebLoadingListener.removeListener(this.browser, listener);
+      WebLoadingListener.removeListener(this.browser, this);
     }
     this.onComplete();
   }

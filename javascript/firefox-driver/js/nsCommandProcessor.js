@@ -38,7 +38,6 @@ goog.require('fxdriver.modals');
 goog.require('goog.dom');
 
 
-var JSON;
 var loadStrategy_ = 'conservative';
 
 /**
@@ -852,12 +851,12 @@ nsCommandProcessor.Module = {
 /**
  * Module initialization.
  */
-function NSGetModule() {
+NSGetModule = function() {
   return nsCommandProcessor.Module;
-}
+};
 
 nsCommandProcessor.prototype.classID = nsCommandProcessor.CLASS_ID;
 fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
 if (XPCOMUtils.generateNSGetFactory) {
-  /** @const */ var NSGetFactory = XPCOMUtils.generateNSGetFactory([nsCommandProcessor]);
+  /** @const */ NSGetFactory = XPCOMUtils.generateNSGetFactory([nsCommandProcessor]);
 }

@@ -79,11 +79,11 @@ var ServerModule = {
 };
 
 //module initialization
-function NSGetModule(aCompMgr, aFileSpec) {
+NSGetModule = function(aCompMgr, aFileSpec) {
   return ServerModule;
-}
+};
 
-function NSGetFactory() {
+NSGetFactory = function() {
   return ServerFactory;
-}
+};
 WebDriverServer.prototype.classID = CLASS_ID;
