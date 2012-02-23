@@ -1,8 +1,43 @@
 v2.20.0 (In progress)
 =======
+
+WebDriver:
+  * RemoteWebDriver.setLogLevel is no longer a static method.
+  * Introduce a timeout for page loads. This needs to be used in
+    conjunction with the unstable page load detection.
+  * Adding alertIsPresent ExpectedCondition.
+  * Turning off password saving in the Android driver.
+  * FIXED: 3391: scroll containing elements, not just windows.
+  * FIXED: 2211: Allow the http client factory to discover the proxy
+    for traffic between the http command executor and the webdriver
+    server via the normal system properties.
+
+WebDriverJS:
+  * Refactored the WebDriverJs promise manager to use a proper tree to
+    track scheduled tasks.
+  * In webdriver.Builder, default to http://localhost:4444/wd/hub if a
+    server URL is not specified.
+
 Grid:
-  * The HUB is now upgraded to run with Jetty 7.6.1
-  * FIXED: 3096:	Memory leak in selenium hub
+  * The HUB is now upgraded to run with Jetty 7.6.1.
+  * Making the id for proxy final, and allowing it to be specified
+    from the registration request. If the id isn't in the request, the
+    remote host is used as an id, as it was before.
+  * FIXED: 3096: Memory leak in selenium hub.
+
+RC:
+  * More work on SSL certs. Should work cleanly in Firefox now.
+  * FIXED: 1982: Clear an input element in such a way as to avoid
+    firing any events when emulating typing in selenium
+    emulation. Fixes issue 1982.
+
+Atoms:
+  * Submit a form when the enter button is pressed in its input
+    element.
+  * Add a "mouse pixel scroll" event to the atoms events module.
+  * Adding a public "mouseOver" action and a little internal
+    refactoring around the mouseOver functionality.
+
 
 v2.19.0
 =======
