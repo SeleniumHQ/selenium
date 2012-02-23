@@ -2,7 +2,7 @@ v2.20.0 (In progress)
 =======
 Grid:
   * The HUB is now upgraded to run with Jetty 7.6.1
-
+  * FIXED: 3096:	Memory leak in selenium hub
 
 v2.19.0
 =======
