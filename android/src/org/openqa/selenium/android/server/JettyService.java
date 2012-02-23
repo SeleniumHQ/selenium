@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.android.server;
 
-import org.eclipse.jetty.http.HttpGenerator;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.seleniumhq.jetty7.http.HttpGenerator;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.handler.DefaultHandler;
+import org.seleniumhq.jetty7.server.handler.HandlerList;
+import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
+import org.seleniumhq.jetty7.servlet.ServletHolder;
 import org.openqa.selenium.android.library.Logger;
 import org.openqa.selenium.android.Platform;
 import org.openqa.selenium.android.app.R;
@@ -130,19 +130,19 @@ public class JettyService extends Service {
 
   protected void configureHandlers() {
     if (server != null) {
-      org.eclipse.jetty.servlet.ServletContextHandler root =
-          new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub",
-              org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
+      org.seleniumhq.jetty7.servlet.ServletContextHandler root =
+          new org.seleniumhq.jetty7.servlet.ServletContextHandler(server, "/wd/hub",
+              org.seleniumhq.jetty7.servlet.ServletContextHandler.SESSIONS);
       root.addServlet(new ServletHolder(new AndroidDriverServlet()), "/*");
       
-      org.eclipse.jetty.servlet.ServletContextHandler healthz =
-        new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub/status",
-            org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
+      org.seleniumhq.jetty7.servlet.ServletContextHandler healthz =
+        new org.seleniumhq.jetty7.servlet.ServletContextHandler(server, "/wd/hub/status",
+            org.seleniumhq.jetty7.servlet.ServletContextHandler.SESSIONS);
       healthz.addServlet(new ServletHolder(new HealthzServlet()), "/*");
       
       HandlerList handlers = new HandlerList();
       handlers.setHandlers(
-          new org.eclipse.jetty.server.Handler[] {healthz, root, new DefaultHandler()});
+          new org.seleniumhq.jetty7.server.Handler[] {healthz, root, new DefaultHandler()});
       server.setHandler(handlers);
 
     }

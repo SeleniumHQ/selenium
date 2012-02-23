@@ -195,9 +195,9 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     locationProvider = LocationManager.GPS_PROVIDER;
     locManager = (LocationManager) activity.getSystemService(
         Context.LOCATION_SERVICE);
-    locManager.setTestProviderEnabled(locationProvider, true);
     locManager.addTestProvider(locationProvider,
         true, true, true, true, true, true, true, 0, 5);
+    locManager.setTestProviderEnabled(locationProvider, true);
     locManager.requestLocationUpdates(locationProvider, 0, 0, this);
   }
 
