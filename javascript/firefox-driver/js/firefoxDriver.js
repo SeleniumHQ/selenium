@@ -56,14 +56,45 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
       [ function() { fxdriver.preconditions.alertPresent(this) } ];
 
 
-  goog.userAgent.GECKO = true;
-
   FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
 
   this.jsTimer = new fxdriver.Timer();
   this.mouse = Utils.newInstance("@googlecode.com/webdriver/syntheticmouse;1", "wdIMouse");
   // Current state of modifier keys (for synthenized events).
   this.modifierKeysState = undefined;
+
+  if (!bot.userAgent.isProductVersion('3.5')) {
+    fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
+    var cssSelectorFunction = (function() {
+      var sizzle = [
+        'var originalSizzle = window.Sizzle;',
+        Utils.loadUrl('resource://fxdriver/sizzle.js') + ';',
+        'var results = Sizzle(arguments[0], arguments[1]);',
+        'window.Sizzle = originalSizzle;'
+      ].join('\n');
+
+      function compileScript(script, root) {
+        var win = goog.dom.getOwnerDocument(root).defaultView;
+        win = fxdriver.moz.unwrap(win);
+        return new win.Function(script);
+      }
+
+      return {
+        single: function(target, root) {
+          var fn = compileScript(sizzle + ' return results[0] || null;', root);
+          root = fxdriver.moz.unwrap(root);
+          return fn.call(null, target, root);
+        },
+        many: function(target, root) {
+          var fn = compileScript(sizzle + ' return results;', root);
+          root = fxdriver.moz.unwrap(root);
+          return fn.call(null, target, root);
+        }
+      };
+    })();
+    bot.locators.add('css', cssSelectorFunction);
+    bot.locators.add('css selector', cssSelectorFunction);
+  }
 };
 
 

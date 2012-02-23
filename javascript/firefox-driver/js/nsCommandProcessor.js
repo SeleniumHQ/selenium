@@ -335,37 +335,6 @@ var nsCommandProcessor = function() {
   // Since we only support 3.0+, this check is enough to see if we're on 3.0
   if (!bot.userAgent.isProductVersion('3.5')) {
     eval(Utils.loadUrl('resource://fxdriver/json2.js'));
-    fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
-    var cssSelectorFunction = (function() {
-      var sizzle = [
-        'var originalSizzle = window.Sizzle;',
-        Utils.loadUrl('resource://fxdriver/sizzle.js') + ';',
-        'var results = Sizzle(arguments[0], arguments[1]);',
-        'window.Sizzle = originalSizzle;'
-      ].join('\n');
-
-      function compileScript(script, root) {
-        var win = goog.dom.getOwnerDocument(root).defaultView;
-        win = fxdriver.moz.unwrap(win);
-        return new win.Function(script);
-      }
-
-      return {
-        single: function(target, root) {
-          var fn = compileScript(sizzle + ' return results[0] || null;', root);
-          root = fxdriver.moz.unwrap(root);
-          return fn.call(null, target, root);
-        },
-        many: function(target, root) {
-          var fn = compileScript(sizzle + ' return results;', root);
-          root = fxdriver.moz.unwrap(root);
-          return fn.call(null, target, root);
-        }
-      };
-    })();
-    bot.locators.add('css', cssSelectorFunction);
-    bot.locators.add('css selector', cssSelectorFunction);
-//    Utils.loadUrl('resource://fxdriver/json2.js');
   }
 
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces["nsIPrefBranch"]);
