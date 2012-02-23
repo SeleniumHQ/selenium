@@ -7,17 +7,20 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
+import java.net.ProxySelector;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -46,9 +49,13 @@ public class HttpClientFactory {
   public HttpClientFactory() {
     httpClient = new DefaultHttpClient(getClientConnectionManager());
     httpClient.setParams(getHttpParams());
+    httpClient.setRoutePlanner(
+        getRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry()));
     gridClient = new DefaultHttpClient(getClientConnectionManager());
     gridClient.setRedirectStrategy(new MyRedirectHandler());
     gridClient.setParams(getGridHttpParams());
+    gridClient.setRoutePlanner(
+        getRoutePlanner(gridClient.getConnectionManager().getSchemeRegistry()));
     gridClient.getConnectionManager().closeIdleConnections(100, TimeUnit.MILLISECONDS);
   }
 
@@ -77,6 +84,10 @@ public class HttpClientFactory {
     HttpConnectionParams.setSoTimeout(params, TIMEOUT_THREE_HOURS);
     HttpConnectionParams.setStaleCheckingEnabled(params, true);
     return params;
+  }
+
+  public HttpRoutePlanner getRoutePlanner(SchemeRegistry registry) {
+    return new ProxySelectorRoutePlanner(registry, ProxySelector.getDefault());
   }
 
   public HttpParams getGridHttpParams(){
