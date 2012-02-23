@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
-import org.eclipse.jetty.util.log.Logger;
+import org.seleniumhq.jetty7.util.log.Logger;
 
 public class NullLogger implements Logger {
   public void disableLogging() {

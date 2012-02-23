@@ -13,6 +13,6 @@ java_library(name = "grid",
     "//third_party/java/apache-httpclient",
     "//third_party/java/jcip-annotations",
     "//third_party/java/yaml",
-    "//third_party/java/jetty:jetty761"
+    "//third_party/java/jetty"
   ])
 

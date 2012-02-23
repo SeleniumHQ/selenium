@@ -19,18 +19,17 @@ package org.openqa.selenium.environment.webserver;
 
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
-import org.eclipse.jetty.server.Handler;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.net.NetworkUtils;
-
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.server.ssl.SslSocketConnector;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.servlets.MultiPartFilter;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.seleniumhq.jetty7.server.Connector;
+import org.seleniumhq.jetty7.server.Handler;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.handler.ContextHandlerCollection;
+import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
+import org.seleniumhq.jetty7.server.ssl.SslSocketConnector;
+import org.seleniumhq.jetty7.servlet.ServletHolder;
+import org.seleniumhq.jetty7.servlets.MultiPartFilter;
+import org.seleniumhq.jetty7.webapp.WebAppContext;
 
 import java.io.File;
 

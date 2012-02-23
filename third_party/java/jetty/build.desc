@@ -1,34 +1,12 @@
 java_library(name = "jetty",
   deps = [
-    ":lite",
+    "jetty-repacked-7.6.1.jar",
     "//third_party/java/jasper",
-    "//third_party/java/slf4j"
-  ])
-
-java_library(name = "lite",
-  deps = [
-    "jetty-continuation-7.2.0.v20101020.jar",
-    "jetty-http-7.2.0.v20101020.jar",
-    "jetty-io-7.2.0.v20101020.jar",
-    "jetty-security-7.2.0.v20101020.jar",
-    "jetty-server-7.2.0.v20101020.jar",
-    "jetty-servlet-7.2.0.v20101020.jar",
-    "jetty-servlets-7.2.0.v20101020.jar",
-    "jetty-util-7.2.0.v20101020.jar",
-    "jetty-webapp-7.2.0.v20101020.jar",
-    "jetty-websocket-7.2.0.v20101020.jar",
-    "jetty-xml-7.2.0.v20101020.jar",
-    "//third_party/java/servlet-api"
+    "//third_party/java/slf4j",
+	"//third_party/java/servlet-api",
   ])
 
 java_library(name = "lite-android",
   deps = [
     "jetty-lite-7.2.0-repackaged-for-android.jar"
   ])
-
-
-java_library(name = "jetty761",
-  deps = [
-    "jetty-repacked-7.6.1.jar",
-  ])
-
