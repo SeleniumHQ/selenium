@@ -61,13 +61,14 @@
 <span class="c"># See the License for the specific language governing permissions and</span>
 <span class="c"># limitations under the License.</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">zipfile</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
 <span class="kn">from</span> <span class="nn">distutils</span> <span class="kn">import</span> <span class="n">dir_util</span>
@@ -77,6 +78,11 @@
 <span class="n">EXTENSION_NAME</span> <span class="o">=</span> <span class="s">&quot;fxdriver@googlecode.com&quot;</span>
 
 <div class="viewcode-block" id="FirefoxProfile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile">[docs]</a><span class="k">class</span> <span class="nc">FirefoxProfile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&quot;darwin&quot;</span><span class="p">:</span>
+        <span class="n">native_events</span> <span class="o">=</span> <span class="s">&quot;false&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">native_events</span> <span class="o">=</span> <span class="s">&quot;true&quot;</span>
 
     <span class="n">ANONYMOUS_PROFILE_NAME</span>   <span class="o">=</span> <span class="s">&quot;WEBDRIVER_ANONYMOUS_PROFILE&quot;</span>
     <span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="p">{</span>
@@ -129,7 +135,7 @@
         <span class="s">&quot;javascript.options.showInConsole&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;browser.dom.window.dump.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
-        <span class="s">&quot;webdriver_enable_native_events&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
+        <span class="s">&quot;webdriver_enable_native_events&quot;</span><span class="p">:</span> <span class="n">native_events</span><span class="p">,</span>
         <span class="s">&quot;dom.max_script_run_time&quot;</span><span class="p">:</span> <span class="s">&quot;30&quot;</span><span class="p">,</span>
         <span class="p">}</span>
 

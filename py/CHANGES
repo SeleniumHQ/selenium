@@ -1,3 +1,7 @@
+Selenium 2.20
+* disable native events for FF on Mac by default
+* fix webdriverwait to execute at least once when using 0 timeout
+
 Selenium 2.19
 * WebDriverBackedSelenium is now avalaible to all languages
 * Addon installation fixes
