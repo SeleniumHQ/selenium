@@ -42,6 +42,11 @@
 	<lib name="bcprov-jdk15-135.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/bcprov/bcprov-jdk15-135.jar!/"/>
 	</lib>
+	<lib name="jetty-repacked-7.6.1.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/jetty/jetty-repacked-7.6.1-sources.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked-7.6.1-sources.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked-7.6.1.jar!/"/>
+	</lib>
 	<lib name="htmlunit-2.9.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.9.jar!/"/>
 	</lib>

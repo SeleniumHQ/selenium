@@ -28,14 +28,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.internal.utils.ForwardConfiguration;
+import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
-import org.openqa.jetty.jetty.servlet.ServletHttpResponse;
+import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.grid.internal.utils.ForwardConfiguration;
+import org.seleniumhq.jetty7.server.Response;
 
 /**
  * Handles an individual request, scope is a single request and hence a single thread.
@@ -123,7 +123,7 @@ public class WebDriverRequestHandler extends RequestHandler {
 
     if (getResponse().containsHeader("Location")) {
       String location =
-          ((ServletHttpResponse) getResponse()).getHttpResponse().getField("Location");
+          ((Response) getResponse()).getHeader( "Location" );
       ExternalSessionKey res =  ExternalSessionKey.fromWebDriverRequest( location);
       if ( res!=null){
         return res;

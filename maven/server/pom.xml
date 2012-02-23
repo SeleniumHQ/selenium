@@ -28,6 +28,11 @@
             <version>6.1.9</version>
         </dependency>
         <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>jetty-repacked</artifactId>
+            <version>7.6.1</version>
+        </dependency>
+        <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
         </dependency>

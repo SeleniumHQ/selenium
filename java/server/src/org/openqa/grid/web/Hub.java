@@ -29,6 +29,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.servlet.ConsoleServlet;
@@ -40,19 +42,16 @@ import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
-import org.openqa.jetty.http.SocketListener;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.WebApplicationContext;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.bio.SocketConnector;
+import org.seleniumhq.jetty7.servlet.ServletContextHandler;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.log.TerseFormatter;
 
-import com.google.common.collect.Maps;
-
 /**
- * Jetty server. Main entry point for everything about the grid.
- * <p/>
- * Except for unit tests, this should be a singleton.
+ * Jetty server. Main entry point for everything about the grid. <p/> Except for unit tests, this
+ * should be a singleton.
  */
 public class Hub {
 
@@ -71,7 +70,7 @@ public class Hub {
 
   /**
    * get the registry backing up the hub state.
-   * 
+   *
    * @return The registry
    */
   public Registry getRegistry() {
@@ -81,8 +80,8 @@ public class Hub {
   public Hub(GridHubConfiguration config) {
     String logFilename =
         config.getLogFilename() == null
-            ? RemoteControlConfiguration.getDefaultLogOutFile()
-            : config.getLogFilename();
+        ? RemoteControlConfiguration.getDefaultLogOutFile()
+        : config.getLogFilename();
     if (logFilename != null) {
       try {
         Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
@@ -122,37 +121,41 @@ public class Hub {
   private void initServer() {
     try {
       server = new Server();
-      SocketListener socketListener = new SocketListener();
-      socketListener.setMaxIdleTimeMs(60000);
+      SocketConnector socketListener = new SocketConnector();
+      socketListener.setMaxIdleTime(60000);
       socketListener.setPort(port);
-      server.addListener(socketListener);
+      server.addConnector(socketListener);
 
-      WebApplicationContext root = server.addWebApplication("", ".");
+      ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
+      root.setContextPath("/");
+      server.setHandler(root);
+
       root.setAttribute(Registry.KEY, registry);
 
-      root.addServlet("/*", DisplayHelpServlet.class.getName());
+      root.addServlet(DisplayHelpServlet.class.getName(), "/*");
 
-      root.addServlet("/grid/console/*", ConsoleServlet.class.getName());
-      root.addServlet("/grid/beta/console/*", org.openqa.grid.web.servlet.beta.ConsoleServlet.class.getName());
-      root.addServlet("/grid/register/*", RegistrationServlet.class.getName());
+      root.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
+      root.addServlet(org.openqa.grid.web.servlet.beta.ConsoleServlet.class.getName(),
+                      "/grid/beta/console/*");
+      root.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
       // TODO remove at some point. Here for backward compatibility of
       // tests etc.
-      root.addServlet("/grid/driver/*", DriverServlet.class.getName());
-      root.addServlet("/wd/hub/*", DriverServlet.class.getName());
-      root.addServlet("/selenium-server/driver/*", DriverServlet.class.getName());
-      root.addServlet("/grid/resources/*", ResourceServlet.class.getName());
+      root.addServlet(DriverServlet.class.getName(), "/grid/driver/*");
+      root.addServlet(DriverServlet.class.getName(), "/wd/hub/*");
+      root.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
+      root.addServlet(ResourceServlet.class.getName(), "/grid/resources/*");
 
-      root.addServlet("/grid/api/proxy/*", ProxyStatusServlet.class.getName());
-      root.addServlet("/grid/api/testsession/*", TestSessionStatusServlet.class.getName());
+      root.addServlet(ProxyStatusServlet.class.getName(), "/grid/api/proxy/*");
+      root.addServlet(TestSessionStatusServlet.class.getName(), "/grid/api/testsession/*");
 
       // Selenium Grid 1.0 compatibility routes for older nodes trying to
       // work with the newer hub.
-      root.addServlet("/registration-manager/register/*", RegistrationServlet.class.getName());
-      root.addServlet("/heartbeat", Grid1HeartbeatServlet.class.getName());
+      root.addServlet(RegistrationServlet.class.getName(), "/registration-manager/register/*");
+      root.addServlet(Grid1HeartbeatServlet.class.getName(), "/heartbeat");
 
       // Load any additional servlets provided by the user.
       for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
-        root.addServlet(entry.getKey(), entry.getValue().getName());
+        root.addServlet(entry.getValue().getName(), entry.getKey());
       }
 
     } catch (Throwable e) {

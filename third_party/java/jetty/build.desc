@@ -25,3 +25,10 @@ java_library(name = "lite-android",
   deps = [
     "jetty-lite-7.2.0-repackaged-for-android.jar"
   ])
+
+
+java_library(name = "jetty761",
+  deps = [
+    "jetty-repacked-7.6.1.jar",
+  ])
+
