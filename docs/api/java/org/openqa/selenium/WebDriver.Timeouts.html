@@ -129,6 +129,15 @@ An interface for managing timeout behavior for WebDriver instances.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long, java.util.concurrent.TimeUnit)">pageLoadTimeout</A></B>(long&nbsp;time,
+                java.util.concurrent.TimeUnit&nbsp;unit)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the amount of time to wait for a page load to complete before throwing an error.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)">setScriptTimeout</A></B>(long&nbsp;time,
                  java.util.concurrent.TimeUnit&nbsp;unit)</CODE>
 
@@ -187,6 +196,22 @@ setScriptTimeout</H3>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>time</CODE> - The timeout value.<DD><CODE>unit</CODE> - The unit of time.
 <DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><A HREF="../../../org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String, java.lang.Object...)"><CODE>JavascriptExecutor.executeAsyncScript(String, Object...)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="pageLoadTimeout(long, java.util.concurrent.TimeUnit)"><!-- --></A><H3>
+pageLoadTimeout</H3>
+<PRE>
+<A HREF="../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A> <B>pageLoadTimeout</B>(long&nbsp;time,
+                                   java.util.concurrent.TimeUnit&nbsp;unit)</PRE>
+<DL>
+<DD>Sets the amount of time to wait for a page load to complete before throwing an error.
+ If the timeout is negative, page loads can be indefinite.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>time</CODE> - The timeout value.<DD><CODE>unit</CODE> - The unit of time.
+<DT><B>Returns:</B><DD></DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

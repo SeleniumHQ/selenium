@@ -147,6 +147,15 @@ java.lang.Object
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#pageLoadTimeout(long, java.util.concurrent.TimeUnit)">pageLoadTimeout</A></B>(long&nbsp;time,
+                java.util.concurrent.TimeUnit&nbsp;unit)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the amount of time to wait for a page load to complete before throwing an error.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#setScriptTimeout(long, java.util.concurrent.TimeUnit)">setScriptTimeout</A></B>(long&nbsp;time,
                  java.util.concurrent.TimeUnit&nbsp;unit)</CODE>
 
@@ -239,6 +248,26 @@ public <A HREF="../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>time</CODE> - The timeout value.<DD><CODE>unit</CODE> - The unit of time.
 <DT><B>Returns:</B><DD>A self reference.<DT><B>See Also:</B><DD><A HREF="../../../../org/openqa/selenium/JavascriptExecutor.html#executeAsyncScript(java.lang.String, java.lang.Object...)"><CODE>JavascriptExecutor.executeAsyncScript(String, Object...)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="pageLoadTimeout(long, java.util.concurrent.TimeUnit)"><!-- --></A><H3>
+pageLoadTimeout</H3>
+<PRE>
+public <A HREF="../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A> <B>pageLoadTimeout</B>(long&nbsp;time,
+                                          java.util.concurrent.TimeUnit&nbsp;unit)</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long, java.util.concurrent.TimeUnit)">WebDriver.Timeouts</A></CODE></B></DD>
+<DD>Sets the amount of time to wait for a page load to complete before throwing an error.
+ If the timeout is negative, page loads can be indefinite.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long, java.util.concurrent.TimeUnit)">pageLoadTimeout</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>time</CODE> - The timeout value.<DD><CODE>unit</CODE> - The unit of time.
+<DT><B>Returns:</B><DD></DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

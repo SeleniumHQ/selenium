@@ -128,16 +128,29 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#FirefoxProfile()">FirefoxProfile</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#FirefoxProfile(java.io.File)">FirefoxProfile</A></B>(java.io.File&nbsp;profileDir)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructs a firefox profile from an existing profile directory.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected </CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#FirefoxProfile(java.io.Reader, java.io.File)">FirefoxProfile</A></B>(java.io.Reader&nbsp;defaultsReader,
+               java.io.File&nbsp;profileDir)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -263,6 +276,14 @@ java.lang.Object
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Call this to cause the current profile to be written to disk.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;java.io.Reader</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#onlyOverrideThisIfYouKnowWhatYouAreDoing()">onlyOverrideThisIfYouKnowWhatYouAreDoing</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Internal method.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -421,6 +442,16 @@ public <B>FirefoxProfile</B>(java.io.File&nbsp;profileDir)</PRE>
 <DL>
 <DT><B>Parameters:</B><DD><CODE>profileDir</CODE> - The profile directory to use as a model.</DL>
 </DL>
+<HR>
+
+<A NAME="FirefoxProfile(java.io.Reader, java.io.File)"><!-- --></A><H3>
+FirefoxProfile</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</A>
+</FONT>protected <B>FirefoxProfile</B>(java.io.Reader&nbsp;defaultsReader,
+                              java.io.File&nbsp;profileDir)</PRE>
+<DL>
+</DL>
 
 <!-- ============ METHOD DETAIL ========== -->
 
@@ -431,6 +462,20 @@ public <B>FirefoxProfile</B>(java.io.File&nbsp;profileDir)</PRE>
 <B>Method Detail</B></FONT></TH>
 </TR>
 </TABLE>
+
+<A NAME="onlyOverrideThisIfYouKnowWhatYouAreDoing()"><!-- --></A><H3>
+onlyOverrideThisIfYouKnowWhatYouAreDoing</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</A>
+</FONT>protected java.io.Reader <B>onlyOverrideThisIfYouKnowWhatYouAreDoing</B>()</PRE>
+<DL>
+<DD><strong>Internal method. This is liable to change at a moment's notice.</strong>
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
 
 <A NAME="addWebDriverExtensionIfNeeded()"><!-- --></A><H3>
 addWebDriverExtensionIfNeeded</H3>
