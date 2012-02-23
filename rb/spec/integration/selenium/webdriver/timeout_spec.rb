@@ -1,6 +1,6 @@
 require File.expand_path("../spec_helper", __FILE__)
 
-describe "Timeouts", :focus => true do
+describe "Timeouts" do
 
   context "implicit waits" do
     before do
