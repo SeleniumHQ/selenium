@@ -214,6 +214,7 @@ class SendKeysCommandHandler : public IECommandHandler {
         curr = ::SendMessage(edit_field_window_handle, WM_GETTEXTLENGTH, 0, 0);
       }
 
+      bool triedToDismiss = false;
       for (int i = 0; i < 10000; i++) {
         HWND open_window_handle = ::GetDlgItem(dialog_window_handle, IDOK);
         if (open_window_handle) {
@@ -222,10 +223,19 @@ class SendKeysCommandHandler : public IECommandHandler {
           total += ::SendMessage(open_window_handle, WM_LBUTTONUP, 0, 0);
 
           if (total == 0) {
-            return true;
+            triedToDismiss = true;
+            // Sometimes IE10 doesn't dismiss this dialog after the messages
+            // are received, even though the messages were processed
+            // successfully.  If not, try again, just in case.
+            if (!IsWindow(dialog_window_handle)) {
+              return true;
+            }
           }
 
-          wait(500);
+          wait(200);
+        } else if (triedToDismiss) {
+          // Probably just a slow close
+          return true;
         }
       }
 
