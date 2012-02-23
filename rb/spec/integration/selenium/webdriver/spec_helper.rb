@@ -13,7 +13,8 @@ if WebDriver::Platform.jruby?
 
   [
     Dir['build/**/*.jar'],
-    Dir['third_party/java/{jetty,servlet-api}/*.jar']
+    Dir['third_party/java/servlet-api/*.jar'],
+    'third_party/java/jetty/jetty-repacked-7.6.1.jar',
   ].flatten.each { |jar| require jar }
 
 
