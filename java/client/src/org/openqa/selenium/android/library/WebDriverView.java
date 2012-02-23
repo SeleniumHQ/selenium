@@ -106,6 +106,7 @@ import com.google.common.base.Preconditions;
     settings.setDomStorageEnabled(true);
     settings.setGeolocationEnabled(true);
     settings.setSaveFormData(true);
+    settings.setSavePassword(false);
     settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
 
     // Same as the browser settings
