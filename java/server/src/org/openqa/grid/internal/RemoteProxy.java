@@ -560,7 +560,9 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
     HttpClient client = getHttpClientFactory().getHttpClient();
     HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
     HttpResponse response;
+    String existingName = Thread.currentThread().getName();
     try {
+      Thread.currentThread().setName("Probing status of " + url);
       response = client.execute(host, r);
       int code = response.getStatusLine().getStatusCode();
       if (code == 200) {
@@ -573,6 +575,8 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
       }
     } catch (Exception e) {
       throw new GridException(e.getMessage(), e);
+    } finally {
+       Thread.currentThread().setName(existingName);
     }
   }
 
