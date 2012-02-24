@@ -31,7 +31,7 @@ class Select:
             from selenium.webdriver.support.ui import Select \n
             Select(driver.find_element_by_tag_name("select")).select_by_index(2)
         """
-        if webelement.tag_name != "select":
+        if webelement.tag_name.lower() != "select":
             raise UnexpectedTagNameException(
                 "Select only works on <select> elements, not on <%s>" % 
                 webelement.tag_name)
