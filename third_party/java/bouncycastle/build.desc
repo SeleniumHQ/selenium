@@ -1,2 +1,2 @@
 java_library(name = "bouncycastle",
-  deps = [ "bcprov-jdk15-135.jar" ])
+  deps = [ "bcprov-jdk15-146.jar" ])

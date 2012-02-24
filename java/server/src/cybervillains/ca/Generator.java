@@ -30,7 +30,7 @@ import java.util.Date;
  * <pre>
  * $> cd SELENIUM_SOURCE_DIRECTORY_ROOT
  * $> ./go //java/server/src/cybervillains:cybervillains
- * $> java -cp build/java/server/src/cybervillains/cybervillains.jar:third_party/java/bcprov/bcprov-jdk15-135.jar cybervillains.ca.Generator
+ * $> java -cp build/java/server/src/cybervillains/cybervillains.jar:third_party/java/bouncycastle/bcprov-jdk15-146.jar cybervillains.ca.Generator
  * $> cp -r new_certs/* java/server/src/org/openqa/selenium/server/sslSupport/
  * $> rm -r new_certs
  * $> COMMIT TO SELENIUM REPO

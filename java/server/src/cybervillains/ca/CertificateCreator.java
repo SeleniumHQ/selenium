@@ -1,7 +1,7 @@
 package cybervillains.ca;
 
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.DEREncodable;
-import org.bouncycastle.asn1.DEREncodableVector;
 import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -123,7 +123,7 @@ public class CertificateCreator {
    * @param newPubKey
    * @param caCert
    * @param caPrivateKey
-   * @param hostname
+   * @param subject
    * @return
    * @throws CertificateParsingException
    * @throws SignatureException
@@ -189,22 +189,17 @@ public class CertificateCreator {
     // false,
     // new KeyUsage(KeyUsage.dataEncipherment | KeyUsage.digitalSignature ) );
 
-
-    DEREncodableVector typicalSSLServerExtendedKeyUsages = new DEREncodableVector();
-
-    typicalSSLServerExtendedKeyUsages.add(new DERObjectIdentifier(
-        ExtendedKeyUsageConstants.serverAuth));
-    typicalSSLServerExtendedKeyUsages.add(new DERObjectIdentifier(
-        ExtendedKeyUsageConstants.clientAuth));
-    typicalSSLServerExtendedKeyUsages.add(new DERObjectIdentifier(
-        ExtendedKeyUsageConstants.netscapeServerGatedCrypto));
-    typicalSSLServerExtendedKeyUsages.add(new DERObjectIdentifier(
-        ExtendedKeyUsageConstants.msServerGatedCrypto));
+    DERSequence typicalSSLServerExtendedKeyUsages = new DERSequence(new ASN1Encodable[]{
+        new DERObjectIdentifier(ExtendedKeyUsageConstants.serverAuth),
+        new DERObjectIdentifier(ExtendedKeyUsageConstants.clientAuth),
+        new DERObjectIdentifier(ExtendedKeyUsageConstants.netscapeServerGatedCrypto),
+        new DERObjectIdentifier(ExtendedKeyUsageConstants.msServerGatedCrypto)
+    });
 
     v3CertGen.addExtension(
         X509Extensions.ExtendedKeyUsage,
         false,
-        new DERSequence(typicalSSLServerExtendedKeyUsages));
+        typicalSSLServerExtendedKeyUsages);
 
     // Disabled by default. Left in comments in case this is desired.
     //
@@ -456,17 +451,16 @@ public class CertificateCreator {
         false,
         new KeyUsage(KeyUsage.cRLSign | KeyUsage.keyCertSign));
 
-    DEREncodableVector typicalCAExtendedKeyUsages = new DEREncodableVector();
-
-    typicalCAExtendedKeyUsages.add(new DERObjectIdentifier(ExtendedKeyUsageConstants.serverAuth));
-    typicalCAExtendedKeyUsages.add(new DERObjectIdentifier(ExtendedKeyUsageConstants.OCSPSigning));
-    typicalCAExtendedKeyUsages.add(new DERObjectIdentifier(
-        ExtendedKeyUsageConstants.verisignUnknown));
+    DERSequence typicalCAExtendedKeyUsages = new DERSequence(new ASN1Encodable[] {
+        new DERObjectIdentifier(ExtendedKeyUsageConstants.serverAuth),
+        new DERObjectIdentifier(ExtendedKeyUsageConstants.OCSPSigning),
+        new DERObjectIdentifier(ExtendedKeyUsageConstants.verisignUnknown)
+    });
 
     v3CertGen.addExtension(
         X509Extensions.ExtendedKeyUsage,
         false,
-        new DERSequence(typicalCAExtendedKeyUsages));
+        typicalCAExtendedKeyUsages);
 
     X509Certificate cert = v3CertGen.generate(keyPair.getPrivate(), "BC");
 

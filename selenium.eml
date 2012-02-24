@@ -39,8 +39,10 @@
 	<lib name="htmlunit-core-js-2.9.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.9.jar!/"/>
 	</lib>
-	<lib name="bcprov-jdk15-135.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/bouncycastle/bcprov-jdk15-135.jar!/"/>
+	<lib name="bcprov-jdk15-146.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/bouncycastle/bcprov-jdk15-146-src.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/bouncycastle/bcprov-jdk15-146-src.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/bouncycastle/bcprov-jdk15-146.jar!/"/>
 	</lib>
 	<lib name="jetty-repacked-7.6.1.jar" scope="COMPILE">
 		<srcroot url="jar://$MODULE_DIR$/third_party/java/jetty/jetty-repacked-7.6.1-sources.jar!/"/>
