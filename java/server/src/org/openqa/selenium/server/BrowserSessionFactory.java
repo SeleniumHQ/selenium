@@ -475,6 +475,7 @@ public class BrowserSessionFactory {
         BrowserSessionInfo info = iter.next();
         if (now - info.lastClosedAt > maxIdleSessionTime) {
           iter.remove();
+          shutdownBrowserAndClearSessionData(info);
         }
       }
     }
