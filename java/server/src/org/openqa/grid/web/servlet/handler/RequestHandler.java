@@ -165,12 +165,12 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
         }
         try {
           forwardRequest(session, this);
+        } catch (ClientGoneException e) {
+          log.log(Level.WARNING, "The client is gone for session " + session + ", terminating");
+          registry.terminate(session, SessionTerminationReason.CLIENT_GONE);
         } catch (Throwable t) {
-          SessionTerminationReason reason = t instanceof ClientGoneException ?
-                                         SessionTerminationReason.CLIENT_GONE :
-                                         SessionTerminationReason.FORWARDING_TO_NODE_FAILED;
           log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);
-          registry.terminate(session, reason);
+          registry.terminate(session, SessionTerminationReason.FORWARDING_TO_NODE_FAILED);
           throw new GridException("cannot forward the request " + t.getMessage(), t);
         }
 

@@ -25,7 +25,6 @@
 	<classpathentry kind="lib" path="third_party/java/commons-logging/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jna/jna-3.4.0.jar" sourcepath="third_party/java/jna/jna-3.4.0-src.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jna/jna-platform-3.4.0.jar" sourcepath="third_party/java/jna/jna-platform-3.4.0-src.jar"/>
-	<classpathentry kind="lib" path="third_party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar"/>
 	<classpathentry kind="lib" path="third_party/java/mx4j/mx4j-tools-3.0.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/json/json-20080701.jar"/>
 	<classpathentry kind="lib" path="third_party/java/testng/testng-6.0.1-nobsh-noguice.jar" sourcepath="third_party/java/testng/testng-6.0.1-nobsh-noguice-src.jar"/>
