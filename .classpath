@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="third_party/java/junit/junit-dep-4.10.jar" sourcepath="third_party/java/junit/junit-dep-4.10-src.jar"/>
 	<classpathentry kind="lib" path="third_party/java/easymock/easymockclassextension-2.4.jar"/>
 	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-core-js-2.9.jar"/>
-	<classpathentry kind="lib" path="third_party/java/bcprov/bcprov-jdk15-135.jar"/>
+	<classpathentry kind="lib" path="third_party/java/bouncycastle/bcprov-jdk15-135.jar"/>
 	<classpathentry kind="lib" path="third_party/java/jetty/jetty-repacked-7.6.1.jar" sourcepath="third_party/java/jetty/jetty-repacked-7.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="third_party/java/htmlunit/htmlunit-2.9.jar"/>
 	<classpathentry kind="lib" path="third_party/java/easymock/easymock-2.4.jar"/>
