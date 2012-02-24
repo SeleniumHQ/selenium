@@ -2,18 +2,17 @@ package org.openqa.selenium.remote.server.auth;
 
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
-
-import org.eclipse.jetty.http.security.Constraint;
-import org.eclipse.jetty.http.security.Password;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.security.HashLoginService;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.seleniumhq.jetty7.security.ConstraintMapping;
+import org.seleniumhq.jetty7.security.ConstraintSecurityHandler;
+import org.seleniumhq.jetty7.security.HashLoginService;
+import org.seleniumhq.jetty7.security.authentication.BasicAuthenticator;
+import org.seleniumhq.jetty7.server.Connector;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
+import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty7.servlet.ServletHolder;
+import org.seleniumhq.jetty7.util.security.Constraint;
+import org.seleniumhq.jetty7.util.security.Password;
 
 public class AuthenticatedWebDriverServer {
 
