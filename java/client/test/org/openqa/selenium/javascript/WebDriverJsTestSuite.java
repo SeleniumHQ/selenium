@@ -32,10 +32,10 @@ import com.google.common.base.Throwables;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty7.servlet.ServletHolder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
