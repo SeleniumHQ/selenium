@@ -310,7 +310,7 @@ public class FirefoxProfile {
     // If the user sets the home page, we should also start up there
     Object homePage = prefs.getPreference("browser.startup.homepage");
     if (homePage != null && homePage instanceof String) {
-      prefs.setPreference("startup.homepage_welcome_url", (String) homePage);
+      prefs.setPreference("startup.homepage_welcome_url", "");
     }
 
     if (!"about:blank".equals(prefs.getPreference("browser.startup.homepage"))) {
