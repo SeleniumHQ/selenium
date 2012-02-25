@@ -27,6 +27,7 @@ goog.provide('WdCertOverrideService');
 
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.moz');
+goog.require('bot.userAgent');
 
 
 function getPreferenceFromProfile(prefName, prefDefaultValue) {
@@ -276,6 +277,7 @@ WDBadCertListenerModule.prototype.unregisterSelf = function(
   aCompMgr.unregisterFactoryLocation(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, aLocation);
 };
 
+if (!bot.userAgent.isProductVersion('12')){
 /** @const */ var FACTORY = {
   createInstance: function (aOuter, aIID) {
     if (aOuter != null)
@@ -299,7 +301,8 @@ WDBadCertListenerModule.prototype.unregisterSelf = function(
   }
 };
 
-WdCertOverrideService.prototype._xpcom_factory = FACTORY;
+//  WdCertOverrideService.prototype._xpcom_factory = FACTORY;
+}
 
 WDBadCertListenerModule.prototype.getClassObject = function(
     aCompMgr, aCID, aIID) {
@@ -307,7 +310,11 @@ WDBadCertListenerModule.prototype.getClassObject = function(
     throw CR['NS_ERROR_NOT_IMPLEMENTED'];
 
   if (aCID.equals(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID)) {
-    return FACTORY;
+    if (bot.userAgent.isProductVersion('12')){
+      return WDCertOverrideFactory; 
+    }else{
+      return FACTORY;
+   }
   }
 
   throw CR['NS_ERROR_NO_INTERFACE'];
