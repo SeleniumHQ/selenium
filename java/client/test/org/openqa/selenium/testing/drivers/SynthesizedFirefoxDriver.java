@@ -19,7 +19,10 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
+import com.google.common.io.Files;
+
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.InProject.locate;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
@@ -71,6 +74,9 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
   private static FirefoxProfile createTemporaryProfile() {
     try {
+      File prefs = locate("javascript/firefox-driver/webdriver.json");
+      File dest = locate("out/production/selenium/org/openqa/selenium/firefox");
+      Files.copy(prefs, new File(dest, "webdriver.json"));
       FirefoxProfile profile = new FirefoxProfile();
 
       if (Boolean.getBoolean("webdriver.debug")) {
@@ -87,7 +93,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
   private static FirefoxProfile copyExtensionTo(FirefoxProfile profile)
       throws Exception {
-    File topDir = InProject.locate("Rakefile").getParentFile();
+    File topDir = locate("Rakefile").getParentFile();
     File ext = new File(topDir,
         "build/javascript/firefox-driver/webdriver.xpi");
     if (!ext.exists() || runBuild) {
