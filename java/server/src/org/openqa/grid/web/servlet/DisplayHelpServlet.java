@@ -84,7 +84,7 @@ public class DisplayHelpServlet extends HttpServlet {
       ByteStreams.copy(in, response.getOutputStream());
     } finally {
       in.close();
-      response.getOutputStream().close();
+      response.flushBuffer();
     }
   }
 

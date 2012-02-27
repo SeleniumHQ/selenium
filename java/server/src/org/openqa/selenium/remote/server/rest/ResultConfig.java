@@ -219,6 +219,7 @@ public class ResultConfig {
       FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
         public ResultType call() throws Exception {
           renderer.render(request, response, handler);
+          response.flushBuffer();
           return null;
         }
       });
@@ -236,6 +237,7 @@ public class ResultConfig {
 
     } else {
       renderer.render(request, response, handler);
+      response.flushBuffer();
     }
   }
 

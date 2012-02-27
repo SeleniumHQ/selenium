@@ -118,7 +118,7 @@ public class DriverServlet extends RegistryBasedServlet {
           ByteStreams.copy(in, response.getOutputStream());
         } finally {
           in.close();
-          response.getOutputStream().close();
+          response.flushBuffer();
         }
       } else {
         throw (new IOException(e));

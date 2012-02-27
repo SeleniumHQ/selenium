@@ -56,7 +56,7 @@ public class ResourceServlet extends HttpServlet {
       ByteStreams.copy(in, response.getOutputStream());
     } finally {
       in.close();
-      response.getOutputStream();
+      response.flushBuffer();
     }
 
   }

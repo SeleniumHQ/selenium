@@ -243,8 +243,6 @@ public class TestSession {
 
           writeRawBody(response, bytes);
 
-	  // Flushing the buffer is important to avoid concurrency problems
-          response.flushBuffer();
         } finally {
           EntityUtils.consume(responseBody);
         }
@@ -258,6 +256,8 @@ public class TestSession {
       return res;
     } finally {
       forwardingRequest = false;
+      // Flushing the buffer is important to avoid concurrency problems
+      response.flushBuffer();
     }
   }
 
