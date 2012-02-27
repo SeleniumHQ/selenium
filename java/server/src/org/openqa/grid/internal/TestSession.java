@@ -240,7 +240,11 @@ public class TestSession {
           }
 
           final byte[] bytes = drainInputStream(in);
+
           writeRawBody(response, bytes);
+
+	  // Flushing the buffer is important to avoid concurrency problems
+          response.flushBuffer();
         } finally {
           EntityUtils.consume(responseBody);
         }
