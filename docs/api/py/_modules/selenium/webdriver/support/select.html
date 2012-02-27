@@ -79,7 +79,7 @@
 <span class="sd">            from selenium.webdriver.support.ui import Select \n</span>
 <span class="sd">            Select(driver.find_element_by_tag_name(&quot;select&quot;)).select_by_index(2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">webelement</span><span class="o">.</span><span class="n">tag_name</span> <span class="o">!=</span> <span class="s">&quot;select&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">webelement</span><span class="o">.</span><span class="n">tag_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&quot;select&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnexpectedTagNameException</span><span class="p">(</span>
                 <span class="s">&quot;Select only works on &lt;select&gt; elements, not on &lt;</span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> 
                 <span class="n">webelement</span><span class="o">.</span><span class="n">tag_name</span><span class="p">)</span>
