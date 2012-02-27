@@ -298,10 +298,12 @@ if (!bot.userAgent.isProductVersion('12')){
                 CI.nsICertOverrideService, raw, 5);
 
     return service;
-  }
-};
+    }
+  };
+}
 
-//  WdCertOverrideService.prototype._xpcom_factory = FACTORY;
+if (!bot.userAgent.isProductVersion('10')){
+  WdCertOverrideService.prototype._xpcom_factory = FACTORY;
 }
 
 WDBadCertListenerModule.prototype.getClassObject = function(
