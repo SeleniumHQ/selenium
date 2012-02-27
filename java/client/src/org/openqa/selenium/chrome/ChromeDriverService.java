@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.os.CommandLine.findExecutable;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -64,7 +65,7 @@ public class ChromeDriverService {
    */
   private CommandLine process = null;
   private final String executable;
-  private final String args;
+  private final ImmutableList<String> args;
   private final ImmutableMap<String, String> environment;
 
   /**
@@ -72,14 +73,24 @@ public class ChromeDriverService {
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
    * @param environment The environment for the launched server.
+   * @param logFile Optional file to dump logs to.
    * @throws IOException If an I/O error occurs.
    */
   private ChromeDriverService(File executable, int port,
-      ImmutableMap<String, String> environment) throws IOException {
+      ImmutableMap<String, String> environment, File logFile) throws IOException {
     this.executable = executable.getCanonicalPath();
-    args = String.format("--port=%d", port);
+    args = buildArgsFrom(port, logFile);
     url = new URL(String.format("http://localhost:%d", port));
     this.environment = environment;
+  }
+
+  private ImmutableList<String> buildArgsFrom(int port, File logFile) {
+    ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
+    argsBuilder.add(String.format("--port=%d", port));
+    if (logFile != null) {
+      argsBuilder.add(String.format("--log-path=%s", logFile.getAbsolutePath()));
+    }
+    return argsBuilder.build();
   }
 
   /**
@@ -154,7 +165,7 @@ public class ChromeDriverService {
       if (process != null) {
         return;
       }
-      process = new CommandLine(this.executable, args);
+      process = new CommandLine(this.executable, args.toArray(new String[] {}));
       process.setEnvironmentVariables(environment);
       process.copyOutputTo(System.err);
       process.executeAsync();
@@ -202,6 +213,7 @@ public class ChromeDriverService {
     private int port = 0;
     private File exe = null;
     private ImmutableMap<String, String> environment = ImmutableMap.of();
+    private File logFile;
 
     /**
      * Sets which chromedriver executable the builder will use.
@@ -258,6 +270,11 @@ public class ChromeDriverService {
       this.environment = ImmutableMap.copyOf(environment);
       return this;
     }
+    
+    public Builder withLogFile(File logFile) {
+      this.logFile = logFile;
+      return this;
+    }
 
     /**
      * Creates a new binary to manage the chromedriver server. Before creating a new binary, the
@@ -275,7 +292,7 @@ public class ChromeDriverService {
       checkState(exe != null, "Path to the chromedriver executable not specified");
 
       try {
-        return new ChromeDriverService(exe, port, environment);
+        return new ChromeDriverService(exe, port, environment, logFile);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
