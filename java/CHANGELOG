@@ -19,6 +19,7 @@ WebDriverJS:
     server URL is not specified.
 
 Grid:
+  * JDK 1.6.1_31 recommended for maximum stability
   * The HUB is now upgraded to run with Jetty 7.6.1.
   * Making the id for proxy final, and allowing it to be specified
     from the registration request. If the id isn't in the request, the
