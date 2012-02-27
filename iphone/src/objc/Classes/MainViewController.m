@@ -37,6 +37,7 @@ static MainViewController *singleton_;
 - (void)viewDidLoad {
   [super viewDidLoad];
   singleton_ = self;
+  [webViewController.webView loadHTMLString:@"" baseURL:nil];
 }
 
 // Override to allow orientations other than the default portrait orientation.
