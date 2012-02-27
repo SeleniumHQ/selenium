@@ -277,8 +277,11 @@ WDBadCertListenerModule.prototype.unregisterSelf = function(
   aCompMgr.unregisterFactoryLocation(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, aLocation);
 };
 
-if (!bot.userAgent.isProductVersion('12')){
-/** @const */ var FACTORY = {
+
+var FACTORY = null;
+
+if (!bot.userAgent.isProductVersion('10')){
+/** @const */ FACTORY = {
   createInstance: function (aOuter, aIID) {
     if (aOuter != null)
       throw CR['NS_ERROR_NO_AGGREGATION'];
@@ -300,9 +303,7 @@ if (!bot.userAgent.isProductVersion('12')){
     return service;
     }
   };
-}
 
-if (!bot.userAgent.isProductVersion('10')){
   WdCertOverrideService.prototype._xpcom_factory = FACTORY;
 }
 
@@ -312,9 +313,9 @@ WDBadCertListenerModule.prototype.getClassObject = function(
     throw CR['NS_ERROR_NOT_IMPLEMENTED'];
 
   if (aCID.equals(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID)) {
-    if (bot.userAgent.isProductVersion('12')){
+    if (bot.userAgent.isProductVersion('10')) {
       return WDCertOverrideFactory; 
-    }else{
+    } else{
       return FACTORY;
    }
   }
