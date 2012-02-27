@@ -27,10 +27,11 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    CompositeActionTest.class,
-    IndividualMouseActionsTest.class,
-    IndividualKeyboardActionsTest.class,
     ActionsTest.class,
-    IgnoreComparitorUnitTest.class
+    ByTest.class,
+    CompositeActionTest.class,
+    IgnoreComparitorUnitTest.class,
+    IndividualKeyboardActionsTest.class,
+    IndividualMouseActionsTest.class
 })
 public class SmallTests {}
