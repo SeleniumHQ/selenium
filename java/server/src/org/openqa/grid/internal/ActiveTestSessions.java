@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.grid.internal;
 
 import net.jcip.annotations.ThreadSafe;
+import org.openqa.grid.common.exception.GridException;
 
 import java.util.Collections;
 import java.util.Map;
@@ -73,7 +74,7 @@ class ActiveTestSessions {
 
     terminatedSessions.add(o.getExternalKey());
     reasons.put(o.getExternalKey(), reason);
-    if (reasons.size() > 10000) {
+    if (reasons.size() > 1000) {
       ExternalSessionKey remove = terminatedSessions.remove();
       reasons.remove(remove);
     }
@@ -98,11 +99,14 @@ class ActiveTestSessions {
       SessionTerminationReason sessionTerminationReason = reasons.get(externalkey);
       String keyId = externalkey != null ? externalkey.getKey() : "(null externalkey)";
       if (sessionTerminationReason != null) {
-        log.warning("Client requested session " + keyId + " that was terminated due to "
-                    + sessionTerminationReason);
+          String msg = "Session [" + keyId + "] was terminated due to " + sessionTerminationReason;
+          log.fine(msg);
+          throw new GridException(msg);
       } else {
-        log.info("Client requested an externalKey " + keyId
-                 + " that is not among the last 10000 active sessions");
+          String msg = "Session [" + keyId + "] not available and is not among the last 1000 terminated sessions.\n"
+                  + "Active sessions are" + this.unmodifiableSet();
+          log.fine(msg);
+          throw new GridException(msg);
       }
     }
     return sessionByExternalKey;
