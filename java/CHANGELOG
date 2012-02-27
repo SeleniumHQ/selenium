@@ -19,11 +19,9 @@ WebDriverJS:
     server URL is not specified.
 
 Grid:
-  * The HUB is now upgraded to run with Jetty 7.6.1.
   * Making the id for proxy final, and allowing it to be specified
     from the registration request. If the id isn't in the request, the
     remote host is used as an id, as it was before.
-  * FIXED: 3096: Memory leak in selenium hub.
 
 RC:
   * More work on SSL certs. Should work cleanly in Firefox now.
