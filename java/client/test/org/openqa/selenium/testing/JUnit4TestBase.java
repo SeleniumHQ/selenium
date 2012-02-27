@@ -24,7 +24,7 @@ public abstract class JUnit4TestBase {
   protected static WebDriver driver;
 
   @Before
-  public void setUp() throws Exception {
+  public void prepareEnvironment() throws Exception {
     environment = GlobalTestEnvironment.get();
     appServer = environment.getAppServer();
 
