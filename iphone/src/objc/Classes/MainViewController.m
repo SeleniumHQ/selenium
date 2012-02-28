@@ -38,6 +38,7 @@ static MainViewController *singleton_;
   [super viewDidLoad];
   singleton_ = self;
   [webViewController.webView loadHTMLString:@"" baseURL:nil];
+  [statusLabel_ setAdjustsFontSizeToFitWidth:YES];
 }
 
 // Override to allow orientations other than the default portrait orientation.
