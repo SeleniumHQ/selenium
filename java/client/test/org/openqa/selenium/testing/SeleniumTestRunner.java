@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
+import static org.openqa.selenium.testing.DevMode.isInDevMode;
+
 import com.google.common.base.Throwables;
 
 import org.junit.internal.runners.model.ReflectiveCallable;
@@ -46,7 +48,12 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
   public SeleniumTestRunner(Class<?> klass) throws InitializationError {
     super(klass);
 
-    ignorance = new TestIgnorance(Browser.none);
+    Browser browser = Browser.detect();
+    if (browser == null && isInDevMode()) {
+      browser = Browser.none;
+    }
+
+    ignorance = new TestIgnorance(browser);
   }
 
   @Override
