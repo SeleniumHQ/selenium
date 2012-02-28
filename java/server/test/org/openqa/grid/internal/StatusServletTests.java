@@ -17,6 +17,14 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.Assert;
 
 import org.apache.http.HttpHost;
@@ -31,21 +39,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
-import org.openqa.grid.web.servlet.handler.RequestType;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 public class StatusServletTests {
 
@@ -100,11 +100,9 @@ public class StatusServletTests {
     Map<String, Object> cap = new HashMap<String, Object>();
     cap.put(CapabilityType.BROWSER_NAME, "app1");
 
-    MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
-    newSessionRequest.setRequestType(RequestType.START_SESSION);
-    newSessionRequest.setDesiredCapabilities(cap);
+    RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, cap);
     newSessionRequest.process();
-    session = newSessionRequest.getTestSession();
+    session = newSessionRequest.getSession();
     session.setExternalKey(ExternalSessionKey.fromString("ext. key"));
 
   }

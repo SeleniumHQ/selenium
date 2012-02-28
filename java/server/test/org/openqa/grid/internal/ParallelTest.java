@@ -22,18 +22,19 @@ import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class ParallelTest {
 
@@ -70,7 +71,7 @@ public class ParallelTest {
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
     } finally {
       registry.stop();
@@ -91,19 +92,20 @@ public class ParallelTest {
     RemoteProxy p1 = new RemoteProxy(req, registry);
     try {
       registry.add(p1);
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+      MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
 
       TestThreadCounter testThreadCounter = new TestThreadCounter();
       testThreadCounter.start(new Runnable() {
         public void run() {
-          MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+          MockedRequestHandler newSessionRequest =
+              GridHelper.createNewSessionHandler(registry, app2);
           newSessionRequest.process();
           processed = true;
         }
       });
       testThreadCounter.waitUntilStarted(1);
-      Assert.assertFalse(processed);  // Can race, but should *never* fail
+      Assert.assertFalse(processed); // Can race, but should *never* fail
     } finally {
       registry.stop();
     }
@@ -119,7 +121,7 @@ public class ParallelTest {
     try {
       registry.add(p1);
       for (int i = 0; i < 5; i++) {
-        MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+        MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
         newSessionRequest.process();
       }
     } finally {
@@ -144,8 +146,7 @@ public class ParallelTest {
       for (int i = 0; i < 6; i++) {
         testThreadCounter.start(new Runnable() {
           public void run() {
-            MockedRequestHandler newSessionRequest =
-                    new MockedNewSessionRequestHandler(registry, app1);
+            RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
             newSessionRequest.process();
             count.incrementAndGet();
           }
@@ -183,8 +184,7 @@ public class ParallelTest {
       for (int i = 0; i < 5; i++) {
         testThreadCounter.start(new Runnable() {
           public void run() {
-            MockedRequestHandler newSessionRequest =
-                    new MockedNewSessionRequestHandler(registry, app1);
+            RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
             newSessionRequest.process();
           }
         });
@@ -193,8 +193,7 @@ public class ParallelTest {
 
       testThreadCounter.start(new Runnable() {
         public void run() {
-          MockedRequestHandler newSessionRequest =
-                  new MockedNewSessionRequestHandler(registry, app2);
+          RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
           newSessionRequest.process();
           app6Done = true;
         }
@@ -237,9 +236,9 @@ public class ParallelTest {
       // reserve 5 app1
       List<TestSession> used = new ArrayList<TestSession>();
       for (int i = 0; i < 5; i++) {
-        MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+        RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
         newSessionRequest.process();
-        used.add(newSessionRequest.getTestSession());
+        used.add(newSessionRequest.getSession());
       }
 
       Assert.assertEquals(registry.getActiveSessions().size(), 5);
@@ -255,9 +254,9 @@ public class ParallelTest {
       for (int i = 0; i < 5; i++) {
         int original = registry.getActiveSessions().size();
         Assert.assertEquals(original, i);
-        MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+        RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
         newSessionRequest.process();
-        TestSession session = newSessionRequest.getTestSession();
+        TestSession session = newSessionRequest.getSession();
         used.add(session);
       }
 
@@ -265,9 +264,9 @@ public class ParallelTest {
 
       registry.terminateSynchronousFOR_TEST_ONLY(used.get(0));
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
-      newSessionRequest.getTestSession();
+      newSessionRequest.getSession();
       Assert.assertEquals(registry.getActiveSessions().size(), 5);
       System.out.println(registry.getAllProxies());
     } finally {

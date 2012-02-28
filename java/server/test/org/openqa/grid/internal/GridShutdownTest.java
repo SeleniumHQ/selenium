@@ -17,6 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,16 +28,18 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import junit.framework.Assert;
-import org.junit.Test;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import org.junit.Test;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class GridShutdownTest {
 
 
-  @Test(timeout = 500000)
+  // TODO freynaud test failing. Not part of the suite. Check if 
+  // it was ok before.
+  @Test(timeout = 5000)
   public void shutdown() throws InterruptedException {
 
     final Map<String, Object> ff = new HashMap<String, Object>();
@@ -47,7 +53,7 @@ public class GridShutdownTest {
     registry.add(p1);
     registry.setThrowOnCapabilityNotPresent(true);
 
-    MockedNewSessionRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ff);
+    MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
 
     final int before = getCurrentThreadCount();
@@ -55,24 +61,24 @@ public class GridShutdownTest {
     List<Thread> threads = new ArrayList<Thread>();
     for (int i = 0; i < numRequests(); i++) {
       final Thread thread = new Thread(new Runnable() { // Thread safety reviewed
-        public void run() {
-          latch.countDown();
-          MockedNewSessionRequestHandler
-              newSessionRequest =
-              new MockedNewSessionRequestHandler(registry, ff);
-          newSessionRequest.process();
-        }
-      }, "TestThread" + i);
-      threads.add( thread);
+            public void run() {
+              latch.countDown();
+              RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
+              newSessionRequest.process();
+            }
+          }, "TestThread" + i);
+      threads.add(thread);
       thread.start();
     }
+    Thread.sleep(500);
     latch.await();
     Assert.assertEquals(before + 5, getCurrentThreadCount());
     registry.stop();
     for (Thread thread : threads) {
-      thread.join();
+        thread.join();
     }
     Assert.assertTrue(getCurrentThreadCount() <= before);
+
   }
 
   private int getCurrentThreadCount() {

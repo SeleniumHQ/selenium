@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
 
@@ -101,14 +102,12 @@ public class ConcurrencyLockTest {
 
   private void runTests2(Map<String, Object> cap) throws InterruptedException {
 
-    MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
-    newSessionRequest.setRequestType(RequestType.START_SESSION);
-    newSessionRequest.setDesiredCapabilities(cap);
+    MockedRequestHandler newSessionHandler =GridHelper.createNewSessionHandler(registry, cap);
 
     if (cap.get(APP).equals("FF")) {
       // start the FF right away
-      newSessionRequest.process();
-      TestSession s = newSessionRequest.getTestSession();
+      newSessionHandler.process();
+      TestSession s = newSessionHandler.getSession();
       Thread.sleep(2000);
       results.add("FF");
       registry.terminateSynchronousFOR_TEST_ONLY(s);
@@ -116,7 +115,7 @@ public class ConcurrencyLockTest {
       // wait for 1 sec before starting IE to make sure the FF proxy is
       // busy with the 3 FF requests.
       Thread.sleep(1000);
-      newSessionRequest.process();
+      newSessionHandler.process();
       results.add("IE");
     }
     // at that point, the hub has recieved first 3 FF requests that are

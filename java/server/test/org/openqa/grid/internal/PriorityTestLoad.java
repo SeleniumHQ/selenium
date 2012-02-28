@@ -19,19 +19,20 @@ package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -54,7 +55,7 @@ public class PriorityTestLoad {
 
   static Map<String, Object> ff = new HashMap<String, Object>();
   static RemoteProxy p1;
-  static List<MockedRequestHandler> requests = new ArrayList<MockedRequestHandler>();
+  static List<RequestHandler> requests = new ArrayList<RequestHandler>();
 
   /**
    * create a hub with 1 FF
@@ -73,20 +74,18 @@ public class PriorityTestLoad {
       Map<String, Object> cap = new HashMap<String, Object>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
-      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, cap);
+      RequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
       requests.add(req);
     }
 
     // use all the proxies
-    MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
-    newSessionRequest.setRequestType(RequestType.START_SESSION);
-    newSessionRequest.setDesiredCapabilities(ff);
+    RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
-    TestSession session = newSessionRequest.getTestSession();
+    TestSession session = newSessionRequest.getSession();
 
     // and keep adding request in the queue.
-    for (MockedRequestHandler h : requests) {
-      final MockedRequestHandler req = h;
+    for (RequestHandler h : requests) {
+      final RequestHandler req = h;
       new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
           req.process();
@@ -117,9 +116,9 @@ public class PriorityTestLoad {
     while (!reqDone) {
       Thread.sleep(20);
     }
-    Assert.assertNotNull(requests.get(requests.size() - 1).getTestSession());
+    Assert.assertNotNull(requests.get(requests.size() - 1).getSession());
     Assert.assertEquals(
-        requests.get(requests.size() - 1).getDesiredCapabilities().get("_priority"), MAX);
+        requests.get(requests.size() - 1).getRequest().getDesiredCapabilities().get("_priority"), MAX);
   }
 
   @AfterClass

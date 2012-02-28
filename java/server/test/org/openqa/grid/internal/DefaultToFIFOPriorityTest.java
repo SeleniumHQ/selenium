@@ -17,15 +17,7 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import junit.framework.Assert;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.openqa.grid.web.servlet.handler.RequestType;
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
+import junit.framework.Assert;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.mock.MockedRequestHandler;
 
 // TODO freynaud copy paste from PriorityTestLoad ....
 
@@ -69,17 +68,15 @@ public class DefaultToFIFOPriorityTest {
       Map<String, Object> cap = new HashMap<String, Object>();
       cap.put(APP, "FF");
       cap.put("_priority", i);
-      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, cap);
+      MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, cap);
       requests.add(req);
     }
 
 
     // use all the spots ( so 1 ) of the grid so that a queue buils up
-    MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
-    newSessionRequest.setRequestType(RequestType.START_SESSION);
-    newSessionRequest.setDesiredCapabilities(ff);
+    MockedRequestHandler newSessionRequest =GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
-    session = newSessionRequest.getTestSession();
+    session = newSessionRequest.getSession();
 
     // fill the queue with MAX requests.
     for (MockedRequestHandler h : requests) {
@@ -106,15 +103,15 @@ public class DefaultToFIFOPriorityTest {
     int cpt = 0;
     while (cpt < 8) {
       try {
-        requests.get(0).getTestSession();
+        requests.get(0).getSession();
         break;
-      } catch (IllegalAccessError e) {
+      } catch (Throwable e) {
         // ignore.
       }
       Thread.sleep(250);
     }
-    Assert.assertNotNull(requests.get(0).getTestSession());
-    Assert.assertEquals(1, requests.get(0).getDesiredCapabilities().get("_priority"));
+    Assert.assertNotNull(requests.get(0).getSession());
+    Assert.assertEquals(1, requests.get(0).getRequest().getDesiredCapabilities().get("_priority"));
   }
 
   @AfterClass

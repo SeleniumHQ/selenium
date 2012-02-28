@@ -17,22 +17,23 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.listeners.TimeoutListener;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
+import static org.openqa.grid.common.RegistrationRequest.ID;
+import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.listeners.TimeoutListener;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class SessionTimesOutTest {
 
@@ -80,16 +81,16 @@ public class SessionTimesOutTest {
 
     try {
       registry.add(p1);
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
 
       newSessionRequest.process();
-      TestSession session = newSessionRequest.getTestSession();
+      TestSession session = newSessionRequest.getSession();
       // wait for a timeout
       Thread.sleep(500);
 
-      MockedRequestHandler newSessionRequest2 = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest2 = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest2.process();
-      TestSession session2 = newSessionRequest2.getTestSession();
+      TestSession session2 = newSessionRequest2.getSession();
       Assert.assertNotNull(session2);
       Assert.assertNotSame(session, session2);
     } finally {
@@ -125,9 +126,9 @@ public class SessionTimesOutTest {
     try {
       registry.add(p1);
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
-      TestSession session = newSessionRequest.getTestSession();
+      TestSession session = newSessionRequest.getSession();
       // timeout cleanup will start
       Thread.sleep(500);
       // but the session finishes before the timeout cleanup finishes
@@ -143,9 +144,9 @@ public class SessionTimesOutTest {
       }
       Assert.assertTrue(timeoutDone);
 
-      MockedRequestHandler newSessionRequest2 = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest2 = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest2.process();
-      TestSession session2 = newSessionRequest2.getTestSession();
+      TestSession session2 = newSessionRequest2.getSession();
       Assert.assertNotNull(session2);
       Assert.assertTrue(session.equals(session));
       Assert.assertFalse(session2.equals(session));
@@ -167,7 +168,7 @@ public class SessionTimesOutTest {
   }
 
   // a proxy throwing an exception will end up not releasing the resources.
-  @Test(timeout = 1000, expected = IllegalAccessError.class)
+  @Test(timeout = 1000)
   public void testTimeoutBug() throws InterruptedException {
     final Registry registry = Registry.newInstance();
     RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req, registry);
@@ -176,11 +177,11 @@ public class SessionTimesOutTest {
     try {
       registry.add(p1);
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
 
-      final MockedRequestHandler newSessionRequest2 =
-          new MockedNewSessionRequestHandler(registry, app1);
+      final RequestHandler newSessionRequest2 =
+          GridHelper.createNewSessionHandler(registry, app1);
       new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
           // the request should never be processed because the
@@ -191,9 +192,8 @@ public class SessionTimesOutTest {
 
       // wait for a timeout
       Thread.sleep(500);
-      // should throw illegal access. getTestSession cannot be called
-      // because the request has not been processed yet.
-      newSessionRequest2.getTestSession();
+      // the request has not been processed yet.
+      Assert.assertNull(newSessionRequest2.getServerSession());
     } finally {
       registry.stop();
     }
@@ -242,9 +242,9 @@ public class SessionTimesOutTest {
         final MyStupidConfig proxy = new MyStupidConfig(req, registry);
         proxy.setupTimeoutListener();
         registry.add(proxy);
-        MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+        RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
         newSessionRequest.process();
-        TestSession session = newSessionRequest.getTestSession();
+        TestSession session = newSessionRequest.getSession();
         // wait -> timed out and released.
         Thread.sleep(500);
         boolean shouldTimeout = timeout > 0 && cycle > 0;

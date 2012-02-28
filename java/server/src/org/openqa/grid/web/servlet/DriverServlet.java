@@ -27,7 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
-import org.openqa.grid.web.servlet.handler.WebDriverRequestHandler;
+import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
+import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -76,12 +77,14 @@ public class DriverServlet extends RegistryBasedServlet {
   protected void process(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     RequestHandler req = null;
+    SeleniumBasedRequest r = null;
     try {
-      req = RequestHandler.createHandler(request, response, getRegistry());
+      r = SeleniumBasedRequest.createFromRequest(request, getRegistry());
+      req = new RequestHandler(r, response, getRegistry());
       req.process();
 
     } catch (Throwable e) {
-      if (req instanceof WebDriverRequestHandler) {
+      if (r instanceof WebDriverRequest) {
         // http://code.google.com/p/selenium/wiki/JsonWireProtocol#Error_Handling
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

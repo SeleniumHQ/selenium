@@ -17,6 +17,12 @@ limitations under the License.
 
 package org.openqa.grid.internal.listener;
 
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,14 +31,8 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.RegistrationListener;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 
 public class RegistrationListenerTest {
@@ -73,10 +73,10 @@ public class RegistrationListenerTest {
     Registry registry = Registry.newInstance();
     registry.add(new MyRemoteProxy(req, registry));
 
-    MockedRequestHandler request = new MockedNewSessionRequestHandler(registry, app1);
+    RequestHandler request = GridHelper.createNewSessionHandler(registry, app1);
     request.process();
 
-    Assert.assertNotNull(request.getTestSession());
+    Assert.assertNotNull(request.getSession());
     Assert.assertTrue(serverUp);
   }
 
@@ -156,9 +156,9 @@ public class RegistrationListenerTest {
       // check onRegistration has not run yet.
       Assert.assertEquals(slowRemoteUp, false);
       // should return right away, as RemoteProxy is fast.
-      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler req =GridHelper.createNewSessionHandler(registry, app1);
       req.process();
-      TestSession s1 = req.getTestSession();
+      TestSession s1 = req.getSession();
       Assert.assertNotNull(s1);
 
       // slow proxy hasn't finished to start slow remote, isn't accessible via
@@ -168,9 +168,9 @@ public class RegistrationListenerTest {
       Assert.assertEquals(false, slowRemoteUp);
 
       // will block until MySlowRemoteProxy is fully registered.
-      MockedNewSessionRequestHandler req2 = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler req2 = GridHelper.createNewSessionHandler(registry, app1);
       req2.process();
-      TestSession s2 = req2.getTestSession();
+      TestSession s2 = req2.getSession();
       Assert.assertNotNull(s2);
       // return when the proxy is visible = fully registered. So registry has
       // 2 proxies at that point.

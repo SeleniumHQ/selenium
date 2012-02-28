@@ -19,19 +19,20 @@ package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class PriorityTest {
@@ -50,13 +51,13 @@ public class PriorityTest {
   static Map<String, Object> ff = new HashMap<String, Object>();
   static RemoteProxy p1;
 
-  static MockedNewSessionRequestHandler newSessionRequest1;
-  static MockedNewSessionRequestHandler newSessionRequest2;
-  static MockedNewSessionRequestHandler newSessionRequest3;
-  static MockedNewSessionRequestHandler newSessionRequest4;
-  static MockedNewSessionRequestHandler newSessionRequest5;
+  static RequestHandler newSessionRequest1;
+  static RequestHandler newSessionRequest2;
+  static RequestHandler newSessionRequest3;
+  static RequestHandler newSessionRequest4;
+  static RequestHandler newSessionRequest5;
 
-  static List<MockedRequestHandler> requests = new ArrayList<MockedRequestHandler>();
+  static List<RequestHandler> requests = new ArrayList<RequestHandler>();
 
   /**
    * create a hub with 1 FF
@@ -92,11 +93,11 @@ public class PriorityTest {
     ff5.put(APP, "FF");
     ff5.put("_priority", 5);
 
-    newSessionRequest1 = new MockedNewSessionRequestHandler(registry, ff1);
-    newSessionRequest2 = new MockedNewSessionRequestHandler(registry, ff2);
-    newSessionRequest3 = new MockedNewSessionRequestHandler(registry, ff3);
-    newSessionRequest4 = new MockedNewSessionRequestHandler(registry, ff4);
-    newSessionRequest5 = new MockedNewSessionRequestHandler(registry, ff5);
+    newSessionRequest1 = GridHelper.createNewSessionHandler(registry, ff1);
+    newSessionRequest2 = GridHelper.createNewSessionHandler(registry, ff2);
+    newSessionRequest3 = GridHelper.createNewSessionHandler(registry, ff3);
+    newSessionRequest4 = GridHelper.createNewSessionHandler(registry, ff4);
+    newSessionRequest5 = GridHelper.createNewSessionHandler(registry, ff5);
 
     requests.add(newSessionRequest1);
     requests.add(newSessionRequest2);
@@ -104,20 +105,18 @@ public class PriorityTest {
     requests.add(newSessionRequest3);
     requests.add(newSessionRequest4);
 
-    MockedRequestHandler newSessionRequest = new MockedRequestHandler(registry);
-    newSessionRequest.setRequestType(RequestType.START_SESSION);
-    newSessionRequest.setDesiredCapabilities(ff);
+    RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
-    TestSession session = newSessionRequest.getTestSession();
+    TestSession session = newSessionRequest.getSession();
 
     // fill the queue with 5 requests.
-    for (MockedRequestHandler h : requests) {
-      final MockedRequestHandler req = h;
-      new Thread(new Runnable() {  // Thread safety reviewed
-        public void run() {
-          req.process();
-        }
-      }).start();
+    for (RequestHandler h : requests) {
+      final RequestHandler req = h;
+      new Thread(new Runnable() { // Thread safety reviewed
+            public void run() {
+              req.process();
+            }
+          }).start();
     }
 
     while (registry.getNewSessionRequestCount() != 5) {
@@ -135,7 +134,7 @@ public class PriorityTest {
   @Test
   public void validate() throws InterruptedException {
     Thread.sleep(250);
-    Assert.assertNotNull(newSessionRequest5.getTestSession());
+    Assert.assertNotNull(newSessionRequest5.getSession());
   }
 
 

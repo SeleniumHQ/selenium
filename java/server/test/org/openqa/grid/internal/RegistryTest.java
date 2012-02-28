@@ -17,16 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
-import org.openqa.grid.internal.listeners.RegistrationListener;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.grid.common.exception.GridException;
+import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +26,16 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.listeners.RegistrationListener;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 public class RegistryTest {
 
@@ -108,7 +108,7 @@ public class RegistryTest {
   public void emptyRegistry() throws Throwable {
     Registry registry = Registry.newInstance();
     try {
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
     } catch (Exception e) {
       Assert.assertEquals(GridException.class, e.getCause().getClass());
@@ -123,7 +123,7 @@ public class RegistryTest {
     registry.setThrowOnCapabilityNotPresent(false);
     try {
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
     } finally {
       registry.stop();
@@ -136,10 +136,10 @@ public class RegistryTest {
     Registry registry = Registry.newInstance();
     try {
       registry.add(new RemoteProxy(req, registry));
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
-      System.out.println(newSessionRequest.getDesiredCapabilities());
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
+      System.out.println(newSessionRequest.getRequest().getDesiredCapabilities());
       newSessionRequest.process();
-      System.out.println("new " + newSessionRequest.getTestSession());
+      System.out.println("new " + newSessionRequest.getSession());
     } catch (Exception e) {
       Assert.assertEquals(CapabilityNotPresentOnTheGridException.class, e.getCause().getClass());
     } finally {
@@ -154,7 +154,7 @@ public class RegistryTest {
     try {
       registry.add(new RemoteProxy(req, registry));
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app2);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
 
     } finally {
@@ -191,7 +191,7 @@ public class RegistryTest {
    * try to simulate a real proxy. The proxy registration takes up to 1 sec to register, and crashes
    * in 10% of the case.
    *
-   * @author Fran�ois Reynaud
+   * @author Francois Reynaud
    */
   class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
 

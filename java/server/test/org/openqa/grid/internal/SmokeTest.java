@@ -19,18 +19,17 @@ package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.openqa.grid.web.servlet.handler.RequestType;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 
 public class SmokeTest {
@@ -75,9 +74,9 @@ public class SmokeTest {
     for (int i = 0; i < MAX; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
-          MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ie);
+          RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ie);
           newSessionRequest.process();
-          TestSession session = newSessionRequest.getTestSession();
+          TestSession session = newSessionRequest.getSession();
           inc();
           sessions.add(session);
         }
@@ -87,9 +86,9 @@ public class SmokeTest {
     for (int i = 0; i < MAX; i++) {
       new Thread(new Runnable() {  // Thread safety reviewed
         public void run() {
-          MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ff);
+          RequestHandler newSessionRequest =  GridHelper.createNewSessionHandler(registry, ff);
           newSessionRequest.process();
-          TestSession session = newSessionRequest.getTestSession();
+          TestSession session = newSessionRequest.getSession();
           inc();
           sessions.add(session);
         }
@@ -110,9 +109,7 @@ public class SmokeTest {
     // all the tests ran via the registry.
     while (stopped < 2 * MAX) {
       for (TestSession session : sessions) {
-        MockedRequestHandler stopSessionRequest = new MockedRequestHandler(registry);
-        stopSessionRequest.setSession(session);
-        stopSessionRequest.setRequestType(RequestType.STOP_SESSION);
+        RequestHandler stopSessionRequest = GridHelper.createStopSessionHandler(registry, session);
         stopSessionRequest.process();
         stopped++;
         sessions.remove(session);

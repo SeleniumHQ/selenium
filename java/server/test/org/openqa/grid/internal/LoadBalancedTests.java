@@ -22,15 +22,16 @@ import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.mock.MockedRequestHandler;
 
 
 public class LoadBalancedTests {
@@ -64,9 +65,9 @@ public class LoadBalancedTests {
 
     // request 5 slots : it should spread the load to 1 FF per proxy.
     for (int i = 0; i < 5; i++) {
-      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, ff);
-      req.process();
-      TestSession session = req.getTestSession();
+      MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, ff);
+     req.process();
+      TestSession session = req.getSession();
 
       Assert.assertNotNull(session);
       Assert.assertEquals(session.getSlot().getProxy().getTotalUsed(), 1);
@@ -74,9 +75,9 @@ public class LoadBalancedTests {
 
     // 2 ff per proxy.
     for (int i = 0; i < 5; i++) {
-      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, ff);
+      MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, ff);
       req.process();
-      TestSession session = req.getTestSession();
+      TestSession session = req.getSession();
       Assert.assertNotNull(session);
       Assert.assertEquals(2, session.getSlot().getProxy().getTotalUsed());
       // and release
@@ -85,9 +86,8 @@ public class LoadBalancedTests {
 
     // at that point, 1 FF per proxy
     for (int i = 0; i < 5; i++) {
-      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, ff);
-      req.process();
-      TestSession session = req.getTestSession();
+      MockedRequestHandler req =GridHelper.createNewSessionHandler(registry, ff);req.process();
+      TestSession session = req.getSession();
       Assert.assertNotNull(session);
       Assert.assertEquals(session.getSlot().getProxy().getTotalUsed(), 2);
 

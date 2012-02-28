@@ -17,17 +17,21 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
+import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 
 public class NewRequestCrashesDuringNewSessionTest {
 
@@ -54,9 +58,9 @@ public class NewRequestCrashesDuringNewSessionTest {
   @Test(timeout = 1000)
   public void basic() {
     // should work
-    MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ff);
-    newSessionRequest.process();
-    TestSession s = newSessionRequest.getTestSession();
+    MockedRequestHandler newSessionRequest =GridHelper.createNewSessionHandler(registry, ff);
+   newSessionRequest.process();
+    TestSession s = newSessionRequest.getSession();
     Assert.assertNotNull(s);
     registry.terminate(s, SessionTerminationReason.CLIENT_STOPPED_SESSION);
     Assert.assertEquals(0, registry.getNewSessionRequestCount());
@@ -70,8 +74,9 @@ public class NewRequestCrashesDuringNewSessionTest {
   public void requestIsremovedFromTheQeueAfterItcrashes() throws InterruptedException {
     // should work
     try {
+      SeleniumBasedRequest newSession = GridHelper.createNewSessionRequest(registry, SeleniumProtocol.WebDriver, ff);
       MockedRequestHandler newSessionRequest =
-          new MockedBuggyNewSessionRequestHandler(registry, ff);
+          new MockedBuggyNewSessionRequestHandler(newSession,null,registry);
       newSessionRequest.process();
     } catch (RuntimeException e) {
       System.out.println(e.getMessage());
@@ -85,17 +90,19 @@ public class NewRequestCrashesDuringNewSessionTest {
     registry.stop();
   }
 
-  class MockedBuggyNewSessionRequestHandler extends MockedNewSessionRequestHandler {
+  class MockedBuggyNewSessionRequestHandler extends MockedRequestHandler {
 
-    public MockedBuggyNewSessionRequestHandler(Registry registry,
-                                               Map<String, Object> desiredCapabilities) {
-      super(registry, desiredCapabilities);
+
+    public MockedBuggyNewSessionRequestHandler(SeleniumBasedRequest request,
+        HttpServletResponse response, Registry registry) {
+      super(request, response, registry);
     }
+
 
     @Override
-    public ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session) {
+    public void forwardNewSessionRequestAndUpdateRegistry(TestSession session) {
       throw new RuntimeException("something horrible happened.");
     }
-
+    
   }
 }

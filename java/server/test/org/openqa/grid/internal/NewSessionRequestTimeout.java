@@ -19,14 +19,14 @@ package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class NewSessionRequestTimeout {
 
@@ -52,12 +52,12 @@ public class NewSessionRequestTimeout {
   public void method() {
 
     // should work
-    MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, ff);
+    MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
     newSessionRequest.process();
 
     // should throw after 1sec being stuck in the queue
     try {
-      MockedRequestHandler newSessionRequest2 = new MockedNewSessionRequestHandler(registry, ff);
+      MockedRequestHandler newSessionRequest2 = GridHelper.createNewSessionHandler(registry, ff);
       newSessionRequest2.process();
     } catch (RuntimeException ignore) {
     }

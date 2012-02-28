@@ -238,12 +238,12 @@ public class Registry {
     this.hub = hub;
   }
 
-  public void addNewSessionRequest(RequestHandler request) {
+  public void addNewSessionRequest(RequestHandler handler) {
     try {
       lock.lock();
 
-      proxies.verifyAbilityToHandleDesiredCapabilities(request.getDesiredCapabilities());
-      newSessionQueue.add(request);
+      proxies.verifyAbilityToHandleDesiredCapabilities(handler.getRequest().getDesiredCapabilities());
+      newSessionQueue.add(handler);
       fireMatcherStateChanged();
     } finally {
       lock.unlock();
@@ -278,12 +278,12 @@ public class Registry {
 
   }
 
-  private boolean takeRequestHandler(RequestHandler request) {
-    final TestSession session = proxies.getNewSession(request.getDesiredCapabilities());
+  private boolean takeRequestHandler(RequestHandler handler) {
+    final TestSession session = proxies.getNewSession(handler.getRequest().getDesiredCapabilities());
     final boolean sessionCreated = session != null;
     if (sessionCreated) {
       activeTestSessions.add(session);
-      request.bindSession(session);
+      handler.bindSession(session);
     }
     return sessionCreated;
   }

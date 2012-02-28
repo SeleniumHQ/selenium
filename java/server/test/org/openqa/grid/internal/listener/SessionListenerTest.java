@@ -17,6 +17,17 @@ limitations under the License.
 
 package org.openqa.grid.internal.listener;
 
+import static org.openqa.grid.common.RegistrationRequest.APP;
+import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
+import static org.openqa.grid.common.RegistrationRequest.ID;
+import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
+import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,18 +38,8 @@ import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
+import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class SessionListenerTest {
 
@@ -77,9 +78,10 @@ public class SessionListenerTest {
     Registry registry = Registry.newInstance();
     registry.add(new MyRemoteProxy(req, registry));
 
-    MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
+    RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
+
     req.process();
-    TestSession session = req.getTestSession();
+    TestSession session = req.getSession();
     Assert.assertEquals(true, session.get("FLAG"));
     registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
     try {
@@ -93,7 +95,7 @@ public class SessionListenerTest {
   /**
    * buggy proxy that will throw an exception the first time beforeSession is called.
    *
-   * @author Fran�ois Reynaud
+   * @author Francois Reynaud
    */
   static class MyBuggyBeforeRemoteProxy extends RemoteProxy implements TestSessionListener {
 
@@ -103,8 +105,7 @@ public class SessionListenerTest {
       super(request, registry);
     }
 
-    public void afterSession(TestSession session) {
-    }
+    public void afterSession(TestSession session) {}
 
     public void beforeSession(TestSession session) {
       if (firstCall) {
@@ -122,7 +123,7 @@ public class SessionListenerTest {
     Registry registry = Registry.newInstance();
     registry.add(new MyBuggyBeforeRemoteProxy(req, registry));
 
-    MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
+    RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
     try {
       req.process();
     } catch (Exception ignore) {
@@ -138,10 +139,10 @@ public class SessionListenerTest {
 
     Assert.assertEquals(registry.getActiveSessions().size(), 0);
 
-    MockedNewSessionRequestHandler req2 = new MockedNewSessionRequestHandler(registry, app1);
+    RequestHandler req2 = GridHelper.createNewSessionHandler(registry, app1);
     req2.process();
 
-    TestSession session = req2.getTestSession();
+    TestSession session = req2.getSession();
     Assert.assertNotNull(session);
     Assert.assertEquals(registry.getActiveSessions().size(), 1);
 
@@ -150,7 +151,7 @@ public class SessionListenerTest {
   /**
    * buggy proxy that will throw an exception the first time beforeSession is called.
    *
-   * @author Fran�ois Reynaud
+   * @author Francois Reynaud
    */
   static class MyBuggyAfterRemoteProxy extends RemoteProxy implements TestSessionListener {
 
@@ -162,8 +163,7 @@ public class SessionListenerTest {
       throw new NullPointerException();
     }
 
-    public void beforeSession(TestSession session) {
-    }
+    public void beforeSession(TestSession session) {}
   }
 
   static volatile boolean processed = false;
@@ -177,9 +177,9 @@ public class SessionListenerTest {
     try {
       registry.add(new MyBuggyAfterRemoteProxy(req, registry));
 
-      MockedNewSessionRequestHandler req = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
       req.process();
-      TestSession session = req.getTestSession();
+      TestSession session = req.getSession();
       Assert.assertEquals(registry.getActiveSessions().size(), 1);
       Assert.assertNotNull(session);
       registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
@@ -189,18 +189,15 @@ public class SessionListenerTest {
         e.printStackTrace();
       }
 
-      final
-      MockedNewSessionRequestHandler
-          req2 =
-          new MockedNewSessionRequestHandler(registry, app1);
+      final RequestHandler req2 = GridHelper.createNewSessionHandler(registry, app1);
 
-      new Thread(new Runnable() {  // Thread safety reviewed
+      new Thread(new Runnable() { // Thread safety reviewed
 
-        public void run() {
-          req2.process();
-          processed = true;
-        }
-      }).start();
+            public void run() {
+              req2.process();
+              processed = true;
+            }
+          }).start();
 
       Thread.sleep(100);
       Assert.assertFalse(processed);
@@ -239,8 +236,7 @@ public class SessionListenerTest {
       }
     }
 
-    public void beforeSession(TestSession session) {
-    }
+    public void beforeSession(TestSession session) {}
 
     public void beforeRelease(TestSession session) {
       getRegistry().terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
@@ -273,9 +269,9 @@ public class SessionListenerTest {
       proxy.setupTimeoutListener();
       registry.add(proxy);
 
-      MockedNewSessionRequestHandler r = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler r = GridHelper.createNewSessionHandler(registry, app1);
       r.process();
-      TestSession session = r.getTestSession();
+      TestSession session = r.getSession();
 
       Thread.sleep(150);
       // the session has timed out -> doing the long after method.

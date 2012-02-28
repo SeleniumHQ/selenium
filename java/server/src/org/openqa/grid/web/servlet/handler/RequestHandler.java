@@ -17,6 +17,16 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
@@ -27,44 +37,21 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
-import org.openqa.grid.internal.utils.ForwardConfiguration;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Base stuff to handle the request coming from a remote. Ideally, there should be only 1 concrete
- * class, but to support both legacy selenium1 and web driver, 2 classes are needed. <p/> {@link
- * Selenium1RequestHandler} for the part specific to selenium1 protocol {@link
- * WebDriverRequestHandler} for the part specific to webdriver protocol
+ * Base stuff to handle the request coming from a remote. 
  *
  * Threading notes; RequestHandlers are instantiated per-request, run on the servlet container
  * thread. The instance is also accessed by the matcher thread.
  */
 @SuppressWarnings("JavaDoc")
-public abstract class RequestHandler implements Comparable<RequestHandler> {
+public class RequestHandler implements Comparable<RequestHandler> {
 
   private final Registry registry;
-  private final HttpServletRequest request;
+  private final SeleniumBasedRequest request;
   private final HttpServletResponse response;
 
-  private String body = null;
-  private boolean bodyHasBeenRead = false;
-  private volatile Map<String, Object> desiredCapabilities = null;
-  private RequestType requestType = null;
   private volatile TestSession session = null;
 
 
@@ -73,79 +60,52 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
   private final Thread waitingThread;
 
-  /**
-   * Detect what kind of protocol ( selenium1 vs webdriver ) is used by the request and create the
-   * associated handler.
-   */
-  public static RequestHandler createHandler(HttpServletRequest request,
-                                             HttpServletResponse response, Registry registry) {
-    if (isSeleniumProtocol(request)) {
-      return new Selenium1RequestHandler(request, response, registry);
-    } else {
-      return new WebDriverRequestHandler(request, response, registry);
-    }
-  }
+  
+  
 
-  protected RequestHandler(HttpServletRequest request, HttpServletResponse response,
-                           Registry registry) {
+  public  RequestHandler(SeleniumBasedRequest request, HttpServletResponse response,
+      Registry registry) {
     this.request = request;
     this.response = response;
     this.registry = registry;
     this.waitingThread = Thread.currentThread();
   }
 
-  /**
-   * @return the type of the request.
-   */
-  public abstract RequestType extractRequestType();
 
-  /**
-   * Extract the session from the request. This only works for a request that has a session already
-   * assigned. It shouldn't be called for a new session request.
-   *
-   * @return the external session id sent by the remote. Null is the session cannot be found.
-   */
-  public abstract ExternalSessionKey extractSession();
-
-  /**
-   * Parse the request to extract the desiredCapabilities. For non web driver protocol ( selenium1 )
-   * some mapping will be necessary
-   *
-   * @return the desired capabilities requested by the client.
-   */
-  public abstract Map<String, Object> extractDesiredCapability();
 
   /**
    * Forward the new session request to the TestSession that has been assigned, and parse the
    * response to extract and return the external key assigned by the remote.
    *
-   * @return the external key sent by the remote.
    * @throws NewSessionException in case anything wrong happens during the new session process.
    */
-  public abstract ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session)
-      throws NewSessionException;
+  public void forwardNewSessionRequestAndUpdateRegistry(TestSession session)
+      throws NewSessionException {
+    try {
+      String content = request.getNewSessionRequestedCapability(session);
+      getRequest().setBody(content);
+      session.forward(getRequest(), getResponse());
+    } catch (IOException e) {
+      //log.warning("Error forwarding the request " + e.getMessage());
+      throw new NewSessionException("Error forwarding the request " + e.getMessage(), e);
+    }
+  }
 
   protected void forwardRequest(TestSession session, RequestHandler handler) throws IOException {
-    if (bodyHasBeenRead) {
-      ForwardConfiguration config = new ForwardConfiguration();
-      config.setContentOverWrite(getRequestBody());
-      session.forward(request, response, config);
-    } else {
-      session.forward(request, response);
-    }
+    session.forward(request, response);
   }
 
   /**
    * forwards the request to the remote, allocating / releasing the resources if necessary.
    */
   public void process() {
-    switch (getRequestType()) {
+    switch (request.getRequestType()) {
       case START_SESSION:
         try {
           registry.addNewSessionRequest(this);
           waitForSessionBound();
           beforeSessionEvent();
-          forwardNewSessionRequestAndUpdateRegistry(session);
+          forwardNewSessionRequestAndUpdateRegistry(session);  
         } catch (Exception e) {
           cleanup();
           throw new GridException("Error forwarding the new session " + e.getMessage(), e);
@@ -157,11 +117,10 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
         if (session == null) {
           ExternalSessionKey sessionKey = null;
           try {
-            sessionKey = extractSession();
-          } catch (RuntimeException ignore) {
-          }
+            sessionKey = request.extractSession();
+          } catch (RuntimeException ignore) {}
           throw new GridException("Session [" + sessionKey + "] not available - "
-                                  + registry.getActiveSessions());
+              + registry.getActiveSessions());
         }
         try {
           forwardRequest(session, this);
@@ -174,13 +133,12 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
           throw new GridException("cannot forward the request " + t.getMessage(), t);
         }
 
-        if (getRequestType() == RequestType.STOP_SESSION) {
+        if (request.getRequestType() == RequestType.STOP_SESSION) {
           registry.terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
         }
         break;
       default:
         throw new RuntimeException("NI");
-
     }
   }
 
@@ -192,7 +150,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     }
   }
 
-  
+
   /**
    * calls the TestSessionListener is the proxy for that node has one specified.
    *
@@ -232,47 +190,9 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   }
 
   /**
-   * return true is the request is using the selenium1 protocol, false if that's a web driver
-   * protocol.
+   * the SeleniumBasedRequest this hanlder is processing.
    */
-  private static boolean isSeleniumProtocol(HttpServletRequest request) {
-    return "/selenium-server/driver".equals(request.getServletPath());
-  }
-
-  /**
-   * reads the input stream of the request and returns its content.
-   */
-  protected String getRequestBody() {
-    if (!bodyHasBeenRead) {
-      bodyHasBeenRead = true;
-      StringBuilder sb = new StringBuilder();
-      String line;
-      try {
-        InputStream is = request.getInputStream();
-        if (is == null) {
-          return null;
-        }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-        while ((line = reader.readLine()) != null) {
-          // TODO freynaud bug ?
-          sb.append(line);/* .append("\n"); */
-
-        }
-        is.close();
-      } catch (UnsupportedEncodingException e) {
-        throw new RuntimeException(e);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-      body = sb.toString();
-    }
-    return body;
-  }
-
-  /**
-   * the HttpServletRequest this hanlder is processing.
-   */
-  public HttpServletRequest getRequest() {
+  public SeleniumBasedRequest getRequest() {
     return request;
   }
 
@@ -283,36 +203,19 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     return response;
   }
 
-  public Map<String, Object> getDesiredCapabilities() {
-    if (desiredCapabilities == null) {
-      desiredCapabilities = extractDesiredCapability();
-    }
-    return desiredCapabilities;
-  }
 
-  protected void setDesiredCapabilities(Map<String, Object> desiredCapabilities) {
-    this.desiredCapabilities = desiredCapabilities;
-  }
 
   public int compareTo(RequestHandler o) {
     Prioritizer prioritizer = registry.getPrioritizer();
     if (prioritizer != null) {
-      return prioritizer.compareTo(this.getDesiredCapabilities(), o.getDesiredCapabilities());
+      return prioritizer.compareTo(this.getRequest().getDesiredCapabilities(), o.getRequest()
+          .getDesiredCapabilities());
     } else {
       return 0;
     }
   }
 
-  protected RequestType getRequestType() {
-    if (requestType == null) {
-      requestType = extractRequestType();
-    }
-    return requestType;
-  }
 
-  protected void setRequestType(RequestType requestType) {
-    this.requestType = requestType;
-  }
 
   protected void setSession(TestSession session) {
     this.session = session;
@@ -323,9 +226,9 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     sessionAssigned.countDown();
   }
 
-  protected TestSession getSession() {
+  public TestSession getSession() {
     if (session == null) {
-      ExternalSessionKey externalKey = extractSession();
+      ExternalSessionKey externalKey = request.extractSession();
       session = registry.getExistingSession(externalKey);
     }
     return session;
@@ -352,7 +255,6 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
   public String toString() {
     StringBuilder b = new StringBuilder();
     b.append("session :").append(session).append(" , ");
-    b.append("cap : ").append(getDesiredCapabilities());
     b.append("\n");
     return b.toString();
   }
@@ -362,7 +264,7 @@ public abstract class RequestHandler implements Comparable<RequestHandler> {
     b.append("\nmethod: ").append(request.getMethod());
     b.append("\npathInfo: ").append(request.getPathInfo());
     b.append("\nuri: ").append(request.getRequestURI());
-    b.append("\ncontent :").append(getRequestBody());
+    b.append("\ncontent :").append(request.getBody());
     return b.toString();
   }
 

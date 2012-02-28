@@ -108,7 +108,7 @@ class NewSessionRequestQueue {
   public synchronized Iterable<DesiredCapabilities> getDesiredCapabilities() {
     List<DesiredCapabilities> result = new ArrayList<DesiredCapabilities>();
     for (RequestHandler req : newSessionRequests) {
-      result.add(new DesiredCapabilities(req.getDesiredCapabilities()));
+      result.add(new DesiredCapabilities(req.getRequest().getDesiredCapabilities()));
     }
     return result;
   }

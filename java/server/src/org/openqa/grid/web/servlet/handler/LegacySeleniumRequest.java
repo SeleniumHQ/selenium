@@ -1,68 +1,51 @@
 /*
-Copyright 2011 WebDriver committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Copyright 2011 WebDriver committers Copyright 2011 Software Freedom Conservancy
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.SeleniumProtocol;
-import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.internal.utils.ForwardConfiguration;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.web.utils.BrowserNameUtils;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-/**
- * Handler processing the selenium1 based requests. Each request body has to be read to get the
- * sessionId at least.
- */
-public class Selenium1RequestHandler extends RequestHandler {
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.grid.web.utils.BrowserNameUtils;
 
-  private static final Logger log = Logger.getLogger(Selenium1RequestHandler.class.getName());
+public class LegacySeleniumRequest extends SeleniumBasedRequest {
 
-  Selenium1RequestHandler(HttpServletRequest request, HttpServletResponse response,
-      Registry registry) {
-    super(request, response, registry);
-    if (getRequestBody() == null) {
-      throw new InstantiationError(
-          "Cannot create a selenium1 request handler from a request without body");
-    }
+  public LegacySeleniumRequest(HttpServletRequest httpServletRequest, Registry registry) {
+    super(httpServletRequest, registry);
+
   }
 
   @Override
   public RequestType extractRequestType() {
-    if (getRequestBody().contains("cmd=getNewBrowserSession")) {
+    if (getBody().contains("cmd=getNewBrowserSession")) {
       return RequestType.START_SESSION;
-    } else if (getRequestBody().contains("cmd=testComplete")) {
+    } else if (getBody().contains("cmd=testComplete")) {
       return RequestType.STOP_SESSION;
     } else {
       return RequestType.REGULAR;
     }
+
   }
 
   @Override
@@ -72,17 +55,16 @@ public class Selenium1RequestHandler extends RequestHandler {
     }
     // for selenium 1, the url is ignored. The session has to be read from
     // the request body.
-    String command = getRequestBody();
+    String command = getBody();
     String[] pieces = command.split("&");
     ExternalSessionKey externalSessionKey;
     for (String piece : pieces) {
-      externalSessionKey = ExternalSessionKey.fromSe1Request( piece);
-      if (externalSessionKey != null){
+      externalSessionKey = ExternalSessionKey.fromSe1Request(piece);
+      if (externalSessionKey != null) {
         return externalSessionKey;
       }
     }
     return null;
-
   }
 
   @Override
@@ -90,12 +72,11 @@ public class Selenium1RequestHandler extends RequestHandler {
     if (getRequestType() != RequestType.START_SESSION) {
       throw new Error("the desired capability is only present in the new session requests.");
     }
-    String[] pieces = getRequestBody().split("&");
+    String[] pieces = getBody().split("&");
     for (String piece : pieces) {
       try {
         piece = URLDecoder.decode(piece, "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-      }
+      } catch (UnsupportedEncodingException e) {}
       if (piece.startsWith("1=")) {
         String envt = piece.replace("1=", "");
         Map<String, Object> cap = new HashMap<String, Object>();
@@ -122,14 +103,10 @@ public class Selenium1RequestHandler extends RequestHandler {
     throw new RuntimeException("Error");
   }
 
-  // TODO freynaud do some real parsing here instead. BrowserString to
-  // Capabilities service or so.
   @Override
-  public ExternalSessionKey forwardNewSessionRequestAndUpdateRegistry(TestSession session) throws NewSessionException {
-    String responseBody;
-
+  public String getNewSessionRequestedCapability(TestSession session) {
     try {
-      String body = getRequestBody();
+      String body = getBody();
       String[] pieces = body.split("&");
       StringBuilder builder = new StringBuilder();
 
@@ -159,15 +136,12 @@ public class Selenium1RequestHandler extends RequestHandler {
         }
         builder.append(piece).append("&");
       }
+      return builder.toString();
+    } catch (UnsupportedEncodingException ignore) {
 
-      ForwardConfiguration config = new ForwardConfiguration();
-      config.setProtocol(SeleniumProtocol.Selenium);
-      config.setNewSessionRequest(true);
-      config.setContentOverWrite(builder.toString());
-      responseBody = session.forward(getRequest(), getResponse(), config);
-    } catch (IOException e) {
-      throw new NewSessionException("Error forwarding the request " + e.getMessage(),e);
     }
-    return ExternalSessionKey.fromResponseBody(responseBody);
+    throw new NewSessionException("Error with the request ");
+
   }
+
 }

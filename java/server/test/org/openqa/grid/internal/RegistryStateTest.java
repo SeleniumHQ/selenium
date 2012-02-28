@@ -22,15 +22,16 @@ import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.mock.MockedNewSessionRequestHandler;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 
 public class RegistryStateTest {
@@ -74,9 +75,9 @@ public class RegistryStateTest {
     try {
       registry.add(p1);
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
-      TestSession session = newSessionRequest.getTestSession();
+      TestSession session = newSessionRequest.getSession();
 
       registry.terminateSynchronousFOR_TEST_ONLY(session);
       Assert.assertEquals(0, registry.getActiveSessions().size());
@@ -97,9 +98,9 @@ public class RegistryStateTest {
       Assert.assertEquals(1, registry.getAllProxies().size());
       Assert.assertEquals(0, registry.getUsedProxies().size());
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+      MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
-      TestSession session = newSessionRequest.getTestSession();
+      TestSession session = newSessionRequest.getSession();
 
       Assert.assertEquals(1, registry.getActiveSessions().size());
       Assert.assertEquals(1, registry.getAllProxies().size());
@@ -122,9 +123,9 @@ public class RegistryStateTest {
     try {
       registry.add(p1);
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
-      TestSession session = newSessionRequest.getTestSession();
+      TestSession session = newSessionRequest.getSession();
       registry.terminateSynchronousFOR_TEST_ONLY(session);
       Assert.assertEquals(0, registry.getActiveSessions().size());
 
@@ -141,9 +142,9 @@ public class RegistryStateTest {
     try {
       registry.add(p1);
 
-      MockedRequestHandler newSessionRequest = new MockedNewSessionRequestHandler(registry, app1);
+      RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
-      TestSession session = newSessionRequest.getTestSession();
+      TestSession session = newSessionRequest.getSession();
       final ExternalSessionKey externalKey = ExternalSessionKey.fromString("1234");
       session.setExternalKey(externalKey);
 
