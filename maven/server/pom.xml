@@ -15,7 +15,7 @@
         <dependency>
             <groupId>bouncycastle</groupId>
             <artifactId>bcprov-jdk15</artifactId>
-            <version>146</version>
+            <version>140</version>
         </dependency>
         <dependency>
             <groupId>mx4j</groupId>
