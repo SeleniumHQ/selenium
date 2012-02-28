@@ -50,7 +50,7 @@ goog.require('goog.userAgent');
  * @see http://www.w3.org/TR/DOM-Level-3-XPath/xpath.html#XPathResult
  * @private
  */
-// TODO(user): Move this enum back to bot.locators.xpath namespace.
+// TODO(berrada): Move this enum back to bot.locators.xpath namespace.
 // The problem is that we alias bot.locators.xpath in locators.js, while
 // we set the flag --collapse_properties (http://goo.gl/5W6cP).
 // The compiler should have thrown the error anyways, it's a bug that it fails
