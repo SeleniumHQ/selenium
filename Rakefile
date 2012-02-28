@@ -130,7 +130,10 @@ task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
   '//javascript/chrome-driver:test:run',
   '//javascript/webdriver:test_chrome:run']
-task :test_htmlunit => [ "//java/client/test/org/openqa/selenium/htmlunit:test:run" ]
+task :test_htmlunit => [
+  "//java/client/test/org/openqa/selenium/htmlunit:test_basic:run",
+  "//java/client/test/org/openqa/selenium/htmlunit:test_js:run"
+]
 task :test_grid => [
   "//java/server/test/org/openqa/grid/common:test:run",
   "//java/server/test/org/openqa/grid:test:run",
