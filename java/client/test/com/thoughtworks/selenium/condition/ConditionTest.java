@@ -17,20 +17,26 @@
 
 package com.thoughtworks.selenium.condition;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
 import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
+
+import org.junit.Test;
 
 /**
  * Test for Condition class.
  */
-public class ConditionTest extends TestCase {
+public class ConditionTest {
 
   private static final ConditionRunner conditionRunner =
       new JUnitConditionRunner(null, 1, 100);
 
+  @Test
   public void testAppendsInfoToFailureMessage() throws Exception {
     try {
       conditionRunner.waitFor("this condition should always fail", new AlwaysFalseCondition());
@@ -41,6 +47,7 @@ public class ConditionTest extends TestCase {
     }
   }
 
+  @Test
   public void testNotCanInvertFailingSituationQuickly() throws Exception {
     Condition alwaysFalse = new AlwaysFalseCondition();
     long start = System.currentTimeMillis();
@@ -67,6 +74,7 @@ public class ConditionTest extends TestCase {
     assertEquals("sky is in fact pink", sb.toString());
   }
 
+  @Test
   public void testNotCanNegatePassingSituationAfterTimeout() throws Exception {
     Condition alwaysTrue = new AlwaysTrueCondition();
     long start = System.currentTimeMillis();
@@ -82,6 +90,7 @@ public class ConditionTest extends TestCase {
     }
   }
 
+  @Test
   public void testCanTurnTrueBeforeTimeout() throws Exception {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
@@ -97,6 +106,7 @@ public class ConditionTest extends TestCase {
     assertTrue(l < 2000); // but timing out before 2000 milliseconds
   }
 
+  @Test
   public void testCannotTurnTrueAfterTimeout() throws Exception {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
@@ -122,6 +132,7 @@ public class ConditionTest extends TestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testCanLateNotifyOfSeleniumExceptionAfterTimeout() throws Exception {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
@@ -144,7 +155,7 @@ public class ConditionTest extends TestCase {
 
   }
 
-
+  @Test
   public void testRuntimeExceptionInsideConditionIsWrapped() {
     final RuntimeException thrownException = new RuntimeException("ooops");
     Condition condition = new Condition("foo") {
@@ -162,6 +173,7 @@ public class ConditionTest extends TestCase {
     }
   }
 
+  @Test
   public void testAssertionFailureInsideConditionIsNotWrapped() {
     Condition condition = new Condition() {
       @Override
@@ -179,6 +191,7 @@ public class ConditionTest extends TestCase {
     }
   }
 
+  @Test
   public void testMessageWithArgs() {
     final RuntimeException thrownException = new RuntimeException();
     Condition condition = new Condition("foo %s baz", "bar") {

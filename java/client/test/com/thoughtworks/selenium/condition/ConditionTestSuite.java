@@ -17,11 +17,13 @@ limitations under the License.
 
 package com.thoughtworks.selenium.condition;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class ConditionTestSuite extends TestSuite {
-  public static Test suite() {
-    return new TestSuite(ConditionTest.class, JUnit4AndTestNgConditionRunnerTest.class);
-  }
+@RunWith(value = Suite.class)
+@Suite.SuiteClasses({
+    ConditionTest.class,
+    JUnit4AndTestNgConditionRunnerTest.class
+})
+public class ConditionTestSuite {
 }

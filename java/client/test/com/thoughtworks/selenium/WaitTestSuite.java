@@ -22,10 +22,13 @@ import com.thoughtworks.selenium.condition.ConditionTestSuite;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class WaitTestSuite extends TestSuite {
-  public static Test suite() throws Exception {
-    TestSuite suite = new TestSuite(WaitTest.class);
-    suite.addTest(ConditionTestSuite.suite());
-    return suite;
-  }
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    ConditionTestSuite.class,
+    WaitTest.class
+})
+public class WaitTestSuite {
 }

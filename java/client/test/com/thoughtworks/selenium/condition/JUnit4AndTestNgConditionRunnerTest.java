@@ -16,10 +16,15 @@
  */
 package com.thoughtworks.selenium.condition;
 
-import junit.framework.TestCase;
 
-public class JUnit4AndTestNgConditionRunnerTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import org.junit.Test;
+
+public class JUnit4AndTestNgConditionRunnerTest {
+
+  @Test
   public void testAssertionErrorIsOfRightType() {
     JUnit4AndTestNgConditionRunner cr = new JUnit4AndTestNgConditionRunner(null, null, 1, 1);
     try {
