@@ -17,28 +17,34 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import junit.extensions.TestSetup;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.junit.internal.runners.SuiteMethod;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.drivers.Browser;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 
-import java.util.Arrays;
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    ChromeOptionsFunctionalTest.class,
+    ChromeDriverTests.LegacyTests.class
+})
+public class ChromeDriverTests {
 
-public class ChromeDriverTestSuite extends TestSuite {
-  public static Test suite() throws Exception {
-    return new TestSuiteBuilder()
-        .addSourceDir("java/client/test")
-        .using(Browser.chrome)
-        .includeJavascriptTests()
-        .keepDriverInstance()
-        .restrictToPackage("org.openqa.selenium")
-        .restrictToPackage("org.openqa.selenium.chrome")
-        .create();
+  @RunWith(SuiteMethod.class)
+  public static class LegacyTests extends TestSuite {
+
+    public static Test suite() throws Exception {
+      return new TestSuiteBuilder()
+          .addSourceDir("java/client/test")
+          .using(Browser.chrome)
+          .includeJavascriptTests()
+          .keepDriverInstance()
+          .restrictToPackage("org.openqa.selenium")
+          .restrictToPackage("org.openqa.selenium.chrome")
+          .create();
+    }
   }
 }

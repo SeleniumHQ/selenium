@@ -17,27 +17,32 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+import org.junit.Test;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NeedsLocalEnvironment;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 /**
  * Functional tests for {@link ChromeOptions}.
  */
-public class ChromeOptionsFunctionalTest extends AbstractDriverTestCase {
+public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
 
   private ChromeDriver driver = null;
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     if (driver != null) {
       driver.quit();
     }
-    super.tearDown();
   }
 
   @NeedsLocalEnvironment
-  public void testCanStartChromeWithCustomOptions() {
+  @Test
+  public void canStartChromeWithCustomOptions() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("user-agent=foo;bar");
     driver = new ChromeDriver(options);
