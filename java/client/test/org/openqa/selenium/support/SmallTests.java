@@ -49,6 +49,7 @@ import org.junit.runners.Suite;
     PageFactoryTest.class,
     SelectTest.class,
     SlowLoadableComponentTest.class,
+    ThreadGuardTest.class,
     WebDriverWaitTest.class
 })
 public class SmallTests {}

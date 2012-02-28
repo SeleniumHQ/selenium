@@ -17,10 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-public class SlowLoadableComponentTest extends TestCase {
+import org.junit.Test;
 
+public class SlowLoadableComponentTest {
+
+  @Test
   public void testShouldDoNothingIfComponentIsAlreadyLoaded() {
     try {
       new DetonatingSlowLoader().get();
@@ -29,6 +33,7 @@ public class SlowLoadableComponentTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded() {
     int numberOfTimesThroughLoop = 1;
     SlowLoading slowLoading = new SlowLoading(new SystemClock(), 1, numberOfTimesThroughLoop).get();
@@ -36,6 +41,7 @@ public class SlowLoadableComponentTest extends TestCase {
     assertEquals(numberOfTimesThroughLoop, slowLoading.getLoopCount());
   }
 
+  @Test
   public void testTheLoadMethodShouldOnlyBeCalledOnceIfTheComponentTakesALongTimeToLoad() {
     try {
       new OnlyOneLoad(new SystemClock(), 5, 5).get();
@@ -44,6 +50,7 @@ public class SlowLoadableComponentTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout() {
     FakeClock clock = new FakeClock();
     try {
@@ -54,6 +61,7 @@ public class SlowLoadableComponentTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldCancelLoadingIfAnErrorIsDetected() {
     HasError error = new HasError();
 

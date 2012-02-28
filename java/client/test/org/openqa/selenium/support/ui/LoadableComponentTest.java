@@ -17,9 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class LoadableComponentTest extends TestCase {
+import org.junit.Test;
+
+public class LoadableComponentTest {
+  @Test
   public void testShouldDoNothingIfComponentIsAlreadyLoaded() {
     try {
       new DetonatingComponent().get();
@@ -28,6 +33,7 @@ public class LoadableComponentTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded() {
     LoadsOk ok = new LoadsOk(true);
 
@@ -36,6 +42,7 @@ public class LoadableComponentTest extends TestCase {
     assertTrue(ok.wasLoadCalled());
   }
 
+  @Test
   public void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoad() {
     LoadsOk ok = new LoadsOk(false);
 
