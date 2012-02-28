@@ -278,7 +278,7 @@ WDBadCertListenerModule.prototype.unregisterSelf = function(
 };
 
 
-var FACTORY = null;
+var FACTORY;
 
 if (!bot.userAgent.isProductVersion('10')){
 /** @const */ FACTORY = {
