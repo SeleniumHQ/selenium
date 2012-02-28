@@ -194,7 +194,7 @@ public class TestSession {
   /**
    * forwards the request to the node.
    */
-  public String forward(SeleniumBasedRequest request, HttpServletResponse response)
+  public String forward(SeleniumBasedRequest request, HttpServletResponse response, boolean newSessionRequest)
       throws IOException {
     String res = null;
 
@@ -216,13 +216,13 @@ public class TestSession {
       response.setStatus(proxyResponse.getStatusLine().getStatusCode());
       processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
 
-      if (proxyResponse.getStatusLine().getStatusCode() == 500) {
-        removeIncompleteNewSessionRequest();
-      } else {
+      if (proxyResponse.getStatusLine().getStatusCode() != 500) {
         updateHubIfNewWebDriverSession(request, proxyResponse);
+      } else if (newSessionRequest) {
+        removeIncompleteNewSessionRequest();
       }
 
-      HttpEntity responseBody = proxyResponse.getEntity();
+        HttpEntity responseBody = proxyResponse.getEntity();
       byte[] contentBeingForwarded = null;
       if (responseBody != null) {
         try {

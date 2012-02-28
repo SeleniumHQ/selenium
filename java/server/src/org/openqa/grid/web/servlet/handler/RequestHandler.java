@@ -84,7 +84,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
     try {
       String content = request.getNewSessionRequestedCapability(session);
       getRequest().setBody(content);
-      session.forward(getRequest(), getResponse());
+      session.forward(getRequest(), getResponse(), true);
     } catch (IOException e) {
       //log.warning("Error forwarding the request " + e.getMessage());
       throw new NewSessionException("Error forwarding the request " + e.getMessage(), e);
@@ -92,7 +92,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   }
 
   protected void forwardRequest(TestSession session, RequestHandler handler) throws IOException {
-    session.forward(request, response);
+    session.forward(request, response, false);
   }
 
   /**
