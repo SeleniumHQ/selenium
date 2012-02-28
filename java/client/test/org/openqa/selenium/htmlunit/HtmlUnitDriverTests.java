@@ -20,15 +20,16 @@ package org.openqa.selenium.htmlunit;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.openqa.selenium.TestSuiteBuilder;
 
 import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
 
-public class HtmlUnitDriverTestSuite extends TestSuite {
-  public static Test suite() throws Exception {
-    return new TestSuiteBuilder()
-        .addSourceDir("java/client/test")
-        .using(htmlunit)
-        .create();
-  }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    HtmlUnitSpecificTests.class,
+    LegacyJunit3Tests.class
+})
+public class HtmlUnitDriverTests {
 }

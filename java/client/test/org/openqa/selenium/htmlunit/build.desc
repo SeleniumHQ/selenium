@@ -1,9 +1,34 @@
-java_test(name = "test",
-  srcs = [ "*.java" ],
-  sysproperties = [
-    { "selenium.browser" : "htmlunit_js" },
+java_library(name = "tests",
+  srcs = [
+    "HtmlUnitCapabilitiesTest.java",
+    "HtmlUnitSpecificTests.java",
+    "InputKeysContainerTest.java",
+    "LegacyJunit3Tests.java",
+    "ToStringTest.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/test/org/openqa/selenium:tests"
+  ])
+
+java_test(name = "test_basic",
+  srcs = [
+    "HtmlUnitDriverTests.java",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "htmlunit" },
+  ],
+  deps = [
+    ":tests",
+  ])
+
+java_test(name = "test_js",
+  srcs = [
+    "JavascriptEnabledHtmlUnitDriverTests.java",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "htmlunit_js" },
+  ],
+  deps = [
+    ":tests",
   ])

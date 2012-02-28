@@ -93,7 +93,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(name)) {
       if (caps.isJavascriptEnabled()) {
         className =
-            "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
+            "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
       } else {
         className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
       }

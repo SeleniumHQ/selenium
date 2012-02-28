@@ -20,13 +20,15 @@ package org.openqa.selenium.htmlunit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class ToStringTest extends AbstractDriverTestCase {
+public class ToStringTest extends JUnit4TestBase {
 
-  public void testToString() {
+  @Test
+  public void toStringShouldLookNice() {
     driver.get(pages.xhtmlTestPage);
 
     WebElement a = driver.findElement(By.id("id1"));

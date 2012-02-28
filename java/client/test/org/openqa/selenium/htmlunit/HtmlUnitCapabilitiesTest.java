@@ -16,6 +16,11 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -26,8 +31,9 @@ import junit.framework.TestCase;
 /**
  * Test the determineBrowserVersion method.
  */
-public class HtmlUnitCapabilitiesTest extends TestCase {
-  public void testConfigurationViaDirectCapabilities() {
+public class HtmlUnitCapabilitiesTest {
+  @Test
+  public void configurationViaDirectCapabilities() {
     DesiredCapabilities ie7Capabilities =
         new DesiredCapabilities("internet explorer", "7", Platform.ANY);
 
@@ -47,7 +53,8 @@ public class HtmlUnitCapabilitiesTest extends TestCase {
         BrowserVersion.FIREFOX_3_6);
   }
 
-  public void testConfigurationOfFirefoxViaRemote() {
+  @Test
+  public void configurationOfFirefoxViaRemote() {
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities("htmlunit", "firefox", Platform.ANY);
 
@@ -55,7 +62,8 @@ public class HtmlUnitCapabilitiesTest extends TestCase {
         BrowserVersion.FIREFOX_3_6);
   }
 
-  public void testConfigurationOfIEViaRemote() {
+  @Test
+  public void configurationOfIEViaRemote() {
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities("htmlunit", "internet explorer", Platform.ANY);
 
@@ -69,7 +77,8 @@ public class HtmlUnitCapabilitiesTest extends TestCase {
         BrowserVersion.INTERNET_EXPLORER_7);
   }
 
-  public void testHtmlUnitReportsCapabilities() {
+  @Test
+  public void htmlUnitReportsCapabilities() {
     HtmlUnitDriver driver = new HtmlUnitDriver(true);
     Capabilities jsEnabled = driver.getCapabilities();
     driver.quit();
