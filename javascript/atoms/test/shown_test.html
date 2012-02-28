@@ -62,7 +62,7 @@
       expectedFailures.expectFailureFor(
           goog.userAgent.IE && goog.userAgent.platform.VISTA,
           'Vista fails this test, have not figured it out yet...');
-      // TODO(user): Figure it out
+      // TODO(jleyba): Figure it out
       expectedFailures.run(function() {
         assertFalse(isShown(parent));
         assertFalse(isShown(child));

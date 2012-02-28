@@ -63,7 +63,7 @@
     function assertElementIsActiveElement(expected) {
       var actual = document.activeElement;
       if (actual) {
-        // NOTE(user): Using assertEquals(expected, document.activeElement)
+        // NOTE(jleyba): Using assertEquals(expected, document.activeElement)
         // causes an error in IE when the assertion fails (from trying to
         // convert the DOM elements into strings for the error message):
         //     "'constructor' is null or not an object".
@@ -88,7 +88,7 @@
     }
 
     function testShouldBeAbleToFocusOnAnElement() {
-      // NOTE(user): Test does not work on IE 8 with the new IE Driver,
+      // NOTE(jleyba): Test does not work on IE 8 with the new IE Driver,
       // I suspect due to something similar to
       // http://support.microsoft.com/kb/973528
       if (goog.userAgent.IE && goog.userAgent.isVersion('8')) {

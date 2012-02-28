@@ -19,7 +19,7 @@
  * Instead, it is intended to be used in its compiled form when injecting
  * script from another language (e.g. C++).
  *
- * TODO(user): Add an example
+ * TODO(jleyba): Add an example
  */
 
 goog.provide('bot.inject');

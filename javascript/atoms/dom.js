@@ -633,8 +633,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     if (mapDoc['evaluate']) {
       // The "//*" XPath syntax can confuse the closure compiler, so we use
       // the "/descendant::*" syntax instead.
-      // TODO(user): Try to find a reproducible case for the compiler bug.
-      // TODO(user): Restrict to applet, img, input:image, and object nodes.
+      // TODO(jleyba): Try to find a reproducible case for the compiler bug.
+      // TODO(jleyba): Restrict to applet, img, input:image, and object nodes.
       var imageXpath = '/descendant::*[@usemap = "#' + elem.name + '"]';
 
       // TODO(user): Break dependency of bot.locators on bot.dom,

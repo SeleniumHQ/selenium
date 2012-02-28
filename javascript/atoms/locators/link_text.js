@@ -35,7 +35,7 @@ goog.require('goog.dom.DomHelper');
  * @private
  */
 bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
-  // TODO(user): Fix this to work for XHTML (which is case sensitive)
+  // TODO(jleyba): Fix this to work for XHTML (which is case sensitive)
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       goog.dom.TagName.A, /*className=*/null, root);
 
@@ -58,7 +58,7 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
  * @private
  */
 bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
-  // TODO(user): Fix this to work for XHTML (which is case sensitive)
+  // TODO(jleyba): Fix this to work for XHTML (which is case sensitive)
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       goog.dom.TagName.A, /*className=*/null, root);
   return goog.array.filter(elements, function(element) {
