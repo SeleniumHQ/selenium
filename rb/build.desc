@@ -15,10 +15,10 @@ rubygem(
     "//rb:rc-client"
   ],
   gemdeps = [
-    { "multi_json"   : "~> 1.0.4" },
+    { "multi_json"   : "~> 1.0"   },
     { "rubyzip"      : ">= 0"     },
     { "childprocess" : ">= 0.2.5" },
-    { "ffi"          : "~> 1.0.9" }
+    { "ffi"          : "~> 1.0"   }
   ],
   devdeps = [
     { "rspec"       : "~> 2.0"   },
