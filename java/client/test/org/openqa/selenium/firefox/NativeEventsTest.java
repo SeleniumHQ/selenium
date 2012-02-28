@@ -1,10 +1,16 @@
 // Copyright 2010 Google Inc. All Rights Reserved.
 package org.openqa.selenium.firefox;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NeedsLocalEnvironment;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 /**
  * If native events are enabled, make sure they work.
@@ -12,13 +18,12 @@ import org.openqa.selenium.remote.CapabilityType;
  * @author eran.mes@gmail.com (Eran Mes)
  */
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-public class NativeEventsTest extends AbstractDriverTestCase {
+public class NativeEventsTest extends JUnit4TestBase {
   private boolean testNativeEvents = false;
   private FirefoxDriver driver2;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  @Before
+  public void setUp() throws Exception {
     testNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS ||
         Platform.getCurrent().is(Platform.LINUX);
     if (testNativeEvents) {
@@ -28,15 +33,15 @@ public class NativeEventsTest extends AbstractDriverTestCase {
     }
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
+  @After
+  public void tearDown() throws Exception {
     if (driver2 != null) {
       driver2.quit();
     }
   }
 
-  public void testNativeEventsCanBeEnabled() {
+  @Test
+  public void nativeEventsCanBeEnabled() {
     if (driver2 == null) {
       return;
     }

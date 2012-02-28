@@ -20,25 +20,42 @@ package org.openqa.selenium.firefox;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.junit.BeforeClass;
+import org.junit.internal.runners.SuiteMethod;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.testing.drivers.Browser;
 
-public class NativeEventsFirefoxDriverTestSuite extends TestSuite {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    FirefoxSpecificTests.class,
+    NativeEventsFirefoxDriverTests.LegacyTests.class
+})
+public class NativeEventsFirefoxDriverTests extends TestSuite {
 
-  public static Test suite() throws Exception {
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return new TestSuite();
-    }
-
+  @BeforeClass
+  public static void forceNativeEvents() {
     System.setProperty("selenium.browser.native_events", "true");
-
-    return new TestSuiteBuilder()
-        .addSourceDir("java/client/test")
-        .using(Browser.ff)
-        .keepDriverInstance()
-        .includeJavascriptTests()
-        .create();
   }
 
+  @RunWith(SuiteMethod.class)
+  public static class LegacyTests {
+
+    public static Test suite() throws Exception {
+      if (Platform.getCurrent().is(Platform.MAC)) {
+        return new TestSuite();
+      }
+
+      System.setProperty("selenium.browser.native_events", "true");
+
+      return new TestSuiteBuilder()
+          .addSourceDir("java/client/test")
+          .using(Browser.ff)
+          .keepDriverInstance()
+          .includeJavascriptTests()
+          .create();
+    }
+  }
 }

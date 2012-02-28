@@ -17,31 +17,41 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
 
-public class PreferencesTest extends TestCase {
+public class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
   private StringReader defaults;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp(); 
+  @Before
+  public void setUp() throws Exception {
     defaults = new StringReader(emptyDefaults);
   }
 
-  public void testStringifyVsStringFormat() {
+  @Test
+  public void stringifyVsStringFormat() {
     assertEquals("\"stringifyMe\"", String.format("\"%s\"", "stringifyMe"));
   }
 
-  public void testStringFormatOfStringify() {
+  @Test
+  public void stringFormatOfStringify() {
     assertEquals("\"\"stringifyMe\"\"", String.format("\"%s\"", "\"stringifyMe\""));
   }
 
-  public void testDetectStringification() {
+  @Test
+  public void detectStringification() {
     Preferences a = new Preferences(defaults);
 
     assertFalse("Empty String", canSet(a, "\"\""));
@@ -56,21 +66,24 @@ public class PreferencesTest extends TestCase {
 
   }
 
-  public void testParsePreferences_boolean() {
+  @Test
+  public void parsePreferences_boolean() {
     StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
     Preferences prefs = new Preferences(defaults, lines);
 
     assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));
   }
 
-  public void testParsePreferences_integer() {
+  @Test
+  public void parsePreferences_integer() {
     StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 34);");
     Preferences prefs = new Preferences(defaults, lines);
 
     assertEquals(34, prefs.getPreference("dom.max_script_run_time"));
   }
 
-  public void testParsePreferences_string() {
+  @Test
+  public void parsePreferences_string() {
     String prefWithComma = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) "
         + "AppleWebKit/532.9 (KHTML, like Gecko)";
     String prefWithQuotes = "lpr ${MOZ_PRINTER_NAME:+-P\"$MOZ_PRINTER_NAME\"}";
@@ -84,7 +97,8 @@ public class PreferencesTest extends TestCase {
     assertEquals(prefWithQuotes, prefs.getPreference("print.print_command"));
   }
 
-  public void testParsePreferences_multiline() {
+  @Test
+  public void parsePreferences_multiline() {
     Reader lines = new StringReader(
         "user_pref(\"extensions.update.notifyUser\", false);\n" +
             "user_pref(\"dom.max_script_run_time\", 32);");
@@ -94,7 +108,8 @@ public class PreferencesTest extends TestCase {
     assertEquals(32, prefs.getPreference("dom.max_script_run_time"));
   }
 
-  public void testCannotOverrideAFozenPrefence() {
+  @Test
+  public void cannotOverrideAFozenPrefence() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
 
@@ -108,7 +123,8 @@ public class PreferencesTest extends TestCase {
     }
   }
 
-  public void testCanOverrideAFrozenPreferenceWithTheFrozenValue() throws Exception {
+  @Test
+  public void canOverrideAFrozenPreferenceWithTheFrozenValue() throws Exception {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
 
@@ -117,7 +133,8 @@ public class PreferencesTest extends TestCase {
     assertEquals(preferences.getPreference("frozen.pref"), true);
   }
 
-  public void testCanOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
+  @Test
+  public void canOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
     Preferences preferences = new Preferences(defaults);
 
     try {

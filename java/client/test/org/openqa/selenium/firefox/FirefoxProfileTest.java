@@ -19,7 +19,12 @@ package org.openqa.selenium.firefox;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.io.FileHandler;
@@ -37,20 +42,19 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirefoxProfileTest extends TestCase {
+public class FirefoxProfileTest {
 
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
 
   private FirefoxProfile profile;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     profile = new FirefoxProfile();
   }
 
-  public void testShouldQuoteStringsWhenSettingStringProperties() throws Exception {
+  @Test
+  public void shouldQuoteStringsWhenSettingStringProperties() throws Exception {
     profile.setPreference("cheese", "brie");
 
     List<String> props = readGeneratedProperties(profile);
@@ -64,7 +68,8 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue(seenCheese);
   }
 
-  public void testShouldSetIntegerPreferences() throws Exception {
+  @Test
+  public void shouldSetIntegerPreferences() throws Exception {
     profile.setPreference("cheese", 1234);
 
     List<String> props = readGeneratedProperties(profile);
@@ -78,7 +83,8 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue("Did not see integer value being set correctly", seenCheese);
   }
 
-  public void testManualProxy() throws Exception {
+  @Test
+  public void manualProxy() throws Exception {
     profile.setProxyPreferences(
         new Proxy()
             .setHttpProxy("foo:123")
@@ -97,7 +103,8 @@ public class FirefoxProfileTest extends TestCase {
     assertThat(prefs, containsString("network.proxy.type\", 1"));
   }
 
-  public void testProxyAutoconfigUrl() throws Exception {
+  @Test
+  public void proxyAutoconfigUrl() throws Exception {
     profile.setProxyPreferences(
         new Proxy()
             .setProxyAutoconfigUrl("http://foo/bar.pac"));
@@ -107,7 +114,8 @@ public class FirefoxProfileTest extends TestCase {
     assertThat(prefs, containsString("network.proxy.type\", 2"));
   }
 
-  public void testProxyAutodetect() throws Exception {
+  @Test
+  public void proxyAutodetect() throws Exception {
     profile.setProxyPreferences(
         new Proxy()
             .setAutodetect(true));
@@ -116,13 +124,15 @@ public class FirefoxProfileTest extends TestCase {
     assertThat(prefs, containsString("network.proxy.type\", 4"));
   }
 
-  public void testShouldSetBooleanPreferences() throws Exception {
+  @Test
+  public void shouldSetBooleanPreferences() throws Exception {
     profile.setPreference("cheese", false);
 
     assertPreferenceValueEquals("cheese", false);
   }
 
-  public void testShouldInstallExtensionFromZip() throws IOException {
+  @Test
+  public void shouldInstallExtensionFromZip() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     profile.addExtension(InProject.locate(FIREBUG_PATH));
     File profileDir = profile.layoutOnDisk();
@@ -130,7 +140,8 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue(extensionDir.exists());
   }
 
-  public void testShouldInstallExtensionFromDirectory() throws IOException {
+  @Test
+  public void shouldInstallExtensionFromDirectory() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     File extension = InProject.locate(FIREBUG_PATH);
     File unzippedExtension = FileHandler.unzip(new FileInputStream(extension));
@@ -140,7 +151,8 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue(extensionDir.exists());
   }
 
-  public void testShouldInstallExtensionUsingClasspath() throws IOException {
+  @Test
+  public void shouldInstallExtensionUsingClasspath() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     profile.addExtension(FirefoxProfileTest.class, "/resource/firebug-1.5.0-fx.xpi");
     File profileDir = profile.layoutOnDisk();
@@ -148,7 +160,8 @@ public class FirefoxProfileTest extends TestCase {
     assertTrue(extensionDir.exists());
   }
 
-  public void testShouldConvertItselfIntoAMeaningfulRepresentation() throws IOException {
+  @Test
+  public void shouldConvertItselfIntoAMeaningfulRepresentation() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("i.like.cheese", true);
 
@@ -179,13 +192,15 @@ public class FirefoxProfileTest extends TestCase {
     return prefLines;
   }
 
-  public void testLayoutOnDiskSetsUserPreferences() throws IOException {
+  @Test
+  public void layoutOnDiskSetsUserPreferences() throws IOException {
     profile.setPreference("browser.startup.homepage", "http://www.example.com");
     Preferences parsedPrefs = parseUserPrefs(profile);
     assertEquals("http://www.example.com", parsedPrefs.getPreference("browser.startup.homepage"));
   }
 
-  public void testUserPrefsArePreservedWhenConvertingToAndFromJson() throws IOException {
+  @Test
+  public void userPrefsArePreservedWhenConvertingToAndFromJson() throws IOException {
     profile.setPreference("browser.startup.homepage", "http://www.example.com");
 
     String json = profile.toJson();
@@ -194,8 +209,9 @@ public class FirefoxProfileTest extends TestCase {
 
     assertEquals("http://www.example.com", parsedPrefs.getPreference("browser.startup.homepage"));
   }
-  
-  public void testBackslashedCharsArePreservedWhenConvertingToAndFromJson() throws IOException {
+
+  @Test
+  public void backslashedCharsArePreservedWhenConvertingToAndFromJson() throws IOException {
     String dir = "c:\\aaa\\bbb\\ccc\\ddd\\eee\\fff\\ggg\\hhh\\iii\\jjj\\kkk\\lll\\mmm\\nnn\\ooo\\ppp\\qqq\\rrr\\sss\\ttt\\uuu\\vvv\\www\\xxx\\yyy\\zzz";
     profile.setPreference("browser.download.dir", dir);
 

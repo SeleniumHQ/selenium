@@ -1,6 +1,7 @@
 
 java_library(name = "tests_common",
   srcs = [
+    "FirefoxSpecificTests.java",
     "*Test.java",
     "internal/*.java",
   ],
@@ -12,7 +13,7 @@ java_library(name = "tests_common",
   ])
 
 java_test(name = "test_synthesized",
-  srcs = [ "SynthesizedFirefoxDriverTestSuite.java" ],
+  srcs = [ "SynthesizedFirefoxDriverTests.java" ],
   sysproperties = [
     { "selenium.browser" : "ff" },
   ],
@@ -21,7 +22,7 @@ java_test(name = "test_synthesized",
   ])
 
 java_test(name = "test_native",
-  srcs = [ "NativeEventsFirefoxDriverTestSuite.java" ],
+  srcs = [ "NativeEventsFirefoxDriverTests.java" ],
   sysproperties = [
     { "selenium.browser" : "ff" },
   ],

@@ -23,6 +23,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
@@ -37,6 +41,7 @@ import java.util.concurrent.Callable;
 
 import com.google.common.base.Throwables;
 import org.junit.Assert;
+import org.junit.Test;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.testing.DevMode;
@@ -49,6 +54,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
@@ -60,10 +66,12 @@ import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-public class FirefoxDriverTest extends AbstractDriverTestCase {
-  public void testShouldContinueToWorkIfUnableToFindElementById() {
+public class FirefoxDriverTest extends JUnit4TestBase {
+  @Test
+  public void shouldContinueToWorkIfUnableToFindElementById() {
     driver.get(pages.formPage);
     try {
       driver.findElement(By.id("notThere"));
@@ -90,7 +98,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldGetMeaningfulExceptionOnBrowserDeath() {
+  @Test
+  public void shouldGetMeaningfulExceptionOnBrowserDeath() {
     if (TestUtilities.getEffectivePlatform().is(Platform.LINUX) && 
         (TestUtilities.isFirefox30(driver) || TestUtilities.isFirefox35(driver))) {
         // This test does not work on firefox 3.0, 3.5 on linux.
@@ -98,7 +107,6 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
     ConnectionCapturingDriver driver2 = new ConnectionCapturingDriver();
     driver2.get(pages.formPage);
-
 
     try {
       driver2.keptConnection.quit();
@@ -112,11 +120,12 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
 
   @NeedsFreshDriver
-  @Ignore(value = FIREFOX, reason = "Need to figure out how to open a new browser instance mid-test")
-  public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {
+  @Test
+  public void shouldWaitUntilBrowserHasClosedProperly() throws Exception {
     driver.get(pages.simpleTestPage);
-    driver.close();
-    setUp();
+    driver.quit();
+
+    driver = new WebDriverBuilder().get();
 
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -126,7 +135,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  public void testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
+  @Test
+  public void shouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
     WebDriver secondDriver = newFirefoxDriver();
 
     driver.get(pages.xhtmlTestPage);
@@ -139,7 +149,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     secondDriver.quit();
   }
 
-  public void testShouldBeAbleToStartFromAUniqueProfile() {
+  @Test
+  public void shouldBeAbleToStartFromAUniqueProfile() {
     FirefoxProfile profile = new FirefoxProfile();
 
     try {
@@ -151,7 +162,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testANewProfileShouldAllowSettingAdditionalParameters() {
+  @Test
+  public void aNewProfileShouldAllowSettingAdditionalParameters() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.homepage", pages.formPage);
 
@@ -168,7 +180,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldBeAbleToStartFromProfileWithLogFileSet() throws IOException {
+  @Test
+  public void shouldBeAbleToStartFromProfileWithLogFileSet() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     File logFile = File.createTempFile("test", "firefox.log");
     logFile.deleteOnExit();
@@ -186,7 +199,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   }
 
   @Ignore(FIREFOX)
-  public void testShouldBeAbleToStartANamedProfile() {
+  @Test
+  public void shouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 
     if (profile != null) {
@@ -197,7 +211,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
+  @Test
+  public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
     binary.setEnvironmentProperty("NSPR_LOG_MODULES", "all:5");
 
@@ -219,7 +234,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  public void testFocusRemainsInOriginalWindowWhenOpeningNewWindow() {
+  @Test
+  public void focusRemainsInOriginalWindowWhenOpeningNewWindow() {
     if (platformHasNativeEvents() == false) {
       return;
     }
@@ -242,7 +258,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  public void testSwitchingWindowSwitchesFocus() {
+  @Test
+  public void switchingWindowSwitchesFocus() {
     if (platformHasNativeEvents() == false) {
       return;
     }
@@ -286,7 +303,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  public void testClosingWindowAndSwitchingToOriginalSwitchesFocus() {
+  @Test
+  public void closingWindowAndSwitchingToOriginalSwitchesFocus() {
     if (platformHasNativeEvents() == false) {
       return;
     }
@@ -323,7 +341,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
   }
 
-  public void testCanBlockInvalidSslCertificates() {
+  @Test
+  public void canBlockInvalidSslCertificates() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setAcceptUntrustedCertificates(false);
     String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
@@ -344,7 +363,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldAllowUserToSuccessfullyOverrideTheHomePage() {
+  @Test
+  public void shouldAllowUserToSuccessfullyOverrideTheHomePage() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", "1");
     profile.setPreference("browser.startup.homepage", pages.javascriptPage);
@@ -360,7 +380,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
   @Ignore(value = FIREFOX,
       reason = "Reworking alert handling. First step: removing existing broken alert support")
-  public void testShouldThrowWhenAlertNotHandled() {
+  @Test
+  public void shouldThrowWhenAlertNotHandled() {
     WebDriver firefox = newFirefoxDriver();
     firefox.get(pages.alertsPage);
 
@@ -377,7 +398,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testCanAccessUrlProtectedByBasicAuth() {
+  @Test
+  public void canAccessUrlProtectedByBasicAuth() {
     driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
     assertEquals("authorized", driver.findElement(By.tagName("h1")).getText());
   }
@@ -396,7 +418,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     };
   }
 
-  public void testShouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
+  @Test
+  public void shouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
       throws InterruptedException {
     class FirefoxRunner implements Runnable {
       private volatile WebDriver myDriver;
@@ -457,7 +480,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     return sb.toString();
   }
 
-  public void testMultipleFirefoxDriversRunningConcurrently() throws Exception {
+  @Test
+  public void multipleFirefoxDriversRunningConcurrently() throws Exception {
     // Unfortunately native events on linux mean mucking around with the
     // window's focus. this breaks multiple drivers.
     if (TestUtilities.isNativeEventsEnabled(driver) &&
@@ -501,7 +525,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testShouldBeAbleToUseTheSameProfileMoreThanOnce() {
+  @Test
+  public void shouldBeAbleToUseTheSameProfileMoreThanOnce() {
     FirefoxProfile profile = new FirefoxProfile();
 
     profile.setPreference("browser.startup.homepage", pages.formPage);
@@ -522,14 +547,16 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
   }
 
-  public void testCanCallQuitTwiceWithoutThrowingAnException() {
+  @Test
+  public void canCallQuitTwiceWithoutThrowingAnException() {
     WebDriver instance = newFirefoxDriver();
 
     instance.quit();
     instance.quit();
   }
 
-  public void testAnExceptionThrownIfUsingAQuitInstance() {
+  @Test
+  public void anExceptionThrownIfUsingAQuitInstance() {
     WebDriver instance = newFirefoxDriver();
 
     instance.quit();
@@ -544,7 +571,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   }
 
   // See http://code.google.com/p/selenium/issues/detail?id=1774
-  public void testCanStartFirefoxDriverWithSubclassOfFirefoxProfile() {
+  @Test
+  public void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
     new FirefoxDriver(new CustomFirefoxProfile()).quit();
     new FirefoxDriver(new FirefoxProfile() {}).quit();
   }
@@ -552,7 +580,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   /**
    * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
    */
-  public void testSearchingByCssDoesNotPolluteGlobalNamespaceWithSizzleLibrary() {
+  @Test
+  public void searchingByCssDoesNotPolluteGlobalNamespaceWithSizzleLibrary() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("div.content"));
     assertEquals(true,
@@ -562,7 +591,8 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
   /**
    * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
    */
-  public void testSearchingByCssDoesNotOverwriteExistingSizzleDefinition() {
+  @Test
+  public void searchingByCssDoesNotOverwriteExistingSizzleDefinition() {
     driver.get(pages.xhtmlTestPage);
     ((JavascriptExecutor) driver).executeScript("window.Sizzle = 'original sizzle value';");
     driver.findElement(By.cssSelector("div.content"));

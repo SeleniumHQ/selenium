@@ -17,19 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 
-public class StreamsTest extends TestCase {
+public class StreamsTest {
 
   @Test
-  public void testStreamExtraction() {
+  public void streamExtraction() {
     // InputStream stream = new ByteArrayInputStream("foo".getBytes());
     // assertEquals("foo", new String(Streams.drainStream(stream)));
   }
 
   @Test
-  public void testNullStreamIsQuiet() {
+  public void nullStreamIsQuiet() {
     assertNull(Streams.drainStream(null));
   }
 }

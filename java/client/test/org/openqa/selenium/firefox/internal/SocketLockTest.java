@@ -17,14 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.net.PortProber;
-
-import junit.framework.TestCase;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,23 +32,23 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author gregory.block@gmail.com (Gregory Block)
  */
-public class SocketLockTest extends TestCase {
+public class SocketLockTest {
   private int freePort;
-  
-  @Override
-  protected void setUp() throws Exception {
+
+  @Before
+  public void setUp() throws Exception {
     freePort = PortProber.findFreePort();
   }
 
   @Test
-  public void testWellKnownLockLocation() {
+  public void wellKnownLockLocation() {
     Lock lock = new SocketLock(freePort);
     lock.lock(TimeUnit.SECONDS.toMillis(1));
     lock.unlock();
   }
 
   @Test
-  public void testSerialLockOnSamePort() {
+  public void serialLockOnSamePort() {
     for (int i = 0; i < 20; i++) {
       Lock lock = new SocketLock(freePort);
       lock.lock(TimeUnit.SECONDS.toMillis(1));
@@ -58,7 +57,7 @@ public class SocketLockTest extends TestCase {
   }
 
   @Test
-  public void testAttemptToReuseLocksFails() {
+  public void attemptToReuseLocksFails() {
     Lock lock = new SocketLock(freePort);
     lock.lock(TimeUnit.SECONDS.toMillis(1));
     lock.unlock();
