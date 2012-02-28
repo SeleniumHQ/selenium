@@ -116,9 +116,11 @@ public class DriverServlet extends RegistryBasedServlet {
         }
         String json = resp.toString();
 
-        InputStream in = new ByteArrayInputStream(json.getBytes("UTF-8"));
+        byte[] bytes = json.getBytes("UTF-8");
+        InputStream in = new ByteArrayInputStream(bytes);
         try {
-          ByteStreams.copy(in, response.getOutputStream());
+            response.setHeader("Content-Length", Integer.toString(bytes.length));
+            ByteStreams.copy(in, response.getOutputStream());
         } finally {
           in.close();
           response.flushBuffer();
