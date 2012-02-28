@@ -216,7 +216,11 @@ public class TestSession {
       response.setStatus(proxyResponse.getStatusLine().getStatusCode());
       processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
 
-      updateHubIfNewWebDriverSession(request, proxyResponse);
+      if (proxyResponse.getStatusLine().getStatusCode() == 500) {
+        removeIncompleteNewSessionRequest();
+      } else {
+        updateHubIfNewWebDriverSession(request, proxyResponse);
+      }
 
       HttpEntity responseBody = proxyResponse.getEntity();
       byte[] contentBeingForwarded = null;
@@ -255,7 +259,12 @@ public class TestSession {
     }
   }
 
- 
+  private void removeIncompleteNewSessionRequest() {
+    RemoteProxy proxy = slot.getProxy();
+    proxy.getRegistry().terminate(this, SessionTerminationReason.CREATIONFAILED);
+  }
+
+
   private void updateHubNewSeleniumSession(String content) {
     ExternalSessionKey key = ExternalSessionKey.fromResponseBody(content);
     setExternalKey(key);
