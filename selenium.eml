@@ -90,8 +90,8 @@
 		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/commons-lang/commons-lang-2.6-sources.jar!/"/>
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-lang/commons-lang-2.6.jar!/"/>
 	</lib>
-	<lib name="commons-codec-1.4.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.4.jar!/"/>
+	<lib name="commons-codec-1.6.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.6.jar!/"/>
 	</lib>
 	<lib name="hamcrest-all-1.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/hamcrest/hamcrest-all-1.1.jar!/"/>
