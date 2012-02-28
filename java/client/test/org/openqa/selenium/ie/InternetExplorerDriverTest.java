@@ -19,15 +19,16 @@ package org.openqa.selenium.ie;
 
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.WebDriver;
 
 import junit.framework.TestCase;
 
-public class InternetExplorerDriverTest extends TestCase {
+public class InternetExplorerDriverTest {
 
-  @Ignore(value = IE, reason = "Not sure why this is failing on my machine")
-  public void testCanRestartTheIeDriverInATightLoop() {
+  @Test
+  public void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
       WebDriver driver = new InternetExplorerDriver();
       driver.quit();

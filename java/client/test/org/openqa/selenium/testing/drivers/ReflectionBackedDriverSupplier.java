@@ -100,7 +100,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     } else if (DesiredCapabilities.internetExplorer().getBrowserName().equals(name)) {
       if (isInDevMode()) {
         className =
-            "org.openqa.selenium.ie.InternetExplorerDriverTestSuite$TestInternetExplorerDriver";
+            "org.openqa.selenium.ie.InternetExplorerDriverTests$TestInternetExplorerDriver";
       } else {
         className = "org.openqa.selenium.ie.InternetExplorerDriver";
       }
