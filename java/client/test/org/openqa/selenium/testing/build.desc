@@ -58,7 +58,6 @@ java_library(name = "junit",
 
 java_library(name = "junit_4",
   srcs = [
-    "JUnit3SuiteRunner.java",
     "JUnit4TestBase.java",
     "SeleniumTestRunner.java",
   ],

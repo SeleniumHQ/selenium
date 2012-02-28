@@ -20,12 +20,12 @@ package org.openqa.selenium.htmlunit;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.junit.internal.runners.SuiteMethod;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.testing.JUnit3SuiteRunner;
 import org.openqa.selenium.testing.drivers.Browser;
 
-@RunWith(JUnit3SuiteRunner.class)
+@RunWith(SuiteMethod.class)
 public class LegacyJunit3Tests extends TestSuite {
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()
