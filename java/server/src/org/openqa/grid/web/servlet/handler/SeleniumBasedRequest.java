@@ -137,6 +137,16 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
   public BufferedReader getReader() throws IOException {
     return new BufferedReader(new InputStreamReader(getInputStream(), encoding));
   }
+  
+  @Override
+  public int getContentLength() {
+    if (body == null){
+      return 0;  
+    }else {
+      return body.length;
+    }
+    
+  }
 
   public String getBody() {
     try {
