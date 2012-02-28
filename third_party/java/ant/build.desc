@@ -1,2 +1,2 @@
 java_library(name = "ant",
-  deps = [ "ant.jar" ])
+  deps = [ "ant-1.8.2.jar" ])
