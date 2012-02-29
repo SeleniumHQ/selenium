@@ -298,7 +298,7 @@ module Android
 
         raise LoadError.new("Emulator didn't respond properly - infrastructure failure") unless started
 
-        sh "#{$adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android/.MainActivity"
+        sh "#{$adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity"
         sleep 5
 
         sh "#{$adb} forward tcp:8080 tcp:8080"
