@@ -20,6 +20,7 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.collect.Sets;
 
 import org.junit.runners.model.FrameworkMethod;
+import org.openqa.selenium.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -80,6 +81,10 @@ public class TestIgnorance {
     ignored |= isIgnoredDueToJavascript(method.getMethod().getAnnotation(JavascriptEnabled.class));
 
     ignored |= isIgnoredDueToEnvironmentVariables(method, test);
+    
+    ignored |= SauceDriver.shouldUseSauce() &&
+        (method.getMethod().getAnnotation(NeedsLocalEnvironment.class) != null ||
+         test.getClass().getAnnotation(NeedsLocalEnvironment.class) != null);
     
     return ignored;
   }
