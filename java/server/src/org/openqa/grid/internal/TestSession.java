@@ -198,6 +198,8 @@ public class TestSession {
       throws IOException {
     String res = null;
 
+    String currentThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("Forwarding to " + slot.getRemoteURL());
     forwardingRequest = true;
     
     try {
@@ -256,6 +258,7 @@ public class TestSession {
       forwardingRequest = false;
       // Flushing the buffer is important to avoid concurrency problems
       response.flushBuffer();
+      Thread.currentThread().setName(currentThreadName);
     }
   }
 
