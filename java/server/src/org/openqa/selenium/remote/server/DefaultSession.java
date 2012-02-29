@@ -134,8 +134,19 @@ public class DefaultSession implements Session {
     tempFs.deleteBaseDir();
   }
 
-  public <X> X execute(FutureTask<X> future) throws Exception {
-    executor.execute(future);
+  
+   
+  public <X> X execute(final FutureTask<X> future) throws Exception {
+    executor.execute(new Runnable() {
+      public void run() {
+          Thread.currentThread().setName("Session " + sessionId + " processing inside browser");
+          try {
+            future.run();
+          } finally {
+               Thread.currentThread().setName("Session " + sessionId + " awaiting client");
+          }
+      }
+    });
     return future.get();
   }
 

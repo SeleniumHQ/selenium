@@ -26,11 +26,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -199,7 +196,7 @@ public class TestSession {
     String res = null;
 
     String currentThreadName = Thread.currentThread().getName();
-    Thread.currentThread().setName("Forwarding to " + slot.getRemoteURL());
+    setThreadDisplayName();
     forwardingRequest = true;
     
     try {
@@ -262,7 +259,14 @@ public class TestSession {
     }
   }
 
-  private void removeIncompleteNewSessionRequest() {
+    private void setThreadDisplayName() {
+        DateFormat dfmt=DateFormat.getTimeInstance();
+        String name = "Forwarding " + this + " to " + slot.getRemoteURL() + " at " +
+                dfmt.format(Calendar.getInstance().getTime());
+        Thread.currentThread().setName(name);
+    }
+
+    private void removeIncompleteNewSessionRequest() {
     RemoteProxy proxy = slot.getProxy();
     proxy.getRegistry().terminate(this, SessionTerminationReason.CREATIONFAILED);
   }
