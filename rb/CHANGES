@@ -1,3 +1,21 @@
+2.20.0 (2012-02-28)
+===================
+
+* Loosen the multi_json and ffi dependencies (#3446)
+* Firefox:
+  * Introduce a timeout for page loads. This needs to be used in
+    conjunction with the unstable page load detection. Exposed as
+    Timeouts#page_load=
+* Scroll containing elements, not just windows (#3391).
+* Element#{style => css_value}, with an alias for backwards compatibility.
+* Atoms:
+  * Submit a form when the enter button is pressed in its input
+    element.
+  * Add a "mouse pixel scroll" event to the atoms events module.
+  * Adding a public "mouseOver" action and a little internal
+    refactoring around the mouseOver functionality.
+* Selenium::WebDriver::Wait: polling interval reduced from 0.5 to 0.2 seconds.
+
 2.19.0 (2012-02-08)
 ===================
 
