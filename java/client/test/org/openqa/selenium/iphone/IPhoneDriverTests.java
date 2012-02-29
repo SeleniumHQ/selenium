@@ -19,24 +19,19 @@ package org.openqa.selenium.iphone;
 
 import java.io.File;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.StandardSeleniumTests;
 import org.openqa.selenium.testing.InProject;
-import org.openqa.selenium.testing.drivers.Browser;
 
-public class IPhoneDriverTestSuite extends TestSuite {
-
-  public static Test suite() throws Exception {
-    return new TestSuiteBuilder()
-        .addSourceDir("java/client/test")
-        .using(Browser.iphone)
-        .keepDriverInstance()
-        .includeJavascriptTests()
-        .create();
-  }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    StandardSeleniumTests.class,
+    IPhoneSpecificTests.class,
+    LegacyTests.class
+})
+public class IPhoneDriverTests {
 
   // this is being magically used in ReflectionBackedDriverSupplier
   public static class TestIPhoneSimulatorDriver extends IPhoneSimulatorDriver {

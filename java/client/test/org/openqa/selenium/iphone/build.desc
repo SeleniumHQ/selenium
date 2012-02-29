@@ -1,15 +1,24 @@
-java_test(name = "test",
+java_library(name = "base",
   srcs = [
-    "CreateIPhoneDriverTest.java",
-    "IPhoneDriverTestSuite.java",
-    "IPhoneDriverRespondsToStatusTest.java",
-    "IPhoneSimulatorCommandExecutorTest.java",
+    "IPhoneSpecificTests.java",
+    "LegacyTests.java",
+    "*Test.java",
   ],
   deps = [
-    ":server",
-    "//java/client/test/org/openqa/selenium:tests",
     "//java/client/src/org/openqa/selenium/iphone:iphone",
+    "//java/client/test/org/openqa/selenium:tests",
+    "//third_party/java/junit",
+  ])
+
+java_test(name = "test",
+  srcs = [
+    "IPhoneDriverTests.java",
+  ],
+  deps = [
+    ":base",
+    ":server",
     "//third_party/java/commons-exec",
+    "//third_party/java/junit",
   ],
   resources = [
     {"//third_party/objc/iphonesim:iphonesim-binary" : "mac/iphonesim"},
@@ -17,12 +26,10 @@ java_test(name = "test",
 
 java_test(name = "test_deployed",
   srcs = [
-    "AlreadyRunningIPhoneDriverTestSuite.java",
-    "*Test.java",
+    "AlreadyRunningIPhoneDriverTests.java",
   ],
   deps = [
-    "//java/client/test/org/openqa/selenium:tests",
-    "//java/client/src/org/openqa/selenium/iphone",
+    ":base",
     "//third_party/java/junit",
   ])
 
