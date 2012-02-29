@@ -23,7 +23,12 @@ java_library(name = "server-with-tests",
 # TODO(simon): Only resources should be fine
 java_library(name = "server_lite",
   main = "org.openqa.selenium.server.SeleniumServer",
-  srcs = [ "SeleniumServer.java", ],
+  deps = [
+    ":base",
+    ":server_resources",
+  ])
+
+java_library(name = "server_resources",
   resources = [
     "customProfileDirCUSTFF",
     "customProfileDirCUSTFFCHROME",
@@ -35,8 +40,7 @@ java_library(name = "server_lite",
     "//javascript/jsunit",
   ],
   deps = [
-    ":base",
-    "//javascript/selenium-core",
+    "//javascript/selenium-core"
   ])
 
 java_library(name = "logging",
