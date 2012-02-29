@@ -84,7 +84,6 @@ public class RequestHandler implements Comparable<RequestHandler> {
     try {
       String content = request.getNewSessionRequestedCapability(session);
       getRequest().setBody(content);
-      getRequest().setAttribute("Content-Length", content.length());
       session.forward(getRequest(), getResponse(), true);
     } catch (IOException e) {
       //log.warning("Error forwarding the request " + e.getMessage());

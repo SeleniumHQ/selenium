@@ -78,7 +78,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     super(httpServletRequest);
     try {
       InputStream is = super.getInputStream();
-      body = IOUtils.toByteArray(is);
+      setBody( IOUtils.toByteArray(is));
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -161,7 +161,12 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
   }
 
   public void setBody(String content) {
-    body = content.getBytes();
+    setBody(content.getBytes());
+  }
+
+  public void setBody(byte[] content) {
+    body = content;
+    setAttribute("Content-Length", content.length);
   }
 
   public long getCreationTime(){
