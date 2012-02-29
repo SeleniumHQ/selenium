@@ -18,8 +18,12 @@ limitations under the License.
 package org.openqa.selenium.android;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
+import org.junit.BeforeClass;
+import org.junit.internal.runners.SuiteMethod;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.openqa.selenium.StandardSeleniumTests;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.android.environment.AndroidTestEnvironment;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -30,20 +34,31 @@ import static org.openqa.selenium.testing.drivers.Browser.android;
 /**
  * Unit tests suite for Android driver.
  */
-public class AndroidDriverTestSuite extends TestSuite {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    StandardSeleniumTests.class,
+    AndroidDriverTests.LegacyTests.class
+})
+public class AndroidDriverTests {
 
-  public static Test suite() throws Exception {
+  @BeforeClass
+  public static void startEnvironment() {
     TestEnvironment env = GlobalTestEnvironment.get();
     if (env != null) {
       env.stop();
     }
     GlobalTestEnvironment.set(new AndroidTestEnvironment());
+  }
 
-    return new TestSuiteBuilder()
-        .addSourceDir("java/client/test")
-        .using(android)
-        .keepDriverInstance()
-        .includeJavascriptTests()
-        .create();
+  @RunWith(SuiteMethod.class)
+  public static class LegacyTests {
+    public static Test suite() throws Exception {
+      return new TestSuiteBuilder()
+          .addSourceDir("java/client/test")
+          .using(android)
+          .keepDriverInstance()
+          .includeJavascriptTests()
+          .create();
+    }
   }
 }

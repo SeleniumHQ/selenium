@@ -1,13 +1,13 @@
 
 android_test(name = "android-test",
-  srcs = [ "AndroidDriverTestSuite.java" ],
+  srcs = [ "AndroidDriverTests.java" ],
   binary = "//android:android-server",
   deps = [
    ":base",
   ])
 
 java_test(name = "java-test",
-  srcs = [ "AndroidDriverTestSuite.java" ],
+  srcs = [ "AndroidDriverTests.java" ],
   binary = "//android:android-server",
   deps = [
    ":base",
