@@ -50,7 +50,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
 
     Browser browser = Browser.detect();
     if (browser == null && isInDevMode()) {
-      browser = Browser.none;
+      browser = Browser.ff;
     }
 
     ignorance = new TestIgnorance(browser);
