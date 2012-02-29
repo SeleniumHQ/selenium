@@ -81,12 +81,16 @@ public class TestIgnorance {
     ignored |= isIgnoredDueToJavascript(method.getMethod().getAnnotation(JavascriptEnabled.class));
 
     ignored |= isIgnoredDueToEnvironmentVariables(method, test);
-    
-    ignored |= SauceDriver.shouldUseSauce() &&
+
+    ignored |= isIgnoredDueToBeingOnSauce(method, test);
+
+    return ignored;
+  }
+
+  private boolean isIgnoredDueToBeingOnSauce(FrameworkMethod method, Object test) {
+    return SauceDriver.shouldUseSauce() &&
         (method.getMethod().getAnnotation(NeedsLocalEnvironment.class) != null ||
          test.getClass().getAnnotation(NeedsLocalEnvironment.class) != null);
-    
-    return ignored;
   }
 
   private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {
