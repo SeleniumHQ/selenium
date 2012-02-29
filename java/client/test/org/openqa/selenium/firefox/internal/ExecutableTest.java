@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.openqa.selenium.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.io.File;
 

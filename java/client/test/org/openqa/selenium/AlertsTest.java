@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.TestUtilities;
 
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;

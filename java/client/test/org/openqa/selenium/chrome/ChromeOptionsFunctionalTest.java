@@ -22,9 +22,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.NeedsLocalEnvironment;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 /**
  * Functional tests for {@link ChromeOptions}.
