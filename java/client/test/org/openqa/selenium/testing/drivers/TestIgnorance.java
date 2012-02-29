@@ -17,12 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
+import com.google.common.collect.Sets;
+
 import org.junit.runners.model.FrameworkMethod;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreComparator;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.Arrays;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
@@ -41,10 +45,22 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
  */
 public class TestIgnorance {
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
+  private Set<String> methods = Sets.newHashSet();
+  private Set<String> only = Sets.newHashSet();
   private Browser browser;
 
   public TestIgnorance(Browser browser) {
     setBrowser(browser);
+
+    String onlyRun = System.getProperty("onlyrun");
+    if (onlyRun != null) {
+      only.addAll(Arrays.asList(onlyRun.split(",")));
+    }
+    
+    String method = System.getProperty("method");
+    if (method != null) {
+      methods.addAll(Arrays.asList(method.split(",")));
+    }
   }
 
   public boolean isIgnored(AnnotatedElement element) {
@@ -62,16 +78,23 @@ public class TestIgnorance {
     
     ignored |= isIgnoredDueToJavascript(test.getClass().getAnnotation(JavascriptEnabled.class));
     ignored |= isIgnoredDueToJavascript(method.getMethod().getAnnotation(JavascriptEnabled.class));
+
+    ignored |= isIgnoredDueToEnvironmentVariables(method, test);
     
     return ignored;
   }
-  
+
   private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {
     if (enabled == null) {
       return false;
     }
 
     return !browser.isJavascriptEnabled();
+  }
+
+  private boolean isIgnoredDueToEnvironmentVariables(FrameworkMethod method, Object test) {
+    return only.contains(test.getClass().getSimpleName()) ||
+        methods.contains(method.getName());
   }
 
   public void setBrowser(Browser browser) {
