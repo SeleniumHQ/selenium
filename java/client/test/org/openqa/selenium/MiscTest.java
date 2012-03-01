@@ -79,4 +79,22 @@ public class MiscTest extends AbstractDriverTestCase {
     driver.get(pages.simpleTestPage);
     driver.findElement(By.id("links"));
   }
+
+  @JavascriptEnabled
+  public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
+    driver.get(appServer.whereIs("globalscope.html"));
+    String[] vars = new String[] {"w", "h"};
+    for (String var : vars) {
+      assertEquals(var, getGlobalVar(driver, var));
+    }
+    driver.findElement(By.id("toclick")).click();
+    for (String var : vars) {
+      assertEquals(var, getGlobalVar(driver, var));
+    }
+  }
+
+  private String getGlobalVar(WebDriver driver, String var) {
+    Object val = ((JavascriptExecutor) driver).executeScript("return window." + var + ";");
+    return val == null ? "null" : val.toString();
+  }
 }

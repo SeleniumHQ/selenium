@@ -47,6 +47,7 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -110,14 +111,15 @@ public class AndroidWebElement implements WebElement,
     driver.setEditAreaHasFocus(false);
     Point topLeft = getLocation();
     String sizeJs =
-        "var w = 0; h = 0;" +
+        "var __webdriver_w = 0;" +
+        "var __webdriver_h = 0;" +
             "if (arguments[0].getClientRects && arguments[0].getClientRects()[0]) {" +
-            "  w = arguments[0].getClientRects()[0].width;" +
-            "  h = arguments[0].getClientRects()[0].height;" +
+            "  __webdriver_w = arguments[0].getClientRects()[0].width;" +
+            "  __webdriver_h = arguments[0].getClientRects()[0].height;" +
             " } else {" +
-            "  w = arguments[0].offsetWidth;" +
-            "  h = arguments[0].offsetHeight;" +
-            "}; return w + ',' + h;";
+            "  __webdriver_w = arguments[0].offsetWidth;" +
+            "  __webdriver_h = arguments[0].offsetHeight;" +
+            "}; return __webdriver_w + ',' + __webdriver_h;";
     String[] result = ((String) driver.executeScript(sizeJs, this)).split(",");
     return new Point(topLeft.x + Integer.parseInt(result[0]) / 2,
         topLeft.y + Integer.parseInt(result[1]) / 2);
