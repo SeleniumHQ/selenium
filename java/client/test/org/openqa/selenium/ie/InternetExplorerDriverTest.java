@@ -17,17 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.WebDriver;
-
-import junit.framework.TestCase;
 
 public class InternetExplorerDriverTest {
 
   @Test
+  @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
   public void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
       WebDriver driver = new InternetExplorerDriver();
