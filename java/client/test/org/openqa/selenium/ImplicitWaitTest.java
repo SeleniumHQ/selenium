@@ -17,17 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
@@ -35,20 +40,16 @@ import java.util.List;
 
 @NeedsLocalEnvironment(reason =
     "Executing these tests over the wire doesn't work, because they relies on 100ms-specific timing")
-public class ImplicitWaitTest extends AbstractDriverTestCase {
+public class ImplicitWaitTest extends JUnit4TestBase {
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
-
-    super.tearDown();
   }
 
   @Test
