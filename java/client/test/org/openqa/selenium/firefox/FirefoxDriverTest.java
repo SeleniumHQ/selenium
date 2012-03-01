@@ -129,8 +129,9 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
-    String expectedText = "Example textI like cheese\n\nIt's really nice";
-    textarea.sendKeys(expectedText);
+    String sentText = "I like cheese\n\nIt's really nice";
+    String expectedText = textarea.getAttribute("value") + sentText;
+    textarea.sendKeys(sentText);
     String seenText = textarea.getAttribute("value");
     assertThat(seenText, equalTo(expectedText));
   }
