@@ -225,7 +225,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertTrue("Took too long to load page: " + duration, duration < 5*1000);
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA}, reason = "Not implemented")
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "Not implemented")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
