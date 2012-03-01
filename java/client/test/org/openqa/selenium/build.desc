@@ -99,7 +99,7 @@ java_test(name = "single",
     "//java/server/src/org/openqa/selenium/server",
     "//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test",
     "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
-    "//java/client/test/org/openqa/selenium/htmlunit:test",
+    "//java/client/test/org/openqa/selenium/htmlunit:test_js",
     "//java/client/test/org/openqa/selenium/ie:test",
     "//java/server/test/org/openqa/selenium/remote/server:test",
   ])
