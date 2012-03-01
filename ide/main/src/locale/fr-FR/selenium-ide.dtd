@@ -43,6 +43,12 @@
 <!ENTITY value.label "Valeur">
 <!ENTITY findTarget.label "Rechercher">
 
+<!ENTITY helpDocumentation.label "Documentation">
+<!ENTITY helpReportIssue.label "Signaler le problème">
+<!ENTITY helpReleaseNotes.label "Notes de version">
+<!ENTITY helpBlog.label "Selenium officiel Blog">
+<!ENTITY helpWebsite.label "Site officiel Selenium">
+
 <!ENTITY logConsole.label "Log">
 <!ENTITY logFilter.debug.label "Debug">
 <!ENTITY logFilter.info.label "Info">

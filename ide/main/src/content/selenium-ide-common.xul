@@ -219,9 +219,15 @@ limitations under the License.
       <menuitem id="internalTestsMenu" label="&internalTestsMenu.label;" oncommand="window.editor.showInBrowser('chrome://selenium-ide/content/tests/index.html');" />
     </menupopup>
   </menu>
-  <menu id="help_menu" label="&helpMenu.label;">
-    <menupopup id="help-popup">
-      <menuitem label="UI-Element Documentation" oncommand="openTabOrWindow('chrome://selenium-ide/content/selenium-core/scripts/ui-doc.html')" />
+  <menu id="menu_help" label="&helpMenu.label;">
+    <menupopup id="menu_HelpPopup">
+      <menuitem label="&helpDocumentation.label;" oncommand="openTabOrWindow('http://seleniumhq.org/docs/02_selenium_ide.html')"/>
+      <menuitem label="UI-Element Documentation" oncommand="openTabOrWindow('chrome://selenium-ide/content/selenium-core/scripts/ui-doc.html')"/>
+      <menuseparator/>
+      <menuitem label="&helpReportIssue.label;" oncommand="openTabOrWindow('https://code.google.com/p/selenium/issues/entry?template=Defect report from user&amp;labels=Component-IDE,Priority-Medium,Type-Defect')"/>
+      <menuitem label="&helpReleaseNotes.label;" oncommand="openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes')"/>
+      <menuitem label="&helpBlog.label;" oncommand="openTabOrWindow('http://seleniumhq.wordpress.com/')"/>
+      <menuitem label="&helpWebsite.label;" oncommand="openTabOrWindow('http://seleniumhq.org/')"/>
     </menupopup>
   </menu>
 

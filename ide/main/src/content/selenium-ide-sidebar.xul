@@ -52,7 +52,7 @@ limitations under the License.
       <menu id="runMenu" />
       <menu id="menu_edit" />
       <menu id="optionsMenu" />
-      <menu id="help_menu" />
+      <menu id="menu_help" />
     </menubar>
     <toolbar class="sidebarToolbar" id="sidebarToolbar_URL">
       <textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>

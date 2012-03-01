@@ -43,6 +43,12 @@
 <!ENTITY value.label "値">
 <!ENTITY findTarget.label "検索">
 
+<!ENTITY helpDocumentation.label "ドキュメンテーション">
+<!ENTITY helpReportIssue.label "レポートを発行">
+<!ENTITY helpReleaseNotes.label "リリースノート">
+<!ENTITY helpBlog.label "公式のSeleniumブログ">
+<!ENTITY helpWebsite.label "公式のSeleniumのウェブサイト">
+
 <!ENTITY logConsole.label "ログ">
 <!ENTITY logFilter.debug.label "デバッグ">
 <!ENTITY logFilter.info.label "情報">

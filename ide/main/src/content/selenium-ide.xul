@@ -61,7 +61,7 @@ limitations under the License.
         </menupopup>
       </menu>
       <menu id="windowMenu"/>
-      <menu id="help_menu" />
+      <menu id="menu_help" />
       <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
     </menubar>
     <toolbar id="toolbar1">

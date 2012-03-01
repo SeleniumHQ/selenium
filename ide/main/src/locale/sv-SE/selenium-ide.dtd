@@ -43,6 +43,12 @@
 <!ENTITY value.label "Värde">
 <!ENTITY findTarget.label "Lokalisera">
 
+<!ENTITY helpDocumentation.label "Dokumentation">
+<!ENTITY helpReportIssue.label "Rapport Utgåva">
+<!ENTITY helpReleaseNotes.label "Release Notes">
+<!ENTITY helpBlog.label "Officiell Selenium Blog">
+<!ENTITY helpWebsite.label "Officiell Selenium hemsida">
+
 <!ENTITY logConsole.label "Logg">
 <!ENTITY logFilter.debug.label "Debug">
 <!ENTITY logFilter.info.label "Info">
