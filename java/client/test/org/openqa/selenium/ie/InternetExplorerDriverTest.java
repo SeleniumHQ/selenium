@@ -18,9 +18,12 @@ limitations under the License.
 package org.openqa.selenium.ie;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.WebDriver;
 
+@RunWith(SeleniumTestRunner.class)
 public class InternetExplorerDriverTest {
 
   @Test
