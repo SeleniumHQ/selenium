@@ -20,19 +20,32 @@ package org.openqa.selenium.v1;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.junit.internal.runners.SuiteMethod;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.openqa.selenium.StandardSeleniumTests;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.testing.drivers.Browser;
 
-public class SeleneseWebDriverTestSuite extends TestSuite {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+  StandardSeleniumTests.class,
+  SeleneseWebDriverTests.LegacyTests.class
+})
+public class SeleneseWebDriverTests {
 
-  public static Test suite() throws Exception {
-    System.setProperty("selenium.browser.selenium", "true");
+  @RunWith(SuiteMethod.class)
+  public static class LegacyTests extends TestSuite {
 
-    return new TestSuiteBuilder()
-        .addSourceDir("java/client/test")
-        .using(Browser.ff)
-        .includeJavascriptTests()
-        .keepDriverInstance()
-        .create();
+    public static Test suite() throws Exception {
+      System.setProperty("selenium.browser.selenium", "true");
+
+      return new TestSuiteBuilder()
+          .addSourceDir("java/client/test")
+          .using(Browser.ff)
+          .includeJavascriptTests()
+          .keepDriverInstance()
+          .create();
+    }
   }
 }

@@ -52,7 +52,11 @@ java_library(name = "selenium_backed_webdriver",
 
 java_test(name = "selenium-backed-webdriver-test",
   srcs = [
-    "SeleneseWebDriverTestSuite.java",
+    "SeleneseWebDriverTests.java",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "ff" },
+    { "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":selenium_backed_webdriver",
@@ -61,4 +65,3 @@ java_test(name = "selenium-backed-webdriver-test",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     "//java/client/test/org/openqa/selenium:tests",
   ])
-
