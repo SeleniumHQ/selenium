@@ -29,6 +29,8 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+import org.openqa.selenium.NeedsFreshDriver;
+import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.TestIgnorance;
 
@@ -42,6 +44,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
   /**
    * Creates a BlockJUnit4ClassRunner to run {@code klass}
    *
+   * @param klass The class under test
    * @throws org.junit.runners.model.InitializationError
    *          if the test class is malformed.
    */
@@ -78,6 +81,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     }
   }
 
+  @SuppressWarnings("deprecation")
   private Statement methodBlock(FrameworkMethod method, Object test) {
     Statement statement = methodInvoker(method, test);
     statement = possiblyExpectingExceptions(method, test, statement);
@@ -85,8 +89,49 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     statement = withBefores(method, test, statement);
     statement = withAfters(method, test, statement);
     statement = withRules(method, test, statement);
+    if (test instanceof JUnit4TestBase) {
+      JUnit4TestBase base = (JUnit4TestBase) test;
+      statement = withFreshDriver(method, base, statement);
+      statement = withNoDriverAfterTest(method, statement);
+    }
     return statement;
   }
+
+  private Statement withFreshDriver(
+      FrameworkMethod method, final JUnit4TestBase test, final Statement statement) {
+
+    NeedsFreshDriver annotation = method.getAnnotation(NeedsFreshDriver.class);
+    if (annotation == null) {
+      return statement;
+    }
+
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        JUnit4TestBase.removeDriver();  // bletch
+        test.createDriver();
+        statement.evaluate();
+      }
+    };
+  }
+
+  private Statement withNoDriverAfterTest(
+      FrameworkMethod method, final Statement statement) {
+
+    NoDriverAfterTest annotation = method.getAnnotation(NoDriverAfterTest.class);
+    if (annotation == null) {
+      return statement;
+    }
+
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        JUnit4TestBase.removeDriver();  // bletch
+        statement.evaluate();
+      }
+    };
+  }
+
 
   private Statement withRules(FrameworkMethod method, Object target, Statement statement) {
     try {
