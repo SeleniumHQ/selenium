@@ -17,17 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.TestSuiteBuilder;
-
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
+import org.openqa.selenium.StandardSeleniumTests;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    StandardSeleniumTests.class,
     HtmlUnitSpecificTests.class,
     LegacyJunit3Tests.class
 })

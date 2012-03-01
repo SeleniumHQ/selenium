@@ -17,11 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.TestUtilities;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -41,16 +47,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 @Ignore({CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
-public class AlertsTest extends AbstractDriverTestCase {
+public class AlertsTest extends JUnit4TestBase {
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     driver.get(pages.alertsPage);
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     ((JavascriptExecutor) driver).executeScript(
         "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
@@ -58,6 +63,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowUsersToAcceptAnAlertManually() {
     driver.findElement(By.id("alert")).click();
 
@@ -69,6 +75,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
     driver.findElement(By.id("empty-alert")).click();
 
@@ -81,6 +88,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
+  @Test
   public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
     driver.findElement(By.id("slow-alert")).click();
     
@@ -96,6 +104,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowUsersToDismissAnAlertManually() {
     driver.findElement(By.id("alert")).click();
 
@@ -107,6 +116,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowAUserToAcceptAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -118,6 +128,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowAUserToDismissAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -129,6 +140,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -140,6 +152,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testSettingTheValueOfAnAlertThrows() {
     driver.findElement(By.id("alert")).click();
 
@@ -154,6 +167,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
     driver.findElement(By.id("alert")).click();
 
@@ -165,7 +179,8 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  public void testAlertShouldNotAllowAdditionalCommandsIfDimissed() {
+  @Test
+  public void testAlertShouldNotAllowAdditionalCommandsIfDismissed() {
     driver.findElement(By.id("alert")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -179,6 +194,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @Ignore(ANDROID)
   @JavascriptEnabled
+  @Test
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     driver.switchTo().frame("iframeWithAlert");
 
@@ -192,6 +208,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, CHROME, HTMLUNIT})
+  @Test
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert() {
     driver.findElement(By.id("alert")).click();
     try {
@@ -206,6 +223,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testSwitchingToMissingAlertThrows() throws Exception {
     try {
       driver.switchTo().alert();
@@ -217,6 +235,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {ALL}, issues = {2764, 2834})
+  @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
     String mainWindow = driver.getWindowHandle();
     try {
@@ -238,6 +257,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.findElement(By.id("prompt-with-default")).click();
 
@@ -249,6 +269,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(ANDROID)
+  @Test
   public void testPromptShouldHaveNullValueIfDismissed() {
     driver.findElement(By.id("prompt-with-default")).click();
 
@@ -259,6 +280,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testHandlesTwoAlertsFromOneInteraction() {
     driver.findElement(By.id("double-prompt")).click();
 
@@ -275,6 +297,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldHandleAlertOnPageLoad() {
     driver.findElement(By.id("open-page-with-onload-alert")).click();
 
@@ -289,6 +312,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {FIREFOX, IE}, reason = "FF waits too long, may be hangs out." +
       "Android currently does not store the source of the alert. IE8: Not confirmed working.")
+  @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
     String onloadWindow = null;
@@ -317,6 +341,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {IE}, reason = "IE crashes")
+  @Test
   public void testShouldHandleAlertOnPageUnload() {
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
     driver.navigate().back();
@@ -332,6 +357,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE, ANDROID}, reason = "IE crashes. On Android, alerts do not pop up" +
       " when a window is closed.")
+  @Test
   public void testShouldHandleAlertOnWindowClose() {
     if (TestUtilities.isFirefox(driver) &&
         TestUtilities.isNativeEventsEnabled(driver) &&
@@ -359,6 +385,7 @@ public class AlertsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
+  @Test
   public void testIncludesAlertInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
     waitFor(alertToBePresent(driver));

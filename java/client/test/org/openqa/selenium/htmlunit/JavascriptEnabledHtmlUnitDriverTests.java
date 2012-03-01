@@ -20,10 +20,12 @@ package org.openqa.selenium.htmlunit;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.StandardSeleniumTests;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    StandardSeleniumTests.class,
     HtmlUnitSpecificTests.class,
     LegacyJunit3Tests.class
 })
