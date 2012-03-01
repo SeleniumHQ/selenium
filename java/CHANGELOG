@@ -1,4 +1,16 @@
-v2.20.0 (In progress)
+v2.21.0 (In Progress)
+=======
+
+WebDriver:
+  * Significant stability improvements in firefoxdriver.
+
+Grid:
+  * Content length issue solved
+  * Improvements in thread dumps in both hub and node,
+    possible to corrolate the two.
+
+
+v2.20.0 
 =======
 
 WebDriver:

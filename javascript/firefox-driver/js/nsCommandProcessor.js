@@ -281,7 +281,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
       this.driver_.response_ = this.response_;
 
       var response = this.response_;
-      var timer = new fxdriver.Timer();
+      DelayedCommand.prototype.executeInternal_.nstimer = new fxdriver.Timer();
       var startTime = new Date().getTime();
       var endTime = startTime + this.response_.session.getImplicitWait();
       var name = this.command_.name;
@@ -301,7 +301,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
           func();
         } catch (e) {
           if (new Date().getTime() < endTime) {
-            timer.setTimeout(toExecute, 100);
+              DelayedCommand.prototype.executeInternal_.nstimer.setTimeout(toExecute, 100);
           } else {
             if (!e.isWebDriverError) {
               fxdriver.Logger.dumpn(
