@@ -17,9 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
 
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -30,8 +33,9 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.util.List;
 
-public class XPathElementFindingTest extends AbstractDriverTestCase {
+public class XPathElementFindingTest extends JUnit4TestBase {
 
+  @Test
   public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndItIsFoundWithXPath() {
     driver.get(pages.xhtmlTestPage);
 
@@ -43,6 +47,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
     driver.get(pages.xhtmlTestPage);
 
@@ -54,6 +59,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testShouldFindSingleElementByXPath() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//h1"));
@@ -61,6 +67,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
+  @Test
   public void testShouldFindElementsByXPath() {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> divs = driver.findElements(By.xpath("//div"));
@@ -69,6 +76,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
+  @Test
   public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
     driver.get(pages.xhtmlTestPage);
     String xpathString = "//node()[contains(@id,'id')]";
@@ -78,6 +86,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     assertThat(driver.findElements(By.xpath(xpathString)).size(), equalTo(0));
   }
 
+  @Test
   public void testShouldBeAbleToIdentifyElementsByClass() {
     driver.get(pages.xhtmlTestPage);
 
@@ -85,6 +94,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     assertThat(header, equalTo("XHTML Might Be The Future"));
   }
 
+  @Test
   public void testShouldBeAbleToSearchForMultipleAttributes() {
     driver.get(pages.formPage);
 
@@ -96,6 +106,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testShouldLocateElementsWithGivenText() {
     driver.get(pages.xhtmlTestPage);
 
@@ -108,6 +119,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, SELENESE, OPERA})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
 
@@ -121,6 +133,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, SELENESE, OPERA})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     if (TestUtilities.isIe6(driver)) {
       System.out.println("Ignoring xpath error test in IE6");
@@ -138,6 +151,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
@@ -151,6 +165,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     if (TestUtilities.isIe6(driver)) {
       System.out.println("Ignoring xpath error test in IE6");
@@ -167,8 +182,8 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
 
@@ -182,6 +197,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     if (TestUtilities.isIe6(driver)) {
       System.out.println("Ignoring xpath error test in IE6");
@@ -199,6 +215,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
 
@@ -214,6 +231,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     if (TestUtilities.isIe6(driver)) {
       System.out.println("Ignoring xpath error test in IE6");

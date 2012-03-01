@@ -17,12 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -33,8 +36,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE},
         reason = "Not yet implemented.")
-public class WindowTest extends AbstractDriverTestCase {
+public class WindowTest extends JUnit4TestBase {
 
+  @Test
   public void testGetsTheSizeOfTheCurrentWindow() {
     Dimension size = driver.manage().window().getSize();
 
@@ -42,6 +46,7 @@ public class WindowTest extends AbstractDriverTestCase {
     assertThat(size.height, is(greaterThan(0)));
   }
 
+  @Test
   public void testSetsTheSizeOfTheCurrentWindow() {
     WebDriver.Window window = driver.manage().window();
     Dimension size = window.getSize();
@@ -56,6 +61,7 @@ public class WindowTest extends AbstractDriverTestCase {
   }
 
   @Ignore(IE)
+  @Test
   public void testGetsThePositionOfTheCurrentWindow() {
     Point position = driver.manage().window().getPosition();
 
@@ -63,6 +69,7 @@ public class WindowTest extends AbstractDriverTestCase {
     assertThat(position.y, is(greaterThanOrEqualTo(0)));
   }
 
+  @Test
   public void testSetsThePositionOfTheCurrentWindow() {
     WebDriver.Window window = driver.manage().window();
     Point position = window.getPosition();

@@ -17,25 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.junit.BeforeClass;
-import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
-import org.openqa.selenium.testing.drivers.Browser;
-
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     AlertsTest.class,
     ExecutingAsyncJavascriptTest.class,
-    ImplicitWaitTest.class
+    ImplicitWaitTest.class,
+    WindowSwitchingTest.class,
+    WindowTest.class,
+    XPathElementFindingTest.class
 })
 public class StandardSeleniumTests {
 
