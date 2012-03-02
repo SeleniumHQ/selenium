@@ -18,9 +18,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -31,9 +37,10 @@ import static org.hamcrest.core.Is.is;
 
 import java.util.concurrent.Callable;
 
-public class VisibilityTest extends AbstractDriverTestCase {
+public class VisibilityTest extends JUnit4TestBase {
 
   @JavascriptEnabled
+  @Test
   public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
     driver.get(pages.javascriptPage);
 
@@ -45,6 +52,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testVisibilityShouldTakeIntoAccountParentVisibility() {
     driver.get(pages.javascriptPage);
 
@@ -56,6 +64,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet() {
     driver.get(pages.javascriptPage);
 
@@ -65,6 +74,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
@@ -80,6 +90,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testHiddenInputElementsAreNeverVisible() {
     driver.get(pages.javascriptPage);
 
@@ -90,6 +101,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
+  @Test
   public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
@@ -104,6 +116,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
+  @Test
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
@@ -120,6 +133,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IE, SELENESE})
+  @Test
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
 

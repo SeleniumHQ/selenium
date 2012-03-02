@@ -1,6 +1,9 @@
 package org.openqa.selenium;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -25,22 +28,22 @@ import java.util.concurrent.TimeUnit;
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 @Ignore(value = {IPHONE, ANDROID}, reason = "File uploads not allowed on the iPhone")
-public class UploadTest extends AbstractDriverTestCase {
+public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
   private static final String FILE_HTML = "<div>" + LOREM_IPSUM_TEXT + "</div>";
 
   private File testFile;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  @Before
+  public void setUp() throws Exception {
     testFile = createTmpFile(FILE_HTML);
   }
 
   @JavascriptEnabled
   @Ignore(value = {CHROME, SELENESE, OPERA},
       reason = "Chrome, Opera: File input elements are not supported yet")
+  @Test
   public void testFileUploading() throws Exception {
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());

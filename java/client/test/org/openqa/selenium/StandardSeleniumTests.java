@@ -28,6 +28,9 @@ import org.openqa.selenium.environment.InProcessTestEnvironment;
     AlertsTest.class,
     ExecutingAsyncJavascriptTest.class,
     ImplicitWaitTest.class,
+    UploadTest.class,
+    VisibilityTest.class,
+    WebElementTest.class,
     WindowSwitchingTest.class,
     WindowTest.class,
     XPathElementFindingTest.class

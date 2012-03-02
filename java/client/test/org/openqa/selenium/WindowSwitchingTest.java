@@ -17,28 +17,27 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
-import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -133,6 +132,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @Ignore(value = {IE, SELENESE, OPERA},
       reason = "IE: can show a dialog 'The web page you are viewing is trying to close the window'")
+  @JavascriptEnabled
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
@@ -142,6 +142,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.findElement(By.name("windowThree")).click();
 
     driver.switchTo().window("result");
+    System.out.println("currentHandle = " + currentHandle);
+    System.out
+        .println("driver.getWindowHandle() = " + driver.getWindowHandle());
 
     try {
       waitFor(elementToExist(driver, "close"));

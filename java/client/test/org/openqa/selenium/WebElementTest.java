@@ -17,19 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
+import org.junit.Test;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 /**
  * Tests for generic WebElement.
- * 
- * @author eran.mes@gmail.com (Eran Mes)
- * 
  */
-public class WebElementTest extends AbstractDriverTestCase {
+public class WebElementTest extends JUnit4TestBase {
   @Ignore(SELENESE)
+  @Test
   public void testElementImplementsWrapsDriver() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
@@ -37,6 +38,7 @@ public class WebElementTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
+  @Test
   public void testElementReturnsOriginDriver() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
