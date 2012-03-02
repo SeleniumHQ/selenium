@@ -49,6 +49,7 @@ class Command(object):
     SEND_KEYS_TO_ELEMENT = "sendKeysToElement"
     SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement"
     SUBMIT_ELEMENT = "submitElement"
+    UPLOAD_FILE = "uploadFile"
     TOGGLE_ELEMENT = "toggleElement"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"

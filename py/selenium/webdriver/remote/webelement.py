@@ -15,6 +15,12 @@
 
 
 """WebElement implementation."""
+import os
+import zipfile
+from StringIO import StringIO
+import base64
+
+
 from command import Command
 from selenium.common.exceptions import NoSuchAttributeException
 from selenium.webdriver.common.by import By
@@ -29,7 +35,7 @@ class WebElement(object):
     def __init__(self, parent, id_):
         self._parent = parent
         self._id = id_
-
+    
     @property
     def tag_name(self):
         """Gets this element's tagName property."""
@@ -132,6 +138,10 @@ class WebElement(object):
 
     def send_keys(self, *value):
         """Simulates typing into the element."""
+        local_file = LocalFileDetector.is_local_file(*value)
+        if local_file is not None:
+            value = self._upload(local_file)
+
         typing = []
         for val in value:
             if isinstance(val, Keys):
@@ -200,3 +210,36 @@ class WebElement(object):
     def find_elements(self, by=By.ID, value=None):
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
+
+    def _upload(self, filename):
+        fp = StringIO()
+        zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
+        zipped.write(filename)
+        zipped.close()
+        return self._execute(Command.UPLOAD_FILE, {'file': base64.encodestring(fp.getvalue())})['value']
+
+class LocalFileDetector(object):
+    
+    @classmethod
+    def is_local_file(cls, *keys):
+        file_path = ''
+        typing = []
+        for val in keys:
+            if isinstance(val, Keys):
+                typing.append(val)
+            elif isinstance(val, int):
+                val = str(val)
+                for i in range(len(val)):
+                    typing.append(val[i])
+            else:
+                for i in range(len(val)):
+                    typing.append(val[i])
+        file_path = ''.join(typing)
+        
+        if file_path is '':
+            return None
+
+        if os.path.exists(file_path):
+            return file_path
+        else:
+            return None
