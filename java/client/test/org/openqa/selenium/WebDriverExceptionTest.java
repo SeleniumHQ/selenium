@@ -16,14 +16,15 @@ limitations under the License.
  */
 package org.openqa.selenium;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * Small test for name extraction
- * 
- * @author eran.mes@gmail.com
  */
-public class WebDriverExceptionTest extends TestCase {
+public class WebDriverExceptionTest {
+  @Test
   public void testExtractsADriverName() {
     StackTraceElement[] stackTrace = new StackTraceElement[2];
     stackTrace[0] = new StackTraceElement("SomeClass", "someMethod", "SomeClass.java", 5);
@@ -34,6 +35,7 @@ public class WebDriverExceptionTest extends TestCase {
     assertEquals("TestDriver", gotName);
   }
 
+  @Test
   public void testExtractsMostSpecificDriverName() {
     StackTraceElement[] stackTrace = new StackTraceElement[3];
     stackTrace[0] = new StackTraceElement("SomeClass", "someMethod", "SomeClass.java", 5);
@@ -47,6 +49,7 @@ public class WebDriverExceptionTest extends TestCase {
 
   }
 
+  @Test
   public void testDefaultsToUnknownDriverName() {
     StackTraceElement[] stackTrace = new StackTraceElement[2];
     stackTrace[0] = new StackTraceElement("SomeClass", "someMethod", "SomeClass.java", 5);

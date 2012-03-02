@@ -32,6 +32,7 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
     CompositeActionTest.class,
     IgnoreComparitorUnitTest.class,
     IndividualKeyboardActionsTest.class,
-    IndividualMouseActionsTest.class
+    IndividualMouseActionsTest.class,
+    WebDriverExceptionTest.class
 })
 public class SmallTests {}
