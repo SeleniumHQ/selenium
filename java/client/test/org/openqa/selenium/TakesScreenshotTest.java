@@ -17,15 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.OutputType.BASE64;
 
 import java.io.File;
 
 @Ignore(IPHONE)
-public class TakesScreenshotTest extends AbstractDriverTestCase {
+public class TakesScreenshotTest extends JUnit4TestBase {
+  @Test
   public void testSaveScreenshotAsFile() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {
       return;
@@ -38,6 +42,7 @@ public class TakesScreenshotTest extends AbstractDriverTestCase {
     tempFile.delete();
   }
 
+  @Test
   public void testCaptureToBase64() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {
       return;

@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,6 +27,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -37,10 +40,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 
-public class TypingTest extends AbstractDriverTestCase {
+public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(ANDROID)
+  @Test
   public void testShouldFireKeyPressEvents() {
     driver.get(pages.javascriptPage);
 
@@ -52,6 +56,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldFireKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -63,6 +68,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldFireKeyUpEvents() {
     driver.get(pages.javascriptPage);
 
@@ -73,6 +79,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(result.getText(), containsString("up:"));
   }
 
+  @Test
   public void testShouldTypeLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -82,6 +89,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
+  @Test
   public void testShouldBeAbleToTypeCapitalLetters() {
     driver.get(pages.javascriptPage);
 
@@ -91,6 +99,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
   }
 
+  @Test
   public void testShouldBeAbleToTypeQuoteMarks() {
     driver.get(pages.javascriptPage);
 
@@ -100,6 +109,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is("\""));
   }
 
+  @Test
   public void testShouldBeAbleToTypeTheAtCharacter() {
     // simon: I tend to use a US/UK or AUS keyboard layout with English
     // as my primary language. There are consistent reports that we're
@@ -115,6 +125,7 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getAttribute("value"), is("@"));
   }
 
+  @Test
   public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -126,6 +137,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IPHONE, SELENESE})
+  @Test
   public void testArrowKeysShouldNotBePrintable() {
     driver.get(pages.javascriptPage);
 
@@ -136,6 +148,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {HTMLUNIT, IPHONE, SELENESE})
+  @Test
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -147,6 +160,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(ANDROID)
+  @Test
   public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -159,6 +173,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID})
+  @Test
   public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -173,6 +188,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID})
+  @Test
   public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -187,6 +203,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(ANDROID)
+  @Test
   public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -199,6 +216,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID})
+  @Test
   public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -213,6 +231,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(ANDROID)
+  @Test
   public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -229,6 +248,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @Ignore(value = {FIREFOX, IE, SELENESE, ANDROID},
       reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the "
           + "focus on the window already., Android: Uses native key events.")
+  @Test
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
@@ -242,6 +262,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IE, IPHONE, SELENESE, ANDROID},
       reason = "firefox-specific. Android uses prev/next.")
+  @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -273,6 +294,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -301,6 +323,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {SELENESE, ANDROID}, reason = "untested user agent")
+  @Test
   public void testNumericNonShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -315,6 +338,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, ANDROID, OPERA},
       reason = "untested user agent")
+  @Test
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -330,6 +354,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = ANDROID, reason = "untested user agent")
+  @Test
   public void testLowerCaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -344,6 +369,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -359,6 +385,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, OPERA, ANDROID}, reason = "untested user agents")
+  @Test
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -376,6 +403,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
 
@@ -389,6 +417,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     // FIXME: macs don't have HOME keys, would PGUP work?
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -408,6 +437,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -425,6 +455,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IPHONE, SELENESE}, reason = "untested user agents")
+  @Test
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -437,6 +468,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
@@ -452,6 +484,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IPHONE, SELENESE, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
 
@@ -465,6 +498,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID, OPERA},
       reason = "untested user agents. Opera: F2 focuses location bar")
+  @Test
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
@@ -481,6 +515,7 @@ public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID},
       reason = "untested user agents")
+  @Test
   public void testChordControlHomeShiftEndDelete() {
     // FIXME: macs don't have HOME keys, would PGUP work?
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -504,6 +539,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID}, reason = "untested user agents")
+  @Test
   public void testChordReveseShiftHomeSelectionDeletes() {
     // FIXME: macs don't have HOME keys, would PGUP work?
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -538,6 +574,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA}, reason = "untested user agents")
+  @Test
   public void testChordControlCutAndPaste() {
     // FIXME: macs don't have HOME keys, would PGUP work?
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -586,6 +623,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldTypeIntoInputElementsThatHaveNoTypeAttribute() {
     driver.get(pages.formPage);
 
@@ -597,6 +635,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = IPHONE, reason = "untested user agents")
+  @Test
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -608,6 +647,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {ANDROID, CHROME, IE, IPHONE}, reason = "firefox-specific")
+  @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     driver.get(pages.javascriptPage);
 
@@ -620,6 +660,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -641,6 +682,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE, OPERA, ANDROID})
+  @Test
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -658,6 +700,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToTypeOnAnEmailInputField() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("email"));
@@ -667,6 +710,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID, CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
         reason = "Untested browsers.", issues = {3127})
+  @Test
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable"));
@@ -678,6 +722,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {ALL}, reason = "Untested except in Firefox", issues = {2825})
+  @Test
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable"));

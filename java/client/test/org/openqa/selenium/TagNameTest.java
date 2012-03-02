@@ -21,8 +21,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class TagNameTest extends AbstractDriverTestCase {
+public class TagNameTest extends JUnit4TestBase {
 
   @Test
   public void shouldReturnInput() {

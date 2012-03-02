@@ -19,6 +19,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -27,22 +29,24 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class TextPagesTest extends AbstractDriverTestCase {
+public class TextPagesTest extends JUnit4TestBase {
 
   private String textPage;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
   @Ignore(value = {IE, FIREFOX, SELENESE, CHROME, IPHONE, OPERA, ANDROID},
       reason = "Android: WebView adds HTML tags to the page.")
+  @Test
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 
@@ -50,6 +54,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     assertEquals("Test", source);
   }
 
+  @Test
   public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
     driver.get(textPage);
 
@@ -63,6 +68,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, IE, IPHONE, SELENESE, OPERA, ANDROID}, reason =
       "Opera: creates DOM for displaying text pages")
+  @Test
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 
