@@ -91,8 +91,8 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     statement = withRules(method, test, statement);
     if (test instanceof JUnit4TestBase) {
       JUnit4TestBase base = (JUnit4TestBase) test;
-      statement = withFreshDriver(method, base, statement);
       statement = withNoDriverAfterTest(method, statement);
+      statement = withFreshDriver(method, base, statement);
     }
     return statement;
   }
@@ -126,8 +126,11 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
-        JUnit4TestBase.removeDriver();  // bletch
-        statement.evaluate();
+        try {
+          statement.evaluate();
+        } finally {
+          JUnit4TestBase.removeDriver();  // bletch
+        }
       }
     };
   }
