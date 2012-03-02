@@ -66,12 +66,6 @@ namespace OpenQA.Selenium.IE
     /// </example>
     public class InternetExplorerDriver : RemoteWebDriver, ITakesScreenshot
     {
-        /// <summary>
-        /// The name of the ICapabilities setting to use to ignore Protected Mode settings.
-        /// </summary>
-        [Obsolete("This constant will be removed in a future version. Use InternetExplorerOptions instead.")]
-        public static readonly string IntroduceInstabilityByIgnoringProtectedModeSettings = "ignoreProtectedModeSettings";
-
         private static int serverPort;
         private static bool useLegacyServer;
         private InternetExplorerDriverServer server;
@@ -94,16 +88,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class with the desired capabilities.
-        /// </summary>
-        /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
-        [Obsolete("Deprecated. Please use constructors using InternetExplorerOptions.")]
-        public InternetExplorerDriver(ICapabilities desiredCapabilities)
-            : this(0, desiredCapabilities)
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of the InternetExplorerDriver class with the desired options.
         /// </summary>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
@@ -116,32 +100,9 @@ namespace OpenQA.Selenium.IE
         /// Initializes a new instance of the InternetExplorerDriver class for the specified port and desired capabilities.
         /// </summary>
         /// <param name="port">The port to use to communicate with the IE server.</param>
-        /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
-        [Obsolete("Deprecated. Please use constructors using InternetExplorerOptions.")]
-        public InternetExplorerDriver(int port, ICapabilities desiredCapabilities)
-            : this(port, desiredCapabilities, TimeSpan.FromSeconds(60))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class for the specified port and desired capabilities.
-        /// </summary>
-        /// <param name="port">The port to use to communicate with the IE server.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(int port, InternetExplorerOptions options)
             : this(port, options, TimeSpan.FromSeconds(60))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class for the specified port, desired capabilities, and command timeout.
-        /// </summary>
-        /// <param name="port">The port to use to communicate with the IE server.</param>
-        /// <param name="desiredCapabilities">The desired capabilities of the IE driver.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        [Obsolete("Deprecated. Please use constructors using InternetExplorerOptions.")]
-        public InternetExplorerDriver(int port, ICapabilities desiredCapabilities, TimeSpan commandTimeout)
-            : base(GetCommandExecutor(port, desiredCapabilities, commandTimeout), desiredCapabilities)
         {
         }
 
