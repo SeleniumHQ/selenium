@@ -1,7 +1,6 @@
 package org.openqa.selenium.iphone;
 
 import org.junit.Test;
-import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.testing.JUnit4TestBase;
 

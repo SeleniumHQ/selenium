@@ -27,7 +27,6 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.testing.JUnit4TestBase;
