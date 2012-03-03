@@ -16,8 +16,11 @@ limitations under the License.
  */
 package org.openqa.selenium;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.environment.DomainHelper;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.net.URI;
@@ -27,7 +30,13 @@ import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -39,16 +48,14 @@ import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore(SELENESE)
-public class CookieImplementationTest extends AbstractDriverTestCase {
+public class CookieImplementationTest extends JUnit4TestBase {
 
   private DomainHelper domainHelper;
   private static final Random random = new Random();
 
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     domainHelper = new DomainHelper(appServer);
 
     // This page is the deepest page we go to in the cookie tests
@@ -69,6 +76,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldGetCookieByName() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -86,6 +94,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
+  @Test
   public void testShouldBeAbleToAddCookie() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -100,6 +109,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertCookieHasValue(key, value);
   }
 
+  @Test
   public void testGetAllCookies() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -128,6 +138,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testDeleteAllCookies() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -141,6 +152,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testDeleteCookieWithName() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -160,6 +172,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertCookieIsPresentWithName(key2);
   }
 
+  @Test
   public void testShouldNotDeleteCookiesWithASimilarName() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -183,6 +196,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore(OPERA)
+  @Test
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -204,6 +218,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore({CHROME, OPERA})
+  @Test
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -216,6 +231,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNull(driver.manage().getCookieNamed(cookieName));
   }
 
+  @Test
   public void testShouldNotGetCookieOnDifferentDomain() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -231,6 +247,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
         reason = "Untested browsers.")
+  @Test
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     if (!domainHelper.checkIsOnValidSubDomain()) {
       return;
@@ -247,6 +264,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {ALL})
+  @Test
   public void testsShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod() {
     if (!domainHelper.checkIsOnValidSubDomain()) {
       return;
@@ -262,6 +280,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore({REMOTE, IE})
+  @Test
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -279,6 +298,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore(IE)
+  @Test
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -295,6 +315,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie));
   }
 
+  @Test
   public void testShouldWalkThePathToDeleteACookie() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -326,6 +347,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore(IE)
+  @Test
   public void testShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie() throws Exception {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -344,6 +366,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore(OPERA)
+  @Test
   public void testCookieEqualityAfterSetAndGet() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -377,6 +400,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   @Ignore(value = {ANDROID, IE, OPERA}, reason =
       "Selenium, which use JavaScript to retrieve cookies, cannot return expiry info; " +
           "Other suppressed browsers have not been tested.")
+  @Test
   public void testRetainsCookieExpiry() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -395,6 +419,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @Ignore(ANDROID)
+  @Test
   public void testSettingACookieThatExpiredInThePast() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;
@@ -409,6 +434,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
   }
 
+  @Test
   public void testCanSetCookieWithoutOptionalFieldsSet() {
     if (!domainHelper.checkIsOnValidHostname()) {
       return;

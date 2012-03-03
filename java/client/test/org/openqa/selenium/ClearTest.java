@@ -1,7 +1,11 @@
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -11,8 +15,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 
 @Ignore({CHROME, OPERA, SELENESE, ANDROID})
-public class ClearTest extends AbstractDriverTestCase {
+public class ClearTest extends JUnit4TestBase {
 
+  @Test
   public void testWritableTextInputShouldClear() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("writableTextInput"));
@@ -20,7 +25,7 @@ public class ClearTest extends AbstractDriverTestCase {
     assertEquals("", element.getAttribute("value"));
   }
 
-
+  @Test
   public void testTextInputShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     try {
@@ -33,6 +38,7 @@ public class ClearTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testTextInputShouldNotClearWhenReadOnly() {
     try {
       driver.get(pages.readOnlyPage);
@@ -44,6 +50,7 @@ public class ClearTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testWritableTextAreaShouldClear() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("writableTextArea"));
@@ -51,6 +58,7 @@ public class ClearTest extends AbstractDriverTestCase {
     assertEquals("", element.getAttribute("value"));
   }
 
+  @Test
   public void testTextAreaShouldNotClearWhenDisabled() {
     try {
       driver.get(pages.readOnlyPage);
@@ -62,6 +70,7 @@ public class ClearTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testTextAreaShouldNotClearWhenReadOnly() {
     try {
       driver.get(pages.readOnlyPage);
@@ -74,6 +83,7 @@ public class ClearTest extends AbstractDriverTestCase {
   }
 
   @Ignore({HTMLUNIT, IPHONE})
+  @Test
   public void testContentEditableAreaShouldClear() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("content-editable"));

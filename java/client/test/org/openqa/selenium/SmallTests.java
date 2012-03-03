@@ -29,6 +29,7 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
 @Suite.SuiteClasses({
     ActionsTest.class,
     ByTest.class,
+    CookieTest.class,
     CompositeActionTest.class,
     DimensionTest.class,
     IgnoreComparitorUnitTest.class,

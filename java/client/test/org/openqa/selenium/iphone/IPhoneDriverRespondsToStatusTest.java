@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
@@ -27,9 +28,14 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class IPhoneDriverRespondsToStatusTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+public class IPhoneDriverRespondsToStatusTest extends JUnit4TestBase {
+
+  @Test
   public void testCanCheckServerStatusIndependentlyOfSessions() throws IOException, JSONException {
     if (!(driver instanceof IPhoneDriver)) {
       System.out.println("Skipping test: driver is not a IPhoneDriver");

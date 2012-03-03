@@ -24,22 +24,31 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
  * @author dawagner@gmail.com (Daniel Wagner-Hall)
  */
 
-public class IPhoneSimulatorCommandExecutorTest extends AbstractDriverTestCase {
+public class IPhoneSimulatorCommandExecutorTest extends JUnit4TestBase {
+  @Rule public TestName name = new TestName();
+  
   @NoDriverAfterTest
+  @Test
   public void testShouldDetectThatTheIPhoneSimulatorHasUnexpectedlyShutdown() throws Exception {
     if (!(driver instanceof IPhoneSimulatorDriver)) {
       System.out.println(String.format(
           "[%s] Skipping test; requires current driver to be a %s, but instead is a %s",
-          getName(), IPhoneSimulatorDriver.class.getName(), driver.getClass().getName()));
+          name.getMethodName(), IPhoneSimulatorDriver.class.getName(), driver.getClass().getName()));
       return;
     }
 

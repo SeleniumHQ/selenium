@@ -18,11 +18,18 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -33,21 +40,18 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 
-public class ClickTest extends AbstractDriverTestCase {
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+public class ClickTest extends JUnit4TestBase {
+  @Before
+  public void setUp() throws Exception {
     driver.get(pages.clicksPage);
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     driver.switchTo().defaultContent();
-
-    super.tearDown();
   }
 
+  @Test
   public void testCanClickOnALinkAndFollowIt() {
     driver.findElement(By.id("normal")).click();
 
@@ -56,6 +60,7 @@ public class ClickTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, OPERA, SELENESE},
       reason = "Not tested on these browsers.")
+  @Test
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
 
@@ -63,6 +68,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testCanClickOnAnAnchorAndNotReloadThePage() {
     ((JavascriptExecutor) driver).executeScript("document.latch = true");
 
@@ -77,6 +83,7 @@ public class ClickTest extends AbstractDriverTestCase {
   @Ignore(value = {OPERA, ANDROID}, reason = 
 	  "Opera: Incorrect runtime retrieved, Android: A bug in emulator JSC egine on 2.2, "
       + "works on devices.")
+  @Test
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -89,6 +96,7 @@ public class ClickTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {SELENESE, OPERA, ANDROID}, reason = 
   		"Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
+  @Test
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -105,6 +113,7 @@ public class ClickTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {SELENESE, OPERA, ANDROID}, reason = 
 	"Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
+  @Test
   public void testJsLoactedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
@@ -123,6 +132,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
     String page = appServer.whereIs("styledPage.html");
     driver.get(page);
@@ -135,6 +145,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   @Ignore(ALL) //TODO(danielwh): Unignore
+  @Test
   public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
     driver.findElement(By.id("twoClientRects")).click();
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
@@ -142,6 +153,7 @@ public class ClickTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE}, reason = "Not implemented")
+  @Test
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
@@ -162,6 +174,7 @@ public class ClickTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @NoDriverAfterTest
   @Ignore(value = {IPHONE, OPERA, SELENESE}, reason = "Doesn't support multiple windows")
+  @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);
     int windowHandlesBefore = driver.getWindowHandles().size();
@@ -175,6 +188,7 @@ public class ClickTest extends AbstractDriverTestCase {
     fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
   }
 
+  @Test
   public void testClickingLabelShouldSetCheckbox() {
     driver.get(pages.formPage);
 
@@ -185,24 +199,28 @@ public class ClickTest extends AbstractDriverTestCase {
         driver.findElement(By.id("checkbox-with-label")).isSelected());
   }
 
+  @Test
   public void testCanClickOnALinkWithEnclosedImage() {
     driver.findElement(By.id("link-with-enclosed-image")).click();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
+  @Test
   public void testCanClickOnAnImageEnclosedInALink() {
     driver.findElement(By.id("link-with-enclosed-image")).findElement(By.tagName("img")).click();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
+  @Test
   public void testCanClickOnALinkThatContainsTextWrappedInASpan() {
     driver.findElement(By.id("link-with-enclosed-span")).click();
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
+  @Test
   public void testCanClickOnAnElementEnclosedInALink() {
     driver.findElement(By.id("link-with-enclosed-span")).findElement(By.tagName("span")).click();
 
@@ -210,6 +228,7 @@ public class ClickTest extends AbstractDriverTestCase {
   }
 
   // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
+  @Test
   public void testShouldBeAbleToClickOnAnElementInTheViewport() {
     String url = appServer.whereIs("click_out_of_bounds.html");
 
@@ -223,9 +242,10 @@ public class ClickTest extends AbstractDriverTestCase {
     }
   }
 
- public void testClicksASurroundingStrongTag() {
-   driver.get(appServer.whereIs("ClickTest_testClicksASurroundingStrongTag.html"));
-   driver.findElement(By.tagName("a")).click();
-   waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
- }
+  @Test
+  public void testClicksASurroundingStrongTag() {
+    driver.get(appServer.whereIs("ClickTest_testClicksASurroundingStrongTag.html"));
+    driver.findElement(By.tagName("a")).click();
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
 }

@@ -31,6 +31,11 @@ import junit.framework.TestCase;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * @deprecated Please migrate tests to inherit from JUnit4TestBase and add them to the
+ *    StandardSeleniumTests.
+ */
+@Deprecated
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 
   protected TestEnvironment environment;
@@ -60,36 +65,5 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   protected boolean isIeDriverTimedOutException(IllegalStateException e) {
     // The IE driver may throw a timed out exception
     return e.getClass().getName().contains("TimedOutException");
-  }
-
-  protected boolean browserNeedsFocusOnThisOs(WebDriver driver) {
-    // No browser yet demands focus on windows
-    if (Platform.getCurrent().is(Platform.WINDOWS))
-      return false;
-
-    if (Boolean.getBoolean("webdriver.focus.override")) {
-      return false;
-    }
-
-    String browserName = getBrowserName(driver);
-    return browserName.toLowerCase().contains("firefox");
-  }
-
-  // It's methods like this that make me think we need a "HasCapabilities" interface
-  private String getBrowserName(WebDriver driver) {
-    try {
-      // is there a "getCababilities" method?
-      Method getCapabilities = driver.getClass().getMethod("getCapabilities");
-      Object capabilities = getCapabilities.invoke(driver);
-      return (String) capabilities.getClass().getMethod("getBrowserName").invoke(capabilities);
-    } catch (NoSuchMethodException e) {
-      // Fall through
-    } catch (IllegalAccessException e) {
-      // Fall through
-    } catch (InvocationTargetException e) {
-      // Fall through
-    }
-
-    return driver.getClass().getName();
   }
 }

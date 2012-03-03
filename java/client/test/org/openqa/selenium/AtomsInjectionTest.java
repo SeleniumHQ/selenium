@@ -17,12 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
-public class AtomsInjectionTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+
+public class AtomsInjectionTest extends JUnit4TestBase {
 
   /** http://code.google.com/p/selenium/issues/detail?id=1333 */
   @JavascriptEnabled
+  @Test
   public void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {
     driver.get(pages.underscorePage);
     driver.findElement(By.tagName("body"));

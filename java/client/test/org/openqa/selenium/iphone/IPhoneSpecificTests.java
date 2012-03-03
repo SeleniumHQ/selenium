@@ -24,8 +24,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     CreateIPhoneDriverTest.class,
     IPhoneDriverRespondsToStatusTest.class,
-    IPhoneSimulatorCommandExecutorTest.class,
-    MultitouchTest.class
+    IPhoneSimulatorCommandExecutorTest.class
 })
 public class IPhoneSpecificTests {
 }

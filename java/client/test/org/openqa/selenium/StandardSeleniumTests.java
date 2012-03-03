@@ -26,6 +26,14 @@ import org.openqa.selenium.environment.InProcessTestEnvironment;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     AlertsTest.class,
+    AtomsInjectionTest.class,
+    ByTest.class,
+    ChildrenFindingTest.class,
+    ClearTest.class,
+    ClickScrollingTest.class,
+    ClickTest.class,
+    CookieImplementationTest.class,
+    CorrectEventFiringTest.class,
     DragAndDropTest.class,
     ElementAttributeTest.class,
     ElementEqualityTest.class,

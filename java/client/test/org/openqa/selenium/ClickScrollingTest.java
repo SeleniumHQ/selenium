@@ -1,25 +1,29 @@
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-
-import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JavascriptEnabled;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore(value = {ANDROID, HTMLUNIT}, reason = "Android: Race condition when click returns, "
     + "the UI did not finish scrolling..\nHtmlUnit: Scrolling requires rendering")
-public class ClickScrollingTest extends AbstractDriverTestCase {
+public class ClickScrollingTest extends JUnit4TestBase {
   @JavascriptEnabled
+  @Test
   public void testClickingOnAnchorScrollsPage() {
     String scrollScript = "";
     scrollScript += "var pageY;";
@@ -40,9 +44,9 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     // Focusing on to click, but not actually following,
     // the link will scroll it in to view, which is a few pixels further than 0
     assertThat("Did not scroll", yOffset, is(greaterThan(300L)));
-
   }
 
+  @Test
   public void testShouldScrollToClickOnAnElementHiddenByOverflow() {
     String url = appServer.whereIs("click_out_of_bounds_overflow.html");
     driver.get(url);
@@ -55,6 +59,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
     driver.get(appServer.whereIs("scroll.html"));
 
@@ -65,6 +70,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, OPERA})
+  @Test
   public void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
     WebElement list = driver.findElement(By.tagName("ul"));
@@ -76,6 +82,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({CHROME, IPHONE})
+  @Test
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
     driver.findElement(By.id("button1")).click();
@@ -84,6 +91,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
     assertEquals(scrollTop, getScrollTop());
   }
 
+  @Test
   public void testShouldBeAbleToClickRadioButtonScrolledIntoView() {
     driver.get(appServer.whereIs("scroll4.html"));
     driver.findElement(By.id("radio")).click();
@@ -91,6 +99,7 @@ public class ClickScrollingTest extends AbstractDriverTestCase {
   }
   
   @Ignore(value = {IE}, reason = "IE has special overflow handling")
+  @Test
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
     driver.get(appServer.whereIs("scroll5.html"));
     driver.findElement(By.id("inner")).click();

@@ -19,14 +19,22 @@ package org.openqa.selenium;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 import java.util.Date;
 
-public class CookieTest extends TestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+public class CookieTest {
+
+  @Test
   public void testCanCreateAWellFormedCookie() {
     new Cookie("Fish", "cod", "", "", null, false);
   }
 
+  @Test
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
     try {
       new Cookie("hi;hi", "value", null, null, null, false);
@@ -36,6 +44,7 @@ public class CookieTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldThrowAnExceptionTheNameIsNull() {
     try {
       new Cookie(null, "value", null, null, null, false);
@@ -45,11 +54,13 @@ public class CookieTest extends TestCase {
     }
   }
 
+  @Test
   public void testCookiesShouldAllowSecureToBeSet() {
     Cookie cookie = new Cookie("name", "value", "", "/", new Date(), true);
     assertTrue(cookie.isSecure());
   }
 
+  @Test
   public void testSecureDefaultsToFalse() {
     Cookie cookie = new Cookie("name", "value");
     assertFalse(cookie.isSecure());
