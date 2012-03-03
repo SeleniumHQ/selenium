@@ -33,6 +33,9 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
     IgnoreComparitorUnitTest.class,
     IndividualKeyboardActionsTest.class,
     IndividualMouseActionsTest.class,
+    PlatformTest.class,
+    PointTest.class,
+    ProxyTest.class,
     WebDriverExceptionTest.class
 })
 public class SmallTests {}

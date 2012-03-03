@@ -17,12 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-public class RotatableTest extends AbstractDriverTestCase {
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class RotatableTest extends JUnit4TestBase {
 
   private boolean isRotatable() {
-    return (driver instanceof Rotatable) ? true : false;
+    return driver instanceof Rotatable;
   }
 
+  @Test
   public void testRotateToLandscapeMode() {
     if (!isRotatable()) {
       return;
@@ -32,6 +39,7 @@ public class RotatableTest extends AbstractDriverTestCase {
     assertEquals(ScreenOrientation.LANDSCAPE, rotatable.getOrientation());
   }
 
+  @Test
   public void testRotateToPortrait() {
     if (!isRotatable()) {
       return;
@@ -41,6 +49,7 @@ public class RotatableTest extends AbstractDriverTestCase {
     assertEquals(ScreenOrientation.PORTRAIT, rotatable.getOrientation());
   }
 
+  @Test
   public void testGetOrientationReturnsInitialValue() {
     if (!isRotatable()) {
       return;

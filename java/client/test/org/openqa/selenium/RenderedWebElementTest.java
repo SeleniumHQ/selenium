@@ -16,6 +16,22 @@ limitations under the License.
  */
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.SauceDriver;
+
+import java.util.concurrent.Callable;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -24,25 +40,12 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
-
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
-
-import java.util.concurrent.Callable;
-
-public class RenderedWebElementTest extends AbstractDriverTestCase {
+public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore({SELENESE, OPERA, ANDROID})
+  @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
@@ -69,6 +72,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID})
   // Reason for Chrome: WebKit bug 28804
+  @Test
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
 
@@ -87,6 +91,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({SELENESE, IPHONE, OPERA, ANDROID})
+  @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
 
@@ -103,6 +108,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @Ignore(
       value = {FIREFOX, HTMLUNIT, IPHONE, SELENESE, OPERA},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.")
+  @Test
   public void testShouldAllowUsersToHoverOverElements() {
     if (!hasInputDevices()) {
       return;
@@ -142,6 +148,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @Ignore(
       value = {FIREFOX, HTMLUNIT, IPHONE, SELENESE, OPERA},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @Test
   public void testHoverPersists() throws Exception {
     if (!hasInputDevices()) {
       return;
@@ -180,6 +187,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldCorrectlyIdentifyThatAnElementHasWidth() {
     driver.get(pages.xhtmlTestPage);
 
@@ -191,6 +199,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
+  @Test
   public void testCorrectlyDetectMapElementsAreShown() {
     driver.get(pages.mapVisibilityPage);
 
@@ -202,6 +211,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @Ignore
   @JavascriptEnabled
+  @Test
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     if (!hasInputDevices()) {
       return;
@@ -228,6 +238,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE},
       reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Test
   public void testMovingMouseByRelativeOffset() {
     if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
       System.out.println(
@@ -253,6 +264,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, SELENESE},
       reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Test
   public void testMovingMouseToRelativeElementOffset() {
     if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
       System.out.println(
@@ -275,6 +287,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @NeedsFreshDriver
   @Ignore(value = {CHROME, HTMLUNIT, SELENESE}, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Test
   public void testMoveRelativeToBody() {
     if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
       System.out.println(

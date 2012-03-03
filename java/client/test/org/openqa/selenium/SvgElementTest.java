@@ -17,8 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -35,8 +39,9 @@ import java.util.List;
 @Ignore(
     value = {HTMLUNIT, IE, CHROME, REMOTE, SELENESE, OPERA},
     reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
-public class SvgElementTest extends AbstractDriverTestCase {
+public class SvgElementTest extends JUnit4TestBase {
 
+  @Test
   public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));
@@ -73,6 +78,7 @@ public class SvgElementTest extends AbstractDriverTestCase {
     return null;
   }
 
+  @Test
   public void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.tagName("svg:svg"));

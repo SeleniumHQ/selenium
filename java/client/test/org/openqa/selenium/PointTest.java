@@ -1,19 +1,24 @@
 // Copyright 2011 Google Inc. All Rights Reserved.
 package org.openqa.selenium;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * Tests WebDriver's Point class.
  */
-public class PointTest extends TestCase {
+public class PointTest {
 
+  @Test
   public void testSimpleAssignment() {
     Point p1 = new Point(30, 50);
     assertEquals(30, p1.getX());
     assertEquals(50, p1.getY());
   }
 
+  @Test
   public void testEquality() {
     Point p1 = new Point(30, 60);
     Point p2 = new Point(40, 60);
@@ -28,6 +33,7 @@ public class PointTest extends TestCase {
     assertEquals(p1.hashCode(), p1copy.hashCode());
   }
 
+  @Test
   public void testMoveBy() {
     Point p1 = new Point(31, 42);
 

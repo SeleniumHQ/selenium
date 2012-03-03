@@ -18,26 +18,34 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class PlatformTest extends TestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+public class PlatformTest {
+
+  @Test
   public void testShouldIdentifyWindowsVariants() {
     assertAllAre(Platform.WINDOWS, "Windows 2003");
   }
 
+  @Test
   public void testShouldIdentifyMacVariants() {
     assertAllAre(Platform.MAC, "Darwin", "Mac OS X");
   }
 
+  @Test
   public void testShouldIdentifyUnixVariants() {
     assertAllAre(Platform.UNIX, "solaris", "bsd");
   }
 
+  @Test
   public void testShouldIdentifyLinux() {
     assertAllAre(Platform.LINUX, "Linux");
   }
 
+  @Test
   public void testShouldDistinctUnixFromLinux() {
     Platform linPlatform = Platform.extractFromSysProperty("Linux");
     assertTrue("Linux should be identified as Unix", linPlatform.is(Platform.UNIX));

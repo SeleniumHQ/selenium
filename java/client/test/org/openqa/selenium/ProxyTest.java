@@ -1,10 +1,15 @@
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.Proxy.ProxyType;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
-public class ProxyTest extends TestCase {
+public class ProxyTest {
+  @Test
   public void testUnspecified() {
     Proxy proxy = new Proxy();
     assertEquals(ProxyType.UNSPECIFIED, proxy.getProxyType());
@@ -13,6 +18,7 @@ public class ProxyTest extends TestCase {
     assertNull(proxy.getProxyAutoconfigUrl());
   }
 
+  @Test
   public void testDirect() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.DIRECT);
@@ -24,6 +30,7 @@ public class ProxyTest extends TestCase {
     }
   }
 
+  @Test
   public void testManual() {
     Proxy proxy = new Proxy();
     proxy.setHttpProxy("foo:1234");
@@ -46,6 +53,7 @@ public class ProxyTest extends TestCase {
     }
   }
 
+  @Test
   public void testPac() {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://aaa/bbb.pac");

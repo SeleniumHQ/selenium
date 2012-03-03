@@ -17,16 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import java.util.List;
 
-public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
+public class PartialLinkTextMatchTest extends JUnit4TestBase {
 
   @Ignore({REMOTE, SELENESE})
+  @Test
   public void testLinkWithFormattingTags() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -38,6 +44,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
   }
 
   @Ignore({REMOTE})
+  @Test
   public void testLinkWithLeadingSpaces() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -48,6 +55,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
   }
 
   @Ignore({REMOTE})
+  @Test
   public void testLinkWithTrailingSpace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -59,6 +67,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
   }
 
   @Ignore({REMOTE})
+  @Test
   public void testFindMultipleElements() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -69,6 +78,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
     assertEquals(6, elements.size());
   }
 
+  @Test
   public void testDriverCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
     driver.get(pages.simpleTestPage);
     WebElement link = null;
@@ -80,6 +90,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
     assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
   }
 
+  @Test
   public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

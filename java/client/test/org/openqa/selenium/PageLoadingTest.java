@@ -17,7 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -25,32 +43,17 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
+public class PageLoadingTest extends JUnit4TestBase {
 
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import java.util.concurrent.TimeUnit;
-
-public class PageLoadingTest extends AbstractDriverTestCase {
-
+  @Test
   public void testShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);
 
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
+  @Test
   public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
     driver.get(pages.redirectPage);
 
@@ -58,12 +61,14 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(ANDROID)
+  @Test
   public void testShouldFollowMetaRedirects() throws Exception {
     driver.get(pages.metaRedirectPage);
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
   @Ignore(SELENESE)
+  @Test
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(pages.xhtmlTestPage);
     driver.get(pages.xhtmlTestPage + "#text");
@@ -71,6 +76,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
+  @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     try {
       // Of course, we're up the creek if this ever does get registered
@@ -83,12 +89,14 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({IPHONE, SELENESE})
+  @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
   }
 
   @Ignore({IPHONE, SELENESE, ANDROID})
+  @Test
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 
@@ -103,6 +111,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore({IPHONE, SELENESE})
   @NeedsFreshDriver
+  @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     if (SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver)) {
       // Sauce opens about:blank after the browser loads, which IE doesn't include in history
@@ -121,6 +130,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, ANDROID})
+  @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
 
@@ -132,6 +142,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
+  @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(pages.xhtmlTestPage);
 
@@ -146,6 +157,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, ANDROID})
+  @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
 
@@ -163,6 +175,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID})
+  @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
     String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
@@ -172,6 +185,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(SELENESE)
+  @Test
   public void testShouldBeAbleToRefreshAPage() {
     driver.get(pages.xhtmlTestPage);
 
@@ -191,6 +205,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID}, reason = "Untested user-agents")
   @NoDriverAfterTest
   @JavascriptEnabled
+  @Test
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
     driver.get(pages.documentWrite);
@@ -201,6 +216,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   @Ignore
+  @Test
   public void testShouldNotWaitIndefinitelyIfAnExternalResourceFailsToLoad() {
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
@@ -227,6 +243,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "Not implemented")
   @NeedsLocalEnvironment
+  @Test
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
 

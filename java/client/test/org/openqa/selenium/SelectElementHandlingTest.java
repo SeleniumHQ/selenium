@@ -17,8 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -30,9 +33,10 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 
-public class SelectElementHandlingTest extends AbstractDriverTestCase {
+public class SelectElementHandlingTest extends JUnit4TestBase {
 
   @Ignore({CHROME, SELENESE, IPHONE, OPERA, ANDROID})
+  @Test
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -51,6 +55,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({OPERA, SELENESE, ANDROID})
+  @Test
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -66,6 +71,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, ANDROID})
+  @Test
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -85,6 +91,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, ANDROID})
+  @Test
   public void testShouldSelectFirstOptionByDefaultIfNoneIsSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='select-default']"));
@@ -100,13 +107,15 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, CHROME})
+  @Test
   public void testCanSelectElementsInOptGroups() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("two-in-group"));
     element.click();
     assertTrue("Expected to be selected", element.isSelected());
   }
-  
+
+  @Test
   public void testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist() {
 	  driver.get(pages.formPage);
 	  WebElement element = driver.findElement(By.cssSelector("select[name='select-default'] option"));
@@ -114,7 +123,8 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
 	  element = driver.findElement(By.id("blankOption"));
 	  assertThat(element.getAttribute("value"), is(""));
   }
-  
+
+  @Test
   public void testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString() {
 	  driver.get(pages.formPage);
 	  WebElement element = driver.findElement(By.id("optionEmptyValueSet"));
