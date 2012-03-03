@@ -17,6 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WaitingConditions;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -24,21 +36,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WaitingConditions;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
 
 /**
  * Tests single tap actions on touch enabled devices.
  */
-public class TouchSingleTapTest extends AbstractDriverTestCase {
+public class TouchSingleTapTest extends JUnit4TestBase {
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
@@ -52,6 +54,7 @@ public class TouchSingleTapTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
       + "operations not supported")
+  @Test
   public void testCanSingleTapOnALinkAndFollowIt() {
     driver.get(pages.clicksPage);
     singleTapOnElement("normal");
@@ -60,6 +63,7 @@ public class TouchSingleTapTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "TouchScreen "
       + "operations not supported")
+  @Test
   public void testCanSingleTapOnAnAnchorAndNotReloadThePage() {
     driver.get(pages.clicksPage);
     ((JavascriptExecutor) driver).executeScript("document.latch = true");

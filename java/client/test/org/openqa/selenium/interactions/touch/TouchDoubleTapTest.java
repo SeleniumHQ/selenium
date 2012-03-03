@@ -17,6 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -25,17 +34,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
-
 /**
  * Tests the basic double tap operations.
  */
-public class TouchDoubleTapTest extends AbstractDriverTestCase {
+public class TouchDoubleTapTest extends JUnit4TestBase {
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
@@ -49,6 +51,7 @@ public class TouchDoubleTapTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
+  @Test
   public void testCanDoubleTapOnAnImageAndAlterLocationOfElementsInScreen() {
     driver.get(pages.touchLongContentPage);
 

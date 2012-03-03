@@ -17,17 +17,21 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -39,17 +43,16 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
 
 /**
  * Tests combined input actions.
  */
 @Ignore(ANDROID)
-public class CombinedInputActionsTest extends AbstractDriverTestCase {
+public class CombinedInputActionsTest extends JUnit4TestBase {
 
   // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
+  @Test
   public void testClickingOnFormElements() {
     if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
       System.out.println("Skipping testClickingOnFormElements: Only works with native events" +
@@ -80,6 +83,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA})
+  @Test
   public void testSelectingMultipleItems() {
     if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
       System.out.println("Skipping testClickingOnFormElements: Only works with native events" +
@@ -127,6 +131,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, IPHONE})
+  @Test
   public void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }
@@ -134,6 +139,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
   @Ignore(
       value = {HTMLUNIT, IPHONE, SELENESE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+  @Test
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(appServer.whereIs("clicks.html"));
 
@@ -154,6 +160,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
    * up at the wrong coordinates.
    */
   @Ignore({SELENESE, IPHONE,HTMLUNIT})
+  @Test
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 
@@ -167,6 +174,7 @@ public class CombinedInputActionsTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, HTMLUNIT, OPERA})
+  @Test
   public void testChordControlCutAndPaste() {
     // FIXME: macs don't have CONRTROL key
     if (getEffectivePlatform().is(Platform.MAC)) {

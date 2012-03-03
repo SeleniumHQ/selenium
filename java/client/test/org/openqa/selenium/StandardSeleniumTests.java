@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.html5.Html5Tests;
+import org.openqa.selenium.interactions.InteractionTests;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -73,6 +74,7 @@ import org.openqa.selenium.html5.Html5Tests;
     XPathElementFindingTest.class,
 
     Html5Tests.class,
+    InteractionTests.class
 })
 public class StandardSeleniumTests {
 

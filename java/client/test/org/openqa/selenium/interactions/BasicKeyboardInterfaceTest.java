@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -26,9 +27,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.junit.Test;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -40,13 +43,14 @@ import org.openqa.selenium.testing.TestUtilities;
  * 
  */
 @Ignore(IE)
-public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
+public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
 
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, SELENESE})
+  @Test
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
 
@@ -62,6 +66,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, SELENESE, IE})
+  @Test
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
 
@@ -83,6 +88,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, SELENESE, IE})
+  @Test
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -107,6 +113,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE, IE})
+  @Test
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -134,6 +141,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, SELENESE})
+  @Test
   public void testSendingKeysToActiveElement() {
     if (TestUtilities.isFirefox9(driver)) {
       // This test fails due to a bug in Firefox 9. For more details, see:
@@ -150,6 +158,7 @@ public class BasicKeyboardInterfaceTest extends AbstractDriverTestCase {
   }
 
   @Ignore({ANDROID, IPHONE, SELENESE})
+  @Test
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 

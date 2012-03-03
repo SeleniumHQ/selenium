@@ -17,6 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NeedsFreshDriver;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -26,18 +36,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import org.openqa.selenium.AbstractDriverTestCase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.NeedsFreshDriver;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
-
 /**
  * Tests the basic flick operations on touch enabled devices.
  */
-public class TouchFlickTest extends AbstractDriverTestCase {
+public class TouchFlickTest extends JUnit4TestBase {
   
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
@@ -46,6 +48,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickHorizontallyFromWebElement() {
     driver.get(pages.touchLongContentPage);
 
@@ -68,6 +71,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickHorizontallyFastFromWebElement() {
     driver.get(pages.touchLongContentPage);
 
@@ -89,6 +93,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickHorizontally() {
     driver.get(pages.clicksPage);
     driver.get(pages.touchLongContentPage);
@@ -110,6 +115,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
       reason = "TouchScreen operations not supported, Android flick's can result in different "
           + "offsets")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickHorizontallyFast() {
     driver.get(pages.touchLongContentPage);
 
@@ -129,6 +135,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickVerticallyFromWebElement() {
     driver.get(pages.touchLongContentPage);
 
@@ -150,6 +157,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickVerticallyFastFromWebElement() {
     driver.get(pages.touchLongContentPage);
 
@@ -171,6 +179,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickVertically() {
     driver.get(pages.touchLongContentPage);
 
@@ -191,6 +200,7 @@ public class TouchFlickTest extends AbstractDriverTestCase {
   @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
       reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
+  @Test
   public void testCanFlickVerticallyFast() {
     driver.get(pages.touchLongContentPage);
 

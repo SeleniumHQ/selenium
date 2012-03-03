@@ -17,19 +17,27 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToContain;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -44,17 +52,12 @@ import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox35;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementTextToContain;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 /**
  * Tests operations that involve mouse and keyboard.
  * 
  */
-public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
+public class BasicMouseInterfaceTest extends JUnit4TestBase {
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
@@ -89,6 +92,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Test
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
@@ -101,6 +105,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
       reason = "Advanced mouse actions only implemented in rendered browsers")
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
+  @Test
   public void testDraggingElementWithMouseFiresEvents() {
     performDragAndDropWithMouse();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
@@ -120,6 +125,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Test
   public void testDoubleClickThenGet() {
       // Fails in ff3 if WebLoadingListener removes browser listener
       driver.get(pages.javascriptPage);
@@ -134,6 +140,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Test
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
@@ -170,6 +177,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -186,6 +194,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE})
+  @Test
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -200,6 +209,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Test
   public void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
@@ -217,6 +227,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, IPHONE, SELENESE, FIREFOX})
+  @Test
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
 
@@ -239,6 +250,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, FIREFOX, OPERA},
       reason = "Behaviour not finalized yet regarding linked images.")
+  @Test
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);
 
@@ -281,6 +293,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME},
       reason = "Not implemented yet.")
+  @Test
   public void testMovingMousePastViewPort() {
     if (!isNativeEventsEnabled(driver)) {
       System.out.println("Skipping testMovingMousePastViewPort: Native events are disabled.");
@@ -319,6 +332,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME, OPERA},
       reason = "Not implemented yet.")
+  @Test
   public void testMovingMouseBackAndForthPastViewPort() {
 
     if (isFirefox(driver) && !isNativeEventsEnabled(driver)) {
@@ -353,6 +367,7 @@ public class BasicMouseInterfaceTest extends AbstractDriverTestCase {
   }
 
   @Ignore(ALL)
+  @Test
   public void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
     try {
