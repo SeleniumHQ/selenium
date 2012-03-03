@@ -19,8 +19,15 @@ package org.openqa.selenium;
 
 import com.google.common.base.Throwables;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -38,8 +45,9 @@ import static org.hamcrest.core.IsNull.nullValue;
 
 import java.util.List;
 
-public class ElementAttributeTest extends AbstractDriverTestCase {
+public class ElementAttributeTest extends JUnit4TestBase {
 
+  @Test
   public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
     driver.get(pages.simpleTestPage);
     //TODO(eran): This fails consistently on Linux machines due to issue #2099. Remove
@@ -47,7 +55,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     try {
       Thread.sleep(500);
     } catch (InterruptedException e) {
-      Throwables.propagate(e);
+      throw Throwables.propagate(e);
     }
 
     WebElement head = driver.findElement(By.xpath("/html"));
@@ -55,6 +63,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(attribute, is(nullValue()));
   }
 
+  @Test
   public void testShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("invalidImgTag"));
@@ -63,6 +72,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore(OPERA)
+  @Test
   public void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validImgTag"));
@@ -71,6 +81,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore(OPERA)
+  @Test
   public void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validAnchorTag"));
@@ -78,12 +89,14 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
   }
 
+  @Test
   public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.xpath("//body"));
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
+  @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
@@ -95,6 +108,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(pElement.isEnabled(), equalTo(true));
   }
 
+  @Test
   public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
     driver.get(pages.formPage);
 
@@ -103,6 +117,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(options.get(1).getAttribute("index"), equalTo("1"));
   }
 
+  @Test
   public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
@@ -112,6 +127,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(inputElement.isEnabled(), is(true));
   }
 
+  @Test
   public void testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
@@ -126,6 +142,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
   @Ignore(value = {IPHONE, SELENESE},
       reason = "sendKeys does not determine whether the element is disabled")
+  @Test
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
@@ -147,12 +164,14 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(disabledTextElement2.getText(), is(""));
   }
 
+  @Test
   public void testShouldIndicateWhenATextAreaIsDisabled() {
     driver.get(pages.formPage);
     WebElement textArea = driver.findElement(By.xpath("//textarea[@id='notWorkingArea']"));
     assertThat(textArea.isEnabled(), is(false));
   }
 
+  @Test
   public void testShouldIndicateWhenASelectIsDisabled() {
     driver.get(pages.formPage);
 
@@ -163,6 +182,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertFalse(disabled.isEnabled());
   }
 
+  @Test
   public void testShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked() {
     driver.get(pages.formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
@@ -171,6 +191,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(checkbox.getAttribute("checked"), equalTo("true"));
   }
 
+  @Test
   public void testShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet() {
     driver.get(pages.formPage);
     WebElement neverSelected = driver.findElement(By.id("cheese"));
@@ -187,6 +208,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(initiallySelected.getAttribute("selected"), equalTo(null));
   }
 
+  @Test
   public void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -199,6 +221,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(two.getAttribute("selected"), equalTo(null));
   }
 
+  @Test
   public void testShouldReturnValueOfClassAttributeOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
@@ -208,6 +231,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(className, equalTo("header"));
   }
 
+  @Test
   public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
 
@@ -216,6 +240,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(value, equalTo("Example text"));
   }
 
+  @Test
   public void testShouldTreatReadonlyAsAValue() {
     driver.get(pages.formPage);
 
@@ -228,6 +253,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertFalse(readonly.equals(notReadonly));
   }
 
+  @Test
   public void testShouldGetNumericAtribute() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -235,6 +261,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore(FIREFOX)
+  @Test
   public void testCanReturnATextApproximationOfTheStyleAttribute() {
     driver.get(pages.javascriptPage);
 
@@ -243,6 +270,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertTrue(style.toLowerCase().contains("background-color"));
   }
 
+  @Test
   public void testShouldCorrectlyReportValueOfColspan() {
     driver.get(pages.tables);
 
@@ -266,6 +294,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   // This is a test-case re-creating issue 900.
   @SuppressWarnings("unchecked")
   @Ignore(SELENESE)
+  @Test
   public void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
 
@@ -284,12 +313,14 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
   @Ignore(value = {IE, IPHONE, ANDROID}, reason = "IE7 Does not support SVG; " +
       "SVG elements crash the iWebDriver app (issue 1134)", issues = {1134})
+  @Test
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
     assertEquals("rotate(30)", svgElement.getAttribute("transform"));
   }
 
+  @Test
   public void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -298,6 +329,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
+  @Test
   public void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("email"));
@@ -307,6 +339,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore(ANDROID)
+  @Test
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("emptyTextArea"));
@@ -316,6 +349,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore({FIREFOX, CHROME, OPERA, IPHONE, ANDROID, REMOTE, SELENESE})
+  @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
     WebElement element1 = driver.findElement(By.id("working"));
@@ -325,6 +359,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
   }
 
   @Ignore({IE, IPHONE, ANDROID, REMOTE, SELENESE})
+  @Test
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
     WebElement element1 = driver.findElement(By.id("emailRequired"));

@@ -16,16 +16,25 @@ limitations under the License.
  */
 package org.openqa.selenium;
 
+import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import java.io.File;
 
-public class OutputTypeTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class OutputTypeTest {
   public static final String TEST_BASE64 = "ABADABAD";
   public static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
 
+  @Test
   public void testBase64() {
     assertEquals(TEST_BASE64, OutputType.BASE64.convertFromBase64Png(TEST_BASE64));
   }
 
+  @Test
   public void testBytes() {
     byte[] bytes = OutputType.BYTES
         .convertFromBase64Png(TEST_BASE64);
@@ -35,6 +44,7 @@ public class OutputTypeTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testFiles() {
     File tmpFile = OutputType.FILE
         .convertFromBase64Png(TEST_BASE64);

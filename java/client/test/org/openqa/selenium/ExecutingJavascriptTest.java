@@ -21,7 +21,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.io.File;
@@ -37,6 +39,12 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -44,9 +52,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
-public class ExecutingJavascriptTest extends AbstractDriverTestCase {
+public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -61,6 +70,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnALong() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -75,6 +85,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -90,6 +101,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -107,6 +119,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore({IPHONE})
+  @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -126,6 +139,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore({IPHONE})
+  @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -149,6 +163,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore({IE, IPHONE})
+  @Test
   public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -177,6 +192,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore({IE, IPHONE})
+  @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -235,6 +251,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testPassingAndReturningALongShouldReturnAWholeNumber() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -249,6 +266,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -263,6 +281,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -279,6 +298,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -296,6 +316,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToPassAStringAnAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -309,6 +330,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToPassABooleanAnAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -321,6 +343,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToPassANumberAnAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -333,6 +356,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToPassAWebElementAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -349,6 +373,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testPassingArrayAsOnlyArgumentFlattensArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -362,6 +387,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore
+  @Test
   public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -375,6 +401,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IE, REMOTE})
+  @Test
   public void testShouldBeAbleToPassACollectionAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -398,6 +425,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -413,6 +441,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToPassInMoreThanOneArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -427,6 +456,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @Ignore(value = {IPHONE, OPERA},
       reason = "iPhone: Frame switching not yet implemented.")
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(pages.richTextPage);
 
@@ -442,6 +472,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore
+  @Test
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
 
@@ -452,6 +483,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testJavascriptStringHandlingShouldWorkAsExpected() {
     driver.get(pages.javascriptPage);
 
@@ -467,6 +499,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(OPERA)
+  @Test
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
 
@@ -486,6 +519,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore({REMOTE, IPHONE})
+  @Test
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
     String scriptToExec = "return document.getElementsByName('snack');";
@@ -502,6 +536,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @Ignore
   // Reason for ignore: Failure indicates hang condition,
   // which would break the test suite. Really needs a timeout set.
+  @Test
   public void testShouldThrowExceptionIfExecutingOnNoPage() {
     try {
       ((JavascriptExecutor) driver).executeScript("return 1;");
@@ -513,6 +548,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToCreateAPersistentValue() {
     driver.get(pages.formPage);
 
@@ -524,6 +560,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testCanHandleAnArrayOfElementsAsAnObjectArray() {
     driver.get(pages.formPage);
 
@@ -539,6 +576,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, OPERA},
           reason = "Opera and HtmlUnit obey the method contract. Androidn, IE and iOS, not tested")
+  @Test
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
     

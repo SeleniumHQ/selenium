@@ -18,9 +18,14 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -29,7 +34,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import java.util.List;
 
-public class OpacityTest extends AbstractDriverTestCase {
+public class OpacityTest extends JUnit4TestBase {
 
   /**
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
@@ -37,6 +42,7 @@ public class OpacityTest extends AbstractDriverTestCase {
    */
   @JavascriptEnabled
   @Ignore({IE, SELENESE, OPERA})
+  @Test
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
@@ -53,6 +59,7 @@ public class OpacityTest extends AbstractDriverTestCase {
    */
   @JavascriptEnabled
   @Ignore({ANDROID, HTMLUNIT, IE, SELENESE, OPERA})
+  @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);
 

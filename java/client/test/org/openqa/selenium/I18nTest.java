@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -26,15 +29,17 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
+import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class I18nTest extends AbstractDriverTestCase {
+public class I18nTest extends JUnit4TestBase {
 
   /**
    * The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M).
@@ -54,12 +59,14 @@ public class I18nTest extends AbstractDriverTestCase {
   private static final String tokyo = "東京";
 
   @Ignore({IE, FIREFOX, IPHONE})
+  @Test
   public void testCn() {
     driver.get(pages.chinesePage);
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
   @Ignore(ANDROID)
+  @Test
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -70,6 +77,7 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   @Ignore(ANDROID)
+  @Test
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -80,6 +88,7 @@ public class I18nTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {IE, SELENESE})
+  @Test
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()
@@ -95,6 +104,7 @@ public class I18nTest extends AbstractDriverTestCase {
   @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, FIREFOX, OPERA, ANDROID, IPHONE},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
+  @Test
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     if (!Platform.getCurrent().is(Platform.LINUX)) {
       System.out.println("Skipping test because IME is supported on Linux only.");
@@ -156,6 +166,7 @@ public class I18nTest extends AbstractDriverTestCase {
   @Ignore(value = {IE, SELENESE, CHROME, HTMLUNIT, OPERA, ANDROID, IPHONE},
       reason = "Not implemented on anything other than"
           + "Firefox/Linux at the moment.")
+  @Test
   public void testShouldBeAbleToInputJapanese() {
     if (!Platform.getCurrent().is(Platform.LINUX)) {
       System.out.println("Skipping test because IME is supported on Linux only.");

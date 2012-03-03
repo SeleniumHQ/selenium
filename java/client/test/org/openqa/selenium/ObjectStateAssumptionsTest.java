@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -28,8 +30,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
  * calls various methods to confirm the expected NPEs happen, once HtmlUnitDriver (and any others if
  * necessary) is fixed they'll serve as regression tests :)
  */
-public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
+public class ObjectStateAssumptionsTest extends JUnit4TestBase {
 
+  @Test
   public void testUninitializedWebDriverDoesNotThrowNPE() {
     try {
       variousMethodCallsToCheckAssumptions();
@@ -46,6 +49,7 @@ public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
    * This test case differs from @see testUninitializedWebDriverDoesNotThrowNPE as it initializes
    * WebDriver with an initial call to get(). It also should not fail.
    */
+  @Test
   public void testinitializedWebDriverDoesNotThrowNPE() {
     driver.get(pages.simpleTestPage);
     try {
@@ -72,6 +76,7 @@ public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
    * Test the various options, again for an uninitialized driver, NPEs are thrown.
    */
   @Ignore({SELENESE, IPHONE})
+  @Test
   public void testOptionsForUninitializedWebDriver() {
     WebDriver.Options options = driver.manage();
     try {

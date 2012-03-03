@@ -1,7 +1,11 @@
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -11,40 +15,47 @@ import static org.openqa.selenium.WaitingConditions.elementSelectionToBe;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ElementSelectingTest extends AbstractDriverTestCase {
+public class ElementSelectingTest extends JUnit4TestBase {
   private static final boolean UNSELECTED = false;
   private static final boolean SELECTED = true;
 
+  @Test
   public void testShouldBeAbleToSelectAnEnabledUnselectedCheckbox() {
     driver.get(pages.formPage);
     assertCanSelect(enabledUnselectedCheckbox());
   }
 
+  @Test
   public void testShouldBeAbleToSelectAnEnabledUnselectedRadioButton() {
     driver.get(pages.formPage);
     assertCanSelect(enabledUnselectedRadioButton());
   }
 
+  @Test
   public void testShouldNotBeAbleToSelectADisabledCheckbox() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedCheckbox());
   }
 
+  @Test
   public void testShouldNotBeAbleToSelectADisabledCheckboxDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledSelectedCheckbox());
   }
 
+  @Test
   public void testShouldNotBeAbleToSelectADisabledRadioButton() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedRadioButton());
   }
 
+  @Test
   public void testShouldNotBeAbleToSelectADisabledRadioButtonDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledUnselectedRadioButton());
   }
 
+  @Test
   public void testSelectingRadioButtonShouldUnselectItsSibling() {
     driver.get(pages.formPage);
 
@@ -59,17 +70,19 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     assertSelected(toSelect);
   }
 
-
+  @Test
   public void testShouldBeAbleToToggleAnEnabledUnselectedCheckbox() {
     driver.get(pages.formPage);
     assertCanToggle(enabledUnselectedCheckbox());
   }
 
+  @Test
   public void testShouldBeAbleToToggleAnEnabledSelectedCheckbox() {
     driver.get(pages.formPage);
     assertCanToggle(enabledSelectedCheckbox());
   }
 
+  @Test
   public void testClickingOnASelectedRadioButtonShouldLeaveItSelected() {
     driver.get(pages.formPage);
 
@@ -82,11 +95,13 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {CHROME, SELENESE, ANDROID}, reason = "Android: opens a dialog.")
+  @Test
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);
     assertCanToggle(selectedMultipleSelectOption());
   }
 
+  @Test
   public void testShouldBeAbleToToggleSelectableCheckboxByClickingOnIt() {
     driver.get(pages.formPage);
 
@@ -100,6 +115,7 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     assertNotSelected(checkbox);
   }
 
+  @Test
   public void testShouldBeAbleToSelectSelectableRadioButtonByClickingOnIt() {
     driver.get(pages.formPage);
 
@@ -113,26 +129,29 @@ public class ElementSelectingTest extends AbstractDriverTestCase {
     assertSelected(radioButton);
   }
 
+  @Test
   public void testClickingDisabledSelectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(randomlyDisabledSelectedCheckbox());
   }
 
+  @Test
   public void testClickingDisabledUnselectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedCheckbox());
   }
 
+  @Test
   public void testClickingDisabledSelectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledSelectedRadioButton());
   }
 
+  @Test
   public void testClickingDisabledUnselectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedRadioButton());
   }
-
 
 
   private static void assertNotSelected(WebElement element) {

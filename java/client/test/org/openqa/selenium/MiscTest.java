@@ -17,9 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -30,8 +34,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class MiscTest extends AbstractDriverTestCase {
+public class MiscTest extends JUnit4TestBase {
 
+  @Test
   public void testShouldReportTheCurrentUrlCorrectly() {
     driver.get(pages.simpleTestPage);
     assertTrue(pages.simpleTestPage.equalsIgnoreCase(driver.getCurrentUrl()));
@@ -42,6 +47,7 @@ public class MiscTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
+  @Test
   public void testShouldReturnTheSourceOfAPage() {
     driver.get(pages.simpleTestPage);
 
@@ -60,6 +66,7 @@ public class MiscTest extends AbstractDriverTestCase {
       reason = "Chrome: returns XML content formatted for display as HTML document"
           + "Opera: includes XML doctype"
           + "Others: untested")
+  @Test
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     String source = driver.getPageSource().toLowerCase();
@@ -69,6 +76,7 @@ public class MiscTest extends AbstractDriverTestCase {
 
   @Ignore
   // See issue 2282
+  @Test
   public void testStimulatesStrangeOnloadInteractionInFirefox()
       throws Exception {
     driver.get(pages.documentWrite);
@@ -81,6 +89,7 @@ public class MiscTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
     driver.get(appServer.whereIs("globalscope.html"));
     String[] vars = new String[] {"w", "h"};

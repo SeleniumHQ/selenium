@@ -18,6 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -34,10 +37,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.matchers.JUnitMatchers.either;
 
+import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 
 import org.hamcrest.Matchers;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.concurrent.Callable;
@@ -46,10 +51,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * Test case for browsers that support using Javascript
  */
-public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
+public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = {SELENESE, ANDROID}, reason = "I'm not sure why this fails")
+  @Test
   public void testDocumentShouldReflectLatestTitle() throws Exception {
     driver.get(pages.javascriptPage);
 
@@ -63,6 +69,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testDocumentShouldReflectLatestDom() throws Exception {
     driver.get(pages.javascriptPage);
     String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
@@ -80,6 +87,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE, IPHONE, OPERA, SELENESE, ANDROID},
       reason = "iPhone: does not detect that a new page loaded.")
+  @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -92,6 +100,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID},
       reason = "iPhone: does not detect that a new page loaded.")
+  @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -103,6 +112,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(SELENESE)
+  @Test
   public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
@@ -114,6 +124,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
@@ -127,6 +138,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IPHONE, OPERA},
       reason = "iPhone: sendKeys not implemented correctly")
+  @Test
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -137,6 +149,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(ANDROID)
+  @Test
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
@@ -153,6 +166,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {IE, ANDROID}, reason = "Fails for IE in the continuous build")
+  @Test
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
@@ -165,6 +179,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(ANDROID)
+  @Test
   public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
@@ -179,6 +194,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: focus doesn't change as expected")
+  @Test
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
 
@@ -190,6 +206,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IPHONE})
+  @Test
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
 
@@ -201,6 +218,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {IE, FIREFOX, OPERA, REMOTE, SELENESE},
       reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Test
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
@@ -225,6 +243,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
    * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
    */
   @JavascriptEnabled
+  @Test
   public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(pages.javascriptPage);
 
@@ -238,6 +257,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({IPHONE, SELENESE})
+  @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     driver.get(pages.javascriptPage);
 
@@ -271,6 +291,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   @Ignore({IE, SELENESE, IPHONE, OPERA})
   @JavascriptEnabled
   @NeedsFreshDriver
+  @Test
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
 

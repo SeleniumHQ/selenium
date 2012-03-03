@@ -17,8 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -36,7 +41,8 @@ import static org.hamcrest.Matchers.is;
 import java.io.File;
 import java.io.IOException;
 
-public class FormHandlingTest extends AbstractDriverTestCase {
+public class FormHandlingTest extends JUnit4TestBase {
+  @Test
   public void testShouldClickOnSubmitInputElements() {
     driver.get(pages.formPage);
     driver.findElement(By.id("submitButton")).click();
@@ -44,6 +50,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
+  @Test
   public void testClickingOnUnclickableElementsDoesNothing() {
     driver.get(pages.formPage);
     try {
@@ -56,6 +63,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
   @Ignore(value = ANDROID, reason = "The page is zoomed in because of the previous state"
       + "which causes the click to fail.")
+  @Test
   public void testShouldBeAbleToClickImageButtons() {
     driver.get(pages.formPage);
     driver.findElement(By.id("imageButton")).click();
@@ -63,24 +71,28 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
+  @Test
   public void testShouldBeAbleToSubmitForms() {
     driver.get(pages.formPage);
     driver.findElement(By.name("login")).submit();
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
+  @Test
   public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.id("checky")).submit();
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
+  @Test
   public void testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("//form/p")).submit();
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
+  @Test
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
 
@@ -93,6 +105,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
@@ -104,6 +117,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID}, reason = "Android: capitalizatin bug in ICS keeps"
       + "caps on after a capital letter is sent.")
+  @Test
   public void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
@@ -114,6 +128,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {SELENESE, IPHONE, ANDROID})
+  @Test
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -124,6 +139,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore({SELENESE, IPHONE, ANDROID})
+  @Test
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -133,6 +149,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
+  @Test
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By
@@ -151,6 +168,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
       reason = "Does not yet support file uploads")
+  @Test
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -167,6 +185,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
       reason = "Does not yet support file uploads")
+  @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -189,6 +208,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   }
 
   @Ignore(value = {IPHONE}, reason = "iPhone: sendKeys implemented incorrectly.")
+  @Test
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -203,6 +223,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
   @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE},
       reason = "iPhone: sendKeys implemented incorrectly. Selenium: just because")
+  @Test
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -215,6 +236,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   @Ignore(value = {HTMLUNIT, SELENESE, IPHONE, ANDROID},
       reason = "Not implemented going to the end of the line first;\n"
           + "  iPhone: sendKeys not implemented correctly")
+  @Test
   public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -225,6 +247,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Example text. Some text"));
   }
 
+  @Test
   public void testShouldBeAbleToClearTextFromInputElements() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -238,12 +261,14 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value.length(), is(0));
   }
 
+  @Test
   public void testEmptyTextBoxesShouldReturnAnEmptyStringNotNull() {
     driver.get(pages.formPage);
     WebElement emptyTextBox = driver.findElement(By.id("working"));
     assertEquals(emptyTextBox.getAttribute("value"), "");
   }
 
+  @Test
   public void testShouldBeAbleToClearTextFromTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));

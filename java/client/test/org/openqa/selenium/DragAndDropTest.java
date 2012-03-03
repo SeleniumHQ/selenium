@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -28,9 +31,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 
+import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.regex.Matcher;
@@ -39,9 +44,10 @@ import java.util.regex.Pattern;
 @Ignore(
     value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
-public class DragAndDropTest extends AbstractDriverTestCase {
+public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
+  @Test
   public void testDragAndDrop() throws Exception {
     if (Platform.getCurrent().is(Platform.MAC)) {
       System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
@@ -61,6 +67,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -70,6 +77,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testElementInDiv() {
     if (Platform.getCurrent().is(Platform.MAC)) {
       System.out.println("Skipping testElementInDiv on Mac: See issue 2281.");
@@ -84,6 +92,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({CHROME, IE})
+  @Test
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
@@ -106,6 +115,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   // We can't reliably resize the window back afterwards, cross-browser, so have to kill the
   // window, otherwise we are stuck with a small window for the rest of the tests.
   // TODO(dawagner): Remove @NoDriverAfterTest when we can reliably do window resizing
+  @Test
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -128,6 +138,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Test
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 

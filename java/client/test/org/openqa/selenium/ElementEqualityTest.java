@@ -1,21 +1,24 @@
 package org.openqa.selenium;
 
+import org.junit.Test;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
-import com.google.common.base.Throwables;
+import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
 @Ignore({IPHONE, SELENESE})
-public class ElementEqualityTest extends AbstractDriverTestCase {
+public class ElementEqualityTest extends JUnit4TestBase {
+  @Test
   public void testSameElementLookedUpDifferentWaysShouldBeEqual() {
     driver.get(pages.simpleTestPage);
 
@@ -25,6 +28,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     assertEquals(body, xbody);
   }
 
+  @Test
   public void testDifferentElementsShouldNotBeEqual() {
     driver.get(pages.simpleTestPage);
 
@@ -33,6 +37,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     assertFalse(ps.get(0).equals(ps.get(1)));
   }
 
+  @Test
   public void testSameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.tagName("body"));
@@ -41,6 +46,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     assertEquals(body.hashCode(), xbody.hashCode());
   }
 
+  @Test
   public void testSameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     List<WebElement> body = driver.findElements(By.tagName("body"));
@@ -51,6 +57,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Test
   public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {
     String url = appServer.whereIs("missedJsReference.html");
     driver.get(url);
@@ -79,23 +86,12 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
   }
 
   private String getId(WebElement element) {
-    Class<?> remoteWebElementClass;
-    try {
-      remoteWebElementClass = Class.forName("org.openqa.selenium.remote.RemoteWebElement");
-    } catch (ClassNotFoundException e) {
+    if (!(element instanceof RemoteWebElement)) {
       System.err.println("Skipping remote element equality test - not a remote web driver");
       return null;
     }
-    if (remoteWebElementClass.isInstance(element)) {
-      try {
-        Method getIdMethod = element.getClass().getMethod("getId");
-        return (String)getIdMethod.invoke(element);
-      } catch (Throwable t) {
-        Throwables.propagate(t);
-      }
-    }
-    System.err.println("Skipping remote element equality test - not a remote web driver");
-    return null;
+
+    return ((RemoteWebElement) element).getId();
   }
 
   private WebElement unwrapIfNecessary(WebElement element) {
