@@ -17,17 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.TestWaiter;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.concurrent.Callable;
 
-public class BrowserConnectionTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+public class BrowserConnectionTest extends JUnit4TestBase {
+
+  @Test
   public void testShouldSetBrowserOffline() {
     if (!(driver instanceof BrowserConnection)) {
       return;

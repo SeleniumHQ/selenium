@@ -17,11 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.Set;
 
-public class SessionStorageTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class SessionStorageTest extends JUnit4TestBase {
+  @Test
   public void testSessionStorageSetAndGetItem() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -41,6 +46,7 @@ public class SessionStorageTest extends AbstractDriverTestCase {
     assertEquals(0, session.size());
   }
 
+  @Test
   public void testSessionStorageKeySet() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -63,6 +69,7 @@ public class SessionStorageTest extends AbstractDriverTestCase {
     assertTrue(session.keySet().isEmpty());
   }
 
+  @Test
   public void testClearSessionStorage() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -77,6 +84,7 @@ public class SessionStorageTest extends AbstractDriverTestCase {
     assertEquals(0, session.size());
   }
 
+  @Test
   public void testSessionStorageRemoveItem() {
     if (!(driver instanceof WebStorage)) {
       return;

@@ -17,14 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import static org.openqa.selenium.TestWaiter.waitFor;
-
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.WaitingConditions;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.Map;
 
-public class SqlDatabaseTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.TestWaiter.waitFor;
+
+public class SqlDatabaseTest extends JUnit4TestBase {
   private static final String INSERT_STATEMENT =
       "INSERT INTO docs(docname) VALUES (?)";
   private static final String SELECT_STATEMENT = "SELECT * FROM docs";
@@ -42,6 +45,7 @@ public class SqlDatabaseTest extends AbstractDriverTestCase {
         (Object[]) param);
   }
 
+  @Test
   public void testResultSetsReturnNegativeLastInsertedRowId() {
     if (!(driver instanceof DatabaseStorage)) {
       return;
@@ -53,6 +57,7 @@ public class SqlDatabaseTest extends AbstractDriverTestCase {
     assertTrue(resultSet.getLastInsertedRowId() == -1);
   }
 
+  @Test
   public void testResultSetsReturnPositiveLastInsertedRowId() {
     if (!(driver instanceof DatabaseStorage)) {
       return;
@@ -70,6 +75,7 @@ public class SqlDatabaseTest extends AbstractDriverTestCase {
     assertTrue(resultSet2.getLastInsertedRowId() == -1);
   }
 
+  @Test
   public void testResultSetsNumberOfRowsAffected() {
     if (!(driver instanceof DatabaseStorage)) {
       return;
@@ -92,6 +98,7 @@ public class SqlDatabaseTest extends AbstractDriverTestCase {
     executeQuery(DELETE_STATEMENT);
   }
 
+  @Test
   public void testResultSetRowsContainsInsertedRows() {
     if (!(driver instanceof DatabaseStorage)) {
       return;

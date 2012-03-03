@@ -17,13 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
 
-public class AppCacheTest extends AbstractDriverTestCase {
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+
+public class AppCacheTest extends JUnit4TestBase {
+  @Test
   public void testAppCacheStatus() {
     if (!(driver instanceof ApplicationCache)) {
       return;
@@ -42,6 +45,7 @@ public class AppCacheTest extends AbstractDriverTestCase {
         AppCacheStatus.IDLE, status1);
   }
 
+  @Test
   public void testBrowserLoadsFromCacheWhenOffline() {
     if (!(driver instanceof ApplicationCache)) {
       return;
@@ -54,6 +58,7 @@ public class AppCacheTest extends AbstractDriverTestCase {
     assertEquals("HTML5", driver.getTitle());
   }
 
+  @Test
   public void testGetAppCache() {
     if (!(driver instanceof ApplicationCache)) {
       return;

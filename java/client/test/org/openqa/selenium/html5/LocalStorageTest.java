@@ -17,11 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.Set;
 
-public class LocalStorageTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class LocalStorageTest extends JUnit4TestBase {
+  @Test
   public void testLocalStorageSetAndGetItem() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -43,6 +48,7 @@ public class LocalStorageTest extends AbstractDriverTestCase {
     assertEquals(0, local.size());
   }
 
+  @Test
   public void testLocalStorageKeySet() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -65,6 +71,7 @@ public class LocalStorageTest extends AbstractDriverTestCase {
     assertTrue(local.keySet().isEmpty());
   }
 
+  @Test
   public void testClearLocalStorage() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -79,6 +86,7 @@ public class LocalStorageTest extends AbstractDriverTestCase {
     assertEquals(0, local.size());
   }
 
+  @Test
   public void testLocalStorageRemoveItem() {
     if (!(driver instanceof WebStorage)) {
       return;
@@ -94,7 +102,8 @@ public class LocalStorageTest extends AbstractDriverTestCase {
     assertEquals(0, local.size());
     local.clear();
   }
-  
+
+  @Test
   public void testLocalAndSessionStorageDontInterfereWithEachOther() {
     if (!(driver instanceof WebStorage)) {
       return;

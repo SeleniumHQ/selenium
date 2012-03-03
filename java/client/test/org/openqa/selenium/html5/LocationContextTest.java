@@ -17,15 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.logging.Logger;
 
-public class LocationContextTest  extends AbstractDriverTestCase {
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+
+public class LocationContextTest  extends JUnit4TestBase {
   private static final Logger logger = Logger.getLogger(LocationContextTest.class.getName());
 
+  @Test
   public void testShouldSetAndGetLocation() {
     if (!(driver instanceof LocationContext)) {
       logger.info("Skipped LocationContextTest#testShouldSetAndGetLocation because driver"
