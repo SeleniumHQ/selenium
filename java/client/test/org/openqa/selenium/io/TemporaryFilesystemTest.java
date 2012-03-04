@@ -1,20 +1,20 @@
 package org.openqa.selenium.io;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 import java.io.IOException;
 
-public class TemporaryFilesystemTest extends TestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class TemporaryFilesystemTest {
   private TemporaryFilesystem tmpFs;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
 

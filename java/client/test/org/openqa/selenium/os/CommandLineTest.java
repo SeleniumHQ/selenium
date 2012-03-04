@@ -19,22 +19,20 @@ package org.openqa.selenium.os;
 
 import com.google.common.collect.Maps;
 
-import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 
-public class CommandLineTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class CommandLineTest {
 
   private static String testExecutable;
 
-  @Override
   @Before
   public void setUp() throws Exception {
-    super.setUp();
-
     // ping can be found on every platform we support.
     testExecutable = "ping";
   }

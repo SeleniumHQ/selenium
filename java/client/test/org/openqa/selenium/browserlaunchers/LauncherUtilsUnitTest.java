@@ -1,28 +1,31 @@
 package org.openqa.selenium.browserlaunchers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
 
+import org.junit.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class LauncherUtilsUnitTest extends TestCase {
+public class LauncherUtilsUnitTest {
 
   private static String COOKIE_SUFFIX = "txt";
 
+  @Test
   public void testCopySingleFileWithOverwrite() throws IOException {
     File srcFile = createFileWithData("src-dir", "cert8.db", "src text");
     File destFile = createFileWithData("dest-dir", "cert8.db", "some text");
     LauncherUtils.copySingleFileWithOverwrite(srcFile, destFile, true);
     String destText = getFileContent(destFile.getAbsolutePath());
     assertEquals("src text", destText);
-
   }
 
   // create file with name fileName under <temp-dir>/<parentDirName> and write <data> into the
@@ -51,6 +54,7 @@ public class LauncherUtilsUnitTest extends TestCase {
     writer.close();
   }
 
+  @Test
   public void testCopyDirectoryWithNonMatchingSuffix() throws IOException {
     File srcDir = makeSourceDirAndCookie();
     File destDir = getNonexistentDestDir();
@@ -60,6 +64,7 @@ public class LauncherUtilsUnitTest extends TestCase {
     copyDirectoryCleanUp(srcDir, destDir);
   }
 
+  @Test
   public void testCopyDirectoryWithMatchingSuffix() throws IOException {
     File srcDir = makeSourceDirAndCookie();
     File destDir = getNonexistentDestDir();
@@ -95,6 +100,7 @@ public class LauncherUtilsUnitTest extends TestCase {
     assertFalse(destDir.exists());
   }
 
+  @Test
   public void testProxyPacMaking() {
     doProxyPacTest(
         true,

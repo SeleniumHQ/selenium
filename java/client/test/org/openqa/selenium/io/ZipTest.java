@@ -2,9 +2,10 @@ package org.openqa.selenium.io;
 
 import com.google.common.io.Closeables;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.testing.InProject;
-
-import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,16 +14,18 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ZipTest extends TestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+public class ZipTest {
   private File inputDir;
   private File outputDir;
   private Zip zip;
   private TemporaryFilesystem tmpFs;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
     tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest);
@@ -33,13 +36,12 @@ public class ZipTest extends TestCase {
     zip = new Zip();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     tmpFs.deleteTemporaryFiles();
-
-    super.tearDown();
   }
 
+  @Test
   public void testShouldCreateAZipWithASingleEntry() throws IOException {
     touch(new File(inputDir, "example.txt"));
 
@@ -50,6 +52,7 @@ public class ZipTest extends TestCase {
     assertZipContains(output, "example.txt");
   }
 
+  @Test
   public void testShouldZipUpASingleSubDirectory() throws IOException {
     touch(new File(inputDir, "subdir/example.txt"));
 
@@ -60,6 +63,7 @@ public class ZipTest extends TestCase {
     assertZipContains(output, "subdir/example.txt");
   }
 
+  @Test
   public void testShouldZipMultipleDirectories() throws IOException {
     touch(new File(inputDir, "subdir/example.txt"));
     touch(new File(inputDir, "subdir2/fishy/food.txt"));
@@ -72,6 +76,7 @@ public class ZipTest extends TestCase {
     assertZipContains(output, "subdir2/fishy/food.txt");
   }
 
+  @Test
   public void testCanUnzipASingleEntry() throws IOException {
     File source = InProject.locate(
         "java/client/test/org/openqa/selenium/internal/single-file.zip");
@@ -81,6 +86,7 @@ public class ZipTest extends TestCase {
     assertTrue(new File(outputDir, "example.txt").exists());
   }
 
+  @Test
   public void testCanUnzipAComplexZip() throws IOException {
     File source = InProject.locate(
         "java/client/test/org/openqa/selenium/internal/subfolders.zip");
@@ -91,6 +97,7 @@ public class ZipTest extends TestCase {
     assertTrue(new File(outputDir, "subdir/foodyfun.txt").exists());
   }
 
+  @Test
   public void testWillNotOverwriteAnExistingZip() {
     try {
       zip.zip(inputDir, outputDir);
@@ -100,6 +107,7 @@ public class ZipTest extends TestCase {
     }
   }
 
+  @Test
   public void testCanZipASingleFile() throws IOException {
     File input = new File(inputDir, "foo.txt");
     File unwanted = new File(inputDir, "nay.txt");
@@ -116,6 +124,7 @@ public class ZipTest extends TestCase {
     assertFalse(notThere.exists());
   }
 
+  @Test
   public void testZippingASingleFileWillThrowIfInputIsNotAFile() throws IOException {
     try {
       zip.zipFile(inputDir.getParentFile(), inputDir);

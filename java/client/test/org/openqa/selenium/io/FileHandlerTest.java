@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.io;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.io.File;
@@ -31,7 +30,11 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class FileHandlerTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class FileHandlerTest {
 
   @Test
   public void testUnzip() throws IOException {

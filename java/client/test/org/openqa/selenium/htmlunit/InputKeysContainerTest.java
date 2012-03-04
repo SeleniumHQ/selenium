@@ -1,14 +1,11 @@
 package org.openqa.selenium.htmlunit;
 
+import org.junit.Test;
+import org.openqa.selenium.Keys;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.testing.SeleniumTestRunner;
-
-@RunWith(SeleniumTestRunner.class)
 public class InputKeysContainerTest {
   @Test
   public void testConstructionFromSingleCharSequence() {

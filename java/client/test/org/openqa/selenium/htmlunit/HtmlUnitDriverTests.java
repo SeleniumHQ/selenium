@@ -24,8 +24,7 @@ import org.openqa.selenium.StandardSeleniumTests;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    HtmlUnitSpecificTests.class,
-    LegacyJunit3Tests.class
+    HtmlUnitSpecificTests.class
 })
 public class HtmlUnitDriverTests {
 }

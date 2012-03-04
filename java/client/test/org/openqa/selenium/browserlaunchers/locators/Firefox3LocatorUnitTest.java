@@ -1,12 +1,16 @@
 package org.openqa.selenium.browserlaunchers.locators;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * {@link org.openqa.selenium.browserlaunchers.locators.Firefox3Locator} unit test class.
  */
-public class Firefox3LocatorUnitTest extends TestCase {
+public class Firefox3LocatorUnitTest {
 
+  @Test
   public void testUsualLauncherLocationsOnWindows() {
     final Firefox3Locator locator;
 
@@ -23,6 +27,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
     assertTrue(locator.usualLauncherLocations()[4].endsWith("\\Firefox"));
   }
 
+  @Test
   public void testUsualLauncherLocationsOnOSX() {
     final Firefox3Locator locator;
 
@@ -43,6 +48,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
     assertEquals("/Applications/Firefox.app/Contents/MacOS", locator.usualLauncherLocations()[1]);
   }
 
+  @Test
   public void testUsualLauncherLocationsOnUbuntu() {
     final Firefox3Locator locator;
 
@@ -61,6 +67,4 @@ public class Firefox3LocatorUnitTest extends TestCase {
     assertEquals(1, locator.usualLauncherLocations().length);
     assertEquals("/usr/lib/firefox-3.0.3", locator.usualLauncherLocations()[0]);
   }
-
-
 }

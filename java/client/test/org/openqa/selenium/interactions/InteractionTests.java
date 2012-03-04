@@ -37,7 +37,7 @@ import org.openqa.selenium.interactions.touch.TouchSingleTapTest;
     TouchFlickTest.class,
     TouchLongPressTest.class,
     TouchScrollTest.class,
-    TouchSingleTapTest.class,
+    TouchSingleTapTest.class
 })
 public class InteractionTests {
 }

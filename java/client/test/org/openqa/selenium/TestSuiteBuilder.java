@@ -243,6 +243,7 @@ public class TestSuiteBuilder {
         if (outputTestNames) {
           test = new TestNameDecorator(test);
         }
+        System.err.println(test);
         suite.addTest(test);
       }
     }

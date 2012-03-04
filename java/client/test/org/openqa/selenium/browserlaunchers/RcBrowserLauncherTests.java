@@ -15,23 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.browserlaunchers;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.junit.internal.runners.SuiteMethod;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.junit.runners.Suite;
+import org.openqa.selenium.browserlaunchers.locators.Firefox3LocatorUnitTest;
+import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocatorUnitTest;
 
-@RunWith(SuiteMethod.class)
-public class LegacyJunit3Tests extends TestSuite {
-  public static Test suite() throws Exception {
-    return new TestSuiteBuilder()
-        .addSourceDir("java/client/test")
-        .using(Browser.detect())
-        .includeJavascriptTests()
-        .create();
-  }
+@RunWith(Suite.class)
+@Suite.SuiteClasses(value = {
+    Firefox3LocatorUnitTest.class,
+    LauncherUtilsUnitTest.class,
+    MacProxyManagerUnitTest.class,
+    ProxiesTest.class,
+    WindowsProxyManagerUnitTest.class,
+    SingleBrowserLocatorUnitTest.class
+})
+public class RcBrowserLauncherTests {
 }

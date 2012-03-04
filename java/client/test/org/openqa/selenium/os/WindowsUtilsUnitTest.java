@@ -16,19 +16,26 @@
  */
 package org.openqa.selenium.os;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WindowsUtilsUnitTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+public class WindowsUtilsUnitTest {
 
   private int majorVersion;
   private int minorVersion;
   private Pattern WIN_OS_VERSION = Pattern.compile("^(\\d)+\\.(\\d)+$");
 
-  @Override
+  @Before
   public void setUp() {
     if (!WindowsUtils.thisIsWindows()) return;
     String osVersion = System.getProperty("os.version");
@@ -42,6 +49,7 @@ public class WindowsUtilsUnitTest extends TestCase {
     return majorVersion >= 5 && minorVersion >= 1;
   }
 
+  @Test
   public void testLoadEnvironment() {
     if (!WindowsUtils.thisIsWindows()) return;
     Map p = WindowsUtils.loadEnvironment();
@@ -50,18 +58,21 @@ public class WindowsUtilsUnitTest extends TestCase {
         WindowsUtils.findSystemRoot());
   }
 
+  @Test
   public void testWMIC() {
     if (!WindowsUtils.thisIsWindows()) return;
     if (!isXpOrHigher()) return;
     assertFalse("wmic should be found", "wmic".equals(WindowsUtils.findWMIC()));
   }
 
+  @Test
   public void testTaskKill() {
     if (!WindowsUtils.thisIsWindows()) return;
     if (!isXpOrHigher()) return;
     assertFalse("taskkill should be found", "taskkill".equals(WindowsUtils.findTaskKill()));
   }
 
+  @Test
   public void testRegistry() {
     if (!WindowsUtils.thisIsWindows()) return;
     // TODO(danielwh): Uncomment or remove assert
@@ -94,6 +105,7 @@ public class WindowsUtilsUnitTest extends TestCase {
         WindowsUtils.doesRegistryValueExist(keySeleniumFoo));
   }
 
+  @Test
   public void testVersion1() {
     if (!WindowsUtils.thisIsWindows()) return;
     System.out.println("Version 1: " + WindowsUtils.isRegExeVersion1());

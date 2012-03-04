@@ -3,7 +3,6 @@ java_library(name = "tests",
     "HtmlUnitCapabilitiesTest.java",
     "HtmlUnitSpecificTests.java",
     "InputKeysContainerTest.java",
-    "LegacyJunit3Tests.java",
     "ToStringTest.java",
   ],
   deps = [
