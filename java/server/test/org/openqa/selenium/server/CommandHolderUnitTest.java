@@ -1,18 +1,28 @@
 package org.openqa.selenium.server;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
 import org.openqa.selenium.testworker.TrackableThread;
 
-import junit.framework.TestCase;
-
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class CommandHolderUnitTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+public class CommandHolderUnitTest {
+
+  @Rule public TestName name = new TestName();
+  
   private static Logger log = Logger.getLogger(CommandHolderUnitTest.class.getName());
 
   private static final String sessionId = "1";
@@ -25,11 +35,11 @@ public class CommandHolderUnitTest extends TestCase {
   private static final int retryTimeout = 2;
   private CommandHolder holder;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     configureLogging();
     holder = new CommandHolder(sessionId, retryTimeout);
-    log.info("Start test: " + getName());
+    log.info("Start test: " + name.getMethodName());
   }
 
   private void configureLogging() throws Exception {
@@ -43,11 +53,12 @@ public class CommandHolderUnitTest extends TestCase {
     }
   }
 
-  @Override
+  @After
   public void tearDown() throws Exception {
     LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
   }
 
+  @Test
   public void testGetCommandGeneratesRetryWhenNoCommand() {
     long now = System.currentTimeMillis();
     RemoteCommand nextCmd = holder.getCommand();
@@ -58,6 +69,7 @@ public class CommandHolderUnitTest extends TestCase {
     assertNull(holder.peek());
   }
 
+  @Test
   public void testGetCommandGeneratesNullWhenPoisoned() throws Throwable {
     TrackableRunnable internalGetter = new TrackableRunnable() {
       @Override
@@ -74,6 +86,7 @@ public class CommandHolderUnitTest extends TestCase {
     assertNull(t.getResult());
   }
 
+  @Test
   public void testSimpleSingleThreaded() throws Throwable {
     injectCommand(testRemoteCommand, true);
     expectCommand(testRemoteCommand);

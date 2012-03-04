@@ -28,10 +28,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    SingleEntryAsyncQueueUnitTest.class,
     CommandHolderUnitTest.class,
-    CommandResultHolderUnitTest.class,
     CommandQueueUnitTest.class,
+    CommandResultHolderUnitTest.class,
+    SingleEntryAsyncQueueUnitTest.class,
+
     BrowserConfigurationOptionsTest.class,
     BrowserSessionFactoryUnitTest.class,
     SeleniumServerUnitTest.class,

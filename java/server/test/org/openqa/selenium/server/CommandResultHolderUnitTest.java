@@ -1,17 +1,26 @@
 package org.openqa.selenium.server;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
 import org.openqa.selenium.testworker.TrackableThread;
 
-import junit.framework.TestCase;
-
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class CommandResultHolderUnitTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+public class CommandResultHolderUnitTest {
+
+  @Rule public TestName name = new TestName();
 
   private static Logger log = Logger.getLogger(CommandResultHolderUnitTest.class.getName());
 
@@ -21,11 +30,11 @@ public class CommandResultHolderUnitTest extends TestCase {
   private static final int cmdTimeout = 3;
   private CommandResultHolder holder;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
     configureLogging();
     holder = new CommandResultHolder(sessionId, cmdTimeout);
-    log.info("Start test: " + getName());
+    log.info("Start test: " + name.getMethodName());
   }
 
   private void configureLogging() throws Exception {
@@ -39,11 +48,12 @@ public class CommandResultHolderUnitTest extends TestCase {
     }
   }
 
-  @Override
+  @After
   public void tearDown() throws Exception {
     LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
   }
 
+  @Test
   public void testGetCommandGeneratesTimeoutStringWhenNoResult() {
     long now = System.currentTimeMillis();
     String result = holder.getResult();
@@ -53,6 +63,7 @@ public class CommandResultHolderUnitTest extends TestCase {
     assertTrue(after - now >= (cmdTimeout * 999)); // at least timeout seconds
   }
 
+  @Test
   public void testGetCommandGeneratesNullMsgWhenPoisoned() throws Throwable {
     TrackableRunnable internalGetter = new TrackableRunnable() {
       @Override
@@ -70,6 +81,7 @@ public class CommandResultHolderUnitTest extends TestCase {
         t.getResult());
   }
 
+  @Test
   public void testSimpleSingleThreaded() throws Throwable {
     injectContent(testResult, true);
     expectContent(testResult);
