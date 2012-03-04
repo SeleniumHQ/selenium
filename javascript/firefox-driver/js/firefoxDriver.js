@@ -92,8 +92,35 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
         }
       };
     })();
+
+    var linkTextFunction = (function() {
+      return {
+        single: function(target, root, opt_isPartial) {
+	  var elements = cssSelectorFunction.many('a', root);
+
+	  var element = goog.array.find(elements, function(element) {
+	    var text = bot.dom.getVisibleText(element);
+	    return (opt_isPartial && text.indexOf(target) != -1) || text == target;
+	  });
+	  return (/**@type{Element}*/element);
+        },
+	many: function(target, root, opt_isPartial) {
+	  var elements = cssSelectorFunction.many('a', root);
+	  return goog.array.filter(elements, function(element) {
+	    var text = bot.dom.getVisibleText(element);
+	    return (opt_isPartial && text.indexOf(target) != -1) || text == target;
+	  });
+	}
+      }
+    })();
+        
+	  
     bot.locators.add('css', cssSelectorFunction);
     bot.locators.add('css selector', cssSelectorFunction);
+    bot.locators.add('linkText', linkTextFunction);
+    bot.locators.add('link text', linkTextFunction);
+    bot.locators.add('partialLinkText', linkTextFunction);
+    bot.locators.add('partial link text', linkTextFunction);
   }
 };
 

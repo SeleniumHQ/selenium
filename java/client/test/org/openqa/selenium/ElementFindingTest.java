@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -570,5 +571,14 @@ public class ElementFindingTest extends JUnit4TestBase {
     } finally {
       driver.switchTo().defaultContent();
     }
+  }
+
+  @Test
+  @Ignore(value = HTMLUNIT, reason = "HtmlUnitDriver doesn't support XHTML right now")
+  public void findsByLinkTextOnXhtmlPage() {
+    driver.get(appServer.whereIs("actualXhtmlPage.xhtml"));
+    String linkText = "Foo";
+    WebElement element = driver.findElement(By.linkText(linkText));
+    assertEquals(linkText, element.getText());
   }
 }

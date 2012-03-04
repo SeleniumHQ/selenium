@@ -18,6 +18,7 @@ goog.provide('bot.locators.partialLinkText');
 
 goog.require('bot');
 goog.require('bot.dom');
+goog.require('bot.locators.css');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
@@ -35,9 +36,7 @@ goog.require('goog.dom.DomHelper');
  * @private
  */
 bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
-  // TODO(jleyba): Fix this to work for XHTML (which is case sensitive)
-  var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      goog.dom.TagName.A, /*className=*/null, root);
+  var elements = bot.locators.css.many('a', root);
 
   var element = goog.array.find(elements, function(element) {
     var text = bot.dom.getVisibleText(element);
@@ -58,9 +57,7 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
  * @private
  */
 bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
-  // TODO(jleyba): Fix this to work for XHTML (which is case sensitive)
-  var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      goog.dom.TagName.A, /*className=*/null, root);
+  var elements = bot.locators.css.many('a', root);
   return goog.array.filter(elements, function(element) {
     var text = bot.dom.getVisibleText(element);
     return (opt_isPartial && text.indexOf(target) != -1) || text == target;
