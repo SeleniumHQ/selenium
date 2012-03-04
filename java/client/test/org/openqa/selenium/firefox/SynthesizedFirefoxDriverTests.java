@@ -17,14 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import junit.framework.Test;
-
-import org.junit.internal.runners.SuiteMethod;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.testing.drivers.Browser;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
