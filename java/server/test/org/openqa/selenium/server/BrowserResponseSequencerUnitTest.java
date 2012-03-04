@@ -1,8 +1,9 @@
-package org.openqa.selenium.rc;
+package org.openqa.selenium.server;
 
-import org.openqa.selenium.server.BrowserResponseSequencer;
-
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,21 +12,23 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-public class BrowserResponseSequencerUnitTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+public class BrowserResponseSequencerUnitTest {
+
+  @Rule public TestName name = new TestName();
+  
   private BrowserResponseSequencer seq;
   private List<Integer> numbers;
 
-  public BrowserResponseSequencerUnitTest(String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() {
-    seq = new BrowserResponseSequencer(getName());
+    seq = new BrowserResponseSequencer(name.getMethodName());
     numbers = Collections.synchronizedList( new ArrayList<Integer>());
   }
 
+  @Test
   public void testBrowserResponseSequencer() throws InterruptedException, ExecutionException {
 
     // we launch them in reverse order, but they get added in sequence
@@ -37,6 +40,7 @@ public class BrowserResponseSequencerUnitTest extends TestCase {
     assertEquals("[0, 1, 2, 3]", numbers.toString());
   }
 
+  @Test
   public void testOutOfSequence() throws InterruptedException, ExecutionException {
     // we launch them in reverse order, but they get added in sequence
     long now = System.currentTimeMillis();

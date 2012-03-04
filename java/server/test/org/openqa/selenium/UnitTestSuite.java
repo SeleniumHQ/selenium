@@ -1,10 +1,7 @@
 package org.openqa.selenium;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtilsUnitTest;
-import org.openqa.selenium.browserlaunchers.MacProxyManagerUnitTest;
-import org.openqa.selenium.browserlaunchers.WindowsProxyManagerUnitTest;
 import org.openqa.selenium.os.WindowsUtilsUnitTest;
-import org.openqa.selenium.rc.BrowserResponseSequencerUnitTest;
+import org.openqa.selenium.server.BrowserResponseSequencerUnitTest;
 import org.openqa.selenium.rc.HTMLSuiteResultUnitTest;
 import org.openqa.selenium.server.BrowserConfigurationOptionsTest;
 import org.openqa.selenium.server.BrowserSessionFactoryUnitTest;
