@@ -25,6 +25,7 @@ java_library(name = "tests",
   ],
   deps = [
     ":junit",
+    ":junit_4",
     "//third_party/java/guava-libraries",
     "//third_party/java/jmock",
     "//third_party/java/junit",
