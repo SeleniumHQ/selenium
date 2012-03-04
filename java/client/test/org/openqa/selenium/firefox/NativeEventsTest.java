@@ -6,11 +6,12 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 
 /**
  * If native events are enabled, make sure they work.
@@ -18,6 +19,7 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
  * @author eran.mes@gmail.com (Eran Mes)
  */
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
+@RunWith(SeleniumTestRunner.class)
 public class NativeEventsTest extends JUnit4TestBase {
   private boolean testNativeEvents = false;
   private FirefoxDriver driver2;

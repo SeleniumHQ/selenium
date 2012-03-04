@@ -95,16 +95,16 @@ public class TestSuiteBuilder {
   private void applySystemProperties() {
     // Add the test case rules defined in the system properties only if there
     // were no other test cases specified in the test suite specification.
-    String onlyRunProperty = System.getProperty("only_run", "");
-    if (!onlyRunProperty.equals("")) {
+    String onlyRunProperty = System.getProperty("only_run");
+    if (onlyRunProperty != null) {
       for (String classname : onlyRunProperty.split(",")) {
         onlyRun(classname);
       }
     }
 
     if (testMethodNames.isEmpty()) {
-      String methodProperty = System.getProperty("method", "");
-      if (!methodProperty.equals("")) {
+      String methodProperty = System.getProperty("method");
+      if (methodProperty != null) {
         method(methodProperty);
       }
     }
@@ -133,25 +133,6 @@ public class TestSuiteBuilder {
       toReturn.addTest(suite);
     }
 
-    if (suite.countTestCases() == 0) {
-      System.err.println("No test cases found");
-
-      if (!onlyRun.isEmpty()) {
-        System.err.println("The following class names are enabled but may not exist: ");
-        for(String className : onlyRun) {
-          System.err.println("*** " + className);
-        }
-      }
-
-      if (!testMethodNames.isEmpty()) {
-        System.err.println("The following method names are enabled but may not exist: ");
-        for(String methodName : testMethodNames) {
-          System.err.println("*** " + methodName);
-        }
-      }
-
-      throw new IllegalArgumentException("No test cases found");
-    }
     return decorate(toReturn);
   }
 

@@ -42,11 +42,12 @@ import java.util.concurrent.Callable;
 import com.google.common.base.Throwables;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
@@ -63,12 +64,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
+@RunWith(SeleniumTestRunner.class)
 public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void shouldContinueToWorkIfUnableToFindElementById() {

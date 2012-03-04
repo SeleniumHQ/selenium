@@ -53,11 +53,11 @@ public class TestIgnorance {
   public TestIgnorance(Browser browser) {
     setBrowser(browser);
 
-    String onlyRun = System.getProperty("onlyrun");
+    String onlyRun = System.getProperty("only_run");
     if (onlyRun != null) {
       only.addAll(Arrays.asList(onlyRun.split(",")));
     }
-    
+
     String method = System.getProperty("method");
     if (method != null) {
       methods.addAll(Arrays.asList(method.split(",")));
@@ -102,8 +102,8 @@ public class TestIgnorance {
   }
 
   private boolean isIgnoredDueToEnvironmentVariables(FrameworkMethod method, Object test) {
-    return only.contains(test.getClass().getSimpleName()) ||
-        methods.contains(method.getName());
+    return (!only.isEmpty() && !only.contains(test.getClass().getSimpleName())) ||
+        (!methods.isEmpty() && !methods.contains(method.getName()));
   }
 
   public void setBrowser(Browser browser) {

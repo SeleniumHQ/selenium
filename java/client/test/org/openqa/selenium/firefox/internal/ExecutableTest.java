@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.SeleniumTestRunner;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.io.File;
 

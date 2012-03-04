@@ -20,7 +20,10 @@ package org.openqa.selenium.firefox.internal;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 
+@RunWith(SeleniumTestRunner.class)
 public class StreamsTest {
 
   @Test
