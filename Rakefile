@@ -169,7 +169,8 @@ task :'test-selenium-backed-webdriver' => [
   '//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test:run'
 ]
 task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
-task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run',
+task :'test-rc' => ['//java/client/test/org/openqa/selenium:RcBrowserLauncherTests:run',
+                    '//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run',
                     '//java/client/test/com/thoughtworks/selenium:firefox-proxy-rc-test:run',
                     '//java/client/test/com/thoughtworks/selenium:firefox-singlewindow-rc-test:run']
 task :'test-core' => [:'test-core-firefox']

@@ -91,6 +91,14 @@ java_test(name = "SmallTests",
     ":tests",
   ])
 
+java_test(name = "RcBrowserLauncherTests",
+  scs = [
+    "browserlaunchers/RcBrowserLauncherTests.java",
+  ],
+  deps = [
+    ":tests",
+  ])
+
 java_test(name = "single",
   srcs = [
     "SingleTestSuite.java",

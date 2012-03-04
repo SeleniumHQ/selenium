@@ -28,6 +28,7 @@ import org.openqa.selenium.browserlaunchers.locators.SingleBrowserLocatorUnitTes
     LauncherUtilsUnitTest.class,
     MacProxyManagerUnitTest.class,
     ProxiesTest.class,
+    ProxyPacTest.class,
     WindowsProxyManagerUnitTest.class,
     SingleBrowserLocatorUnitTest.class
 })

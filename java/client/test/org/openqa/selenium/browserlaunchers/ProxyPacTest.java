@@ -1,15 +1,17 @@
-package org.openqa.selenium.remote;
+package org.openqa.selenium.browserlaunchers;
 
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
-
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
-public class ProxyPacTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class ProxyPacTest {
+  @Test
   public void testShouldNotReturnAnythingIfNothingIsConfigured() throws IOException {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
@@ -19,6 +21,7 @@ public class ProxyPacTest extends TestCase {
     assertEquals(writer.toString(), EMPTY_PAC, writer.toString());
   }
 
+  @Test
   public void testShouldAllowSpecificUrlsToBeProxied() throws IOException {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
@@ -31,6 +34,7 @@ public class ProxyPacTest extends TestCase {
         + "}"));
   }
 
+  @Test
   public void testShouldAllowSpecificUrlsToBePassedThroughDirectly() throws IOException {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
@@ -43,6 +47,7 @@ public class ProxyPacTest extends TestCase {
         + "}"));
   }
 
+  @Test
   public void testShouldAllowBasicWildCarding() throws IOException {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
@@ -56,6 +61,7 @@ public class ProxyPacTest extends TestCase {
   }
 
   // See: http://support.microsoft.com/kb/274204
+  @Test
   public void testShouldUseJsRegexIfIEWouldNotHandleTheMappingUrl() throws IOException {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
@@ -68,6 +74,7 @@ public class ProxyPacTest extends TestCase {
         + "}"));
   }
 
+  @Test
   public void testFinalLineOfFunctionShouldRedirectToDefaultProxy() throws IOException {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
 
@@ -84,6 +91,7 @@ public class ProxyPacTest extends TestCase {
   }
 
   // This is going to be a whole heap of fun.
+  @Test
   public void testShouldAllowAPacToBeBasedOffAnExistingPacFile() throws IOException {
     // We should allow people to override the settings in the given pac
     // The strategy will be to rename the method we care about to something else
