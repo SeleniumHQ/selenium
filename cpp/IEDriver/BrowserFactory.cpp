@@ -292,9 +292,16 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
   }
   
   if (strcmp(ALERT_WINDOW_CLASS, name) != 0 && 
-      strcmp(HTML_DIALOG_WINDOW_CLASS, name) != 0){
+      strcmp(HTML_DIALOG_WINDOW_CLASS, name) != 0) {
     return TRUE;
   } else {
+    // If the window style has the WS_DISABLED bit set or the 
+    // WS_VISIBLE bit unset, it can't  be handled via the UI, 
+    // and must not be a visible dialog.
+    if ((::GetWindowLong(hwnd, GWL_STYLE) & WS_DISABLED) != 0 ||
+        (::GetWindowLong(hwnd, GWL_STYLE) & WS_VISIBLE) == 0) {
+      return TRUE;
+    }
     DWORD process_id = NULL;
     ::GetWindowThreadProcessId(hwnd, &process_id);
     if (process_win_info->dwProcessId == process_id) {
