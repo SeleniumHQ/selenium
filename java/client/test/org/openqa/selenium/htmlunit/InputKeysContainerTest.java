@@ -1,10 +1,16 @@
 package org.openqa.selenium.htmlunit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 
-import junit.framework.TestCase;
-
-public class InputKeysContainerTest extends TestCase {
+@RunWith(SeleniumTestRunner.class)
+public class InputKeysContainerTest {
+  @Test
   public void testConstructionFromSingleCharSequence() {
     CharSequence sequence = "abc";
     InputKeysContainer container = new InputKeysContainer(sequence);
@@ -12,6 +18,7 @@ public class InputKeysContainerTest extends TestCase {
     assertEquals("Should be the same as input sequence", "abc", container.toString());
   }
 
+  @Test
   public void testConstructionFromMultipleSequences() {
     CharSequence seq1 = "abc";
     CharSequence seq2 = "def";
@@ -21,6 +28,7 @@ public class InputKeysContainerTest extends TestCase {
         container.toString());
   }
 
+  @Test
   public void testShouldTerminateStringAtSubmissionKey() {
     InputKeysContainer container = new InputKeysContainer(true, "abc", Keys.ENTER, "def");
 
@@ -29,6 +37,7 @@ public class InputKeysContainerTest extends TestCase {
     assertTrue("Was supposed to identify submit key.", container.wasSubmitKeyFound());
   }
 
+  @Test
   public void testShouldNotTerminateAStringIfNotRequested() {
     InputKeysContainer container = new InputKeysContainer(false, "abc", Keys.ENTER, "def");
 
@@ -37,6 +46,7 @@ public class InputKeysContainerTest extends TestCase {
     assertTrue("Was supposed to identify submit key.", container.wasSubmitKeyFound());
   }
 
+  @Test
   public void testShouldCapitalizeWhenAsked() {
     InputKeysContainer container = new InputKeysContainer(false, "abc", Keys.ENTER, "def");
     container.setCapitalization(true);

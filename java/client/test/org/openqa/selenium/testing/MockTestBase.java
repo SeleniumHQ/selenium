@@ -5,7 +5,9 @@ import org.jmock.Sequence;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 
+@RunWith(SeleniumTestRunner.class)
 public abstract class MockTestBase {
   protected JUnit4Mockery context;
 
