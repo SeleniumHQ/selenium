@@ -20,12 +20,10 @@ package org.openqa.selenium.firefox.internal;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.testing.SeleniumTestRunner;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +32,6 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author gregory.block@gmail.com (Gregory Block)
  */
-@RunWith(SeleniumTestRunner.class)
 public class SocketLockTest {
   private int freePort;
 

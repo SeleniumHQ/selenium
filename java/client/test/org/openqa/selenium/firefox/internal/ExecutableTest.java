@@ -10,7 +10,6 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
 
 import java.io.File;
 
-@RunWith(SeleniumTestRunner.class)
 public class ExecutableTest {
 
   @Test

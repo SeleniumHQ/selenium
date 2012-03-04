@@ -30,7 +30,6 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
 import java.io.Reader;
 import java.io.StringReader;
 
-@RunWith(SeleniumTestRunner.class)
 public class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";

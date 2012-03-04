@@ -17,21 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.testing.InProject;
-import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.testing.InProject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,7 +34,12 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SeleniumTestRunner.class)
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 public class FirefoxProfileTest {
 
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";

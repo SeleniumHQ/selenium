@@ -16,23 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+
+import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.SeleniumTestRunner;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-
 /**
  * Test the determineBrowserVersion method.
  */
-@RunWith(SeleniumTestRunner.class)
 public class HtmlUnitCapabilitiesTest {
   @Test
   public void configurationViaDirectCapabilities() {
