@@ -125,7 +125,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   }
 
   public void flushBuffer() throws IOException {
-    throw new UnsupportedOperationException();
+    // no-op
   }
 
   public void resetBuffer() {
