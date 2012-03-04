@@ -30,23 +30,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    ChromeDriverTests.LegacyTests.class
+    ChromeOptionsFunctionalTest.class
 })
 public class ChromeDriverTests {
-
-  @RunWith(SuiteMethod.class)
-  public static class LegacyTests extends TestSuite {
-
-    public static Test suite() throws Exception {
-      return new TestSuiteBuilder()
-          .addSourceDir("java/client/test")
-          .using(Browser.chrome)
-          .includeJavascriptTests()
-          .keepDriverInstance()
-          .restrictToPackage("org.openqa.selenium")
-          .restrictToPackage("org.openqa.selenium.chrome")
-          .create();
-    }
-  }
 }

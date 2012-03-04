@@ -29,22 +29,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    FirefoxSpecificTests.class,
-    SynthesizedFirefoxDriverTests.LegacyTests.class
+    FirefoxSpecificTests.class
 })
 public class SynthesizedFirefoxDriverTests {
-
-  @RunWith(SuiteMethod.class)
-  public static class LegacyTests {
-    public static Test suite() throws Exception {
-      System.setProperty("selenium.browser.native_events", "false");
-
-      return new TestSuiteBuilder()
-          .addSourceDir("java/client/test")
-          .using(Browser.ff)
-          .keepDriverInstance()
-          .includeJavascriptTests()
-          .create();
-    }
-  }
 }

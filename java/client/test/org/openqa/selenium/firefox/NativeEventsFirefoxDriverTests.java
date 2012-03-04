@@ -32,32 +32,12 @@ import org.openqa.selenium.testing.drivers.Browser;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    FirefoxSpecificTests.class,
-    NativeEventsFirefoxDriverTests.LegacyTests.class
+    FirefoxSpecificTests.class
 })
 public class NativeEventsFirefoxDriverTests extends TestSuite {
 
   @BeforeClass
   public static void forceNativeEvents() {
     System.setProperty("selenium.browser.native_events", "true");
-  }
-
-  @RunWith(SuiteMethod.class)
-  public static class LegacyTests {
-
-    public static Test suite() throws Exception {
-      if (Platform.getCurrent().is(Platform.MAC)) {
-        return new TestSuite();
-      }
-
-      System.setProperty("selenium.browser.native_events", "true");
-
-      return new TestSuiteBuilder()
-          .addSourceDir("java/client/test")
-          .using(Browser.ff)
-          .keepDriverInstance()
-          .includeJavascriptTests()
-          .create();
-    }
   }
 }
