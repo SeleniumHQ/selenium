@@ -100,8 +100,8 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
 
           var element = goog.array.find(elements, function(element) {
             var text = bot.dom.getVisibleText(element);
-	    return (opt_isPartial && text.indexOf(target) != -1) || text == target;
-	  });
+            return (opt_isPartial && text.indexOf(target) != -1) || text == target;
+          });
           return (/**@type{Element}*/element);
         },
         many: function(target, root, opt_isPartial) {
