@@ -2,10 +2,14 @@
 
 package org.openqa.selenium;
 
+import com.google.common.collect.Lists;
+
 import static org.openqa.selenium.Platform.WINDOWS;
 
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
+import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.BufferedReader;
@@ -13,9 +17,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Build {
-  private List<String> targets = new ArrayList<String>();
+  private static Logger log = Logger.getLogger(Build.class.getName());
+  
+  private List<String> targets = Lists.newArrayList();
 
   public Build of(String... targets) {
     this.targets.addAll(Arrays.asList(targets));
@@ -23,6 +30,14 @@ public class Build {
   }
 
   public void go() {
+    if (!isInDevMode()) {
+      // we should only need to do this when we're in dev mode
+      // when running in a test suite, our dependencies should already
+      // be listed.
+      log.info("Not in dev mode. Ignoring attempt to build: " + targets);
+      return;
+    }
+    
     if (targets.isEmpty()) {
       throw new IllegalStateException("No targets specified");
     }

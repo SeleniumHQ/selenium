@@ -19,20 +19,21 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
+import com.google.common.base.Throwables;
 import com.google.common.io.Files;
-
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.InProject.locate;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.DevMode.isInDevMode;
+import static org.openqa.selenium.testing.InProject.locate;
 
 public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
@@ -73,6 +74,19 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   }
 
   private static FirefoxProfile createTemporaryProfile() {
+    if (!isInDevMode()) {
+      FirefoxProfile profile = new FirefoxProfile();
+
+      if (Boolean.getBoolean("webdriver.debug")) {
+        try {
+          Firebug.addTo(profile);
+        } catch (IOException e) {
+          throw Throwables.propagate(e);
+        }
+      }
+      return profile;
+    }
+    
     try {
       File prefs = locate("javascript/firefox-driver/webdriver.json");
       File dest = locate("out/production/selenium/org/openqa/selenium/firefox");

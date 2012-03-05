@@ -13,6 +13,7 @@ java_library(name = "build",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/os",
+    "//java/client/test/org/openqa/selenium/testing:dev_mode",
     "//java/client/test/org/openqa/selenium/testing:util",
     "//third_party/java/junit",
   ])

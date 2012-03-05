@@ -38,6 +38,7 @@ java_library(name = "environment",
     "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
     "//java/client/test/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/environment",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     "//third_party/java/guava-libraries",
   ])
 
