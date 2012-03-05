@@ -302,7 +302,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
         } catch (e) {
           if (new Date().getTime() < endTime) {
               DelayedCommand.prototype.executeInternal_.nstimer.setTimeout(
-		  toExecute, 100);
+                  toExecute, 100);
           } else {
             if (!e.isWebDriverError) {
               fxdriver.Logger.dumpn(
