@@ -175,9 +175,6 @@ bool Script::ResultIsObject() {
 
 int Script::Execute() {
   VARIANT result;
-  if (this->script_engine_host_ == NULL) {
-    return ENOSUCHDOCUMENT;
-  }
   CComVariant temp_function;
   if (!this->CreateAnonymousFunction(&temp_function)) {
     // Debug level since this is normally the point we find out that 

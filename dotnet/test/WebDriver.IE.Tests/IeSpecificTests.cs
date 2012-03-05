@@ -9,16 +9,6 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
-        public void ClearTest()
-        {
-            driver.Url = "http://www.zgtechnologies.com/chrome/index.php";
-            System.Threading.Thread.Sleep(4000);
-            // Element is not present
-            By by = By.XPath("//img[@id='topKPIWaitFeedback']");
-            IWebElement webElement = driver.FindElement(by);  // Java crash!!!!               
-        }
-
-        [Test]
         public void ShouldBeAbleToBrowseTransformedXml()
         {
             driver.Url = xhtmlTestPage;
