@@ -35,7 +35,7 @@ class WebElement(object):
     def __init__(self, parent, id_):
         self._parent = parent
         self._id = id_
-    
+
     @property
     def tag_name(self):
         """Gets this element's tagName property."""
@@ -219,7 +219,7 @@ class WebElement(object):
         return self._execute(Command.UPLOAD_FILE, {'file': base64.encodestring(fp.getvalue())})['value']
 
 class LocalFileDetector(object):
-    
+
     @classmethod
     def is_local_file(cls, *keys):
         file_path = ''
@@ -235,7 +235,7 @@ class LocalFileDetector(object):
                 for i in range(len(val)):
                     typing.append(val[i])
         file_path = ''.join(typing)
-        
+
         if file_path is '':
             return None
 
