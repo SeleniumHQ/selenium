@@ -101,7 +101,7 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
           var element = goog.array.find(elements, function(element) {
             var text = bot.dom.getVisibleText(element);
             return (opt_isPartial && text.indexOf(target) != -1) ||
-	        text == target;
+                text == target;
           });
           return (/**@type{Element}*/element);
         },
@@ -110,7 +110,7 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
           return goog.array.filter(elements, function(element) {
             var text = bot.dom.getVisibleText(element);
             return (opt_isPartial && text.indexOf(target) != -1) ||
-	        text == target;
+                text == target;
           });
         }
       }
