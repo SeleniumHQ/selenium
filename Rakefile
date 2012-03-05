@@ -192,9 +192,11 @@ end
 task :test_java_webdriver => [
   :test_htmlunit,
   :test_firefox,
-  :test_ie,
   :test_remote_server,
 ]
+if (windows?)
+  task :test_java_webdrierv => [:test_ie]
+end
 if (present?("chromedriver"))
   task :test_java_webdriver => [:test_chrome]
 end
