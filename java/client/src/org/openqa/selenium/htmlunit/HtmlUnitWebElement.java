@@ -183,8 +183,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   public void submit() {
-    assertElementNotStale();
-
     try {
       if (element instanceof HtmlForm) {
         submitForm((HtmlForm) element);
