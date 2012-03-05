@@ -21,7 +21,7 @@
  *
  * <html>
  *   <head>
- *     <script src="test-bootstrap.js"></script>
+ *     <script src="test_bootstrap.js"></script>
  *     <script>
  *       goog.require('goog.debug.Logger');
  *     </script>
@@ -34,7 +34,6 @@
  *   </head>
  *   <body></body>
  * </html>
- * @author jmelyba@gmail.com (Jason Leyba)
  */
 
 (function() {
@@ -54,7 +53,7 @@
   // All of the files to load. Files are specified in the order they must be
   // loaded, NOT alphabetical order.
   var files = [
-    '../../../third_party/closure/goog/base.js',  
+    '../../../third_party/closure/goog/base.js',
     '../../deps.js'
   ];
 
