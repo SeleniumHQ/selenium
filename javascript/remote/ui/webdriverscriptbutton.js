@@ -15,8 +15,8 @@
 goog.provide('remote.ui.WebDriverScriptButton');
 
 goog.require('goog.events');
-goog.require('goog.ui.Component');
 goog.require('goog.ui.Button');
+goog.require('goog.ui.Component');
 goog.require('remote.ui.Event');
 goog.require('remote.ui.OpenScriptDialog');
 

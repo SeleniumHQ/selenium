@@ -19,8 +19,8 @@ goog.require('goog.dom.TagName');
 goog.require('goog.events.Event');
 goog.require('goog.math.Box');
 goog.require('goog.style');
-goog.require('goog.ui.Component');
 goog.require('goog.ui.Button');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Dialog');
 goog.require('remote.ui.ControlBlock');
 goog.require('remote.ui.Event');
@@ -35,7 +35,7 @@ goog.require('remote.ui.OpenScriptDialog');
  */
 remote.ui.SessionView = function() {
   goog.base(this);
-  
+
   /**
    * @type {!remote.ui.ControlBlock}
    * @private
@@ -48,7 +48,7 @@ remote.ui.SessionView = function() {
    * @type {!goog.ui.Dialog}
    * @private
    */
-  this.confirmDialog_ = new goog.ui.Dialog(null, true);
+  this.confirmDialog_ = new goog.ui.Dialog(undefined, true);
 
   this.confirmDialog_.setTitle('Delete session?');
   this.confirmDialog_.setContent(
@@ -86,7 +86,7 @@ remote.ui.SessionView = function() {
    * @type {!remote.ui.JsonTooltip}
    * @private
    */
-  this.capabilitiesTooltip_ = new remote.ui.JsonTooltip(null);
+  this.capabilitiesTooltip_ = new remote.ui.JsonTooltip();
   this.capabilitiesTooltip_.setHotSpotPadding(new goog.math.Box(5, 5, 5, 5));
   this.capabilitiesTooltip_.setCursorTracking(true);
   this.capabilitiesTooltip_.setMargin(new goog.math.Box(10, 0, 0, 0));
@@ -155,7 +155,6 @@ remote.ui.SessionView.prototype.createDom = function() {
   this.deleteSessionButton_.createDom();
   this.controlBlock_.createDom();
 
-  var capabilities;
   var dom = this.getDomHelper();
 
   this.emptyViewElement_ = dom.createDom(goog.dom.TagName.DIV,
@@ -166,13 +165,17 @@ remote.ui.SessionView.prototype.createDom = function() {
   // TODO(jleyba): What more to add?
   this.todoBlock_ = dom.createDom(goog.dom.TagName.DIV, 'todo', '\xa0');
   this.todoBlock_.disabled = true;
-  
+
   this.controlBlock_.addElement(this.sessionIdSpan_);
+
+  var capabilities;
   this.controlBlock_.addElement(
       capabilities = dom.createDom(goog.dom.TagName.SPAN,
         'session-capabilities', 'Capabilities'));
-  this.controlBlock_.addElement(this.screenshotButton_.getElement());
-  this.controlBlock_.addElement(this.deleteSessionButton_.getElement());
+  this.controlBlock_.addElement(
+      (/** @type {!Element} */this.screenshotButton_.getElement()));
+  this.controlBlock_.addElement(
+      (/** @type {!Element} */this.deleteSessionButton_.getElement()));
 
   this.viewElement_ = dom.createDom(goog.dom.TagName.DIV, 'goog-tab-content',
       this.controlBlock_.getElement(), this.todoBlock_);

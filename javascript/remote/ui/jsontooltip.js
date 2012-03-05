@@ -73,7 +73,8 @@ remote.ui.JsonTooltip.prototype.disposeInternal = function() {
  * @param {Object} json The JSON object to display.
  */
 remote.ui.JsonTooltip.prototype.update = function(json) {
-  var f = new goog.format.JsonPrettyPrinter();
+  var f = new goog.format.JsonPrettyPrinter(
+      new goog.format.JsonPrettyPrinter.TextDelimiters);
   this.bodyElement_.innerHTML = f.format(json || {});
 };
 

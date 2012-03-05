@@ -112,5 +112,4 @@ remote.ui.CreateSessionDialog.prototype.hasUserSelection = function() {
  */
 remote.ui.CreateSessionDialog.prototype.onShow_ = function(e) {
   this.browserSelect_.selectedIndex = 0;
-  this.browserSelect_.focus();
 };

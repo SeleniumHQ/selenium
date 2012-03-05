@@ -67,7 +67,7 @@ remote.ui.Banner.prototype.createDom = function() {
 };
 
 
-/** @param {boolean}visible Whether this component should be visible. */
+/** @param {boolean} visible Whether this component should be visible. */
 remote.ui.Banner.prototype.setVisible = function(visible) {
   goog.style.showElement(this.getElement(), visible);
   this.reposition_();

@@ -16,10 +16,10 @@ goog.provide('remote.ui.ControlBlock');
 goog.provide('remote.ui.createControlBlock');
 goog.provide('remote.ui.updateControlBlock');
 
-goog.require('goog.ui.Component');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.ui.Component');
 
 
 /**
@@ -35,6 +35,7 @@ goog.inherits(remote.ui.ControlBlock, goog.ui.Component);
 
 /**
  * @type {string}
+ * @const
  * @private
  */
 remote.ui.ControlBlock.SEPARATOR_TEXT_ = '\xa0\xa0|\xa0\xa0';
@@ -60,7 +61,7 @@ remote.ui.ControlBlock.prototype.createDom = function() {
   var dom = this.getDomHelper();
   var div = dom.createDom(goog.dom.TagName.DIV, 'control-block');
   this.setElementInternal(div);
-  
+
   if (this.elementsToAdd_) {
     goog.array.forEach(this.elementsToAdd_, this.addElement, this);
     this.elementsToAdd_ = null;
@@ -114,7 +115,8 @@ remote.ui.updateControlBlock = function(div, domHelper, var_args) {
   goog.array.forEach(elements, function(element, i) {
     goog.dom.appendChild(div, element);
     if (i + 1 < elements.length) {
-      goog.dom.appendChild(div, domHelper.createTextNode('\xa0\xa0|\xa0\xa0'));
+      goog.dom.appendChild(div, domHelper.createTextNode(
+          remote.ui.ControlBlock.SEPARATOR_TEXT_));
     }
   });
 };

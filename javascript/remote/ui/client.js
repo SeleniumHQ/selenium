@@ -23,9 +23,9 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('remote.ui.Banner');
 goog.require('remote.ui.Event.Type');
+goog.require('remote.ui.ScreenshotDialog');
 goog.require('remote.ui.ServerInfo');
 goog.require('remote.ui.SessionContainer');
-goog.require('remote.ui.ScreenshotDialog');
 goog.require('remote.ui.WebDriverScriptButton');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
@@ -87,14 +87,8 @@ remote.ui.Client = function(url, executor) {
    * @type {!remote.ui.SessionContainer}
    * @private
    */
-  this.sessionContainer_ = new remote.ui.SessionContainer([
-      'android',
-      'chrome',
-      'firefox',
-      'internet explorer',
-      'iphone',
-      'opera'
-  ]);
+  this.sessionContainer_ = new remote.ui.SessionContainer(
+      remote.ui.Client.SUPPORTED_BROWSERS);
 
   /**
    * @type {!remote.ui.ScreenshotDialog}
@@ -105,7 +99,7 @@ remote.ui.Client = function(url, executor) {
   /**
    * @type {!remote.ui.WebDriverScriptButton}
    * @private
-   */  
+   */
   this.scriptButton_ = new remote.ui.WebDriverScriptButton();
 
   goog.events.listen(this.sessionContainer_, remote.ui.Event.Type.CREATE,
@@ -120,6 +114,29 @@ remote.ui.Client = function(url, executor) {
       remote.ui.WebDriverScriptButton.LOAD_SCRIPT, this.onLoad_, false, this);
 };
 goog.inherits(remote.ui.Client, goog.Disposable);
+
+
+/**
+ * The names of the browsers supported by the WebDriver server. The values in
+ * this array match the keys recognized as valid values for the "browserName"
+ * field in a capabilities object in the WebDriver wire protocol.
+ *
+ * TODO(jleyba): It should be possible to query the server for the list of
+ * supported browsers. See:
+ * http://code.google.com/p/selenium/issues/detail?id=6
+ *
+ * @type {!Array.<string>}
+ * @const
+ * @see http://code.google.com/p/selenium/wiki/DesiredCapabilities
+ */
+remote.ui.Client.SUPPORTED_BROWSERS = [
+  'android',
+  'chrome',
+  'firefox',
+  'internet explorer',
+  'iphone',
+  'opera'
+];
 
 
 /** @override */
@@ -146,6 +163,8 @@ remote.ui.Client.prototype.disposeInternal = function() {
  * Initializes the client and renders it into the DOM.
  * @param {!Element=} opt_element The element to render to; defaults to the
  *     current document's BODY element.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the client has been initialized.
  */
 remote.ui.Client.prototype.init = function(opt_element) {
   this.banner_.render();
@@ -258,7 +277,7 @@ remote.ui.Client.prototype.onCreate_ = function(e) {
       }, this).
       addErrback(function(e) {
         this.logError_('Unable to create new session.', e);
-        this.sessionContainer_.removeSession(null);
+        this.sessionContainer_.removePendingTab();
       }, this);
 };
 
@@ -333,10 +352,6 @@ remote.ui.Client.prototype.onScreenshot_ = function() {
 
   this.screenshotDialog_.setState(remote.ui.ScreenshotDialog.State.LOADING);
   this.screenshotDialog_.setVisible(true);
-  goog.events.listenOnce(this.screenshotDialog_,
-      goog.ui.Dialog.EventType.SELECT,
-      goog.bind(this.screenshotDialog_.setVisible, this.screenshotDialog_,
-          false));
 
   this.execute_(command).
       addCallback(function(response) {

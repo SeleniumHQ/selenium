@@ -26,7 +26,7 @@ goog.require('goog.ui.Dialog');
  * @extends {goog.ui.Dialog}
  */
 remote.ui.ScreenshotDialog = function() {
-  goog.base(this, null, true);
+  goog.base(this, undefined, true);
 
   this.setButtonSet(goog.ui.Dialog.ButtonSet.createOk());
   this.setState(remote.ui.ScreenshotDialog.State.LOADING);
@@ -56,6 +56,8 @@ remote.ui.ScreenshotDialog.LOADING_TITLE = 'Taking Screenshot...';
 
 /**
  * Title displayed when the screenshot is ready.
+ * @type {string}
+ * @const
  */
 remote.ui.ScreenshotDialog.LOADED_TITLE = 'Screenshot';
 
@@ -110,9 +112,8 @@ remote.ui.ScreenshotDialog.prototype.displayScreenshot = function(screenshot) {
   var a = dom.createDom(goog.dom.TagName.A, { 'href': url, 'target': '_blank' },
       dom.createDom(goog.dom.TagName.IMG, { 'src': url }));
 
-  var contentElement = this.getContentElement();
-  contentElement.innerHTML = '';
-  goog.dom.appendChild(contentElement, a);
+  this.setContent('');
+  goog.dom.appendChild(this.getContentElement(), a);
 
   this.reposition();
 };

@@ -42,12 +42,6 @@ limitations under the License.
     dialog.dispose();
   }
 
-  function assertIsFocusedOnBrowserSelect() {
-    assertEquals('Is not focused on browser select',
-        dialog.getBrowserSelectElement(),
-        bot.dom.getActiveElement(window));
-  }
-
   function assertDialogIsVisible() {
     assertTrue('Expected dialog to be visible', dialog.isVisible());
   }
@@ -56,14 +50,9 @@ limitations under the License.
     assertFalse('Expected dialog not to be visible', dialog.isVisible());
   }
 
-  function testShouldFocusOnBrowserSelectWhenDialogIsOpened() {
-    dialog.setVisible(true);
-    assertIsFocusedOnBrowserSelect();
-  }
-
   function testShouldNotCloseDialogWhenEscapingFromSelect() {
     dialog.setVisible(true);
-    assertIsFocusedOnBrowserSelect();
+    dialog.browserSelect_.focus();
     assertDialogIsVisible();
     bot.action.type(bot.dom.getActiveElement(window), bot.Keyboard.Keys.ESC);
     assertDialogIsVisible();
@@ -71,7 +60,6 @@ limitations under the License.
 
   function testShouldCloseDialogWhenEscapingFromButtonSet_ok() {
     dialog.setVisible(true);
-    assertIsFocusedOnBrowserSelect();
     assertDialogIsVisible();
     bot.action.type(dialog.getButtonSet().getButton('ok'),
         bot.Keyboard.Keys.ESC);
@@ -80,7 +68,6 @@ limitations under the License.
 
   function testShouldCloseDialogWhenEscapingFromButtonSet_cancel() {
     dialog.setVisible(true);
-    assertIsFocusedOnBrowserSelect();
     assertDialogIsVisible();
     bot.action.type(dialog.getButtonSet().getButton('cancel'),
         bot.Keyboard.Keys.ESC);

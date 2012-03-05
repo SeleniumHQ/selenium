@@ -255,12 +255,12 @@ limitations under the License.
     assertSessions(SESSIONS[1], SESSIONS[2]);
   }
 
-  function testRemove_removePendingTab() {
+  function testRemovingPendingTabs() {
     container.addPendingTab_();
     assertEquals(1, container.pendingTabs_.length);
     assertEquals(1, container.tabBar_.getChildCount());
 
-    container.removeSession(null);
+    container.removePendingTab();
     assertEquals(0, container.pendingTabs_.length);
     assertEquals(0, container.tabBar_.getChildCount());
   }

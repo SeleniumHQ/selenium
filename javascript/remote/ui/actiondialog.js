@@ -28,7 +28,7 @@ goog.require('goog.ui.Dialog');
  * @extends {goog.ui.Dialog}
  */
 remote.ui.ActionDialog = function(title) {
-  goog.base(this, /*opt_class=*/null, /*useIframeMask=*/true);
+  goog.base(this, /*opt_class=*/undefined, /*useIframeMask=*/true);
   this.setTitle(title);
 
   goog.events.listen(this, goog.ui.Dialog.EventType.SELECT,
@@ -71,7 +71,7 @@ remote.ui.ActionDialog.prototype.getUserSelection = goog.abstractMethod;
 /**
  * @return {boolean} Whether the user made a selection on this dialog, or
  *     choose to cancel their action.
- * @private
+ * @protected
  */
 remote.ui.ActionDialog.prototype.hasUserSelection = goog.abstractMethod;
 

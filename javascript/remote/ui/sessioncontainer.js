@@ -83,9 +83,9 @@ remote.ui.SessionContainer = function(browsers) {
   /**
    * @type {!remote.ui.ControlBlock}
    * @private
-   */      
+   */
   this.controlBlock_ = new remote.ui.ControlBlock();
-  
+
   /**
    * Tracks any tabs for pending new sessions that are descendants of this
    * component.
@@ -199,7 +199,9 @@ remote.ui.SessionContainer.prototype.updatePendingTabs_ = function() {
     return;
   }
 
-  // Compute the new content once.
+  // Each pending tab has a simple animated sequence of ".", "..", "...", etc.
+  // Compute the next entry in the sequence once, so it can be used for every
+  // tab to keep them in sync.
   var content = this.pendingTabs_[0].getContent();
   content = content.length === 5 ? '.' : content + '.';
 
@@ -240,10 +242,9 @@ remote.ui.SessionContainer.prototype.addPendingTab_ = function() {
 
 
 /**
- * Removes a "pending" session tab.
- * @private
+ * Removes a "pending" session tab, if there is one to remove.
  */
-remote.ui.SessionContainer.prototype.removePendingTab_ = function() {
+remote.ui.SessionContainer.prototype.removePendingTab = function() {
   var tab = this.pendingTabs_.shift();
   if (tab) {
     this.tabBar_.removeChild(tab, true);
@@ -277,15 +278,9 @@ remote.ui.SessionContainer.prototype.addSession = function(session) {
 
 /**
  * Removes a session from this container.
- * @param {webdriver.Session} session The session to remove, or {@code null} if
- *     a pending tab should be removed.
+ * @param {!webdriver.Session} session The session to remove.
  */
 remote.ui.SessionContainer.prototype.removeSession = function(session) {
-  if (!session) {
-    this.removePendingTab_();
-    return;
-  }
-
   var selectedTab = this.tabBar_.getSelectedTab();
   var tabToRemove;
   var n = this.tabBar_.getChildCount();
@@ -310,7 +305,7 @@ remote.ui.SessionContainer.prototype.removeSession = function(session) {
 
 
 /**
- * Updates the sessions displayed by this container. Any sessions new sessions
+ * Updates the sessions displayed by this container. Any new sessions
  * will be added, while tabs not present in the input list will be removed. The
  * last tab selected before this function was called will be selected when it is
  * finished. If this tab was removed, the first displayed tab will be selected.

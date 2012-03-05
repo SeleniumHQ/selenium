@@ -66,7 +66,7 @@ remote.ui.FieldSet.prototype.createDom = function() {
  * @protected
  */
 remote.ui.FieldSet.prototype.createFieldSetDom = function() {
-  return undefined;
+  return null;
 };
 
 

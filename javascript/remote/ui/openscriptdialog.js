@@ -60,7 +60,7 @@ remote.ui.OpenScriptDialog.prototype.createContentDom = function() {
 
   this.input_.createDom();
   goog.dom.classes.add(this.input_.getElement(), 'url-input');
-  
+
   var dom = this.getDomHelper();
   return dom.createDom(goog.dom.TagName.DIV, null,
       dom.createDom(goog.dom.TagName.P, null,
