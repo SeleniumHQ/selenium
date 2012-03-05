@@ -118,11 +118,12 @@ bot.Device.prototype.fireKeyboardEvent = function(type, args) {
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number} button The mouse button value for the event.
  * @param {Element=} opt_related The related element of this event.
+ * @param {number=} opt_wheelDelta The wheel delta value for the event.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
 bot.Device.prototype.fireMouseEvent = function(type, coord, button,
-                                               opt_related) {
+                                               opt_related, opt_wheelDelta) {
   // TODO(user): Event if the element is not interactable, the mouse event
   // should still fire on another element (offset parent?).
   if (!bot.dom.isInteractable(this.element_)) {
@@ -144,7 +145,7 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
     ctrlKey: false,
     shiftKey: false,
     metaKey: false,
-    wheelDelta: 0,
+    wheelDelta: opt_wheelDelta || 0,
     relatedTarget: opt_related || null
   };
 

@@ -291,17 +291,48 @@ bot.Mouse.prototype.move = function(element, coords) {
 
 
 /**
+ * Scrolls the wheel of the mouse by the given number of ticks, where a positive
+ * number indicates a downward scroll and a negative is upward scroll.
+ *
+ * @param {number} ticks Number of ticks to scroll the mouse wheel.
+ */
+bot.Mouse.prototype.scroll = function(ticks) {
+  if (ticks == 0) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'Must scroll a non-zero number of ticks.');
+  }
+
+  // The wheelDelta value for a single up-tick of the mouse wheel is 120, and
+  // a single down-tick is -120. The deltas in pixels (which is only relevant
+  // for Firefox) appears to be -57 and 57, respectively.
+  var wheelDelta = ticks > 0 ? -120 : 120;
+  var pixelDelta = ticks > 0 ? 57 : -57;
+
+  // Browsers fire a separate event (or pair of events in Gecko) for each tick.
+  for (var i = 0; i < Math.abs(ticks); i++) {
+    this.fireMouseEvent_(bot.events.EventType.MOUSEWHEEL, null, wheelDelta);
+    if (goog.userAgent.GECKO) {
+      this.fireMouseEvent_(bot.events.EventType.MOUSEPIXELSCROLL, null,
+                           pixelDelta);
+    }
+  }
+};
+
+
+/**
  * A helper function to fire mouse events.
  *
  * @param {bot.events.EventType} type Event type.
  * @param {Element=} opt_related The related element of this event.
+ * @param {number=} opt_wheelDelta The wheel delta value for the event.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
  */
-bot.Mouse.prototype.fireMouseEvent_ = function(type, opt_related) {
+bot.Mouse.prototype.fireMouseEvent_ = function(type, opt_related,
+                                               opt_wheelDelta) {
   this.hasEverInteracted_ = true;
   return this.fireMouseEvent(type, this.clientXY_,
-      this.getButtonValue_(type), opt_related);
+      this.getButtonValue_(type), opt_related, opt_wheelDelta);
 };
 
 

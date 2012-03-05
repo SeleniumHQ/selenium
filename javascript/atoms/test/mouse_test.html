@@ -16,6 +16,12 @@
 </script>
 <body>
 <script type="text/javascript">
+  // The goog.events.EventType enum is missing mouse scrolling event types.
+  // This a little hacky but gives us some stylistic consistency :).
+  goog.events.EventType.MOUSEWHEEL =
+    goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel';
+  goog.events.EventType.MOUSEPIXELSCROLL = 'MozMousePixelScroll';
+
   var events = [];
   var greenDiv, redDiv;
   var MOUSE_EVENTS = [
@@ -24,6 +30,8 @@
     goog.events.EventType.MOUSEMOVE,
     goog.events.EventType.MOUSEDOWN,
     goog.events.EventType.MOUSEUP,
+    goog.events.EventType.MOUSEWHEEL,
+    goog.events.EventType.MOUSEPIXELSCROLL,
     goog.events.EventType.CLICK,
     goog.events.EventType.CONTEXTMENU,
     goog.events.EventType.DBLCLICK
@@ -245,6 +253,59 @@
     assertEquals('mouseover event not fired', 1, fired);
     assertNotNull(relatedTarget);
     assertNotEquals(redDiv, relatedTarget);
+  }
+
+  function testScrollMouseZeroTicksThrowsError() {
+    var mouse = new bot.Mouse();
+    mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
+    assertThrows(function() {
+      mouse.scroll(0);
+    });
+  }
+
+  function testScrollMouseDown() {
+    var mouse = new bot.Mouse();
+    mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
+    mouse.scroll(1);
+
+    if (goog.userAgent.GECKO) {
+      assertEvents([
+        goog.events.EventType.MOUSEOVER, greenDiv, 0,
+        goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+        goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
+        goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0
+      ]);
+    } else {
+      assertEvents([
+        goog.events.EventType.MOUSEOVER, greenDiv, 0,
+        goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+        goog.events.EventType.MOUSEWHEEL, greenDiv, 0
+      ]);
+    }
+  }
+
+  function testScrollMouseUp() {
+    var mouse = new bot.Mouse();
+    mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
+    mouse.scroll(-2);
+
+    if (goog.userAgent.GECKO) {
+      assertEvents([
+        goog.events.EventType.MOUSEOVER, greenDiv, 0,
+        goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+        goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
+        goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0,
+        goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
+        goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0
+      ]);
+    } else {
+      assertEvents([
+        goog.events.EventType.MOUSEOVER, greenDiv, 0,
+        goog.events.EventType.MOUSEMOVE, greenDiv, 0,
+        goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
+        goog.events.EventType.MOUSEWHEEL, greenDiv, 0
+      ]);
+    }
   }
 </script>
 <div id="green" style="background-color:green; width:100px; height:50px">
