@@ -96,25 +96,25 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
     var linkTextFunction = (function() {
       return {
         single: function(target, root, opt_isPartial) {
-	  var elements = cssSelectorFunction.many('a', root);
+          var elements = cssSelectorFunction.many('a', root);
 
-	  var element = goog.array.find(elements, function(element) {
-	    var text = bot.dom.getVisibleText(element);
+          var element = goog.array.find(elements, function(element) {
+            var text = bot.dom.getVisibleText(element);
 	    return (opt_isPartial && text.indexOf(target) != -1) || text == target;
 	  });
-	  return (/**@type{Element}*/element);
+          return (/**@type{Element}*/element);
         },
-	many: function(target, root, opt_isPartial) {
-	  var elements = cssSelectorFunction.many('a', root);
-	  return goog.array.filter(elements, function(element) {
-	    var text = bot.dom.getVisibleText(element);
-	    return (opt_isPartial && text.indexOf(target) != -1) || text == target;
-	  });
-	}
+        many: function(target, root, opt_isPartial) {
+          var elements = cssSelectorFunction.many('a', root);
+          return goog.array.filter(elements, function(element) {
+            var text = bot.dom.getVisibleText(element);
+            return (opt_isPartial && text.indexOf(target) != -1) || text == target;
+          });
+        }
       }
     })();
-        
-	  
+
+
     bot.locators.add('css', cssSelectorFunction);
     bot.locators.add('css selector', cssSelectorFunction);
     bot.locators.add('linkText', linkTextFunction);
@@ -216,7 +216,7 @@ FirefoxDriver.prototype.close = function(respond) {
 
     this.nstimer = new fxdriver.Timer();
     this.nstimer.setTimeout(event, 500);
-    
+
     return;  // The client should catch the fact that the socket suddenly closes
   }
 
@@ -307,7 +307,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
 
     var handler = function(event) {
         doc.removeEventListener('webdriver-evaluate-response', handler, true);
-        
+
         if (self.modalOpen) {
           // The modal detection code in modals.js deals with throwing an
           // exception, in this case.
@@ -920,7 +920,7 @@ FirefoxDriver.prototype.screenshot = function(respond) {
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Could not take screenshot of current page - ' + e);
-  }         
+  }
   respond.send();
 };
 
@@ -995,7 +995,7 @@ FirefoxDriver.prototype.imeGetActiveEngine = function(respond) {
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
         "IME not available on the host: " + e);
-  }    
+  }
   respond.send();
 };
 
@@ -1020,7 +1020,7 @@ FirefoxDriver.prototype.imeDeactivate = function(respond) {
     throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
         "IME not available on the host: " + e);
   }
-  
+
   respond.send();
 };
 
@@ -1038,7 +1038,7 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
   if (! successfulActivation.value) {
     throw new WebDriverError(bot.ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
         "Activation of engine failed: " + engineToActivate);
-  } 
+  }
   respond.send();
 };
 
