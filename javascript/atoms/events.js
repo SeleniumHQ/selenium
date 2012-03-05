@@ -19,7 +19,12 @@
 
 
 goog.provide('bot.events');
+goog.provide('bot.events.EventArgs');
 goog.provide('bot.events.EventType');
+goog.provide('bot.events.KeyboardArgs');
+goog.provide('bot.events.MouseArgs');
+goog.provide('bot.events.Touch');
+goog.provide('bot.events.TouchArgs');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
