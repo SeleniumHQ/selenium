@@ -1,5 +1,16 @@
 package org.openqa.selenium.server.mock;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.commons.logging.Log;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.InjectionHelper;
 import org.openqa.selenium.server.RemoteCommand;
@@ -11,37 +22,22 @@ import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-
 import java.io.File;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class MockPIFrameUnitTest extends TestCase {
+public class MockPIFrameUnitTest {
 
   static final Log LOGGER = LogFactory.getLog(MockPIFrameUnitTest.class);
+
+  @Rule public TestName name = new TestName();
 
   private static final String DRIVER_URL = "http://localhost:4444/selenium-server/driver/";
   private static int timeoutInSeconds = 10;
   private String sessionId;
   private SeleniumServer server;
 
-  public MockPIFrameUnitTest(String name) {
-    super(name);
-  }
-
-  public static Test suitex() {
-    TestSuite suite = new TestSuite();
-    // for (int i= 0; i < 100; i++)
-    suite.addTest(new MockPIFrameUnitTest("testClickAndPause"));
-    return suite;
-  }
-
-  @Override
+  @Before
   public void setUp() throws Exception {
     configureLogging();
     RemoteControlConfiguration configuration = new RemoteControlConfiguration();
@@ -52,7 +48,7 @@ public class MockPIFrameUnitTest extends TestCase {
     server.start();
     BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
     InjectionHelper.setFailOnError(false);
-    LOGGER.info("Starting " + getName());
+    LOGGER.info("Starting " + name.getMethodName());
   }
 
   private RemoteControlConfiguration configureLogging() throws Exception {
@@ -76,7 +72,7 @@ public class MockPIFrameUnitTest extends TestCase {
   }
 
 
-  @Override
+  @After
   public void tearDown() {
     server.stop();
     LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
@@ -87,7 +83,8 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * start a basic browser session
    */
-  public void testStartSession() {
+   @Test
+   public void testStartSession() {
     startSession();
   }
 
@@ -123,6 +120,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * create a session and issue a valid "open" command
    */
+  @Test
   public void testRegularOpen() {
     openUrl();
   }
@@ -153,6 +151,7 @@ public class MockPIFrameUnitTest extends TestCase {
    * create a session and issue a valid open command, simulating an out-of-order response from the
    * browser, as the new page load request comes in before the "OK" from the original page
    */
+  @Test
   public void testEvilOpen() {
     MockPIFrame frame1 = startSession();
 
@@ -178,6 +177,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * Click, then waitForPageToLoad
    */
+  @Test
   public void testClickThenWait() {
     MockPIFrame frame1 = startSession();
 
@@ -203,6 +203,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * Click, then wait for page to load; but this time, frame2 starts before frame1 declares close
    */
+  @Test
   public void testEvilClickThenWait() {
     MockPIFrame frame1 = startSession();
     BrowserRequest browserRequest = frame1.getMostRecentRequest();
@@ -233,6 +234,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * click, then wait for page to load, but frame1 may send close before sending OK result
    */
+  @Test
   public void testEvilClickThenWaitRaceCondition() {
     MockPIFrame frame1 = startSession();
     BrowserRequest browserRequest = frame1.getMostRecentRequest();
@@ -268,6 +270,7 @@ public class MockPIFrameUnitTest extends TestCase {
    * Click, then sleep for a while, then send commands. We expect this to work; waitForPageToLoad
    * should not be mandatory
    */
+  @Test
   public void testClickAndPause() {
     MockPIFrame frame1 = startSession();
     BrowserRequest browserRequest = frame1.getMostRecentRequest();
@@ -294,6 +297,7 @@ public class MockPIFrameUnitTest extends TestCase {
    * Click, then sleep for a while, then start waiting for page to load. WaitForPageToLoad should
    * work regardles of whether it runs before or after the page loads.
    */
+  @Test
   public void testClickAndPauseThenWait() {
     MockPIFrame frame1 = startSession();
     BrowserRequest browserRequest = frame1.getMostRecentRequest();
@@ -324,6 +328,7 @@ public class MockPIFrameUnitTest extends TestCase {
    * WindowClosedException, even if you click more than once. Eventually the page will load and then
    * clicking will work again.
    */
+  @Test
   public void testClickForgetToWait() {
     MockPIFrame frame1 = startSession();
     BrowserRequest browserRequest = frame1.getMostRecentRequest();
@@ -355,6 +360,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * Test out the retryLast logic.
    */
+  @Test
   public void testRetryLast() throws Exception {
     MockPIFrame frame = startSession();
 
@@ -387,6 +393,7 @@ public class MockPIFrameUnitTest extends TestCase {
    * 
    * @throws Exception
    */
+  @Test
   public void testSetTimeout() throws Exception {
     MockPIFrame frame = startSession();
     int timeout = 4000;
@@ -410,6 +417,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * Open a subWindow, close the subWindow, select the mainWindow, and send it a command.
    */
+  @Test
   public void testMultiWindow() throws Exception {
     MockPIFrame frame = openUrl();
     MockPIFrame subWindow = openSubWindow(frame);
@@ -452,6 +460,7 @@ public class MockPIFrameUnitTest extends TestCase {
    * run in Eclipse as part of the UnitTestSuite. Raising the timeout does not necessarily help.
    * test.
    */
+  @Test
   public void testEvilClosingWindow() throws Exception {
     MockPIFrame frame = startSession();
     MockPIFrame subWindow = openSubWindow(frame);
@@ -549,6 +558,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * Open a page that has subframes
    */
+  @Test
   public void testSubFrames() {
     openSubFrames();
   }
@@ -556,6 +566,7 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * Select a subFrame, then send an "open" command to that subFrame
    */
+  @Test
   public void testFramesOpen() {
     SmallFrameSet set = openSubFrames();
 
@@ -599,7 +610,9 @@ public class MockPIFrameUnitTest extends TestCase {
   /**
    * Try sending two commands at once
    */
-  public void XtestDoubleCommand() throws Exception {
+  @Test
+  @Ignore
+  public void testDoubleCommand() throws Exception {
     MockPIFrame frame = startSession();
     BrowserRequest browserRequest = frame.getMostRecentRequest();
 
@@ -614,7 +627,6 @@ public class MockPIFrameUnitTest extends TestCase {
     frame.sendResult("OK");
     assertEquals("click foo result got mangled", "OK", clickFoo.getResult());
     assertEquals("click bar result got mangled", "OK", clickBar.getResult());
-
   }
 
   /**

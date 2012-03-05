@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
@@ -36,9 +39,6 @@ import org.openqa.selenium.remote.server.StubDriverFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class UploadFileTest {
 

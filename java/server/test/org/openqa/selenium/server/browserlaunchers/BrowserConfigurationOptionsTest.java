@@ -1,37 +1,45 @@
-package org.openqa.selenium.server;
+package org.openqa.selenium.server.browserlaunchers;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
-import junit.framework.TestCase;
+public class BrowserConfigurationOptionsTest {
 
-public class BrowserConfigurationOptionsTest extends TestCase {
-
+  @Test
   public void testInitializationWithNoOptions() {
     BrowserOptions.newBrowserOptions("");
   }
 
+  @Test
   public void testInitializationWithGoodSingleOption() {
     Capabilities options = BrowserOptions.newBrowserOptions("profile=foo");
     assertEquals("foo", BrowserOptions.getProfile(options));
     assertTrue(BrowserOptions.hasOptionsSet(options));
   }
 
+  @Test
   public void testInitializationWithGoodSingleOptionAndWhitespace() {
     Capabilities options = BrowserOptions.newBrowserOptions("profile= foo bar");
     assertEquals("foo bar", BrowserOptions.getProfile(options));
     assertTrue(BrowserOptions.hasOptionsSet(options));
   }
 
+  @Test
   public void testInitializationWithBadSingleOption() {
     Capabilities options = BrowserOptions.newBrowserOptions("profile_foo");
     assertNull(BrowserOptions.getProfile(options));
     assertFalse(BrowserOptions.hasOptionsSet(options));
   }
 
+  @Test
   public void testInitializationWithGoodOptionsAndWhitespace() {
     Capabilities options =
         BrowserOptions.newBrowserOptions("profile=foo ; unknown=bar");
@@ -39,6 +47,7 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     assertTrue(BrowserOptions.hasOptionsSet(options));
   }
 
+  @Test
   public void testToStringEquivalentToSerialize() {
     String[] tests = {
         "",
@@ -56,6 +65,7 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     // fail("Make me pass");
   }
 
+  @Test
   public void testCanBeConvertedToACapabilitiesObject() {
     Capabilities options = BrowserOptions.newBrowserOptions();
     options = Proxies.setAvoidProxy(options, true);

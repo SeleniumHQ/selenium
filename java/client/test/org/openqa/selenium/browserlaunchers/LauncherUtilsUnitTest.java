@@ -93,6 +93,7 @@ public class LauncherUtilsUnitTest {
     return destDir;
   }
 
+  @Test
   public void copyDirectoryCleanUp(File srcDir, File destDir) {
     LauncherUtils.deleteTryTryAgain(srcDir, 1);
     LauncherUtils.deleteTryTryAgain(destDir, 1);

@@ -22,20 +22,21 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
+import junit.framework.TestCase;
+
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.StubHandler;
 
-import junit.framework.TestCase;
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnit4Mockery;
-
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ResultConfigTest extends TestCase {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());

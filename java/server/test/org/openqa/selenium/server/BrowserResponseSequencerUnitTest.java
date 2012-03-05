@@ -1,5 +1,8 @@
 package org.openqa.selenium.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,9 +14,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class BrowserResponseSequencerUnitTest {
 

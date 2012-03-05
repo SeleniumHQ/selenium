@@ -21,18 +21,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import junit.framework.TestCase;
+
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.StubHandler;
 
-import junit.framework.TestCase;
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnit4Mockery;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.logging.Logger;
 
 public class UrlMapperTest extends TestCase {
   private final static Logger log = Logger.getLogger(UrlMapperTest.class.getName());

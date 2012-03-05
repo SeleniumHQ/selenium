@@ -1,8 +1,8 @@
 package org.openqa.selenium.server;
 
-import org.openqa.selenium.server.log.LoggingManager;
-
 import junit.framework.TestCase;
+
+import org.openqa.selenium.server.log.LoggingManager;
 
 public class HtmlIdentifierTest extends TestCase {
 

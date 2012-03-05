@@ -1,6 +1,6 @@
 /*
-Copyright 2011 WebDriver committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2012 WebDriver committers
+Copyright 2012 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,14 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+package org.openqa.selenium;
 
-package org.openqa.selenium.server.browserlaunchers;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import org.openqa.selenium.os.CommandLine;
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    ByTest.class,
+    CookieImplementationTest.class,
+    ExecutingAsyncJavascriptTest.class,
+    TagNameTest.class
+})
+public class LargeTests {
 
-public class TestProcess extends CommandLine {
-  public TestProcess() {
-    // Ping exists on all supported OS
-    super("ping");
-  }
 }

@@ -1,15 +1,17 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import static com.thoughtworks.selenium.SeleneseTestNgHelper.assertEquals;
+
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import junit.framework.TestCase;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher} unit test class.
  */
-public class AbstractBrowserLauncherUnitTest extends TestCase {
+public class AbstractBrowserLauncherUnitTest {
 
+  @Test
   public void testGetConfigurationReturnsConfigurationProvidedInConstructor() {
     final RemoteControlConfiguration theConfiguration;
     final Capabilities browserOptions;

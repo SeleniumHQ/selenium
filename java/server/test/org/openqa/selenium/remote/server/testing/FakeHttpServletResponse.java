@@ -16,13 +16,14 @@
 
 package org.openqa.selenium.remote.server.testing;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Locale;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 public class FakeHttpServletResponse extends HeaderContainer
     implements HttpServletResponse {

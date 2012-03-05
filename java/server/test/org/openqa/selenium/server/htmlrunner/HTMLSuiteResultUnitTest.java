@@ -2,14 +2,15 @@
  * Created on Oct 12, 2006
  *
  */
-package org.openqa.selenium.rc;
+package org.openqa.selenium.server.htmlrunner;
 
-import org.openqa.selenium.server.htmlrunner.HTMLSuiteResult;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class HTMLSuiteResultUnitTest extends TestCase {
+public class HTMLSuiteResultUnitTest {
 
+  @Test
     public void testBasic() {
         String input = "\r\n" + 
         "\r\n" + 

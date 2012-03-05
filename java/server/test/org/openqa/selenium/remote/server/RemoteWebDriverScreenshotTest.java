@@ -13,12 +13,11 @@
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.OutputType.BASE64;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -26,6 +25,7 @@ import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.ScreenshotException;
+import org.openqa.selenium.testing.Ignore;
 
 
 @Ignore(HTMLUNIT)

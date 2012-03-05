@@ -1,8 +1,8 @@
 package org.openqa.selenium.server.cli;
 
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 import junit.framework.TestCase;
+
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
  * {@link org.openqa.selenium.server.cli.RemoteControlLauncher} unit test class.

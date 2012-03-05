@@ -2,10 +2,9 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import static org.junit.Assert.assertFalse;
 
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import org.junit.Test;
 
 public class CustomBrowserLauncherTest {
 

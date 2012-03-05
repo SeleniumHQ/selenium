@@ -5,12 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 
@@ -313,21 +312,20 @@ public class RemoteControlConfigurationUnitTest {
     Capabilities caps = configuration
         .copySettingsIntoBrowserOptions(browserOptions);
 
-    assertEquals(fileName, caps.getCapability("firefoxProfileTemplate"));
-    assertEquals(Integer.toString(timeOut), caps.getCapability("timeoutInSeconds"));
-    assertEquals(Boolean.toString(honorSystemProxy), caps.getCapability("honorSystemProxy"));
+    assertEquals(new File(fileName), caps.getCapability("firefoxProfileTemplate"));
+    assertEquals(timeOut, caps.getCapability("timeoutInSeconds"));
+    assertEquals(honorSystemProxy, caps.getCapability("honorSystemProxy"));
     assertEquals(dontInjectRegex, caps.getCapability("dontInjectRegex"));
-    assertEquals(Boolean.toString(trustAllSSLCertificates),
-        caps.getCapability("trustAllSSLCertificates"));
-    assertEquals(newuserExtensions.getName(), caps.getCapability("userExtensions"));
-    assertEquals(Boolean.toString(useUserJSInjection), caps.getCapability("userJSInjection"));
-    assertEquals(Boolean.toString(useProxyInjectionMode), caps.getCapability("proxyInjectionMode"));
-    assertEquals(Boolean.toString(useSingleWindow), caps.getCapability("singleWindow"));
-    assertEquals(Boolean.toString(ensureCleanSession),
+    assertEquals(trustAllSSLCertificates, caps.getCapability("trustAllSSLCertificates"));
+    assertEquals(newuserExtensions, caps.getCapability("userExtensions"));
+    assertEquals(useUserJSInjection, caps.getCapability("userJSInjection"));
+    assertEquals(useProxyInjectionMode, caps.getCapability("proxyInjectionMode"));
+    assertEquals(useSingleWindow, caps.getCapability("singleWindow"));
+    assertEquals(ensureCleanSession,
         caps.getCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION));
-    assertEquals(Boolean.toString(avoidProxy),
+    assertEquals(avoidProxy,
         caps.getCapability(CapabilityType.ForSeleniumServer.AVOIDING_PROXY));
-    assertEquals(Boolean.toString(browserSideLogEnabled), caps.getCapability("browserSideLog"));
+    assertEquals(browserSideLogEnabled, caps.getCapability("browserSideLog"));
   }
 
 }

@@ -10,13 +10,12 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.fail;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -9,12 +9,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import org.junit.Test;
 
 import java.io.File;
 

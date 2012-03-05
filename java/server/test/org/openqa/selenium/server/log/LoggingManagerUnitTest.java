@@ -1,9 +1,9 @@
 package org.openqa.selenium.server.log;
 
+import static junit.framework.Assert.assertNotNull;
+
 import org.junit.Test;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import static junit.framework.Assert.assertNotNull;
 
 /**
  * @author Kristian Rosenvold

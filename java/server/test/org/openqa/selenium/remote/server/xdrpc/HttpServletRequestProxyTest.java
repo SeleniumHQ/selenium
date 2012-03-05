@@ -19,12 +19,14 @@ package org.openqa.selenium.remote.server.xdrpc;
 import com.google.common.io.CharStreams;
 
 import junit.framework.TestCase;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Test;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Unit tests for {@link HttpServletRequestProxy}.

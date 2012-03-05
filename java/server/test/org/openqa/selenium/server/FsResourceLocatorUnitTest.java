@@ -1,27 +1,33 @@
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.util.Resource;
 
 import java.io.File;
 
-public class FsResourceLocatorUnitTest extends TestCase {
+public class FsResourceLocatorUnitTest {
   private File tempFile;
 
   private FsResourceLocator resourceLocator;
 
   private HttpContext context;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     tempFile = File.createTempFile("selenium-test-", "");
     tempFile.deleteOnExit();
     resourceLocator = new FsResourceLocator(tempFile.getParentFile());
     context = new HttpContext();
   }
 
+  @Test
   public void testShouldGetResourceFromRootDir() throws Exception {
     Resource resource = resourceLocator.getResource(context, tempFile.getName());
     assertTrue(resource.exists());
@@ -29,11 +35,13 @@ public class FsResourceLocatorUnitTest extends TestCase {
     assertEquals(tempFile.getAbsolutePath(), resource.getFile().getAbsolutePath());
   }
 
+  @Test
   public void testShouldReturnMissingResourceIfResourceNotFound()
       throws Exception {
     assertFalse(resourceLocator.getResource(context, "not_exists").exists());
   }
 
+  @Test
   public void testShouldReturnFilePathFromToString() throws Exception {
     Resource resource = resourceLocator.getResource(context, tempFile.getName());
     assertTrue(
@@ -41,6 +49,7 @@ public class FsResourceLocatorUnitTest extends TestCase {
         resource.toString().endsWith(tempFile.getName()));
   }
 
+  @Test
   public void testHackForJsUserExtensionsLocating() throws Exception {
     File extension = new File("user-extensions.js").getAbsoluteFile();
     extension.createNewFile();

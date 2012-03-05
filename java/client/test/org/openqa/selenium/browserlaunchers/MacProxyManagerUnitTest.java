@@ -1,5 +1,11 @@
 package org.openqa.selenium.browserlaunchers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.browserlaunchers.MacProxyManager.MacNetworkSetupException;
@@ -16,12 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class MacProxyManagerUnitTest {
 

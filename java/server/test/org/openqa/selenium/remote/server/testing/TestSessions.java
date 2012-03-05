@@ -18,13 +18,12 @@ package org.openqa.selenium.remote.server.testing;
 
 import com.google.common.collect.Maps;
 
+import org.jmock.Mockery;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
-
-import org.jmock.Mockery;
 
 import java.util.Collections;
 import java.util.Map;

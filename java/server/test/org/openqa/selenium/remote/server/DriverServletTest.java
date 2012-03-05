@@ -19,6 +19,13 @@ package org.openqa.selenium.remote.server;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
 
+import junit.framework.TestCase;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
@@ -26,16 +33,10 @@ import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.remote.server.testing.UrlInfo;
 
-import junit.framework.TestCase;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Test;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class DriverServletTest extends TestCase {
   

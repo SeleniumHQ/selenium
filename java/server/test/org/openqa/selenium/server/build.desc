@@ -1,0 +1,19 @@
+
+java_test(name = "RcServerUnitTests",
+  srcs = [
+    "RcServerUnitTests.java",
+    "*UnitTest.java",
+    "browserlaunchers/DummyLauncher.java",
+    "browserlaunchers/*.java",
+    "htmlrunner/*UnitTest.java",
+    "mock/*.java",
+  ],
+  deps = [
+    "//java/client/test/org/openqa/selenium/testing:junit_4",
+    "//java/server/src/org/openqa/selenium/server:base",
+    "//java/server/test/org/openqa/selenium/remote/server:test",
+    "//java/server/test/org/openqa/selenium/testworker",
+    "//third_party/java/easymock",
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
+  ])

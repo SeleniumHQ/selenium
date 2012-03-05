@@ -21,11 +21,10 @@ package org.openqa.selenium.server.browserlaunchers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import org.junit.Test;
 
 import java.io.File;
 

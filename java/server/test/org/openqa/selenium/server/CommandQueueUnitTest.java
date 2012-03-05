@@ -1,5 +1,11 @@
 package org.openqa.selenium.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -14,16 +20,8 @@ import org.openqa.selenium.testworker.TrackableThread;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 public class CommandQueueUnitTest {
 
-  @Rule public TestName name = new TestName();
-  
   private static final String sessionId = "1";
   private static final String testCommand = "testCommand";
   private static final String waitCommand = "waitForSomethingCommand";
@@ -32,6 +30,8 @@ public class CommandQueueUnitTest {
   private static final int retryTimeout = 5;
 
   private static final Logger log = Logger.getLogger(CommandQueueUnitTest.class.getName());
+
+  @Rule public TestName name = new TestName();
 
   private CommandQueue cq;
   private RemoteControlConfiguration configuration;

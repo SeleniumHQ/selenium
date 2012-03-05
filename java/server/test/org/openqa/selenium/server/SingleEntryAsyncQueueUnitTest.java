@@ -1,5 +1,10 @@
 package org.openqa.selenium.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -15,11 +20,6 @@ import org.openqa.selenium.testworker.TrackableThread;
 
 import java.util.logging.Handler;
 import java.util.logging.Logger;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class SingleEntryAsyncQueueUnitTest {
 

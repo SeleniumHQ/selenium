@@ -32,7 +32,6 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.MockTestBase;
 
 import java.util.UUID;

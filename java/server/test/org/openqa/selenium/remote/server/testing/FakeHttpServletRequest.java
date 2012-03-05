@@ -18,11 +18,6 @@ package org.openqa.selenium.remote.server.testing;
 
 import com.google.common.collect.Maps;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,6 +28,12 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class FakeHttpServletRequest extends HeaderContainer
     implements HttpServletRequest {

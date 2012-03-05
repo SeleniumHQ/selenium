@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.testing.drivers.Browser.ie;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -29,8 +31,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import static org.openqa.selenium.testing.drivers.Browser.ie;
 
 public class RemoteWebDriverIeTestSuite extends TestSuite {
   public static Test suite() throws Exception {

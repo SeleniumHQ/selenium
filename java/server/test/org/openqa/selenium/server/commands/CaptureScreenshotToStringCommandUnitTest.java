@@ -6,6 +6,7 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 
 import junit.framework.TestCase;
+
 import org.bouncycastle.util.encoders.Base64;
 
 import java.io.ByteArrayInputStream;

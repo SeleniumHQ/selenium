@@ -1,15 +1,15 @@
 package org.openqa.selenium.browserlaunchers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 
 import java.io.File;
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class WindowsProxyManagerUnitTest {
 

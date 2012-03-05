@@ -1,8 +1,10 @@
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class FrameGroupCommandQueueUnitTest extends TestCase {
+import org.junit.Test;
+
+public class FrameGroupCommandQueueUnitTest {
 
   private static String firstSessionId = "session 1";
   private static String firstQueueId = "queue 1";
@@ -10,6 +12,7 @@ public class FrameGroupCommandQueueUnitTest extends TestCase {
   private static int defaultSpeed = CommandQueue.getSpeed();
   private static int newSpeed = defaultSpeed + 42;
 
+  @Test
   public void testGetGlobalQueueSpeed() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 =
@@ -20,6 +23,7 @@ public class FrameGroupCommandQueueUnitTest extends TestCase {
     FrameGroupCommandQueueSet.clearQueueSet(firstSessionId);
   }
 
+  @Test
   public void testSetGlobalQueueSpeed() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     CommandQueue.setSpeed(newSpeed);
@@ -32,6 +36,7 @@ public class FrameGroupCommandQueueUnitTest extends TestCase {
     FrameGroupCommandQueueSet.clearQueueSet(firstSessionId);
   }
 
+  @Test
   public void testSetSessionSpeedNotGlobalSpeed() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 =
@@ -51,6 +56,7 @@ public class FrameGroupCommandQueueUnitTest extends TestCase {
     FrameGroupCommandQueueSet.clearQueueSet(secondSessionId);
   }
 
+  @Test
   public void testCommandQueueInitSpeedMatchesSessionSpeed() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 =

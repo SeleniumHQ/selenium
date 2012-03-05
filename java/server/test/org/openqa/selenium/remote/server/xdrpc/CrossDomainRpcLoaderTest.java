@@ -17,16 +17,18 @@
 package org.openqa.selenium.remote.server.xdrpc;
 
 import junit.framework.TestCase;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Unit tests for {@link CrossDomainRpcLoader}.

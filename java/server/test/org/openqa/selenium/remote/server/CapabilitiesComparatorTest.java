@@ -25,14 +25,14 @@ import static org.hamcrest.number.OrderingComparisons.greaterThan;
 import static org.hamcrest.number.OrderingComparisons.lessThan;
 import static org.openqa.selenium.remote.server.CapabilitiesComparator.getBestMatch;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
 import com.google.common.collect.Lists;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Comparator;
 import java.util.List;

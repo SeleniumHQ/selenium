@@ -1,20 +1,20 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
-
-import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MakeProxyPacUnitTest extends TestCase {
-  public MakeProxyPacUnitTest(String name) {
-    super(name);
-  }
+public class MakeProxyPacUnitTest {
 
   private File parentDir, pacFile;
   private boolean proxySeleniumTrafficOnly = true;
@@ -23,13 +23,13 @@ public class MakeProxyPacUnitTest extends TestCase {
   private String httpProxyPort = null;
   private String httpNonProxyHosts = null;
 
-  @Override
+  @Before
   public void setUp() {
     parentDir = LauncherUtils.createCustomProfileDir("LauncherUtilsUnitTest");
     pacFile = new File(parentDir, "proxy.pac");
   }
 
-  @Override
+  @After
   public void tearDown() {
     LauncherUtils.recursivelyDeleteDir(parentDir);
   }
@@ -55,6 +55,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     return pac.replaceAll("\\s+", " ").trim();
   }
 
+  @Test
   public void testBasic() throws IOException {
     proxySeleniumTrafficOnly = false;
     String pac = makeProxyPAC();
@@ -63,6 +64,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testNeverProxySeleniumTrafficOnly() throws IOException {
     proxySeleniumTrafficOnly = false;
     String pac = makeProxyPAC();
@@ -71,6 +73,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testAvoidProxyNeverProxySeleniumTrafficOnly() throws IOException {
     proxySeleniumTrafficOnly = false;
     avoidProxy = true;
@@ -80,6 +83,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testAvoidProxy() throws IOException {
     avoidProxy = true;
     String pac = makeProxyPAC();
@@ -90,6 +94,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testConfiguredProxy() throws IOException {
     proxySeleniumTrafficOnly = false;
     httpProxyHost = "foo";
@@ -99,6 +104,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testConfiguredProxyAvoidProxy() throws IOException {
     httpProxyHost = "foo";
     avoidProxy = true;
@@ -110,6 +116,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testAvoidProxyNonProxyHost() throws IOException {
     avoidProxy = true;
     httpNonProxyHosts = "www.google.com";
@@ -121,6 +128,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testConfiguredProxyAvoidProxyNonProxyHost() throws IOException {
     avoidProxy = true;
     httpProxyHost = "foo";
@@ -133,6 +141,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testAvoidProxyNonProxyHosts() throws IOException {
     avoidProxy = true;
     httpNonProxyHosts = "www.google.com|*.yahoo.com";
@@ -145,6 +154,7 @@ public class MakeProxyPacUnitTest extends TestCase {
     assertEquals(expected, pac);
   }
 
+  @Test
   public void testConfiguredProxyAvoidProxyNonProxyHosts() throws IOException {
     avoidProxy = true;
     httpProxyHost = "foo";
@@ -157,6 +167,4 @@ public class MakeProxyPacUnitTest extends TestCase {
         + "{ return 'PROXY localhost:4444; PROXY foo'; } return 'PROXY foo'; }";
     assertEquals(expected, pac);
   }
-
-
 }

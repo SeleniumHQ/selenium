@@ -5,7 +5,6 @@ java_test(name = "common-tests",
     "DesiredCapabilitiesTest.java",
     "HttpRequest.java",
     "JsonToBeanConverterTest.java",
-    "ProxyPacTest.java",
     "RemoteCommonTestSuite.java",
   ],
   deps = [

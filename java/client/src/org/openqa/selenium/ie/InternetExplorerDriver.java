@@ -32,7 +32,15 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
+
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
+  private static Logger log = Logger.getLogger(InternetExplorerDriver.class.getName());
+
   /**
    * Setting this capability will make your tests unstable and hard to debug.
    */
@@ -65,6 +73,24 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
     String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
+
+    // There's a bug in some versions of IE where images are returned as
+    // being completely black. We're not sure _why_, but try and work
+    // around this.
+//    BufferedImage image = ImageIO.read(new ByteArrayInputStream(
+//        OutputType.BYTES.convertFromBase64Png(base64)));
+//    int width = image.getWidth();
+//    int height = image.getHeight();
+//    int[] rgb = new int[width * height];
+//    image.getRGB(0, 0, width, height, rgb, 0, width);
+//    boolean allBlack = true;
+//    for (int i = 0; i < (width * height) && allBlack; i++) {
+//      allBlack &= rgb[i] == 0;
+//    }
+//    if (allBlack) {
+//      base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
+//    }
+
     // ... and convert it.
     return target.convertFromBase64Png(base64);
   }

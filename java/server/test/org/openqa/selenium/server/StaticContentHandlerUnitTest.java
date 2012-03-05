@@ -5,8 +5,13 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
@@ -16,28 +21,29 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-public class StaticContentHandlerUnitTest extends TestCase {
+public class StaticContentHandlerUnitTest {
   private StaticContentHandler handler;
   private boolean slowResourcesInitially;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     handler = new StaticContentHandler("", false);
     slowResourcesInitially = StaticContentHandler.getSlowResources();
   }
 
-  @Override
+  @After
   public void tearDown() {
     StaticContentHandler.setSlowResources(slowResourcesInitially);
   }
 
+  @Test
   public void testShouldMakePageNotCachedWhenHandle() throws Exception {
     HttpResponse response = new HttpResponse();
     handler.handle("", "", new HttpRequest(), response);
     assertEquals("Thu, 01 Jan 1970 00:00:00 GMT", response.getField("Expires"));
   }
 
+  @Test
   public void testShouldDelayResourceLoadingIfSetToSlow() throws Exception {
     long start = new Date().getTime();
     StaticContentHandler.setSlowResources(true);
@@ -46,6 +52,7 @@ public class StaticContentHandlerUnitTest extends TestCase {
     assertTrue(end - start >= 0.9 * StaticContentHandler.SERVER_DELAY);
   }
 
+  @Test
   public void testShouldDoubleDelayWithAPageMarkedAsSlow() throws Exception {
     long start = new Date().getTime();
     StaticContentHandler.setSlowResources(true);
@@ -56,6 +63,7 @@ public class StaticContentHandlerUnitTest extends TestCase {
     assertTrue(end - start >= 1.9 * StaticContentHandler.SERVER_DELAY);
   }
 
+  @Test
   public void testShouldReturnTheFirstResourceLocatedByLocators() throws Exception {
     final File file = File.createTempFile("selenium-test-", "");
     file.deleteOnExit();
@@ -72,11 +80,13 @@ public class StaticContentHandlerUnitTest extends TestCase {
     assertEquals(file, handler.getResource(file.toURI().toURL().toString()).getFile());
   }
 
+  @Test
   public void testShouldReturnMissingResourceIfNoResourceLocated() throws Exception {
     Resource resource = handler.getResource("not exists path");
     assertFalse(resource.exists());
   }
 
+  @Test
   public void testHandleSetsResponseAttributeInCaseOfMissingResource() throws Exception {
     String pathInContext = "/invalid";
     String pathParams = "";
@@ -86,6 +96,7 @@ public class StaticContentHandlerUnitTest extends TestCase {
     assertEquals("True", httpResponse.getAttribute("NotFound"));
   }
 
+  @Test
   public void testHandleSetsNoResponseStatusCodeInCaseOfAvailableResource() throws Exception {
 
     StaticContentHandler mock =
@@ -108,6 +119,4 @@ public class StaticContentHandlerUnitTest extends TestCase {
     assertEquals(HttpResponse.__200_OK, httpResponse.getStatus());
     verify(mock);
   }
-
-
 }

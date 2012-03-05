@@ -1,10 +1,10 @@
 package org.openqa.selenium.server.commands;
 
-import org.openqa.selenium.server.ModifiedIO;
-
 import junit.framework.TestCase;
+
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
+import org.openqa.selenium.server.ModifiedIO;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

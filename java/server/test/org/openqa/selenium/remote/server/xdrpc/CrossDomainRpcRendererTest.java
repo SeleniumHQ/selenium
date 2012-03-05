@@ -16,21 +16,22 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.server.rest.Handler;
-
 import junit.framework.TestCase;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.server.rest.Handler;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /**
  * Unit tests for {@link CrossDomainRpcRenderer}

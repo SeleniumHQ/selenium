@@ -5,7 +5,16 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
@@ -15,14 +24,12 @@ import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 
-import junit.framework.TestCase;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class BrowserSessionFactoryUnitTest extends TestCase {
+public class BrowserSessionFactoryUnitTest {
 
   private static final String SESSION_ID_1 = "testLookupByBrowserAndUrl1";
   private static final String BROWSER_1 = "*firefox";
@@ -32,10 +39,8 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
   private static final String BROWSER2 = "*firefox";
   private static final String BASEURL2 = "http://maps.google.com";
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     configureLogging();
   }
 
@@ -50,6 +55,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testBrowserSessionFactorySetsLastSessionIdOfSeleniumDriverResourceHandler()
       throws Exception {
 
@@ -87,6 +93,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertEquals(expected, SeleniumDriverResourceHandler.getLastSessionId());
   }
 
+  @Test
   public void testInvalidLauncherPreventsNewRemoteSessionCreationWithException() {
     final BrowserSessionFactory factory;
     final RemoteControlConfiguration configuration;
@@ -105,12 +112,14 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testIsValidWithInvalidSessionInfo() {
     BrowserSessionInfo info = new BrowserSessionInfo("id1", "*firefox",
         null, null, null);
     assertNotNull(info);
   }
 
+  @Test
   public void testLookupByBrowserAndUrl() {
     BrowserSessionFactory factory = getTestSessionFactory();
     Set<BrowserSessionInfo> infos = getTestSessionSet();
@@ -119,6 +128,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertEquals(SESSION_ID_1, result.sessionId);
   }
 
+  @Test
   public void testLookupByBrowserAndUrlWithNoMatch() {
     BrowserSessionFactory factory = getTestSessionFactory();
     Set<BrowserSessionInfo> infos = getTestSessionSet();
@@ -127,6 +137,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertNull(result);
   }
 
+  @Test
   public void testLookupBySessionId() {
     BrowserSessionFactory factory = getTestSessionFactory();
     Set<BrowserSessionInfo> infos = getTestSessionSet();
@@ -135,6 +146,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertEquals(BASEURL2, result.baseUrl);
   }
 
+  @Test
   public void testLookupBySessionIdWithNoMatch() {
     BrowserSessionFactory factory = getTestSessionFactory();
     Set<BrowserSessionInfo> infos = getTestSessionSet();
@@ -143,6 +155,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertNull(result);
   }
 
+  @Test
   public void testRegisterValidExternalSession() {
     BrowserSessionFactory factory = getTestSessionFactory();
     BrowserSessionInfo info1 = getTestSession1();
@@ -150,6 +163,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertTrue(factory.hasActiveSession(info1.sessionId));
   }
 
+  @Test
   public void testRegisterInValidExternalSession() {
     BrowserSessionFactory factory = getTestSessionFactory();
     BrowserSessionInfo info = new BrowserSessionInfo(SESSION_ID_1, "*firefox",
@@ -158,6 +172,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertFalse(factory.hasActiveSession(info.sessionId));
   }
 
+  @Test
   public void testGrabAvailableSession() {
     BrowserSessionFactory factory = getTestSessionFactory();
     factory.addToAvailableSessions(getTestSession1());
@@ -169,6 +184,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertTrue(factory.hasActiveSession(SESSION_ID_1));
   }
 
+  @Test
   public void testEndSessionWithNoCaching() {
     BrowserSessionFactory factory = getTestSessionFactory();
     factory.registerExternalSession(getTestSession1());
@@ -178,6 +194,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertFalse(factory.hasAvailableSession(SESSION_ID_1));
   }
 
+  @Test
   public void testEndSessionWithCaching() {
     BrowserSessionFactory factory = getTestSessionFactory();
     factory.registerExternalSession(getTestSession1());
@@ -193,6 +210,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertTrue(info.lastClosedAt >= closingTime);
   }
 
+  @Test
   public void testEndAllBrowserSessions() {
     BrowserSessionFactory factory = getTestSessionFactory();
     factory.registerExternalSession(getTestSession1());
@@ -203,6 +221,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertFalse(factory.hasAvailableSession(SESSION_ID_1));
   }
 
+  @Test
   public void testRemoveIdleAvailableSessions() {
     BrowserSessionFactory factory = getTestSessionFactory();
     factory.addToAvailableSessions(getTestSession1());
@@ -211,7 +230,9 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     assertFalse(factory.hasAvailableSession(SESSION_ID_1));
   }
 
-  public void disable_testRemoveIdleAvailableSessionsViaCleanup() {
+  @Test
+  @Ignore
+  public void removeIdleAvailableSessionsViaCleanup() {
     BrowserSessionFactory factory = new BrowserSessionFactory(null, 5, 0, true);
     BrowserSessionInfo info1 = getTestSession1();
     info1.lastClosedAt = 0; // very idle.

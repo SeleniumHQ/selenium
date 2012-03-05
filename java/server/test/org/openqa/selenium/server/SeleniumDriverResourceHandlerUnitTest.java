@@ -11,14 +11,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import org.junit.Test;
+import org.openqa.jetty.http.HttpResponse;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
 import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
 import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
 import org.openqa.selenium.server.commands.SeleniumCoreCommand;
-
-import org.junit.Test;
-import org.openqa.jetty.http.HttpResponse;
 
 import java.io.File;
 import java.io.OutputStream;
