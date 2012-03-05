@@ -95,10 +95,10 @@ webdriver.promise.Promise.prototype.isPending = function() {
  * Registers listeners for when this instance is resolved. This function most
  * overridden by subtypes.
  *
- * @param {?function(*)} callback The function to call if this promise is
+ * @param {Function=} opt_callback The function to call if this promise is
  *     successfully resolved. The function should expect a single argument: the
  *     promise's resolved value.
- * @param {?function(*)=} opt_errback The function to call if this promise is
+ * @param {Function=} opt_errback The function to call if this promise is
  *     rejected. The function should expect a single argument: the failure
  *     reason. While this argument is typically an {@code Error}, any type is
  *     permissible.
@@ -106,7 +106,8 @@ webdriver.promise.Promise.prototype.isPending = function() {
  *     with the result of the invoked callback.
  * @export
  */
-webdriver.promise.Promise.prototype.then = function(callback, opt_errback) {
+webdriver.promise.Promise.prototype.then = function(opt_callback,
+                                                    opt_errback) {
   throw new TypeError('Unimplemented function: "then"');
 };
 
@@ -116,7 +117,7 @@ webdriver.promise.Promise.prototype.then = function(callback, opt_errback) {
  * resolved. This function is provided for backwards compatibility with the
  * Dojo Deferred API.
  *
- * @param {?function(*)} callback The function to call if this promise is
+ * @param {Function} callback The function to call if this promise is
  *     successfully resolved. The function should expect a single argument: the
  *     promise's resolved value.
  * @param {!Object=} opt_self The object which |this| should refer to when the
@@ -135,7 +136,7 @@ webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
  * This function is provided for backwards compatibility with the
  * Dojo Deferred API.
  *
- * @param {?function(*)} errback The function to call if this promise is
+ * @param {Function} errback The function to call if this promise is
  *     rejected. The function should expect a single argument: the failure
  *     reason. While this argument is typically an {@code Error}, any type is
  *     permissible.
@@ -155,7 +156,7 @@ webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
  * resolved. This function is provided for backwards compatibility with the
  * Dojo Deferred API.
  *
- * @param {?function(*)} callback The function to call when this promise is
+ * @param {Function} callback The function to call when this promise is
  *     either resolved or rejected. The function should expect a single
  *     argument: the resolved value or rejection error.
  * @param {!Object=} opt_self The object which |this| should refer to when the
@@ -175,10 +176,10 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
  * the scope of the invoked function to be specified. This function is provided
  * for backwards compatibility with the Dojo Deferred API.
  *
- * @param {?function(*)} callback The function to call if this promise is
+ * @param {Function} callback The function to call if this promise is
  *     successfully resolved. The function should expect a single argument: the
  *     promise's resolved value.
- * @param {?function(*)} errback The function to call if this promise is
+ * @param {Function} errback The function to call if this promise is
  *     rejected. The function should expect a single argument: the failure
  *     reason. While this argument is typically an {@code Error}, any type is
  *     permissible.
@@ -210,7 +211,7 @@ webdriver.promise.Promise.prototype.addCallbacks = function(callback, errback,
  * the Deferred's canceller function (if provided). The canceller may return a
  * truth-y value to override the reason provided for rejection.
  *
- * @param {function(*)=} opt_canceller Function to call when cancelling the
+ * @param {Function=} opt_canceller Function to call when cancelling the
  *     computation of this instance's value.
  * @constructor
  * @extends {webdriver.promise.Promise}
@@ -311,14 +312,21 @@ webdriver.promise.Deferred = function(opt_canceller) {
     }
   }
 
-  /** @override */
-  this.then = function(callback, opt_errback) {
+  /**
+   * Registers a callback on this Deferred.
+   * @param {Function=} opt_callback The callback.
+   * @param {Function=} opt_errback The errback.
+   * @return {!webdriver.promise.Promise} A new promise representing the result
+   *     of the callback.
+   * @see webdriver.promise.Promise#then
+   */
+  this.then = function(opt_callback, opt_errback) {
     // The moment a listener is registered, we consider this deferred to be
     // handled; the callback must handle any rejection errors.
     handled = true;
 
     var listener = {
-      callback: callback,
+      callback: opt_callback,
       errback: opt_errback,
       deferred: new webdriver.promise.Deferred(cancel)
     };
@@ -338,39 +346,39 @@ webdriver.promise.Deferred = function(opt_canceller) {
    * Resolves this promise with the given value. If the value is itself a
    * promise and not a reference to this deferred, this instance will wait for
    * it before resolving.
-   * @param {*} value The resolved value.
+   * @param {*=} opt_value The resolved value.
    */
-  function resolve(value) {
-    if (webdriver.promise.isPromise(value) && value !== self) {
-      if (value instanceof webdriver.promise.Deferred) {
-        value.then(
+  function resolve(opt_value) {
+    if (webdriver.promise.isPromise(opt_value) && opt_value !== self) {
+      if (opt_value instanceof webdriver.promise.Deferred) {
+        opt_value.then(
             goog.partial(notifyAll, webdriver.promise.Deferred.State.RESOLVED),
             goog.partial(notifyAll, webdriver.promise.Deferred.State.REJECTED));
         return;
       }
-      webdriver.promise.when(value, resolve, reject);
+      webdriver.promise.when(opt_value, resolve, reject);
     } else {
-      notifyAll(webdriver.promise.Deferred.State.RESOLVED, value);
+      notifyAll(webdriver.promise.Deferred.State.RESOLVED, opt_value);
     }
   }
 
   /**
    * Rejects this promise. If the error is itself a promise, this instance will
    * be chained to it and be rejected with the error's resolved value.
-   * @param {*} error The rejection reason, typically either a {@code Error} or
-   *     a {@code string}.
+   * @param {*=} opt_error The rejection reason, typically either a
+   *     {@code Error} or a {@code string}.
    */
-  function reject(error) {
-    if (webdriver.promise.isPromise(error) && value !== self) {
-      if (value instanceof webdriver.promise.Deferred) {
-        value.then(
+  function reject(opt_error) {
+    if (webdriver.promise.isPromise(opt_error) && opt_error !== self) {
+      if (opt_error instanceof webdriver.promise.Deferred) {
+        opt_error.then(
             goog.partial(notifyAll, webdriver.promise.Deferred.State.REJECTED),
             goog.partial(notifyAll, webdriver.promise.Deferred.State.REJECTED));
         return;
       }
-      webdriver.promise.when(error, reject, reject);
+      webdriver.promise.when(opt_error, reject, reject);
     } else {
-      notifyAll(webdriver.promise.Deferred.State.REJECTED, error);
+      notifyAll(webdriver.promise.Deferred.State.REJECTED, opt_error);
     }
   }
 
@@ -416,8 +424,8 @@ goog.inherits(webdriver.promise.Deferred, webdriver.promise.Promise);
 
 /**
  * Type definition for a listener registered on a Deferred object.
- * @typedef {{callback:?function(*),
- *            errback:?function(*),
+ * @typedef {{callback:(Function|undefined),
+ *            errback:(Function|undefined),
  *            deferred:!webdriver.promise.Deferred}}
  */
 webdriver.promise.Deferred.Listener;
@@ -533,9 +541,9 @@ webdriver.promise.checkedNodeCall = function(fn) {
  * that will be resolved when the value is. If {@code value} is not a promise,
  * then the return promise will be immediately resolved.
  * @param {*} value The value to observe.
- * @param {?function(*)=} opt_callback The function to call when the value is
+ * @param {Function=} opt_callback The function to call when the value is
  *     resolved successfully.
- * @param {?function(*)=} opt_errback The function to call when the value is
+ * @param {Function=} opt_errback The function to call when the value is
  *     rejected.
  * @return {!webdriver.promise.Promise} A new promise.
  * @export
@@ -558,9 +566,9 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
  * {@code value} is resolved. This function is similar to
  * {@code webdriver.promise.when}, except it does not return a new promise.
  * @param {*} value The value to observe.
- * @param {?function(*)} callback The function to call when the value is
+ * @param {Function} callback The function to call when the value is
  *     resolved successfully.
- * @param {?function(*)=} opt_errback The function to call when the value is
+ * @param {Function=} opt_errback The function to call when the value is
  *     rejected.
  * @export
  */
@@ -619,6 +627,7 @@ webdriver.promise.fullyResolveValue_ = function(value) {
       // containing undefined values because "index in array" returns
       // false when array[index] === undefined. To get around this, we need
       // to use our own forEach implementation.  Yay, IE.
+      value = (/** @type {!Array} */value);
       return webdriver.promise.fullyResolveKeys_(value, value.length,
           function(arr, f, opt_obj) {
             var l = arr.length;
@@ -634,7 +643,7 @@ webdriver.promise.fullyResolveValue_ = function(value) {
         // trust that it counts as a "fully resolved" value and return it.
         // Of course, since it's already a promise, we can just return it
         // to the user instead of wrapping it in another promise.
-        return value;
+        return (/** @type {!webdriver.promise.Promise} */value);
       }
 
       if (goog.isNumber(value.nodeType)) {
@@ -643,6 +652,7 @@ webdriver.promise.fullyResolveValue_ = function(value) {
         return webdriver.promise.resolved(value);
       }
 
+      value = (/** @type {!Object} */value);
       return webdriver.promise.fullyResolveKeys_(value,
           goog.object.getKeys(value).length,
           goog.object.forEach);
@@ -1209,7 +1219,10 @@ webdriver.promise.Application.prototype.getNextTask_ = function() {
  */
 webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
   if (this.activeFrame_ === frame) {
-    this.activeFrame_ = frame.getParent();
+    // Frame parent is always another frame, but the compiler is not smart
+    // enough to recognize this.
+    this.activeFrame_ =
+        (/** @type {webdriver.promise.Application.Frame} */frame.getParent());
   }
 
   if (frame.getParent()) {
@@ -1237,7 +1250,10 @@ webdriver.promise.Application.prototype.abortFrame_ = function(error) {
     return;
   }
 
-  var parent = this.activeFrame_.getParent();
+  // Frame parent is always another frame, but the compiler is not smart
+  // enough to recognize this.
+  var parent = (/** @type {webdriver.promise.Application.Frame} */
+      this.activeFrame_.getParent());
   if (parent) {
     parent.removeChild(this.activeFrame_);
   }
@@ -1390,6 +1406,7 @@ webdriver.promise.Application.prototype.abortNow_ = function(error) {
  * A single node in an {@link webdriver.promise.Application}'s task tree.
  * @constructor
  * @extends {webdriver.promise.Deferred}
+ * @private
  */
 webdriver.promise.Application.Node = function() {
   webdriver.promise.Deferred.call(this);
@@ -1440,6 +1457,7 @@ webdriver.promise.Application.Node.prototype.getRoot = function() {
  * <p>Each frame may contain sub-frames.  If child N is a sub-frame, then the
  * items queued within it are given priority over child N+1.
  *
+ * @constructor
  * @extends {webdriver.promise.Application.Node}
  * @private
  */

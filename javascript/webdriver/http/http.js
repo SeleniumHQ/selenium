@@ -86,8 +86,7 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
     var responseObj;
     if (!e) {
       try {
-        responseObj = webdriver.http.Executor.parseHttpResponse_(
-            /** @type {!webdriver.http.Response} */response);
+        responseObj = webdriver.http.Executor.parseHttpResponse_(response);
       } catch (ex) {
         e = ex;
       }
@@ -138,11 +137,13 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
  * Callback used to parse {@link webdriver.http.Response} objects from a
  * {@link webdriver.http.Client}.
  * @param {!webdriver.http.Response} httpResponse The HTTP response to parse.
+ * @return {!webdriver.CommandResponse} The parsed response.
  * @private
  */
 webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
   try {
-    return goog.json.parse(httpResponse.body);
+    return (/** @type {!webdriver.CommandResponse} */goog.json.parse(
+        httpResponse.body));
   } catch (ex) {
     // Whoops, looks like the server sent us a malformed response. We'll need
     // to manually build a response object based on the response code.
@@ -257,6 +258,7 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           post('/session/:sessionId/timeouts/implicit_wait')).
       build();
 
+  /** @constructor */
   function Builder() {
     var map = {};
 
@@ -324,7 +326,7 @@ webdriver.http.Request = function(method, path, opt_data) {
 
   /**
    * The headers to send with the request.
-   * @type {!Object.<string>}
+   * @type {!Object.<(string|number)>}
    */
   this.headers = {'Accept': 'application/json; charset=utf-8'};
 };
@@ -397,7 +399,11 @@ webdriver.http.Response.fromXmlHttpRequest = function(xhr) {
     }
   }
 
-  return new webdriver.http.Response(xhr.status, headers,
+  // If xhr is a XDomainRequest object, it will not have a status.
+  // However, if we're parsing the response from a XDomainRequest, then
+  // that request must have been a success, so we can assume status == 200.
+  var status = xhr.status || 200;
+  return new webdriver.http.Response(status, headers,
       xhr.responseText.replace(/\0/g, ''));
 };
 

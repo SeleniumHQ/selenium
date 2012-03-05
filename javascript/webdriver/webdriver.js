@@ -170,7 +170,8 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
   switch (goog.typeOf(obj)) {
     case 'array':
       return webdriver.promise.fullyResolved(
-          goog.array.map(obj, webdriver.WebDriver.toWireValue_));
+          goog.array.map((/** @type {!Array} */obj),
+              webdriver.WebDriver.toWireValue_));
     case 'object':
       if (goog.isFunction(obj.toWireValue)) {
         return webdriver.promise.fullyResolved(obj.toWireValue());
@@ -184,7 +185,8 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
         ].join(''));
       }
       return webdriver.promise.fullyResolved(
-          goog.object.map(obj, webdriver.WebDriver.toWireValue_));
+          goog.object.map((/** @type {!Object} */obj),
+              webdriver.WebDriver.toWireValue_));
     case 'function':
       return webdriver.promise.resolved('' + obj);
     case 'undefined':
@@ -646,7 +648,8 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
                                                      var_args) {
   var id;
   if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
-    id = this.findDomElement_(/** @typedef {!Element} */locatorOrElement).
+    var element = (/** @type {!Element} */locatorOrElement);
+    id = this.findDomElement_(element).
         then(function(elements) {
           if (!elements.length) {
             throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
@@ -688,8 +691,8 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
  * ownerDocument's window+frame.
 
  * @param {!Element} element The element to locate.
- * @return {!webdriver.WebElement} A WebElement that can be used to issue
- *     commands against the provided DOM element.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved
+ *     with the located WebElement.
  * @private
  */
 webdriver.WebDriver.prototype.findDomElement_ = function(element) {
@@ -747,7 +750,7 @@ webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
                                                           var_args) {
   var findElement =
       locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument ?
-          this.findDomElement_(/** @typedef {!Element} */locatorOrElement) :
+          this.findDomElement_((/** @type {!Element} */locatorOrElement)) :
           this.findElements.apply(this, arguments);
   return findElement.then(function(result) {
     return !!result.length;
@@ -1344,7 +1347,7 @@ webdriver.Key.chord = function(var_args) {
  *     underlying DOM element assigned by the server, or a promise that will
  *     resolve to that ID or another WebElement.
  * @constructor
- * @extends {webdriver.promise.Promise}
+ * @extends {webdriver.promise.Deferred}
  */
 webdriver.WebElement = function(driver, id) {
   webdriver.promise.Deferred.call(this);

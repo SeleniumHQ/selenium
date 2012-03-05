@@ -21,6 +21,12 @@ goog.require('bot.ErrorCode');
 
 
 /**
+ * @typedef {{status:bot.ErrorCode, value:*}}
+ */
+webdriver.error.ResponseObject;
+
+
+/**
  * Converts an error value into its JSON representation as defined by the
  * WebDriver wire protocol.
  * @param {*} error The error value to convert.
@@ -28,10 +34,12 @@ goog.require('bot.ErrorCode');
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
  */
 webdriver.error.createResponse = function(error) {
+  var statusCode = error && goog.isNumber(error.code) ? error.code :
+      bot.ErrorCode.UNKNOWN_ERROR;
   return {
-    status: error && error.code || bot.ErrorCode.UNKNOWN_ERROR,
-    value: {
-      message: error && error.message || error + ''
+    'status': (/** @type {number} */statusCode),
+    'value': {
+      'message': error && error.message || error + ''
       // TODO(jleyba): Parse stack trace info.
     }
   };
@@ -43,8 +51,10 @@ webdriver.error.createResponse = function(error) {
  * by the WebDriver wire protocol. If the response object defines an error, it
  * will be thrown. Otherwise, the response will be returned as is.
  *
- * @param {!{status:number, value:*}} responseObj The response object to check.
- * @return {!{status:number, value:*}} The checked response object.
+ * @param {!webdriver.error.ResponseObject} responseObj The response object to
+ *     check.
+ * @return {!webdriver.error.ResponseObject} The checked response object.
+ * @throws {bot.Error} If the response describes an error.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
  */
 webdriver.error.checkResponse = function(responseObj) {

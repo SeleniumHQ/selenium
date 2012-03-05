@@ -92,8 +92,8 @@ webdriver.node.checkIsNative_ = function() {
 webdriver.node.HttpClient = function(url) {
   webdriver.node.checkIsNative_();
 
-  url = webdriver.node.parseUrl_(url);
-  if (!url.hostname) {
+  var parsedUrl = webdriver.node.parseUrl_(url);
+  if (!parsedUrl.hostname) {
     throw new Error('Invalid server URL: ' + url);
   }
 
@@ -103,9 +103,9 @@ webdriver.node.HttpClient = function(url) {
    * @private
    */
   this.options_ = {
-    host: url.hostname,
-    path: url.pathname || '/',
-    port: url.port
+    host: parsedUrl.hostname,
+    path: parsedUrl.pathname || '/',
+    port: parsedUrl.port
   };
 };
 
@@ -161,7 +161,7 @@ webdriver.node.HttpClient.sendRequest_ = function(options, callback, opt_data) {
     }
 
     var body = [];
-    response.on('data', body.push.bind(body));
+    response.on('data', goog.bind(body.push, body));
     response.on('end', function() {
       var resp = new webdriver.http.Response(response.statusCode,
           response.headers, body.join('').replace(/\0/g, ''));

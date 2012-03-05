@@ -25,7 +25,7 @@ goog.provide('webdriver.CommandResponse');
 
 /**
  * Describes a command to be executed by the WebDriverJS framework.
- * @param {!webdriver.CommandName} name The name of this command.
+ * @param {string} name The name of this command.
  * @constructor
  * @export
  */
@@ -33,7 +33,7 @@ webdriver.Command = function(name) {
 
   /**
    * The name of this command.
-   * @type {!webdriver.CommandName}
+   * @type {string}
    * @private
    */
   this.name_ = name;
@@ -48,7 +48,7 @@ webdriver.Command = function(name) {
 
 
 /**
- * @return {!webdriver.CommandName} This command's name.
+ * @return {string} This command's name.
  * @export
  */
 webdriver.Command.prototype.getName = function() {
@@ -93,7 +93,7 @@ webdriver.Command.prototype.getParameter = function(key) {
 
 
 /**
- * @return {Object.<*>} The parameters to send with this command.
+ * @return {!Object.<*>} The parameters to send with this command.
  * @export
  */
 webdriver.Command.prototype.getParameters = function() {

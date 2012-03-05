@@ -175,7 +175,10 @@ webdriver.testing.jsunit.TestRunner.prototype.writeLog = function(log) {
 
     if (nextScreenshot) {
       a = document.createElement('A');
-      a.href = nextScreenshot.src;
+      // Accessing the |src| property in IE sometimes results in an
+      // "Invalid pointer" error, which indicates it has been garbage
+      // collected. This does not occur when using getAttribute.
+      a.href = nextScreenshot.getAttribute('src');
       a.target = '_blank';
       a.appendChild(nextScreenshot);
       this.logEl_.appendChild(a);

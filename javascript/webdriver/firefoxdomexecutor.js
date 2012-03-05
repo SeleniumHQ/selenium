@@ -18,6 +18,7 @@ goog.require('goog.json');
 goog.require('goog.userAgent.product');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
+goog.require('webdriver.CommandResponse');
 goog.require('webdriver.error');
 
 
@@ -86,7 +87,7 @@ webdriver.FirefoxDomExecutor.EventType_ = {
 
 /**
  * The pending command, if any.
- * @type {{name:string, callback:!Function}}
+ * @type {?{name:string, callback:!Function}}
  * @private
  */
 webdriver.FirefoxDomExecutor.prototype.pendingCommand_ = null;
@@ -160,7 +161,8 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
       webdriver.FirefoxDomExecutor.Attribute_.RESPONSE);
 
   try {
-    var response = webdriver.error.checkResponse(goog.json.parse(json));
+    var response = webdriver.error.checkResponse(
+        (/** @type {webdriver.CommandResponse} */goog.json.parse(json)));
   } catch (ex) {
     command.callback(ex);
     return;
