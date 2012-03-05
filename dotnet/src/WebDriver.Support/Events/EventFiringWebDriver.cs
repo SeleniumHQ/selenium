@@ -980,7 +980,8 @@ namespace OpenQA.Selenium.Support.Events
                 IWebDriver driver = null;
                 try
                 {
-                    driver = this.wrappedLocator.Frame(frameElement);
+                    IWrapsElement wrapper = frameElement as IWrapsElement;
+                    driver = this.wrappedLocator.Frame(wrapper.WrappedElement);
                 }
                 catch (Exception ex)
                 {
