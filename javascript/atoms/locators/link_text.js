@@ -36,7 +36,15 @@ goog.require('goog.dom.DomHelper');
  * @private
  */
 bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
-  var elements = bot.locators.css.many('a', root);
+  var elements;
+  try {
+    elements = bot.locators.css.many('a', root);
+  } catch (e) {
+    // Old versions of browsers don't support CSS. They won't have XHTML
+    // support. Sorry.
+    elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
+        goog.dom.TagName.A, /*className=*/null, root);
+  }
 
   var element = goog.array.find(elements, function(element) {
     var text = bot.dom.getVisibleText(element);
@@ -57,7 +65,16 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
  * @private
  */
 bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
-  var elements = bot.locators.css.many('a', root);
+  var elements;
+  try {
+    elements = bot.locators.css.many('a', root);
+  } catch (e) {
+    // Old versions of browsers don't support CSS. They won't have XHTML
+    // support. Sorry.
+    elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
+        goog.dom.TagName.A, /*className=*/null, root);
+  }
+
   return goog.array.filter(elements, function(element) {
     var text = bot.dom.getVisibleText(element);
     return (opt_isPartial && text.indexOf(target) != -1) || text == target;
