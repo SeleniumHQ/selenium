@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
@@ -127,14 +128,14 @@ public class SeleniumDriverResourceHandlerUnitTest {
     verify(queueSet);
   }
 
-  @Test
+  // Running this test nukes the JVM with a System.exit. Hilarious.
+  @Test @Ignore
   public void shutDownSeleniumServer_willBeProcessedInDoCommand() throws Exception {
     SeleniumServer server = createNiceMock(SeleniumServer.class);
     HttpResponse response = createNiceMock(HttpResponse.class);
     OutputStream stream = createNiceMock(OutputStream.class);
 
     SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server, null);
-
 
     expect(response.getOutputStream()).andReturn(stream);
     response.commit();

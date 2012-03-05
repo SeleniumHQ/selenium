@@ -30,8 +30,8 @@ import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
     MockPIFrameUnitTest.class,
     RemoteControlConfigurationUnitTest.class,
     SeleniumDriverResourceHandlerUnitTest.class,
-    SeleniumServerUnitTest.class
-//    SingleEntryAsyncQueueUnitTest.class,
-//    StaticContentHandlerUnitTest.class
+    SeleniumServerUnitTest.class,
+    SingleEntryAsyncQueueUnitTest.class,
+    StaticContentHandlerUnitTest.class
 })
 public class RcServerUnitTests {}
