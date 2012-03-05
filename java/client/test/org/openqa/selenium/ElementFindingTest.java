@@ -573,6 +573,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(OPERA)
   public void findsByLinkTextOnXhtmlPage() {
     driver.get(appServer.whereIs("actualXhtmlPage.xhtml"));
     String linkText = "Foo";
