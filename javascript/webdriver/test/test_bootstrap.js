@@ -53,7 +53,7 @@
   // All of the files to load. Files are specified in the order they must be
   // loaded, NOT alphabetical order.
   var files = [
-    '../../../third_party/closure/goog/base.js',  
+    '../../../third_party/closure/goog/base.js',
     '../../deps.js'
   ];
 
