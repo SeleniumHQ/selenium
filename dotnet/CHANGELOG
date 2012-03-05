@@ -1,3 +1,11 @@
+v2.20.0
+=======
+ * No changes specific to the .NET bindings.
+
+v2.19.0
+=======
+ * No changes specific to the .NET bindings.
+
 v2.18.1
 =======
  * NuGet dependency release. No functional changes to the project.
