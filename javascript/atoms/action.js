@@ -199,10 +199,11 @@ bot.action.submit = function(element) {
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.moveMouse = function(element, opt_coords) {
-  bot.action.moveAndReturnMouse_(element, opt_coords);
+bot.action.moveMouse = function(element, opt_coords, opt_mouse) {
+  bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
 };
 
 
@@ -212,10 +213,11 @@ bot.action.moveMouse = function(element, opt_coords) {
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.click = function(element, opt_coords) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
+bot.action.click = function(element, opt_coords, opt_mouse) {
+  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
 };
 
@@ -226,10 +228,11 @@ bot.action.click = function(element, opt_coords) {
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.rightClick = function(element, opt_coords) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
+bot.action.rightClick = function(element, opt_coords, opt_mouse) {
+  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.RIGHT);
 };
 
@@ -240,10 +243,11 @@ bot.action.rightClick = function(element, opt_coords) {
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.doubleClick = function(element, opt_coords) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
+bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
+  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
 };
@@ -257,9 +261,10 @@ bot.action.doubleClick = function(element, opt_coords) {
  * @param {number} dy Increment in y coordinate.
  * @param {goog.math.Coordinate=} opt_coords Drag start position relative to the
  *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.drag = function(element, dx, dy, opt_coords) {
+bot.action.drag = function(element, dx, dy, opt_coords, opt_mouse) {
   var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
   mouse.pressButton(bot.Mouse.Button.LEFT);
 
@@ -288,11 +293,12 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   target.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @return {!bot.Mouse} The mouse object used for the click.
  * @throws {bot.Error} If the element cannot be interacted with.
  * @private
  */
-bot.action.moveAndReturnMouse_ = function(element, opt_coords) {
+bot.action.moveAndReturnMouse_ = function(element, opt_coords, opt_mouse) {
   bot.action.checkShown_(element);
 
   // Unlike element.scrollIntoView(), this scrolls the minimal amount
@@ -314,9 +320,8 @@ bot.action.moveAndReturnMouse_ = function(element, opt_coords) {
     opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
   }
 
-  var mouse = new bot.Mouse();
+  var mouse = opt_mouse || new bot.Mouse();
   mouse.move(element, opt_coords);
-
   return mouse;
 };
 
