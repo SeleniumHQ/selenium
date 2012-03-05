@@ -201,8 +201,8 @@ bot.action.submit = function(element) {
  *   element.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.mouseOver = function(element, opt_coords) {
-  bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+bot.action.moveMouse = function(element, opt_coords) {
+  bot.action.moveAndReturnMouse_(element, opt_coords);
 };
 
 
@@ -215,7 +215,7 @@ bot.action.mouseOver = function(element, opt_coords) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.click = function(element, opt_coords) {
-  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
 };
 
@@ -229,7 +229,7 @@ bot.action.click = function(element, opt_coords) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.rightClick = function(element, opt_coords) {
-  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.RIGHT);
 };
 
@@ -243,7 +243,7 @@ bot.action.rightClick = function(element, opt_coords) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.doubleClick = function(element, opt_coords) {
-  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
   bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
 };
@@ -260,7 +260,7 @@ bot.action.doubleClick = function(element, opt_coords) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.drag = function(element, dx, dy, opt_coords) {
-  var mouse = bot.action.mouseOverAndReturnMouse_(element, opt_coords);
+  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
   mouse.pressButton(bot.Mouse.Button.LEFT);
 
   // Fire two mousemoves (middle and destination) to trigger a drag action.
@@ -292,7 +292,7 @@ bot.action.drag = function(element, dx, dy, opt_coords) {
  * @throws {bot.Error} If the element cannot be interacted with.
  * @private
  */
-bot.action.mouseOverAndReturnMouse_ = function(element, opt_coords) {
+bot.action.moveAndReturnMouse_ = function(element, opt_coords) {
   bot.action.checkShown_(element);
 
   // Unlike element.scrollIntoView(), this scrolls the minimal amount
