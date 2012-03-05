@@ -21,7 +21,7 @@
  *
  * <html>
  *   <head>
- *     <script src="test-bootstrap.js"></script>
+ *     <script src="test_bootstrap.js"></script>
  *     <script>
  *       goog.require('goog.debug.Logger');
  *     </script>
@@ -34,7 +34,6 @@
  *   </head>
  *   <body></body>
  * </html>
- * @author jmelyba@gmail.com (Jason Leyba)
  */
 
 (function() {
