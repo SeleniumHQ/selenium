@@ -15,7 +15,7 @@ js_fragment_java(name = "atoms",
     "//javascript/webdriver/atoms/inject:get_local_storage_item:android",
     "//javascript/webdriver/atoms/inject:get_local_storage_keys:android",
     "//javascript/webdriver/atoms/inject:get_local_storage_size:android",
-    "//javascript/webdriver/atoms/inject:get_session_storage_item:android"
+    "//javascript/webdriver/atoms/inject:get_session_storage_item:android",
     "//javascript/webdriver/atoms/inject:get_session_storage_keys:android",
     "//javascript/webdriver/atoms/inject:get_session_storage_size:android",
     "//javascript/webdriver/atoms/inject:get_size:android",
