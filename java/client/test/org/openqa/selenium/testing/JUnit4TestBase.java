@@ -54,7 +54,6 @@ public abstract class JUnit4TestBase {
     environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
   }
 
-  @AfterClass
   public static void removeDriver() {
     WebDriver current = storedDriver.get();
 
