@@ -47,7 +47,6 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,6 +125,12 @@ public class AndroidWebElement implements WebElement,
   }
 
   public void click() {
+    if ("OPTION".equals(getTagName().toUpperCase())) {
+      driver.resetPageIsLoading();
+      driver.executeAtom(AndroidAtoms.CLICK.getValue(), this);
+      driver.waitForPageToLoad();
+    }
+  
     Point center = getCenterCoordinates();
     long downTime = SystemClock.uptimeMillis();
     final List<MotionEvent> events = Lists.newArrayList();
@@ -145,7 +150,6 @@ public class AndroidWebElement implements WebElement,
     // If the page started loading we should wait
     // until the page is done loading.
     driver.waitForPageToLoad();
-
   }
 
   public void submit() {
@@ -314,14 +318,25 @@ public class AndroidWebElement implements WebElement,
   }
 
   private List<WebElement> lookupElements(String strategy, String locator) {
-    // If the Id is empty, this reffers to the window document context.
-    if (elementId.equals("")) {
-      return (List<WebElement>) driver
-          .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator);
-    } else {
-      return (List<WebElement>) driver
-          .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator, this);
+    List<WebElement> results;
+    try {
+      // If the Id is empty, this refers to the window document context.
+      if (elementId.equals("")) {
+        results = (List<WebElement>) driver
+            .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator);
+      } else {
+        results = (List<WebElement>) driver
+            .executeAtom(AndroidAtoms.FIND_ELEMENTS.getValue(), strategy, locator, this);
+      }
+    } catch (RuntimeException e) {
+      // TODO(simon): This is probably not the Right Thing to do.
+      results = Lists.newArrayList();
     }
+    
+    if (results == null) {
+      return Lists.newArrayList();
+    }
+    return results;
   }
 
   private WebElement lookupElement(String strategy, String locator) {

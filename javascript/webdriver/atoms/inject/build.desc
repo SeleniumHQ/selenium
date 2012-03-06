@@ -54,6 +54,11 @@ js_fragment(name = "clear",
   function = "webdriver.atoms.inject.action.clear",
   deps = [":deps"])
 
+js_fragment(name = "click",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.click",
+  deps = [":deps"])
+
 js_fragment(name = "is_displayed",
   module = "webdriver.atoms.inject.dom",
   function = "webdriver.atoms.inject.dom.isDisplayed",

@@ -44,3 +44,13 @@ webdriver.atoms.inject.action.clear = function(element) {
   bot.inject.executeScript(bot.action.clear, [element], true);
 };
 
+
+/**
+ * Click an element.
+ *
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to click.
+ * @see bot.action.click
+ */
+webdriver.atoms.inject.action.click = function(element) {
+  bot.inject.executeScript(bot.action.click, [element], true);
+};
