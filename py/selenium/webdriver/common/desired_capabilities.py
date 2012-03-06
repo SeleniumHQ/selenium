@@ -54,7 +54,7 @@ class DesiredCapabilities(object):
     
     ANDROID = {"browserName": "android",
                         "version": "",
-                        "platform": "LINUX",
+                        "platform": "ANDROID",
                         "javascriptEnabled": True }
 
 
