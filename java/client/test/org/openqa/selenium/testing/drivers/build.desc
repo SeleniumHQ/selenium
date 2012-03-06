@@ -1,8 +1,10 @@
 
+java_library(name = "browser",
+  srcs = [ "Browser.java" ])
+
 java_library(name = "drivers",
   srcs = [
     "BackedBy.java",
-    "Browser.java",
     "Firebug.java",
     "SauceDriver.java",
     "SynthesizedFirefoxDriver.java",
@@ -15,6 +17,7 @@ java_library(name = "drivers",
     {"//third_party/firebug" : "resource/firebug-1.5.0-fx.xpi"}
   ],
   deps = [
+    ":browser",
     ":test_selenium_server",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/src/org/openqa/selenium/firefox",

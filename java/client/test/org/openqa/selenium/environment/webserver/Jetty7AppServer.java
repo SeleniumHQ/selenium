@@ -19,8 +19,10 @@ package org.openqa.selenium.environment.webserver;
 
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
+import org.openqa.selenium.net.INetAddress;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.testing.drivers.Browser;
 import org.seleniumhq.jetty7.server.Connector;
 import org.seleniumhq.jetty7.server.Handler;
 import org.seleniumhq.jetty7.server.Server;
@@ -67,6 +69,11 @@ public class Jetty7AppServer implements AppServer {
   }
 
   private static String getHostname() {
+    if (Browser.detect() == Browser.android) {
+      INetAddress address = networkUtils.getIp4NonLoopbackAddressOfThisMachine();
+      return address.getHostName();
+    }
+    
     String hostnameFromProperty = System.getenv(HOSTNAME_FOR_TEST_ENV_NAME);
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
   }
