@@ -21,7 +21,8 @@ public abstract class JUnit4TestBase {
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
-  protected static WebDriver driver;
+  private static ThreadLocal<WebDriver> storedDriver = new ThreadLocal<WebDriver>();
+  protected WebDriver driver;
 
   @Before
   public void prepareEnvironment() throws Exception {
@@ -38,11 +39,14 @@ public abstract class JUnit4TestBase {
 
   @Before
   public void createDriver() throws Exception {
+    driver = storedDriver.get();
+    
     if (driver != null) {
       return;
     }
 
     driver = new WebDriverBuilder().get();
+    storedDriver.set(driver);
   }
 
   @Before
@@ -52,16 +56,18 @@ public abstract class JUnit4TestBase {
 
   @AfterClass
   public static void removeDriver() {
-    if (driver == null) {
+    WebDriver current = storedDriver.get();
+
+    if (current == null) {
       return;
     }
 
     try {
-      driver.quit();
+      current.quit();
     } catch (RuntimeException ignored) {
       // Fall through
     }
-    driver = null;
+    storedDriver.remove();
   }
 
   protected boolean isIeDriverTimedOutException(IllegalStateException e) {

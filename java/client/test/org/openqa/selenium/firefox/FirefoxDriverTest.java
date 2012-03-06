@@ -124,6 +124,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void shouldWaitUntilBrowserHasClosedProperly() throws Exception {
     driver.get(pages.simpleTestPage);
     driver.quit();
+    JUnit4TestBase.removeDriver();
 
     driver = new WebDriverBuilder().get();
 

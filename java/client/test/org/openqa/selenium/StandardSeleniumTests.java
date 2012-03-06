@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,6 +25,7 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.html5.Html5Tests;
 import org.openqa.selenium.interactions.InteractionTests;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -81,5 +83,10 @@ public class StandardSeleniumTests {
   @BeforeClass
   public static void prepareCommonEnvironment() {
     GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+  }
+
+  @AfterClass
+  public static void cleanUpDriver() {
+    JUnit4TestBase.removeDriver();
   }
 }
