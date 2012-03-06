@@ -409,8 +409,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Response response;
 
     long start = System.currentTimeMillis();
+    String currentName = Thread.currentThread().getName();
+    Thread.currentThread().setName("Forwarding " + driverCommand + " on session " + sessionId +
+                                   " to remote");
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
+      
 
       response = executor.execute(command);
 
@@ -433,6 +437,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
             "invalid address of the remote server or browser start-up failure.";
       }
       throw new UnreachableBrowserException(errorMessage, e);
+    } finally {
+      Thread.currentThread().setName(currentName);
     }
 
     return errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
