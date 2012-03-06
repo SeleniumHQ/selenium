@@ -4,5 +4,9 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium"/>
+	<classpathentry kind="lib" path="/selenium/third_party/java/servlet-api/servlet-api-2.5-6.1.9.jar"/>
+	<classpathentry kind="lib" path="/selenium/third_party/java/jetty/jetty-repacked-7.6.1.jar" sourcepath="/selenium/third_party/java/jetty/jetty-repacked-7.6.1-sources.jar"/>
+	<classpathentry kind="lib" path="/selenium/third_party/java/guava-libraries/guava-11.0.1.jar" sourcepath="/selenium/third_party/java/guava-libraries/guava-11.0.1-src.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
