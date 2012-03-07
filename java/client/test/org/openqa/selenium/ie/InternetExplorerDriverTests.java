@@ -17,20 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.junit.internal.runners.SuiteMethod;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.EmptyTest;
 import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.testing.drivers.Browser.ie;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

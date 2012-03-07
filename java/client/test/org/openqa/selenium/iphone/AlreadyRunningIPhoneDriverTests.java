@@ -29,8 +29,7 @@ import java.net.URL;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    IPhoneSpecificTests.class,
-    LegacyTests.class
+    IPhoneSpecificTests.class
 })
 public class AlreadyRunningIPhoneDriverTests {
 

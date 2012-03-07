@@ -28,8 +28,7 @@ import org.openqa.selenium.testing.InProject;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    IPhoneSpecificTests.class,
-    LegacyTests.class
+    IPhoneSpecificTests.class
 })
 public class IPhoneDriverTests {
 
