@@ -25,6 +25,8 @@ from cStringIO import StringIO
 from xml.dom import minidom
 from distutils import dir_util
 from selenium.webdriver.common.proxy import Proxy, ProxyType
+from selenium.common.exceptions import WebDriverException
+
 
 WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
@@ -88,6 +90,7 @@ class FirefoxProfile(object):
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
         "webdriver_enable_native_events": native_events,
+        "webdriver_assume_untrusted_issuer": " false",
         "dom.max_script_run_time": "30",
         }
 
@@ -171,6 +174,17 @@ class FirefoxProfile(object):
     @accept_untrusted_certs.setter
     def accept_untrusted_certs(self, value):
         self.default_preferences["webdriver_accept_untrusted_certs"] = str(value)
+
+    @property
+    def assume_untrusted_cert_issuer(self):
+        return bool(self.default_preferences["webdriver_assume_untrusted_issuer"])
+
+    @assume_untrusted_cert_issuer.setter
+    def assume_untrusted_cert_issuer(self, value):
+        if value not in [True, False]:
+            raise WebDriverException("Please pass in a Boolean to this call")
+
+        self.set_preference("webdriver_assume_untrusted_issuer", value)
 
     @property
     def native_events_enabled(self):
