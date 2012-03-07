@@ -38,19 +38,4 @@ import static org.openqa.selenium.testing.drivers.Browser.ie;
     InternetExplorerDriverTest.class
 })
 public class InternetExplorerDriverTests extends TestSuite {
-  public static class TestInternetExplorerDriver extends InternetExplorerDriver {
-    public TestInternetExplorerDriver() {
-      this(buildDesiredCapabilities());
-    }
-
-    public TestInternetExplorerDriver(Capabilities extraCapabilities) {
-      super(buildDesiredCapabilities().merge(extraCapabilities));
-    }
-
-    private static DesiredCapabilities buildDesiredCapabilities() {
-      DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
-      caps.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-      return caps;
-    }
-  }
 }
