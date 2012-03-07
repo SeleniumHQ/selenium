@@ -35,33 +35,9 @@ import static org.openqa.selenium.testing.drivers.Browser.ie;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    InternetExplorerDriverTest.class,
-    InternetExplorerDriverTests.LegacyTests.class
+    InternetExplorerDriverTest.class
 })
 public class InternetExplorerDriverTests extends TestSuite {
-
-  @RunWith(SuiteMethod.class)
-  public static class LegacyTests {
-
-    public static Test suite() throws Exception {
-      System.setProperty("webdriver.development", "true");
-
-      if (TestSuiteBuilder.getEffectivePlatform().is(WINDOWS)) {
-        return new TestSuiteBuilder()
-            .addSourceDir("java/client/test")
-            .using(ie)
-            .includeJavascriptTests()
-            .keepDriverInstance()
-            .outputTestNames()
-            .create();
-      }
-
-      TestSuite toReturn = new TestSuite();
-      toReturn.addTestSuite(EmptyTest.class);
-      return toReturn;
-    }
-  }
-
   public static class TestInternetExplorerDriver extends InternetExplorerDriver {
     public TestInternetExplorerDriver() {
       this(buildDesiredCapabilities());
