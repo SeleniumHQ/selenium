@@ -16,12 +16,12 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import junit.framework.TestCase;
-
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -30,22 +30,25 @@ import java.io.StringReader;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 /**
  * Unit tests for {@link CrossDomainRpcLoader}.
  */
-public class CrossDomainRpcLoaderTest extends TestCase {
+public class CrossDomainRpcLoaderTest {
 
   private Mockery mockery;
   private HttpServletRequest mockRequest;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     mockery = new Mockery();
     mockRequest = mockery.mock(HttpServletRequest.class);
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     mockery.assertIsSatisfied();
   }
 

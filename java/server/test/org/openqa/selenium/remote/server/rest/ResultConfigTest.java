@@ -17,15 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-
-import junit.framework.TestCase;
-
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
@@ -38,22 +34,31 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class ResultConfigTest extends TestCase {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
+public class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
 
   private JUnit4Mockery context;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     context = new JUnit4Mockery();
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     context.assertIsSatisfied();
   }
 
+  @Test
   public void testShouldMatchBasicUrls() throws Exception {
     ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);
 
@@ -61,6 +66,7 @@ public class ResultConfigTest extends TestCase {
     assertThat(config.getHandler("/cod", dummySessionId), is(nullValue()));
   }
 
+  @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
     try {
       new ResultConfig(null, StubHandler.class, null, logger);
@@ -70,6 +76,7 @@ public class ResultConfigTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldNotAllowNullToBeUsedForTheHandler() {
     try {
       new ResultConfig("/cheese", null, null, logger);
@@ -79,6 +86,7 @@ public class ResultConfigTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldMatchNamedParameters() throws Exception {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
     Handler handler = config.getHandler("/foo/fishy", dummySessionId);
@@ -86,6 +94,7 @@ public class ResultConfigTest extends TestCase {
     assertThat(handler, is(notNullValue()));
   }
 
+  @Test
   public void testShouldSetNamedParametersOnHandler() throws Exception {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
     NamedParameterHandler handler =
@@ -95,12 +104,14 @@ public class ResultConfigTest extends TestCase {
   }
 
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
+  @Test
   public void testShouldGracefullyHandleNullInputs() {
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
     assertNull(config.getRootExceptionCause(null));
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  @Test
   public void testCanPeelNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");
     InvocationTargetException invocation = new InvocationTargetException(runtime,
@@ -116,6 +127,7 @@ public class ResultConfigTest extends TestCase {
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  @Test
   public void testDoesNotPeelTooManyLayersFromNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");
     NoSuchElementException noElement = new NoSuchElementException("no soup for you", runtime);
@@ -127,6 +139,7 @@ public class ResultConfigTest extends TestCase {
     assertEquals(noElement, toClient);
   }
 
+  @Test
   public void testFailsWhenUnableToDetermineResultTypeForRequest_noHandlersRegistered() {
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
     final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
@@ -140,6 +153,7 @@ public class ResultConfigTest extends TestCase {
     }
   }
 
+  @Test
   public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypesSpecified() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
@@ -157,6 +171,7 @@ public class ResultConfigTest extends TestCase {
     assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
+  @Test
   public void testSelectsRenderWithMimeTypeMatch() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
@@ -174,6 +189,7 @@ public class ResultConfigTest extends TestCase {
     assertEquals(mockRenderer2, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
+  @Test
   public void testUsesFirstRegisteredRendererWhenNoMimeTypeMatches() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
@@ -191,7 +207,8 @@ public class ResultConfigTest extends TestCase {
     assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
-  public void testSkipsRenderersThatRequrieASpecificTypeOfMimeType() {
+  @Test
+  public void testSkipsRenderersThatRequireASpecificTypeOfMimeType() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
     final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);

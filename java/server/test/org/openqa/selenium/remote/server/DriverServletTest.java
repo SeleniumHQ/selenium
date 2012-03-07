@@ -19,12 +19,11 @@ package org.openqa.selenium.remote.server;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
 
-import junit.framework.TestCase;
-
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.SessionId;
@@ -38,7 +37,12 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-public class DriverServletTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+public class DriverServletTest {
   
   private static final String BASE_URL = "http://localhost:4444";
   private static final String CONTEXT_PATH = "/wd/hub";
@@ -47,8 +51,8 @@ public class DriverServletTest extends TestCase {
   private TestSessions testSessions;
   private DriverServlet driverServlet;
 
-  @Override
-  protected void setUp() throws ServletException {
+  @Before
+  public void setUp() throws ServletException {
     mockery = new Mockery();
     testSessions = new TestSessions(mockery);
 

@@ -17,21 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
-
-import junit.framework.TestCase;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -42,8 +35,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class JsonToBeanConverterTest extends TestCase {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+public class JsonToBeanConverterTest {
+
+  @Test
   public void testCanConstructASimpleString() throws Exception {
     String text = new JsonToBeanConverter().convert(String.class, "cheese");
 
@@ -51,6 +57,7 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testCanPopulateAMap() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("cheese", "brie");
@@ -63,6 +70,7 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testCanPopulateAMapThatContainsNull() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("foo", JSONObject.NULL);
@@ -73,6 +81,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertNull(converted.get("foo"));
   }
 
+  @Test
   public void testCanPopulateASimpleBean() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("value", "time");
@@ -82,6 +91,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertThat(bean.getValue(), is("time"));
   }
 
+  @Test
   public void testWillSilentlyDiscardUnusedFieldsWhenPopulatingABean() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("value", "time");
@@ -93,6 +103,7 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testShouldSetPrimitiveValuesToo() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("magicNumber", 3);
@@ -102,6 +113,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertThat(3L, is(map.get("magicNumber")));
   }
 
+  @Test
   public void testShouldPopulateFieldsOnNestedBeans() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("name", "frank");
@@ -116,6 +128,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertThat(bean.getBean().getValue(), is("lots"));
   }
 
+  @Test
   public void testShouldProperlyFillInACapabilitiesObject() throws Exception {
     DesiredCapabilities capabilities =
         new DesiredCapabilities("browser", CapabilityType.VERSION, Platform.ANY);
@@ -128,6 +141,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals(capabilities, readCapabilities);
   }
 
+  @Test
   public void testShouldBeAbleToInstantiateBooleans() throws Exception {
     JSONArray array = new JSONArray();
     array.put(true);
@@ -141,6 +155,7 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
     JSONObject toModel = new JSONObject();
     toModel.put("thing", "hairy");
@@ -151,6 +166,7 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testShouldConvertAResponseWithAnElementInIt() throws Exception {
     String json =
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\",\"error\":false}";
@@ -160,12 +176,14 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals("three", value.get("id"));
   }
 
+  @Test
   public void testConvertABlankStringAsAStringEvenWhenAskedToReturnAnObject() throws Exception {
     Object o = new JsonToBeanConverter().convert(Object.class, "");
 
     assertTrue(o instanceof String);
   }
 
+  @Test
   public void testShouldBeAbleToCopeWithStringsThatLookLikeBooleans() throws Exception {
     String json =
         "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\",\"error\":false}";
@@ -178,6 +196,7 @@ public class JsonToBeanConverterTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldBeAbleToSetAnObjectToABoolean() throws Exception {
     String json =
         "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\",\"error\":false}";
@@ -188,6 +207,7 @@ public class JsonToBeanConverterTest extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testCanHandleValueBeingAnArray() throws Exception {
     String[] value = {"Cheese", "Peas"};
 
@@ -204,6 +224,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals(1512, response.getStatus());
   }
 
+  @Test
   public void testShouldConvertObjectsInArraysToMaps() throws Exception {
     Date date = new Date();
     Cookie cookie = new Cookie("foo", "bar", "/rooted", date);
@@ -227,6 +248,7 @@ public class JsonToBeanConverterTest extends TestCase {
         expected, map.get(key));
   }
 
+  @Test
   public void testShouldConvertAnArrayBackIntoAnArray() throws Exception {
     Exception e = new Exception();
     String converted = new BeanToJsonConverter().convert(e);
@@ -237,6 +259,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertTrue(trace.get(0) instanceof Map);
   }
 
+  @Test
   public void testShouldBeAbleToReconsituteASessionId() throws Exception {
     String json = new BeanToJsonConverter().convert(new SessionId("id"));
     SessionId sessionId = new JsonToBeanConverter().convert(SessionId.class, json);
@@ -244,6 +267,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals("id", sessionId.toString());
   }
 
+  @Test
   public void testShouldBeAbleToConvertACommand() throws Exception {
     SessionId sessionId = new SessionId("session id");
     Command original = new Command(sessionId, DriverCommand.NEW_SESSION,
@@ -262,6 +286,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals("cheese", converted.getParameters().get("food"));
   }
 
+  @Test
   public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() throws Exception {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability("furrfu", "fishy");
@@ -272,6 +297,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals("fishy", converted.getCapability("furrfu"));
   }
 
+  @Test
   public void testShouldBeAbleToReconstituteAProxyPac() throws Exception {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
     pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
@@ -292,6 +318,7 @@ public class JsonToBeanConverterTest extends TestCase {
     assertEquals(source.toString(), derived.toString());
   }
 
+  @Test
   public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() throws JSONException {
     JSONObject inner = new JSONObject()
         .put("color", "green")

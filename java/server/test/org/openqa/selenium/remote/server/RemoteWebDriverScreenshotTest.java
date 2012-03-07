@@ -13,10 +13,7 @@
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
@@ -26,10 +23,17 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.ScreenshotException;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.OutputType.BASE64;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 
 
 @Ignore(HTMLUNIT)
-public class RemoteWebDriverScreenshotTest extends AbstractDriverTestCase {
+public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
+  @Test
   public void testShouldBeAbleToGrabASnapshotOnException() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
@@ -46,6 +50,7 @@ public class RemoteWebDriverScreenshotTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testCanAugmentWebDriverInstanceIfNecessary() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");

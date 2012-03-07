@@ -18,20 +18,22 @@ package org.openqa.selenium.remote.server.xdrpc;
 
 import com.google.common.io.CharStreams;
 
-import junit.framework.TestCase;
-
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Unit tests for {@link HttpServletRequestProxy}.
  */
-public class HttpServletRequestProxyTest extends TestCase {
+public class HttpServletRequestProxyTest {
 
   private static final CrossDomainRpc CROSS_DOMAIN_RPC = new CrossDomainRpc(
       "POST", "/session/foo/url", "foo bar baz");
@@ -43,16 +45,16 @@ public class HttpServletRequestProxyTest extends TestCase {
   private HttpServletRequest mockRequest;
   private HttpServletRequest proxiedRequest;
 
-  @Override
-  protected void setUp() throws IOException {
+  @Before
+  public void setUp() throws IOException {
     mockery = new Mockery();
     mockRequest = mockery.mock(HttpServletRequest.class);
     proxiedRequest = HttpServletRequestProxy.createProxy(mockRequest,
         CROSS_DOMAIN_RPC, RPC_PATH, MIME_TYPE);
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     mockery.assertIsSatisfied();
   }
 

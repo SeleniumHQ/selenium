@@ -17,22 +17,28 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class DriverFactoryTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+public class DriverFactoryTest {
   private DefaultDriverFactory factory;
 
-  @Override
-  protected void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     factory = new DefaultDriverFactory();
   }
 
+  @Test
   public void testShouldBeAbleToRegisterNewDrivers() {
     Capabilities capabilities = DesiredCapabilities.htmlUnit();
     assertFalse(factory.hasMappingFor(capabilities));
@@ -42,6 +48,7 @@ public class DriverFactoryTest extends TestCase {
     assertTrue(factory.hasMappingFor(capabilities));
   }
 
+  @Test
   public void testShouldReturnMatchIfOneFieldMatchesAndOnlyOneDriverIsRegistered() {
     DesiredCapabilities template = new DesiredCapabilities();
     template.setBrowserName("foo");
@@ -57,6 +64,7 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(DriverOne.class, result);
   }
 
+  @Test
   public void testShouldReturnDriverWhereTheMostCapabilitiesMatch() {
     DesiredCapabilities first = new DesiredCapabilities();
     first.setBrowserName("foo");
@@ -80,6 +88,7 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(DriverTwo.class, result);
   }
 
+  @Test
   public void testShouldReturnDriverWhereTheMostCapabilitiesMatch_lotsOfRegisteredDrivers() {
     abstract class Chrome implements WebDriver {}
     abstract class Firefox implements WebDriver {}
@@ -102,6 +111,7 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(Ie.class, factory.getBestMatchFor(desiredCapabilities));
   }
 
+  @Test
   public void testShouldReturnMostRecentlyAddedDriverWhenAllCapabilitiesAreEqual() {
     Capabilities capabilities = DesiredCapabilities.firefox();
 
@@ -113,6 +123,7 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(DriverTwo.class, result);
   }
 
+  @Test
   public void testShouldConsiderPlatform() {
     DesiredCapabilities windows = new DesiredCapabilities("browser", "v1", Platform.WINDOWS);
     DesiredCapabilities linux = new DesiredCapabilities("browser", "v1", Platform.LINUX);
@@ -124,6 +135,7 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(DriverTwo.class, factory.getBestMatchFor(linux));
   }
 
+  @Test
   public void testShouldMatchAgainstAnyPlatformWhenRequestingAny() {
     DesiredCapabilities windowsVista = new DesiredCapabilities("browser", "v1", Platform.VISTA);
     DesiredCapabilities windowsXp = new DesiredCapabilities("browser", "v1", Platform.XP);
@@ -137,6 +149,7 @@ public class DriverFactoryTest extends TestCase {
         DriverOne.class, factory.getBestMatchFor(windowsXp));
   }
 
+  @Test
   public void testShouldFailFastWhenMatchingAndNoDriversHaveBeenRegistered() {
     try {
       factory.getBestMatchFor(DesiredCapabilities.chrome());
@@ -145,6 +158,7 @@ public class DriverFactoryTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldConsiderJavascriptCapabilities() {
     DesiredCapabilities nojavascript = new DesiredCapabilities("browser", "v1", Platform.LINUX);
     nojavascript.setJavascriptEnabled(false);
@@ -158,6 +172,7 @@ public class DriverFactoryTest extends TestCase {
     assertEquals(DriverTwo.class, factory.getBestMatchFor(javascript));
   }
 
+  @Test
   public void testShouldCallAConstructorTakingACapabilitiesArgInPreferenceToANoArgOne() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setBrowserName("example");

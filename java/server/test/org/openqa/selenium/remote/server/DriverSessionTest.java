@@ -17,14 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class DriverSessionTest extends TestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class DriverSessionTest {
+  @Test
   public void testShouldRegisterCorrectDefaultsOnMac() {
     DriverFactory factory = new DefaultDriverFactory();
     new DefaultDriverSessions(Platform.MAC, factory);
@@ -35,6 +38,7 @@ public class DriverSessionTest extends TestCase {
     assertFalse(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
   }
 
+  @Test
   public void testShouldRegisterCorrectDefaultsOnLinux() {
     DriverFactory factory = new DefaultDriverFactory();
     new DefaultDriverSessions(Platform.LINUX, factory);
@@ -45,6 +49,7 @@ public class DriverSessionTest extends TestCase {
     assertFalse(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
   }
 
+  @Test
   public void testShouldRegisterCorrectDefaultsOnWindows() {
     DriverFactory factory = new DefaultDriverFactory();
     new DefaultDriverSessions(Platform.VISTA, factory);
@@ -55,6 +60,7 @@ public class DriverSessionTest extends TestCase {
     assertTrue(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
   }
 
+  @Test
   public void testShouldBeAbleToRegisterOwnDriver() {
     DriverFactory factory = new DefaultDriverFactory();
     DriverSessions sessions = new DefaultDriverSessions(Platform.VISTA, factory);

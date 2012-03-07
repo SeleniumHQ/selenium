@@ -17,14 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
-import junit.framework.TestCase;
-
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -35,23 +32,29 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UrlMapperTest extends TestCase {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+
+public class UrlMapperTest {
   private final static Logger log = Logger.getLogger(UrlMapperTest.class.getName());
 
   private JUnit4Mockery context;
   private UrlMapper mapper;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     context = new JUnit4Mockery();
     mapper = new UrlMapper(new DefaultDriverSessions(), log);
   }
 
-  @Override
-  protected void tearDown() {
+  @After
+  public void tearDown() {
     context.assertIsSatisfied();
   }
 
+  @Test
   public void testShouldBePossibleToBindAHandler() throws Exception {
     mapper.bind("/foo", StubHandler.class);
 
@@ -60,6 +63,7 @@ public class UrlMapperTest extends TestCase {
     assertThat(config, is(notNullValue()));
   }
 
+  @Test
   public void testShouldInjectDependenciesViaTheConstructor() throws Exception {
     mapper.bind("/example", SessionHandler.class);
 
@@ -69,6 +73,7 @@ public class UrlMapperTest extends TestCase {
     assertThat(handler.getSessions(), is(notNullValue()));
   }
 
+  @Test
   public void testAppliesGlobalHandlersToNewConfigs() {
     Renderer renderer = new StubRenderer();
     Result result = new Result("", renderer);
@@ -81,6 +86,7 @@ public class UrlMapperTest extends TestCase {
     assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
+  @Test
   public void testAppliesNewGlobalHandlersToExistingConfigs() {
     Renderer renderer = new StubRenderer();
     Result result = new Result("", renderer);
@@ -93,6 +99,7 @@ public class UrlMapperTest extends TestCase {
     assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
+  @Test
   public void testPermitsMultipleGlobalHandlersWithDifferentMimeTypes() {
     Renderer renderer = new StubRenderer();
 

@@ -16,8 +16,7 @@ limitations under the License.
  */
 package org.openqa.selenium.remote.server;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
@@ -27,12 +26,15 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.util.logging.Logger;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Kristian Rosenvold
  */
-public class SessionCleanerTest extends TestCase {
+public class SessionCleanerTest {
   private final static Logger log = Logger.getLogger(SessionCleanerTest.class.getName());
 
+  @Test
   public void testCleanup() throws Exception {
     DriverSessions defaultDriverSessions = getDriverSessions();
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
@@ -44,6 +46,7 @@ public class SessionCleanerTest extends TestCase {
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
 
+  @Test
   public void testCleanupWithThread() throws Exception {
     DriverSessions defaultDriverSessions = getDriverSessions();
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
@@ -77,6 +80,7 @@ public class SessionCleanerTest extends TestCase {
     }
   }
 
+  @Test
   public void testCleanupWithSessionExtension() throws Exception {
     DriverSessions defaultDriverSessions = getDriverSessions();
     SessionId firstSession = defaultDriverSessions.newSession(DesiredCapabilities.firefox());

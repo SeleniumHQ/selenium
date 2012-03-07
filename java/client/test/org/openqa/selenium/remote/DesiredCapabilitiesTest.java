@@ -1,15 +1,17 @@
 package org.openqa.selenium.remote;
 
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 
-import junit.framework.TestCase;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DesiredCapabilitiesTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class DesiredCapabilitiesTest {
+  @Test
   public void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
         new ConcurrentHashMap<Capabilities, Class<? extends WebDriver>>();
@@ -20,6 +22,7 @@ public class DesiredCapabilitiesTest extends TestCase {
     assertEquals(1, capabilitiesToDriver.size());
   }
 
+  @Test
   public void testAugmentingCapabilitiesReturnsNewCapabilities() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities();
     origCapabilities.setCapability("Browser", "firefox");
@@ -32,6 +35,7 @@ public class DesiredCapabilitiesTest extends TestCase {
     assertEquals("any", origCapabilities.getCapability("Platform"));
   }
 
+  @Test
   public void testCopyConstructorWithNullArgument() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities((Capabilities) null);
 
@@ -39,6 +43,7 @@ public class DesiredCapabilitiesTest extends TestCase {
     assertEquals("firefox", origCapabilities.getCapability("Browser"));
   }
 
+  @Test
   public void testCopyConstructorDoesNotAliasToArgument() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities();
     origCapabilities.setCapability("Browser", "firefox");

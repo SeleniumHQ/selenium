@@ -17,32 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
-
-import junit.framework.TestCase;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 
-import java.awt.Point;
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,15 +45,26 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class BeanToJsonConverterTest extends TestCase {
 
+public class BeanToJsonConverterTest {
+
+  @Test
   public void testShouldBeAbleToConvertASimpleString() throws Exception {
     String json = new BeanToJsonConverter().convert("cheese");
 
     assertThat(json, is("cheese"));
   }
 
+  @Test
   public void testShouldConvertAMapIntoAJsonObject() throws Exception {
     Map<String, String> toConvert = new HashMap<String, String>();
     toConvert.put("cheese", "cheddar");
@@ -72,6 +76,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertThat((String) converted.get("cheese"), is("cheddar"));
   }
 
+  @Test
   public void testShouldConvertASimpleJavaBean() throws Exception {
     String json = new BeanToJsonConverter().convert(new SimpleBean());
 
@@ -81,6 +86,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertThat((Double) converted.get("number"), is(123.456));
   }
 
+  @Test
   public void testShouldConvertArrays() throws Exception {
     String json = new BeanToJsonConverter().convert(new BeanWithArray());
 
@@ -89,6 +95,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertThat(allNames.length(), is(3));
   }
 
+  @Test
   public void testShouldConvertCollections() throws Exception {
     String json = new BeanToJsonConverter().convert(new BeanWithCollection());
 
@@ -97,6 +104,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertThat(allNames.length(), is(2));
   }
 
+  @Test
   public void testShouldConvertNumbersAsLongs() throws Exception {
 
     String json = new BeanToJsonConverter().convert(new Exception());
@@ -109,6 +117,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertTrue("line number is of type: " + o.getClass(), o instanceof Long);
   }
 
+  @Test
   public void testShouldNotChokeWhenCollectionIsNull() throws Exception {
     try {
       new BeanToJsonConverter().convert(new BeanWithNullCollection());
@@ -118,16 +127,19 @@ public class BeanToJsonConverterTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldConvertEnumsToStrings() throws Exception {
     // If this doesn't hang indefinitely, we're all good
     new BeanToJsonConverter().convert(State.INDIFFERENT);
   }
 
+  @Test
   public void testShouldConvertEnumsWithMethods() throws Exception {
     // If this doesn't hang indefinitely, we're all good
     new BeanToJsonConverter().convert(WithMethods.CHEESE);
   }
 
+  @Test
   public void testNullAndAnEmptyStringAreEncodedDifferently() throws Exception {
     BeanToJsonConverter converter = new BeanToJsonConverter();
 
@@ -137,6 +149,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertFalse(emptyString.equals(nullValue));
   }
 
+  @Test
   public void testShouldBeAbleToConvertAPoint() throws Exception {
     Point point = new Point(65, 75);
 
@@ -147,6 +160,7 @@ public class BeanToJsonConverterTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldEncodeClassNameAsClassProperty() throws Exception {
     String json = new BeanToJsonConverter().convert(new SimpleBean());
     JSONObject converted = new JSONObject(json);
@@ -154,6 +168,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals(SimpleBean.class.getName(), converted.get("class"));
   }
 
+  @Test
   public void testShouldBeAbleToConvertASessionId() throws JSONException {
     SessionId sessionId = new SessionId("some id");
     String json = new BeanToJsonConverter().convert(sessionId);
@@ -162,6 +177,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("some id", converted.getString("value"));
   }
 
+  @Test
   public void testShouldBeAbleToConvertAJsonObject() throws JSONException {
     JSONObject obj = new JSONObject();
     obj.put("key", "value");
@@ -171,6 +187,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("value", converted.getString("key"));
   }
 
+  @Test
   public void testShouldBeAbleToConvertACapabilityObject() throws JSONException {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability("key", "alpha");
@@ -181,6 +198,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("alpha", converted.getString("key"));
   }
 
+  @Test
   public void testShouldConvertAProxyPacProperly() throws JSONException {
     DoNotUseProxyPac pac = new DoNotUseProxyPac();
     pac.map("*/selenium/*").toProxy("http://localhost:8080/selenium-server");
@@ -203,6 +221,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("'DIRECT'", converted.get("defaultProxy"));
   }
 
+  @Test
   public void testShouldConvertAProxyCorrectly() throws JSONException {
     Proxy proxy = new Proxy();
     proxy.setHttpProxy("localhost:4444");
@@ -220,6 +239,7 @@ public class BeanToJsonConverterTest extends TestCase {
         capsAsMap.getJSONObject(CapabilityType.PROXY).get("httpProxy"));
   }
 
+  @Test
   public void testShouldCallToJsonMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
 
@@ -249,6 +269,7 @@ public class BeanToJsonConverterTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldBeAbleToConvertARuntimeException() {
     RuntimeException clientError = new RuntimeException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
@@ -259,6 +280,7 @@ public class BeanToJsonConverterTest extends TestCase {
     verifyStackTraceInJson(json, stackTrace);
   }
 
+  @Test
   public void testShouldBeAbleToConvertAWebDriverException() throws JSONException {
     RuntimeException clientError = new WebDriverException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
@@ -277,11 +299,13 @@ public class BeanToJsonConverterTest extends TestCase {
     verifyStackTraceInJson(raw, stackTrace);
   }
 
+  @Test
   public void testShouldConvertDatesToMillisecondsInUtcTime() {
     String jsonStr = new BeanToJsonConverter().convert(new Date(0));
     assertEquals(0, Integer.valueOf(jsonStr).intValue());
   }
 
+  @Test
   public void testShouldConvertDateFieldsToSecondsSince1970InUtcTime() throws JSONException {
     class Bean {
       private final Date date;
@@ -304,6 +328,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals(123456L, json.getLong("date"));
   }
 
+  @Test
   public void testShouldBeAbleToConvertACookie() throws JSONException {
     Date expiry = new Date();
     Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry, true);
@@ -319,6 +344,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals(TimeUnit.MILLISECONDS.toSeconds(expiry.getTime()), json.getLong("expiry"));
   }
 
+  @Test
   public void testUnsetCookieFieldsAreUndefined() {
     Cookie cookie = new Cookie("name", "value");
     String jsonStr = new BeanToJsonConverter().convert(cookie);
@@ -327,6 +353,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertThat(jsonStr, not(containsString("expiry")));
   }
 
+  @Test
   public void testProperlyConvertsNulls() {
     Map<String, Object> frameId = Maps.newHashMap();
     frameId.put("id", null);
@@ -334,6 +361,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("{\"id\":null}", payload);
   }
 
+  @Test
   public void testConvertLoggingPreferencesToJson() throws JSONException {
     LoggingPreferences prefs = new LoggingPreferences();
     prefs.enable(LogType.DRIVER, Level.FINE);
@@ -345,6 +373,7 @@ public class BeanToJsonConverterTest extends TestCase {
     assertEquals("ALL", json.getString(logType));
   }
 
+  @Test
   public void testConvertLogEntriesToJson() throws JSONException {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF.intValue(), timestamp, "entry1");
