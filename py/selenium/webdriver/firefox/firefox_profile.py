@@ -163,8 +163,10 @@ class FirefoxProfile(object):
         """
         Sets the port that WebDriver will be running on
         """
+        if not isinstance(port, int):
+            raise WebDriverException("Port needs to be an integer")
         self._port = port
-        self.default_preferences["webdriver_firefox_port"] =  str(self._port)
+        self.set_preference("webdriver_firefox_port", self._port)
 
     @property
     def accept_untrusted_certs(self):
@@ -173,7 +175,9 @@ class FirefoxProfile(object):
 
     @accept_untrusted_certs.setter
     def accept_untrusted_certs(self, value):
-        self.default_preferences["webdriver_accept_untrusted_certs"] = str(value)
+        if value not in [True, False]:
+            raise WebDriverException("Please pass in a Boolean to this call")
+        self.set_preference("webdriver_accept_untrusted_certs", value)
 
     @property
     def assume_untrusted_cert_issuer(self):
@@ -192,7 +196,9 @@ class FirefoxProfile(object):
 
     @native_events_enabled.setter
     def native_events_enabled(self, value):
-        self.default_preferences['webdriver_enable_native_events'] = str(value)
+        if value not in [True, False]:
+            raise WebDriverException("Please pass in a Boolean to this call")
+        self.set_preference("webdriver_enable_native_events", value)
 
     @property
     def encoded(self):
