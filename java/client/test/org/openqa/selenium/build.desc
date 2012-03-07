@@ -100,20 +100,6 @@ java_test(name = "RcBrowserLauncherTests",
     ":tests",
   ])
 
-java_test(name = "single",
-  srcs = [
-    "SingleTestSuite.java",
-  ],
-  deps = [
-    ":tests",
-    "//java/server/src/org/openqa/selenium/server",
-    "//java/client/test/org/openqa/selenium/v1:selenium-backed-webdriver-test",
-    "//java/client/test/org/openqa/selenium/firefox:test_synthesized",
-    "//java/client/test/org/openqa/selenium/htmlunit:test_js",
-    "//java/client/test/org/openqa/selenium/ie:test",
-    "//java/server/test/org/openqa/selenium/remote/server:test",
-  ])
-
 java_library(name = "dump-ignores",
   deps = [ ":tests" ],
   main = "org.openqa.selenium.internal.IgnoredTestPrinter"
