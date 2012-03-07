@@ -8,7 +8,9 @@ android_test(name = "android-test",
 
 java_test(name = "java-test",
   srcs = [ "AndroidDriverTests.java" ],
-  binary = "//android:android-server",
+  sysproperties = [
+    { "selenium.browser" : "android" },
+  ],
   deps = [
    ":base",
   ])
