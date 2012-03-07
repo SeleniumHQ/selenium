@@ -19,9 +19,6 @@ package org.openqa.selenium.remote.server;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.remote.BeanToJsonConverterTest;
-import org.openqa.selenium.remote.DesiredCapabilitiesTest;
-import org.openqa.selenium.remote.JsonToBeanConverterTest;
 import org.openqa.selenium.remote.server.rest.ResultConfigTest;
 import org.openqa.selenium.remote.server.rest.UrlMapperTest;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
@@ -29,14 +26,11 @@ import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxyTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    BeanToJsonConverterTest.class,
     CrossDomainRpcLoaderTest.class,
-    DesiredCapabilitiesTest.class,
     DriverFactoryTest.class,
     DriverServletTest.class,
     DriverSessionTest.class,
     HttpServletRequestProxyTest.class,
-    JsonToBeanConverterTest.class,
     RemoteWebDriverScreenshotTest.class,
     ResultConfigTest.class,
     SessionCleanerTest.class,

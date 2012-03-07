@@ -148,6 +148,7 @@ end
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:test:run' ]
 task :test_remote => [
+  '//java/client/test/org/openqa/selenium/remote:common-tests:run',
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
   :test_remote_server
 ]

@@ -5,7 +5,7 @@ java_test(name = "common-tests",
     "DesiredCapabilitiesTest.java",
     "HttpRequest.java",
     "JsonToBeanConverterTest.java",
-    "RemoteCommonTestSuite.java",
+    "RemoteCommonTests.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/remote",
@@ -19,7 +19,7 @@ java_test(name = "client-tests",
   srcs = [
     "AugmenterTest.java",
     "ErrorHandlerTest.java",
-    "RemoteClientTestSuite.java",
+    "RemoteClientTests.java",
     "internal/CircularOutputStreamTest.java",
   ],
   deps = [

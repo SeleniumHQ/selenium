@@ -17,38 +17,54 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import junit.framework.TestCase;
-import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.InvalidCoordinatesException;
-
-import java.util.Map;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.XPathLookupException;
+import org.openqa.selenium.interactions.InvalidCoordinatesException;
+
+import java.util.Map;
 
 /**
  * Unit tests for {@link ErrorHandler}.
  * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-public class ErrorHandlerTest extends TestCase {
+public class ErrorHandlerTest {
   private ErrorHandler handler;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     handler = new ErrorHandler();
     handler.setIncludeServerErrors(true);
   }
 
+  @Test
   public void testShouldNotThrowIfResponseWasASuccess() {
     handler.throwIfResponseFailed(createResponse(ErrorCodes.SUCCESS), 100);
     // All is well if this doesn't throw.
   }
 
+  @Test
   public void testThrowsCorrectExceptionTypes() {
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class);
@@ -87,6 +103,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
     try {
         Response response = createResponse(ErrorCodes.UNHANDLED_ERROR);
@@ -101,6 +118,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldNotSetCauseIfResponseValueIsJustAString() {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123);
@@ -114,6 +132,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  @Test
   public void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR,
@@ -137,6 +156,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  @Test
   public void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR,
@@ -155,6 +175,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  @Test
   public void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
     try {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR,
@@ -174,6 +195,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldBeAbleToRebuildASerializedException() throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
 
@@ -197,6 +219,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldIncludeScreenshotIfProvided() throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
@@ -223,6 +246,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldDefaultToUnknownServerErrorIfClassIsNotSpecified()
       throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -246,6 +270,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldStillTryToBuildServerErrorIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
@@ -279,6 +304,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()
       throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -297,6 +323,7 @@ public class ErrorHandlerTest extends TestCase {
   }
 
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @Test
   public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled()
       throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");

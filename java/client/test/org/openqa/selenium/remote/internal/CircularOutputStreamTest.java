@@ -18,13 +18,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote.internal;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-public class CircularOutputStreamTest extends TestCase {
+public class CircularOutputStreamTest {
+  @Test
   public void testShouldReturnTheEntireWrittenContentIfSmallerThanTheBufferSize() throws Exception {
     String expected = "foo";
     int maxSize = expected.getBytes().length;
@@ -37,6 +40,7 @@ public class CircularOutputStreamTest extends TestCase {
     assertEquals(expected, seen);
   }
 
+  @Test
   public void testShouldReturnJustTheWrittenOutputIfBufferIsTooLarge() throws Exception {
     String expected = "foo";
     // Note, this makes the buffer larger than what we write to it
@@ -50,6 +54,7 @@ public class CircularOutputStreamTest extends TestCase {
     assertEquals(expected, seen);
   }
 
+  @Test
   public void testShouldTruncateOutputToMatchTheSizeOfTheBuffer() throws Exception {
     String expected = "oo";
     int maxSize = expected.getBytes().length;
@@ -62,6 +67,7 @@ public class CircularOutputStreamTest extends TestCase {
     assertEquals(expected, seen);
   }
 
+  @Test
   public void testShouldReturnContentInTheCorrectOrder() throws Exception {
     String expected = "234";
     int maxSize = expected.getBytes().length;
@@ -74,6 +80,7 @@ public class CircularOutputStreamTest extends TestCase {
     assertEquals(expected, seen);
   }
 
+  @Test
   public void testLongerMultiLineOutputPreservesJustTheEnd() throws Exception {
     int maxSize = 64;
 
@@ -94,6 +101,7 @@ public class CircularOutputStreamTest extends TestCase {
     assertEquals(expected, seen);
   }
 
+  @Test
   public void testCircularness() {
     CircularOutputStream os = new CircularOutputStream(5);
     PrintWriter pw = new PrintWriter(os, true);
