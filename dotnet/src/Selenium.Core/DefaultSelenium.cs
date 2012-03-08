@@ -17,6 +17,7 @@
 
 // This file has been automatically generated via XSL
 using System;
+using OpenQA.Selenium;
 namespace Selenium
 {
 	/// <summary>Defines an object that runs Selenium commands.
@@ -155,6 +156,12 @@ namespace Selenium
         public void Start(string optionsString)
         {
             commandProcessor.Start(optionsString);
+        }
+
+        public void Start(ICapabilities capabilities)
+        {
+            string id = (string) capabilities.GetCapability("webdriver.remote.sessionid");
+            Start("webdriver.remote.sessionid=" + id);
         }
 
 		/// <summary>
