@@ -145,12 +145,6 @@
       <Link>WebDriver.snk</Link>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WebDriver\WebDriver.csproj">
-      <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
-      <Name>WebDriver</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
