@@ -17,6 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import static org.openqa.selenium.net.PortProber.pollPort;
+
+import com.google.common.base.Preconditions;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -67,6 +71,7 @@ public class InternetExplorerDriverServer {
     }
 
     server = lib.StartServer(port);
+    Preconditions.checkArgument(pollPort(port), "Cannot connect to IE server");
   }
 
   public void stop() {
