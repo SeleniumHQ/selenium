@@ -59,6 +59,7 @@ class FirefoxProfile(object):
         "browser.safebrowsing.malware.enabled": "false",
         "startup.homepage_welcome_url": "\"about:blank\"",
         "devtools.errorconsole.enabled": "true",
+        "focusmanager.testmode": "true",
         "dom.disable_open_during_load": "false",
         "extensions.autoDisableScopes" : 10,
         "extensions.logging.enabled": "true",
