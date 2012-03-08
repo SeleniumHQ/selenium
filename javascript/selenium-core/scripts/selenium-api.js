@@ -1494,6 +1494,7 @@ Selenium.prototype.getEval = function(script) {
    * @return string the results of evaluating the snippet
    */
     try {
+        LOG.info('script is: ' + script);
         var window = this.browserbot.getCurrentWindow();
         var result = eval(script);
         // Selenium RC doesn't allow returning null
@@ -2361,7 +2362,7 @@ Selenium.prototype.getExpression = function(expression) {
      * @return string the value passed in
      */
     return expression;
-}
+};
 
 Selenium.prototype.getXpathCount = function(xpath) {
     /**
@@ -2373,7 +2374,7 @@ Selenium.prototype.getXpathCount = function(xpath) {
     */
     var result = this.browserbot.evaluateXPathCount(xpath, this.browserbot.getDocument());
     return result;
-}
+};
 
 Selenium.prototype.getCssCount = function(css) {
     /**
@@ -2385,7 +2386,7 @@ Selenium.prototype.getCssCount = function(css) {
     */
     var result = this.browserbot.evaluateCssCount(css, this.browserbot.getDocument());
     return result;
-}
+};
 
 Selenium.prototype.doAssignId = function(locator, identifier) {
     /**
@@ -2397,7 +2398,7 @@ Selenium.prototype.doAssignId = function(locator, identifier) {
     */
     var element = this.browserbot.findElement(locator);
     element.id = identifier;
-}
+};
 
 Selenium.prototype.doAllowNativeXpath = function(allow) {
     /**
@@ -2550,7 +2551,7 @@ Selenium.prototype.replaceVariables = function(str) {
         var variable = match[i]; // The replacement variable, with ${}
         var name = variable.substring(2, variable.length - 1); // The replacement variable without ${}
         var replacement = storedVars[name];
-        if (replacement.indexOf('$') != -1) {
+        if (replacement && replacement.indexOf('$') != -1) {
             replacement = replacement.replace(/\$/g, '$$$$'); //double up on $'s because of the special meaning these have in 'replace'
         }
         if (replacement != undefined) {
@@ -2633,7 +2634,7 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
     }
     LOG.debug("Setting cookie to: " + cookie);
     this.browserbot.getDocument().cookie = cookie;
-}
+};
 
 Selenium.prototype.doDeleteCookie = function(name,optionsString) {
     /**
