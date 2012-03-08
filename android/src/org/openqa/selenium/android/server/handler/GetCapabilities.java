@@ -49,6 +49,7 @@ public class GetCapabilities extends GetSessionCapabilities {
     caps.put(CapabilityType.SUPPORTS_ALERTS, true);
     caps.put(CapabilityType.SUPPORTS_JAVASCRIPT, true);
     caps.put(CapabilityType.VERSION, Build.VERSION.SDK);
+    caps.put(CapabilityType.ACCEPT_SSL_CERTS, true);
     return caps;
   }
 }
