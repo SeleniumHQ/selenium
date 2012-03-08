@@ -56,14 +56,14 @@ core.filters.value_ = function(value, elements) {
  * @private
  */
 core.filters.index_ = function(index, elements) {
-  index = Number(index);
-  if (isNaN(index) || index < 0) {
+  var idx = Number(index);
+  if (isNaN(idx) || idx < 0) {
     throw new core.Error('Illegal Index: ' + index);
   }
-  if (elements.length <= index) {
+  if (elements.length <= idx) {
     throw new core.Error('Index out of range: ' + index);
   }
-  return [elements[index]];
+  return [elements[idx]];
 };
 
 

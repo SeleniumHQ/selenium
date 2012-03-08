@@ -155,11 +155,11 @@ core.locators.findElementRecursive_ = function(locatorType, locatorString,
  * @return {Element} The located element, or null if nothing is found.
  */
 core.locators.findElementOrNull = function(locator, opt_win) {
-  locator = core.locators.parseLocator_(locator);
+  var loc = core.locators.parseLocator_(locator);
 
   var win = opt_win || bot.window_;
   var element = core.locators.findElementRecursive_(
-      locator['type'], locator['string'], win.document, win);
+      loc['type'], loc['string'], win.document, win);
 
   if (element != null) {
     return element;

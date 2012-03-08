@@ -24,10 +24,14 @@ goog.provide('core.events');
 goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.events.EventType');
+goog.require('bot.events.MouseArgs');
+goog.require('bot.userAgent');
 goog.require('core.Error');
 goog.require('core.locators');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.style');
+goog.require('goog.userAgent.product');
 
 
 core.events.controlKeyDown_ = false;
@@ -35,6 +39,7 @@ core.events.altKeyDown_ = false;
 core.events.metaKeyDown_ = false;
 core.events.shiftKeyDown_ = false;
 
+var XPCNativeWrapper = XPCNativeWrapper || function() {};
 
 core.events.getEventFactory_ = function(eventName) {
   var type = bot.events.EventType[eventName.toUpperCase()];
@@ -47,7 +52,7 @@ core.events.getEventFactory_ = function(eventName) {
       var doc = goog.dom.getOwnerDocument(target);
       var event;
 
-      if (bot.events.IE_NO_W3C_EVENTS_) {
+      if (bot.userAgent.IE_DOC_PRE9) {
         event = doc.createEventObject();
       } else {
         event = doc.createEvent('HTMLEvents');
@@ -88,8 +93,8 @@ core.events.parseCoordinates_ = function(coordString) {
   if (goog.isString(coordString)) {
     // TODO(simon): Tighten constraints on what a valid coordString is.
     var pieces = coordString.split(/,/);
-    var x = parseInt(pieces[0]);
-    var y = parseInt(pieces[1]);
+    var x = parseInt(pieces[0], 0);
+    var y = parseInt(pieces[1], 0);
     return {x: x, y: y};
   }
 
@@ -109,8 +114,24 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
   var element = core.locators.findElement(locator);
   var coords = core.events.parseCoordinates_(opt_coordString || "0,0");
 
+  if (goog.userAgent.IE || goog.userAgent.product.CHROME) {
+    var bounds = goog.style.getBounds(element);
+    coords.x += bounds.left;
+    coords.y += bounds.top;
+  }
+
   var type = core.events.getEventFactory_(eventName);
-  bot.events.fire(element, type, coords);
+  var args = { 
+      clientX: coords.x,
+      clientY: coords.y,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      shiftKey: false,
+      metaKey: false,
+      relatedTarget: null
+  }; 
+  bot.events.fire(element, type, (/** @type{!bot.events.MouseArgs} */args));
 };
 
 
@@ -119,13 +140,13 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
  * @param {string} value The value to use.
  */
 core.events.replaceText_ = function(element, value) {
-  bot.events.fire(element, bot.events.EventType.FOCUS, {bubble: false});
+  bot.events.fire(element, bot.events.EventType.FOCUS);
   bot.events.fire(element, bot.events.EventType.SELECT);
 
   var maxLengthAttr = bot.dom.getAttribute(element, 'maxlength');
   var actualValue = value;
   if (maxLengthAttr != null) {
-    var maxLength = parseInt(maxLengthAttr);
+    var maxLength = parseInt(maxLengthAttr, 0);
     if (value.length > maxLength) {
       actualValue = value.substr(0, maxLength);
     }
@@ -139,18 +160,18 @@ core.events.replaceText_ = function(element, value) {
         element.innerHTML = actualValue;
       }
     }
-  } else if (goog.userAgent.GECKO && bot.userAgent.isEngineVersion(8)) {
+//  } else if (goog.userAgent.GECKO && bot.userAgent.isEngineVersion(8)) {
     // Firefox 8+ fails with a security error if typing into (XPCNativeWrapper) unwrapped objects
-    XPCNativeWrapper(element).value = actualValue;
+//    XPCNativeWrapper(element).value = actualValue;
   } else {
     element.value = actualValue;
   }
   // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
   try {
     var elem = element;
-    if (bot.userAgent.FIREFOX_EXTENSION && Components && Components['classes'] && XPCNativeWrapper) {
-      elem = new XPCNativeWrapper(element);
-    }
+//    if (bot.userAgent.FIREFOX_EXTENSION && Components && Components['classes'] && XPCNativeWrapper) {
+//      elem = new XPCNativeWrapper(element);
+//    }
     bot.events.fire(elem, bot.events.EventType.CHANGE);
   } catch (e) {
   }
@@ -164,7 +185,7 @@ core.events.replaceText_ = function(element, value) {
  * text.
  *
  * @param {string|!Element} locator The element locator.
- * @param {string} newValue The value to use.
+ * @param {string} value The value to use.
  */
 core.events.setValue = function(locator, value) {
   if (core.events.controlKeyDown_ || core.events.altKeyDown_ || core.events.metaKeyDown_) {

@@ -113,7 +113,7 @@ core.select.option.createValueLocator_ = function(value) {
 
     assertSelected: function(element) {
       var selectedValue = element.options[element.selectedIndex].value;
-      if (!matches(selectedValue)) {
+      if (!matcher(selectedValue)) {
         throw new core.Error("Expected value (" + value + ") did not match: " + selectedValue);
       }
     }
@@ -139,7 +139,7 @@ core.select.option.createIdLocator_ = function(id) {
 
     assertSelected: function(element) {
       var selectedId = element.options[element.selectedIndex].id;
-      if (!matches(selectedValue)) {
+      if (!matches(selectedId)) {
         throw new core.Error("Expected id (" + id + ") did not match: " + selectedId);
       }
     }
@@ -151,7 +151,7 @@ core.select.option.createIdLocator_ = function(id) {
  * Option location strategies.
  *
  * @const
- * @type {Object.<string, core.select.option.Locator>}
+ * @type {Object.<string, function(string) : core.select.option.Locator>}
  */
 core.select.option.Locators_ = {
   'id': core.select.option.createIdLocator_,
@@ -240,7 +240,7 @@ core.select.findSelectedOptionProperty_ = function(locator, property) {
 
 
 /**
- * @param {string | Element} locator an identifying for a SELECT element.
+ * @param {string | !Element} locator an identifying for a SELECT element.
  * @return {boolean} Whether an some option has been selected.
  */
 core.select.isSomethingSelected = function(locator) {

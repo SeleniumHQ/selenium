@@ -35,7 +35,7 @@ goog.require('goog.userAgent');
 /**
  * Attempt to normalize the text content of an element.
  *
- * @param {!Element} element The element to use.
+ * @param {!Node} element The element to use.
  * @param {boolean} preformatted Whether the text is preformatted or not.
  * @return {string} The text content of the element.
  * @private
@@ -60,6 +60,9 @@ core.text.getTextContent_ = function(element, preformatted) {
     text = '';
     for (var i = 0; i < element.childNodes.length; i++) {
       var child = element.childNodes.item(i);
+      if (!child) {
+        continue;
+      }
       text += core.text.getTextContent_(child, childrenPreformatted);
     }
     // Handle block elements that introduce newlines
@@ -148,9 +151,9 @@ core.text.getText = function(locator) {
   var isRecentFirefox =
       (goog.userAgent.GECKO && goog.userAgent.VERSION >= '1.8');
   
-  if (isRecentFirefox || goog.userAgent.KONQUEROR ||
+  if (isRecentFirefox ||
       goog.userAgent.SAFARI || goog.userAgent.OPERA) {
-    text = core.text.getTextContent_(element);
+    text = core.text.getTextContent_(element, false);
   } else {
     if (element.textContent) {
       text = element.textContent;
@@ -172,7 +175,8 @@ core.text.getText = function(locator) {
  */
 core.text.getBodyText = function() {
   var doc = bot.window_.document;
-  return core.text.getText(doc.body);
+  var body = doc.body;
+  return !!body ? core.text.getText(body) : '';
 };
 
 

@@ -53,7 +53,7 @@ core.patternMatcher.regexp_ = function(regexpString, actual) {
  * @private
  */
 core.patternMatcher.regexpi_ = function(regexpString, actual) {
-  return new RegExp(regexpString, 'i').text(actual);
+  return new RegExp(regexpString, 'i')['text'](actual);
 };
 
 
