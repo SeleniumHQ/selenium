@@ -40,7 +40,7 @@ class WebDriverWait(object):
         if self._poll == 0:
             self._poll = POLL_FREQUENCY
 
-    def until(self, method):
+    def until(self, method, message=''):
         """Calls the method provided with the driver as an argument until the \
         return value is not False."""
         end_time = time.time() + self._timeout
@@ -54,9 +54,9 @@ class WebDriverWait(object):
             time.sleep(self._poll)
             if(time.time() > end_time):
                 break
-        raise TimeoutException()
+        raise TimeoutException(message)
 
-    def until_not(self, method):
+    def until_not(self, method, message=''):
           """Calls the method provided with the driver as an argument until the \
           return value is False."""
           end_time = time.time() + self._timeout
@@ -70,4 +70,4 @@ class WebDriverWait(object):
               time.sleep(self._poll)
               if(time.time() > end_time):
                   break
-          raise TimeoutException()
+          raise TimeoutException(message)
