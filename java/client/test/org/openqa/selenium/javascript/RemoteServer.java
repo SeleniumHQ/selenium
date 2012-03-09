@@ -19,10 +19,8 @@ package org.openqa.selenium.javascript;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -32,23 +30,15 @@ import javax.servlet.Servlet;
 enum RemoteServer implements AppServer {
   INSTANCE;
 
-  private final SeleniumServer server;
+  private final OutOfProcessSeleniumServer server;
 
   RemoteServer() {
-    int port = PortProber.findFreePort();
-    RemoteControlConfiguration config = new RemoteControlConfiguration();
-    config.setPort(port);
-
-    try {
-      server = new SeleniumServer(config);
-    } catch (Exception e) {
-      throw Throwables.propagate(e);
-    }
+    server = new OutOfProcessSeleniumServer();
   }
 
   public void start() {
     try {
-      server.boot();
+      server.start();
 
       URL statusUrl = new URL(whereIs("/wd/hub/status"));
       new UrlChecker().waitUntilAvailable(20, TimeUnit.SECONDS, statusUrl);
@@ -70,7 +60,8 @@ enum RemoteServer implements AppServer {
   }
 
   public String whereIs(String relativeUrl) {
-    return String.format("http://localhost:%d%s", server.getPort(), relativeUrl);
+    URL webDriverUrl = server.getWebDriverUrl();
+    return String.format("http://localhost:%d%s", webDriverUrl.getPort(), relativeUrl);
   }
 
   public String whereElseIs(String relativeUrl) {
