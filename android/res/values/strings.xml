@@ -13,6 +13,7 @@
   <string name="jetty_stopped">Jetty stopped</string>
   <string name="jetty_not_stopped">Jetty not stopped</string>
   <string name="jetty_not_running">Jetty not running</string>
+  <string name="app_name">WebDriver</string>
 
 
 </resources>

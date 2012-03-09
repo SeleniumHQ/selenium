@@ -38,7 +38,7 @@ limitations under the License.
   <supports-screens android:smallScreens="true" android:normalScreens="true"
                     android:largeScreens="true"/>
 
-  <application android:label="WebDriver Client" android:icon="@drawable/selenium_icon">
+  <application android:label="@string/app_name" android:icon="@drawable/selenium_icon">
     <activity android:name=".MainActivity"
               android:configChanges="orientation|screenLayout"
               android:label="WebDriver">
