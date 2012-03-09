@@ -7,6 +7,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnConnectionPNames;
 import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -82,6 +83,7 @@ public class HttpClientFactory {
     HttpConnectionParams.setSoReuseaddr(params, true);
     HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
     HttpConnectionParams.setSoTimeout(params, TIMEOUT_THREE_HOURS);
+    params.setIntParameter(ConnConnectionPNames.MAX_STATUS_LINE_GARBAGE, 0);
     HttpConnectionParams.setStaleCheckingEnabled(params, true);
     return params;
   }
