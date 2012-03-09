@@ -311,19 +311,13 @@ public class RemoteProxy implements Comparable<RemoteProxy> {
         long inactivity = session.getInactivityTime();
         boolean hasTimedOut = inactivity > timeOut;
         if (hasTimedOut) {
-          if (session.isForwardingRequest()) {
-            URL remoteURL = session.getSlot().getRemoteURL();
-            log.logp(Level.WARNING, "SessionCleanup", null,
-                     "session " + session + " has TIMED OUT while being processed in node ("
-                     + remoteURL
-                     + ")and will be released.\nThe remote node or browser is probably in trouble");
-          } else {
+          if (!session.isForwardingRequest()) {
             log.logp(Level.WARNING, "SessionCleanup", null,
                      "session " + session
                      + " has TIMED OUT due to client inactivity and will be released.");
+            ((TimeoutListener) proxy).beforeRelease(session);
+            registry.terminate(session, SessionTerminationReason.TIMEOUT);
           }
-          ((TimeoutListener) proxy).beforeRelease(session);
-          registry.terminate(session, SessionTerminationReason.TIMEOUT);
         }
 
         if (session.isOrphaned()) {
