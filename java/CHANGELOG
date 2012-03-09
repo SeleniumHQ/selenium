@@ -7,6 +7,10 @@ WebDriver:
 Grid:
   * Significant changes in the timeout strategy between hub, nodes and browser.
     See http://code.google.com/p/selenium/wiki/Grid2 section on timeouts.
+    Compatibility note: It is recommended to at least update the nodes
+    to 2.21. Upgrading only the hub will effectively disable the 
+    browser-death timeout.
+
   * Content length issue solved
   * Improvements in thread dumps in both hub and node,
     possible to corrolate the two.
