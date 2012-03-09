@@ -18,17 +18,11 @@ limitations under the License.
 package org.openqa.selenium.testing.drivers;
 
 import com.google.common.base.Supplier;
-import com.google.common.base.Throwables;
 
-import org.apache.jasper.tagplugins.jstl.core.Out;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RemoteSupplier implements Supplier<WebDriver> {
 
