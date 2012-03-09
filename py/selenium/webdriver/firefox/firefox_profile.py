@@ -171,7 +171,7 @@ class FirefoxProfile(object):
 
     @property
     def accept_untrusted_certs(self):
-        return bool(
+        return self._santise_pref(
             self.default_preferences["webdriver_accept_untrusted_certs"])
 
     @accept_untrusted_certs.setter
@@ -182,7 +182,7 @@ class FirefoxProfile(object):
 
     @property
     def assume_untrusted_cert_issuer(self):
-        return bool(self.default_preferences["webdriver_assume_untrusted_issuer"])
+        return self._santise_pref(self.default_preferences["webdriver_assume_untrusted_issuer"])
 
     @assume_untrusted_cert_issuer.setter
     def assume_untrusted_cert_issuer(self, value):
@@ -193,7 +193,7 @@ class FirefoxProfile(object):
 
     @property
     def native_events_enabled(self):
-        return bool(self.default_preferences['webdriver_enable_native_events'])
+        return self._santise_pref(self.default_preferences['webdriver_enable_native_events'])
 
     @native_events_enabled.setter
     def native_events_enabled(self, value):
@@ -235,7 +235,13 @@ class FirefoxProfile(object):
             self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
 
     #Private Methods
-
+    def _santise_pref(self, item):
+        if item == 'true':
+            return True
+        elif item == 'false':
+            return False
+        else:
+            return item
     def _set_manual_proxy_preference(self, key, setting):
         if setting is None or setting is '':
             return
