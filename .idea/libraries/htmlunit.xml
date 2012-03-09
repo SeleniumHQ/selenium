@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="htmlunit">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="xml-apis">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/xml/xercesImpl-2.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/xml/xalan-2.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/xml/xml-apis-1.3.04.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

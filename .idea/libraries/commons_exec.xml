@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="commons-exec">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/commons-exec/commons-exec-1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/commons-exec/commons-exec-1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

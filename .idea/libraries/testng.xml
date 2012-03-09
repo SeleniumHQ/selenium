@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="testng">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/testng/testng-6.0.1-nobsh-noguice.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/testng/testng-6.0.1-nobsh-noguice-src.jar!/" />
+    </SOURCES>
+  </library>
+</component>

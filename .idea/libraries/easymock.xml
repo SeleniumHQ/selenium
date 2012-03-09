@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="easymock">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/easymock/easymockclassextension-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/easymock/easymock-2.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
