@@ -286,6 +286,10 @@
       var noscript = findElement({id: 'noscript'});
       assertFalse(isShown(noscript));
     }
+    function testThatItemsHiddenWithOverflowHiddenAreFalse(){
+      var target = findElement({id: 'target'});
+      assertFalse(isShown(target));
+    }
   </script>
 
   <style type="text/css">
@@ -395,5 +399,33 @@
 <iframe id="iframe" src="testdata/iframe_page.html"></iframe>
 
 <span id="onlyWhitespace">  </span>
+<style>
+  #box{
+    border: 1px solid black;
+  }
+  #box ul{
+    height: 250px;
+    overflow: hidden;               
+  }
+  #box ul > li{
+    height: 50px;
+  }
+  #box ul > li > a{
+    height: 26px;
+  }
+</style>
+<div id="box">
+   <ul id="list1">
+     <li><a>Item 1</a></li>
+     <li><a>Item 2</a></li>
+     <li><a>Item 3</a></li>
+     <li><a>Item 4</a></li>
+     <li><a>Item 5</a></li>
+     <li><a>Item 6</a></li>
+     <li><a>Item 7</a></li>
+     <li id="target"><a>Item 8</a></li>
+   </ul>
+</div>
+
 </body>
 </html>

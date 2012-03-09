@@ -708,6 +708,26 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   if (!positiveSize(elem)) {
     return false;
   }
+  function isOverflowHiding(e){
+    var parent = bot.dom.getParentElement(e);
+    if (bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden'){
+      var sizeOfParent = bot.dom.getElementSize_(parent); 
+      var locOfParent = goog.style.getClientPosition(parent);
+      var locOfElement = goog.style.getClientPosition(e);
+      if (locOfParent.x + sizeOfParent.width < locOfElement.x){
+        return false;
+      }
+      if (locOfParent.y + sizeOfParent.height < locOfElement.y){
+        return false;
+      }
+      return !parent || isOverflowHiding(parent);
+    }
+    return true;
+  }
+
+  if (!isOverflowHiding(elem)){
+    return false;
+  }
 
   return true;
 };
