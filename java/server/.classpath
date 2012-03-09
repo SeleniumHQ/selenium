@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/client"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/bouncycastle"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-httpclient"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-io"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logging"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jcip-annotations"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mx4j"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/snakeyaml"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/easymock"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hamcrest"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jmock"/>
+	<classpathentry kind="output" path="build/production"/>
+</classpath>

@@ -89,7 +89,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
     
     try {
       File prefs = locate("javascript/firefox-driver/webdriver.json");
-      File dest = locate("out/production/selenium/org/openqa/selenium/firefox");
+      File dest = locate("java/client/build/production/org/openqa/selenium/firefox");
       Files.copy(prefs, new File(dest, "webdriver.json"));
       FirefoxProfile profile = new FirefoxProfile();
 

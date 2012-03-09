@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+	<output-test url="file://$MODULE_DIR$/build/test"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/test"/>
+	</contentEntry>
+	<lib name="jetty" scope="TEST"/>
+	<lib name="commons-lang" scope="RUNTIME"/>
+	<lib name="commons-logging" scope="RUNTIME"/>
+	<lib name="commons-codec" scope="RUNTIME"/>
+	<lib name="commons-collections" scope="RUNTIME"/>
+	<lib name="cssparser" scope="RUNTIME"/>
+	<lib name="nekohtml" scope="RUNTIME"/>
+	<lib name="sac" scope="RUNTIME"/>
+	<lib name="xml-apis" scope="RUNTIME"/>
+</component>

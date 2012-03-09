@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/guava-libraries"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/operadriver"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/simple-json"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/testng"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/cglib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-io"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-exec"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-httpclient"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/easymock"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hamcrest"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/htmlunit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jmock"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jna"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/android"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-lang"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logging"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-codec"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-collections"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/cssparser"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/nekohtml"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/sac"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/xml-apis"/>
+	<classpathentry kind="output" path="build/production"/>
+</classpath>
