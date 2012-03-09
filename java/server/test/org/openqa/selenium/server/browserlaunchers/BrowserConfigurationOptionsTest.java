@@ -6,6 +6,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.thoughtworks.selenium.BrowserConfigurationOptions;
+
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Proxies;
@@ -73,5 +75,19 @@ public class BrowserConfigurationOptionsTest {
 
     // Because "proxyRequired" is set
     assertEquals(3, options.asMap().size());
+  }
+
+  @Test
+  public void testServerOptionsCanLoadClientOptions() {
+    String profile = "foo";
+    String execPath = "c:\\simon stewart\\likes\\cheese";
+    BrowserConfigurationOptions bco = new BrowserConfigurationOptions()
+        .setSingleWindow()
+        .setProfile(profile)
+        .setBrowserExecutablePath(execPath);
+    Capabilities serverOptions = BrowserOptions.newBrowserOptions(bco.toString());
+    assertEquals(profile, BrowserOptions.getProfile(serverOptions));
+    assertEquals(execPath, BrowserOptions.getExecutablePath(serverOptions));
+    assertTrue(BrowserOptions.isSingleWindow(serverOptions));
   }
 }

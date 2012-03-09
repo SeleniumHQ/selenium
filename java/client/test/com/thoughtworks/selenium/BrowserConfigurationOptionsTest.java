@@ -1,7 +1,6 @@
 package com.thoughtworks.selenium;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
 import junit.framework.TestCase;
 
@@ -99,19 +98,6 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setBrowserMode(mode);
     assertTrue(bco.isSet(BrowserConfigurationOptions.BROWSER_MODE));
     assertEquals(mode, bco.getBrowserMode());
-  }
-
-  public void testServerOptionsCanLoadClientOptions() {
-    String profile = "foo";
-    String execPath = "c:\\simon stewart\\likes\\cheese";
-    BrowserConfigurationOptions bco = new BrowserConfigurationOptions()
-        .setSingleWindow()
-        .setProfile(profile)
-        .setBrowserExecutablePath(execPath);
-    Capabilities serverOptions = BrowserOptions.newBrowserOptions(bco.toString());
-    assertEquals(profile, BrowserOptions.getProfile(serverOptions));
-    assertEquals(execPath, BrowserOptions.getExecutablePath(serverOptions));
-    assertTrue(BrowserOptions.isSingleWindow(serverOptions));
   }
 
 }

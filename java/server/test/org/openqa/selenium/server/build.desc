@@ -17,3 +17,16 @@ java_test(name = "RcServerUnitTests",
     "//third_party/java/jmock",
     "//third_party/java/junit",
   ])
+
+java_test(name = "RcServerLargeTests",
+  srcs = [
+    "RcServerLargeTests.java",
+    "SeleniumServerProxyTest.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/os",
+    "//java/client/test/org/openqa/selenium:build",
+    "//java/client/test/org/openqa/selenium/testing:util",
+    "//java/server/src/org/openqa/grid/selenium:selenium:uber",
+    "//java/server/src/org/openqa/selenium/server:base",
+  ])

@@ -1,6 +1,6 @@
 /*
-Copyright 2011 WebDriver committers
-Copyright 2011 Google Inc.
+Copyright 2012 Software Freedom Conservancy
+Copyright 2012 WebDriver committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
-package com.thoughtworks.selenium;
+package org.openqa.selenium.server;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class SeleniumServerTestSuite extends TestSuite {
-  public static Test suite() throws Exception {
-    TestSuite suite = new TestSuite(SeleniumServerProxyTest.class);
-    return suite;
-  }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    SeleniumServerProxyTest.class
+})
+public class RcServerLargeTests {
 }
