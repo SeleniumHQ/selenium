@@ -13,6 +13,9 @@ java_test(name = "test",
   srcs = [
     "IPhoneDriverTests.java",
   ],
+  sysproperties = [
+    { "selenium.browser" : "iphone" },
+  ],
   deps = [
     ":base",
     ":server",
@@ -26,6 +29,9 @@ java_test(name = "test",
 java_test(name = "test_deployed",
   srcs = [
     "AlreadyRunningIPhoneDriverTests.java",
+  ],
+  sysproperties = [
+    { "selenium.browser" : "iphone" },
   ],
   deps = [
     ":base",
