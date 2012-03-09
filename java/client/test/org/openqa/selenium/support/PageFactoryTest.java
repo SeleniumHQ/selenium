@@ -17,19 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.testing.MockTestBase;
+import org.junit.Assert;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
-
-import org.junit.Test;
+import org.openqa.selenium.testing.MockTestBase;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -42,7 +42,7 @@ public class PageFactoryTest extends MockTestBase {
   public void shouldProxyElementsInAnInstantiatedPage() {
     PublicPage page = new PublicPage();
 
-    assertThat(page.q, is(nullValue()));
+    Assert.assertThat(page.q, is(nullValue()));
     assertThat(page.list, is(nullValue()));
 
     PageFactory.initElements(driver, page);

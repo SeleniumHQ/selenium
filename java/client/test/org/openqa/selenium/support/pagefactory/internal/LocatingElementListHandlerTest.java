@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.testing.MockTestBase;

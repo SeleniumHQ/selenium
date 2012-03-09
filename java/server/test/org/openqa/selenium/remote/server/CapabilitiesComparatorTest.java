@@ -18,11 +18,11 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.number.OrderingComparisons.greaterThan;
 import static org.hamcrest.number.OrderingComparisons.lessThan;
+import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.remote.server.CapabilitiesComparator.getBestMatch;
 
 import com.google.common.collect.Lists;

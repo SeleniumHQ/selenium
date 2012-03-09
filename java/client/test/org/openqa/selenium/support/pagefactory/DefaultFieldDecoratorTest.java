@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasInputDevices;

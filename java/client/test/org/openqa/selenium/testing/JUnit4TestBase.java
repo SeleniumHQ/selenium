@@ -1,6 +1,10 @@
 package org.openqa.selenium.testing;
 
-import org.junit.AfterClass;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.Pages;
@@ -10,11 +14,6 @@ import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase {

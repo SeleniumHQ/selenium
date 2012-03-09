@@ -17,8 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;

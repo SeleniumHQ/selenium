@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -24,7 +25,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
@@ -60,7 +60,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     sendLowercase.perform();
 
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
-
   }
 
   @JavascriptEnabled

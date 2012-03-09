@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.lift;
 
+import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.fail;
 
