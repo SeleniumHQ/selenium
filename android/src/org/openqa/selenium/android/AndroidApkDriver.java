@@ -39,12 +39,12 @@ import org.openqa.selenium.android.app.MainActivity;
 import java.util.List;
 import java.util.Set;
 
-public class AndroidDriver implements BrowserConnection, HasTouchScreen, JavascriptExecutor,
+public class AndroidApkDriver implements BrowserConnection, HasTouchScreen, JavascriptExecutor,
     LocationContext, Rotatable, TakesScreenshot, WebDriver, WebStorage {
 
   private AndroidWebDriver driver;
 
-  public AndroidDriver() {
+  public AndroidApkDriver() {
     driver = MainActivity.createDriver();
   }
 

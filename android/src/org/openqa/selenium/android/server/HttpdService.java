@@ -17,24 +17,23 @@ limitations under the License.
 
 package org.openqa.selenium.android.server;
 
-import org.seleniumhq.jetty7.http.HttpGenerator;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.handler.DefaultHandler;
-import org.seleniumhq.jetty7.server.handler.HandlerList;
-import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
-import org.seleniumhq.jetty7.servlet.ServletHolder;
-import org.openqa.selenium.android.library.Logger;
-import org.openqa.selenium.android.Platform;
-import org.openqa.selenium.android.app.R;
-
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.util.Log;
 import android.widget.Toast;
+
+import org.openqa.selenium.android.Platform;
+import org.openqa.selenium.android.app.R;
+import org.openqa.selenium.android.library.Logger;
+import org.seleniumhq.jetty7.http.HttpGenerator;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.handler.DefaultHandler;
+import org.seleniumhq.jetty7.server.handler.HandlerList;
+import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
+import org.seleniumhq.jetty7.servlet.ServletHolder;
 
 import java.util.logging.Level;
 
@@ -160,7 +159,7 @@ public class HttpdService extends Service {
       wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "IJetty");
       wakeLock.acquire();
 
-      //AndroidDriver.setContext(this);
+      //AndroidApkDriver.setContext(this);
 
       System.setProperty("org.mortbay.log.class", "org.mortbay.log.AndroidLog");
       server = new Server();
