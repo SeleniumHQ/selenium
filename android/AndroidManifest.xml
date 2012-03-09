@@ -48,6 +48,6 @@ limitations under the License.
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <service android:enabled="true" android:name="org.openqa.selenium.android.server.JettyService"/>
+    <service android:enabled="true" android:name="org.openqa.selenium.android.server.HttpdService"/>
   </application>
 </manifest>
