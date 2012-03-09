@@ -42,6 +42,14 @@ public interface Session {
 
   boolean isTimedOut(int timeout);
 
+    /**
+     * Indicates that the session is in use at this moment (being forwarded to browser)
+     * @return  true if the session is active inside the browser
+     */
+  boolean isInUse();
+
+  void interrupt();
+
   void updateLastAccessTime();
 
   SessionId getSessionId();

@@ -48,9 +48,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The default session implementation.
- * 
+ *
  * Thread safety notes:
- * 
+ *
  * There are basically two different thread types rummaging around in this class: Container listener
  * threads which deliver requests, and the "executor" thread that processes each request. This means
  * there is a minefield of thread constraints/guards, some of which are described in docs for each
@@ -58,25 +58,28 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class DefaultSession implements Session {
+
   private final SessionId sessionId;
   private final WebDriver driver;
   /**
    * The cache of known elements.
-   * 
+   *
    * Happens-before the exexutor and is thereafter thread-confined to the executor thread.
    */
   private final KnownElements knownElements;
   private final ThreadPoolExecutor executor;
   private final Capabilities capabilities; // todo: Investigate memory model implications of map
-                                           // elements inside capabilities.
+  // elements inside capabilities.
   private volatile String base64EncodedImage;
   private volatile long lastAccess;
+  private volatile Thread inUseWithThread = null;
   private final BrowserCreator browserCreator;
   private TemporaryFilesystem tempFs;
 
   // This method is to avoid constructor escape of partially constructed session object
   public static Session createSession(DriverFactory factory,
-      SessionId sessionId, Capabilities capabilities) throws Exception {
+                                      SessionId sessionId, Capabilities capabilities)
+      throws Exception {
     File tmpDir = new File(System.getProperty("java.io.tmpdir"), sessionId.toString());
     if (!tmpDir.mkdir()) {
       throw new WebDriverException("Cannot create temp directory: " + tmpDir);
@@ -88,12 +91,13 @@ public class DefaultSession implements Session {
 
   @VisibleForTesting
   public static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs,
-      SessionId sessionId, Capabilities capabilities) throws Exception {
+                                      SessionId sessionId, Capabilities capabilities)
+      throws Exception {
     return new DefaultSession(factory, tempFs, sessionId, capabilities);
   }
 
   private DefaultSession(final DriverFactory factory, TemporaryFilesystem tempFs,
-      SessionId sessionId, final Capabilities capabilities) throws Exception {
+                         SessionId sessionId, final Capabilities capabilities) throws Exception {
     this.knownElements = new KnownElements();
     this.sessionId = sessionId;
     this.tempFs = tempFs;
@@ -101,8 +105,8 @@ public class DefaultSession implements Session {
     final FutureTask<EventFiringWebDriver> webDriverFutureTask =
         new FutureTask<EventFiringWebDriver>(browserCreator);
     executor = new ThreadPoolExecutor(1, 1,
-        600L, TimeUnit.SECONDS,
-        new LinkedBlockingQueue<Runnable>());
+                                      600L, TimeUnit.SECONDS,
+                                      new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
     EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
@@ -125,7 +129,7 @@ public class DefaultSession implements Session {
   }
 
   public boolean isTimedOut(int timeout) {
-    return (lastAccess + timeout) < System.currentTimeMillis();
+    return timeout > 0 && (lastAccess + timeout) < System.currentTimeMillis();
   }
 
   public void close() {
@@ -134,17 +138,21 @@ public class DefaultSession implements Session {
     tempFs.deleteBaseDir();
   }
 
-  
-   
+
   public <X> X execute(final FutureTask<X> future) throws Exception {
+/*    if (executor.isShutdown()){
+         throw new WebDriverException(sessionId + " is closed for further execution");
+    } */
     executor.execute(new Runnable() {
       public void run() {
-          Thread.currentThread().setName("Session " + sessionId + " processing inside browser");
-          try {
-            future.run();
-          } finally {
-               Thread.currentThread().setName("Session " + sessionId + " awaiting client");
-          }
+        inUseWithThread = Thread.currentThread();
+        inUseWithThread.setName("Session " + sessionId + " processing inside browser");
+        try {
+          future.run();
+        } finally {
+          inUseWithThread = null;
+          Thread.currentThread().setName("Session " + sessionId + " awaiting client");
+        }
       }
     });
     return future.get();
@@ -174,6 +182,7 @@ public class DefaultSession implements Session {
   }
 
   private class BrowserCreator implements Callable<EventFiringWebDriver> {
+
     private final DriverFactory factory;
     private final Capabilities capabilities;
     private volatile Capabilities describedCapabilities;
@@ -240,5 +249,18 @@ public class DefaultSession implements Session {
 
   public TemporaryFilesystem getTemporaryFileSystem() {
     return tempFs;
+  }
+
+  public boolean isInUse() {
+    return inUseWithThread != null;
+  }
+
+  public void interrupt() {
+    Thread threadToStop = inUseWithThread;
+    if (threadToStop != null) {
+      synchronized (threadToStop) {
+        threadToStop.interrupt();
+      }
+    }
   }
 }

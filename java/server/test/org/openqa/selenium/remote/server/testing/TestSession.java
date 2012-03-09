@@ -36,6 +36,8 @@ public class TestSession implements Session {
   private final Capabilities capabilities;
   private final KnownElements knownElements;
   private final ExecutorService executor;
+  private volatile Thread inUseWithThread = null;
+
 
   private long lastAccess;
 
@@ -54,8 +56,13 @@ public class TestSession implements Session {
   }
 
   public <X> X execute(FutureTask<X> future) throws Exception {
+    try {
+      inUseWithThread = Thread.currentThread();
     executor.execute(future);
     return future.get();
+    } finally {
+      inUseWithThread = null;
+    }
   }
 
   public WebDriver getDriver() {
@@ -79,7 +86,7 @@ public class TestSession implements Session {
   }
 
   public boolean isTimedOut(int timeout) {
-    return (lastAccess + timeout) < System.currentTimeMillis();
+    return timeout > 0 && (lastAccess + timeout) < System.currentTimeMillis();
   }
 
   public void updateLastAccessTime() {
@@ -92,5 +99,18 @@ public class TestSession implements Session {
 
   public TemporaryFilesystem getTemporaryFileSystem() {
     return null;
+  }
+
+  public boolean isInUse() {
+    return inUseWithThread != null;
+  }
+
+  public void interrupt() {
+    Thread threadToStop = inUseWithThread;
+    if (threadToStop != null) {
+      synchronized (threadToStop) {
+        threadToStop.interrupt();
+      }
+    }
   }
 }

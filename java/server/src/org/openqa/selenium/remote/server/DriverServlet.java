@@ -183,8 +183,9 @@ public class DriverServlet extends HttpServlet {
     setupMappings(driverSessions, logger);
 
     int sessionTimeOut = Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
+    int browserTimeout = Integer.parseInt(System.getProperty("webdriver.server.browser.timeout", "0"));
     if (sessionTimeOut > 0) {
-      sessionCleaner = new SessionCleaner(driverSessions, logger, 1000 * sessionTimeOut);
+      sessionCleaner = new SessionCleaner(driverSessions, logger, 1000 * sessionTimeOut, 1000* browserTimeout);
       sessionCleaner.start();
     }
   }

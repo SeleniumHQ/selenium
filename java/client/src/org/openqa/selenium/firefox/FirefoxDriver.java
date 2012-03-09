@@ -34,6 +34,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -63,7 +64,7 @@ import java.util.concurrent.TimeUnit;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that
  * profile directly. This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
+public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, Killable {
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
 
@@ -147,6 +148,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot {
         return new FirefoxWebElement(FirefoxDriver.this);
       }
     });
+  }
+
+  public void kill() {
+    binary.quit();
   }
 
   @Override

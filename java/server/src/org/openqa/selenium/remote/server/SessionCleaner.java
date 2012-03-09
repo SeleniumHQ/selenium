@@ -16,24 +16,29 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.util.logging.Logger;
 
 class SessionCleaner extends Thread {   // Thread safety reviewed
 
   private final DriverSessions driverSessions;
-  private final int timeoutMs;
+  private final int clientGoneTimeout;
+  private final int insideBrowserTimeout;
   private final Logger log;
   private volatile boolean running = true;
 
-  SessionCleaner(DriverSessions driverSessions, Logger log, int sessionTimeOutInMs) {
+  SessionCleaner(DriverSessions driverSessions, Logger log, int clientGoneTimeout, int insideBrowserTimeout) {
     super("DriverServlet Session Cleaner");
     this.log = log;
-    timeoutMs = sessionTimeOutInMs;
+    this.clientGoneTimeout = clientGoneTimeout;
+    this.insideBrowserTimeout = insideBrowserTimeout;
     this.driverSessions = driverSessions;
   }
 
@@ -44,7 +49,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     while (running) {
       checkExpiry();
       try {
-        Thread.sleep(timeoutMs / 10);
+        Thread.sleep(clientGoneTimeout / 10);
       } catch (InterruptedException e) {
         log.info("Exiting session cleaner thread");
       }
@@ -62,17 +67,47 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
   void checkExpiry() {
     for (SessionId sessionId : driverSessions.getSessions()) {
       Session session = driverSessions.get(sessionId);
-      if (session != null && session.isTimedOut(timeoutMs)) {
-        DeleteSession deleteSession = new DeleteSession(session);
-        try {
-          deleteSession.call();
+      if (session != null) {
+        boolean useDeleteSession = false;
+        boolean killed = false;
+
+        boolean inUse = session.isInUse();
+        if (!inUse && session.isTimedOut(clientGoneTimeout)) {
+          useDeleteSession = true;
+          log.info("Session " + session.getSessionId() + " deleted due to client timeout");
+        }
+        if (inUse && session.isTimedOut(insideBrowserTimeout)) {
+          WebDriver driver = session.getDriver();
+          if (driver instanceof EventFiringWebDriver){
+            driver = ((EventFiringWebDriver)driver).getWrappedDriver();
+          }
+          if (driver instanceof Killable) {
+            session.interrupt();
+            ((Killable) driver).kill();
+            killed = true;
+            log.warning("Browser killed and session " + session.getSessionId() + " terminated due to in-browser timeout.");
+          } else {
+            useDeleteSession = true;
+            log.warning("Session " + session.getSessionId() + " deleted due to in-browser timeout. " +
+                        "Terminating driver with DeleteSession since it does not support Killable, "
+                        + "the driver in question does not support selenium-server timeouts fully");
+          }
+        }
+
+        if (useDeleteSession) {
+          DeleteSession deleteSession = new DeleteSession(session);
+          try {
+            deleteSession.call();
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+        if (useDeleteSession || killed) {
+          driverSessions.deleteSession(sessionId);
           final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
           logHandler.transferThreadTempLogsToSessionLogs(sessionId.toString());
           logHandler.removeSessionLogs(sessionId.toString());
-          driverSessions.deleteSession(sessionId);
-          log.info("Session " + session + " deleted due to timeout");
-        } catch (Exception e) {
-          throw new RuntimeException(e);
         }
       }
     }

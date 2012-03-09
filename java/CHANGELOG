@@ -9,6 +9,11 @@ Grid:
   * Improvements in thread dumps in both hub and node,
     possible to corrolate the two.
 
+Server:
+  * -Dwebdriver.server.browser.timeout=<timeoutInSeconds> added to
+    differentiate between browser hang and client gone (which is
+    webdriver.server.session.timeout as before)
+
 
 v2.20.0 
 =======

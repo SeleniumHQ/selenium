@@ -25,6 +25,7 @@ import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -59,7 +60,11 @@ public class KnownElements {
         } else if ("getWrappedElement".equals(method.getName())) {
           return element;
         } else {
+          try {
           return method.invoke(element, objects);
+          } catch (InvocationTargetException e){
+            throw e.getTargetException();
+          }
         }
       }
     };
