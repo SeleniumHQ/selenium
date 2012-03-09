@@ -1,7 +1,6 @@
 java_library(name = "base",
   srcs = [
     "IPhoneSpecificTests.java",
-    "LegacyTests.java",
     "*Test.java",
   ],
   deps = [
