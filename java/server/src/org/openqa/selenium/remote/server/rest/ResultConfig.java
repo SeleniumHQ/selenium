@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
@@ -31,10 +29,12 @@ import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
+import org.openqa.selenium.remote.server.handler.SessionNotFoundException;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;
@@ -50,11 +50,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ResultConfig {
 
@@ -181,6 +184,10 @@ public class ResultConfig {
     String sessionId = HttpCommandExecutor.getSessionId(request.getRequestURI());
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 
+    ResultType result;
+    if (isSessionTerminated(sessId, request, response)) {
+      return;
+    }
     final Handler handler = getHandler(pathInfo, sessId);
 
     if (handler instanceof JsonParametersAware) {
@@ -189,13 +196,19 @@ public class ResultConfig {
 
     request.setAttribute("handler", handler);
 
-    ResultType result;
+
+    if (isSessionTerminated(sessId, request, response)) {
+      return;
+    }
 
     try {
       log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);
       log.info("Done: " + pathInfo);
+    } catch (UnreachableBrowserException e){
+      replyError(request, response, e);
+      return;
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
       log.log(Level.WARNING, "Exception thrown", e);
@@ -224,8 +237,13 @@ public class ResultConfig {
         }
       });
 
+      try {
       ((WebDriverHandler) handler).execute(task);
       task.get();
+      } catch (RejectedExecutionException e){  // The session is gone
+        respondSessionError(sessId, request, response);
+      }
+
       if (handler instanceof DeleteSession) {
         // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
         final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
@@ -239,6 +257,34 @@ public class ResultConfig {
       renderer.render(request, response, handler);
       response.flushBuffer();
     }
+  }
+
+  private void replyError(HttpServletRequest request, final HttpServletResponse response, Exception e)
+      throws Exception {
+    response.reset();
+    Renderer renderer2 = getRenderer( ResultType.EXCEPTION, request);
+    request.setAttribute("exception",  e);
+    renderer2.render(request, response, null);
+
+  }
+
+  private boolean isSessionTerminated(SessionId sessId, HttpServletRequest request,
+                                      HttpServletResponse response) throws Exception {
+    if (sessId == null) return false;
+    Session session = sessions.get(sessId);
+    final boolean isTerminated = session == null;
+    if (isTerminated){
+      respondSessionError(sessId, request, response);
+    }
+    return isTerminated;
+  }
+
+  private void respondSessionError(SessionId sessId, HttpServletRequest request,
+                                   HttpServletResponse response) throws Exception {
+    SessionNotFoundException sessionNotFoundException =
+        new SessionNotFoundException("404 session " + sessId + " not found");
+    request.setAttribute("exception", sessionNotFoundException);
+    replyError(request, response, sessionNotFoundException);
   }
 
   @VisibleForTesting

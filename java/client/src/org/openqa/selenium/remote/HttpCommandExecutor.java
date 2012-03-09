@@ -316,7 +316,7 @@ public class HttpCommandExecutor implements CommandExecutor {
       try {
         Thread.sleep(2000);
       } catch (InterruptedException ie) {
-        throw Throwables.propagate(ie);
+        throw new SessionTerminatedException();
       }
     }
     return client.execute(targetHost, httpMethod, context);

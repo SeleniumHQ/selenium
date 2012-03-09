@@ -74,10 +74,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
           new Class[] {WebDriverEventListener.class},
           new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+              try {
               for (WebDriverEventListener eventListener : eventListeners) {
                 method.invoke(eventListener, args);
               }
               return null;
+              } catch (InvocationTargetException e){
+                throw e.getTargetException();
+              }
             }
           }
       );

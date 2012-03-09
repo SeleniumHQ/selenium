@@ -428,6 +428,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       Object value = converter.apply(response.getValue());
       response.setValue(value);
       log(sessionId, command.getName(), command, When.AFTER);
+    } catch (SessionTerminatedException e){
+      throw new UnreachableBrowserException("Session was terminated by hanging browser detection", e);
     } catch (Exception e) {
       log(sessionId, command.getName(), command, When.EXCEPTION);
       String errorMessage = "Error communicating with the remote browser. " +
