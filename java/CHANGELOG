@@ -5,6 +5,8 @@ WebDriver:
   * Significant stability improvements in firefoxdriver.
 
 Grid:
+  * Significant changes in the timeout strategy between hub, nodes and browser.
+    See http://code.google.com/p/selenium/wiki/Grid2 section on timeouts.
   * Content length issue solved
   * Improvements in thread dumps in both hub and node,
     possible to corrolate the two.
@@ -13,6 +15,8 @@ Server:
   * -Dwebdriver.server.browser.timeout=<timeoutInSeconds> added to
     differentiate between browser hang and client gone (which is
     webdriver.server.session.timeout as before)
+    See http://code.google.com/p/selenium/wiki/RemoteWebDriverServer 
+    for further details.
 
 
 v2.20.0 
