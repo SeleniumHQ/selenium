@@ -4,10 +4,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/guava-libraries"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/operadriver"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/simple-json"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/testng"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/testng"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/cglib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-io"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-exec"/>
