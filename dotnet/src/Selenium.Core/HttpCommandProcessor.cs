@@ -128,6 +128,7 @@ namespace Selenium
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded; charset=utf-8";
             request.Timeout = Timeout.Infinite;
+            request.ServicePoint.ConnectionLimit = 2000;
             
             Stream rs = request.GetRequestStream();
             rs.Write(data, 0, data.Length);
