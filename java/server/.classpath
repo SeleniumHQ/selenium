@@ -9,12 +9,14 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-io"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logging"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jcip-annotations"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/easymock"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hamcrest"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jmock"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mx4j"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/snakeyaml"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/easymock"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hamcrest"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jmock"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/testng"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
