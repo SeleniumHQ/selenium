@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Closeables;
@@ -145,7 +146,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private volatile boolean pageStartedLoading;
   private boolean done = false;
 
-  private LocationManager locManager;
+  private Supplier<LocationManager> locManagerSupplier;
   private String locationProvider;
 
   private JavascriptResultNotifier notifier = new JavascriptResultNotifier() {
@@ -192,13 +193,30 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     logs = new AndroidLogs();
 
     Looper.prepare();
-    locationProvider = LocationManager.GPS_PROVIDER;
-    locManager = (LocationManager) activity.getSystemService(
-        Context.LOCATION_SERVICE);
-    locManager.addTestProvider(locationProvider,
-        true, true, true, true, true, true, true, 0, 5);
-    locManager.setTestProviderEnabled(locationProvider, true);
-    locManager.requestLocationUpdates(locationProvider, 0, 0, this);
+    try {
+      locationProvider = LocationManager.GPS_PROVIDER;
+      final LocationManager locManager =
+          (LocationManager)activity.getSystemService(Context.LOCATION_SERVICE);
+      locManagerSupplier = new Supplier<LocationManager>() {
+        public LocationManager get() {
+          return locManager;
+          }
+      };
+      locManager.addTestProvider(locationProvider,
+          true, true, true, true, true, true, true, 0, 5);
+      locManager.setTestProviderEnabled(locationProvider, true);
+      locManager.requestLocationUpdates(locationProvider, 0, 0, this);
+    } catch (SecurityException e) {
+      // Devices require manually setting up to allow location, 99% of tests don't need location,
+      // ignore the relevant exception here
+      locManagerSupplier = new Supplier<LocationManager>() {
+        public LocationManager get() {
+          throw new IllegalStateException(
+            "The permission to ALLOW_MOCK_LOCATION needs to be set on your android device, " +
+            "but currently is not. Cannot perform location actions without this permission.");
+        }
+      };
+    }
   }
 
   private void initCookiesState() {
@@ -1119,7 +1137,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   }
 
   public Location location() {
-    android.location.Location loc = locManager.getLastKnownLocation(locationProvider);
+    android.location.Location loc = locManagerSupplier.get().getLastKnownLocation(locationProvider);
     return new Location(loc.getLatitude(), loc.getLongitude(), loc.getAltitude());
   }
 
@@ -1131,8 +1149,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     location.setAltitude(loc.getAltitude());
     // set the time so it's not ignored!
     location.setTime(System.currentTimeMillis());
-    locManager.setTestProviderLocation(locationProvider,
-        location);
+    locManagerSupplier.get().setTestProviderLocation(locationProvider, location);
   }
 
   public void onLocationChanged(android.location.Location location) {
