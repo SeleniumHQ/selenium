@@ -37,7 +37,7 @@ module Folder
       end
 
       task task_name(dir, args[:name]) do
-	args[:srcs].each do |src|
+	(args[:srcs] || []).each do |src|
           to_export = "#{dir}/#{src}"
           src = Platform.path_for to_export
           dest = dest_name(dir, args, src)
