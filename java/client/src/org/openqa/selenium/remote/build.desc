@@ -30,7 +30,7 @@ java_library(name = "common",
     ":base",
 
     "//java/client/src/org/openqa/selenium/interactions",
-    "//java/client/src/org/openqa/selenium/browserlaunchers",
+    "//java/client/src/org/openqa/selenium/browserlaunchers:launcher-utils",
     "//third_party/java/guava-libraries",
     "//third_party/java/apache-httpclient",
     "//third_party/java/json",

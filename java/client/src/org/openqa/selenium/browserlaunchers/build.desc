@@ -3,8 +3,6 @@ java_library(name = "browserlaunchers",
   srcs = [
     "BrowserLauncher.java",
     "MacProxyManager.java",
-    "Maps.java",
-    "WindowsProxyManager.java",
   ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium:api",
@@ -26,8 +24,10 @@ java_library(name = "launcher-utils",
   srcs = [
     "DoNotUseProxyPac.java",
     "LauncherUtils.java",
+    "Maps.java",
     "Proxies.java",
     "Sleeper.java",
+    "WindowsProxyManager.java",
   ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium:api",
