@@ -710,7 +710,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   }
   function isOverflowHiding(e){
     var parent = bot.dom.getParentElement(e);
-    if (bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden'){
+    if (parent !== null && goog.style.getComputedStyle(parent, 'overflow') == 'hidden'){
       var sizeOfParent = bot.dom.getElementSize_(parent); 
       var locOfParent = goog.style.getClientPosition(parent);
       var locOfElement = goog.style.getClientPosition(e);
