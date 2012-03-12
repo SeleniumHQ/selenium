@@ -1,12 +1,12 @@
 java_library(name = "jetty",
   deps = [
-    ":lite",
+    "jetty-repacked-7.6.1.jar",
     "//third_party/java/jasper",
     "//third_party/java/slf4j",
+	"//third_party/java/servlet-api",
   ])
 
-java_library(name = "lite",
+java_library(name = "lite-android",
   deps = [
-    "jetty-repacked-7.6.1.jar",
-    "//third_party/java/servlet-api",
+    "jetty-lite-7.2.0-repackaged-for-android.jar"
   ])

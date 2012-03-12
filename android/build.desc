@@ -18,7 +18,7 @@ java_library(name = "server",
     "//java/server/src/org/openqa/selenium/remote/server:server_core",
     "//java/server/src/org/openqa/selenium/server:logging",
     "//third_party/java/android",
-    "//third_party/java/jetty:lite:uber",
+    "//third_party/java/jetty:lite-android:uber",
     "//third_party/java/guava-libraries:guava-libraries",
     "//third_party/java/servlet-api"
   ])

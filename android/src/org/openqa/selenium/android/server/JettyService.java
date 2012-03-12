@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.android.server;
 
-import org.seleniumhq.jetty7.http.HttpGenerator;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.handler.DefaultHandler;
-import org.seleniumhq.jetty7.server.handler.HandlerList;
-import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
-import org.seleniumhq.jetty7.servlet.ServletHolder;
+import org.eclipse.jetty.http.HttpGenerator;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.openqa.selenium.android.library.Logger;
 import org.openqa.selenium.android.Platform;
 import org.openqa.selenium.android.app.R;
@@ -38,8 +38,8 @@ import android.widget.Toast;
 
 import java.util.logging.Level;
 
-public class HttpdService extends Service {
-  private static final String LOG_TAG = HttpdService.class.getName();
+public class JettyService extends Service {
+  private static final String LOG_TAG = JettyService.class.getName();
   private NotificationManager notificationManager;
   private Server server;
   private int port = 8080;
@@ -91,7 +91,7 @@ public class HttpdService extends Service {
         Toast.makeText(this, getText(R.string.jetty_stopped), Toast.LENGTH_SHORT).show();
         Logger.log(Level.INFO, LOG_TAG, "onDestroy", "Jetty stopped");
       } else {
-        Toast.makeText(HttpdService.this, R.string.jetty_not_running, Toast.LENGTH_SHORT).show();
+        Toast.makeText(JettyService.this, R.string.jetty_not_running, Toast.LENGTH_SHORT).show();
       }
     } catch (Exception e) {
       Logger.log(Level.INFO, LOG_TAG, "onDestroy", "Error stopping jetty" + e.getMessage());
@@ -130,19 +130,19 @@ public class HttpdService extends Service {
 
   protected void configureHandlers() {
     if (server != null) {
-      org.seleniumhq.jetty7.servlet.ServletContextHandler root =
-          new org.seleniumhq.jetty7.servlet.ServletContextHandler(server, "/wd/hub",
-              org.seleniumhq.jetty7.servlet.ServletContextHandler.SESSIONS);
+      org.eclipse.jetty.servlet.ServletContextHandler root =
+          new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub",
+              org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       root.addServlet(new ServletHolder(new AndroidDriverServlet()), "/*");
       
-      org.seleniumhq.jetty7.servlet.ServletContextHandler healthz =
-        new org.seleniumhq.jetty7.servlet.ServletContextHandler(server, "/wd/hub/status",
-            org.seleniumhq.jetty7.servlet.ServletContextHandler.SESSIONS);
+      org.eclipse.jetty.servlet.ServletContextHandler healthz =
+        new org.eclipse.jetty.servlet.ServletContextHandler(server, "/wd/hub/status",
+            org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS);
       healthz.addServlet(new ServletHolder(new HealthzServlet()), "/*");
       
       HandlerList handlers = new HandlerList();
       handlers.setHandlers(
-          new org.seleniumhq.jetty7.server.Handler[] {healthz, root, new DefaultHandler()});
+          new org.eclipse.jetty.server.Handler[] {healthz, root, new DefaultHandler()});
       server.setHandler(handlers);
 
     }
@@ -150,7 +150,7 @@ public class HttpdService extends Service {
 
   public void startServer() {
     if (server != null && server.isRunning()) {
-      Toast.makeText(HttpdService.this, R.string.jetty_already_started, Toast.LENGTH_SHORT).show();
+      Toast.makeText(JettyService.this, R.string.jetty_already_started, Toast.LENGTH_SHORT).show();
       return;
     }
 
@@ -173,7 +173,7 @@ public class HttpdService extends Service {
       HttpGenerator.setServerVersion("WebDriver jetty");
 
       notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-      Toast.makeText(HttpdService.this, R.string.jetty_started, Toast.LENGTH_SHORT).show();
+      Toast.makeText(JettyService.this, R.string.jetty_started, Toast.LENGTH_SHORT).show();
 
       Logger.log(Level.INFO, LOG_TAG, "startServer", "Jetty started");
     } catch (Exception e) {

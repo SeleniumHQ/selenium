@@ -29,7 +29,7 @@ import android.os.IBinder;
 
 import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.android.library.Logger;
-import org.openqa.selenium.android.server.HttpdService;
+import org.openqa.selenium.android.server.JettyService;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.CapabilityType;
@@ -41,7 +41,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 public class MainActivity extends Activity {
 
   private boolean bound;
-  private HttpdService httpd;
+  private JettyService jettyService;
   private Intent jettyIntent;
   public static final String DEBUG_MODE_ARG = "debug";
   private static Activity thisActivity;
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
   private ServiceConnection mConnection = new ServiceConnection() {
     public void onServiceConnected(ComponentName className, IBinder service) {
       bound = true;
-      httpd = ((org.openqa.selenium.android.server.WebDriverBinder) service).getService();
+      jettyService = ((org.openqa.selenium.android.server.WebDriverBinder) service).getService();
     }
 
     public void onServiceDisconnected(ComponentName arg0) {
@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
 
     new Thread(new Runnable() {
       public void run() {
-        jettyIntent = new Intent(MainActivity.this, HttpdService.class);
+        jettyIntent = new Intent(MainActivity.this, JettyService.class);
         bindService(jettyIntent, mConnection, Context.BIND_AUTO_CREATE);
       }
     }).start();
@@ -83,8 +83,8 @@ public class MainActivity extends Activity {
       unbindService(mConnection);
       bound = false;
     }
-    if (httpd != null) {
-      httpd.stopService(jettyIntent);
+    if (jettyService != null) {
+      jettyService.stopService(jettyIntent);
     }
     stopService(jettyIntent);
     this.getWindow().closeAllPanels();
