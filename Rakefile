@@ -13,6 +13,7 @@ verbose false
 require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/android'
 require 'rake-tasks/crazy_fun/mappings/export'
+require 'rake-tasks/crazy_fun/mappings/folder'
 require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/java'
 require 'rake-tasks/crazy_fun/mappings/javascript'
@@ -60,6 +61,7 @@ crazy_fun = CrazyFun.new
 # in the example above) then it will throw an exception, stopping the build
 AndroidMappings.new.add_all(crazy_fun)
 ExportMappings.new.add_all(crazy_fun)
+FolderMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
 JavaMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
