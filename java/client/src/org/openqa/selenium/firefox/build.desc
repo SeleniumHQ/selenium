@@ -12,6 +12,7 @@ java_library(name = "firefox",
     { "//cpp:imehandler64" : "org/openqa/selenium/firefox/amd64/libibushandler.so" }
   ],
   deps = [
+    "//java/client/src/org/openqa/selenium/browserlaunchers:proxies",
     "//java/client/src/org/openqa/selenium/io",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote",
