@@ -2,6 +2,19 @@
 # note that this server doesn't include the necessary drivers.
 
 java_library(name = "server",
+  resources = [
+    { "//javascript/remote:client" : "org/openqa/selenium/remote/server/resource/client.js" },
+    { "//javascript/remote:hub" : "org/openqa/selenium/remote/server/resource/hub.html" },
+    { "//javascript/remote:style" : "org/openqa/selenium/remote/server/resource/style.css" },
+  ],
+  deps = [
+    ":server_core",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium/ie",
+    "//java/client/src/org/openqa/selenium/firefox",
+  ])
+
+java_library(name = "server_core",
   srcs = [
     "CapabilitiesComparator.java",
     "DefaultDriverFactory.java",
@@ -21,11 +34,6 @@ java_library(name = "server",
     "rest/*.java",
     "xdrpc/*.java",
   ],
-  resources = [
-    { "//javascript/remote:client" : "org/openqa/selenium/remote/server/resource/client.js" },
-    { "//javascript/remote:hub" : "org/openqa/selenium/remote/server/resource/hub.html" },
-    { "//javascript/remote:style" : "org/openqa/selenium/remote/server/resource/style.css" },
-  ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium:webdriver-api",
@@ -34,7 +42,6 @@ java_library(name = "server",
     "//java/client/src/org/openqa/selenium/remote",
     "//java/client/src/org/openqa/selenium/support/events",
     "//java/server/src/org/openqa/selenium/server:logging",
-    "//javascript/firefox-driver:webdriver",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
     "//third_party/java/servlet-api",
