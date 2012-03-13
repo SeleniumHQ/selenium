@@ -22,23 +22,33 @@ import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
 import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
 
 import cybervillains.ca.KeyStoreManager;
-import org.openqa.jetty.http.HttpConnection;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.http.HttpException;
-import org.openqa.jetty.http.HttpFields;
-import org.openqa.jetty.http.HttpMessage;
-import org.openqa.jetty.http.HttpRequest;
-import org.openqa.jetty.http.HttpResponse;
-import org.openqa.jetty.http.HttpServer;
+import org.seleniumhq.jetty7.http.HttpConnection;
+import org.seleniumhq.jetty7.http.HttpContext;
+import org.seleniumhq.jetty7.http.HttpException;
+import org.seleniumhq.jetty7.http.HttpFields;
+import org.seleniumhq.jetty7.http.HttpHeaderValues;
+import org.seleniumhq.jetty7.http.HttpHeaders;
+import org.seleniumhq.jetty7.http.HttpMessage;
+import org.seleniumhq.jetty7.http.HttpMethods;
+import org.seleniumhq.jetty7.http.HttpStatus;
+import org.seleniumhq.jetty7.http.HttpURI;
+import org.seleniumhq.jetty7.util.ssl.SslContextFactory;
+import org.seleniumhq.jetty7.server.Request;
+import org.seleniumhq.jetty7.http.HttpRequest;
 import org.openqa.jetty.http.HttpTunnel;
-import org.openqa.jetty.http.SocketListener;
-import org.openqa.jetty.http.SslListener;
-import org.openqa.jetty.http.handler.AbstractHttpHandler;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.util.IO;
-import org.openqa.jetty.util.InetAddrPort;
-import org.openqa.jetty.util.StringMap;
-import org.openqa.jetty.util.URI;
+import org.seleniumhq.jetty7.http.SocketListener;
+import org.seleniumhq.jetty7.SslListener;
+import org.seleniumhq.jetty7.http.handler.AbstractHttpHandler;
+import org.seleniumhq.jetty7.server.Response;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.Handler;
+import org.seleniumhq.jetty7.server.bio.SocketConnector;
+import org.seleniumhq.jetty7.server.handler.ContextHandler;
+import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty7.util.IO;
+import org.seleniumhq.jetty7.util.InetAddrPort;
+import org.seleniumhq.jetty7.util.StringMap;
+import org.seleniumhq.jetty7.util.URI;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,6 +75,8 @@ import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLHandshakeException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /* ------------------------------------------------------------ */
 
@@ -78,7 +90,7 @@ import javax.net.ssl.SSLHandshakeException;
  * @author giacof@tiscali.it (chained proxy)
  * @version $Id: ProxyHandler.java,v 1.34 2005/10/05 13:32:59 gregwilkins Exp $
  */
-public class ProxyHandler extends AbstractHttpHandler {
+public class ProxyHandler implements Handler {
   private static Logger log = Logger.getLogger(ProxyHandler.class.getName());
 
   protected Set<String> _proxyHostsWhiteList;
@@ -110,13 +122,13 @@ public class ProxyHandler extends AbstractHttpHandler {
   {
     Object o = new Object();
     _DontProxyHeaders.setIgnoreCase(true);
-    _DontProxyHeaders.put(HttpFields.__ProxyConnection, o);
-    _DontProxyHeaders.put(HttpFields.__Connection, o);
-    _DontProxyHeaders.put(HttpFields.__KeepAlive, o);
-    _DontProxyHeaders.put(HttpFields.__TransferEncoding, o);
-    _DontProxyHeaders.put(HttpFields.__TE, o);
-    _DontProxyHeaders.put(HttpFields.__Trailer, o);
-    _DontProxyHeaders.put(HttpFields.__Upgrade, o);
+    _DontProxyHeaders.put(HttpHeaders.PROXY_CONNECTION, o);
+    _DontProxyHeaders.put(HttpHeaders.CONNECTION, o);
+    _DontProxyHeaders.put(HttpHeaders.KEEP_ALIVE, o);
+    _DontProxyHeaders.put(HttpHeaders.TRANSFER_ENCODING, o);
+    _DontProxyHeaders.put(HttpHeaders.TE, o);
+    _DontProxyHeaders.put(HttpHeaders.TRAILER, o);
+    _DontProxyHeaders.put(HttpHeaders.UPGRADE, o);
   }
 
   /* ------------------------------------------------------------ */
@@ -128,8 +140,8 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   {
     Object o = new Object();
-    _ProxyAuthHeaders.put(HttpFields.__ProxyAuthorization, o);
-    _ProxyAuthHeaders.put(HttpFields.__ProxyAuthenticate, o);
+    _ProxyAuthHeaders.put(HttpHeaders.PROXY_AUTHORIZATION, o);
+    _ProxyAuthHeaders.put(HttpHeaders.PROXY_AUTHENTICATE, o);
   }
 
   /* ------------------------------------------------------------ */
@@ -141,8 +153,8 @@ public class ProxyHandler extends AbstractHttpHandler {
   {
     Object o = new Object();
     _ProxySchemes.setIgnoreCase(true);
-    _ProxySchemes.put(HttpMessage.__SCHEME, o);
-    _ProxySchemes.put(HttpMessage.__SSL_SCHEME, o);
+    _ProxySchemes.put("http", o);
+    _ProxySchemes.put("https", o);
     _ProxySchemes.put("ftp", o);
   }
 
@@ -273,14 +285,15 @@ public class ProxyHandler extends AbstractHttpHandler {
     _tunnelTimeoutMs = ms;
   }
 
+
   /* ------------------------------------------------------------ */
-  public void handle(String pathInContext, String pathParams, HttpRequest request,
-      HttpResponse response) throws HttpException, IOException {
-    URI uri = request.getURI();
+  public void handle(String pathInContext, Request baseRequest, HttpServletRequest request,
+                     HttpServletResponse response) throws HttpException, IOException {
+    HttpURI uri = baseRequest.getUri();
 
     // Is this a CONNECT request?
-    if (HttpRequest.__CONNECT.equalsIgnoreCase(request.getMethod())) {
-      response.setField(HttpFields.__Connection, "close"); // TODO Needed for IE????
+    if (HttpMethods.CONNECT.equalsIgnoreCase(request.getMethod())) {
+      response.setHeader(HttpHeaders.CONNECTION, HttpHeaderValues.CLOSE); // TODO Needed for IE????
       handleConnect(pathInContext, pathParams, request, response);
       return;
     }
@@ -362,7 +375,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     } catch (Exception e) {
       log.log(Level.FINE, "Could not proxy " + uri, e);
       if (!response.isCommitted())
-        response.sendError(HttpResponse.__400_Bad_Request, "Could not proxy " + uri + "\n" + e);
+        response.sendError(HttpStatus.BAD_REQUEST_400, "Could not proxy " + uri + "\n" + e);
     }
   }
 
@@ -391,7 +404,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   protected long proxyPlainTextRequest(URL url, String pathInContext, String pathParams,
-      HttpRequest request, HttpResponse response) throws IOException {
+                                       HttpServletRequest request, Response response) throws IOException {
     CaptureNetworkTrafficCommand.Entry entry =
         new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
     entry.addRequestHeaders(request);
@@ -430,17 +443,17 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
 
     // check connection header
-    String connectionHdr = request.getField(HttpFields.__Connection);
+    String connectionHdr = request.getHeader(HttpHeaders.CONNECTION);
     if (connectionHdr != null &&
-        (connectionHdr.equalsIgnoreCase(HttpFields.__KeepAlive) || connectionHdr
-            .equalsIgnoreCase(HttpFields.__Close)))
+        (connectionHdr.equalsIgnoreCase(HttpHeaders.KEEP_ALIVE) || connectionHdr
+            .equalsIgnoreCase(HttpHeaderValues.CLOSE)))
       connectionHdr = null;
 
     // copy headers
     boolean xForwardedFor = false;
     boolean isGet = "GET".equals(request.getMethod());
     boolean hasContent = false;
-    Enumeration enm = request.getFieldNames();
+    Enumeration enm = request.getHeaderNames();
     while (enm.hasMoreElements()) {
       // TODO could be better than this!
       String hdr = (String) enm.nextElement();
@@ -450,10 +463,10 @@ public class ProxyHandler extends AbstractHttpHandler {
       if (connectionHdr != null && connectionHdr.indexOf(hdr) >= 0)
         continue;
 
-      if (!isGet && HttpFields.__ContentType.equals(hdr))
+      if (!isGet && HttpHeaders.CONTENT_TYPE.equals(hdr))
         hasContent = true;
 
-      Enumeration vals = request.getFieldValues(hdr);
+      Enumeration vals = request.getHeaders(hdr);
       while (vals.hasMoreElements()) {
         String val = (String) vals.nextElement();
         if (val != null) {
@@ -461,12 +474,12 @@ public class ProxyHandler extends AbstractHttpHandler {
           if ("Referer".equals(hdr) && (-1 != val.indexOf("/selenium-server/"))) {
             continue;
           }
-          if (!isGet && HttpFields.__ContentLength.equals(hdr) && Integer.parseInt(val) > 0) {
+          if (!isGet && HttpHeaders.CONTENT_LENGTH.equals(hdr) && Integer.parseInt(val) > 0) {
             hasContent = true;
           }
 
           connection.addRequestProperty(hdr, val);
-          xForwardedFor |= HttpFields.__XForwardedFor.equalsIgnoreCase(hdr);
+          xForwardedFor |= HttpHeaders.X_FORWARDED_FOR.equalsIgnoreCase(hdr);
         }
       }
     }
@@ -482,10 +495,10 @@ public class ProxyHandler extends AbstractHttpHandler {
     if (!_anonymous)
       connection.setRequestProperty("Via", "1.1 (jetty)");
     if (!xForwardedFor)
-      connection.addRequestProperty(HttpFields.__XForwardedFor, request.getRemoteAddr());
+      connection.addRequestProperty(HttpHeaders.X_FORWARDED_FOR, request.getRemoteAddr());
 
     // a little bit of cache control
-    String cache_control = request.getField(HttpFields.__CacheControl);
+    String cache_control = request.getHeader(HttpHeaders.CACHE_CONTROL);
     if (cache_control != null &&
         (cache_control.indexOf("no-cache") >= 0 || cache_control.indexOf("no-store") >= 0))
       connection.setUseCaches(false);
@@ -542,8 +555,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
 
     // clear response defaults.
-    response.removeField(HttpFields.__Date);
-    response.removeField(HttpFields.__Server);
+    response.removeField(HttpHeaders.DATE);
+    response.removeField(HttpHeaders.SERVER);
 
     // set response headers
     int h = 0;
@@ -560,8 +573,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     if (!_anonymous)
       response.setField("Via", "1.1 (jetty)");
 
-    response.removeField(HttpFields.__ETag); // possible cksum? Stop caching...
-    response.removeField(HttpFields.__LastModified); // Stop caching...
+    response.removeField(HttpHeaders.ETAG); // possible cksum? Stop caching...
+    response.removeField(HttpHeaders.LAST_MODIFIED); // Stop caching...
 
     // Handled
     long bytesCopied = -1;
@@ -599,7 +612,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     return !path.matches(dontInjectRegex);
   }
 
-  private void adjustRequestForProxyInjection(HttpRequest request, URLConnection connection) {
+  private void adjustRequestForProxyInjection(HttpServletRequest request, URLConnection connection) {
     request.setState(HttpMessage.__MSG_EDITABLE);
     if (request.containsField("If-Modified-Since")) {
       // TODO: still need to disable caching? I want to prevent 304s during this development phase
@@ -616,19 +629,24 @@ public class ProxyHandler extends AbstractHttpHandler {
 
   public static void main(String[] args) throws Exception {
     Server server = new Server();
-    HttpContext httpContext = new HttpContext();
-    httpContext.setContextPath("/");
+    SocketConnector socketListener = new SocketConnector();
+    socketListener.setMaxIdleTime(60000);
+    socketListener.setPort(4444);
+    server.addConnector(socketListener);
+
+    ServletContextHandler root = new ServletContextHandler();
+    root.setContextPath("/");
+
     ProxyHandler proxy = new ProxyHandler(true, "", "", false, false, 4444);
     proxy.useCyberVillains = false;
-    httpContext.addHandler(proxy);
-    server.addContext(httpContext);
-    SocketListener listener = new SocketListener();
-    listener.setPort(4444);
-    server.addListener(listener);
+    server.setHandler(proxy);
+
+    server.setHandler(root);
+
     server.start();
   }
 
-  public synchronized void generateSSLCertsForLoggingHosts(HttpServer server) {
+  public synchronized void generateSSLCertsForLoggingHosts(Server server) {
     if (fakeCertsGenerated) return;
     log.info("Creating 16 fake SSL servers for browser side logging");
     for (int i = 1; i <= 16; i++) {
@@ -643,9 +661,10 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-  public void handleConnect(String pathInContext, String pathParams, HttpRequest request,
-      HttpResponse response) throws HttpException, IOException {
-    URI uri = request.getURI();
+  public void handleConnect(String pathInContext, Request baseRequest, HttpServletRequest request,
+                            HttpServletResponse response) throws HttpException, IOException {
+
+    HttpURI uri = baseRequest.getUri();
 
     try {
       log.fine("CONNECT: " + uri);
@@ -662,10 +681,12 @@ public class ProxyHandler extends AbstractHttpHandler {
       if (isForbidden(HttpMessage.__SSL_SCHEME, addrPort.getHost(), addrPort.getPort(), false)) {
         sendForbid(request, response, uri);
       } else {
+        Request request1;
+        request1.getConnection().completeResponse();
         HttpConnection http_connection = request.getHttpConnection();
         http_connection.forceClose();
 
-        HttpServer server = http_connection.getHttpServer();
+        Server server = http_connection.getHttpServer();
 
         SslRelay listener = getSslRelayOrCreateNew(uri, addrPort, server);
 
@@ -696,18 +717,18 @@ public class ProxyHandler extends AbstractHttpHandler {
 
           customizeConnection(pathInContext, pathParams, request, tunnel.getSocket());
           request.getHttpConnection().setHttpTunnel(tunnel);
-          response.setStatus(HttpResponse.__200_OK);
+          response.setStatus(HttpStatus.OK_200);
           response.setContentLength(0);
         }
         request.setHandled(true);
       }
     } catch (Exception e) {
       log.log(Level.FINE, "error during handleConnect", e);
-      response.sendError(HttpResponse.__500_Internal_Server_Error, e.toString());
+      response.sendError(HttpStatus.INTERNAL_SERVER_ERROR_500, e.toString());
     }
   }
 
-  protected SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server)
+  protected SslRelay getSslRelayOrCreateNew(HttpURI uri, InetAddrPort addrPort, Server server)
       throws Exception {
     SslRelay listener;
     synchronized (_sslMap) {
@@ -748,7 +769,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     return listener;
   }
 
-  protected void wireUpSslWithRemoteService(String host, SslRelay listener) throws IOException {
+  protected void wireUpSslWithRemoteService(String host, SslRelay listener, SslContextFactory sslContextFactory) throws IOException {
     // grab a keystore that has been signed by a CA cert that has already been imported in to the
     // browser
     // note: this logic assumes the tester is using *custom and has imported the CA cert in to
@@ -772,12 +793,12 @@ public class ProxyHandler extends AbstractHttpHandler {
     fos.close();
     is.close();
 
-    listener.setKeystore(keystore.getAbsolutePath());
+    sslContextFactory.setKeyStorePath(keystore.getAbsolutePath());
     // listener.setKeystore("c:\\" + (_sslMap.size() + 1) + ".keystore");
     listener.setNukeDirOrFile(keystore);
   }
 
-  protected void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) {
+  protected void wireUpSslWithCyberVilliansCA(String host, SslRelay listener, SslContextFactory sslContextFactory) {
     try {
       File root = File.createTempFile("seleniumSslSupport", host);
       root.delete();
@@ -793,7 +814,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       mgr.getKeyStore().deleteEntry(KeyStoreManager._caPrivKeyAlias);
       mgr.persist();
 
-      listener.setKeystore(new File(root, "cybervillainsCA.jks").getAbsolutePath());
+      sslContextFactory.setKeyStorePath(new File(root, "cybervillainsCA.jks").getAbsolutePath());
       listener.setNukeDirOrFile(root);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -801,7 +822,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-  protected HttpTunnel newHttpTunnel(HttpRequest request, HttpResponse response, InetAddress iaddr,
+  protected HttpTunnel newHttpTunnel(HttpServletRequest request, HttpServletResponse response, InetAddress iaddr,
       int port, int timeoutMS) throws IOException {
     try {
       Socket socket = new Socket(iaddr, port);
@@ -810,7 +831,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       return new HttpTunnel(socket, null, null);
     } catch (IOException e) {
       log.log(Level.FINE, "Exception thrown", e);
-      response.sendError(HttpResponse.__400_Bad_Request);
+      response.sendError(HttpStatus.BAD_REQUEST_400);
       return null;
     }
   }
@@ -821,7 +842,7 @@ public class ProxyHandler extends AbstractHttpHandler {
    * Customize proxy Socket connection for CONNECT. Method to allow derived handlers to customize
    * the tunnel sockets.
    */
-  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request,
+  protected void customizeConnection(String pathInContext, String pathParams, HttpServletRequest request,
       Socket socket) {
   }
 
@@ -830,7 +851,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   /**
    * Customize proxy URL connection. Method to allow derived handlers to customize the connection.
    */
-  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request,
+  protected void customizeConnection(String pathInContext, String pathParams, HttpServletRequest request,
       URLConnection connection) {
   }
 
@@ -843,7 +864,7 @@ public class ProxyHandler extends AbstractHttpHandler {
    * @return The URL to proxy to, or null if the passed URI should not be proxied. The default
    *         implementation returns the passed uri if isForbidden() returns true.
    */
-  protected URL isProxied(URI uri) throws MalformedURLException {
+  protected URL isProxied(HttpURI uri) throws MalformedURLException {
     // Is this a proxy request?
     if (isForbidden(uri))
       return null;
@@ -859,7 +880,7 @@ public class ProxyHandler extends AbstractHttpHandler {
    * 
    * @return True if the URL is not forbidden. Calls isForbidden(scheme,host,port,true);
    */
-  protected boolean isForbidden(URI uri) {
+  protected boolean isForbidden(HttpURI uri) {
     String scheme = uri.getScheme();
     String host = uri.getHost();
     int port = uri.getPort();
@@ -905,16 +926,16 @@ public class ProxyHandler extends AbstractHttpHandler {
    * Send Forbidden. Method called to send forbidden response. Default implementation calls
    * sendError(403)
    */
-  protected void sendForbid(HttpRequest request, HttpResponse response, URI uri) throws IOException {
-    response.sendError(HttpResponse.__403_Forbidden, "Forbidden for Proxy");
+  protected void sendForbid(HttpServletRequest request, HttpServletResponse response, URI uri) throws IOException {
+    response.sendError(HttpStatus.FORBIDDEN_403, "Forbidden for Proxy");
   }
 
   /**
    * Send not found. Method called to send not found response. Default implementation calls
    * sendError(404)
    */
-  protected void sendNotFound(HttpResponse response) throws IOException {
-    response.sendError(HttpResponse.__404_Not_Found, "Not found");
+  protected void sendNotFound(HttpServletResponse response) throws IOException {
+    response.sendError(HttpStatus.NOT_FOUND_404, "Not found");
   }
 
   /* ------------------------------------------------------------ */
@@ -957,9 +978,9 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
 
     @Override
-    protected void customizeRequest(Socket socket, HttpRequest request) {
+    protected void customizeRequest(Socket socket, HttpServletRequest request) {
       super.customizeRequest(socket, request);
-      URI uri = request.getURI();
+      HttpURI uri = request.getURI();
 
       // Convert the URI to a proxy URL
       //

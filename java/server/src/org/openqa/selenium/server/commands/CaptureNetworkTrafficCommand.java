@@ -11,6 +11,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class CaptureNetworkTrafficCommand extends Command {
   private static final List<Entry> entries = Collections.synchronizedList(new ArrayList<Entry>());
 
@@ -221,11 +223,11 @@ public class CaptureNetworkTrafficCommand extends Command {
       this.end = new Date();
     }
 
-    public void addRequestHeaders(HttpRequest request) {
-      Enumeration names = request.getFieldNames();
+    public void addRequestHeaders(HttpServletRequest request) {
+      Enumeration names = request.getHeaderNames();
       while (names.hasMoreElements()) {
         String name = (String) names.nextElement();
-        String value = request.getField(name);
+        String value = request.getHeader(name);
 
         requestHeaders.add(new Header(name, value));
       }

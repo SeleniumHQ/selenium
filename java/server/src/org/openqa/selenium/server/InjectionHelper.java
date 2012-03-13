@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class InjectionHelper {
   static Logger log = Logger.getLogger(InjectionHelper.class.getName());
   private static boolean failOnError = true;
@@ -180,7 +183,7 @@ public class InjectionHelper {
     }
   }
 
-  public static long injectJavaScript(HttpRequest request, HttpResponse response, InputStream in,
+  public static long injectJavaScript(HttpServletRequest request, HttpServletResponse response, InputStream in,
       OutputStream out, String debugURL) throws IOException {
     if (!contentTransformations.containsKey("__SELENIUM_JS__")) {
       init();
