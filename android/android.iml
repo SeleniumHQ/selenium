@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module classpath="eclipse" classpath-dir="$MODULE_DIR$" type="JAVA_MODULE" version="4">
+<module classpath="eclipse" classpath-dir="$MODULE_DIR$" type="ANDROID_MODULE" version="4">
   <component name="FacetManager">
     <facet type="android" name="Android">
       <configuration>
@@ -20,8 +20,6 @@
         <option name="RUN_PROCESS_RESOURCES_MAVEN_TASK" value="true" />
         <option name="GENERATE_UNSIGNED_APK" value="false" />
         <option name="CUSTOM_DEBUG_KEYSTORE_PATH" value="" />
-        <option name="PACK_TEST_CODE" value="false" />
-        <resOverlayFolders />
       </configuration>
     </facet>
   </component>
