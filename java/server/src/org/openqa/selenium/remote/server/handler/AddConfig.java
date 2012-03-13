@@ -24,12 +24,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 
-public class AddConfig implements Handler, JsonParametersAware {
+public class AddConfig implements RestishHandler, JsonParametersAware {
   private final DriverSessions allSessions;
   private volatile Capabilities desiredCapabilities;
   private volatile String className;

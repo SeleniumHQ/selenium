@@ -17,7 +17,7 @@ import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 
 /**
- * Handler to authenticate access from certain IP-addresses. <br>
+ * RestishHandler to authenticate access from certain IP-addresses. <br>
  * <br>
  * A server configuration-XML-file can look something like this: <br>
  * &lt;Configure class="org.openqa.jetty.jetty.Server"&gt; <br>

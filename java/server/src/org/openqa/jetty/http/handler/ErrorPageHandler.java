@@ -24,7 +24,7 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.util.ByteArrayISO8859Writer;
 import org.openqa.jetty.util.StringUtil;
 /* ------------------------------------------------------------ */
-/** Handler for Error pages
+/** RestishHandler for Error pages
  * A handler that is registered at the org.openqa.jetty.http.ErrorHandler
  * context attributed and called by the HttpResponse.sendError method to write a
  * error page.

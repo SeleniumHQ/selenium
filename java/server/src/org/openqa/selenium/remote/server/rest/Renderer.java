@@ -22,6 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface Renderer {
 
-  void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
+  void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler)
       throws Exception;
 }

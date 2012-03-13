@@ -171,7 +171,7 @@ public class AdminServlet extends HttpServlet
                 }
                 else if (tokens==5)
                 {
-                    // Handler stop/start
+                    // RestishHandler stop/start
                     int handlerIndex=Integer.parseInt(tok.nextToken());
                     HttpHandler handler=context.getHandlers()[handlerIndex];
                     

@@ -269,7 +269,7 @@ public class WebApplicationHandler extends ServletHandler
     /* ----------------------------------------------------------------- */
     protected synchronized void doStart() throws Exception
     {
-        // Start Servlet Handler
+        // Start Servlet RestishHandler
         super.doStart();
         if (log.isDebugEnabled())
             log.debug("Path Filters: " + _pathFilters);

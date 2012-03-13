@@ -171,7 +171,7 @@ public class LoggingManager {
     }
     for (Handler handler : originalHandlers) {
       logger.addHandler(handler);
-      // jbevan: java.util.logging.Handler.setFormatter(null) throws an NPE
+      // jbevan: java.util.logging.RestishHandler.setFormatter(null) throws an NPE
       if (originalFormatters.get(handler) != null) {
         handler.setFormatter(originalFormatters.get(handler));
       }

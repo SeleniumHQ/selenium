@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.resource;
 
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.net.URL;
 
-public class StaticResource implements Handler {
+public class StaticResource implements RestishHandler {
 
   private volatile String file;
   private volatile URL response;

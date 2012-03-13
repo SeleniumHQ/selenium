@@ -25,7 +25,7 @@ import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 
 /* ------------------------------------------------------------ */
-/** Handler for resources that were not found.
+/** RestishHandler for resources that were not found.
  * Implements OPTIONS and TRACE methods for the server.
  * 
  * @version $Id: NotFoundHandler.java,v 1.15 2005/08/13 00:01:26 gregwilkins Exp $

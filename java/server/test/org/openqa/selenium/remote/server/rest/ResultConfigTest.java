@@ -89,7 +89,7 @@ public class ResultConfigTest {
   @Test
   public void testShouldMatchNamedParameters() throws Exception {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
-    Handler handler = config.getHandler("/foo/fishy", dummySessionId);
+    RestishHandler handler = config.getHandler("/foo/fishy", dummySessionId);
 
     assertThat(handler, is(notNullValue()));
   }
@@ -228,7 +228,7 @@ public class ResultConfigTest {
   private void exceptionWasExpected() {
   }
 
-  public static class NamedParameterHandler implements Handler {
+  public static class NamedParameterHandler implements RestishHandler {
 
     private String bar;
 

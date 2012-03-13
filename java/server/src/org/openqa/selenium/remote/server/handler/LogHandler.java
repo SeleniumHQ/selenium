@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 import java.util.Map;
 
 /**
- * Handler used to fetch logs from the Remote WebDriver server.
+ * RestishHandler used to fetch logs from the Remote WebDriver server.
  */
 public class LogHandler extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private volatile String type;

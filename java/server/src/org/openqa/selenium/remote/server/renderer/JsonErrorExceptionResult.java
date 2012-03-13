@@ -21,7 +21,7 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +40,7 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
   }
 
   @Override
-  public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
+  public void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler)
       throws Exception {
     Response res = prepareResponseObject(request);
 

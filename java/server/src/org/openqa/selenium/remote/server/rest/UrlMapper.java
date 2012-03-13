@@ -40,7 +40,7 @@ public class UrlMapper {
     this.log = log;
   }
 
-  public ResultConfig bind(String url, Class<? extends Handler> handlerClazz) {
+  public ResultConfig bind(String url, Class<? extends RestishHandler> handlerClazz) {
     ResultConfig existingConfig = getConfig(url);
     if (existingConfig != null) {
       configs.remove(existingConfig);

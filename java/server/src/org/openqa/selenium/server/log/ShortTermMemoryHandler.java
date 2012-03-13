@@ -8,7 +8,7 @@ import java.util.logging.LogRecord;
 
 
 /**
- * Handler who keeps in memory the last N records as is so that then can be retrieved "as is" on
+ * RestishHandler who keeps in memory the last N records as is so that then can be retrieved "as is" on
  * demand.
  */
 public class ShortTermMemoryHandler extends java.util.logging.Handler {

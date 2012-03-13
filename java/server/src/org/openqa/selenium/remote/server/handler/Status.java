@@ -20,15 +20,15 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import org.json.JSONObject;
 
 /**
- * Handler that returns general status information about the server.
+ * RestishHandler that returns general status information about the server.
  */
-public class Status implements Handler {
+public class Status implements RestishHandler {
 
   private final Response response;
 

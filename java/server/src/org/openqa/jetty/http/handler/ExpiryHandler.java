@@ -26,7 +26,7 @@ import org.openqa.jetty.http.HttpResponse;
 
 /* ------------------------------------------------------------ */
 /**
- * Handler that allows the default Expiry of all content to be set.
+ * RestishHandler that allows the default Expiry of all content to be set.
  *
  * @version $Id: ExpiryHandler.java,v 1.11 2005/08/13 00:01:26 gregwilkins Exp $
  * @author Brett Sealey

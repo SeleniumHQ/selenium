@@ -22,7 +22,7 @@ import org.openqa.jetty.util.LifeCycle;
 
 /* ------------------------------------------------------------ */
 /** HTTP handler.
- * The HTTP Handler interface is implemented by classes that wish to
+ * The HTTP RestishHandler interface is implemented by classes that wish to
  * receive and handle requests from the HttpServer.  The handle method
  * is called for each request and the handler may ignore, modify or
  * handle the request.

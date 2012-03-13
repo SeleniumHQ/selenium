@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
 import com.google.common.io.ByteStreams;
@@ -38,7 +38,7 @@ public class ResourceCopyResult implements Renderer {
     }
   }
 
-  public void render(HttpServletRequest request, HttpServletResponse response, Handler handler) throws Exception {
+  public void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler) throws Exception {
     URL resource = (URL) request.getAttribute(propertyName);
     if (resource == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -36,7 +36,7 @@ import org.openqa.jetty.util.URI;
 import org.openqa.jetty.util.UnixCrypt;
 
 /* ------------------------------------------------------------ */
-/** Handler to authenticate access using the Apache's .htaccess files.
+/** RestishHandler to authenticate access using the Apache's .htaccess files.
  *
  * @version HTAccessHandler v1.0a
  * @author Van den Broeke Iris

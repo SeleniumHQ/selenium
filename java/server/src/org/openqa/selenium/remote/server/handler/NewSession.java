@@ -25,13 +25,13 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.server.log.LoggingManager;
 
 import java.util.Map;
 
-public class NewSession implements Handler, JsonParametersAware {
+public class NewSession implements RestishHandler, JsonParametersAware {
   private volatile DriverSessions allSessions;
   private volatile Capabilities desiredCapabilities;
   private volatile SessionId sessionId;

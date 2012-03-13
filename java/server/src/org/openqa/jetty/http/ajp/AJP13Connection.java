@@ -236,7 +236,7 @@ public class AJP13Connection extends HttpConnection
                             _keepAlive=true;
                     }
 
-                    // Handler other attributes
+                    // RestishHandler other attributes
                     byte attr=packet.getByte();
                     while ((0xFF&attr)!=0xFF)
                     {

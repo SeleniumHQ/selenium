@@ -27,7 +27,7 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.http.SecurityConstraint;
 
 /* ------------------------------------------------------------ */
-/** Handler to enforce SecurityConstraints.
+/** RestishHandler to enforce SecurityConstraints.
  *
  * @version $Id: SecurityHandler.java,v 1.32 2005/08/13 00:01:26 gregwilkins Exp $
  * @author Greg Wilkins (gregw)
@@ -49,7 +49,7 @@ public class SecurityHandler extends AbstractHttpHandler
     public void setAuthMethod(String method)
     {
         if (isStarted() && _authMethod!=null && !_authMethod.equals(method))
-            throw new IllegalStateException("Handler started");
+            throw new IllegalStateException("RestishHandler started");
         _authMethod = method;
     }
 

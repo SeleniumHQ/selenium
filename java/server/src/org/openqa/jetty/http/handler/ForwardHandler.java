@@ -30,7 +30,7 @@ import org.openqa.jetty.util.UrlEncoded;
 
 
 /* ------------------------------------------------------------ */
-/** Forward Request Handler.
+/** Forward Request RestishHandler.
  * Forwards a request to a new URI. Experimental - use with caution.
  * @version $Revision: 1.16 $
  * @author Greg Wilkins (gregw)
@@ -81,7 +81,7 @@ public class ForwardHandler extends AbstractHttpHandler
     }
     
     /* ------------------------------------------------------------ */
-    /** Set the Handler up to cope with forwards to paths that contain query
+    /** Set the RestishHandler up to cope with forwards to paths that contain query
      * elements (e.g. "/blah"->"/foo?a=b").
      * @param b 
      */

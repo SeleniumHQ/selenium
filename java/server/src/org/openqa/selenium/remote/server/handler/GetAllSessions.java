@@ -20,7 +20,7 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import com.google.common.base.Function;
@@ -30,7 +30,7 @@ import com.google.common.collect.Iterables;
 import java.util.Map;
 import java.util.Set;
 
-public class GetAllSessions implements Handler {
+public class GetAllSessions implements RestishHandler {
 
   private final Response response = new Response();
   private volatile DriverSessions allSessions;

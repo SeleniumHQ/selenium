@@ -28,7 +28,7 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.util.ByteArrayISO8859Writer;
 
 /* ------------------------------------------------------------ */
-/** Base HTTP Handler.
+/** Base HTTP RestishHandler.
  * This No-op handler is a good base for other handlers
  *
  * @version $Id: AbstractHttpHandler.java,v 1.12 2005/08/13 00:01:26 gregwilkins Exp $

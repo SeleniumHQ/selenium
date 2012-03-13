@@ -4,7 +4,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 
 /**
- * java.util.logging Log Handler logging everything to standard output.
+ * java.util.logging Log RestishHandler logging everything to standard output.
  */
 public class StdOutHandler extends StreamHandler {
 

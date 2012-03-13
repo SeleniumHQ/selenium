@@ -68,7 +68,7 @@ public class ResultConfig {
   private final String url;
   private final Logger log;
 
-  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions,
+  public ResultConfig(String url, Class<? extends RestishHandler> handlerClazz, DriverSessions sessions,
       Logger log) {
     this.url = url;
     this.log = log;
@@ -82,7 +82,7 @@ public class ResultConfig {
   }
 
 
-  public Handler getHandler(String url, SessionId sessionId) throws Exception {
+  public RestishHandler getHandler(String url, SessionId sessionId) throws Exception {
     if (!isFor(url)) {
       return null;
     }
@@ -110,11 +110,11 @@ public class ResultConfig {
   }
 
   interface HandlerFactory {
-    Handler createHandler(SessionId sessionId) throws Exception;
+    RestishHandler createHandler(SessionId sessionId) throws Exception;
   }
 
 
-  protected Handler populate(Handler handler, String pathString) {
+  protected RestishHandler populate(RestishHandler handler, String pathString) {
     if (pathString == null) {
       return handler;
     }
@@ -188,7 +188,7 @@ public class ResultConfig {
     if (isSessionTerminated(sessId, request, response)) {
       return;
     }
-    final Handler handler = getHandler(pathInfo, sessId);
+    final RestishHandler handler = getHandler(pathInfo, sessId);
 
     if (handler instanceof JsonParametersAware) {
       setJsonParameters(request, handler);
@@ -301,7 +301,7 @@ public class ResultConfig {
   }
 
   @SuppressWarnings("unchecked")
-  private void setJsonParameters(HttpServletRequest request, Handler handler) throws Exception {
+  private void setJsonParameters(HttpServletRequest request, RestishHandler handler) throws Exception {
     BufferedReader reader = request.getReader();
     StringBuilder builder = new StringBuilder();
     for (String line = reader.readLine(); line != null; line = reader.readLine())
@@ -316,7 +316,7 @@ public class ResultConfig {
     }
   }
 
-  protected void addHandlerAttributesToRequest(HttpServletRequest request, Handler handler)
+  protected void addHandlerAttributesToRequest(HttpServletRequest request, RestishHandler handler)
       throws Exception {
     SimplePropertyDescriptor[] properties =
         SimplePropertyDescriptor.getPropertyDescriptors(handler.getClass());
@@ -371,26 +371,26 @@ public class ResultConfig {
     return ec.isMappableError(nextCause) ? nextCause : rootCause;
   }
 
-  private HandlerFactory getHandlerFactory(Class<? extends Handler> handlerClazz) {
-    final Constructor<? extends Handler> sessionAware = getConstructor(handlerClazz, Session.class);
+  private HandlerFactory getHandlerFactory(Class<? extends RestishHandler> handlerClazz) {
+    final Constructor<? extends RestishHandler> sessionAware = getConstructor(handlerClazz, Session.class);
     if (sessionAware != null) return new HandlerFactory() {
-      public Handler createHandler(SessionId sessionId) throws Exception {
+      public RestishHandler createHandler(SessionId sessionId) throws Exception {
         return sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
       }
     };
 
-    final Constructor<? extends Handler> driverSessions =
+    final Constructor<? extends RestishHandler> driverSessions =
         getConstructor(handlerClazz, DriverSessions.class);
     if (driverSessions != null) return new HandlerFactory() {
-      public Handler createHandler(SessionId sessionId) throws Exception {
+      public RestishHandler createHandler(SessionId sessionId) throws Exception {
         return driverSessions.newInstance(sessions);
       }
     };
 
 
-    final Constructor<? extends Handler> norags = getConstructor(handlerClazz);
+    final Constructor<? extends RestishHandler> norags = getConstructor(handlerClazz);
     if (norags != null) return new HandlerFactory() {
-      public Handler createHandler(SessionId sessionId) throws Exception {
+      public RestishHandler createHandler(SessionId sessionId) throws Exception {
         return norags.newInstance();
       }
     };
@@ -398,8 +398,8 @@ public class ResultConfig {
     throw new IllegalArgumentException("Don't know how to construct " + handlerClazz);
   }
 
-  private static Constructor<? extends Handler> getConstructor(
-      Class<? extends Handler> handlerClazz, Class... types) {
+  private static Constructor<? extends RestishHandler> getConstructor(
+      Class<? extends RestishHandler> handlerClazz, Class... types) {
     try {
       return handlerClazz.getConstructor(types);
     } catch (NoSuchMethodException e) {

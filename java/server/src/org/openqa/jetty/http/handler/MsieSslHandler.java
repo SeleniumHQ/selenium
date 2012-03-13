@@ -26,7 +26,7 @@ import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 
 /**
- * Handler to force MSIE SSL connections to not be persistent to
+ * RestishHandler to force MSIE SSL connections to not be persistent to
  * work around MSIE5 bug.
  *  
  * @author gregw

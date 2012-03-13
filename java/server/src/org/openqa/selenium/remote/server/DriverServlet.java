@@ -135,7 +135,7 @@ import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
 import org.openqa.selenium.remote.server.renderer.ResourceCopyResult;
 import org.openqa.selenium.remote.server.resource.StaticResource;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Result;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -479,16 +479,16 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, jsonResponse);
   }
 
-  protected ResultConfig addNewGetMapping(String path, Class<? extends Handler> implementationClass) {
+  protected ResultConfig addNewGetMapping(String path, Class<? extends RestishHandler> implementationClass) {
     return getMapper.bind(path, implementationClass);
   }
 
-  protected ResultConfig addNewPostMapping(String path, Class<? extends Handler> implementationClass) {
+  protected ResultConfig addNewPostMapping(String path, Class<? extends RestishHandler> implementationClass) {
     return postMapper.bind(path, implementationClass);
   }
 
   protected ResultConfig addNewDeleteMapping(String path,
-      Class<? extends Handler> implementationClass) {
+      Class<? extends RestishHandler> implementationClass) {
     return deleteMapper.bind(path, implementationClass);
   }
 

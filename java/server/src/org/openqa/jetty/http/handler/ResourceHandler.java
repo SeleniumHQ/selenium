@@ -39,7 +39,7 @@ import org.openqa.jetty.util.TypeUtil;
 import org.openqa.jetty.util.URI;
 
 /* ------------------------------------------------------------ */
-/** Handler to serve files and resources.
+/** RestishHandler to serve files and resources.
  * Serves files from a given resource URL base and implements
  * the GET, HEAD, DELETE, OPTIONS, PUT, MOVE methods and the
  * IfModifiedSince and IfUnmodifiedSince header fields.

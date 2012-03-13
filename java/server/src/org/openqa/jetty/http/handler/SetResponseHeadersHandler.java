@@ -31,7 +31,7 @@ import org.openqa.jetty.http.HttpResponse;
 
 /* ------------------------------------------------------------ */
 /**
- * Handler that allows arbitrary HTTP Header values to be set in the response.
+ * RestishHandler that allows arbitrary HTTP Header values to be set in the response.
  *
  * @version $Id: SetResponseHeadersHandler.java,v 1.6 2005/08/13 00:01:26 gregwilkins Exp $
  * @author Brett Sealey

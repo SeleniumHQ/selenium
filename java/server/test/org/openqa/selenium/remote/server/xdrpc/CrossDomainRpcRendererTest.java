@@ -23,7 +23,7 @@ import org.jmock.Mockery;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -41,7 +41,7 @@ public class CrossDomainRpcRendererTest extends TestCase {
   private Mockery mockery;
   private HttpServletRequest mockRequest;
   private HttpServletResponse mockResponse;
-  private Handler mockHandler;
+  private RestishHandler mockHandler;
 
   private StringWriter stringWriter;
   private ServletOutputStream servletOutputStream;
@@ -51,7 +51,7 @@ public class CrossDomainRpcRendererTest extends TestCase {
     mockery = new Mockery();
     mockRequest = mockery.mock(HttpServletRequest.class);
     mockResponse = mockery.mock(HttpServletResponse.class);
-    mockHandler = mockery.mock(Handler.class);
+    mockHandler = mockery.mock(RestishHandler.class);
     
     stringWriter = new StringWriter();
     PrintWriter printWriter = new PrintWriter(stringWriter);

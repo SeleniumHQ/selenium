@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
- * Handler which keeps in memory the log records per session so that users can retrieve logs per
+ * RestishHandler which keeps in memory the log records per session so that users can retrieve logs per
  * session.
  */
 public class DefaultPerSessionLogHandler extends PerSessionLogHandler {

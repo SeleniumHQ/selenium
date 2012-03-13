@@ -23,14 +23,14 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-public abstract class WebDriverHandler implements Handler, Callable<ResultType> {
+public abstract class WebDriverHandler implements RestishHandler, Callable<ResultType> {
 
   private final Session session;
 

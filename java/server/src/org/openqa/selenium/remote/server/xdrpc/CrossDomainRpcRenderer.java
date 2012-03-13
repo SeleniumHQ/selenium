@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +61,7 @@ public class CrossDomainRpcRenderer implements Renderer {
   }
 
   public void render(HttpServletRequest request, HttpServletResponse response,
-      Handler handler) throws Exception {
+      RestishHandler handler) throws Exception {
     Object result = request.getAttribute(responsePropertyName);
     if (result == null) {
       if (request.getAttribute(errorPropertyName) != null) {

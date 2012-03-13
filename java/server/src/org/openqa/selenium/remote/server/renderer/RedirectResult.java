@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.renderer;
 
 import org.openqa.selenium.remote.PropertyMunger;
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class RedirectResult implements Renderer {
     this.url = url;
   }
 
-  public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
+  public void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler)
       throws Exception {
     StringBuilder builder = new StringBuilder(request.getContextPath());
 
@@ -55,7 +55,7 @@ public class RedirectResult implements Renderer {
     response.sendRedirect(builder.toString());
   }
 
-  private String get(Handler handler, String part) throws Exception {
+  private String get(RestishHandler handler, String part) throws Exception {
     if (part.length() < 1) {
       return "";
     }

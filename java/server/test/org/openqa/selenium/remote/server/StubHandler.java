@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class StubHandler implements Handler {
+public class StubHandler implements RestishHandler {
 
   public ResultType handle() {
     return ResultType.SUCCESS;

@@ -119,7 +119,7 @@ public class UrlMapperTest {
     assertEquals(renderer, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
-  public static class SessionHandler implements Handler {
+  public static class SessionHandler implements RestishHandler {
 
     private final DriverSessions sessions;
 
@@ -137,7 +137,7 @@ public class UrlMapperTest {
   }
 
   private static class StubRenderer implements Renderer {
-    public void render(HttpServletRequest request, HttpServletResponse response, Handler handler) throws Exception {
+    public void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler) throws Exception {
     }
   }
 }

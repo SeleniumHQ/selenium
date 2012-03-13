@@ -24,7 +24,7 @@ import org.openqa.jetty.http.HttpResponse;
 
 
 /* ------------------------------------------------------------ */
-/** Abstract HTTP Handler.
+/** Abstract HTTP RestishHandler.
  * @version $Id: NullHandler.java,v 1.17 2004/05/09 20:32:06 gregwilkins Exp $
  * @author Greg Wilkins (gregw)
  */

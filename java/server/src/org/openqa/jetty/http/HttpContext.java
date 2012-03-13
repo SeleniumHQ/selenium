@@ -524,7 +524,7 @@ public class HttpContext extends Container
         if (context==null)
             handler.initialize(this);
         else if (context!=this)
-            throw new IllegalArgumentException("Handler in another HttpContext");
+            throw new IllegalArgumentException("RestishHandler in another HttpContext");
         addComponent(handler);
     }
 
@@ -1394,7 +1394,7 @@ public class HttpContext extends Container
     }
 
     /* ------------------------------------------------------------ */
-    /** Handler request.
+    /** RestishHandler request.
      * Determine the path within the context and then call
      * handle(pathInContext,request,response).
      * @param request
@@ -1489,7 +1489,7 @@ public class HttpContext extends Container
     }
 
     /* ------------------------------------------------------------ */
-    /** Handler request.
+    /** RestishHandler request.
      * Call each HttpHandler until request is handled.
      * @param pathInContext Path in context
      * @param pathParams Path parameters such as encoded Session ID
@@ -1526,7 +1526,7 @@ public class HttpContext extends Container
                     continue;
                 }
                 if (log.isDebugEnabled())
-                    log.debug("Handler " + handler);
+                    log.debug("RestishHandler " + handler);
                 handler.handle(pathInContext, pathParams, request, response);
                 if (request.isHandled())
                 {
