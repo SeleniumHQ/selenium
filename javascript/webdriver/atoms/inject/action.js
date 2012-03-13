@@ -54,3 +54,4 @@ webdriver.atoms.inject.action.clear = function(element) {
 webdriver.atoms.inject.action.click = function(element) {
   bot.inject.executeScript(bot.action.click, [element], true);
 };
+
