@@ -150,6 +150,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     });
   }
 
+  /**
+   * Attempt to forcibly kill this Killable at the OS level. Useful where the extension has
+   * stopped responding, and you don't want to leak resources. Should not ordinarily be called.
+   */
   public void kill() {
     binary.quit();
   }

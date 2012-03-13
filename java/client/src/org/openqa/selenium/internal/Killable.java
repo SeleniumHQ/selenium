@@ -24,5 +24,8 @@ package org.openqa.selenium.internal;
  */
 public interface Killable {
 
-   void kill();
+  /**
+   * Attempt to forcibly kill this Killable at the OS level. Call when all hope is lost.
+   */
+  void kill();
 }
