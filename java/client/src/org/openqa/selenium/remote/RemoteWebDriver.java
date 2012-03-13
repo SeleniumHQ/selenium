@@ -414,7 +414,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
                                    " to remote");
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
-      
+
 
       response = executor.execute(command);
 

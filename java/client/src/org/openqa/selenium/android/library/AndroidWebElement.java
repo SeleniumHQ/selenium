@@ -130,7 +130,7 @@ public class AndroidWebElement implements WebElement,
       driver.executeAtom(AndroidAtoms.CLICK.getValue(), this);
       driver.waitForPageToLoad();
     }
-  
+
     Point center = getCenterCoordinates();
     long downTime = SystemClock.uptimeMillis();
     final List<MotionEvent> events = Lists.newArrayList();
@@ -332,7 +332,7 @@ public class AndroidWebElement implements WebElement,
       // TODO(simon): This is probably not the Right Thing to do.
       results = Lists.newArrayList();
     }
-    
+
     if (results == null) {
       return Lists.newArrayList();
     }

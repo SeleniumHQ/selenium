@@ -142,7 +142,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private static final long POLLING_INTERVAL = 50L;
   static final long UI_TIMEOUT = 3000L;
 
-  private boolean acceptSslCerts;  
+  private boolean acceptSslCerts;
   private volatile boolean pageStartedLoading;
   private boolean done = false;
 
