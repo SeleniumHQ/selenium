@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/client/client.iml" filepath="$PROJECT_DIR$/java/client/client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javascript/javascript.iml" filepath="$PROJECT_DIR$/javascript/javascript.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/server/server.iml" filepath="$PROJECT_DIR$/java/server/server.iml" />
     </modules>
   </component>
