@@ -71,8 +71,12 @@ public class ViewClientWrapper implements DriverProvider {
   }
 
   public void setDriver(AndroidWebDriver driver) {
-    Class[] argsClass = {AndroidWebDriver.class};
-    Object[] args = {driver};
-    ReflexionHelper.invoke(client, "setDriver", argsClass, args);
+    try {
+      ((DefaultViewClient)client).setDriver(driver);
+    } catch (ClassCastException e) {
+      Class[] argsClass = {AndroidWebDriver.class};
+      Object[] args = {driver};
+      ReflexionHelper.invoke(client, "setDriver", argsClass, args);
+    }
   }
 }
