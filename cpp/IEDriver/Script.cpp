@@ -298,6 +298,8 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
     *value = this->result_.boolVal == VARIANT_TRUE;
   } else if (this->ResultIsEmpty()) {
     *value = Json::Value::null;
+  } else if (this->result_.vt == VT_NULL) {
+    *value = Json::Value::null;
   } else if (this->ResultIsIDispatch()) {
     if (this->ResultIsArray() || this->ResultIsElementCollection()) {
       Json::Value result_array(Json::arrayValue);
