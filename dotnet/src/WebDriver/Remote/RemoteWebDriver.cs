@@ -915,6 +915,11 @@ namespace OpenQA.Selenium.Remote
 
         private static object[] ConvertArgumentsToJavaScriptObjects(object[] args)
         {
+            if (args == null)
+            {
+                return new object[] {null};
+            }
+
             for (int i = 0; i < args.Length; i++)
             {
                 args[i] = ConvertObjectToJavaScriptObject(args[i]);
