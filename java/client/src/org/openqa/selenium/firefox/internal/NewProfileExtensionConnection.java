@@ -77,8 +77,15 @@ public class NewProfileExtensionConnection implements ExtensionConnection {
 
       delegate = new HttpCommandExecutor(buildUrl(host, port));
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
-      File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
-      process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
+
+      if (firefoxLogFile !=  null) {
+        if ("/dev/stdout".equals(firefoxLogFile)) {
+          process.setOutputWatcher(System.out);
+        } else {
+          File logFile = new File(firefoxLogFile);
+          process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
+        }
+      }
 
       process.startProfile(profile, profileDir, "-foreground");
 

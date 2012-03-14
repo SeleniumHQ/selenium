@@ -224,14 +224,22 @@ fxdriver.debug.addFileLogger_ = function(logger, opt_path) {
     return;
   }
 
+  var formatter = new goog.debug.TextFormatter('webdriver');
+
+  if ('/dev/stdout' == opt_path) {
+    logger.addHandler(function(logRecord) {
+      dump(formatter.formatRecord(logRecord));
+    });
+
+    return;
+  }
+
   // Make sure that file exists
   var file = Components.classes['@mozilla.org/file/local;1']
       .createInstance(Components.interfaces['nsILocalFile']);
   file.initWithPath(opt_path);
   file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666);
   var fileName = file.path;
-
-  var formatter = new goog.debug.TextFormatter('webdriver');
 
   logger.addHandler(function(logRecord) {
     fxdriver.debug.writeToFile_(fileName, formatter.formatRecord(logRecord));

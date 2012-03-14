@@ -213,6 +213,9 @@ public class Executable {
 
   public OutputStream getDefaultOutputStream() {
     String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+    if ("/dev/stdout".equals(firefoxLogFile)) {
+      return System.out;
+    }
     File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
     return new CircularOutputStream(logFile);
   }

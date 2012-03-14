@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.File;
 import java.io.IOException;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 import static org.openqa.selenium.testing.InProject.locate;
@@ -65,6 +66,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
           profile = FirefoxProfile.fromJson((String) tweaked.getCapability(PROFILE));
         }
         copyExtensionTo(profile);
+
         tweaked.setCapability(PROFILE, profile);
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -84,18 +86,43 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
           throw Throwables.propagate(e);
         }
       }
+
+      profile.setEnableNativeEvents(Boolean.getBoolean("selenium.browser.native_events"));
+
       return profile;
     }
-    
+
     try {
       File prefs = locate("javascript/firefox-driver/webdriver.json");
+      File noFocus = locate("build/cpp/i386/libnoblur.so");
+      File ime = locate("build/cpp/i386/libimehandler.so");
+      File noFocus64 = locate("build/cpp/amd64/libnoblur64.so");
+      File ime64 = locate("build/cpp/amd64/libimehandler64.so");
       File dest = locate("java/client/build/production/org/openqa/selenium/firefox");
       Files.copy(prefs, new File(dest, "webdriver.json"));
+
+      File libDir = new File(dest, "x86");
+      if (!libDir.exists()) {
+        assertTrue("Cannot create x86 library directory", libDir.mkdir());
+      }
+      Files.copy(noFocus, new File(libDir, "x_ignore_nofocus.so"));
+      Files.copy(ime, new File(libDir, "libibushandler.so"));
+
+      libDir = new File(dest, "amd64");
+      if (!libDir.exists()) {
+        assertTrue("Cannot create x86 library directory", libDir.mkdir());
+      }
+      Files.copy(noFocus64, new File(libDir, "x_ignore_nofocus.so"));
+      Files.copy(ime64, new File(libDir, "libibushandler.so"));
+
       FirefoxProfile profile = new FirefoxProfile();
 
       if (Boolean.getBoolean("webdriver.debug")) {
         Firebug.addTo(profile);
       }
+
+      profile.setEnableNativeEvents(Boolean.getBoolean("selenium.browser.native_events"));
+      profile.setPreference("webdriver.log.file", "/dev/stdout");
 
       return copyExtensionTo(profile);
     } catch (Exception e) {

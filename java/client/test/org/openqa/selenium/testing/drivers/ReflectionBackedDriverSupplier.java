@@ -61,7 +61,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
         FirefoxProfile profile = new FirefoxProfile();
         boolean enableNativeEvents = Boolean.getBoolean("selenium.browser.native_events") ||
-                               Platform.getCurrent().is( WINDOWS);
+                               Platform.getCurrent().is(WINDOWS);
         profile.setEnableNativeEvents(enableNativeEvents);
         toUse.setCapability(FirefoxDriver.PROFILE, profile);
       }
