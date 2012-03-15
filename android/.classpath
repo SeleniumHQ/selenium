@@ -4,7 +4,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/server"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty-android"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/android"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
