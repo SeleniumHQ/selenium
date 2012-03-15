@@ -11,6 +11,9 @@ class JavascriptMappings
     fun.add_mapping("js_deps", Javascript::AddDependencies.new)
     fun.add_mapping("js_deps", Javascript::WriteOutput.new)
     fun.add_mapping("js_deps", Javascript::CreateHeader.new)
+    
+    fun.add_mapping("js_library", Javascript::CheckPreconditions.new)
+    fun.add_mapping("js_library", Javascript::CreateLibrary.new)
 
     fun.add_mapping("js_binary", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_binary", Javascript::CreateTask.new)
@@ -223,6 +226,40 @@ module Javascript
         File.open(output, 'w') do |f|
           js_files.each do |dep|
             f << IO.read(dep)
+          end
+        end
+      end
+    end
+  end
+  
+  class CreateLibrary < BaseJs
+    def manifest_name(dir, name)
+      name = task_name(dir, name)
+      mf = "build/" + (name.slice(2 ... name.length))
+      mf = mf.sub(":", "/")
+      mf << ".mf"
+
+      Platform.path_for mf
+    end
+
+    def handle(fun, dir, args)
+      manifest = manifest_name(dir, args[:name])
+      task_name = task_name(dir, args[:name])
+      
+      file manifest
+      task task_name => manifest
+      
+      task = Rake::Task[task_name]
+      task.out = manifest
+
+      add_dependencies(task, dir, args[:deps])
+      add_dependencies(task, dir, args[:srcs])
+
+      file manifest do
+        mkdir_p File.dirname(manifest)
+        File.open(manifest, "w") do |file|
+          task.prerequisites.each do |prereq|
+            file << "#{prereq}\n"
           end
         end
       end

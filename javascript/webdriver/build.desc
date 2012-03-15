@@ -1,14 +1,27 @@
-# Deps for WebDriverJS; does not include any atoms code.
-js_deps(name = "deps",
+js_library(name = "webdriver_lib",
   srcs = [
     "*.js",
     "http/*.js",
     "node/node.js",
+  ],
+  deps = [
+    "//javascript/atoms:error_lib",
   ])
-
-js_deps(name = "test_deps",
+  
+js_library(name = "test_lib",
   srcs = [
     "testing/*.js",
+  ],
+  deps = [
+    ":webdriver_lib"
+  ])
+
+js_binary(name = "webdriver",
+  deps = [ ":webdriver_lib" ],
+  flags = [
+    "--generate_exports",
+    "--third_party=false",
+    "--output_wrapper='(function(){%output%;for(var key in webdriver)this[key]=webdriver[key];delete this.webdriver;}).call(typeof exports!=='undefined'&&exports===this?exports:this.webdriver=this.webdriver||{})'"
   ])
 
 js_test(name = "test",
@@ -18,8 +31,7 @@ js_test(name = "test",
   ],
   path = "/javascript/webdriver/test",
   deps = [
-    ":deps",
-    ":test_deps",
+    ":test_lib",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
@@ -34,7 +46,7 @@ webdriverjs_test(name = "test_e2e",
   test_dir = "test_e2e",
   path = "/javascript/webdriver/test_e2e",
   deps = [
-    "//javascript/webdriver:deps",
+    ":test_lib",
     "//java/client/test/org/openqa/selenium/javascript:jsapi",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ],
