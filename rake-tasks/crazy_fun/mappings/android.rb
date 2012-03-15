@@ -162,7 +162,7 @@ module Android
           manifest = File.join(dir, args[:manifest])
           resource = File.join(dir, args[:resource])
           java_r = File.join(dir, args[:out])
-          cmd = "#{$aapt} package -f -M #{manifest} -S #{resource} -I #{android_jar} -J #{java_r}"
+          cmd = "\"#{$aapt}\" package -f -M #{manifest} -S #{resource} -I #{android_jar} -J #{java_r}"
           puts "Building #{task_name} as #{out}"
           sh cmd
         end
@@ -187,7 +187,7 @@ module Android
       file apk do
         if (android_installed?)
           android_target = $properties["androidtarget"].to_s
-          sh "#{$android} update project -p android/ --target #{android_target}"
+          sh "\"#{$android}\" update project -p android/ --target #{android_target}", :verbose => true
            Dir.chdir("android") do
              if windows?
                # ant -Dgo=go.bat overrides the go in the build file android/build.xml
@@ -217,7 +217,7 @@ module Android
         apk = Rake::Task[args[:binary]].out
         puts apk
 
-        cmd = "#{$adb} kill-server"
+        cmd = "\"#{$adb}\" kill-server"
         puts cmd
         sh cmd
 
@@ -228,13 +228,13 @@ module Android
           proc.start
           proc.poll_for_exit(10)
         else
-          sh "#{$adb} start-server"
+          sh "\"#{$adb}\" start-server"
         end
 
         android_target = $properties["androidtarget"].to_s
         puts "Using Android target: " + android_target
         avdname = "debug_rake_#{android_target}"
-        sh "echo no | #{$android} create avd --name #{avdname} --target #{android_target} -c 100M --force"
+        sh "echo no | \"#{$android}\" create avd --name #{avdname} --target #{android_target} -c 100M --force"
 
         emulator_image = "#{$platform}-userdata-qemu.img"
 
@@ -262,15 +262,15 @@ module Android
 
             thread = Thread.new {
               puts "Waiting for emulator to get started"
-              sh "#{$adb} -e wait-for-device"
+              sh "\"#{$adb}\" -e wait-for-device"
               sleep 10
 
               puts "Loading package into emulator: #{apk}"
-              theoutput = `#{$adb} -e install -r #{apk}`
+              theoutput = `"#{$adb}" -e install -r #{apk}`
               while (not theoutput.to_s.match(/Success/)) do
                 puts "Failed to load (emulator not ready?), retrying..."
                 sleep 5
-                theoutput = `#{$adb} -e install -r "#{apk}"`
+                theoutput = `"#{$adb}" -e install -r "#{apk}"`
               end
             }
 
@@ -289,7 +289,7 @@ module Android
           ensure
             if !started
               begin
-                sh "#{$adb} emu kill"
+                sh "\"#{$adb}\" emu kill"
               rescue
               end
             end
@@ -298,10 +298,10 @@ module Android
 
         raise LoadError.new("Emulator didn't respond properly - infrastructure failure") unless started
 
-        sh "#{$adb} shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity"
+        sh "\"#{$adb}\" shell am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity"
         sleep 5
 
-        sh "#{$adb} forward tcp:8080 tcp:8080"
+        sh "\"#{$adb}\" forward tcp:8080 tcp:8080"
       end
     end
   end
@@ -310,7 +310,7 @@ module Android
     def handle(fun, dir, args)
       name = task_name(dir, args[:name]) + ":run"
       task name do
-        sh "#{$adb} emu kill" unless !([nil, 'false'].include? ENV['leaverunning'])
+        sh "\"#{$adb}\" emu kill" unless !([nil, 'false'].include? ENV['leaverunning'])
       end
     end
   end
@@ -321,7 +321,7 @@ module Android
       if (android_installed?)
         android_target =  "android-" << properties["androidtarget"].to_s
         avdname = "debug_rake_#{android_target}"
-        sh "#{$android} delete avd -n #{avdname}"
+        sh "\"#{$android}\" delete avd -n #{avdname}"
       end
     end
   end
