@@ -2,7 +2,7 @@ js_binary(name = "client",
   deps = [
     "./**/*.js",
     "//javascript/atoms:deps",
-    "//javascript/webdriver:deps",
+    "//javascript/webdriver:webdriver_lib",
   ],
   no_format = "1",
   flags = [
