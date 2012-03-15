@@ -7,6 +7,6 @@ default:
     #
     # Note: Android WebDriver will not work on Gingerbread (SDK 2.3) emulator because of
     # an emulator bug. However it will work with Gingerbread (SDK 2.3) devices.
-    androidtarget : "android-14"
+    androidtarget : "android-15"
     # Android platform. You can find supported platforms under androidsdkpath/platforms/
-    androidplatform : "android-14"
+    androidplatform : "android-15"
