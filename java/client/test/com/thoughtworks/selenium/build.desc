@@ -3,9 +3,7 @@ java_test(name = "test",
   srcs = [
     "InternalSelenseTestBase.java",
     "WaitTest.java",
-    "WaitTestSuite.java",
-    "SeleniumServerProxyTest.java",
-    "SeleniumServerTestSuite.java",
+    "WaitTests.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",

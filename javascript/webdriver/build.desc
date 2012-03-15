@@ -16,6 +16,15 @@ js_library(name = "test_lib",
     ":webdriver_lib"
   ])
 
+js_deps(name = "deps",
+  srcs = [
+    "*.js",
+    "atoms/*/*.js",
+    "http/*/*.js",
+    "test/*/*.js",
+    "testing/*/*.js",
+  ])
+
 js_binary(name = "webdriver",
   deps = [ ":webdriver_lib" ],
   flags = [

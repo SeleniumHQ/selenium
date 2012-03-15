@@ -30,5 +30,5 @@ import org.junit.runners.Suite;
     ConditionTestSuite.class,
     WaitTest.class
 })
-public class WaitTestSuite {
+public class WaitTests {
 }
