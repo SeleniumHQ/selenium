@@ -94,11 +94,9 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.UploadFile;
-import org.openqa.selenium.remote.server.handler.html5.ClearAppCache;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
 import org.openqa.selenium.remote.server.handler.html5.ExecuteSQL;
-import org.openqa.selenium.remote.server.handler.html5.GetAppCache;
 import org.openqa.selenium.remote.server.handler.html5.GetAppCacheStatus;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageKeys;
@@ -391,12 +389,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/location", SetLocationContext.class)
         .on(ResultType.SUCCESS, emptyResponse);
 
-    getMapper.bind("/session/:sessionId/application_cache", GetAppCache.class)
-        .on(ResultType.SUCCESS, jsonResponse);
     getMapper.bind("/session/:sessionId/application_cache/status", GetAppCacheStatus.class)
         .on(ResultType.SUCCESS, jsonResponse);
-    deleteMapper.bind("/session/:sessionId/application_cache/clear", ClearAppCache.class)
-        .on(ResultType.SUCCESS, emptyResponse);
     postMapper.bind("/session/:sessionId/browser_connection", SetBrowserConnection.class)
         .on(ResultType.SUCCESS, emptyResponse);
     getMapper.bind("/session/:sessionId/browser_connection", IsBrowserOnline.class)

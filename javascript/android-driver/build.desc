@@ -31,6 +31,7 @@ js_fragment_java(name = "atoms",
     "//javascript/webdriver/atoms/inject:set_local_storage_item:android",
     "//javascript/webdriver/atoms/inject:set_session_storage_item:android",
     "//javascript/webdriver/atoms/inject:submit:android",
+    "//javascript/webdriver/atoms/inject:get_appcache_status:android",
   ],
   utf8 = "true",
   package = "org.openqa.selenium.android.library")

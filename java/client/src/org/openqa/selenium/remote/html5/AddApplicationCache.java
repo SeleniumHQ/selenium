@@ -17,11 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.Lists;
-
-import org.openqa.selenium.html5.AppCacheEntry;
 import org.openqa.selenium.html5.AppCacheStatus;
-import org.openqa.selenium.html5.AppCacheType;
 import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.DriverCommand;
@@ -29,8 +25,6 @@ import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 public class AddApplicationCache implements AugmenterProvider {
 
@@ -42,21 +36,11 @@ public class AddApplicationCache implements AugmenterProvider {
     return new InterfaceImplementation() {
 
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
-        if ("getAppCache".equals(method.getName())) {
-          List<Object> result = (List<Object>) executeMethod.execute(DriverCommand.GET_APP_CACHE,
-              null);
-          List<AppCacheEntry> toReturn = Lists.newArrayList();
-          for (Object obj : result) {
-            Map<String, String> map = (Map<String, String>) obj;
-            AppCacheEntry entry = new AppCacheEntry(AppCacheType.valueOf(map.get("type")),
-                map.get("url"), map.get("mimeType"));
-            toReturn.add(entry);
-          }
-          return toReturn;
-        } else if ("getStatus".equals(method.getName())) {
+        if ("getStatus".equals(method.getName())) {
           String result = (String) executeMethod.execute(DriverCommand.GET_APP_CACHE_STATUS, null);
           return AppCacheStatus.valueOf(result);
         }
+
         return null;
       }
     };

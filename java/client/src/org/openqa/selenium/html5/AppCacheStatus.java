@@ -52,4 +52,15 @@ public enum AppCacheStatus {
     }
     return null;
   }
+
+  public static AppCacheStatus getEnum(String value) {
+    for (AppCacheStatus status : AppCacheStatus.values()) {
+      if (status.toString().equalsIgnoreCase(value)) {
+        return status;
+      }
+    }
+    return null;
+  }
+
+  
 }

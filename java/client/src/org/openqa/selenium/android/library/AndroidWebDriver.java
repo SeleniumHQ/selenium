@@ -17,11 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.library;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.io.Closeables;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,8 +33,10 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
+import com.google.common.base.Supplier;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.io.Closeables;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +60,8 @@ import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.html5.AppCacheStatus;
+import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
@@ -82,10 +81,10 @@ import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.ErrorCodes;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -97,7 +96,7 @@ import java.util.logging.Level;
 
 public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
     TakesScreenshot, Rotatable, BrowserConnection, HasTouchScreen,
-    WebStorage, LocationContext , LocationListener {
+    WebStorage, LocationContext, LocationListener, ApplicationCache {
 
   private static final String ELEMENT_KEY = "ELEMENT";
   private static final String WINDOW_KEY = "WINDOW";
@@ -525,7 +524,12 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
     return found;
   }
 
-  private class AndroidFindBy implements SearchContext, FindsByTagName, FindsById,
+    public AppCacheStatus getStatus() {
+      Long scriptRes = (Long) executeRawScript("(" + AndroidAtoms.GET_APPCACHE_STATUS.getValue() + ")()");
+      return AppCacheStatus.getEnum(scriptRes.intValue());
+    }
+
+    private class AndroidFindBy implements SearchContext, FindsByTagName, FindsById,
       FindsByLinkText, FindsByName, FindsByXPath, FindsByCssSelector, FindsByClassName {
 
     public WebElement findElement(By by) {

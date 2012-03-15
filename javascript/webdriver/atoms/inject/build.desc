@@ -160,3 +160,8 @@ js_fragment(name = "execute_sql",
   module = "webdriver.atoms.inject.storage.database",
   function = "webdriver.atoms.inject.storage.database.executeSql",
   deps = [":deps"])
+
+js_fragment(name = "get_appcache_status",
+  module = "webdriver.atoms.inject.storage.appcache",
+  function = "webdriver.atoms.inject.storage.appcache.getStatus",
+  deps = [":deps"])

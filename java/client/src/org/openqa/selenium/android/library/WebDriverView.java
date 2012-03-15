@@ -99,9 +99,9 @@ import com.google.common.base.Preconditions;
     settings.setSupportMultipleWindows(true);
     settings.setBuiltInZoomControls(true);
     settings.setJavaScriptEnabled(true);
-    /*settings.setAppCacheEnabled(true);
+    settings.setAppCacheEnabled(true);
     settings.setAppCacheMaxSize(10*1024*1024);
-    settings.setAppCachePath("");*/
+    settings.setAppCachePath("");
     settings.setDatabaseEnabled(true);
     settings.setDomStorageEnabled(true);
     settings.setGeolocationEnabled(true);

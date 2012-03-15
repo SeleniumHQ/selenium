@@ -25,22 +25,24 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.HasTouchScreen;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.android.app.MainActivity;
+import org.openqa.selenium.html5.AppCacheStatus;
+import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Rotatable;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.android.app.MainActivity;
 
 import java.util.List;
 import java.util.Set;
 
 public class AndroidApkDriver implements BrowserConnection, HasTouchScreen, JavascriptExecutor,
-    LocationContext, Rotatable, TakesScreenshot, WebDriver, WebStorage {
+    LocationContext, Rotatable, TakesScreenshot, WebDriver, WebStorage, ApplicationCache {
 
   private AndroidWebDriver driver;
 
@@ -147,5 +149,9 @@ public class AndroidApkDriver implements BrowserConnection, HasTouchScreen, Java
 
   public SessionStorage getSessionStorage() {
     return driver.getSessionStorage();
+  }
+
+  public AppCacheStatus getStatus() {
+    return driver.getStatus();
   }
 }

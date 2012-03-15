@@ -20,8 +20,6 @@ package org.openqa.selenium.html5;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-import java.util.List;
-
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
 
@@ -35,14 +33,20 @@ public class AppCacheTest extends JUnit4TestBase {
     driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
 
     AppCacheStatus status = ((ApplicationCache) driver).getStatus();
+    while (status == AppCacheStatus.DOWNLOADING) {
+      status = ((ApplicationCache) driver).getStatus();
+    }
     assertEquals(AppCacheStatus.UNCACHED, status);
     // Check if resources are retrieved from browser's cache.
     ((BrowserConnection) driver).setOnline(false);
-    driver.get(pages.html5Page);
-    AppCacheStatus status1 = ((ApplicationCache) driver).getStatus();
-    status1 = ((ApplicationCache) driver).getStatus();
-    assertEquals("Resources should be retrieved from browser's cache.",
-        AppCacheStatus.IDLE, status1);
+    driver.get(pages.html5OfflinePage);
+    AppCacheStatus new_status = ((ApplicationCache) driver).getStatus();
+    String new_title = driver.getTitle();
+    ((BrowserConnection) driver).setOnline(true);
+    
+    assertEquals("The offline page should report uncached status.",
+        AppCacheStatus.UNCACHED, new_status);
+    assertEquals("Should be directed to the offline page", "Offline", new_title);
   }
 
   @Test
@@ -55,30 +59,8 @@ public class AppCacheTest extends JUnit4TestBase {
 
     ((BrowserConnection) driver).setOnline(false);
     driver.get(pages.html5Page);
-    assertEquals("HTML5", driver.getTitle());
-  }
-
-  @Test
-  public void testGetAppCache() {
-    if (!(driver instanceof ApplicationCache)) {
-      return;
-    }
-    driver.get(pages.html5Page);
-
-    ((BrowserConnection) driver).setOnline(false);
-
-    List<AppCacheEntry> caches = ((ApplicationCache) driver).getAppCache();
-    for (AppCacheEntry cache : caches) {
-      assertEquals("image/jpeg", cache.getMimeType());
-      if (cache.getUrl().contains("red.jpg")) {
-        assertEquals(
-            "Resources that were listed in cache's manifest isn't MASTER.",
-            AppCacheType.MASTER, cache.getType().value());
-      } else if (cache.getUrl().contains("yellow.jpg")) {
-        assertEquals(
-            "Resources that were listed in cache's manifest isn't EXPLICIT",
-            AppCacheType.EXPLICIT, cache.getType().value());
-      }
-    }
+    String title = driver.getTitle();
+    ((BrowserConnection) driver).setOnline(true);
+    assertEquals("HTML5", title);
   }
 }

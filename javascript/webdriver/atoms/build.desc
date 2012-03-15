@@ -208,6 +208,6 @@ js_fragment(name = "get_session_storage_key",
   deps = [ "//javascript/atoms:deps" ])
 
 js_fragment(name = "get_appcache_status",
-  module = "bot.appcache",
-  function = "bot.appcache.getStatus",
+  module = "webdriver.atoms.storage.appcache",
+  function = "webdriver.atoms.storage.appcache.getStatus",
   deps = [ "//javascript/atoms:deps" ])

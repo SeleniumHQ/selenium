@@ -27,6 +27,8 @@ import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.html5.AppCacheStatus;
+import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.BrowserConnection;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
@@ -49,7 +51,7 @@ import java.net.URL;
  * A driver for running tests on an Android device or emulator.
  */
 public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable,
-    BrowserConnection, HasTouchScreen, WebStorage, LocationContext {
+    BrowserConnection, HasTouchScreen, WebStorage, LocationContext, ApplicationCache {
 
   private TouchScreen touch;
   private RemoteLocalStorage localStorage;
@@ -151,5 +153,10 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
 
   public void setLocation(Location loc) {
     locationContext.setLocation(loc);
+  }
+
+  public AppCacheStatus getStatus() {
+    String status = (String) execute(DriverCommand.GET_APP_CACHE_STATUS).getValue();
+    return AppCacheStatus.getEnum(status);
   }
 }

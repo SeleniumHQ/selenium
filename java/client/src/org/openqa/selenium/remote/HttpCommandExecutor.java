@@ -196,9 +196,7 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(EXECUTE_SQL, post("/session/:sessionId/execute_sql"))
         .put(GET_LOCATION, get("/session/:sessionId/location"))
         .put(SET_LOCATION, post("/session/:sessionId/location"))
-        .put(GET_APP_CACHE, get("/session/:sessionId/application_cache"))
         .put(GET_APP_CACHE_STATUS, get("/session/:sessionId/application_cache/status"))
-        .put(CLEAR_APP_CACHE, delete("/session/:sessionId/application_cache/clear"))
         .put(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"))
         .put(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"))
 

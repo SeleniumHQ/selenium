@@ -50,6 +50,7 @@ public class Pages {
   public String dynamicPage;
   public String slowIframes;
   public String html5Page;
+  public String html5OfflinePage;
   public String tables;
   public String deletingFrame;
   public String draggableLists;
@@ -90,6 +91,7 @@ public class Pages {
     framesetPage = appServer.whereIs("frameset.html");
     grandchildPage = appServer.whereIs("child/grandchild/grandchildPage.html");
     html5Page = appServer.whereIs("html5Page.html");
+    html5OfflinePage = appServer.whereIs("html5/offline.html");
     iframePage = appServer.whereIs("iframes.html");
     javascriptEnhancedForm = appServer.whereIs("javascriptEnhancedForm.html");
     javascriptPage = appServer.whereIs("javascriptPage.html");

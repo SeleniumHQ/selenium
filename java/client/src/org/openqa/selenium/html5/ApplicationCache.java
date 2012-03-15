@@ -22,24 +22,10 @@ import org.openqa.selenium.WebDriverException;
 import java.util.List;
 
 public interface ApplicationCache {
-
-  /**
-   * Gets the list of cache entries on the application cache.
-   * 
-   * @return a list of {@link AppCacheEntry}
-   * @throws WebDriverException
-   */
-  List<AppCacheEntry> getAppCache() throws WebDriverException;
-
   /**
    * The current state of the application cache.
    * 
    * @return {@link AppCacheStatus}
    */
   AppCacheStatus getStatus();
-
-  /**
-   * Deletes the application cache from the browser.
-   */
-  void clear();
 }
