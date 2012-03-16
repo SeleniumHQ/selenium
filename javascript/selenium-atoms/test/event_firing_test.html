@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>event_firing_test</title>
@@ -23,6 +24,11 @@
         }
 
         function testShouldFireCustomEvents() {
+          if (bot.userAgent.IE_DOC_PRE9) {
+            // IE before 9 doesn't allow custom event firing
+            return;
+          }
+        
           var element = bot.locators.findElement({id: 'target'});
           addListener(element, 'magic');
 
@@ -33,9 +39,9 @@
 
         function testShouldFireEventsWhenArgumentIsAnElement() {
           var element = bot.locators.findElement({id: 'target'});
-            addListener(element, 'magic');
+          addListener(element, 'focus');
 
-          core.events.fire(element, 'magic');
+          core.events.fire(element, 'focus');
 
           assertTrue(fired);
         }

@@ -13,6 +13,10 @@
       }
 
       function testShouldReturnAttributeOfAnElementLocatedUsingXPathWithATrailingSlash() {
+        if (!(document.documentElement['selectSingleNode'] || document['evaluate'])) {
+          // TODO: Remove when all browsers [IE] support xpath
+          return;
+        }
         var className = core.element.getAttribute("xpath=//a[contains(@href,'#id1')]/@class");
         assertEquals('a1', className);
       }
