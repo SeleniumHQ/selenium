@@ -59,6 +59,16 @@ public class TestUtilities {
     return getUserAgent(driver).contains("MSIE 6");
   }
 
+  public static boolean isOldIe(WebDriver driver) {
+    try {
+      String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
+      // IE9 is trident version 5.  IE9 is the start of new IE.
+      return ((Long)((JavascriptExecutor)driver).executeScript(jsToExecute)).intValue() < 5;
+    } catch (Throwable t) {
+      return false;
+    }
+  }
+
   public  static boolean isFirefox30(WebDriver driver) {
     return getUserAgent(driver).contains("Firefox/3.0.");
   }
