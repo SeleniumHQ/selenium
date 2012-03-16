@@ -31,24 +31,18 @@ module Folder
   end
 
   class CreateTask < Tasks
+    def dest_dir(dir, args)
+      path_for "build/#{dir}/#{args[:out] || args[:name]}"
+    end
+
     def handle(fun, dir, args)
-      def dest_name(dir, args, filename)
-	"build/#{dir}/#{args[:out] || args[:name]}/#{File.basename(filename)}"
-      end
+      folder = dest_dir(dir, args)
 
       task task_name(dir, args[:name]) do
-	(args[:srcs] || []).each do |src|
-          to_export = "#{dir}/#{src}"
-          src = Platform.path_for to_export
-          dest = dest_name(dir, args, src)
-          mkdir_p File.dirname(dest)
-	  cp_r src, dest
-        end
-
-	(args[:deps] || []).each do |dep|
-	  file = Rake::Task[dep].out
-	  cp_r file, dest_name(dir, args, file)
-	end
+        puts "Preparing: #{task_name(dir, args[:name])} as #{folder}"
+        mkdir_p folder
+        copy_resources(dir, args[:srcs], folder)
+        copy_resources(dir, args[:deps], folder) unless args[:deps].nil?
       end
     end
   end
@@ -57,7 +51,7 @@ module Folder
     def handle(fun, dir, args)
       name = task_name(dir, args[:name])
       task = Rake::Task[name]
-      add_dependencies(task, dir, args[:deps])
+      add_dependencies(task, dir, args[:deps]) unless args[:deps].nil?
       add_dependencies(task, dir, args[:srcs])
     end
   end
