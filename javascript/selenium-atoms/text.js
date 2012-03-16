@@ -152,7 +152,7 @@ core.text.getText = function(locator) {
       (goog.userAgent.GECKO && goog.userAgent.VERSION >= '1.8');
   
   if (isRecentFirefox ||
-      goog.userAgent.SAFARI || goog.userAgent.OPERA) {
+      goog.userAgent.SAFARI || goog.userAgent.OPERA || goog.userAgent.IE) {
     text = core.text.getTextContent_(element, false);
   } else {
     if (element.textContent) {

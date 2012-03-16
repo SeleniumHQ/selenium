@@ -115,7 +115,6 @@ core.locators.findElementRecursive_ = function(locatorType, locatorString,
         opt_doc, opt_win) {
   var element = core.locators.findElementBy_(
       locatorType, locatorString, opt_doc);
-
   if (element != null) {
     return element;
   }
@@ -161,12 +160,7 @@ core.locators.findElementOrNull = function(locator, opt_win) {
   var element = core.locators.findElementRecursive_(
       loc['type'], loc['string'], win.document, win);
 
-  if (element != null) {
-    return element;
-  }
-
-  // Element was not found by any locator function.
-  return null;
+  return element;
 };
 
 

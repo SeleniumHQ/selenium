@@ -25,6 +25,10 @@
         }
 
         function testCanSearchByXPath() {
+          if (!(document.documentElement['selectSingleNode'] || document['evaluate'])) {
+            // TODO: Remove when all browsers [IE] support xpath
+            return;
+          }
           assertTrue(core.text.getText('//body').length > 0);
         }
 
