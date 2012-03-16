@@ -31,9 +31,13 @@ module Selenium
         # Starts the server, communicating on the specified port, if it is not already running
         #
 
-        def start(start_port)
+        def start(start_port, timeout)
           return port if running?
           @handle = self.class.start_server(start_port)
+
+          unless SocketPoller.new(Platform.localhost, start_port, timeout).connected?
+            raise Error::WebDriverError, "unable to connect to IE server within #{timeout} seconds"
+          end
 
           start_port
         end
@@ -50,6 +54,10 @@ module Selenium
 
         def port
           self.class.current_port
+        end
+
+        def uri
+          "http://#{Platform.localhost}:#{port}"
         end
 
         private

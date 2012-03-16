@@ -16,25 +16,26 @@ module Selenium
           timeout     = opts.delete(:timeout) { DEFAULT_TIMEOUT }
           port        = opts.delete(:port) { DEFAULT_PORT }
           http_client = opts.delete(:http_client)
+          ignore_mode = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
           @server = Server.new
-          @port   = @server.start Integer(port)
+          @port = @server.start Integer(port), timeout
 
-          host = Platform.localhost
-          unless SocketPoller.new(host, @port, timeout).connected?
-            raise Error::WebDriverError, "unable to connect to IE server within #{timeout} seconds"
+          caps = Remote::Capabilities.internet_explorer
+          if ignore_mode
+            caps['ignoreProtectedModeSettings'] = true
           end
 
           remote_opts = {
-            :url => "http://#{host}:#{@port}",
-            :desired_capabilities => :internet_explorer
+            :url => @server.uri,
+            :desired_capabilities => caps
           }
 
-          remote_opts.merge!(:http_client => http_client) if http_client
+          remote_opts[:http_client] = http_client if http_client
 
           super(remote_opts)
         end
