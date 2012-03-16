@@ -4,12 +4,10 @@ package org.openqa.selenium.firefox;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 
@@ -19,21 +17,10 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
  * @author eran.mes@gmail.com (Eran Mes)
  */
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
+@NativeEventsRequired
 @RunWith(SeleniumTestRunner.class)
-public class NativeEventsTest extends JUnit4TestBase {
-  private boolean testNativeEvents = false;
+public class NativeEventsTest {
   private FirefoxDriver driver2;
-
-  @Before
-  public void setUp() throws Exception {
-    testNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS ||
-        Platform.getCurrent().is(Platform.LINUX);
-    if (testNativeEvents) {
-      FirefoxProfile p = new FirefoxProfile();
-      p.setEnableNativeEvents(true);
-      driver2 = new FirefoxDriver(p);
-    }
-  }
 
   @After
   public void tearDown() throws Exception {
@@ -44,11 +31,12 @@ public class NativeEventsTest extends JUnit4TestBase {
 
   @Test
   public void nativeEventsCanBeEnabled() {
-    if (driver2 == null) {
-      return;
-    }
+    FirefoxProfile p = new FirefoxProfile();
+    p.setEnableNativeEvents(true);
+    driver2 = new FirefoxDriver(p);
 
     assertTrue("Native events were explicitly enabled and should be on.",
-        (Boolean) driver2.getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS));
+        (Boolean) driver2.getCapabilities().getCapability(
+            CapabilityType.HAS_NATIVE_EVENTS));
   }
 }

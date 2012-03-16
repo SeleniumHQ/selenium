@@ -13,10 +13,11 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @RunWith(SeleniumTestRunner.class)
-public abstract class JUnit4TestBase {
+public abstract class JUnit4TestBase implements WrapsDriver {
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
@@ -46,6 +47,10 @@ public abstract class JUnit4TestBase {
 
     driver = new WebDriverBuilder().get();
     storedDriver.set(driver);
+  }
+
+  public WebDriver getWrappedDriver() {
+    return storedDriver.get();
   }
 
   @Before

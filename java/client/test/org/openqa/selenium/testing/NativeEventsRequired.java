@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 // currently wired up into the TestIgnorance, but could be with minimal effort.
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface NativeEventsRequired {
   boolean enabled() default true;
   Platform[] onlyOn() default {Platform.ANY};

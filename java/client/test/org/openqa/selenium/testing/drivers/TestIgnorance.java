@@ -17,19 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.collect.Sets;
-
-import org.junit.runners.model.FrameworkMethod;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoreComparator;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-
-import java.lang.reflect.AnnotatedElement;
-import java.util.Arrays;
-import java.util.Set;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -40,11 +30,37 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.drivers.Browser.android;
+import static org.openqa.selenium.testing.drivers.Browser.chrome;
+import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
+import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
+import static org.openqa.selenium.testing.drivers.Browser.ie;
+import static org.openqa.selenium.testing.drivers.Browser.ipad;
+import static org.openqa.selenium.testing.drivers.Browser.iphone;
+import static org.openqa.selenium.testing.drivers.Browser.opera;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import org.junit.runners.model.FrameworkMethod;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.IgnoreComparator;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NativeEventsRequired;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Class that decides whether a test class or method should be ignored.
  */
 public class TestIgnorance {
+  private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
+  private Set<Browser> neverNativeEvents = ImmutableSet.of(
+      htmlunit, htmlunit_js, ipad, iphone, android);
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
   private Set<String> methods = Sets.newHashSet();
   private Set<String> only = Sets.newHashSet();
@@ -80,11 +96,36 @@ public class TestIgnorance {
     ignored |= isIgnoredDueToJavascript(test.getClass().getAnnotation(JavascriptEnabled.class));
     ignored |= isIgnoredDueToJavascript(method.getMethod().getAnnotation(JavascriptEnabled.class));
 
+    ignored |= isIgnoredBecauseOfNativeEvents(test, test.getClass().getAnnotation(NativeEventsRequired.class));
+    ignored |= isIgnoredBecauseOfNativeEvents(test, method.getMethod().getAnnotation(NativeEventsRequired.class));
+
     ignored |= isIgnoredDueToEnvironmentVariables(method, test);
 
     ignored |= isIgnoredDueToBeingOnSauce(method, test);
 
     return ignored;
+  }
+
+  private boolean isIgnoredBecauseOfNativeEvents(Object test, NativeEventsRequired annotation) {
+    if (annotation == null) {
+      return false;
+    }
+
+    if (neverNativeEvents.contains(browser)) {
+      return true;
+    }
+
+    if (alwaysNativeEvents.contains(browser)) {
+      return false;
+    }
+
+    if (!Boolean.getBoolean("selenium.browser.native_events")) {
+      return true;
+    }
+
+    // We only have native events on Linux and Windows.
+    Platform platform = Platform.getCurrent();
+    return !(platform.is(LINUX) || platform.is(WINDOWS));
   }
 
   private boolean isIgnoredDueToBeingOnSauce(FrameworkMethod method, Object test) {

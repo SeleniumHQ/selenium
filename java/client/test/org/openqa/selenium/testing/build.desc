@@ -13,6 +13,7 @@ java_library(name = "annotations",
   srcs = [
     "Ignore.java",
     "JavascriptEnabled.java",
+    "NativeEventsRequired.java",
     "NeedsLocalEnvironment.java",
   ],
   deps = [
