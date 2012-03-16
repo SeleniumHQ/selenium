@@ -160,9 +160,9 @@ core.events.replaceText_ = function(element, value) {
         element.innerHTML = actualValue;
       }
     }
-//  } else if (goog.userAgent.GECKO && bot.userAgent.isEngineVersion(8)) {
+  } else if (goog.userAgent.GECKO && bot.userAgent.isEngineVersion(8)) {
     // Firefox 8+ fails with a security error if typing into (XPCNativeWrapper) unwrapped objects
-//    XPCNativeWrapper(element).value = actualValue;
+    XPCNativeWrapper(element).value = actualValue;
   } else {
     element.value = actualValue;
   }
