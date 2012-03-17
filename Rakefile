@@ -199,7 +199,7 @@ task :test_java_webdriver => [
   :test_remote_server,
 ]
 if (windows?)
-  task :test_java_webdrierv => [:test_ie]
+  task :test_java_webdriver => [:test_ie]
 end
 if (present?("chromedriver"))
   task :test_java_webdriver => [:test_chrome]
