@@ -290,6 +290,11 @@
       var target = findElement({id: 'target'});
       assertFalse(isShown(target));
     }
+
+    function testThatItemsAreConsideredInvisbleIfAbsolutePositionIsNotInCascade() {
+      var target = findElement({id: 'iHaveAbsolutePosition'});
+      assertFalse(isShown(target));
+    }
   </script>
 
   <style type="text/css">
@@ -426,6 +431,12 @@
      <li id="target"><a>Item 8</a></li>
    </ul>
 </div>
+<div id="grandparent" style="display:none;width:10px;">
+  <div id="parent" style="position:absolute:right:10px;">
+    <div id="iHaveAbsolutePosition" style="display:block">I am over here</div>
+  </div>
+<div>
+    
 
 </body>
 </html>
