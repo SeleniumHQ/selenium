@@ -92,7 +92,7 @@ public class WindowTest extends JUnit4TestBase {
   public void testCanMaximizeTheWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
 
-    window.restore();
+    window.setSize(new Dimension(200, 200));
     // TODO convert to WebDriverWait
     Thread.sleep(500);
 
@@ -105,25 +105,5 @@ public class WindowTest extends JUnit4TestBase {
     Dimension newSize = window.getSize();
     assertThat(newSize.width, greaterThan(size.width));
     assertThat(newSize.height, greaterThan(size.height));  
-  }
-
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
-  @Test
-  public void testCanRestoreTheWindow() throws InterruptedException {
-    WebDriver.Window window = driver.manage().window();
-    window.maximize();
-
-    // TODO convert to WebDriverWait
-    Thread.sleep(500);
-
-    Dimension size = window.getSize();
-
-    window.restore();
-    // TODO convert to WebDriverWait
-    Thread.sleep(500);
-
-    Dimension newSize = window.getSize();
-    assertThat(newSize.width, lessThan(size.width));
-    assertThat(newSize.height, lessThan(size.height));  
   }
 }

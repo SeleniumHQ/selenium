@@ -81,6 +81,7 @@ import org.openqa.selenium.remote.server.handler.ImeGetAvailableEngines;
 import org.openqa.selenium.remote.server.handler.ImeIsActivated;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.remote.server.handler.LogHandler;
+import org.openqa.selenium.remote.server.handler.MaximiseWindow;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.Rotate;
@@ -372,6 +373,8 @@ public class DriverServlet extends HttpServlet {
     getMapper.bind("/session/:sessionId/window/:windowHandle/position", GetWindowPosition.class)
         .on(ResultType.SUCCESS, jsonResponse);
     postMapper.bind("/session/:sessionId/window/:windowHandle/position", SetWindowPosition.class)
+        .on(ResultType.SUCCESS, emptyResponse);
+    postMapper.bind("/session/:sessionId/window/:windowHandle/maximize", MaximiseWindow.class)
         .on(ResultType.SUCCESS, emptyResponse);
 
     postMapper.bind("/session/:sessionId/timeouts", ConfigureTimeout.class)
