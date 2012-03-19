@@ -10,7 +10,7 @@ namespace OpenQA.Selenium
     public class WindowTest : DriverTestFixture
     {
         [TearDown]
-        public void TearDown()
+        public void RestoreBrowserWindow()
         {
             driver.Manage().Window.Restore();
         }
