@@ -10,6 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #ifndef WEBDRIVER_IE_ACCEPTALERTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ACCEPTALERTCOMMANDHANDLER_H_
 
@@ -40,63 +41,94 @@ class AcceptAlertCommandHandler : public IECommandHandler {
     if (alert_handle == NULL) {
       response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
     } else {
-      HWND button_handle = NULL;
-      WPARAM param = IDOK;
-      // Alert present, find the OK button.
-      // Retry up to 10 times to find the dialog.
-      int max_wait = 10;
-      while ((button_handle == NULL) && --max_wait) {
-        ::EnumChildWindows(alert_handle,
-                           &AcceptAlertCommandHandler::FindOKButton,
-                           reinterpret_cast<LPARAM>(&button_handle));
-        if (button_handle == NULL) {
-          ::Sleep(50);
-        }
+      DialogButtonInfo button_info = this->GetDialogButton(alert_handle, OK);
+      if (!button_info.button_exists) {
+        // No OK button on dialog. Look for a cancel button
+        // (JavaScript alert() dialogs have a single button, but its ID
+        // can be that of a "cancel" button.)
+        button_info = this->GetDialogButton(alert_handle, CANCEL);
       }
-
-      // No OK button on dialog. Look for a cancel button
-      // (JavaScript alert() dialogs have a single button, but its ID
-      // can be that of a "cancel" button.
-      if (button_handle == NULL) {
-        max_wait = 10;
-        while ((button_handle == NULL) && --max_wait) {
-          ::EnumChildWindows(alert_handle,
-                             &AcceptAlertCommandHandler::FindCancelButton,
-                             reinterpret_cast<LPARAM>(&button_handle));
-          if (button_handle == NULL) {
-            ::Sleep(50);
-          } else {
-            param = IDCANCEL;
-          }
-        }
-      }
-
-      if (button_handle == NULL) {
-        response->SetErrorResponse(EUNHANDLEDERROR, "Could not find OK button");
+    
+      if (!button_info.button_exists) {
+        response->SetErrorResponse(EUNHANDLEDERROR,
+                                   "Could not find OK button");
       } else {
         // Now click on the OK button of the Alert
-        ::SendMessage(alert_handle, WM_COMMAND, param, NULL);
+        ::SendMessage(alert_handle,
+                      WM_COMMAND,
+                      button_info.button_control_id,
+                      NULL);
         response->SetSuccessResponse(Json::Value::null);
       }
     }
   }
 
- private:
-  static BOOL CALLBACK FindOKButton(HWND hwnd, LPARAM arg) {
-    HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
-    int control_id = ::GetDlgCtrlID(hwnd);
-    if (control_id == IDOK) {
-      *dialog_handle = hwnd;
-      return FALSE;
+  struct DialogButtonInfo {
+    HWND button_handle;
+    int button_control_id;
+    bool button_exists;
+  };
+
+  enum BUTTON_TYPE {
+    OK,
+    CANCEL
+  };
+
+  DialogButtonInfo GetDialogButton(HWND dialog_handle, BUTTON_TYPE button_type) {
+    DialogButtonFindInfo button_find_info;
+    button_find_info.button_handle = NULL;
+    button_find_info.button_control_id = IDOK;
+    if (button_type == OK) {
+      button_find_info.match_proc = &AcceptAlertCommandHandler::IsOKButton;
+    } else {
+      button_find_info.match_proc = &AcceptAlertCommandHandler::IsCancelButton;
     }
-    return TRUE;
+
+    int max_wait = 10;
+    // Retry up to 10 times to find the dialog.
+    while ((button_find_info.button_handle == NULL) && --max_wait) {
+      ::EnumChildWindows(dialog_handle,
+                          &AcceptAlertCommandHandler::FindDialogButton,
+                          reinterpret_cast<LPARAM>(&button_find_info));
+      if (button_find_info.button_handle == NULL) {
+        ::Sleep(50);
+      } else {
+        break;
+      }
+    }
+
+    // Use the simple version of the struct so that subclasses do not
+    // have to know anything about the function pointer definition.
+    DialogButtonInfo button_info;
+    button_info.button_handle = button_find_info.button_handle;
+    button_info.button_control_id = button_find_info.button_control_id;
+    button_info.button_exists = button_find_info.button_handle != NULL;
+    return button_info;
   }
 
-  static BOOL CALLBACK FindCancelButton(HWND hwnd, LPARAM arg) {
-    HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
+ private:
+  typedef bool (__cdecl *ISBUTTONMATCHPROC)(int); 
+
+  struct DialogButtonFindInfo {
+    HWND button_handle;
+    int button_control_id;
+    ISBUTTONMATCHPROC match_proc;
+  };
+
+  static bool IsOKButton(int control_id) {
+    return control_id == IDOK || control_id == IDYES;
+  }
+
+  static bool IsCancelButton(int control_id) {
+    return control_id == IDCANCEL || control_id == IDNO;
+  }
+
+  static BOOL CALLBACK FindDialogButton(HWND hwnd, LPARAM arg) {
+    DialogButtonFindInfo* button_info = reinterpret_cast<DialogButtonFindInfo*>(arg);
     int control_id = ::GetDlgCtrlID(hwnd);
-    if (control_id == IDCANCEL) {
-      *dialog_handle = hwnd;
+    if (button_info->match_proc(control_id)) {
+      button_info->button_handle = hwnd;
+      button_info->button_control_id = control_id;
       return FALSE;
     }
     return TRUE;

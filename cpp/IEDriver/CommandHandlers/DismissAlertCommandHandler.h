@@ -20,7 +20,7 @@
 
 namespace webdriver {
 
-class DismissAlertCommandHandler : public IECommandHandler {
+class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
  public:
   DismissAlertCommandHandler(void) {
   }
@@ -41,39 +41,20 @@ class DismissAlertCommandHandler : public IECommandHandler {
     if (alert_handle == NULL) {
       response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
     } else {
-      HWND button_handle = NULL;
-      // Alert present, find the Cancel button.
-      // Retry up to 10 times to find the dialog.
-      int max_wait = 10;
-      while ((button_handle == NULL) && --max_wait) {
-        ::EnumChildWindows(alert_handle,
-                           &DismissAlertCommandHandler::FindCancelButton,
-                           reinterpret_cast<LPARAM>(&button_handle));
-        if (button_handle == NULL) {
-          ::Sleep(50);
-        }
-      }
-
-      if (button_handle == NULL) {
+      DialogButtonInfo button_info = this->GetDialogButton(alert_handle,
+                                                           CANCEL);
+      if (!button_info.button_exists) {
         response->SetErrorResponse(EUNHANDLEDERROR,
                                    "Could not find Cancel button");
       } else {
         // Now click on the Cancel button of the Alert
-        ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
+        ::SendMessage(alert_handle,
+                      WM_COMMAND,
+                      button_info.button_control_id,
+                      NULL);
         response->SetSuccessResponse(Json::Value::null);
       }
     }
-  }
-
- private:
-  static BOOL CALLBACK FindCancelButton(HWND hwnd, LPARAM arg) {
-    HWND* dialog_handle = reinterpret_cast<HWND*>(arg);
-    int control_id = ::GetDlgCtrlID(hwnd);
-    if (control_id == IDCANCEL) {
-      *dialog_handle = hwnd;
-      return FALSE;
-    }
-    return TRUE;
   }
 };
 
