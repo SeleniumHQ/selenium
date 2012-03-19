@@ -51,6 +51,7 @@
 #include "CommandHandlers/IsElementDisplayedCommandHandler.h"
 #include "CommandHandlers/IsElementEnabledCommandHandler.h"
 #include "CommandHandlers/IsElementSelectedCommandHandler.h"
+#include "CommandHandlers/MaximizeWindowCommandHandler.h"
 #include "CommandHandlers/MouseMoveToCommandHandler.h"
 #include "CommandHandlers/MouseClickCommandHandler.h"
 #include "CommandHandlers/MouseDoubleClickCommandHandler.h"
@@ -59,6 +60,7 @@
 #include "CommandHandlers/NewSessionCommandHandler.h"
 #include "CommandHandlers/QuitCommandHandler.h"
 #include "CommandHandlers/RefreshCommandHandler.h"
+#include "CommandHandlers/RestoreWindowCommandHandler.h"
 #include "CommandHandlers/ScreenshotCommandHandler.h"
 #include "CommandHandlers/SendKeysCommandHandler.h"
 #include "CommandHandlers/SendKeysToActiveElementCommandHandler.h"
@@ -594,6 +596,8 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[SetWindowSize] = CommandHandlerHandle(new SetWindowSizeCommandHandler);
   this->command_handlers_[GetWindowPosition] = CommandHandlerHandle(new GetWindowPositionCommandHandler);
   this->command_handlers_[SetWindowPosition] = CommandHandlerHandle(new SetWindowPositionCommandHandler);
+  this->command_handlers_[MaximizeWindow] = CommandHandlerHandle(new MaximizeWindowCommandHandler);
+  this->command_handlers_[RestoreWindow] = CommandHandlerHandle(new RestoreWindowCommandHandler);
 
   // As-yet unimplemented commands
   this->command_handlers_[Status] = CommandHandlerHandle(new IECommandHandler);
