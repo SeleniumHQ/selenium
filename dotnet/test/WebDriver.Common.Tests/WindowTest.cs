@@ -9,6 +9,12 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class WindowTest : DriverTestFixture
     {
+        [TearDown]
+        public void TearDown()
+        {
+            driver.Manage().Window.Restore();
+        }
+
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
@@ -73,6 +79,46 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(targetPosition.X, newLocation.X);
             Assert.AreEqual(targetPosition.Y, newLocation.Y);
+        }
+
+
+        [Test]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        public void ShouldBeAbleToMaximizeTheCurrentWindow()
+        {
+            IWindow window = driver.Manage().Window;
+            Size size = window.Size;
+
+            window.Maximize();
+            Assert.Greater(window.Size.Height, size.Height);
+            Assert.Greater(window.Size.Width, size.Width);
+
+            window.Restore();
+        }
+
+
+        [Test]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        public void ShouldBeAbleToRestoreTheCurrentWindow()
+        {
+            IWindow window = driver.Manage().Window;
+            Size size = window.Size;
+
+            window.Maximize();
+            Assert.Greater(window.Size.Height, size.Height);
+            Assert.Greater(window.Size.Width, size.Width);
+
+            window.Restore();
+            Assert.AreEqual(window.Size.Height, size.Height);
+            Assert.AreEqual(window.Size.Width, size.Width);
         }
     }
 }

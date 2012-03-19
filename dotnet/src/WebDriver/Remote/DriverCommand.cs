@@ -284,6 +284,16 @@ namespace OpenQA.Selenium.Remote
         SetWindowPosition,
 
         /// <summary>
+        /// Represents MaximizeWindow command
+        /// </summary>
+        MaximizeWindow,
+
+        /// <summary>
+        /// Represents RestoreWindow command
+        /// </summary>
+        RestoreWindow,
+
+        /// <summary>
         /// Represents the DismissAlert command
         /// </summary>
         DismissAlert,

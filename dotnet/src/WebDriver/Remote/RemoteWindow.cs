@@ -93,5 +93,25 @@ namespace OpenQA.Selenium.Remote
                 this.driver.InternalExecute(DriverCommand.SetWindowSize, parameters);
             }
         }
+
+        /// <summary>
+        /// Maximizes the current window if it is not already maximized.
+        /// </summary>
+        public void Maximize()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("windowHandle", "current");
+            this.driver.InternalExecute(DriverCommand.MaximizeWindow, parameters);
+        }
+
+        /// <summary>
+        /// Restores the current window if it is maximized.
+        /// </summary>
+        public void Restore()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("windowHandle", "current");
+            this.driver.InternalExecute(DriverCommand.RestoreWindow, parameters);
+        }
     }
 }

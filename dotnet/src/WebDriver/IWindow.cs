@@ -39,5 +39,15 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <remarks>When setting this property, it should act as the JavaScript window.resizeTo() method.</remarks>
         Size Size { get; set; }
+
+        /// <summary>
+        /// Maximizes the current window if it is not already maximized.
+        /// </summary>
+        void Maximize();
+
+        /// <summary>
+        /// Restores the current window if it is maximized.
+        /// </summary>
+        void Restore();
     }
 }
