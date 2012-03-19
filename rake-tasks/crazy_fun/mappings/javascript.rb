@@ -34,6 +34,10 @@ class JavascriptMappings
         'goog.userAgent.ASSUME_WEBKIT=true',
         'goog.userAgent.product.ASSUME_CHROME=true',
     ]))
+    fun.add_mapping("js_fragment", Javascript::CompileFragment.new('firefox', [
+        'goog.userAgent.ASSUME_GECKO=true',
+        'goog.userAgent.product.ASSUME_FIREFOX=true',
+    ]))
     fun.add_mapping("js_fragment", Javascript::CompileFragment.new('ie', [
         'goog.userAgent.ASSUME_IE=true',
     ]))
