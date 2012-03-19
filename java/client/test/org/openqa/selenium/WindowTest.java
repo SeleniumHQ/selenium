@@ -17,12 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.concurrent.Callable;
+
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -83,4 +87,43 @@ public class WindowTest extends JUnit4TestBase {
     assertEquals(targetPosition.y, newLocation.y);
   }
 
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
+  @Test
+  public void testCanMaximizeTheWindow() throws InterruptedException {
+    WebDriver.Window window = driver.manage().window();
+
+    window.restore();
+    // TODO convert to WebDriverWait
+    Thread.sleep(500);
+
+    Dimension size = window.getSize();
+
+    window.maximize();
+    // TODO convert to WebDriverWait
+    Thread.sleep(500);
+    
+    Dimension newSize = window.getSize();
+    assertThat(newSize.width, greaterThan(size.width));
+    assertThat(newSize.height, greaterThan(size.height));  
+  }
+
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
+  @Test
+  public void testCanRestoreTheWindow() throws InterruptedException {
+    WebDriver.Window window = driver.manage().window();
+    window.maximize();
+
+    // TODO convert to WebDriverWait
+    Thread.sleep(500);
+
+    Dimension size = window.getSize();
+
+    window.restore();
+    // TODO convert to WebDriverWait
+    Thread.sleep(500);
+
+    Dimension newSize = window.getSize();
+    assertThat(newSize.width, lessThan(size.width));
+    assertThat(newSize.height, lessThan(size.height));  
+  }
 }

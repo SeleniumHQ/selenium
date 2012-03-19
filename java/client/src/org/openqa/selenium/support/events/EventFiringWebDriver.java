@@ -617,5 +617,13 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public Point getPosition() {
       return window.getPosition();
     }
+
+    public void maximize() {
+      window.maximize();
+    }
+
+    public void restore() {
+      window.restore();
+    }
   }
 }

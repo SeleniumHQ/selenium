@@ -640,6 +640,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
         return new Point(x, y);
       }
+
+      public void maximize() {
+        execute(DriverCommand.MAXIMIZE_WINDOW,
+            ImmutableMap.of("windowHandle", "current"));
+      }
+
+      public void restore() {
+        execute(DriverCommand.RESTORE_WINDOW,
+            ImmutableMap.of("windowHandle", "current"));
+      }
     }
   }
 

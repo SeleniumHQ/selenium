@@ -1441,10 +1441,50 @@ FirefoxDriver.prototype.setWindowPosition = function(respond, parameters) {
   respond.send();
 };
 
-// TODO(jari): could this be made into a precondition?
+FirefoxDriver.prototype.maximizeWindow = function(respond, parameters) {
+  this.assertTargetsCurrentWindow_(parameters);
+
+  var documentWindow = respond.session.getWindow();
+  var chromeWindow = getChromeWindowFromDocumentWindow(documentWindow);
+  
+  chromeWindow.maximize();
+
+  respond.send();
+};
+
+
+FirefoxDriver.prototype.restoreWindow = function(respond, parameters) {
+  this.assertTargetsCurrentWindow_(parameters);
+
+  var documentWindow = respond.session.getWindow();
+  var chromeWindow = getChromeWindowFromDocumentWindow(documentWindow);
+
+  chromeWindow.restore();
+
+  respond.send();
+};
+
+function getChromeWindowFromDocumentWindow(documentWindow){
+  // Find the chrome window for the requested document window. 
+  // This will ignore unfocused tabs
+  var wm = fxdriver.moz.getService(
+    "@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
+  var allWindows = wm.getEnumerator("navigator:browser");
+
+  while (allWindows.hasMoreElements()) {
+    var chromeWindow = allWindows.getNext()	  
+
+    if (chromeWindow.gBrowser.contentWindow == documentWindow) {
+      return chromeWindow;
+    }
+  }  
+}
+
+//TODO(jari): could this be made into a precondition?
 FirefoxDriver.prototype.assertTargetsCurrentWindow_ = function(parameters) {
   if (parameters.windowHandle != "current") {
     throw new WebDriverError(bot.ErrorCode.UNSUPPORTED_OPERATION,
       'Window operations are only supported for the currently focused window.');
   }
 };
+

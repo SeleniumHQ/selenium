@@ -186,6 +186,8 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_WINDOW_POSITION, get("/session/:sessionId/window/:windowHandle/position"))
         .put(SET_WINDOW_SIZE, post("/session/:sessionId/window/:windowHandle/size"))
         .put(SET_WINDOW_POSITION, post("/session/:sessionId/window/:windowHandle/position"))
+        .put(MAXIMIZE_WINDOW, post("/session/:sessionId/window/:windowHandle/maximize"))
+        .put(RESTORE_WINDOW, post("/session/:sessionId/window/:windowHandle/restore"))
         .put(CLOSE, delete("/session/:sessionId/window"))
         .put(DRAG_ELEMENT, post("/session/:sessionId/element/:id/drag"))
         .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,

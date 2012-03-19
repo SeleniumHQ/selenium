@@ -277,6 +277,12 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.POST, Dispatcher.executeAs('setWindowPosition')).
       on(Request.Method.GET, Dispatcher.executeAs('getWindowPosition'));
 
+  this.bind_('/session/:sessionId/window/:windowHandle/maximize').
+      on(Request.Method.POST, Dispatcher.executeAs('maximizeWindow'));
+
+  this.bind_('/session/:sessionId/window/:windowHandle/restore').
+      on(Request.Method.POST, Dispatcher.executeAs('restoreWindow'));
+
   this.bind_('/session/:sessionId/screenshot').
       on(Request.Method.GET, Dispatcher.executeAs('screenshot'));
 

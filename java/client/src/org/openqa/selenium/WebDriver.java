@@ -498,5 +498,15 @@ public interface WebDriver extends SearchContext {
      * @return The current window position.
      */
     Point getPosition();
+
+    /**
+     * Maximizes the current window if it is not already maximized
+     */
+    void maximize();
+
+    /**
+     * Restores the current window if it is maximized
+     */
+    void restore();
   }
 }

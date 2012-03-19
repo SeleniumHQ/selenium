@@ -763,6 +763,16 @@ relative to the upper left corner of the screen.').
       SetReturnType('{x: number, y: number}', 'The X and Y coordinates for the window, \
 relative to the upper left corner of the screen.').
       AddError('NoSuchWindow', 'If the specified window cannot be found.'))
+      
+  resources.append(
+      SessionResource('/session/:sessionId/window/:windowHandle/maximize').
+      Post('''Maximize the currently selected window if not already maximized.''').
+      AddError('NoSuchWindow', 'If the specified window cannot be found.'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/window/:windowHandle/restore').
+      Post('''Restore currently selected window if maximized.''').
+      AddError('NoSuchWindow', 'If the specified window cannot be found.'))
 
   resources.append(
       SessionResource('/session/:sessionId/cookie').
