@@ -708,6 +708,10 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   if (!positiveSize(elem)) {
     return false;
   }
+
+  // Elements should be hidden if their parent has a fixed size AND has the style
+  // overflow:hidden AND the element's location is not within the fixed size 
+  // of the parent
   function isOverflowHiding(e){
     var parent = bot.dom.getParentElement(e);
     if (parent !== null && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden'){
