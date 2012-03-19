@@ -621,9 +621,5 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public void maximize() {
       window.maximize();
     }
-
-    public void restore() {
-      window.restore();
-    }
   }
 }

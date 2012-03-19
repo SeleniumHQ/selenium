@@ -503,10 +503,5 @@ public interface WebDriver extends SearchContext {
      * Maximizes the current window if it is not already maximized
      */
     void maximize();
-
-    /**
-     * Restores the current window if it is maximized
-     */
-    void restore();
   }
 }

@@ -157,7 +157,6 @@ public interface DriverCommand {
   String GET_WINDOW_SIZE = "getWindowSize";
   String GET_WINDOW_POSITION = "getWindowPosition";
   String MAXIMIZE_WINDOW = "maximizeWindow";
-  String RESTORE_WINDOW = "restoreWindow";
 
   String GET_LOGS = "getLogs";
 }

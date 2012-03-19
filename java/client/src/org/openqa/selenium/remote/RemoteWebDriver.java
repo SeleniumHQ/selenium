@@ -645,11 +645,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         execute(DriverCommand.MAXIMIZE_WINDOW,
             ImmutableMap.of("windowHandle", "current"));
       }
-
-      public void restore() {
-        execute(DriverCommand.RESTORE_WINDOW,
-            ImmutableMap.of("windowHandle", "current"));
-      }
     }
   }
 

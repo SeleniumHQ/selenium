@@ -1453,17 +1453,6 @@ FirefoxDriver.prototype.maximizeWindow = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.restoreWindow = function(respond, parameters) {
-  this.assertTargetsCurrentWindow_(parameters);
-
-  var documentWindow = respond.session.getWindow();
-  var chromeWindow = getChromeWindowFromDocumentWindow(documentWindow);
-
-  chromeWindow.restore();
-
-  respond.send();
-};
-
 function getChromeWindowFromDocumentWindow(documentWindow){
   // Find the chrome window for the requested document window. 
   // This will ignore unfocused tabs
