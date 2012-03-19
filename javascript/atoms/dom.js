@@ -712,19 +712,20 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // Elements should be hidden if their parent has a fixed size AND has the style
   // overflow:hidden AND the element's location is not within the fixed size 
   // of the parent
-  function isOverflowHiding(e){
+  function isOverflowHiding(e) {
     var parent = bot.dom.getParentElement(e);
-    if (parent !== null && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden'){
+    if (parent && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden') {
       var sizeOfParent = bot.dom.getElementSize_(parent); 
       var locOfParent = goog.style.getClientPosition(parent);
       var locOfElement = goog.style.getClientPosition(e);
-      if (locOfParent.x + sizeOfParent.width < locOfElement.x){
+
+      if (locOfParent.x + sizeOfParent.width < locOfElement.x) {
         return false;
       }
-      if (locOfParent.y + sizeOfParent.height < locOfElement.y){
+      if (locOfParent.y + sizeOfParent.height < locOfElement.y) {
         return false;
       }
-      return !parent || isOverflowHiding(parent);
+      return isOverflowHiding(parent);
     }
     return true;
   }
