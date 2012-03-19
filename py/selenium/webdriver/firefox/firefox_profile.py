@@ -91,7 +91,7 @@ class FirefoxProfile(object):
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
         "webdriver_enable_native_events": native_events,
-        "webdriver_assume_untrusted_issuer": " false",
+        "webdriver_assume_untrusted_issuer": "true",
         "dom.max_script_run_time": "30",
         }
 
