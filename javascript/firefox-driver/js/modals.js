@@ -28,10 +28,9 @@ goog.require('fxdriver.Timer');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 
-
 fxdriver.modals.isModalPresent = function(callback, timeout) {
-    fxdriver.modals.timer = new fxdriver.Timer();
-    fxdriver.modals.timer.runWhenTrue(
+    fxdriver.modaltimer = new fxdriver.Timer();
+    fxdriver.modaltimer.runWhenTrue(
     function() {
       var modal = fxdriver.modals.find_();
       return modal && modal.document;

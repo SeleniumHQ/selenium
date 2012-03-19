@@ -131,17 +131,17 @@ function buildHandler(browser, toCall, opt_window) {
   return new PatientListener(browser, toCall, opt_window);
 }
 
+var loadingListenerTimer;
 
 WebLoadingListener = function(browser, toCall, timeout, opt_window) {
-  var timer = new fxdriver.Timer();
-  var func = function(timedOut) { timer.cancel(); toCall(timedOut); };
+  loadingListenerTimer = new fxdriver.Timer();
+  var func = function(timedOut) { loadingListenerTimer.cancel(); toCall(timedOut); };
 
   this.handler = buildHandler(browser, func, opt_window);
   browser.addProgressListener(this.handler);
   var handler = this.handler;
   if (timeout > 0) {
-    this.handler.timer = timer; // Keep a reference to avoid the GC
-    timer.setTimeout(function() {
+      loadingListenerTimer.setTimeout(function() {
       func(true);
       WebLoadingListener.removeListener(browser, handler);
     }, timeout);

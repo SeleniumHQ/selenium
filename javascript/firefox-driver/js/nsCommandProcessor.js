@@ -281,7 +281,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
       this.driver_.response_ = this.response_;
 
       var response = this.response_;
-      DelayedCommand.prototype.executeInternal_.nstimer = new fxdriver.Timer();
+      DelayedCommand.execTimer = new fxdriver.Timer();
       var startTime = new Date().getTime();
       var endTime = startTime + this.response_.session.getImplicitWait();
       var name = this.command_.name;
@@ -303,6 +303,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
           if (new Date().getTime() < endTime) {
               DelayedCommand.prototype.executeInternal_.nstimer.setTimeout(
                   toExecute, 100);
+              DelayedCommand.execTimer.setTimeout( toExecute, 100);
           } else {
             if (!e.isWebDriverError) {
               fxdriver.Logger.dumpn(
@@ -729,8 +730,8 @@ nsCommandProcessor.prototype.quit = function(response) {
           quit(Components.interfaces.nsIAppStartup.eForceQuit);
   };
 
-  this.nstimer = new fxdriver.Timer();
-  this.nstimer.setTimeout(event, 500);
+  nsCommandProcessor.quitTimer = new fxdriver.Timer();
+  nsCommandProcessor.quitTimer.setTimeout(event, 500);
 };
 
 

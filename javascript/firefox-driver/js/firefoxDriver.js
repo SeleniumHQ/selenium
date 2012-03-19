@@ -216,9 +216,8 @@ FirefoxDriver.prototype.close = function(respond) {
         appService.quit(forceQuit);
     };
 
-    this.nstimer = new fxdriver.Timer();
-    this.nstimer.setTimeout(event, 500);
-
+    FirefoxDriver.nstimer = new fxdriver.Timer();
+    FirefoxDriver.nstimer.setTimeout(event, 500);
     return;  // The client should catch the fact that the socket suddenly closes
   }
 
