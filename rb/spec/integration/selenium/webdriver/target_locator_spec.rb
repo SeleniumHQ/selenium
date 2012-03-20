@@ -3,12 +3,14 @@ require File.expand_path("../spec_helper", __FILE__)
 describe "Selenium::WebDriver::TargetLocator" do
   let(:wait) { Selenium::WebDriver::Wait.new }
 
-  it "should find the active element" do
-    driver.navigate.to url_for("xhtmlTest.html")
-    driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
+  not_compliant_on :browser => :safari do # 'maximum call stack size exceeded'
+    it "should find the active element" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
+    end
   end
 
-  not_compliant_on :browser => :iphone do
+  not_compliant_on :browser => [:iphone, :safari] do
     it "should switch to a frame" do
       driver.navigate.to url_for("iframes.html")
       driver.switch_to.frame("iframe1")
@@ -26,7 +28,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:ie, :iphone] do
+  not_compliant_on :browser => [:ie, :iphone, :safari] do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
 
@@ -86,7 +88,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:android, :iphone] do
+  not_compliant_on :browser => [:android, :iphone, :safari] do
     it "should switch to default content" do
       driver.navigate.to url_for("iframes.html")
 
@@ -98,7 +100,7 @@ describe "Selenium::WebDriver::TargetLocator" do
   end
 
   describe "alerts" do
-    not_compliant_on :browser => [:opera, :iphone] do
+    not_compliant_on :browser => [:opera, :iphone, :safari] do
       it "allows the user to accept an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -111,7 +113,8 @@ describe "Selenium::WebDriver::TargetLocator" do
 
     not_compliant_on({:browser => :chrome, :platform => :macosx}, # http://code.google.com/p/chromium/issues/detail?id=90519
                      {:browser => :opera},
-                     {:browser => :iphone}) do
+                     {:browser => :iphone},
+                     {:browser => :safari}) do
       it "allows the user to dismiss an alert" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
@@ -122,7 +125,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => [:opera, :iphone] do
+    not_compliant_on :browser => [:opera, :iphone, :safari] do
       it "allows the user to set the value of a prompt" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "prompt").click
@@ -147,7 +150,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on :browser => [:ie, :opera, :iphone] do
+    not_compliant_on :browser => [:ie, :opera, :iphone, :safari] do
       it "raises NoAlertOpenError if no alert is present" do
         lambda { driver.switch_to.alert }.should raise_error(
           Selenium::WebDriver::Error::NoAlertOpenError, /alert|modal dialog/i)
