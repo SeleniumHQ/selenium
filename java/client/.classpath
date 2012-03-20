@@ -27,6 +27,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/cssparser"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/nekohtml"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/sac"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/webbit"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/xml-apis"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
