@@ -17,19 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.concurrent.Callable;
-
-import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
+import java.util.concurrent.Callable;
+
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -59,9 +58,7 @@ public class WindowTest extends JUnit4TestBase {
     Dimension targetSize = new Dimension(size.width - 20, size.height - 20);
     window.setSize(targetSize);
 
-    Dimension newSize = window.getSize();
-    assertEquals(targetSize.width, newSize.width);
-    assertEquals(targetSize.height, newSize.height);
+    waitFor(windowSizeToEqual(driver, targetSize));
   }
 
   @Ignore(IE)
@@ -92,18 +89,40 @@ public class WindowTest extends JUnit4TestBase {
   public void testCanMaximizeTheWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
 
-    window.setSize(new Dimension(200, 200));
-    // TODO convert to WebDriverWait
-    Thread.sleep(500);
+    Dimension targetSize = new Dimension(200, 200);
+    window.setSize(targetSize);
+    waitFor(windowSizeToEqual(driver, targetSize));
 
     Dimension size = window.getSize();
-
     window.maximize();
-    // TODO convert to WebDriverWait
-    Thread.sleep(500);
-    
-    Dimension newSize = window.getSize();
-    assertThat(newSize.width, greaterThan(size.width));
-    assertThat(newSize.height, greaterThan(size.height));  
+    waitFor(windowSizeToBeGreaterThan(driver, size));
   }
+
+  private Callable<Boolean> windowSizeToBeGreaterThan(final WebDriver driver, final Dimension size) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Dimension newSize = driver.manage().window().getSize();
+        if(newSize.width > size.width && newSize.height > size.height) {
+          return true;
+        }
+
+        return null;
+      }
+    };
+  }
+
+  private Callable<Boolean> windowSizeToEqual(final WebDriver driver, final Dimension size) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Dimension newSize = driver.manage().window().getSize();
+        if(newSize.width == size.width && newSize.height == size.height) {
+          return true;
+        }
+
+        return null;
+      }
+    };
+  }
+
+
 }
