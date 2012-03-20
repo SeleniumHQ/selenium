@@ -5,7 +5,6 @@ module Selenium
       class Server
         def initialize(port)
           @port  = port
-          @hs    = LibWebSocket::OpeningHandshake::Server.new
           @frame = LibWebSocket::Frame.new
         end
 
@@ -47,6 +46,11 @@ module Selenium
 
         def wait_for_connection
           # TODO: timeouts / non-blocking accept
+          process_initial_http_request
+          process_handshake
+        end
+
+        def process_initial_http_request
           http = @server.accept
 
           http.write <<-HTML
@@ -64,16 +68,30 @@ window.onload = function() {
 };
 </script>
           HTML
-
           http.close
+        end
 
+        def process_handshake
           @ws = @server.accept
-          until @hs.done?
+          hs  = LibWebSocket::OpeningHandshake::Server.new
+
+          req = ''
+          until hs.done?
             data = @ws.getc || next
-            @hs.parse(data.chr) or raise Error::WebDriverError, @hs.error.to_s
+            req << data.chr
+
+            unless hs.parse(data.chr)
+              if req.include? "favicon.ico"
+                @ws.close
+                process_handshake
+                return
+              else
+                raise Error::WebDriverError, hs.error.to_s
+              end
+            end
           end
 
-          @ws.write(@hs.to_s)
+          @ws.write(hs.to_s)
           @ws.flush
 
           puts "handshake complete" if $DEBUG
