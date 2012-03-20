@@ -55,3 +55,6 @@ WebDriver.sln.cache
 .yardoc
 rb/.yardoc
 .tm_properties
+maven/*/src
+maven/*/target
+

@@ -47,6 +47,10 @@
             <artifactId>selenium-support</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.webbitserver</groupId>
+            <artifactId>webbit</artifactId>
+        </dependency>
         <!-- We need JUnit for SeleneseTestCase ... -->
         <dependency>
             <groupId>junit</groupId>
@@ -117,6 +121,13 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <failIfNoTests>false</failIfNoTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>
