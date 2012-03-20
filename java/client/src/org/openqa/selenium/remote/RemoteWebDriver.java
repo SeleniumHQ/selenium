@@ -139,7 +139,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Response response = execute(DriverCommand.NEW_SESSION,
         ImmutableMap.of("desiredCapabilities", desiredCapabilities));
 
-    Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
+      Object value = response.getValue();
+      if (value instanceof  String){
+          System.out.println("We got a string instead of a map, will crash now:" + value);
+      }
+      Map<String, Object> rawCapabilities = (Map<String, Object>) value;
     DesiredCapabilities returnedCapabilities = new DesiredCapabilities();
     for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
       // Handle the platform later
