@@ -301,9 +301,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
           func();
         } catch (e) {
           if (new Date().getTime() < endTime) {
-              DelayedCommand.prototype.executeInternal_.nstimer.setTimeout(
-                  toExecute, 100);
-              DelayedCommand.execTimer.setTimeout( toExecute, 100);
+              DelayedCommand.execTimer.setTimeout(toExecute, 100);
           } else {
             if (!e.isWebDriverError) {
               fxdriver.Logger.dumpn(
