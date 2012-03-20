@@ -42,7 +42,14 @@ module Selenium
                        :name       => command,
                        :parameters => opts
 
-          @server.receive
+          response = @server.receive
+
+          status_code = response['status']
+          if status_code != 0
+            raise Error.for_code(status_code), response['value']['message']
+          end
+
+          response
         end
 
         def prepare_connect_file

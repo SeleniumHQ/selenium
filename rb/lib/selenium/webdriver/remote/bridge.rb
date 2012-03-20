@@ -562,7 +562,7 @@ module Selenium
         end
 
         #
-        # executes a command on the remote server via the REST / JSON API.
+        # executes a command on the remote server.
         #
         #
         # Returns the 'value' of the returned payload
@@ -573,7 +573,7 @@ module Selenium
         end
 
         #
-        # executes a command on the remote server via the REST / JSON API.
+        # executes a command on the remote server.
         #
         # @return [WebDriver::Remote::Response]
         #
