@@ -41,6 +41,8 @@ module Selenium
                      IPhone::Bridge.new(opts)
                    when :opera
                      Opera::Bridge.new(opts)
+                   when :safari
+                     Safari::Bridge.new(opts)
                    else
                      raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end

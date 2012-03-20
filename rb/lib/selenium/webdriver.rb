@@ -19,6 +19,7 @@ module Selenium
     autoload :IPhone,  'selenium/webdriver/iphone'
     autoload :Opera,   'selenium/webdriver/opera'
     autoload :Remote,  'selenium/webdriver/remote'
+    autoload :Safari,  'selenium/webdriver/safari'
     autoload :Support, 'selenium/webdriver/support'
 
     # @api private
