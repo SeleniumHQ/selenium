@@ -2,6 +2,10 @@ js_deps(name = "deps",
   srcs = [ "./**/*.js" ],
   deps = "//javascript/atoms:deps")
 
+js_library(name = "all_js",
+  srcs = [ "./**/*.js" ],
+  deps = [ "//javascript/atoms:all_js" ])
+
 js_fragment(name = "clear",
   module = "bot.action",
   function = "bot.action.clear",

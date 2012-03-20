@@ -4,7 +4,7 @@ import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.BrowserType;
 
 /**
- * Discovers a valid Internet Explorer installation on local system.
+ * Discovers a valid Safari installation on local system.
  */
 public class SafariLocator extends SingleBrowserLocator {
 

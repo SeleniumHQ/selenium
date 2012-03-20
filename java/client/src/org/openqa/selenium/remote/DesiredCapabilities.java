@@ -210,6 +210,10 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   public static DesiredCapabilities opera() {
     return new DesiredCapabilities("opera", "", Platform.ANY);
   }
+  
+  public static DesiredCapabilities safari() {
+    return new DesiredCapabilities("safari", "", Platform.ANY);
+  }
 
   @Override
   public String toString() {

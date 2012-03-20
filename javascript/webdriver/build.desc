@@ -1,3 +1,14 @@
+js_library(name = "base_lib",
+  srcs = [
+    "command.js",
+    "error.js",
+    "events.js",
+    "promise.js"
+  ],
+  deps = [
+    "//javascript/atoms:error_lib"
+  ])
+
 js_library(name = "webdriver_lib",
   srcs = [
     "*.js",
@@ -7,7 +18,7 @@ js_library(name = "webdriver_lib",
   deps = [
     "//javascript/atoms:error_lib",
   ])
-  
+
 js_library(name = "test_lib",
   srcs = [
     "testing/*.js",

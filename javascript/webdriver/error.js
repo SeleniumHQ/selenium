@@ -21,23 +21,36 @@ goog.require('bot.ErrorCode');
 
 
 /**
- * @typedef {{status:bot.ErrorCode, value:*}}
+ * @typedef {{status:bot.ErrorCode, value:(*|{message:string})}}
  */
 webdriver.error.ResponseObject;
+
+
+/**
+ * @param {*} value The value to test.
+ * @return {boolean} Whether the given value is a response object.
+ */
+webdriver.error.isResponseObject = function(value) {
+  return goog.isObject(value) && goog.isNumber(value['status']);
+};
 
 
 /**
  * Converts an error value into its JSON representation as defined by the
  * WebDriver wire protocol.
  * @param {*} error The error value to convert.
- * @return {!{status:number, value:!{message:string}}} The converted response.
+ * @return {!webdriver.error.ResponseObject} The converted response.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
  */
 webdriver.error.createResponse = function(error) {
+  if (webdriver.error.isResponseObject(error)) {
+    return (/** @type {!webdriver.error.ResponseObject} */error);
+  }
+
   var statusCode = error && goog.isNumber(error.code) ? error.code :
       bot.ErrorCode.UNKNOWN_ERROR;
   return {
-    'status': (/** @type {number} */statusCode),
+    'status': (/** @type {bot.ErrorCode} */statusCode),
     'value': {
       'message': error && error.message || error + ''
       // TODO(jleyba): Parse stack trace info.

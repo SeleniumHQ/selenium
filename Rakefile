@@ -102,6 +102,10 @@ task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => ["//java/client/src/org/openqa/selenium/remote:common"]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
+task :safari => [
+  "//javascript/safari-driver:SafariDriver",
+  "//java/client/src/org/openqa/selenium/safari",
+]
 task :server_lite => ["//java/server/src/org/openqa/selenium/server:server_lite"]
 task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
@@ -154,6 +158,7 @@ task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
   :test_remote_server
 ]
+task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
 task :test_support => [
   "//java/client/test/org/openqa/selenium/lift:test:run",
   "//java/client/test/org/openqa/selenium/support:SmallTests:run",

@@ -2,6 +2,7 @@ package org.openqa.selenium.remote;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 
 import org.openqa.selenium.UnhandledAlertException;
@@ -63,6 +64,10 @@ public class ErrorHandler {
   public Response throwIfResponseFailed(Response response, long duration) throws RuntimeException {
     if (response.getStatus() == SUCCESS) {
       return response;
+    }
+    
+    if (response.getValue() instanceof Throwable) {
+      throw Throwables.propagate((Throwable) response.getValue());
     }
 
     Class<? extends WebDriverException> outerErrorType =

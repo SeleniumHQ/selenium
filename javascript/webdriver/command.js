@@ -140,8 +140,8 @@ webdriver.CommandName = {
   'CLEAR_ELEMENT': 'clearElement',
   'CLICK_ELEMENT': 'clickElement',
   'SEND_KEYS_TO_ELEMENT': 'sendKeysToElement',
+  'SEND_KEYS_TO_ACTIVE_ELEMENT': 'sendKeysToActiveElement',
   'SUBMIT_ELEMENT': 'submitElement',
-  'TOGGLE_ELEMENT': 'toggleElement',
 
   'GET_CURRENT_WINDOW_HANDLE': 'getCurrentWindowHandle',
   'GET_WINDOW_HANDLES': 'getWindowHandles',
@@ -174,14 +174,66 @@ webdriver.CommandName = {
   'ACCEPT_ALERT': 'acceptAlert',
   'DISMISS_ALERT': 'dismissAlert',
   'GET_ALERT_TEXT': 'getAlertText',
-  'SET_ALERT_VALUE': 'setAlertValue'
+  'SET_ALERT_VALUE': 'setAlertValue',
+
+  'EXECUTE_SQL': 'executeSQL',
+  'GET_LOCATION': 'getLocation',
+  'SET_LOCATION': 'setLocation',
+  'GET_APP_CACHE': 'getAppCache',
+  'GET_APP_CACHE_STATUS': 'getStatus',
+  'CLEAR_APP_CACHE': 'clearAppCache',
+  'IS_BROWSER_ONLINE': 'isBrowserOnline',
+  'SET_BROWSER_ONLINE': 'setBrowserOnline',
+
+  'GET_LOCAL_STORAGE_ITEM': 'getLocalStorageItem',
+  'GET_LOCAL_STORAGE_KEYS': 'getLocalStorageKeys',
+  'SET_LOCAL_STORAGE_ITEM': 'setLocalStorageItem',
+  'REMOVE_LOCAL_STORAGE_ITEM': 'removeLocalStorageItem',
+  'CLEAR_LOCAL_STORAGE': 'clearLocalStorage',
+  'GET_LOCAL_STORAGE_SIZE': 'getLocalStorageSize',
+
+  'GET_SESSION_STORAGE_ITEM': 'getSessionStorageItem',
+  'GET_SESSION_STORAGE_KEYS': 'getSessionStorageKey',
+  'SET_SESSION_STORAGE_ITEM': 'setSessionStorageItem',
+  'REMOVE_SESSION_STORAGE_ITEM': 'removeSessionStorageItem',
+  'CLEAR_SESSION_STORAGE': 'clearSessionStorage',
+  'GET_SESSION_STORAGE_SIZE': 'getSessionStorageSize',
+
+  'SET_SCREEN_ORIENTATION': 'setScreenOrientation',
+  'GET_SCREEN_ORIENTATION': 'getScreenOrientation',
+
+  // These belong to the Advanced user interactions - an element is
+  // optional for these commands.
+  'CLICK': 'mouseClick',
+  'DOUBLE_CLICK': 'mouseDoubleClick',
+  'MOUSE_DOWN': 'mouseButtonDown',
+  'MOUSE_UP': 'mouseButtonUp',
+  'MOVE_TO': 'mouseMoveTo',
+  'SEND_KEYS_TO_SESSION': 'sendKeys',
+
+  // These belong to the Advanced Touch API
+  'TOUCH_SINGLE_TAP': 'touchSingleTap',
+  'TOUCH_DOWN': 'touchDown',
+  'TOUCH_UP': 'touchUp',
+  'TOUCH_MOVE': 'touchMove',
+  'TOUCH_SCROLL': 'touchScroll',
+  'TOUCH_DOUBLE_TAP': 'touchDoubleTap',
+  'TOUCH_LONG_PRESS': 'touchLongPress',
+  'TOUCH_FLICK': 'touchFlick',
+
+  'SET_WINDOW_SIZE': 'setWindowSize',
+  'SET_WINDOW_POSITION': 'setWindowPosition',
+  'GET_WINDOW_SIZE': 'getWindowSize',
+  'GET_WINDOW_POSITION': 'getWindowPosition',
+
+  'GET_LOGS': 'getLogs'
 };
 
 
 /**
  * Type definition for a WebDriver response object as defined by the wire
  * protocol.
- * @typedef {{status:bot.ErrorCode, value:*}}
+ * @typedef {{status:bot.ErrorCode, value:(*|{message:string})}}
  */
 webdriver.CommandResponse;
 
