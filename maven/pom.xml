@@ -126,6 +126,7 @@
         <module>iphone-driver</module>
         <module>java</module>
         <module>remote-driver</module>
+        <module>safari-driver</module>
         <module>server</module>
         <module>support</module>
     </modules>

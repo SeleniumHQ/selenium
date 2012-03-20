@@ -44,6 +44,11 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-safari-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -90,6 +95,7 @@
                                                 <present targetdir="../ie-driver/src/main/java" />
                                                 <present targetdir="../iphone-driver/src/main/java" />
                                                 <present targetdir="../remote-driver/src/main/java" />
+                                                <present targetdir="../safari-driver/src/main/java" />
                                                 <present targetdir="../support/src/main/java" />
                                             </or>
                                         </not>
