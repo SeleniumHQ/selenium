@@ -146,7 +146,9 @@ safaridriver.inject.commands.getCookies = function() {
   });
 };
 
-safaridriver.inject.commands.deleteCookies = goog.net.cookies.clear;
+safaridriver.inject.commands.deleteCookies = function() {
+  goog.net.cookies.clear();
+};
 
 /**
  * Deletes a specified cookie.
