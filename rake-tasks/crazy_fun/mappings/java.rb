@@ -274,7 +274,7 @@ module CrazyFunJava
 
       file jar do
         puts "Compiling: #{task_name(dir, args[:name])} as #{jar}"
-
+        
         mkdir_p out_dir
 
         cp = ClassPath.new(jar_name(dir, args[:name])).all
@@ -528,19 +528,12 @@ module CrazyFunJava
   end
 
   class ClassPath
+    @@CACHE = {}
+    
     def initialize(task_name)
       t = Rake::Task[task_name]
 
-      all = build_classpath([], t)
-      @cp = []
-      all.each do |jar|
-        if jar.is_a? String
-          @cp.push jar
-        else
-          @cp += jar
-        end
-      end
-      @cp = @cp.sort.uniq
+      @cp = build_classpath([], t)
     end
 
     def length
@@ -566,20 +559,23 @@ module CrazyFunJava
     private
 
     def build_classpath(cp, dep)
-      dep.prerequisites.each do |dep|
-        if dep.to_s =~ /\.jar$/
-          cp.push dep
+      return @@CACHE[dep.to_s] if @@CACHE[dep.to_s]
+      
+      ret = []
+      
+      dep.prerequisites.each do |prereq|
+        if prereq.to_s =~ /\.jar$/
+          ret.push(prereq) 
+          ret += build_classpath(cp, Rake::Task[prereq])
         end
-
-        if Rake::Task.task_defined? dep
-          parent = Rake::Task[dep]
-          if !((parent.to_s =~ /\.apk/))
-            build_classpath(cp, parent)
-          end
-        end
+        
+        next unless prereq.to_s =~ /^\/\//
+        next unless Rake::Task.task_defined? prereq
+        
+        ret += build_classpath(cp, Rake::Task[prereq])
       end
-
-      cp
+      
+      @@CACHE[dep.to_s] = ret.sort.uniq
     end
   end
 
