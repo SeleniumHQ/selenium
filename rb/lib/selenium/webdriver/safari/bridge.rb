@@ -29,6 +29,10 @@ module Selenium
           @browser.stop
         end
 
+        def driver_extensions
+          []
+        end
+
         private
 
         def create_session(desired_capabilities)
