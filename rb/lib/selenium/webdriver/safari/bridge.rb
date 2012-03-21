@@ -49,6 +49,10 @@ module Selenium
             raise Error.for_code(status_code), response['value']['message']
           end
 
+          if response['id'] != @command_id.to_s
+            raise Error::WebDriverError, "response id does not match command id"
+          end
+
           response
         end
 
