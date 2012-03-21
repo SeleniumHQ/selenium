@@ -289,8 +289,8 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(javascriptLibrary, elementFinder));
     seleneseMethods.put("runScript", new RunScript(scriptMutator));
-    seleneseMethods
-        .put("select", new SelectOption(alertOverride, javascriptLibrary, elementFinder));
+    seleneseMethods.put("select",
+        new SelectOption(alertOverride, javascriptLibrary, elementFinder));
     seleneseMethods.put("selectFrame", new SelectFrame(windows));
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
@@ -300,8 +300,8 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));
     seleneseMethods.put("shiftKeyUp", new ShiftKeyUp(keyState));
     seleneseMethods.put("submit", new Submit(elementFinder));
-    seleneseMethods
-        .put("type", new Type(alertOverride, javascriptLibrary, elementFinder, keyState));
+    seleneseMethods.put("type",
+        new Type(alertOverride, javascriptLibrary, elementFinder, keyState));
     seleneseMethods.put("typeKeys", new TypeKeys(alertOverride, elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(alertOverride, elementFinder));
     seleneseMethods.put("useXpathLibrary", new UseXPathLibrary());
