@@ -12,10 +12,11 @@ module Selenium
 
         def path
           @path ||= (
-            path = if Platform.windows?
+            path = case Platform.os
+            when :windows
               # TODO: improve this
               File.join(ENV['ProgramFiles'], 'Safari', 'Safari.exe')
-            elsif Platform.mac?
+            when :macosx
               "/Applications/Safari.app/Contents/MacOS/Safari"
             else
               Platform.find_binary("Safari")
