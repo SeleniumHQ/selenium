@@ -49,7 +49,6 @@ mozilla_extension(name = "webdriver",
     { "//cpp:webdriver_firefox_latest" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so" },
     { "//cpp:webdriver_firefox_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so" },
     { "//cpp:webdriver_firefox_latest_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so" },
-    { ":atoms" : "resource/modules/atoms.js" },
     { ":web_element_cache" : "resource/modules/web_element_cache.js" },
     { "js/timer.js" : "resource/modules/timer.js" },
     { "js/evaluate.js" : "resource/evaluate.js" },
@@ -91,36 +90,8 @@ js_binary(name = "driver_component",
     "js/externs.js",
   ],
   deps = [
-    ":atoms",
     "//javascript/webdriver/atoms:deps",
   ])
-
-# Needed because the closure library doesn't have the EXPORTED_SYMBOLS variable
-# required by the loader in firefox
-js_binary(name = "atoms",
-  srcs = [
-    "js/error.js",
-    "js/events.js",
-    "js/exported_symbols.js",
-    "js/firefox-utils.js",
-    "js/logging.js",
-    "js/modals.js",
-    "js/moz.js",
-    "js/preconditions.js",
-    "js/response.js",
-    "js/request.js",
-    "js/screenshooter.js",
-    "js/timer.js",
-    "js/utils.js",
-    "js/webLoadingListener.js",
-  ],
-  defines = [
-    "goog.userAgent.ASSUME_GECKO=true",
-  ],
-  externs = [
-    "js/externs.js",
-  ],
-  deps = [ "//javascript/webdriver/atoms:deps" ])
 
 js_binary(name = "bad_cert_listener",
   srcs = [
