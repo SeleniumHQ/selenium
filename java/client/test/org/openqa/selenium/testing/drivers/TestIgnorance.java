@@ -92,7 +92,10 @@ public class TestIgnorance {
   public boolean isIgnored(FrameworkMethod method, Object test) {
     boolean ignored = ignoreComparator.shouldIgnore(test.getClass().getAnnotation(Ignore.class)) ||
         ignoreComparator.shouldIgnore(method.getMethod().getAnnotation(Ignore.class));
-    
+
+    ignored |= isIgnoredBecauseOfJUnit4Ignore(test.getClass().getAnnotation(org.junit.Ignore.class));
+    ignored |= isIgnoredBecauseOfJUnit4Ignore(method.getMethod().getAnnotation(org.junit.Ignore.class));
+
     ignored |= isIgnoredDueToJavascript(test.getClass().getAnnotation(JavascriptEnabled.class));
     ignored |= isIgnoredDueToJavascript(method.getMethod().getAnnotation(JavascriptEnabled.class));
 
@@ -104,6 +107,10 @@ public class TestIgnorance {
     ignored |= isIgnoredDueToBeingOnSauce(method, test);
 
     return ignored;
+  }
+
+  private boolean isIgnoredBecauseOfJUnit4Ignore(org.junit.Ignore annotation) {
+    return annotation != null;
   }
 
   private boolean isIgnoredBecauseOfNativeEvents(Object test, NativeEventsRequired annotation) {
