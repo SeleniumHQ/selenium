@@ -3,12 +3,15 @@ module Selenium
     module Safari
 
       class Bridge < Remote::Bridge
+        COMMAND_TIMEOUT = 60
+
         def initialize(opts = {})
           port = Integer(opts[:port] || PortProber.random)
+          timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)
 
           @command_id ||= 0
 
-          @server = Server.new(port)
+          @server = Server.new(port, timeout)
           @server.start
 
           @browser = Browser.new

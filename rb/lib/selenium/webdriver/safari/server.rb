@@ -3,8 +3,9 @@ module Selenium
     module Safari
 
       class Server
-        def initialize(port)
+        def initialize(port, command_timeout)
           @port  = port
+          @command_timeout = command_timeout
           @frame = LibWebSocket::Frame.new
         end
 
@@ -29,8 +30,21 @@ module Selenium
 
         def receive
           until msg = @frame.next
-            data = @ws.getc
-            @frame.append(data.chr)
+            end_time = Time.now + @command_timeout
+
+            begin
+              data = @ws.read_nonblock(1)
+            rescue Errno::EWOULDBLOCK, Errno::EAGAIN
+              now = Time.now
+              if now >= end_time
+                raise Error::TimeOutError, "timed out waiting for Safari to respond"
+              end
+
+              IO.select([@ws], nil, nil, end_time - now)
+              retry
+            end
+
+            @frame.append(data)
           end
 
           puts "<<< #{msg}" if $DEBUG
