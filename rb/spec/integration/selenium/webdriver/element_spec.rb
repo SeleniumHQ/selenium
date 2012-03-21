@@ -134,7 +134,7 @@ describe "Element" do
     end
   end
 
-  not_compliant_on :browser => [:android, :safari] do # android returns 'green', safari nil
+  not_compliant_on :browser => [:android] do # android returns 'green'
     it "should get css property" do
       driver.navigate.to url_for("javascriptPage.html")
       element = driver.find_element(:id, "green-parent")

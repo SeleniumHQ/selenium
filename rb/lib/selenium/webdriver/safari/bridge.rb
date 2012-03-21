@@ -39,11 +39,16 @@ module Selenium
         def raw_execute(command, opts = {}, command_hash = nil)
           @command_id += 1
 
-          opts.merge!(command_hash) if command_hash
+          params = {}
+          opts.each do |key, value|
+            params[camel_case(key.to_s)] = value
+          end
+
+          params.merge!(command_hash) if command_hash
 
           @server.send :id         => @command_id.to_s,
                        :name       => command,
-                       :parameters => opts
+                       :parameters => params
 
           response = @server.receive
 
@@ -57,6 +62,13 @@ module Selenium
           end
 
           response
+        end
+
+        def camel_case(str)
+          parts = str.split('_')
+          parts[1..-1].map { |e| e.capitalize! }
+
+          parts.join
         end
 
         def prepare_connect_file
