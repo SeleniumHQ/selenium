@@ -300,15 +300,15 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command) {
  * @param {!webdriver.Command} command The command object.
  */
 safaridriver.extension.commands.switchToWindow = function(session, command) {
-  var id = (/** @type {string} */ command.getParameter('id'));
-  if (!id) {
-    throw Error('Invalid command: missing required parameter "id"');
+  var name = (/** @type {string} */ command.getParameter('name'));
+  if (!name) {
+    throw Error('Invalid command: missing required parameter "name"');
   }
 
-  var tab = session.getTab(id);
+  var tab = session.getTab(name);
   if (!tab) {
     // TODO: handle switching by window name.
-    throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW, 'No such window: ' + id);
+    throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW, 'No such window: ' + name);
   }
   session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
 };
