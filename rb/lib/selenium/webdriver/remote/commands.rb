@@ -71,10 +71,10 @@ class Selenium::WebDriver::Remote::Bridge
   # options
   #
 
-  command :getAllCookies,                          :get,     "session/:session_id/cookie"
+  command :getCookies,                             :get,     "session/:session_id/cookie"
   command :addCookie,                              :post,    "session/:session_id/cookie"
   command :deleteAllCookies,                       :delete,  "session/:session_id/cookie"
-  command :deleteCookieNamed,                      :delete,  "session/:session_id/cookie/:name"
+  command :deleteCookie,                           :delete,  "session/:session_id/cookie/:name"
 
   #
   # timeouts

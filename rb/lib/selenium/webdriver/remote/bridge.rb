@@ -335,11 +335,11 @@ module Selenium
         end
 
         def deleteCookie(name)
-          execute :deleteCookieNamed, :name => name
+          execute :deleteCookie, :name => name
         end
 
         def getAllCookies
-          execute :getAllCookies
+          execute :getCookies
         end
 
         def deleteAllCookies
