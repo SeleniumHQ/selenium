@@ -57,7 +57,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
           "//third_party/js/sizzle"
       ).go();
 
-      File buildDir = InProject.locate("out/production/selenium/org/openqa/selenium/internal/seleniumemulation");
+      File buildDir = InProject.locate("java/client/build/production/org/openqa/selenium/internal/seleniumemulation");
       File atomsDir = InProject.locate("build/javascript/selenium-atoms");
 
       for (File file : atomsDir.listFiles()) {
@@ -71,7 +71,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       Files.copy(sizzle, new File(buildDir, "sizzle.js"));
 
       File seDir = InProject.locate("java/client/test/com/thoughtworks/selenium");
-      File destDir = InProject.locate("out/production/selenium/com/thoughtworks/selenium");
+      File destDir = InProject.locate("java/client/build/production/com/thoughtworks/selenium");
       for (File file : seDir.listFiles()) {
         if (file.getName().endsWith(".js")) {
           File dest = new File(destDir, file.getName());
