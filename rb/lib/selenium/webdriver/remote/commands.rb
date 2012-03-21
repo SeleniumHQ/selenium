@@ -80,7 +80,7 @@ class Selenium::WebDriver::Remote::Bridge
   # timeouts
   #
 
-  command :setImplicitWaitTimeout,                 :post,    "session/:session_id/timeouts/implicit_wait"
+  command :implicitlyWait,                         :post,    "session/:session_id/timeouts/implicit_wait"
   command :setScriptTimeout,                       :post,    "session/:session_id/timeouts/async_script"
   command :setTimeout,                             :post,    "session/:session_id/timeouts"
 

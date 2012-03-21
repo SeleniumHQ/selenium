@@ -104,7 +104,7 @@ module Selenium
         end
 
         def setImplicitWaitTimeout(milliseconds)
-          execute :setImplicitWaitTimeout, {}, :ms => milliseconds
+          execute :implicitlyWait, {}, :ms => milliseconds
         end
 
         def setScriptTimeout(milliseconds)
