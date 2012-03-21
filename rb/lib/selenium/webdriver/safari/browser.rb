@@ -4,7 +4,7 @@ module Selenium
 
       class Browser
         def start(*args)
-          @process = ChildProcess.new(executable_path, *args)
+          @process = ChildProcess.new(Safari.path, *args)
           @process.io.inherit! if $DEBUG
           @process.start
         end
@@ -13,12 +13,6 @@ module Selenium
           @process.stop if @process
         end
 
-        private
-
-        def executable_path
-          # TODO: Windows
-          "/Applications/Safari.app/Contents/MacOS/Safari"
-        end
       end
 
     end
