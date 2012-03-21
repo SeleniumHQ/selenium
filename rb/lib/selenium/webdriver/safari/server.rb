@@ -21,7 +21,9 @@ module Selenium
           json = MultiJson.encode(command)
           puts ">>> #{json}" if $DEBUG
 
-          @ws.write @frame.new(json).to_s
+          frame = LibWebSocket::Frame.new(json).to_s
+
+          @ws.write frame
           @ws.flush
         end
 
