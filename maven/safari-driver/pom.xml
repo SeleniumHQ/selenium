@@ -51,7 +51,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
-                                <!-- Extract everything but the *.class files and MANIFEST.MF from firefox.jar to target/classes ... -->
+                                <!-- Extract everything but the *.class files and MANIFEST.MF from safari.jar to target/classes ... -->
                                 <unjar src="../../build/java/client/src/org/openqa/selenium/safari/safari.jar" dest="target/classes">
                                     <patternset>
                                         <exclude name="**/*.class" />
