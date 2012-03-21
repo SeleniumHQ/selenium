@@ -117,6 +117,8 @@ module Selenium
                        create_chrome_driver
                      when :iphone
                        create_iphone_driver
+                     when :safari
+                       create_safari_driver
                      else
                        WebDriver::Driver.for driver
                      end
@@ -198,6 +200,14 @@ module Selenium
             WebDriver::Driver.for :iphone, :url => url
           else
             WebDriver::Driver.for :iphone
+          end
+        end
+
+        def create_safari_driver
+          if ENV['timeout']
+            WebDriver::Driver.for :safari, :timeout => Integer(ENV['timeout'])
+          else
+            WebDriver::Driver.for :safari
           end
         end
 
