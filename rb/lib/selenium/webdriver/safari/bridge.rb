@@ -19,7 +19,7 @@ module Selenium
 
           @server.wait_for_connection
 
-          super()
+          super(:desired_capabilities => :safari)
         end
 
         def quit

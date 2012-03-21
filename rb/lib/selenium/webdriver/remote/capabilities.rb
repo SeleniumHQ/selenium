@@ -108,6 +108,15 @@ module Selenium
             }.merge(opts))
           end
 
+          def safari(opts = {})
+            new({
+              :browser_name          => "safari",
+              :javascript_enabled    => true,
+              :takes_screenshot      => true,
+              :css_selectors_enabled => true
+            }.merge(opts))
+          end
+
           #
           # @api private
           #
