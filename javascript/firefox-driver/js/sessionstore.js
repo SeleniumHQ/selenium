@@ -16,9 +16,11 @@
  limitations under the License.
  */
 
+goog.provide('wdSessionStoreService');
 
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.moz');
+goog.require('wdSession');
 
 /**
  * Logs a message to the console service.
@@ -33,7 +35,7 @@ function log(message) {
  * Service that keeps track of all the active FirefoxDriver sessions.
  * @constructor
  */
-function wdSessionStoreService() {
+wdSessionStoreService = function() {
 
   /**
    * A wrapped self-reference for XPConnect.
@@ -47,7 +49,7 @@ function wdSessionStoreService() {
    * @private
    */
   this.sessions_ = {};
-}
+};
 
 
 /**

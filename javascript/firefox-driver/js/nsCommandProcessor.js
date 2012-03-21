@@ -36,6 +36,7 @@ goog.require('fxdriver.error');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.modals');
 goog.require('goog.dom');
+goog.require('wdSessionStoreService');
 
 
 var loadStrategy_ = 'conservative';

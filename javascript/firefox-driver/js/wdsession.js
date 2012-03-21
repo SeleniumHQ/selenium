@@ -16,6 +16,7 @@
  limitations under the License.
  */
 
+goog.provide('wdSession');
 
 goog.require('fxdriver.moz');
 
@@ -24,13 +25,13 @@ goog.require('fxdriver.moz');
  * An active FirefoxDriver session.
  * @constructor
  */
-function wdSession() {
+wdSession = function() {
   /**
    * A wrapped self-reference for XPConnect.
    * @type {wdSession}
    */
   this.wrappedJSObject = this;
-}
+};
 
 
 /**
