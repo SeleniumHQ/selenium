@@ -28,6 +28,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
+  # switching by name not yet supported by safari
   not_compliant_on :browser => [:ie, :iphone, :safari] do
     it "should switch to a window and back when given a block" do
       driver.navigate.to url_for("xhtmlTest.html")
