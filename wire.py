@@ -1262,18 +1262,18 @@ location for correctly generating native events.''').
            'this command to start scrolling at a particular screen location.').
       AddJsonParameter('element', '{string}', 'ID of the element where the '
                        'scroll starts.').
-      AddJsonParameter('xOffset', '{number}', 'The x offset in pixels to scroll '
+      AddJsonParameter('xoffset', '{number}', 'The x offset in pixels to scroll '
                        'by.').
-      AddJsonParameter('yOffset', '{number}', 'The y offset in pixels to scroll '
+      AddJsonParameter('yoffset', '{number}', 'The y offset in pixels to scroll '
                        'by.'))
   resources.append(
       SessionResource('session/:sessionId/touch/scroll').
       Post('Scroll on the touch screen using finger based motion events. Use '
            'this command if you don\'t care where the scroll starts on the '
            'screen.').
-      AddJsonParameter('xOffset', '{number}', 'The x offset in pixels to scroll'
+      AddJsonParameter('xoffset', '{number}', 'The x offset in pixels to scroll'
                        'by.').
-      AddJsonParameter('yOffset', '{number}', 'The y offset in pixels to scroll'
+      AddJsonParameter('yoffset', '{number}', 'The y offset in pixels to scroll'
                        'by.'))
   resources.append(
       SessionResource('session/:sessionId/touch/doubleclick').
@@ -1291,7 +1291,7 @@ location for correctly generating native events.''').
            'command starts at a particulat screen location.').
       AddJsonParameter('element', '{string}', 'ID of the element where the '
                        'flick starts.').
-      AddJsonParameter('xOffset', '{number}', 'The x offset in pixels to flick '
+      AddJsonParameter('xoffset', '{number}', 'The x offset in pixels to flick '
                        'by.').
       AddJsonParameter('yOffset', '{number}', 'The y offset in pixels to flick '
                        'by.').
