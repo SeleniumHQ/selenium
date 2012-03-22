@@ -51,5 +51,6 @@
 	<classpathentry kind="lib" path="third_party/java/android/android-14.jar"/>
 	<classpathentry kind="lib" path="third_party/java/hamcrest/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="lib" path="third_party/java/hamcrest/hamcrest-library-1.1.jar"/>
+	<classpathentry kind="lib" path="third_party/java/webbit/webbit-0.4.6-full.jar"/>
 	<classpathentry kind="output" path="out/production/selenium"/>
 </classpath>
