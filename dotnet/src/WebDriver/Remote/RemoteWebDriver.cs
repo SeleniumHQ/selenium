@@ -917,7 +917,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (args == null)
             {
-                return new object[] {null};
+                return new object[] { null };
             }
 
             for (int i = 0; i < args.Length; i++)

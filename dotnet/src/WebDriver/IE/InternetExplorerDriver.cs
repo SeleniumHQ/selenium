@@ -174,32 +174,6 @@ namespace OpenQA.Selenium.IE
         }
         #endregion
 
-        private static ICommandExecutor GetCommandExecutor(int port, ICapabilities capabilities, TimeSpan commandTimeout)
-        {
-            // This method should be completely removed when the standalone server
-            // is in widespread use.
-            ICommandExecutor executor = null;
-            if (capabilities.HasCapability("useLegacyInternalServer"))
-            {
-                useLegacyServer = (bool)capabilities.GetCapability("useLegacyInternalServer");
-                executor = new HttpCommandExecutor(CreateServerUri(port), commandTimeout);
-            }
-            else
-            {
-                useLegacyServer = false;
-                try
-                {
-                    executor = new DriverServiceCommandExecutor(InternetExplorerDriverService.CreateDefaultService(), commandTimeout);
-                }
-                catch (DriverServiceNotFoundException ex)
-                {
-                    throw new WebDriverException("You will need to use add InternetExplorerDriver.UseLegacyInternalServer to the desired capabilities to use the internal native code server library. This functionality will be deprecated in favor of the standalone InternetExplorerDriver.exe server.", ex);
-                }
-            }
-
-            return executor;
-        }
-
         /// <summary>
         /// Starts the command executor, enabling communication with the browser.
         /// </summary>
@@ -233,6 +207,32 @@ namespace OpenQA.Selenium.IE
                 // okay calling lib.Dispose() here.
                 this.server.Dispose();
             }
+        }
+
+        private static ICommandExecutor GetCommandExecutor(int port, ICapabilities capabilities, TimeSpan commandTimeout)
+        {
+            // This method should be completely removed when the standalone server
+            // is in widespread use.
+            ICommandExecutor executor = null;
+            if (capabilities.HasCapability("useLegacyInternalServer"))
+            {
+                useLegacyServer = (bool)capabilities.GetCapability("useLegacyInternalServer");
+                executor = new HttpCommandExecutor(CreateServerUri(port), commandTimeout);
+            }
+            else
+            {
+                useLegacyServer = false;
+                try
+                {
+                    executor = new DriverServiceCommandExecutor(InternetExplorerDriverService.CreateDefaultService(), commandTimeout);
+                }
+                catch (DriverServiceNotFoundException ex)
+                {
+                    throw new WebDriverException("You will need to use add InternetExplorerDriver.UseLegacyInternalServer to the desired capabilities to use the internal native code server library. This functionality will be deprecated in favor of the standalone InternetExplorerDriver.exe server.", ex);
+                }
+            }
+
+            return executor;
         }
 
         private static Uri CreateServerUri(int port)
