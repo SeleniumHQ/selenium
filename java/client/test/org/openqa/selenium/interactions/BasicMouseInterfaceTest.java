@@ -226,7 +226,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, IPHONE, SELENESE, FIREFOX})
+  @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE, FIREFOX})
   @Test
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);

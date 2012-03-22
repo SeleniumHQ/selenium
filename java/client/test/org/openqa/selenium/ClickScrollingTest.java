@@ -60,6 +60,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(CHROME)
   public void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
     driver.get(appServer.whereIs("scroll.html"));
 
@@ -69,7 +70,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertEquals("line8", driver.findElement(By.id("clicked")).getText());
   }
 
-  @Ignore({SELENESE, OPERA})
+  @Ignore({CHROME, OPERA, SELENESE})
   @Test
   public void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
