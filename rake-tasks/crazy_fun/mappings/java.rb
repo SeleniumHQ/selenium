@@ -569,8 +569,12 @@ module CrazyFunJava
           ret += build_classpath(cp, Rake::Task[prereq])
         end
         
-        next unless prereq.to_s =~ /^\/\//
         next unless Rake::Task.task_defined? prereq
+        
+        t = Rake::Task[prereq]
+        if (t.respond_to?(:out)) 
+          ret.push(t.out) if t.out.to_s =~ /\.jar$/
+        end
         
         ret += build_classpath(cp, Rake::Task[prereq])
       end
