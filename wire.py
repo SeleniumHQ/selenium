@@ -1293,7 +1293,7 @@ location for correctly generating native events.''').
                        'flick starts.').
       AddJsonParameter('xoffset', '{number}', 'The x offset in pixels to flick '
                        'by.').
-      AddJsonParameter('yOffset', '{number}', 'The y offset in pixels to flick '
+      AddJsonParameter('yoffset', '{number}', 'The y offset in pixels to flick '
                        'by.').
       AddJsonParameter('speed', '{number}', 'The speed in pixels per seconds.'))
   resources.append(
