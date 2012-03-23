@@ -1,4 +1,4 @@
-﻿// <copyright file="ConnectionEventArgs.cs" company="WebDriver Committers">
+﻿// <copyright file="StandardHttpRequestReceivedEventArgs.cs" company="WebDriver Committers">
 // Copyright 2007-2012 WebDriver committers
 // Copyright 2007-2012 Google Inc.
 // Portions copyright 2012 Software Freedom Conservancy
@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Safari.Internal
         private bool handled;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConnectionEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="StandardHttpRequestReceivedEventArgs"/> class.
         /// </summary>
         /// <param name="connection">The <see cref="IWebSocketConnection"/> representing the 
         /// connection to the client.</param>
