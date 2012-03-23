@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.Safari.Internal
                     return Rfc6455Handler.Create(request);
             }
 
-            throw new WebSocketException(WebSocketStatusCodes.UnsupportedDataType);
+            throw new WebSocketException(WebSocketStatusCodes.UnsupportedDataType, "Unsupported protocol version.");
         }
         
         /// <summary>

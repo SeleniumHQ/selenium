@@ -174,7 +174,7 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
         /// <summary>
         /// Raises the CloseHandled event.
         /// </summary>
-        /// <param name="e">A <see cref="CloseHandledEventArgs"/> that contains the event data.</param>
+        /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
         protected void OnCloseHandled(EventArgs e)
         {
             if (this.CloseHandled != null)

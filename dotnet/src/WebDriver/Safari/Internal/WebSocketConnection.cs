@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace OpenQA.Selenium.Safari.Internal
 {
@@ -70,9 +71,14 @@ namespace OpenQA.Selenium.Safari.Internal
         public event EventHandler<BinaryMessageHandledEventArgs> BinaryMessageReceived;
 
         /// <summary>
+        /// Event raised when a non-WebSocket message is received.
+        /// </summary>
+        public event EventHandler<StandardHttpRequestReceivedEventArgs> StandardHttpRequestReceived;
+
+        /// <summary>
         /// Event raised when an error occurs via the connection.
         /// </summary>
-        public event EventHandler ErrorReceived;
+        public event EventHandler<ErrorEventArgs> ErrorReceived;
 
         /// <summary>
         /// Event raised when data is sent via the connection.
@@ -131,6 +137,16 @@ namespace OpenQA.Selenium.Safari.Internal
             }
 
             var bytes = this.Handler.CreateBinaryFrame(message);
+            this.SendBytes(bytes);
+        }
+
+        /// <summary>
+        /// Sends raw text over the connection, without passing through a handler.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        public void SendRaw(string message)
+        {
+            var bytes = Encoding.UTF8.GetBytes(message);
             this.SendBytes(bytes);
         }
 
@@ -200,6 +216,23 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
+        /// Fires the StandardHttpRequestReceived event.
+        /// </summary>
+        /// <param name="e">A <see cref="StandardHttpRequestReceivedEventArgs"/> that contains the event data.</param>
+        protected void OnStandardHttpRequestReceived(StandardHttpRequestReceivedEventArgs e)
+        {
+            if (this.StandardHttpRequestReceived != null)
+            {
+                // The event handler is to be fired, so set the Handled
+                // property to true. If the user decides to let the non-handled
+                // case happen, he can set the property to false in the event
+                // handler.
+                e.Handled = true;
+                this.StandardHttpRequestReceived(this, e);
+            }
+        }
+
+        /// <summary>
         /// Fires the Sent event.
         /// </summary>
         /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
@@ -214,8 +247,8 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <summary>
         /// Fires the ErrorReceived event.
         /// </summary>
-        /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
-        protected void OnError(EventArgs e)
+        /// <param name="e">An <see cref="ErrorEventArgs"/> that contains the event data.</param>
+        protected void OnError(ErrorEventArgs e)
         {
             if (this.ErrorReceived != null)
             {
@@ -240,8 +273,21 @@ namespace OpenQA.Selenium.Safari.Internal
             {
                 return;
             }
-            
-            this.Handler = HandlerFactory.BuildHandler(request);
+
+            try
+            {
+                this.Handler = HandlerFactory.BuildHandler(request);
+            }
+            catch (WebSocketException)
+            {
+                StandardHttpRequestReceivedEventArgs e = new StandardHttpRequestReceivedEventArgs(this);
+                this.OnStandardHttpRequestReceived(e);
+                if (!e.Handled)
+                {
+                    throw;
+                }
+            }
+
             if (this.Handler == null)
             {
                 return;
@@ -346,7 +392,11 @@ namespace OpenQA.Selenium.Safari.Internal
         {
             if (e.BytesRead <= 0)
             {
-                this.CloseSocket();
+                if (this.Handler != null)
+                {
+                    this.CloseSocket();
+                }
+
                 return;
             }
 

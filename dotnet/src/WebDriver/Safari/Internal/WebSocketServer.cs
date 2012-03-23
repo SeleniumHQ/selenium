@@ -72,6 +72,16 @@ namespace OpenQA.Selenium.Safari.Internal
         public event EventHandler<ConnectionEventArgs> Closed;
 
         /// <summary>
+        /// Event raised when an error occurs.
+        /// </summary>
+        public event EventHandler<ErrorEventArgs> ErrorOccurred;
+
+        /// <summary>
+        /// Event raised when a non-WebSocket message is received.
+        /// </summary>
+        public event EventHandler<StandardHttpRequestReceivedEventArgs> StandardHttpRequestReceived;
+
+        /// <summary>
         /// Gets or sets the <see cref="ISocket"/> on which communication occurs.
         /// </summary>
         public ISocket ListenerSocket { get; set; }
@@ -154,6 +164,18 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
+        /// Raises the StandardHttpRequestReceived event.
+        /// </summary>
+        /// <param name="e">A <see cref="StandardHttpRequestReceivedEventArgs"/> that contains the event data.</param>
+        protected void OnStandardHttpRequestReceived(StandardHttpRequestReceivedEventArgs e)
+        {
+            if (this.StandardHttpRequestReceived != null)
+            {
+                this.StandardHttpRequestReceived(this, e);
+            }
+        }
+
+        /// <summary>
         /// Raises the MessageReceived event.
         /// </summary>
         /// <param name="e">A <see cref="TextMessageHandledEventArgs"/> that contains the event data.</param>
@@ -162,6 +184,18 @@ namespace OpenQA.Selenium.Safari.Internal
             if (this.MessageReceived != null)
             {
                 this.MessageReceived(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Raises the ErrorOccurred event.
+        /// </summary>
+        /// <param name="e">An <see cref="ErrorEventArgs"/> that contains the event data.</param>
+        protected void OnErrorOccurred(ErrorEventArgs e)
+        {
+            if (this.ErrorOccurred != null)
+            {
+                this.ErrorOccurred(this, e);
             }
         }
 
@@ -194,6 +228,8 @@ namespace OpenQA.Selenium.Safari.Internal
             connection.BinaryMessageReceived += new EventHandler<BinaryMessageHandledEventArgs>(this.ConnectionBinaryMessageReceivedEventHandler);
             connection.Opened += new EventHandler<ConnectionEventArgs>(this.ConnectionOpenedEventHandler);
             connection.Closed += new EventHandler<ConnectionEventArgs>(this.ConnectionClosedEventHandler);
+            connection.ErrorReceived += new EventHandler<ErrorEventArgs>(this.ConnectionErrorEventHandler);
+            connection.StandardHttpRequestReceived += new EventHandler<StandardHttpRequestReceivedEventArgs>(this.ConnectionStandardHttpRequestReceivedEventHandler);
 
             if (this.IsSecure)
             {
@@ -229,6 +265,16 @@ namespace OpenQA.Selenium.Safari.Internal
         private void ConnectionMessageReceivedEventHandler(object sender, TextMessageHandledEventArgs e)
         {
             this.OnMessageReceived(e);
+        }
+
+        private void ConnectionStandardHttpRequestReceivedEventHandler(object sender, StandardHttpRequestReceivedEventArgs e)
+        {
+            this.OnStandardHttpRequestReceived(e);
+        }
+
+        private void ConnectionErrorEventHandler(object sender, ErrorEventArgs e)
+        {
+            this.OnErrorOccurred(e);
         }
 
         private void SocketAuthenticatedEventHandler(object sender, EventArgs e)

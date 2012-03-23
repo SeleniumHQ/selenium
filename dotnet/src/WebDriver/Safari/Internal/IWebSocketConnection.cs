@@ -46,9 +46,14 @@ namespace OpenQA.Selenium.Safari.Internal
         event EventHandler<BinaryMessageHandledEventArgs> BinaryMessageReceived;
 
         /// <summary>
+        /// Event raised when a non-WebSocket message is received.
+        /// </summary>
+        event EventHandler<StandardHttpRequestReceivedEventArgs> StandardHttpRequestReceived;
+
+        /// <summary>
         /// Event raised when an error occurs via the connection.
         /// </summary>
-        event EventHandler ErrorReceived;
+        event EventHandler<ErrorEventArgs> ErrorReceived;
 
         /// <summary>
         /// Event raised when data is sent via the connection.
@@ -71,6 +76,12 @@ namespace OpenQA.Selenium.Safari.Internal
         /// </summary>
         /// <param name="message">The binary message to send.</param>
         void Send(byte[] message);
+
+        /// <summary>
+        /// Sends raw text over the connection, without passing through a handler.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        void SendRaw(string message);
 
         /// <summary>
         /// Closes the connection.

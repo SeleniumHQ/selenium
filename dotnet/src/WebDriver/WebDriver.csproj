@@ -230,6 +230,7 @@
     <Compile Include="Safari\Internal\ReceivedEventArgs.cs" />
     <Compile Include="Safari\Internal\RequestParser.cs" />
     <Compile Include="Safari\Internal\SocketWrapper.cs" />
+    <Compile Include="Safari\Internal\StandardHttpRequestReceivedEventArgs.cs" />
     <Compile Include="Safari\Internal\TextMessageHandledEventArgs.cs" />
     <Compile Include="Safari\Internal\WebSocketConnection.cs" />
     <Compile Include="Safari\Internal\WebSocketConnectionInfo.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Safari\Internal\WebSocketHttpRequest.cs" />
     <Compile Include="Safari\Internal\WebSocketServer.cs" />
     <Compile Include="Safari\Internal\WebSocketStatusCodes.cs" />
+    <Compile Include="Safari\SafariDriverServer.cs" />
     <Compile Include="ScreenOrientation.cs" />
     <Compile Include="Screenshot.cs" />
     <Compile Include="StaleElementReferenceException.cs" />
