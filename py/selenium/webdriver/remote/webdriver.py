@@ -464,6 +464,12 @@ class WebDriver(object):
         """
         return self.execute(Command.GET_WINDOW_HANDLES)['value']
 
+    def maximize_window(self):
+        """
+        Maximizes the current window that webdriver is using
+        """
+        self.execute(Command.MAXIMIZE_WINDOW, {"windowHandle": "current"})
+
     #Target Locators
     def switch_to_active_element(self):
         """

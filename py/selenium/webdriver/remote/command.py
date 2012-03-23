@@ -87,6 +87,7 @@ class Command(object):
     IMPLICIT_WAIT = "implicitlyWait"
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
+    MAXIMIZE_WINDOW = "windowMaximize"
 
     #Alerts
     DISMISS_ALERT = "dismissAlert"
