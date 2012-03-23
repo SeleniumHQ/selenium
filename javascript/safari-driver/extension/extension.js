@@ -25,6 +25,8 @@ goog.require('safaridriver.extension.Server');
 goog.require('safaridriver.extension.Session');
 goog.require('safaridriver.extension.TabManager');
 goog.require('safaridriver.console');
+goog.require('webdriver.Session');
+goog.require('webdriver.WebDriver');
 
 
 /**
@@ -34,7 +36,13 @@ safaridriver.extension.init = function() {
   goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
   safaridriver.console.init();
 
+  safaridriver.extension.LOG_.info('Initializing tab manager...');
   safaridriver.extension.tabManager_ = new safaridriver.extension.TabManager();
+
+  safaridriver.extension.LOG_.info('Creating debug driver...');
+  var server = safaridriver.extension.createSessionServer_();
+  safaridriver.extension.driver = new webdriver.WebDriver(
+      new webdriver.Session('debug', {}), server);
 
   // Now that we're initialized, we sit and wait for a page to send us a client
   // to attempt connecting to.
@@ -63,6 +71,14 @@ safaridriver.extension.tabManager_;
 
 
 /**
+ * An instance of {@link webdriver.WebDriver}, provided for interacting with
+ * the extension via the global page's REPL.
+ * @type {webdriver.WebDriver}
+ */
+safaridriver.extension.driver;
+
+
+/**
  * Responds to a message from an injected script.
  * @param {!SafariExtensionMessageEvent} e The event.
  * @private
@@ -70,7 +86,14 @@ safaridriver.extension.tabManager_;
 safaridriver.extension.onMessage_ = function(e) {
   safaridriver.extension.LOG_.info('Received message: ' + e.name);
   if (e.name === safaridriver.MessageType.CONNECT) {
-    safaridriver.extension.createSession_(e);
+    var url = (/** @type {string} */ e.message);
+    safaridriver.extension.createSessionServer_().connect(url).
+        then(function() {
+          safaridriver.extension.LOG_.info('Connected to client: ' + url);
+        }, function(e) {
+          safaridriver.extension.LOG_.severe(
+              'Failed to connect to client: ' + url, e);
+        });
   }
 };
 
@@ -78,19 +101,11 @@ safaridriver.extension.onMessage_ = function(e) {
 /**
  * Creates a new session. The SafariDriver supports multiple sessions, each
  * with their own timeouts, but they all share the same tab manager.
- * @param {!SafariExtensionMessageEvent} e The event.
+ * @return {!safaridriver.extension.Server} The new server.
  * @private
  */
-safaridriver.extension.createSession_ = function(e) {
+safaridriver.extension.createSessionServer_ = function() {
   var session = new safaridriver.extension.Session(
       safaridriver.extension.tabManager_);
-  var server = new safaridriver.extension.Server(session);
-  var url = (/** @type {string} */ e.message);
-  server.connect(url).
-      then(function() {
-        safaridriver.extension.LOG_.info('Connected to client: ' + url);
-      }, function(e) {
-        safaridriver.extension.LOG_.severe(
-            'Failed to connect to client: ' + url, e);
-      });
+  return new safaridriver.extension.Server(session);
 };

@@ -35,6 +35,7 @@ goog.require('webdriver.promise');
  * @param {!safaridriver.extension.Session} session The session associated with this
  *     server.
  * @constructor
+ * @implements {webdriver.CommandExecutor}
  * @extends {goog.Disposable}
  */
 safaridriver.extension.Server = function(session) {
@@ -173,6 +174,12 @@ safaridriver.extension.Server.prototype.disposeInternal = function() {
 };
 
 
+/** @return {!safaridriver.extension.Session} The session for this server. */
+safaridriver.extension.Server.prototype.getSession = function() {
+  return this.session_;
+};
+
+
 /**
  * Connects to a server.
  * @param {string} url URL to connect to.
@@ -209,10 +216,14 @@ safaridriver.extension.Server.prototype.connect = function(url) {
 /**
  * Executes a single command once all those received before it have completed.
  * @param {!webdriver.Command} command The command to execute.
+ * @param {function(Error, !webdriver.CommandResponse=)=} opt_callback A
+ *     callback function for adherence to the {@link webdriver.CommandExecutor}
+ *     interface.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with a
  *     {@link webdriver.CommandResponse} object once the command has completed.
  */
-safaridriver.extension.Server.prototype.execute = function(command) {
+safaridriver.extension.Server.prototype.execute = function(command,
+                                                           opt_callback) {
   var handler = safaridriver.extension.Server.COMMAND_MAP_[command.getName()];
   if (!handler) {
     this.logMessage_('Unknown command: ' + command.getName(),
@@ -223,11 +234,26 @@ safaridriver.extension.Server.prototype.execute = function(command) {
 
   this.logMessage_('Scheduling command: ' + command.getName());
   var description = this.session_.getId() + '::' + command.getName();
-  return webdriver.promise.Application.getInstance().
+  var result = webdriver.promise.Application.getInstance().
       schedule(description, goog.bind(function() {
         this.logMessage_('Executing command: ' + command.getName());
         return handler(this.session_, command);
-      }, this));
+      }, this)).
+      then(function(value) {
+        return webdriver.error.isResponseObject(value) ? value : {
+          'status': bot.ErrorCode.SUCCESS,
+          'value': value
+        };
+      }, webdriver.error.createResponse);
+
+  // If we were given a callback, massage the result to fit the
+  // webdriver.CommandExecutor contract.
+  if (opt_callback) {
+    result.then(webdriver.error.checkResponse).
+        then(goog.partial(opt_callback, null), opt_callback);
+  }
+
+  return result;
 };
 
 
@@ -305,16 +331,9 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
   var command = new safaridriver.Command(
       data['id'], data['name'], data['parameters'] || {});
 
-  this.execute(command).
-      then(function(value) {
-        return webdriver.error.isResponseObject(value) ? value : {
-          'status': bot.ErrorCode.SUCCESS,
-          'value': value
-        };
-      }, webdriver.error.createResponse).
-      addCallback(function(response) {
-        this.send_(command, response);
-      }, this);
+  this.execute(command).addCallback(function(response) {
+    this.send_(command, response);
+  }, this);
 
   function checkHasKey(data, key) {
     if (!goog.object.containsKey(data, key)) {
