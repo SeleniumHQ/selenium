@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- *@fileOverview Ready to inject atoms for handling application cache.
+ * @fileoverview Ready to inject atoms for handling application cache.
  */
 
 goog.provide('webdriver.atoms.inject.storage.appcache');

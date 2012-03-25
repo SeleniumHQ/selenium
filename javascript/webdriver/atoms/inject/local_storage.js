@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- *@fileOverview Ready to inject atoms for handling local storage.
+ * @fileoverview Ready to inject atoms for handling local storage.
  */
 
 goog.provide('webdriver.atoms.inject.storage.local');

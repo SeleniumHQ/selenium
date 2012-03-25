@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- *@fileOverview Ready to inject atoms for handling web SQL database.
+ * @fileoverview Ready to inject atoms for handling web SQL database.
  */
 
 goog.provide('webdriver.atoms.inject.storage.database');

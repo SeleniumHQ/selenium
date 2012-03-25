@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- *@fileOverview Ready to inject atoms for handling session storage.
+ * @fileoverview Ready to inject atoms for handling session storage.
  */
 
 goog.provide('webdriver.atoms.inject.storage.session');

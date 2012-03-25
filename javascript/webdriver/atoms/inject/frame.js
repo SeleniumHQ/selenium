@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /**
- *@fileOverview Ready to inject atoms for handling frames.
+ * @fileoverview Ready to inject atoms for handling frames.
  */
 
 goog.provide('webdriver.atoms.inject.frame');
