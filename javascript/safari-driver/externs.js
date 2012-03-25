@@ -63,7 +63,7 @@ var JSON = {};
 JSON.parse = function(value) {};
 
 /**
- * @param {!Object} value
+ * @param {*} value
  * @return {string}
  */
 JSON.stringify = function(value) {};
