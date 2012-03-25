@@ -623,6 +623,26 @@ namespace :docs do
   end
 end
 
+namespace :safari do
+  desc "Build the SafariDriver extension"
+  task :extension => [ "//javascript/safari-driver:SafariDriver" ]
+
+  desc "Build the SafariDriver extension and java client"
+  task :build => [
+    :extension,
+    "//java/client/src/org/openqa/selenium/safari"
+  ]
+
+  desc "Run the SafariDriver's java test suite"
+  task :test => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
+
+  desc "Re-install the SafariDriver extension; OSX only"
+  task :reinstall => [ :extension ] do |t|
+    raise StandardError, "Task #{t.name} is only available on OSX" unless mac?
+    sh "osascript javascript/safari-driver/reinstall.scpt"
+  end
+end
+
 at_exit do
   if File.exist?(".git") && !Platform.windows?
     sh "sh .git-fixfiles"

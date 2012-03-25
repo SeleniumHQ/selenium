@@ -7,7 +7,7 @@
 	<key>Builder Version</key>
 	<string>7534.53.10</string>
 	<key>CFBundleDisplayName</key>
-	<string>Webdriver</string>
+	<string>WebDriver</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.openqa.selenium</string>
 	<key>CFBundleInfoDictionaryVersion</key>
