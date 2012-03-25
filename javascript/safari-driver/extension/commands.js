@@ -23,6 +23,7 @@ goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('safaridriver.extension.Tab');
+goog.require('safaridriver.message');
 goog.require('webdriver.error');
 goog.require('webdriver.promise');
 
@@ -254,27 +255,34 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command) {
   var id = goog.string.getRandomString();
   var response = new webdriver.promise.Deferred();
 
-  var json = {
-    'id': id,
-    'name': command.getName(),
-    'parameters': command.getParameters()
-  };
+  command = new safaridriver.Command(id, command);
+  var message = new safaridriver.message.CommandMessage(command);
 
   safaridriver.extension.commands.LOG_.info('Sending command: ' +
-      JSON.stringify(json));
+      JSON.stringify(message));
   var tab = sessionOrTab instanceof safaridriver.extension.Tab
       ? (/** @type {!safaridriver.extension.Tab} */sessionOrTab)
-      : (/** @type {!safaridriver.extension.Session} */sessionOrTab).getCommandTab();
+      : (/** @type {!safaridriver.extension.Session} */sessionOrTab).
+          getCommandTab();
   tab.whenReady(function(tab) {
     tab.addEventListener('message', onMessage, false);
-    tab.page.dispatchMessage(safaridriver.MessageType.COMMAND, json);
+    message.send(tab.page);
 
     function onMessage(e) {
-      if (e.name !== safaridriver.MessageType.RESPONSE) {
+      try {
+        var message = safaridriver.message.Message.fromEvent(e);
+      } catch (ex) {
+        safaridriver.extension.commands.LOG_.severe(
+            'Unable to parse message: ' + e.name + ': ' +
+                JSON.stringify(e.message), ex);
         return;
       }
 
-      if (e.message.id !== id) {
+      if (!message.isType(safaridriver.message.Type.RESPONSE)) {
+        return;
+      }
+
+      if (message.getId() !== id) {
         safaridriver.extension.commands.LOG_.info(
             'Ignoring response to another command: ' +
                 e.message.id + ' (' + id + ')');
@@ -283,8 +291,8 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command) {
 
       tab.removeEventListener('message', onMessage, false);
       try {
-        response.resolve(webdriver.error.checkResponse(e.message.response));
-      } catch (ex) {
+        response.resolve(webdriver.error.checkResponse(message.getResponse()));
+     } catch (ex) {
         response.reject(ex);
       }
     }

@@ -20,7 +20,7 @@ goog.provide('safaridriver.extension');
 
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
-goog.require('safaridriver.MessageType');
+goog.require('safaridriver.message');
 goog.require('safaridriver.extension.Server');
 goog.require('safaridriver.extension.Session');
 goog.require('safaridriver.extension.TabManager');
@@ -85,8 +85,10 @@ safaridriver.extension.driver;
  */
 safaridriver.extension.onMessage_ = function(e) {
   safaridriver.extension.LOG_.info('Received message: ' + e.name);
-  if (e.name === safaridriver.MessageType.CONNECT) {
-    var url = (/** @type {string} */ e.message);
+  var message = safaridriver.message.Message.fromEvent(e);
+  if (message.isType(safaridriver.message.Type.CONNECT)) {
+    var url = (/** @type {!safaridriver.message.ConnectMessage} */ message).
+        getUrl();
     safaridriver.extension.createSessionServer_().connect(url).
         then(function() {
           safaridriver.extension.LOG_.info('Connected to client: ' + url);

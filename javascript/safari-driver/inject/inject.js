@@ -25,7 +25,7 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.error');
 goog.require('webdriver.promise');
 goog.require('safaridriver.Command');
-goog.require('safaridriver.MessageType');
+goog.require('safaridriver.message');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.commands');
 
@@ -72,11 +72,24 @@ safaridriver.inject.init = function() {
 
 
 /**
- * Type definition for the data sent with
- * {@link safaridriver.MessageType.RESPONSE} messages.
- * @typedef {{id:string, response:!webdriver.CommandResponse}}
+ * Attempts to parse a message event.
+ * @param {!(MessageEvent|SafariExtensionMessageEvent)} e The message to parse.
+ * @return {(!safaridriver.message.Message|undefined)} The parsed message or
+ *     undefined if the event could not be parsed.
+ * @private
  */
-safaridriver.inject.CommandResponse;
+safaridriver.inject.parseMessage_ = function(e) {
+  var message;
+  try {
+    message = safaridriver.message.Message.fromEvent(e);
+  } catch (ex) {
+    safaridriver.inject.LOG.warning(
+        'Unable to parse message: ' + ex +
+        '\nOriginal message: ' +
+        JSON.stringify(e.message || e.data));
+  }
+  return message;
+};
 
 
 /**
@@ -85,22 +98,17 @@ safaridriver.inject.CommandResponse;
  * @private
  */
 safaridriver.inject.onPageMessage_ = function(e) {
-  if (!goog.isObject(e.data)) {
-    return;
-  }
+  var message = safaridriver.inject.parseMessage_(e);
 
-  if (e.data['message'] != safaridriver.MessageType.CONNECT ||
-      e.data['source'] != 'webdriver' ||
-      !goog.isString(e.data['url'])) {
+  if (!message || !message.isType(safaridriver.message.Type.CONNECT)) {
     return;
   }
 
   safaridriver.inject.LOG.info(
       'Content page has requested a WebDriver client connection to ' +
-          e.data['url']);
+          message.getUrl());
 
-  safari.self.tab.dispatchMessage(safaridriver.MessageType.CONNECT,
-      e.data['url']);
+  message.send(safari.self.tab);
 };
 
 
@@ -110,29 +118,34 @@ safaridriver.inject.onPageMessage_ = function(e) {
  * @private
  */
 safaridriver.inject.onExtensionMessage_ = function(e) {
-  switch (e.name) {
-    case safaridriver.MessageType.COMMAND:
-      safaridriver.inject.onCommand_(e.message);
+  var message = safaridriver.inject.parseMessage_(e);
+  if (!message) {
+    return;
+  }
+
+  switch (message.getType()) {
+    case safaridriver.message.Type.COMMAND:
+      safaridriver.inject.onCommand_(
+          (/** @type {!safaridriver.message.CommandMessage} */message));
       break;
 
-    case safaridriver.MessageType.CONNECT:
-    case safaridriver.MessageType.RESPONSE:
+    case safaridriver.message.Type.CONNECT:
+    case safaridriver.message.Type.RESPONSE:
       safaridriver.inject.LOG.severe(
-          'Injected scripts should never receive ' + e.name + ' messages: ' +
-              JSON.stringify(e.message));
+          'Injected scripts should never receive ' + message.getType() +
+              ' messages: ' + JSON.stringify(e.message));
       break;
 
     default:
       safaridriver.inject.LOG.warning(
-          'Ignoring unrecognized message: ' + e.name + ' ' +
-              JSON.stringify(e.message));
+          'Ignoring unrecognized message: ' + JSON.stringify(e.message));
   }
 };
 
 
 /**
  * Command message handler.
- * @param {!Object.<*>} message The command message.
+ * @param {!safaridriver.message.CommandMessage} message The command message.
  * @private
  */
 safaridriver.inject.onCommand_ = function(message) {
@@ -141,16 +154,14 @@ safaridriver.inject.onCommand_ = function(message) {
   }
 
   var jsonMessage = JSON.stringify(message);
-  if (!message['id']) {
+  var command = message.getCommand();
+  if (!command.getId()) {
     safaridriver.inject.LOG.severe(
         'Ignoring unidentified command message: ' + jsonMessage);
     return;
   }
 
   safaridriver.inject.LOG.info('Handling command: ' + jsonMessage);
-
-  var command = new safaridriver.Command(
-      message['id'], message['name'] || '', message['parameters'] || {});
 
   var handler = safaridriver.inject.COMMAND_MAP_[command.getName()];
   if (handler) {
@@ -184,10 +195,8 @@ safaridriver.inject.onCommand_ = function(message) {
         '\ncommand:  ' + jsonMessage +
         '\nresponse: ' + JSON.stringify(response));
 
-    safari.self.tab.dispatchMessage(safaridriver.MessageType.RESPONSE, {
-      'id': command.id,
-      'response': response
-    });
+    response = new safaridriver.message.ResponseMessage(command.id, response);
+    response.send(safari.self.tab);
   }
 };
 

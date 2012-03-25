@@ -22,18 +22,60 @@ goog.require('webdriver.Command');
 /**
  * Describes a command to execute.
  * @param {string} id The command identifier, used to synchronize between two
- *   end points in the WebDriver wire protocol.
- * @param {string} name The command name.
- * @param {!Object.<*>} parameters The command parameters.
+ *     end points in the WebDriver wire protocol.
+ * @param {(string|!webdriver.Command)} nameOrCommand Either the command name or
+ *     another command to wrap.
+ * @param {!Object.<*>=} opt_parameters The command parameters; ignored if
+ *     {@code nameOrCommand} is a command object.
  * @constructor
  * @extends {webdriver.Command}
  */
-safaridriver.Command = function(id, name, parameters) {
+safaridriver.Command = function(id, nameOrCommand, opt_parameters) {
+  var name = goog.isString(nameOrCommand)
+      ? nameOrCommand : nameOrCommand.getName();
+
   goog.base(this, name);
 
   /** @type {string} */
   this.id = id;
 
-  this.setParameters(parameters);
+  this.setParameters(goog.isString(nameOrCommand)
+      ? opt_parameters || {} : nameOrCommand.getParameters());
 };
 goog.inherits(safaridriver.Command, webdriver.Command);
+
+
+/**
+ * Reconstructrs a command from a JSON object.
+ * @param {!Object} obj The object to reconstruct a command from.
+ * @return {safaridriver.Command} The reconstructed command, or {@code null} if
+ *     the object is not a valid command.
+ */
+safaridriver.Command.fromJSONObject = function(obj) {
+  if (!goog.isString(obj['id']) ||
+      !goog.isString(obj['name']) ||
+      !goog.isObject(obj['parameters'])) {
+    return null;
+  }
+
+  return new safaridriver.Command(obj['id'], obj['name'], obj['parameters']);
+};
+
+
+/** @return {string} This command's ID. */
+safaridriver.Command.prototype.getId = function() {
+  return this.id;
+};
+
+
+/**
+ * Converts this command to its JSON representation.
+ * @return {!Object.<*>} The JSON representation of this command.
+ */
+safaridriver.Command.prototype.toJSON = function() {
+  return {
+    'id': this.id,
+    'name': this.getName(),
+    'parameters': this.getParameters()
+  };
+};
