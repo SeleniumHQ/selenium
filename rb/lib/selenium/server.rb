@@ -190,7 +190,7 @@ module Selenium
         cp = ChildProcess.build("java", "-jar", @jar, "-port", @port.to_s, *@additional_args)
         io = cp.io
 
-        if @log.kind_of?(String) && !@background
+        if @log.kind_of?(String)
           @log_file = File.open(@log, "w")
           io.stdout = io.stderr = @log_file
         elsif @log
