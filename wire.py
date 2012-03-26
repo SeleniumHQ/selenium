@@ -553,8 +553,8 @@ for before they are aborted and a |Timeout| error is returned to the \
 client.''').
       AddJsonParameter('type', '{string}',
 					   'The type of operation to set the timeout for. Valid \
-values are: "script" for script timeouts and "implicit" for modifying the \
-implicit wait timeout.').
+values are: "script" for script timeouts, "implicit" for modifying the \
+implicit wait timeout and "page load" for setting a page load timeout.').
       AddJsonParameter('ms', '{number}',
                        'The amount of time, in milliseconds, that time-limited'
                        ' commands are permitted to run.'))
