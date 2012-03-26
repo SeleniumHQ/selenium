@@ -84,7 +84,7 @@ public class DriverServlet extends RegistryBasedServlet {
       req.process();
 
     } catch (Throwable e) {
-      if (r instanceof WebDriverRequest) {
+      if (r instanceof WebDriverRequest && !response.isCommitted()) {
         // http://code.google.com/p/selenium/wiki/JsonWireProtocol#Error_Handling
         response.reset();
         response.setContentType("application/json");
