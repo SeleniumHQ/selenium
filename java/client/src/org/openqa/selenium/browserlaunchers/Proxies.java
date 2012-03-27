@@ -36,6 +36,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 
 public class Proxies {
@@ -105,6 +108,14 @@ public class Proxies {
       Proxy proxy = extractProxy(capabilities);
       if (proxy.getHttpProxy() != null) {
         pac.defaults().toProxy(proxy.getHttpProxy());
+      } else if (proxy.getProxyAutoconfigUrl() != null) {
+        URI pacUri = null;
+        try {
+          pacUri = new URI(proxy.getProxyAutoconfigUrl());
+          pac.deriveFrom(pacUri);
+        } catch (URISyntaxException e) {
+          throw new WebDriverException(e);
+        }
       }
     }
 
