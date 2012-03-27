@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Safari.Internal
     /// <summary>
     /// Represents the state of a connection.
     /// </summary>
-    public class ReadState
+    internal class ReadState
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadState"/> class.
