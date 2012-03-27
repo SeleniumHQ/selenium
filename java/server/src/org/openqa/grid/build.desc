@@ -2,7 +2,8 @@
 java_library(name = "grid",
   srcs = [
     "internal/**/*.java",
-    "web/**/*.java"
+    "web/**/*.java",
+    "selenium/**/*.java"
   ],
   resources = [
     "images/",

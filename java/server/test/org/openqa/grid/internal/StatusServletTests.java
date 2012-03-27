@@ -1,19 +1,16 @@
 /*
-Copyright 2011 WebDriver committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Copyright 2011 WebDriver committers Copyright 2011 Software Freedom Conservancy
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 
 package org.openqa.grid.internal;
 
@@ -33,6 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.AfterClass;
@@ -50,10 +48,12 @@ import org.openqa.selenium.remote.internal.HttpClientFactory;
 public class StatusServletTests {
 
   private static Hub hub;
+
   private static RemoteProxy p1;
   private static HttpClientFactory httpClientFactory;
 
   private static URL proxyApi;
+  private static URL hubApi;
   private static URL testSessionApi;
   private static HttpHost host;
   private static TestSession session;
@@ -61,10 +61,12 @@ public class StatusServletTests {
   @BeforeClass
   public static void setup() throws Exception {
     GridHubConfiguration c = new GridHubConfiguration();
+    c.getAllParams().put(RegistrationRequest.TIME_OUT, 12345);
     c.setPort(PortProber.findFreePort());
     hub = new Hub(c);
     Registry registry = hub.getRegistry();
     httpClientFactory = new HttpClientFactory();
+    hubApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/hub");
     proxyApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/proxy");
     testSessionApi =
         new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/testsession");
@@ -140,7 +142,7 @@ public class StatusServletTests {
   @Test
   public void testpost() throws IOException, JSONException {
     String id = "http://machine1:4444";
-    HttpClient client =  httpClientFactory.getHttpClient();
+    HttpClient client = httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("id", id);
@@ -159,7 +161,7 @@ public class StatusServletTests {
   @Test
   public void testpostReflection() throws IOException, JSONException {
     String id = "http://machine5:4444";
-    HttpClient client =  httpClientFactory.getHttpClient();
+    HttpClient client = httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("id", id);
@@ -185,7 +187,7 @@ public class StatusServletTests {
   @Test
   public void testSessionApi() throws IOException, JSONException {
     ExternalSessionKey s = session.getExternalKey();
-    HttpClient client =  httpClientFactory.getHttpClient();
+    HttpClient client = httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("session", s);
@@ -209,9 +211,10 @@ public class StatusServletTests {
   public void testSessionget() throws IOException, JSONException {
     ExternalSessionKey s = session.getExternalKey();
 
-    HttpClient client =  httpClientFactory.getHttpClient();
+    HttpClient client = httpClientFactory.getHttpClient();
 
-    String url = testSessionApi.toExternalForm() + "?session=" + URLEncoder.encode(s.getKey(), "UTF-8");
+    String url =
+        testSessionApi.toExternalForm() + "?session=" + URLEncoder.encode(s.getKey(), "UTF-8");
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
 
     HttpResponse response = client.execute(host, r);
@@ -227,10 +230,78 @@ public class StatusServletTests {
 
   }
 
+
+  /**
+   * if a certain set of parameters are requested to the hub, only those params are returned.
+   * @throws IOException
+   * @throws JSONException
+   */
+  @Test
+  public void testHubgetSpecifiedConfig() throws IOException, JSONException {
+
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    String url = hubApi.toExternalForm();
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    JSONObject j = new JSONObject();
+
+    JSONArray keys = new JSONArray();
+    keys.put(RegistrationRequest.TIME_OUT);
+    keys.put("I'm not a valid key");
+    keys.put(RegistrationRequest.SERVLETS);
+
+    j.put("configuration", keys);
+    r.setEntity(new StringEntity(j.toString()));
+
+    HttpResponse response = client.execute(host, r);
+    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    JSONObject o = extractObject(response);
+
+    Assert.assertTrue(o.getBoolean("success"));
+    Assert.assertEquals(12345, o.getInt(RegistrationRequest.TIME_OUT));
+    Assert.assertEquals(JSONObject.NULL, o.get("I'm not a valid key"));
+    Assert.assertEquals(0, o.getJSONArray(RegistrationRequest.SERVLETS).length());
+    Assert.assertFalse(o.has("capabilityMatcher"));
+
+  }
+
+
+  /**
+   * when no param is specified, a call to the hub API returns all the 
+   * config params the hub currently uses.
+   * @throws IOException
+   * @throws JSONException
+   */
+  @Test
+  public void testHubgetAllConfig() throws IOException, JSONException {
+
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    String url = hubApi.toExternalForm();
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    JSONObject j = new JSONObject();
+    JSONArray keys = new JSONArray();
+
+    j.put("configuration", keys);
+    r.setEntity(new StringEntity(j.toString()));
+
+    HttpResponse response = client.execute(host, r);
+    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    JSONObject o = extractObject(response);
+
+    Assert.assertTrue(o.getBoolean("success"));
+    Assert.assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+        o.getString("capabilityMatcher"));
+    Assert.assertEquals(JSONObject.NULL, o.opt("prioritizer"));
+
+  }
+
   @Test
   public void testSessionApiNeg() throws IOException, JSONException {
     String s = "non-existing session";
-    HttpClient client =  httpClientFactory.getHttpClient();
+    HttpClient client = httpClientFactory.getHttpClient();
 
     JSONObject o = new JSONObject();
     o.put("session", s);
