@@ -23,10 +23,11 @@ import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDI
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.PROXYING_EVERYTHING;
 
-import com.thoughtworks.selenium.SeleniumException;
+import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CapabilityType.ForSeleniumServer;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -75,7 +76,7 @@ public class Proxies {
       out.close();
       return pacFile;
     } catch (IOException e) {
-      throw new SeleniumException("Unable to configure proxy. Selenium will not work.", e);
+      throw new WebDriverException("Unable to configure proxy. Selenium will not work.", e);
     }
   }
 
