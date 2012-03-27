@@ -101,7 +101,12 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
   public void close() {
     if (WindowsUtils.thisIsWindows()) {
       if (!browserConfigurationOptions.is("honorSystemProxy")) {
-        restoreSystemProxy();
+        try {
+          restoreSystemProxy();
+        } catch (RuntimeException e) {
+          log.warning("Unable to restore original system proxy settings");
+          // But we should still valiantly attempt to close the browser
+        }
       }
     }
     if (process == null) {
