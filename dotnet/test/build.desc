@@ -127,6 +127,26 @@ dotnet_test(name = "android",
   omitdocxml = "true"
 )
 
+dotnet_test(name = "safari",
+  srcs = "WebDriver.Safari.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Xml.dll",
+    "//dotnet:dotnet",
+    ":common",
+    "third_party/csharp/nunit-2.5.9/framework/nunit.framework.dll"
+  ],
+  out = "WebDriver.Safari.Tests.dll",
+  files = [
+    "WebDriver.Safari.Tests/WebDriver.Safari.Tests.config",
+    "WebDriver.Safari.Tests/WebDriver.Safari.Tests.nunit"
+  ],
+  project = "WebDriver.Safari.Tests.nunit",
+  omitdocxml = "true"
+)
+
 dotnet_test(name = "support",
   srcs = "WebDriver.Support.Tests/**/*.cs",
   refs = [
