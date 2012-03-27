@@ -89,7 +89,7 @@ public class SelfRegisteringRemote {
     try {
       JSONObject hubParameters = getHubConfiguration("timeout");
       int timeout = hubParameters.getInt("timeout");
-      System.out.println("timeout from hub : "+timeout);
+      // TODO freynaud use the timeout from the hub to setup the node ones.
     }catch (Exception e) {
       log.warning("error getting the parameters from the hub. The node may end up with wrong timeouts."+e.getMessage());
     }
@@ -264,6 +264,12 @@ public class SelfRegisteringRemote {
 
   }
 
+  /**
+   * uses the hub API to get some of its configuration.
+   * @param parameters list of the parameter to be retrieved from the hub
+   * @return
+   * @throws Exception
+   */
   private JSONObject getHubConfiguration(String ... parameters) throws Exception{
     String hubApi =
         "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
@@ -283,7 +289,6 @@ public class SelfRegisteringRemote {
     r.setEntity(new StringEntity(j.toString()));
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject o = extractObject(response);
     return o;
   }
