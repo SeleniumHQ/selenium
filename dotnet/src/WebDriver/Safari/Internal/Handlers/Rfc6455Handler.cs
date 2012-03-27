@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
         {
             var builder = new StringBuilder();
 
-            builder.Append("HTTP/1.1 1s01 Switching Protocols\r\n");
+            builder.Append("HTTP/1.1 101 Switching Protocols\r\n");
             builder.Append("Upgrade: websocket\r\n");
             builder.Append("Connection: Upgrade\r\n");
 
