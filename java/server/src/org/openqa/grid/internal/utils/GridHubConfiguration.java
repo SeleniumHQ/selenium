@@ -186,8 +186,9 @@ public class GridHubConfiguration {
     // storing them all.
     List<String> params = helper.getKeys();
     for (String param : params) {
+      String cleanParam = param.replaceFirst("-", "");
       String value = helper.getParamValue(param);
-      allParams.put(param, value);
+      allParams.put(cleanParam, value);
     }
 
   }
