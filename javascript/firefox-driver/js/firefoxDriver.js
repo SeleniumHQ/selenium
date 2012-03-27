@@ -367,20 +367,6 @@ FirefoxDriver.prototype.executeAsyncScript = function(respond, parameters) {
 };
 
 
-FirefoxDriver.prototype.getCurrentUrl = function(respond) {
-  var url;
-  var window = respond.session.getWindow();
-  if (window) {
-    url = window.location;
-  }
-  if (!url) {
-    url = respond.session.getBrowser().contentWindow.location;
-  }
-  respond.value = "" + url;
-  respond.send();
-};
-
-
 FirefoxDriver.prototype.getTitle = function(respond) {
   respond.value = respond.session.getBrowser().contentTitle;
   respond.send();

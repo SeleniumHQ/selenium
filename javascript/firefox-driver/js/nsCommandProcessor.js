@@ -470,6 +470,20 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     }
   }
 
+  if (command.name == 'getCurrentUrl') {
+    var window = response.session.getWindow();
+    var url;
+    if (window) {
+      url = window.location;
+    }
+    if (!url) {
+      url = response.session.getBrowser().contentWindow.location;
+    }
+    response.value = "" + url;
+    response.send();
+    return;
+  }
+
   response.startCommand(sessionWindow);
   new DelayedCommand(driver, command, response).execute(0);
 };
