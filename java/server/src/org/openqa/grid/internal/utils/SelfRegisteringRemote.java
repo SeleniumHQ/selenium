@@ -16,10 +16,12 @@ package org.openqa.grid.internal.utils;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
@@ -39,15 +41,19 @@ import org.openqa.selenium.server.log.LoggingManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
+
+import junit.framework.Assert;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
@@ -79,6 +85,15 @@ public class SelfRegisteringRemote {
   private SeleniumServer server;
 
   public void startRemoteServer() throws Exception {
+    
+    try {
+      JSONObject hubParameters = getHubConfiguration("timeout");
+      int timeout = hubParameters.getInt("timeout");
+      System.out.println("timeout from hub : "+timeout);
+    }catch (Exception e) {
+      log.warning("error getting the parameters from the hub. The node may end up with wrong timeouts."+e.getMessage());
+    }
+    
     nodeConfig.validate();
 
     System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
@@ -249,6 +264,30 @@ public class SelfRegisteringRemote {
 
   }
 
+  private JSONObject getHubConfiguration(String ... parameters) throws Exception{
+    String hubApi =
+        "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
+            + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/api/hub";
+    
+    HttpClient client = httpClientFactory.getHttpClient();
+    
+    URL api = new URL(hubApi);
+    HttpHost host = new HttpHost(api.getHost(), api.getPort());
+    String url = api.toExternalForm();
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    JSONObject j = new JSONObject();
+    JSONArray keys = new JSONArray();
+
+    j.put("configuration", keys);
+    r.setEntity(new StringEntity(j.toString()));
+
+    HttpResponse response = client.execute(host, r);
+    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    JSONObject o = extractObject(response);
+    return o;
+  }
+  
   private boolean isAlreadyRegistered(RegistrationRequest node) {
 
     HttpClient client = httpClientFactory.getHttpClient();
