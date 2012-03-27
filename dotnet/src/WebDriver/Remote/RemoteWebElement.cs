@@ -798,7 +798,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="commandToExecute">The <see cref="DriverCommand"/> to execute against this element.</param>
         /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing names and values of the parameters for the command.</param>
         /// <returns>The <see cref="Response"/> object containing the result of the command execution.</returns>
-        protected Response Execute(DriverCommand commandToExecute, Dictionary<string, object> parameters)
+        protected Response Execute(string commandToExecute, Dictionary<string, object> parameters)
         {
             return this.driver.InternalExecute(commandToExecute, parameters);
         }

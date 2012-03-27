@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Safari.Internal
     /// <summary>
     /// Provides an interface for parsing requests.
     /// </summary>
-    public interface IRequestParser
+    internal interface IRequestParser
     {
         /// <summary>
         /// Parses the specified data into a <see cref="WebSocketHttpRequest"/>.

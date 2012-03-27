@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
     /// <summary>
     /// Provides a request handler for the Hixie76 or Hybi00 version of the WebSocket protocol.
     /// </summary>
-    public class Hybi00Handler : RequestHandler
+    internal class Hybi00Handler : RequestHandler
     {
         private const byte End = 255;
         private const byte Start = 0;

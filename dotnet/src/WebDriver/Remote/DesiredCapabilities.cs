@@ -257,6 +257,15 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Method to return a new DesiredCapabilities using defaults
+        /// </summary>
+        /// <returns>New instance of DesiredCapabilities for use with Safari</returns>
+        public static ICapabilities Safari()
+        {
+            return new DesiredCapabilities("safari", string.Empty, new Platform(PlatformType.Any));
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the browser has a given capability.
         /// </summary>
         /// <param name="capability">The capability ot get.</param>

@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Remote
         private static object lockObject = new object();
         private static CommandInfoRepository collectionInstance;
 
-        private Dictionary<DriverCommand, CommandInfo> commandDictionary;
+        private Dictionary<string, CommandInfo> commandDictionary;
         #endregion
 
         #region Constructor
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         private CommandInfoRepository()
         {
-            this.commandDictionary = new Dictionary<DriverCommand, CommandInfo>();
+            this.commandDictionary = new Dictionary<string, CommandInfo>();
             this.InitializeCommandDictionary();
         }
         #endregion
@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="commandName">The <see cref="DriverCommand"/> for which to get the information.</param>
         /// <returns>The <see cref="CommandInfo"/> for the specified command.</returns>
-        public CommandInfo GetCommandInfo(DriverCommand commandName)
+        public CommandInfo GetCommandInfo(string commandName)
         {
             CommandInfo toReturn = null;
             if (this.commandDictionary.ContainsKey(commandName))

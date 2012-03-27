@@ -16,6 +16,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Remote, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.IPhone, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.Android, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowClickingOnFormElements()
         {
             driver.Url = formSelectionPage;
@@ -45,6 +46,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Remote, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.IPhone, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Android, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSelectingMultipleItems()
         {
             driver.Url = selectableItemsPage;

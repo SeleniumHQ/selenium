@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Remote
     public class Command
     {
         private SessionId commandSessionId;
-        private DriverCommand commandName;
+        private string commandName;
         private Dictionary<string, object> commandParameters = new Dictionary<string, object>();
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="name">Name of the command</param>
         /// <param name="jsonParameters">Parameters for the command as a JSON-encoded string.</param>
-        public Command(DriverCommand name, string jsonParameters)
+        public Command(string name, string jsonParameters)
             : this(null, name, ConvertParametersFromJson(jsonParameters))
         {
         }
@@ -46,7 +46,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="sessionId">Session ID the driver is using</param>
         /// <param name="name">Name of the command</param>
         /// <param name="parameters">Parameters for that command</param>
-        public Command(SessionId sessionId, DriverCommand name, Dictionary<string, object> parameters)
+        public Command(SessionId sessionId, string name, Dictionary<string, object> parameters)
         {
             this.commandSessionId = sessionId;
             if (parameters != null)
@@ -60,6 +60,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the SessionID of the command
         /// </summary>
+        [JsonProperty("sessionId")]
         public SessionId SessionId
         {
             get { return this.commandSessionId; }
@@ -68,7 +69,8 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the command name
         /// </summary>
-        public DriverCommand Name
+        [JsonProperty("name")]
+        public string Name
         {
             get { return this.commandName; }
         }
@@ -76,6 +78,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the parameters of the command
         /// </summary>
+        [JsonProperty("parameters")]
         public Dictionary<string, object> Parameters
         {
             get { return this.commandParameters; }

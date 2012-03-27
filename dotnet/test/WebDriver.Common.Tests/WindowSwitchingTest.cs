@@ -11,6 +11,7 @@ namespace OpenQA.Selenium
     public class WindowSwitchingTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations()
         {
             driver.Url = xhtmlTestPage;
@@ -37,6 +38,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldThrowNoSuchWindowException() {
             driver.Url = xhtmlTestPage;
             String current = driver.CurrentWindowHandle;
@@ -55,6 +57,7 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         //[IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
@@ -80,6 +83,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE prompts with an alert when closing. Revisit when alert handling is done")]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
         {
             driver.Url = xhtmlTestPage;
@@ -105,6 +109,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "IE prompts with an alert when closing. Revisit when alert handling is done")]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void CanCallGetWindowHandlesAfterClosingAWindow()
         {
             driver.Url = xhtmlTestPage;
@@ -159,6 +164,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void CanCloseWindowWhenMultipleWindowsAreOpen()
         {
@@ -182,6 +188,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void ClosingOnlyWindowShouldNotCauseTheBrowserToHang()
         {
@@ -194,6 +201,7 @@ namespace OpenQA.Selenium
         //////////////////////////////////////////////////////////
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldGetBrowserHandles()
         {
             driver.Url = xhtmlTestPage;

@@ -48,6 +48,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertWithNoTextManually()
         {
             driver.Url = alertsPage;

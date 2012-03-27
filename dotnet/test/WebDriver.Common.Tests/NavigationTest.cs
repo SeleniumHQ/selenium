@@ -10,6 +10,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(BeforeTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
         {
             INavigation navigation;
@@ -19,6 +20,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldGoBackAndForward()
         {
             INavigation navigation;

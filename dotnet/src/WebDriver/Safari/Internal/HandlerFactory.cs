@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Safari.Internal
     /// <summary>
     /// Provides a factory for creating handlers for the different versions of the WebSocket protocol.
     /// </summary>
-    public sealed class HandlerFactory
+    internal sealed class HandlerFactory
     {
         /// <summary>
         /// Prevents a default instance of the <see cref="HandlerFactory"/> class from being created.

@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Safari.Internal
     /// <summary>
     /// Parses a request.
     /// </summary>
-    public class RequestParser : IRequestParser
+    internal class RequestParser : IRequestParser
     {
         private const string Pattern = @"^(?<method>[^\s]+)\s(?<path>[^\s]+)\sHTTP\/1\.1\r\n" + // request line
                                        @"((?<field_name>[^:\r\n]+):\s(?<field_value>[^\r\n]+)\r\n)+" + // headers

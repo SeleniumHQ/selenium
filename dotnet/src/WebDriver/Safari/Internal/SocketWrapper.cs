@@ -34,6 +34,7 @@ namespace OpenQA.Selenium.Safari.Internal
     public class SocketWrapper : ISocket
     {
         private readonly Socket underlyingSocket;
+        private bool disposed;
         private Stream stream;
         
         /// <summary>
@@ -302,8 +303,9 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <see langword="false"/> to only release unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && !this.disposed)
             {
+                this.disposed = true;
                 if (this.stream != null)
                 {
                     this.stream.Dispose();
@@ -332,10 +334,10 @@ namespace OpenQA.Selenium.Safari.Internal
 
         private void OnDataReceive(IAsyncResult asyncResult)
         {
-            int bytesRead = this.stream.EndRead(asyncResult);
-            byte[] buffer = asyncResult.AsyncState as byte[];
             try
             {
+                int bytesRead = this.stream.EndRead(asyncResult);
+                byte[] buffer = asyncResult.AsyncState as byte[];
                 this.OnReceived(new ReceivedEventArgs(bytesRead, buffer));
             }
             catch (Exception ex)
@@ -346,14 +348,22 @@ namespace OpenQA.Selenium.Safari.Internal
 
         private void OnClientConnect(IAsyncResult asyncResult)
         {
-            SocketWrapper actual = new SocketWrapper(this.underlyingSocket.EndAccept(asyncResult));
-            try
+            // This logic is mildly convoluted, and requires some explanation.
+            // The socket can be closed (disposed) while there is still a
+            // pending accept. This will cause an exception if we try to reference
+            // the disposed socket. To mitigate this, we set a flag when Dispose()
+            // is called so that we don't try to access a disposed socket.
+            if (!this.disposed)
             {
-                this.OnAccepted(new AcceptEventArgs(actual));
-            }
-            catch (Exception ex)
-            {
-                this.OnAcceptError(new ErrorEventArgs(ex));
+                SocketWrapper actual = new SocketWrapper(this.underlyingSocket.EndAccept(asyncResult));
+                try
+                {
+                    this.OnAccepted(new AcceptEventArgs(actual));
+                }
+                catch (Exception ex)
+                {
+                    this.OnAcceptError(new ErrorEventArgs(ex));
+                }
             }
         }
 

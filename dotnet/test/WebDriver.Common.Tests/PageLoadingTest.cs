@@ -40,6 +40,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldReturnWhenGettingAUrlThatDoesNotResolve()
         {
             try
@@ -58,6 +59,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldReturnWhenGettingAUrlThatDoesNotConnect()
         {
             // Here's hoping that there's nothing here. There shouldn't be
@@ -80,8 +82,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(BeforeTest = true)]
         [IgnoreBrowser(Browser.IPhone)]
+        [NeedsFreshDriver(BeforeTest = true)]
         public void ShouldDoNothingIfThereIsNothingToGoBackTo()
         {
             string originalTitle = driver.Title;

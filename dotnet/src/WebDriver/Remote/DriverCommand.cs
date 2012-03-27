@@ -3,15 +3,15 @@
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License = string.Empty; Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// Unless required by applicable law or agreed to in writing = string.Empty; software
+// distributed under the License is distributed on an "AS IS" BASIS = string.Empty;
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND = string.Empty; either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // </copyright>
@@ -21,336 +21,336 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Values describing the list of commands understood by a remote server using the JSON wire protocol.
     /// </summary>
-    public enum DriverCommand
+    public static class DriverCommand
     {
         /// <summary>
         /// Represents the Define Driver Mapping command
         /// </summary>
-        DefineDriverMapping,
+        public static readonly string DefineDriverMapping = "defineDriverMapping";
 
         /// <summary>
         /// Represents the Status command.
         /// </summary>
-        Status,
+        public static readonly string Status = "status";
 
         /// <summary>
         /// Represents a New Session command
         /// </summary>
-        NewSession,
+        public static readonly string NewSession = "newSession";
 
         /// <summary>
         /// Represents the Get Session List command
         /// </summary>
-        GetSessionList,
+        public static readonly string GetSessionList = "getSessionList";
 
         /// <summary>
         /// Represents the Get Session Capabilities command
         /// </summary>
-        GetSessionCapabilities,
+        public static readonly string GetSessionCapabilities = "getSessionCapabilities";
 
         /// <summary>
         /// Represents a Browser close command
         /// </summary>
-        Close,
+        public static readonly string Close = "close";
 
         /// <summary>
         /// Represents a browser quit command
         /// </summary>
-        Quit,
+        public static readonly string Quit = "quit";
 
         /// <summary>
         /// Represents a GET command
         /// </summary>
-        Get,
+        public static readonly string Get = "get";
 
         /// <summary>
         /// Represents a Browser going back command
         /// </summary>
-        GoBack,
+        public static readonly string GoBack = "goBack";
 
         /// <summary>
         /// Represents a Browser going forward command
         /// </summary>
-        GoForward,
+        public static readonly string GoForward = "goForward";
 
         /// <summary>
         /// Represents a Browser refreshing command
         /// </summary>
-        Refresh,
+        public static readonly string Refresh = "refresh";
 
         /// <summary>
         /// Represents adding a cookie command
         /// </summary>
-        AddCookie,
+        public static readonly string AddCookie = "addCookie";
 
         /// <summary>
         /// Represents getting all cookies command
         /// </summary>
-        GetAllCookies,
+        public static readonly string GetAllCookies = "getAllCookies";
 
         /// <summary>
         /// Represents deleting a cookie command
         /// </summary>        
-        DeleteCookie,
+        public static readonly string DeleteCookie = "deleteCookie";
 
         /// <summary>
         /// Represents Deleting all cookies command
         /// </summary>
-        DeleteAllCookies,
+        public static readonly string DeleteAllCookies = "deleteAllCookies";
 
         /// <summary>
         /// Represents findelement command
         /// </summary>
-        FindElement,
+        public static readonly string FindElement = "findElement";
 
         /// <summary>
         /// Represents findelements command
         /// </summary>
-        FindElements,
+        public static readonly string FindElements = "findElements";
 
         /// <summary>
         /// Represents findchildelements command
         /// </summary>
-        FindChildElement,
+        public static readonly string FindChildElement = "findChildElement";
 
         /// <summary>
         /// Represents findchildelements command
         /// </summary>
-        FindChildElements,
+        public static readonly string FindChildElements = "findChildElements";
 
         /// <summary>
         /// Describes an element
         /// </summary>
-        DescribeElement,
+        public static readonly string DescribeElement = "describeElement";
 
         /// <summary>
         /// Represents clearelements command
         /// </summary>
-        ClearElement,
+        public static readonly string ClearElement = "clearElement";
 
         /// <summary>
         /// Represents clickelements command
         /// </summary>
-        ClickElement,
+        public static readonly string ClickElement = "clickElement";
 
         /// <summary>
         /// Represents SendKeysToElements command
         /// </summary>
-        SendKeysToElement,
+        public static readonly string SendKeysToElement = "sendKeysToElement";
 
         /// <summary>
         /// Represents SubmitElement command
         /// </summary>
-        SubmitElement,
+        public static readonly string SubmitElement = "submitElement";
 
         /// <summary>
         /// Represents findchildelements command
         /// </summary>
-        GetCurrentWindowHandle,
+        public static readonly string GetCurrentWindowHandle = "getCurrentWindowHandle";
 
         /// <summary>
         /// Represents GetWindowHandles command
         /// </summary>
-        GetWindowHandles,
+        public static readonly string GetWindowHandles = "getWindowHandles";
 
         /// <summary>
         /// Represents SwitchToWindow command
         /// </summary>
-        SwitchToWindow,
+        public static readonly string SwitchToWindow = "switchToWindow";
 
         /// <summary>
         /// Represents SwitchToFrame command
         /// </summary>
-        SwitchToFrame,
+        public static readonly string SwitchToFrame = "switchToFrame";
 
         /// <summary>
         /// Represents GetActiveElement command
         /// </summary>
-        GetActiveElement,
+        public static readonly string GetActiveElement = "getActiveElement";
 
         /// <summary>
         /// Represents GetCurrentUrl command
         /// </summary>
-        GetCurrentUrl,
+        public static readonly string GetCurrentUrl = "getCurrentUrl";
 
         /// <summary>
         /// Represents GetPageSource command
         /// </summary>
-        GetPageSource,
+        public static readonly string GetPageSource = "getPageSource";
 
         /// <summary>
         /// Represents GetTitle command
         /// </summary>
-        GetTitle,
+        public static readonly string GetTitle = "getTitle";
 
         /// <summary>
         /// Represents ExecuteScript command
         /// </summary>
-        ExecuteScript,
+        public static readonly string ExecuteScript = "executeScript";
 
         /// <summary>
         /// Represents ExecuteAsyncScript command
         /// </summary>
-        ExecuteAsyncScript,
+        public static readonly string ExecuteAsyncScript = "executeAsyncScript";
 
         /// <summary>
         /// Represents GetElementText command
         /// </summary>
-        GetElementText,
+        public static readonly string GetElementText = "getElementText";
 
         /// <summary>
         /// Represents GetElementTagName command
         /// </summary>
-        GetElementTagName,
+        public static readonly string GetElementTagName = "getElementTagName";
 
         /// <summary>
         /// Represents IsElementSelected command
         /// </summary>
-        IsElementSelected,
+        public static readonly string IsElementSelected = "isElementSelected";
 
         /// <summary>
         /// Represents IsElementEnabled command
         /// </summary>
-        IsElementEnabled,
+        public static readonly string IsElementEnabled = "isElementEnabled";
 
         /// <summary>
         /// Represents IsElementDisplayed command
         /// </summary>
-        IsElementDisplayed,
+        public static readonly string IsElementDisplayed = "isElementDisplayed";
 
         /// <summary>
         /// Represents GetElementLocation command
         /// </summary>
-        GetElementLocation,
+        public static readonly string GetElementLocation = "getElementLocation";
 
         /// <summary>
         /// Represents GetElementLocationOnceScrolledIntoView command
         /// </summary>
-        GetElementLocationOnceScrolledIntoView,
+        public static readonly string GetElementLocationOnceScrolledIntoView = "getElementLocationOnceScrolledIntoView";
 
         /// <summary>
         /// Represents GetElementSize command
         /// </summary>
-        GetElementSize,
+        public static readonly string GetElementSize = "getElementSize";
 
         /// <summary>
         /// Represents GetElementAttribute command
         /// </summary>
-        GetElementAttribute,
+        public static readonly string GetElementAttribute = "getElementAttribute";
 
         /// <summary>
         /// Represents GetElementValueOfCssProperty command
         /// </summary>
-        GetElementValueOfCssProperty,
+        public static readonly string GetElementValueOfCssProperty = "getElementValueOfCssProperty";
 
         /// <summary>
         /// Represents ElementEquals command
         /// </summary>
-        ElementEquals,
+        public static readonly string ElementEquals = "elementEquals";
 
         /// <summary>
         /// Represents Screenshot command
         /// </summary>
-        Screenshot,
+        public static readonly string Screenshot = "screenshot";
 
         /// <summary>
         /// Represents GetOrientation command
         /// </summary>
-        GetOrientation,
+        public static readonly string GetOrientation = "getOrientation";
 
         /// <summary>
         /// Represents SetOrientation command
         /// </summary>
-        SetOrientation,
+        public static readonly string SetOrientation = "setOrientation";
 
         /// <summary>
         /// Represents GetWindowSize command
         /// </summary>
-        GetWindowSize,
+        public static readonly string GetWindowSize = "getWindowSize";
 
         /// <summary>
         /// Represents SetWindowSize command
         /// </summary>
-        SetWindowSize,
+        public static readonly string SetWindowSize = "setWindowSize";
 
         /// <summary>
         /// Represents GetWindowPosition command
         /// </summary>
-        GetWindowPosition,
+        public static readonly string GetWindowPosition = "getWindowPosition";
 
         /// <summary>
         /// Represents SetWindowPosition command
         /// </summary>
-        SetWindowPosition,
+        public static readonly string SetWindowPosition = "setWindowPosition";
 
         /// <summary>
         /// Represents MaximizeWindow command
         /// </summary>
-        MaximizeWindow,
+        public static readonly string MaximizeWindow = "maximizeWindow";
 
         /// <summary>
         /// Represents RestoreWindow command
         /// </summary>
-        RestoreWindow,
+        public static readonly string RestoreWindow = "restoreWindow";
 
         /// <summary>
         /// Represents the DismissAlert command
         /// </summary>
-        DismissAlert,
+        public static readonly string DismissAlert = "dismissAlert";
 
         /// <summary>
         /// Represents the AcceptAlert command
         /// </summary>
-        AcceptAlert,
+        public static readonly string AcceptAlert = "acceptAlert";
 
         /// <summary>
         /// Represents the GetAlertText command
         /// </summary>
-        GetAlertText,
+        public static readonly string GetAlertText = "getAlertText";
 
         /// <summary>
         /// Represents the SetAlertValue command
         /// </summary>
-        SetAlertValue,
+        public static readonly string SetAlertValue = "setAlertValue";
 
         /// <summary>
         /// Represents the ImplicitlyWait command
         /// </summary>
-        ImplicitlyWait,
+        public static readonly string ImplicitlyWait = "implicitlyWait";
 
         /// <summary>
         /// Represents the SetAsyncScriptTimeout command
         /// </summary>
-        SetAsyncScriptTimeout,
+        public static readonly string SetAsyncScriptTimeout = "setAsyncScriptTimeout";
 
         /// <summary>
         /// Represents the MouseClick command.
         /// </summary>
-        MouseClick,
+        public static readonly string MouseClick = "mouseClick";
 
         /// <summary>
         /// Represents the MouseDoubleClick command.
         /// </summary>
-        MouseDoubleClick,
+        public static readonly string MouseDoubleClick = "mouseDoubleClick";
 
         /// <summary>
         /// Represents the MouseDown command.
         /// </summary>
-        MouseDown,
+        public static readonly string MouseDown = "mouseDown";
 
         /// <summary>
         /// Represents the MouseUp command.
         /// </summary>
-        MouseUp,
+        public static readonly string MouseUp = "mouseUp";
 
         /// <summary>
         /// Represents the MouseMoveTo command.
         /// </summary>
-        MouseMoveTo,
+        public static readonly string MouseMoveTo = "mouseMoveTo";
 
         /// <summary>
         /// Represents the SendKeysToActiveElement command.
         /// </summary>
-        SendKeysToActiveElement
+        public static readonly string SendKeysToActiveElement = "sendKeysToActiveElement";
     }
 }

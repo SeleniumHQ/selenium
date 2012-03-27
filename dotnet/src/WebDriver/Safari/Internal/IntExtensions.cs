@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Safari.Internal
     /// <summary>
     /// Provides extension methods for converting integers.
     /// </summary>
-    public static class IntExtensions
+    internal static class IntExtensions
     {
         /// <summary>
         /// Converts a <see cref="System.UInt16"/> to a big-endian byte array.
@@ -31,23 +31,6 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="source">The value to convert.</param>
         /// <returns>A byte array containing a big-endian representation of the value.</returns>
         public static byte[] ToBigEndianByteArray(this ushort source)
-        {
-            byte[] bytes;
-            bytes = BitConverter.GetBytes(source);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(bytes);
-            }
-
-            return bytes;
-        }
-
-        /// <summary>
-        /// Converts a <see cref="System.UInt32"/> to a big-endian byte array.
-        /// </summary>
-        /// <param name="source">The value to convert.</param>
-        /// <returns>A byte array containing a big-endian representation of the value.</returns>
-        public static byte[] ToBigEndianByteArray(this int source)
         {
             byte[] bytes;
             bytes = BitConverter.GetBytes(source);

@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
     /// <summary>
     /// Provides the base class for handling WebSocket protocol requests.
     /// </summary>
-    public abstract class RequestHandler : IHandler
+    internal abstract class RequestHandler : IHandler
     {
         private readonly List<byte> data = new List<byte>();
 

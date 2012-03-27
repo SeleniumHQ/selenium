@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Safari.Internal
     /// <summary>
     /// Provides status codes for the WebSocket protocol
     /// </summary>
-    public static class WebSocketStatusCodes
+    internal static class WebSocketStatusCodes
     {
         /// <summary>
         /// Indicates a normal closure status.

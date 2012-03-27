@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Safari.Internal
     [Serializable]
     public class WebSocketException : Exception
     {
-        private ushort statusCode;
+        private int statusCode;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketException"/> class.
@@ -62,7 +62,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// Initializes a new instance of the <see cref="WebSocketException"/> class with a specified status code.
         /// </summary>
         /// <param name="statusCode">The status code of the exception.</param>
-        public WebSocketException(ushort statusCode)
+        public WebSocketException(int statusCode)
             : base()
         {
             this.statusCode = statusCode;
@@ -74,7 +74,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// </summary>
         /// <param name="statusCode">The status code of the exception.</param>
         /// <param name="message">The message for the exception.</param>
-        public WebSocketException(ushort statusCode, string message)
+        public WebSocketException(int statusCode, string message)
             : base(message)
         {
             this.statusCode = statusCode;
@@ -87,7 +87,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <param name="statusCode">The status code for the exception.</param>
         /// <param name="message">The message for the exception.</param>
         /// <param name="innerException">The inner exception that is the cause of this exception.</param>
-        public WebSocketException(ushort statusCode, string message, Exception innerException)
+        public WebSocketException(int statusCode, string message, Exception innerException)
             : base(message, innerException)
         {
             this.statusCode = statusCode;
@@ -106,7 +106,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <summary>
         /// Gets the status code.
         /// </summary>
-        public ushort StatusCode 
+        public int StatusCode 
         {
             get { return this.statusCode; }
         }

@@ -700,7 +700,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="driverCommandToExecute">Command that needs executing</param>
         /// <param name="parameters">Parameters needed for the command</param>
         /// <returns>WebDriver Response</returns>
-        internal Response InternalExecute(DriverCommand driverCommandToExecute, Dictionary<string, object> parameters)
+        internal Response InternalExecute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
             return this.Execute(driverCommandToExecute, parameters);
         }
@@ -784,7 +784,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="driverCommandToExecute">A <see cref="DriverCommand"/> value representing the command to execute.</param>
         /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
         /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
-        protected virtual Response Execute(DriverCommand driverCommandToExecute, Dictionary<string, object> parameters)
+        protected virtual Response Execute(string driverCommandToExecute, Dictionary<string, object> parameters)
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
 
@@ -1023,7 +1023,7 @@ namespace OpenQA.Selenium.Remote
                 parameters.Add("args", new object[] { });
             }
 
-            DriverCommand command = async ? DriverCommand.ExecuteAsyncScript : DriverCommand.ExecuteScript;
+            string command = async ? DriverCommand.ExecuteAsyncScript : DriverCommand.ExecuteScript;
             Response commandResponse = this.Execute(command, parameters);
             return this.ParseJavaScriptReturnValue(commandResponse.Value);
         }

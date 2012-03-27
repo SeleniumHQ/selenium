@@ -12,6 +12,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowDraggingElementWithMouseMovesItToAnotherList()
         {
             PerformDragAndDropWithMouse();
@@ -25,6 +26,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void DraggingElementWithMouseFiresEvents()
         {
             PerformDragAndDropWithMouse();
@@ -37,6 +39,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowDragAndDrop()
         {
             driver.Url = droppableItems;
@@ -78,6 +81,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowDoubleClick()
         {
             driver.Url = javascriptPage;
@@ -95,6 +99,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowContextClick()
         {
             driver.Url = javascriptPage;
@@ -112,6 +117,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowMoveAndClick()
         {
             driver.Url = javascriptPage;
@@ -129,6 +135,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldNotMoveToANullLocator()
         {
             driver.Url = javascriptPage;
