@@ -111,14 +111,21 @@ class MouseMoveToCommandHandler : public IECommandHandler {
                                                                   &element_y,
                                                                   &element_width,
                                                                   &element_height);
-    if (status_code == SUCCESS) {
-      if (get_element_origin) {
-        *x_coordinate = element_x;
-        *y_coordinate = element_y;
-      } else {
-        *x_coordinate = element_x + (element_width / 2);
-        *y_coordinate = element_y + (element_height / 2);
-      }
+    // We can't use the status code alone here. GetLocationOnceScrolledIntoView
+    // returns EELEMENTNOTDISPLAYED if the element is visible, but the click
+    // point (the center of the element) is not within the viewport. However,
+    // we might still be able to move to whatever portion of the element *is*
+    // visible in the viewport, so we have to have an extra check.
+    if (status_code != SUCCESS && element_width == 0 && element_height == 0) {
+      return status_code;
+    }
+
+    if (get_element_origin) {
+      *x_coordinate = element_x;
+      *y_coordinate = element_y;
+    } else {
+      *x_coordinate = element_x + (element_width / 2);
+      *y_coordinate = element_y + (element_height / 2);
     }
 
     return SUCCESS;

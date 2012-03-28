@@ -178,6 +178,7 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
                                              long* y,
                                              long* width,
                                              long* height) {
+  int status_code = SUCCESS;
   CComPtr<IHTMLDOMNode2> node;
   HRESULT hr = this->element_->QueryInterface(&node);
 
@@ -199,7 +200,7 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
   long top = 0, left = 0, element_width = 0, element_height = 0;
   result = this->GetLocation(&left, &top, &element_width, &element_height);
   long click_x, click_y;
-  GetClickPoint(left, top, element_width, element_height, &click_x, &click_y);
+  this->GetClickPoint(left, top, element_width, element_height, &click_x, &click_y);
 
   if (result != SUCCESS ||
       !this->IsClickPointInViewPort(left, top, element_width, element_height) ||
@@ -221,17 +222,23 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
                                       top,
                                       element_width,
                                       element_height)) {
-      return EELEMENTNOTDISPLAYED;
+      status_code = EELEMENTNOTDISPLAYED;
     }
   }
 
   LOG(DEBUG) << "(x, y, w, h): " << left << ", " << top << ", " << element_width << ", " << element_height << endl;
 
+  // At this point, we know the element is displayed according to its
+  // style attributes, and we've made a best effort at scrolling it so
+  // that it's completely within the viewport. We will always return
+  // the coordinates of the element, even if the scrolling is unsuccessful.
+  // However, we will stgill return the "element not displayed" status code
+  // if the click point has not been scrolled to the viewport.
   *x = left;
   *y = top;
   *width = element_width;
   *height = element_height;
-  return SUCCESS;
+  return status_code;
 }
 
 bool Element::IsHiddenByOverflow() {
