@@ -449,12 +449,6 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     return;
   }
 
-  if (typeof driver[command.name] != 'function' && typeof WebElement[command.name] != 'function') {
-    response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
-        'Unrecognised command: ' + command.name));
-    return;
-  }
-
   if (driver.modalOpen) {
     if (command.name != 'getAlertText' && 
         command.name != 'setAlertValue' &&
@@ -481,6 +475,12 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     }
     response.value = "" + url;
     response.send();
+    return;
+  }
+
+  if (typeof driver[command.name] != 'function' && typeof WebElement[command.name] != 'function') {
+    response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
+        'Unrecognised command: ' + command.name));
     return;
   }
 
