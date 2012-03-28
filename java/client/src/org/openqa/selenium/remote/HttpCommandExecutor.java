@@ -95,7 +95,7 @@ public class HttpCommandExecutor implements CommandExecutor {
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     try {
       remoteServer = addressOfRemoteServer == null ?
-                     new URL(System.getProperty("webdriver.remote.server")) :
+                     new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/wd/hub")) :
                      addressOfRemoteServer;
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
