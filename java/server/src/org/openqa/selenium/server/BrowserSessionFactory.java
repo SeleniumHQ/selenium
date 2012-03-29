@@ -350,9 +350,16 @@ public class BrowserSessionFactory {
     final FrameGroupCommandQueueSet queueSet;
     final BrowserSessionInfo sessionInfo;
     final BrowserLauncher launcher;
-    final String sessionId;
+    String sessionId;
 
     sessionId = UUID.randomUUID().toString().replace("-", "");
+    if ("*webdriver".equals(browserString) && browserConfiguration != null) {
+      Object id = browserConfiguration.getCapability("webdriver.remote.sessionid");
+      if (id != null && id instanceof String) {
+        sessionId = (String) id;
+      }
+    }
+
     queueSet = makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
     queueSet.setExtensionJs(extensionJs);
 
