@@ -92,10 +92,12 @@ safaridriver.extension.Tab.prototype.getId = function() {
 
 /**
  * @param {string} msg The message to log.
+ * @param {goog.debug.Logger.Level=} opt_level The message level.
  * @private
  */
-safaridriver.extension.Tab.prototype.log_ = function(msg) {
-  safaridriver.extension.Tab.LOG_.info('[' + this.id_ + '] ' + msg);
+safaridriver.extension.Tab.prototype.log_ = function(msg, opt_level) {
+  var level = opt_level || goog.debug.Logger.Level.INFO;
+  safaridriver.extension.Tab.LOG_.log(level, '[' + this.id_ + '] ' + msg);
 };
 
 
@@ -167,4 +169,86 @@ safaridriver.extension.Tab.prototype.onNavigate_ = function() {
       }
     }, 100);
   }
+};
+
+
+/**
+ * Sends a command to this tab's injected script.
+ * @param {!webdriver.Command} command The command to send.
+ * @param {number=} opt_timeout How long, in milliseconds, to wait for a
+ *     response before timing out. If not specified, or non-positive, no timeout
+ *     will be applied.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with
+ *     the message
+ */
+safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
+  var id = goog.string.getRandomString();
+
+  var response = new webdriver.promise.Deferred();
+  var safariCommand = new safaridriver.Command(id, command);
+  var message = new safaridriver.message.CommandMessage(safariCommand);
+
+  var log = goog.bind(this.log_, this);
+  log('Preparing command: ' + JSON.stringify(safariCommand));
+  this.whenReady(function(tab) {
+    log('Sending command: ' + JSON.stringify(safariCommand));
+
+    tab.addEventListener('message', onMessage, false);
+
+    if (opt_timeout && opt_timeout > 0) {
+      var start = goog.now();
+      var timeoutKey = setTimeout(function() {
+        if (response.isPending()) {
+          response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
+              'Timed out awaiting response to command "' + command.getName() +
+              '" after ' + (goog.now() - start) + ' ms'));
+        }
+      }, opt_timeout);
+    }
+
+    message.send(tab.page);
+
+    function onMessage(e) {
+      try {
+        var message = safaridriver.message.Message.fromEvent(e);
+      } catch (ex) {
+        log(goog.debug.Logger.Level.SEVERE,
+            'Unable to parse message: ' + e.name + ': ' +
+                JSON.stringify(e.message),
+            ex);
+        return;
+      }
+
+      if (!message.isType(safaridriver.message.Type.RESPONSE)) {
+        log(goog.debug.Logger.Level.FINE,
+            'Ignoring non-response message: ' + JSON.stringify(e.message));
+        return;
+      }
+
+      if (message.getId() !== id) {
+        log(goog.debug.Logger.Level.FINE,
+            'Ignoring response to another command: ' + e.message.id +
+                ' (' + id + ')');
+        return;
+      }
+
+      if (!response.isPending()) {
+        log(goog.debug.Logger.Level.WARNING,
+            'Received command response after promise has been ' +
+                'resolved; perhaps it previously timed-out? ' +
+                JSON.stringify(e.message));
+        return;
+      }
+
+      tab.removeEventListener('message', onMessage, false);
+      clearTimeout(timeoutKey);
+      try {
+        response.resolve(webdriver.error.checkResponse(message.getResponse()));
+      } catch (ex) {
+        response.reject(ex);
+      }
+    }
+  });
+
+  return response.promise;
 };

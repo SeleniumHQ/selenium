@@ -243,62 +243,38 @@ safaridriver.extension.commands.findElement = function(session, command) {
 
 
 /**
+ * Default amount of time, in milliseconds, to wait for a response to any
+ * commands sent to the injected script.  This is set arbitarily high as we
+ * should never hit. It is used soley as a means of preventing hanging the
+ * client when something breaks inside the driver.
+ * @type {number}
+ * @const
+ * @private
+ */
+safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_ = 30000;
+
+
+/**
  * Sends a command to the provided session's current tab.
  * @param {!(safaridriver.extension.Session|safaridriver.extension.Tab)} sessionOrTab Either the
  *     session or tab to send the command to. If given a session, the command
  *     will be sent to the tab the session is currently focused on.
  * @param {!webdriver.Command} command The command object.
+ * @param {number=} opt_additionalTimeout An optional amount of time, in
+ *     milliseconds, to wait for a command response. This timeout is added to
+ *     the default timeout applie dto all commands.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     the command response.
  */
-safaridriver.extension.commands.sendCommand = function(sessionOrTab, command) {
-  var id = goog.string.getRandomString();
-  var response = new webdriver.promise.Deferred();
-
-  command = new safaridriver.Command(id, command);
-  var message = new safaridriver.message.CommandMessage(command);
-
-  safaridriver.extension.commands.LOG_.info('Sending command: ' +
-      JSON.stringify(message));
+safaridriver.extension.commands.sendCommand = function(sessionOrTab, command,
+    opt_additionalTimeout) {
+  var timeout = (opt_additionalTimeout || 0) +
+      safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_;
   var tab = sessionOrTab instanceof safaridriver.extension.Tab
       ? (/** @type {!safaridriver.extension.Tab} */sessionOrTab)
       : (/** @type {!safaridriver.extension.Session} */sessionOrTab).
           getCommandTab();
-  tab.whenReady(function(tab) {
-    tab.addEventListener('message', onMessage, false);
-    message.send(tab.page);
-
-    function onMessage(e) {
-      try {
-        var message = safaridriver.message.Message.fromEvent(e);
-      } catch (ex) {
-        safaridriver.extension.commands.LOG_.severe(
-            'Unable to parse message: ' + e.name + ': ' +
-                JSON.stringify(e.message), ex);
-        return;
-      }
-
-      if (!message.isType(safaridriver.message.Type.RESPONSE)) {
-        return;
-      }
-
-      if (message.getId() !== id) {
-        safaridriver.extension.commands.LOG_.info(
-            'Ignoring response to another command: ' +
-                e.message.id + ' (' + id + ')');
-        return;
-      }
-
-      tab.removeEventListener('message', onMessage, false);
-      try {
-        response.resolve(webdriver.error.checkResponse(message.getResponse()));
-     } catch (ex) {
-        response.reject(ex);
-      }
-    }
-  });
-
-  return response.promise;
+  return tab.send(command, timeout);
 };
 
 
@@ -341,6 +317,8 @@ safaridriver.extension.commands.switchToFrame = function(session, command) {
  * Sends a command that should target the currently selected window.
  * @param {!safaridriver.extension.Session} session The session object.
  * @param {!webdriver.Command} command The command object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with
+ *     the command response.
  */
 safaridriver.extension.commands.sendWindowCommand = function(session, command) {
   var handle = (/** @type {string} */command.getParameter('windowHandle'));
@@ -352,4 +330,21 @@ safaridriver.extension.commands.sendWindowCommand = function(session, command) {
         'No such window: ' + handle);
   }
   return safaridriver.extension.commands.sendCommand(tab, command);
+};
+
+
+/**
+ * Sends a script-based command to the currently selected window.
+ * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!webdriver.Command} command The command object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with
+ *     the command response.
+ */
+safaridriver.extension.commands.executeAsyncScript = function(session,
+                                                              command) {
+  // The async timeout is saved on the session, so embed it in the command to
+  // be sent to the injected script.
+  var timeout = session.getScriptTimeout();
+  command.setParameter('timeout', timeout);
+  return safaridriver.extension.commands.sendCommand(session, command, timeout);
 };
