@@ -87,10 +87,12 @@ public class HubStatusServlet extends RegistryBasedServlet {
         if (json != null && !"".equals(json)) {
           requestJSON = new JSONObject(json);
         }
-        JSONArray keys = requestJSON.getJSONArray("configuration");
+
+        JSONArray keys = requestJSON != null ? requestJSON.getJSONArray("configuration")
+                              : null;
 
         Set<String> paramsToReturn;
-        if (keys.length() == 0) {
+        if (requestJSON == null || keys.length() == 0) {
           paramsToReturn = getRegistry().getConfiguration().getAllParams().keySet();
         } else {
           paramsToReturn = new HashSet<String>();

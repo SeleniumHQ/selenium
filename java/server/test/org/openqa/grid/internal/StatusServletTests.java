@@ -268,10 +268,8 @@ public class StatusServletTests {
 
 
   /**
-   * when no param is specified, a call to the hub API returns all the 
-   * config params the hub currently uses.
-   * @throws IOException
-   * @throws JSONException
+   * when no param is specified, a call to the hub API returns all the config params the hub
+   * currently uses.
    */
   @Test
   public void testHubgetAllConfig() throws IOException, JSONException {
@@ -293,7 +291,26 @@ public class StatusServletTests {
 
     Assert.assertTrue(o.getBoolean("success"));
     Assert.assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-        o.getString("capabilityMatcher"));
+                        o.getString("capabilityMatcher"));
+    Assert.assertEquals(JSONObject.NULL, o.opt("prioritizer"));
+
+  }
+
+  @Test
+  public void testHubgetAllConfigNoParamsWhenNoPostBody() throws IOException, JSONException {
+
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    String url = hubApi.toExternalForm();
+    BasicHttpRequest r = new BasicHttpRequest("GET", url);
+
+    HttpResponse response = client.execute(host, r);
+    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    JSONObject o = extractObject(response);
+
+    Assert.assertTrue(o.getBoolean("success"));
+    Assert.assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+                        o.getString("capabilityMatcher"));
     Assert.assertEquals(JSONObject.NULL, o.opt("prioritizer"));
 
   }
