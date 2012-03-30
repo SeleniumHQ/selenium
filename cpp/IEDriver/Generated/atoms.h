@@ -704,7 +704,7 @@ const wchar_t* const CLICK[] = {
     L"(yd[0]in $)&&$.execScript&&$.execScript(\"var \"+yd[0]);for(var Ad;yd.",
     L"length&&(Ad=yd.shift());)!yd.length&&s(xd)?$[Ad]=xd:$=$[Ad]?$[Ad]:$[Ad",
     L"]={};; return this._.apply(null,arguments);}.apply({navigator:typeof w",
-    L"indow!='undefined'?window.navigator:null}, arguments);}",
+    L"indow!=undefined?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -1347,8 +1347,8 @@ const wchar_t* const CLEAR[] = {
     L"a,bc));Lb(a)&&(a.innerHTML=\n\" \")}var qd=[\"_\"],$=r;!(qd[0]in $)&&$",
     L".execScript&&$.execScript(\"var \"+qd[0]);for(var sd;qd.length&&(sd=qd",
     L".shift());)!qd.length&&s(pd)?$[sd]=pd:$=$[sd]?$[sd]:$[sd]={};; return ",
-    L"this._.apply(null,arguments);}.apply({navigator:typeof window!='undefi",
-    L"ned'?window.navigator:null}, arguments);}",
+    L"this._.apply(null,arguments);}.apply({navigator:typeof window!=undefin",
+    L"ed?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -1588,8 +1588,8 @@ const wchar_t* const FIND_ELEMENT[] = {
     L"(Error(\"Unsupported locator strategy: \"+c))}var Y=[\"_\"],Z=m;!(Y[0]",
     L"in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&(",
     L"$=Y.shift());)!Y.length&&Sa!==i?Z[$]=Sa:Z=Z[$]?Z[$]:Z[$]={};; return t",
-    L"his._.apply(null,arguments);}.apply({navigator:typeof window!='undefin",
-    L"ed'?window.navigator:null}, arguments);}",
+    L"his._.apply(null,arguments);}.apply({navigator:typeof window!=undefine",
+    L"d?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -1829,8 +1829,8 @@ const wchar_t* const FIND_ELEMENTS[] = {
     L"(Error(\"Unsupported locator strategy: \"+c))}var Y=[\"_\"],Z=m;!(Y[0]",
     L"in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&(",
     L"$=Y.shift());)!Y.length&&Sa!==i?Z[$]=Sa:Z=Z[$]?Z[$]:Z[$]={};; return t",
-    L"his._.apply(null,arguments);}.apply({navigator:typeof window!='undefin",
-    L"ed'?window.navigator:null}, arguments);}",
+    L"his._.apply(null,arguments);}.apply({navigator:typeof window!=undefine",
+    L"d?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -1931,8 +1931,8 @@ const wchar_t* const GET_ATTRIBUTE[] = {
     L"a,\nc):e;return b!=f?b.toString():f}var V=[\"_\"],W=this;!(V[0]in W)&&",
     L"W.execScript&&W.execScript(\"var \"+V[0]);for(var X;V.length&&(X=V.shi",
     L"ft());)!V.length&&void 0!==U?W[X]=U:W=W[X]?W[X]:W[X]={};; return this.",
-    L"_.apply(null,arguments);}.apply({navigator:typeof window!='undefined'?",
-    L"window.navigator:null}, arguments);}",
+    L"_.apply(null,arguments);}.apply({navigator:typeof window!=undefined?wi",
+    L"ndow.navigator:null}, arguments);}",
     NULL
 };
 
@@ -2009,7 +2009,7 @@ const wchar_t* const GET_EFFECTIVE_STYLE[] = {
     L";!(P[0]in Q)&&Q.execScript&&Q.execScript(\"var \"+P[0]);for(var R;P.le",
     L"ngth&&(R=P.shift());)!P.length&&void 0!==O?Q[R]=O:Q=Q[R]?Q[R]:Q[R]={};",
     L"; return this._.apply(null,arguments);}.apply({navigator:typeof window",
-    L"!='undefined'?window.navigator:null}, arguments);}",
+    L"!=undefined?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -2062,8 +2062,8 @@ const wchar_t* const GET_LOCATION[] = {
     L";)c.x-=e.scrollLeft,c.y-=e.scrollTop}return c}var J=[\"_\"],K=f;!(J[0]",
     L"in K)&&K.execScript&&K.execScript(\"var \"+J[0]);\nfor(var L;J.length&",
     L"&(L=J.shift());)!J.length&&void 0!==I?K[L]=I:K=K[L]?K[L]:K[L]={};; ret",
-    L"urn this._.apply(null,arguments);}.apply({navigator:typeof window!='un",
-    L"defined'?window.navigator:null}, arguments);}",
+    L"urn this._.apply(null,arguments);}.apply({navigator:typeof window!=und",
+    L"efined?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -2104,8 +2104,8 @@ const wchar_t* const GET_SIZE[] = {
     L"lity=l;return b}\nvar D=[\"_\"],E=this;!(D[0]in E)&&E.execScript&&E.ex",
     L"ecScript(\"var \"+D[0]);for(var F;D.length&&(F=D.shift());)!D.length&&",
     L"void 0!==C?E[F]=C:E=E[F]?E[F]:E[F]={};; return this._.apply(null,argum",
-    L"ents);}.apply({navigator:typeof window!='undefined'?window.navigator:n",
-    L"ull}, arguments);}",
+    L"ents);}.apply({navigator:typeof window!=undefined?window.navigator:nul",
+    L"l}, arguments);}",
     NULL
 };
 
@@ -2290,7 +2290,7 @@ const wchar_t* const GET_TEXT[] = {
     L"!(Y[0]in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);\nfor(var $;Y.l",
     L"ength&&($=Y.shift());)!Y.length&&Ca!==h?Z[$]=Ca:Z=Z[$]?Z[$]:Z[$]={};; ",
     L"return this._.apply(null,arguments);}.apply({navigator:typeof window!=",
-    L"'undefined'?window.navigator:null}, arguments);}",
+    L"undefined?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -2450,7 +2450,7 @@ const wchar_t* const IS_DISPLAYED[] = {
     L"\"],Z=n;!(Y[0]in Z)&&Z.execScript&&Z.execScript(\"var \"+Y[0]);for(var",
     L" $;Y.length&&($=Y.shift());)!Y.length&&ua!==h?Z[$]=ua:Z=Z[$]?Z[$]:Z[$]",
     L"={};; return this._.apply(null,arguments);}.apply({navigator:typeof wi",
-    L"ndow!='undefined'?window.navigator:null}, arguments);}",
+    L"ndow!=undefined?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -2502,8 +2502,8 @@ const wchar_t* const IS_ENABLED[] = {
     L"r K=J,L=[\"_\"],M=this;!(L[0]in M)&&M.execScript&&M.execScript(\"var ",
     L"\"+L[0]);for(var N;L.length&&(N=L.shift());)!L.length&&void 0!==K?M[N]",
     L"=K:M=M[N]?M[N]:M[N]={};; return this._.apply(null,arguments);}.apply({",
-    L"navigator:typeof window!='undefined'?window.navigator:null}, arguments",
-    L");}",
+    L"navigator:typeof window!=undefined?window.navigator:null}, arguments);",
+    L"}",
     NULL
 };
 
@@ -2564,7 +2564,7 @@ const wchar_t* const IS_SELECTED[] = {
     L"var O=[\"_\"],P=this;!(O[0]in P)&&P.execScript&&P.execScript(\"var \"+",
     L"O[0]);for(var Q;O.length&&(Q=O.shift());)!O.length&&void 0!==N?P[Q]=N:",
     L"P=P[Q]?P[Q]:P[Q]={};; return this._.apply(null,arguments);}.apply({nav",
-    L"igator:typeof window!='undefined'?window.navigator:null}, arguments);}",
+    L"igator:typeof window!=undefined?window.navigator:null}, arguments);}",
     NULL
 };
 
@@ -3275,8 +3275,8 @@ const wchar_t* const SUBMIT[] = {
     L"c=Fd.Ha();$b(c,a);fc(b)}var Id=[\"_\"],$=p;!(Id[0]in $)&&$.execScript&",
     L"&$.execScript(\"var \"+Id[0]);for(var Jd;Id.length&&(Jd=Id.shift());)!",
     L"Id.length&&r(Gd)?$[Jd]=Gd:$=$[Jd]?$[Jd]:$[Jd]={};; return this._.apply",
-    L"(null,arguments);}.apply({navigator:typeof window!='undefined'?window.",
-    L"navigator:null}, arguments);}",
+    L"(null,arguments);}.apply({navigator:typeof window!=undefined?window.na",
+    L"vigator:null}, arguments);}",
     NULL
 };
 
@@ -3316,8 +3316,8 @@ const wchar_t* const SET_WINDOW_SIZE[] = {
     L"{(b||n).resizeTo(a.width,a.height)}var F=[\"_\"],G=this;!(F[0]in G)&&G",
     L".execScript&&G.execScript(\"var \"+F[0]);for(var H;F.length&&(H=F.shif",
     L"t());)!F.length&&void 0!==E?G[H]=E:G=G[H]?G[H]:G[H]={};; return this._",
-    L".apply(null,arguments);}.apply({navigator:typeof window!='undefined'?w",
-    L"indow.navigator:null}, arguments);}",
+    L".apply(null,arguments);}.apply({navigator:typeof window!=undefined?win",
+    L"dow.navigator:null}, arguments);}",
     NULL
 };
 
@@ -3357,8 +3357,8 @@ const wchar_t* const SET_WINDOW_POSITION[] = {
     L"{(b||n).moveTo(a.x,a.y)}var F=[\"_\"],G=this;!(F[0]in G)&&G.execScript",
     L"&&G.execScript(\"var \"+F[0]);for(var H;F.length&&(H=F.shift());)!F.le",
     L"ngth&&void 0!==E?G[H]=E:G=G[H]?G[H]:G[H]={};; return this._.apply(null",
-    L",arguments);}.apply({navigator:typeof window!='undefined'?window.navig",
-    L"ator:null}, arguments);}",
+    L",arguments);}.apply({navigator:typeof window!=undefined?window.navigat",
+    L"or:null}, arguments);}",
     NULL
 };
 

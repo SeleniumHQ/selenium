@@ -343,6 +343,9 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     return EUNHANDLEDERROR;
   }
 
+  // If the rect of the element has zero width and height, check its
+  // children to see if any of them have width and height, in which
+  // case, this element will be visible.
   if (!RectHasNonZeroDimensions(rect)) {
     CComPtr<IHTMLDOMNode> node;
     element2->QueryInterface(&node);
@@ -357,10 +360,12 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
         children->item(i, &childDispatch);
         CComPtr<IHTMLElement> child;
         childDispatch->QueryInterface(&child);
-        Element childElement(child, this->containing_window_handle_);
-        int result = childElement.GetLocation(x, y, width, height);
-        if (SUCCEEDED(result)) {
-          return result;
+        if (child != NULL) {
+          Element childElement(child, this->containing_window_handle_);
+          int result = childElement.GetLocation(x, y, width, height);
+          if (SUCCEEDED(result)) {
+            return result;
+          }
         }
       }
     }
