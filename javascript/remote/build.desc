@@ -1,6 +1,8 @@
 js_binary(name = "client",
-  deps = [
+  srcs = [
     "./**/*.js",
+  ],
+  deps = [
     "//javascript/atoms:deps",
     "//javascript/webdriver:webdriver_lib",
   ],
