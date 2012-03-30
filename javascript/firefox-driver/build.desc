@@ -89,6 +89,7 @@ js_binary(name = "command_processor",
   ],
   deps = [
     ":error",
+    ":events",
     ":firefoxdriver",
     ":logging",
     ":modals",
@@ -115,6 +116,7 @@ js_binary(name = "driver_component",
   ],
   deps = [
     ":dispatcher",
+    ":events",
     ":firefoxdriver",
     ":webdriverserver",
     ":webelement",
@@ -239,6 +241,9 @@ js_library(name = "firefoxdriver",
 
 js_library(name = "error",
   srcs = [ "js/error.js", ])
+
+js_library(name = "events",
+  srcs = [ "js/events.js", ])
 
 js_library(name = "logging",
   srcs = [
