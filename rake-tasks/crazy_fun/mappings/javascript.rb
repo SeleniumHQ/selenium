@@ -147,6 +147,93 @@ module Javascript
 
       exit(2) if failed
     end
+
+    def calc_deps(src_files, js_files)
+      all_js = js_files.collect {|f| File.expand_path(f)}
+      all_js.uniq!
+      all_js += Dir['third_party/closure/goog/**/*.js']
+      all_deps = build_deps_from_files(all_js)
+      search_hash = build_deps_hash(all_deps)
+      
+      result_list = ["third_party/closure/goog/base.js"]
+      seen_list = []
+      src_files.each do |input_file|
+        seen_list.push(input_file)
+        lines = IO.read(input_file)
+        lines.each do |line|
+          data = @@REQ_REGEX.match(line)
+          if data
+            req = data[1]
+            resolve_deps(req, search_hash, result_list, seen_list)
+          end
+        end
+        result_list.push(input_file)
+      end
+
+      result_list.uniq
+    end
+
+    private
+    @@REQ_REGEX = /^goog\.require\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\)/
+    @@PROV_REGEX = /^goog\.provide\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\)/
+        
+    def resolve_deps(req, search_hash, result_list, seen_list)
+      if !search_hash[req]
+        raise StandardError, "Missing provider for (#{req})"
+      end
+
+      dep = search_hash[req]
+      if seen_list.index(dep) == nil
+        seen_list.push(dep)
+        dep[:reqs].each do |sub_req|
+          resolve_deps(sub_req, search_hash, result_list, seen_list)
+        end
+        result_list.push(dep[:filename])
+      end
+    end
+    
+    def build_deps_from_files(files)
+      result = []
+      filenames = []
+      files.each do |filename|
+        next if filenames.index(filename) != nil
+  
+        dep = {}
+        dep[:filename] = filename
+        dep[:reqs] = []
+        dep[:provides] = []
+        lines = IO.read(filename)
+        lines.each do |line|
+          data = @@REQ_REGEX.match(line)
+          if data
+            dep[:reqs].push(data[1])
+            next
+          end
+            
+          data = @@PROV_REGEX.match(line)
+          if data
+            dep[:provides].push(data[1])
+          end
+        end
+        result.push(dep)
+        filenames.push(filename)
+      end
+
+      result
+    end
+    
+    def build_deps_hash(deps)
+      dep_hash = {}
+      deps.each do |dep|
+        dep[:provides].each do |prov|
+          if dep_hash[prov]
+            raise StandardError, "Duplicate provide (#{prov}) in (#{dep_hash[prov][:filename]}, #{dep[:filename]})"
+          end
+          dep_hash[prov] = dep
+        end
+      end
+      dep_hash
+    end
   end
 
   class CheckPreconditions
@@ -280,46 +367,44 @@ module Javascript
         t = Rake::Task[task_name(dir, args[:name])]
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
-
-        dirs = {}
-        js_files.each do |js|
-          dirs[File.dirname(js)] = 1
+        
+        all_srcs = args[:srcs].collect do |src|
+          Dir[File.join(dir, src)]
         end
-        dirs = dirs.keys
-
-        declared = args[:defines] || [];
-        defines = declared.collect {|d| "-f \"--define=#{d}\" "}
-        defines = defines.join
-
-        formatting = !args[:no_format].nil? ? "" : '-f "--formatting=PRETTY_PRINT" '
+        all_deps = calc_deps(all_srcs.flatten, js_files)
 
         flags = args[:flags] || []
-        flags = flags.collect {|f| "-f \"#{f}\" "}
-        flags = flags.join
+        
+        declared = args[:defines] || [];
+        flags += declared.collect {|d| "--define=#{d}"}
 
-        cmd = calcdeps +
-           " -o compiled " <<
-           '-f "--third_party=true" ' <<
-           "-f \"--js_output_file=#{output}\" " <<
-           formatting <<
-           defines <<
-           flags <<
-           "-i " <<
-           js_files.join(" -i ") <<
-           " -p third_party/closure/goog -p " <<
-           dirs.join(" -p ")
+        formatting = !args[:no_format].nil? ? "" : '--formatting=PRETTY_PRINT'
+        flags.push(formatting)
+
+        flags.push('--third_party=true')
+        flags.push("--js_output_file=#{output}")
+        
+        cmd = "" <<
+           flags.join(" ") <<
+           " --js=" <<
+           all_deps.join(" --js=")
 
         if (args[:externs])
           args[:externs].each do |extern|
-            cmd << " -f \"--externs=#{File.join(dir, extern)}\" "
+            cmd << " --externs=#{File.join(dir, extern)} "
           end
         end
 
         mkdir_p File.dirname(output)
 
-        execute cmd
+        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner" do
+          classpath do
+            pathelement :path =>  "third_party/closure/bin/compiler-20120305.jar"
+          end
+          arg :line => cmd
+        end
       end
-    end
+    end    
   end
 
   class BaseCompileFragment < BaseJs
@@ -365,12 +450,15 @@ module Javascript
       if !@target_platform.nil?
         output = output.sub(/\.js$/, "_#{@target_platform}.js")
         name += ":#{@target_platform}"
-        defines = @defines.collect {|d| "-f \"--define=#{d}\" "}
+        defines = @defines.collect {|d| "--define=#{d} "}
         defines = defines.join
       end
 
       file output => [exports] do
         puts "Compiling #{name} as #{output}"
+
+        js_files = build_deps(output, Rake::Task[output], []).uniq
+        all_deps = calc_deps(exports, js_files)
 
         # Wrap the output in two functions. The outer function ensures the
         # compiled fragment never pollutes the global scope by using its
@@ -385,21 +473,25 @@ module Javascript
                   "navigator:typeof window!='undefined'?window.navigator:null" +
                   "}, arguments);}"
 
-        cmd = calcdeps +
-            "-o compiled " <<
-            "-f \"--create_name_map_files=true\" " <<
-            "-f \"--third_party=true\" " <<
-            "-f \"--js_output_file=#{output}\" " <<
-            "-f \"--output_wrapper='#{wrapper}'\" " <<
-            "-f \"--compilation_level=#{compilation_level}\" " <<
-            "-f \"--define=goog.NATIVE_ARRAY_PROTOTYPES=false\" " <<
+        cmd = "" <<
+            "--create_name_map_files=true " <<
+            "--third_party=true " <<
+            "--js_output_file=#{output} " <<
+            "--output_wrapper='#{wrapper}' " <<
+            "--compilation_level=#{compilation_level} " <<
+            "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "#{defines} " <<
-            "-p third_party/closure/goog/ " <<
-            "-p javascript " <<
-            "-i #{exports} "
+            "--js=" <<
+            all_deps.join(" --js=")
 
         mkdir_p File.dirname(output)
-        execute cmd
+
+        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false do
+          classpath do
+            pathelement :path =>  "third_party/closure/bin/compiler-20120305.jar"
+          end
+          arg :line => cmd
+        end
       end
 
       output_task = Rake::Task[output]
