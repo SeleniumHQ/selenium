@@ -59,7 +59,7 @@ std::string IEServer::GetStatus() {
   }
 
   Json::Value build;
-  build["version"] = "2.16.0";
+  build["version"] = "2.21.0";
 
   Json::Value os;
   os["arch"] = arch;
