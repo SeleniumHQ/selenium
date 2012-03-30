@@ -386,8 +386,8 @@ module Javascript
         
         cmd = "" <<
            flags.join(" ") <<
-           " --js=" <<
-           all_deps.join(" --js=")
+           " --js='" <<
+           all_deps.join("' --js='") << "'"
 
         if (args[:externs])
           args[:externs].each do |extern|
@@ -481,8 +481,8 @@ module Javascript
             "--compilation_level=#{compilation_level} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "#{defines} " <<
-            "--js=" <<
-            all_deps.join(" --js=")
+            "--js='" <<
+            all_deps.join("' --js='") << "'"
 
         mkdir_p File.dirname(output)
 
