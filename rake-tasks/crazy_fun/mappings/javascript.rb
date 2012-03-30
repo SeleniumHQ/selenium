@@ -153,6 +153,7 @@ module Javascript
       all_js.uniq!
       all_js += Dir['third_party/closure/goog/**/*.js']
       all_deps = build_deps_from_files(all_js)
+
       search_hash = build_deps_hash(all_deps)
       
       result_list = ["third_party/closure/goog/base.js"]
@@ -368,9 +369,8 @@ module Javascript
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
         
-        all_srcs = args[:srcs].collect do |src|
-          Dir[File.join(dir, src)]
-        end
+        all_srcs = args[:srcs].collect{|src| Dir[File.join(dir, src)]}
+        all_srcs = all_srcs.flatten.collect{|src| File.expand_path(src)}
         all_deps = calc_deps(all_srcs.flatten, js_files)
 
         flags = args[:flags] || []
