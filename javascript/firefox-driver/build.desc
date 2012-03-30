@@ -309,6 +309,7 @@ js_library(name = "utils",
 js_library(name = "webdriverserver",
   srcs = [ "js/webdriverserver.js" ],
   deps = [
+    ":dispatcher",
     ":firefoxdriver",
     ":logging",
     ":moz",

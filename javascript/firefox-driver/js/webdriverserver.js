@@ -18,6 +18,7 @@
 
 goog.provide('WebDriverServer');
 
+goog.require('Dispatcher');
 goog.require('FirefoxDriver');
 goog.require('Utils');
 goog.require('WebElement');
