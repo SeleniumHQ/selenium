@@ -302,6 +302,8 @@ bool Element::IsSelected() {
 int Element::GetLocation(long* x, long* y, long* width, long* height) {
   *x = 0, *y = 0, *width = 0, *height = 0;
 
+  bool hasAbsolutePositionReadyToReturn = false;
+
   CComPtr<IHTMLElement2> element2;
   HRESULT hr = this->element_->QueryInterface(&element2);
   if (FAILED(hr)) {
@@ -323,6 +325,9 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
         if (SUCCEEDED(hr) && rect_variant.pdispVal) {
           hr = rect_variant.pdispVal->QueryInterface(&rect);
           if (SUCCEEDED(hr) && RectHasNonZeroDimensions(rect)) {
+            // IE returns absolute positions in the page, rather than frame- and scroll-bound
+            // positions, for clientRects (as opposed to boundingClientRects).
+            hasAbsolutePositionReadyToReturn = true;
             break;
           }
         }
@@ -373,20 +378,22 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
   long w = right - left;
   long h = bottom - top;
 
-  // On versions of IE prior to 8 on Vista, if the element is out of the 
-  // viewport this would seem to return 0,0,0,0. IE 8 returns position in 
-  // the DOM regardless of whether it's in the browser viewport.
+  if (!hasAbsolutePositionReadyToReturn) {
+    // On versions of IE prior to 8 on Vista, if the element is out of the 
+    // viewport this would seem to return 0,0,0,0. IE 8 returns position in 
+    // the DOM regardless of whether it's in the browser viewport.
 
-  long scroll_left, scroll_top = 0;
-  element2->get_scrollLeft(&scroll_left);
-  element2->get_scrollTop(&scroll_top);
-  left += scroll_left;
-  top += scroll_top;
+    long scroll_left, scroll_top = 0;
+    element2->get_scrollLeft(&scroll_left);
+    element2->get_scrollTop(&scroll_top);
+    left += scroll_left;
+    top += scroll_top;
 
-  long frame_offset_x = 0, frame_offset_y = 0;
-  this->GetFrameOffset(&frame_offset_x, &frame_offset_y);
-  left += frame_offset_x;
-  top += frame_offset_y;
+    long frame_offset_x = 0, frame_offset_y = 0;
+    this->GetFrameOffset(&frame_offset_x, &frame_offset_y);
+    left += frame_offset_x;
+    top += frame_offset_y;
+  }
 
   *x = left;
   *y = top;
