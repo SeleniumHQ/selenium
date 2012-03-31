@@ -22,7 +22,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class MyCustomProxy extends RemoteProxy {
+public class MyCustomProxy extends BaseRemoteProxy {
 
   public static String MY_STRING = "my string";
   public static URL MY_URL;

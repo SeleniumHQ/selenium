@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
@@ -83,7 +84,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
     // TODO freynaud : load template desiredCapability from the hub. Is that usefull?
 
-    final RemoteProxy proxy = RemoteProxy.getNewInstance(server, getRegistry());
+    final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(server, getRegistry());
     reply(response, "ok");
 
     new Thread(new Runnable() {  // Thread safety reviewed

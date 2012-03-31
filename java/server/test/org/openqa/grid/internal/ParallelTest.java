@@ -68,7 +68,7 @@ public class ParallelTest {
   @Test
   public void canGetApp2() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -89,7 +89,7 @@ public class ParallelTest {
   @Test
   public void cannotGet2App2() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -117,7 +117,7 @@ public class ParallelTest {
   @Test(timeout = 2000)
   public void canGet5App1() {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       for (int i = 0; i < 5; i++) {
@@ -138,7 +138,7 @@ public class ParallelTest {
   @Test(timeout = 1000)
   public void cannotGet6App1() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       final AtomicInteger count = new AtomicInteger();
@@ -176,7 +176,7 @@ public class ParallelTest {
   @Test(timeout = 1000)
   public void cannotGetApp2() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
 
@@ -228,7 +228,7 @@ public class ParallelTest {
     req.addDesiredCapability(app2);
     req.setConfiguration(config);
 
-    p1 = RemoteProxy.getNewInstance(req, registry);
+    p1 = BaseRemoteProxy.getNewInstance(req, registry);
 
     try {
       registry.add(p1);

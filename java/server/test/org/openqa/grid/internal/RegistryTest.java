@@ -135,7 +135,7 @@ public class RegistryTest {
   public void CapabilityNotPresentRegistry() throws Throwable {
     Registry registry = Registry.newInstance();
     try {
-      registry.add(new RemoteProxy(req, registry));
+      registry.add(new BaseRemoteProxy(req, registry));
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       System.out.println(newSessionRequest.getRequest().getDesiredCapabilities());
       newSessionRequest.process();
@@ -152,7 +152,7 @@ public class RegistryTest {
     Registry registry = Registry.newInstance();
     registry.setThrowOnCapabilityNotPresent(false);
     try {
-      registry.add(new RemoteProxy(req, registry));
+      registry.add(new BaseRemoteProxy(req, registry));
 
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
@@ -172,7 +172,7 @@ public class RegistryTest {
         new Thread(new Runnable() { // Thread safety reviewed
 
           public void run() {
-            registry.add(new RemoteProxy(req, registry));
+            registry.add(new BaseRemoteProxy(req, registry));
             latch.countDown();
           }
         }).start();
@@ -193,7 +193,7 @@ public class RegistryTest {
    *
    * @author Francois Reynaud
    */
-  class MyRemoteProxy extends RemoteProxy implements RegistrationListener {
+  class MyRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);

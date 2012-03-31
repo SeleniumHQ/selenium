@@ -17,7 +17,7 @@ public class UserDefinedCapabilityMatcherTests {
     Registry registry = Registry.newInstance();
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     Assert.assertEquals(DefaultCapabilityMatcher.class,p.getCapabilityHelper().getClass());
 
@@ -32,7 +32,7 @@ public class UserDefinedCapabilityMatcherTests {
     Registry registry = Registry.newInstance((Hub)null,hubConfig);
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     Assert.assertEquals(MyCapabilityMatcher.class,p.getCapabilityHelper().getClass());
   }

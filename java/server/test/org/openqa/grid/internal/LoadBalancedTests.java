@@ -56,7 +56,7 @@ public class LoadBalancedTests {
     for (int i = 0; i < 5; i++) {
       config.put(REMOTE_HOST, "http://machine" + i + ":4444");
       request.setConfiguration(config);
-      registry.add(new RemoteProxy(request, registry));
+      registry.add(new BaseRemoteProxy(request, registry));
     }
   }
 

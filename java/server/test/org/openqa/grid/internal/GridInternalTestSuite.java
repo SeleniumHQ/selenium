@@ -30,7 +30,7 @@ import org.openqa.grid.plugin.RemoteProxyInheritanceTest;
     RemoteProxyInheritanceTest.class,
     SmokeTest.class,
     SessionTimesOutTest.class,
-    RemoteProxyTest.class,
+    BaseRemoteProxyTest.class,
     RemoteProxySlowSetup.class,
     RegistryTest.class,
     RegistryStateTest.class,

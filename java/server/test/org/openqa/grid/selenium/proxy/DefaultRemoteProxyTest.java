@@ -19,8 +19,8 @@ package org.openqa.grid.selenium.proxy;
 
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class DefaultRemoteProxyTest {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, DefaultRemoteProxy.class.getName());
 
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    BaseRemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
     TestSession newSession = p.getNewSession(new HashMap<String, Object>());
     assertNotNull(newSession );
     Thread.sleep(2);

@@ -33,7 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
@@ -43,7 +43,7 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class SessionListenerTest {
 
-  static class MyRemoteProxy extends RemoteProxy implements TestSessionListener {
+  static class MyRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -97,7 +97,7 @@ public class SessionListenerTest {
    *
    * @author Francois Reynaud
    */
-  static class MyBuggyBeforeRemoteProxy extends RemoteProxy implements TestSessionListener {
+  static class MyBuggyBeforeRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
 
     private boolean firstCall = true;
 
@@ -153,7 +153,7 @@ public class SessionListenerTest {
    *
    * @author Francois Reynaud
    */
-  static class MyBuggyAfterRemoteProxy extends RemoteProxy implements TestSessionListener {
+  static class MyBuggyAfterRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
 
     public MyBuggyAfterRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -206,7 +206,7 @@ public class SessionListenerTest {
     }
   }
 
-  class SlowAfterSession extends RemoteProxy implements TestSessionListener, TimeoutListener {
+  class SlowAfterSession extends BaseRemoteProxy implements TestSessionListener, TimeoutListener {
 
     private Lock lock = new ReentrantLock();
     private boolean firstTime = true;

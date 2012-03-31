@@ -59,7 +59,7 @@ public class SessionTimesOutTest {
     req.setConfiguration(config);
   }
 
-  class MyRemoteProxyTimeout extends RemoteProxy implements TimeoutListener {
+  class MyRemoteProxyTimeout extends BaseRemoteProxy implements TimeoutListener {
 
     public MyRemoteProxyTimeout(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -100,7 +100,7 @@ public class SessionTimesOutTest {
 
   private static boolean timeoutDone = false;
 
-  class MyRemoteProxyTimeoutSlow extends RemoteProxy implements TimeoutListener {
+  class MyRemoteProxyTimeoutSlow extends BaseRemoteProxy implements TimeoutListener {
 
     public MyRemoteProxyTimeoutSlow(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -156,7 +156,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  class MyBuggyRemoteProxyTimeout extends RemoteProxy implements TimeoutListener {
+  class MyBuggyRemoteProxyTimeout extends BaseRemoteProxy implements TimeoutListener {
 
     public MyBuggyRemoteProxyTimeout(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -199,7 +199,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  class MyStupidConfig extends RemoteProxy implements TimeoutListener {
+  class MyStupidConfig extends BaseRemoteProxy implements TimeoutListener {
 
     public MyStupidConfig(RegistrationRequest request, Registry registry) {
       super(request, registry);

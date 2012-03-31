@@ -21,6 +21,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 
@@ -53,8 +54,8 @@ public class RemoteProxyInheritanceTest {
     req.setConfiguration(config);
 
     // requires Custom1 & Custom1 set in config to work.
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
-    Assert.assertEquals(RemoteProxy.class, p.getClass());
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+    Assert.assertEquals(BaseRemoteProxy.class, p.getClass());
   }
 
 
@@ -74,7 +75,7 @@ public class RemoteProxyInheritanceTest {
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     Assert.assertEquals(p.getClass(), MyRemoteProxy.class);
     MyRemoteProxy myRemoteProxy = (MyRemoteProxy) p;
@@ -97,7 +98,7 @@ public class RemoteProxyInheritanceTest {
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
-    RemoteProxy.getNewInstance(req, registry);
+    BaseRemoteProxy.getNewInstance(req, registry);
   }
 
   @Test(expected = InvalidParameterException.class)
@@ -113,7 +114,7 @@ public class RemoteProxyInheritanceTest {
     req.addDesiredCapability(app1);
     req.setConfiguration(config);
 
-    RemoteProxy.getNewInstance(req, registry);
+    BaseRemoteProxy.getNewInstance(req, registry);
   }
 
   // when some mandatory param are missing -> InvalidParameterException
@@ -130,7 +131,7 @@ public class RemoteProxyInheritanceTest {
     req.setConfiguration(config);
 
     // requires Custom1 & Custom1 set in config to work.
-    RemoteProxy.getNewInstance(req, registry);
+    BaseRemoteProxy.getNewInstance(req, registry);
   }
 
 

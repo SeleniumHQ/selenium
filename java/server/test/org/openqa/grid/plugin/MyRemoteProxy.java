@@ -18,11 +18,11 @@ limitations under the License.
 package org.openqa.grid.plugin;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
 
 
-public class MyRemoteProxy extends RemoteProxy {
+public class MyRemoteProxy extends BaseRemoteProxy {
   private String custom1;
   private String custom2;
 

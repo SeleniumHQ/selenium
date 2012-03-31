@@ -29,12 +29,12 @@ import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.common.exception.RemoteUnregisterException;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Default remote proxy for selenium, handling both selenium1 and webdriver requests.
  */
-public class DefaultRemoteProxy extends RemoteProxy
+public class DefaultRemoteProxy extends BaseRemoteProxy
     implements
       TimeoutListener,
       SelfHealingProxy,

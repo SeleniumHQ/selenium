@@ -69,7 +69,7 @@ public class RegistryStateTest {
   public void sessionIsRemoved() {
     Registry registry = Registry.newInstance();
 
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
 
     try {
@@ -89,7 +89,7 @@ public class RegistryStateTest {
   @Test(timeout = 5000)
   public void basichecks() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -118,7 +118,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionIsRemoved2() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -137,7 +137,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionByExtKey() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -166,7 +166,7 @@ public class RegistryStateTest {
   @Test
   public void sessionByExtKeyNull() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new RemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);

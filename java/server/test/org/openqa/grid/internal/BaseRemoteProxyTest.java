@@ -32,7 +32,7 @@ import java.util.Map;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-public class RemoteProxyTest {
+public class BaseRemoteProxyTest {
 
   private static RemoteProxy p1 = null;
   private static RemoteProxy p2 = null;
@@ -76,7 +76,7 @@ public class RemoteProxyTest {
     request.addDesiredCapability(cap);
     request.setConfiguration(config);
 
-    new RemoteProxy(request, registry);
+    new BaseRemoteProxy(request, registry);
   }
 
   @Test
@@ -89,7 +89,7 @@ public class RemoteProxyTest {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
 
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     Assert.assertEquals("my string", p.getConfig().get("String"));
     Assert.assertEquals(true, p.getConfig().get("Boolean"));
@@ -107,7 +107,7 @@ public class RemoteProxyTest {
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "A2");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
 
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     Assert.assertEquals("A2", p.getConfig().get("A"));
 
@@ -120,7 +120,7 @@ public class RemoteProxyTest {
     
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost);
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     Assert.assertEquals(remoteHost, p.getId());
 
@@ -132,7 +132,7 @@ public class RemoteProxyTest {
     Registry registry = Registry.newInstance();
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
-    RemoteProxy p = RemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
     Assert.assertEquals("abc", p.getId());
 
