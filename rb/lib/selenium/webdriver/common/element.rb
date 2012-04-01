@@ -27,17 +27,41 @@ module Selenium
       end
 
       #
-      # Click the element
+      # Click this element. If this causes a new page to load, this method 
+      # will block until the page has loaded. At this point, you should discard
+      # all references to this element and any further operations performed on 
+      # this element will have undefined behaviour unless you know that the 
+      # element and the page will still be present. If click() causes a new 
+      # page to be loaded via an event or is done by sending a native event 
+      # (which is a common case on Firefox, IE on Windows) then the method will
+      # *not* wait for it to be loaded and the caller should verify that a new
+      # page has been loaded.
       #
-
+      # If this element is not clickable, then this operation is a no-op since
+      # it's pretty common for someone to accidentally miss the target when 
+      # clicking in Real Life.
+      #
+      # Equivalent to:
+      #   driver.action.click(element)
+      #
+      # @example Click on a button
+      #
+      #    driver.find_element(:tag_name, "button").click
+      #
+      
       def click
         bridge.clickElement @id
       end
 
       #
-      # Get the tag name of this element
+      # Get the tag name of this element. Not the value of the name attribute:
+      # will return "input" for the element <input name="foo" />. 
       #
-      # @return [String]
+      # @example Get the tagname of an INPUT element
+      #
+      #    driver.find_element(:xpath, "//input").tag_name
+      #
+      # @return [String] The tag name of this element.
       #
 
       def tag_name
