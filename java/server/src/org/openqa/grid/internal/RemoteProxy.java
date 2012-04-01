@@ -38,39 +38,147 @@ import java.util.Map;
  * only support Firefox.
  */
 public interface RemoteProxy extends Comparable<RemoteProxy> {
+  /**
+   * Each test running on the node will occupy a test slot.  A test slot can either be in use (have a session) or be
+   * available for scheduling (no associated session).  This method allows retrieving the total state of the node,
+   * both test slots in use and those unused.
+   *
+   * @return the test slots.
+   */
   List<TestSlot> getTestSlots();
 
+  /**
+   * Retrieves the handle to the registry this remote proxy is registered with.
+   *
+   * @return the registry.
+   */
   Registry getRegistry();
 
+  /**
+   * See Registry#getCapabilityMatcher.
+   *
+   * @return the registry's capability matcher.
+   */
   CapabilityMatcher getCapabilityHelper();
 
+  /**
+   * If the RemoteProxy implementation also implements TimeoutListener, then this method
+   * will start up the thread used to monitor timeouts and handle cleanup of timed out resources.
+   */
   void setupTimeoutListener();
 
+  /**
+   * Returns the unique id for the node.  The ID should not change throughout the life of the node.
+   *
+   * @return the unique node id.
+   */
   String getId();
 
+  /**
+   * If the RemoteProxy implementation also implements TimeoutListener, then this method
+   * will stop the thread used to monitor timeouts.
+   */
   void teardown();
 
+  /**
+   * Returns the configuration the node was initialized with.
+   *
+   * @return the node configuration.
+   */
   Map<String, Object> getConfig();
 
+  /**
+   * Returns the request sent from the node to the hub to register the proxy.
+   *
+   * @return the original node registration request.
+   */
   RegistrationRequest getOriginalRegistrationRequest();
 
+  /**
+   * Returns the maximum number of concurrent tests that can run on this node.  NB: this number can be less than
+   * the number of test slots because a test slot only indicates what type of test session can be run on the remote.
+   * I.e., a node may allow N different <em>types</em> of tests, but only allow M tests to run at once, for M <= N.
+   *
+   * @return
+   */
   int getMaxNumberOfConcurrentTestSessions();
 
+  /**
+   * Get the host the node is on. This is different from the URL used to communicate with the
+   * driver. For a local node that support both RC and WebDriver protocols,
+   * remoteHost=http://localhost:5555, but the underlying server will respond on urls
+   * http://localhost:5555/wd/hub (proxy.host + slot.path, where slot is a WebDriver slot) and
+   * http://localhost:5555/selenium-server/driver (proxy.host + slot.path, where slot is an RC slot).
+   *
+   * @return the host the node is running on.
+   */
   URL getRemoteHost();
 
+  /**
+   * Creates and returns a new test session if the current node has the resources and is ready to run the test.
+   *
+   * @param requestedCapability the type of test the client is interested in performing.
+   *
+   * @return a new TestSession if possible, <code>null</code> otherwise
+   */
   TestSession getNewSession(Map<String, Object> requestedCapability);
 
+  /**
+   * Returns the total number of test slots used on this node.
+   *
+   * @return the total number of test slots in use.
+   */
   int getTotalUsed();
 
+  /**
+   * Returns the object responsible for rendering any information about the proxy in a Web application.
+   *
+   * @return the renderer.
+   */
   HtmlRenderer getHtmlRender();
 
+  /**
+   * Indicates how long a node should wait for a seemingly non-responsive test session before deciding it has timed out.
+   *
+   * @return the timeout in milliseconds.
+   */
   int getTimeOut();
 
+  /**
+   * Retrieves the global factory for creating HTTP clients.
+   *
+   * @return The thread-safe HTTP client factory.
+   */
   HttpClientFactory getHttpClientFactory();
 
+  /**
+   * Renders the status of the node as JSON.  Useful for APIs.
+   *
+   * @return the node status.
+   *
+   * @throws GridException if the node is down.
+   */
   JSONObject getStatus() throws GridException;
 
+  /**
+   * Checks if the node has the capability requested.
+   * <br /><br />
+   * The definition of "has" is defined by {@link CapabilityMatcher#matches(Map, Map)}
+   * <br /><br />
+   * <code>hasCapability = true</code> doesn't mean the test cast start just now, only that the proxy will be
+   * able to run a test requiring that capability at some point.
+   *
+   * @param requestedCapability the type of test the client is interested in performing.
+   *
+   * @return <code>true</code> if present
+   */
   boolean hasCapability(Map<String,Object> requestedCapability);
 
+  /**
+   * Indicates whether the node has any test slots in use.  The node may still be able to accept more work even
+   * if it is busy.
+   *
+   * @return <code>true</code> if the node has any test slots in use.
+   */
   boolean isBusy();
 }
