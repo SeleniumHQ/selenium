@@ -22,6 +22,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.IE
 {
@@ -89,7 +90,7 @@ namespace OpenQA.Selenium.IE
                 throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, InternetExplorerDriverDownloadUrl));
             }
 
-            return new InternetExplorerDriverService(executablePath, FindFreePort());
+            return new InternetExplorerDriverService(executablePath, PortUtilities.FindFreePort());
         }
     }
 }

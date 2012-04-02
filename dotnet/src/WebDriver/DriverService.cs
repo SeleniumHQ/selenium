@@ -115,27 +115,6 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Finds a random, free port to be listened on by the DriverService
-        /// </summary>
-        /// <returns>A random, free port to be listened on by the DriverService</returns>
-        protected static int FindFreePort()
-        {
-            // Locate a free port on the local machine by binding a socket to
-            // an IPEndPoint using IPAddress.Any and port 0. The socket will
-            // select a free port.
-            int listeningPort = 0;
-            using (Socket portSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-            {
-                IPEndPoint socketEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                portSocket.Bind(socketEndPoint);
-                socketEndPoint = (IPEndPoint)portSocket.LocalEndPoint;
-                listeningPort = socketEndPoint.Port;
-            }
-
-            return listeningPort;
-        }
-
-        /// <summary>
         /// Releases all resources associated with this <see cref="DriverService"/>.
         /// </summary>
         /// <param name="disposing"><see langword="true"/> if the Dispose method was explicitly called; otherwise, <see langword="false"/>.</param>
