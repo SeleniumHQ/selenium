@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -46,10 +47,15 @@ import java.util.Map;
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
     FindsByTagName, FindsByClassName, FindsByCssSelector, FindsByXPath, WrapsDriver, Locatable {
 
+  private String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
   protected RemoteMouse mouse;
   protected FileDetector fileDetector;
+
+  protected void setFoundBy(SearchContext foundFrom, String locator, String term) {
+    this.foundBy = String.format("[%s] -> %s: %s", foundFrom, locator, term);
+  }
 
   public void setParent(RemoteWebDriver parent) {
     this.parent = parent;
@@ -153,14 +159,22 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   protected WebElement findElement(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
         ImmutableMap.of("id", id, "using", using, "value", value));
-    return (WebElement) response.getValue();
+
+    WebElement element = (WebElement) response.getValue();
+    parent.setFoundBy(this, element, using, value);
+    return element;
   }
 
   @SuppressWarnings("unchecked")
   protected List<WebElement> findElements(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
         ImmutableMap.of("id", id, "using", using, "value", value));
-    return (List<WebElement>) response.getValue();
+    List<WebElement> allElements = (List<WebElement>) response.getValue();
+    for (WebElement element : allElements) {
+      parent.setFoundBy(this, element, using, value);
+    }
+
+    return allElements;
   }
 
   public WebElement findElementById(String using) {
@@ -329,5 +343,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
         return getId();
       }
     };
+  }
+
+  public String toString() {
+    if (foundBy == null) {
+      return String.format("[%s -> unknown locator]", super.toString());
+    }
+    return String.format("[%s]", foundBy);
   }
 }

@@ -35,6 +35,7 @@ import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -225,7 +226,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     Response response = execute(DriverCommand.FIND_ELEMENT,
         ImmutableMap.of("using", by, "value", using));
-    return (WebElement) response.getValue();
+    WebElement element = (WebElement) response.getValue();
+    setFoundBy(this, element, by, using);
+    return element;
+  }
+
+  protected void setFoundBy(SearchContext context, WebElement element, String by, String using) {
+    if (element instanceof RemoteWebElement) {
+      ((RemoteWebElement) element).setFoundBy(context, by, using);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -236,7 +245,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     Response response = execute(DriverCommand.FIND_ELEMENTS,
         ImmutableMap.of("using", by, "value", using));
-    return (List<WebElement>) response.getValue();
+    List<WebElement> allElements = (List<WebElement>) response.getValue();
+    for (WebElement element : allElements) {
+      setFoundBy(this, element, by, using);
+    }
+    return allElements;
   }
 
   public WebElement findElementById(String using) {
@@ -742,4 +755,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     EXCEPTION
   }
 
+  @Override
+  public String toString() {
+    Capabilities caps = getCapabilities();
+    if (caps == null) {
+      return super.toString();
+    }
+    return String.format("%s: %s on %s (%s)", getClass().getSimpleName(),
+        caps.getBrowserName(), caps.getPlatform(), getSessionId());
+  }
 }
