@@ -19,14 +19,12 @@ package org.openqa.selenium;
 
 import java.util.concurrent.Callable;
 
-import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -37,6 +35,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.TestWaiter.waitFor;
+
 
 @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE},
         reason = "Not yet implemented.")
@@ -74,17 +74,19 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testSetsThePositionOfTheCurrentWindow() {
+  public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
     Point position = window.getPosition();
 
+    // Some Linux window managers start taking liberties wrt window positions when moving the window
+    // off-screen. Therefore, try to stay on-screen. Hopefully you have more than 210 px,
+    // or this may fail.
+    window.setSize(new Dimension(200, 200));
     Point targetPosition = new Point(position.x + 10, position.y + 10);
     window.setPosition(targetPosition);
 
-    Point newLocation = window.getPosition();
-
-    assertEquals(targetPosition.x, newLocation.x);
-    assertEquals(targetPosition.y, newLocation.y);
+    waitFor(xEqual(driver, targetPosition));
+    waitFor(yEqual(driver, targetPosition));
   }
 
   @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
@@ -106,4 +108,30 @@ public class WindowTest extends JUnit4TestBase {
     assertThat(newSize.width, greaterThan(size.width));
     assertThat(newSize.height, greaterThan(size.height));  
   }
+
+  private Callable<Boolean> xEqual(final WebDriver driver, final Point targetPosition) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Point newPosition = driver.manage().window().getPosition();
+        if(newPosition.x == targetPosition.x) {
+          return true;
+        }
+
+        return null;
+      }
+    };
+  }
+  private Callable<Boolean> yEqual(final WebDriver driver, final Point targetPosition) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Point newPosition = driver.manage().window().getPosition();
+        if(newPosition.y == targetPosition.y) {
+          return true;
+        }
+
+        return null;
+      }
+    };
+  }
+
 }
