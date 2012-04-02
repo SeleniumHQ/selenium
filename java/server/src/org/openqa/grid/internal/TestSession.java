@@ -87,7 +87,7 @@ public class TestSession {
   /**
    * Creates a test session on the specified testSlot.
    */
-  TestSession(TestSlot slot, Map<String, Object> requestedCapabilities, TimeSource timeSource) {
+  public TestSession(TestSlot slot, Map<String, Object> requestedCapabilities, TimeSource timeSource) {
     internalKey = UUID.randomUUID().toString();
     this.slot = slot;
     this.requestedCapabilities = requestedCapabilities;
