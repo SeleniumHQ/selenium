@@ -476,10 +476,12 @@ public class BaseRemoteProxy implements RemoteProxy {
     HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
+
     try {
       Thread.currentThread().setName("Probing status of " + url);
       response = client.execute(host, r);
       int code = response.getStatusLine().getStatusCode();
+
       if (code == 200) {
         JSONObject status = extractObject(response);
         EntityUtils.consume(response.getEntity());
@@ -488,6 +490,7 @@ public class BaseRemoteProxy implements RemoteProxy {
         EntityUtils.consume(response.getEntity());
         throw new GridException("server response code : " + code);
       }
+
     } catch (Exception e) {
       throw new GridException(e.getMessage(), e);
     } finally {
