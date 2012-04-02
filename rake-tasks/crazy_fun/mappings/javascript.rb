@@ -369,7 +369,7 @@ module Javascript
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
         
-        all_srcs = args[:srcs].collect{|src| Dir[File.join(dir, src)]}
+        all_srcs = args[:srcs].nil? ? [] : args[:srcs].collect{|src| Dir[File.join(dir, src)]}
         all_srcs = all_srcs.flatten.collect{|src| File.expand_path(src)}
         all_deps = calc_deps(all_srcs.flatten, js_files)
 
@@ -381,7 +381,7 @@ module Javascript
         formatting = !args[:no_format].nil? ? "" : '--formatting=PRETTY_PRINT'
         flags.push(formatting)
 
-        flags.push('--third_party=true')
+        flags.push('--third_party=true') unless !flags.index('--third_party=false').nil?
         flags.push("--js_output_file=#{output}")
         
         cmd = "" <<
