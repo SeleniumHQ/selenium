@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -41,6 +42,8 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE},
         reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
+
+  private static Logger log = Logger.getLogger(WindowTest.class.getName());
 
   @Test
   public void testGetsTheSizeOfTheCurrentWindow() {
@@ -135,6 +138,7 @@ public class WindowTest extends JUnit4TestBase {
     return new Callable<Boolean>() {
       public Boolean call() throws Exception {
         Dimension newSize = driver.manage().window().getSize();
+        log.info("waiting for width, Current dimensions are " + newSize);
         if(newSize.width > size.width) {
           return true;
         }
@@ -148,6 +152,7 @@ public class WindowTest extends JUnit4TestBase {
     return new Callable<Boolean>() {
       public Boolean call() throws Exception {
         Dimension newSize = driver.manage().window().getSize();
+        log.info("waiting for height, Current dimensions are " + newSize);
         if(newSize.height > size.height) {
           return true;
         }
