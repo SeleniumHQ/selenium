@@ -55,12 +55,27 @@ class ScreenshotCommandHandler : public IECommandHandler {
       return;
     }
 
-    this->image_ = new CImage();
-    HRESULT hr = this->CaptureBrowser(browser_wrapper);
-    if (FAILED(hr)) {
-      response->SetSuccessResponse("");
-      return;
-    }
+    bool isSameColour = true;
+    HRESULT hr;
+    int i = 0;
+    do {
+      if (this->image_ != NULL) {
+        delete this->image_;
+      }
+      this->image_ = new CImage();
+      hr = this->CaptureBrowser(browser_wrapper);
+      if (FAILED(hr)) {
+        delete this->image_;
+        this->image_ = NULL;
+        response->SetSuccessResponse("");
+        return;
+      }
+      isSameColour = IsSameColour();
+      if (isSameColour) {
+        ::Sleep(2000);
+      }
+      i++;
+    } while (i < 4 && isSameColour);
 
     std::string base64_screenshot = "";
     hr = this->GetBase64Data(base64_screenshot);
@@ -71,6 +86,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
     response->SetSuccessResponse(base64_screenshot);
     delete this->image_;
+    this->image_ = NULL;
   }
 
  private:
@@ -158,6 +174,20 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
     this->image_->ReleaseDC();
     return hr;
+  }
+
+  bool IsSameColour() {
+    COLORREF firstPixelColour = this->image_->GetPixel(0, 0);
+
+    for (int i = 0; i < this->image_->GetWidth(); i++) {
+      for (int j = 0; j < this->image_->GetHeight(); j++) {
+        if (firstPixelColour != this->image_->GetPixel(i, j)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   HRESULT GetBase64Data(std::string& data) {
