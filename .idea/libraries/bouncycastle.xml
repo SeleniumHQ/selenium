@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="bouncycastle">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/bouncycastle/bcprov-jdk15-146.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/bouncycastle/bcprov-jdk15on-147.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/bouncycastle/bcprov-jdk15-146-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/bouncycastle/bcprov-jdk15on-147-src.jar!/" />
     </SOURCES>
   </library>
 </component>
