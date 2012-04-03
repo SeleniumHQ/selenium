@@ -94,21 +94,54 @@ public class WindowTest extends JUnit4TestBase {
   public void testCanMaximizeTheWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
 
-    window.setSize(new Dimension(200, 200));
-    // TODO convert to WebDriverWait
-    Thread.sleep(500);
+    Dimension targetSize = new Dimension(200, 200);
+    window.setSize(targetSize);
+    waitFor(windowHeightToEqual(driver,targetSize));
+    waitFor(windowWidthToEqual(driver, targetSize));
 
     Dimension size = window.getSize();
 
     window.maximize();
-    // TODO convert to WebDriverWait
-    Thread.sleep(500);
-    
-    Dimension newSize = window.getSize();
-    assertThat(newSize.width, greaterThan(size.width));
-    assertThat(newSize.height, greaterThan(size.height));  
+    waitFor(windowSizeToBeGreaterThan(driver, size));
   }
 
+  private Callable<Boolean> windowWidthToEqual(final WebDriver driver, final Dimension size) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Dimension newSize = driver.manage().window().getSize();
+        if(newSize.width == size.width) {
+          return true;
+        }
+        return null;
+      }
+    };
+  }
+
+  private Callable<Boolean> windowHeightToEqual(final WebDriver driver, final Dimension size) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Dimension newSize = driver.manage().window().getSize();
+        if(newSize.height == size.height) {
+          return true;
+        }
+
+        return null;
+      }
+    };
+  }
+
+  private Callable<Boolean> windowSizeToBeGreaterThan(final WebDriver driver, final Dimension size) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Dimension newSize = driver.manage().window().getSize();
+        if(newSize.width > size.width && newSize.height > size.height) {
+          return true;
+        }
+
+        return null;
+      }
+    };
+  }
   private Callable<Boolean> xEqual(final WebDriver driver, final Point targetPosition) {
     return new Callable<Boolean>() {
       public Boolean call() throws Exception {
