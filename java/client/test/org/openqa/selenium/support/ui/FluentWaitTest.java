@@ -22,6 +22,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
+import com.google.common.base.Function;
+
 import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -229,6 +231,33 @@ public class FluentWaitTest extends MockTestBase {
 
     try {
       wait.until(mockCondition);
+      fail();
+    } catch (TimeoutException actual) {
+      assertEquals(expected.getMessage(), actual.getMessage());
+    }
+  }
+
+  @Test
+  public void timeoutMessageIncludesToStringOfCondition() {
+    TimeoutException expected = new TimeoutException(
+        "Timed out after 0 seconds waiting for toString called");
+
+    Function<Object, Boolean> condition = new Function<Object, Boolean>() {
+      public Boolean apply(Object ignored) {
+        return false;
+      }
+
+      @Override
+      public String toString() {
+        return "toString called";
+      }
+    };
+
+    Wait<Object> wait = new FluentWait<Object>("cheese")
+        .withTimeout(0, TimeUnit.MILLISECONDS);
+
+    try {
+      wait.until(condition);
       fail();
     } catch (TimeoutException actual) {
       assertEquals(expected.getMessage(), actual.getMessage());

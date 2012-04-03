@@ -213,11 +213,11 @@ public class FluentWait<T> implements Wait<T> {
       // Check the timeout after evaluating the function to ensure conditions
       // with a zero timeout can succeed.
       if (!clock.isNowBefore(end)) {
-        String timeoutMessage = String.format("Timed out after %d seconds",
-            timeout.in(SECONDS));
-        if (message != null) {
-          timeoutMessage += ": " + message;
-        }
+        String toAppend = message == null ?
+            " waiting for " + isTrue.toString() : ": " + message;
+
+        String timeoutMessage = String.format("Timed out after %d seconds%s",
+            timeout.in(SECONDS), toAppend);
         throw timeoutException(timeoutMessage, lastException);
       }
 

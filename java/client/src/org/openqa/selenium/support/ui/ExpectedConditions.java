@@ -55,6 +55,11 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         return title.equals(driver.getTitle());
       }
+
+      @Override
+      public String toString() {
+        return "title to be: " + title;
+      }
     };
   }
 
@@ -71,6 +76,11 @@ public class ExpectedConditions {
         String currentTitle = driver.getTitle();
         return currentTitle == null ? false : currentTitle.contains(title);
       }
+
+      @Override
+      public String toString() {
+        return "title to contain " + title;
+      }
     };
   }
 
@@ -86,6 +96,11 @@ public class ExpectedConditions {
     return new ExpectedCondition<WebElement>() {
       public WebElement apply(WebDriver driver) {
         return findElement(locator, driver);
+      }
+
+      @Override
+      public String toString() {
+        return "presence of element located by: " + locator;
       }
     };
   }
@@ -108,6 +123,11 @@ public class ExpectedConditions {
           return null;
         }
       }
+
+      @Override
+      public String toString() {
+        return "visibility of element located by " + locator;
+      }
     };
   }
 
@@ -124,6 +144,11 @@ public class ExpectedConditions {
     return new ExpectedCondition<WebElement>() {
       public WebElement apply(WebDriver driver) {
         return elementIfVisible(element);
+      }
+
+      @Override
+      public String toString() {
+        return "visibility of " + element;
       }
     };
   }
@@ -149,6 +174,11 @@ public class ExpectedConditions {
       public List<WebElement> apply(WebDriver driver) {
         return findElements(locator, driver);
       }
+
+      @Override
+      public String toString() {
+        return "presence of any elements located by " + locator;
+      }
     };
   }
 
@@ -167,6 +197,12 @@ public class ExpectedConditions {
         } catch (StaleElementReferenceException e) {
           return null;
         }
+      }
+
+      @Override
+      public String toString() {
+        return String.format("text ('%s') to be present in element found by %s",
+            text, locator);
       }
     };
   }
@@ -191,6 +227,12 @@ public class ExpectedConditions {
           return null;
         }
       }
+
+      @Override
+      public String toString() {
+        return String.format("text ('%s') to be the value of element located by %s",
+            text, locator);
+      }
     };
   }
 
@@ -208,6 +250,11 @@ public class ExpectedConditions {
         } catch (NoSuchFrameException e) {
           return null;
         }
+      }
+
+      @Override
+      public String toString() {
+        return "frame to be available: " + frameLocator;
       }
     };
   }
@@ -233,6 +280,11 @@ public class ExpectedConditions {
           // is no longer visible.
           return true;
         }
+      }
+
+      @Override
+      public String toString() {
+        return "element to no longer be visible: " + locator;
       }
     };
   }
@@ -260,6 +312,11 @@ public class ExpectedConditions {
           return null;
         }
       }
+
+      @Override
+      public String toString() {
+        return "element to be clickable: " + locator;
+      }
     };
   }
 
@@ -282,6 +339,11 @@ public class ExpectedConditions {
           return true;
         }
       }
+
+      @Override
+      public String toString() {
+        return String.format("element (%s) to become stale", element);
+      }
     };
   }
 
@@ -301,6 +363,11 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver from) {
         return element.isSelected() == selected;
       }
+
+      @Override
+      public String toString() {
+        return String.format("element (%s) to %sbe selected", element, (selected ? "" : "not "));
+      }
     };
   }
 
@@ -319,6 +386,12 @@ public class ExpectedConditions {
           return null;
         }
       }
+
+      @Override
+      public String toString() {
+        return String.format("element found by %s to %sbe selected",
+            locator, (selected ? "" : "not "));
+      }
     };
   }
 
@@ -330,6 +403,11 @@ public class ExpectedConditions {
         } catch (NoAlertPresentException e) {
           return null;
         }
+      }
+
+      @Override
+      public String toString() {
+        return "alert to be present";
       }
     };
   }
