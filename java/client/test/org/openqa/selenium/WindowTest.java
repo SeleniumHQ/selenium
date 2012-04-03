@@ -102,7 +102,8 @@ public class WindowTest extends JUnit4TestBase {
     Dimension size = window.getSize();
 
     window.maximize();
-    waitFor(windowSizeToBeGreaterThan(driver, size));
+    waitFor(windowWidthToBeGreaterThan(driver, size));
+    waitFor(windowHeightToBeGreaterThan(driver, size));
   }
 
   private Callable<Boolean> windowWidthToEqual(final WebDriver driver, final Dimension size) {
@@ -130,11 +131,24 @@ public class WindowTest extends JUnit4TestBase {
     };
   }
 
-  private Callable<Boolean> windowSizeToBeGreaterThan(final WebDriver driver, final Dimension size) {
+  private Callable<Boolean> windowWidthToBeGreaterThan(final WebDriver driver, final Dimension size) {
     return new Callable<Boolean>() {
       public Boolean call() throws Exception {
         Dimension newSize = driver.manage().window().getSize();
-        if(newSize.width > size.width && newSize.height > size.height) {
+        if(newSize.width > size.width) {
+          return true;
+        }
+
+        return null;
+      }
+    };
+  }
+
+  private Callable<Boolean> windowHeightToBeGreaterThan(final WebDriver driver, final Dimension size) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        Dimension newSize = driver.manage().window().getSize();
+        if(newSize.height > size.height) {
           return true;
         }
 
