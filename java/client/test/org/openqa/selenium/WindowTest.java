@@ -103,6 +103,8 @@ public class WindowTest extends JUnit4TestBase {
     waitFor(windowWidthToEqual(driver, targetSize));
 
     Dimension size = window.getSize();
+    System.out.println("DESKTOP_SESSION = " + System.getenv("DESKTOP_SESSION"));
+    System.out.println("XDG_CURRENT_DESKTOP = " + System.getenv("XDG_CURRENT_DESKTOP"));
 
     window.maximize();
     waitFor(windowWidthToBeGreaterThan(driver, size));
