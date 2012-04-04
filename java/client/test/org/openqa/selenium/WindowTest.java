@@ -92,7 +92,7 @@ public class WindowTest extends JUnit4TestBase {
     waitFor(yEqual(driver, targetPosition));
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, platforms = Platform.LINUX)
   @Test
   public void testCanMaximizeTheWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
@@ -103,8 +103,6 @@ public class WindowTest extends JUnit4TestBase {
     waitFor(windowWidthToEqual(driver, targetSize));
 
     Dimension size = window.getSize();
-    System.out.println("DESKTOP_SESSION = " + System.getenv("DESKTOP_SESSION"));
-    System.out.println("XDG_CURRENT_DESKTOP = " + System.getenv("XDG_CURRENT_DESKTOP"));
 
     window.maximize();
     waitFor(windowWidthToBeGreaterThan(driver, size));
