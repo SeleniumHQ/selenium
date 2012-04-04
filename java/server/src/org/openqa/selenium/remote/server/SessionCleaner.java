@@ -44,6 +44,10 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     if (clientGoneTimeout == 0 && insideBrowserTimeout == 0){
       throw new IllegalStateException("SessionCleaner not supposed to start when no timeouts specified");
     }
+    if (insideBrowserTimeout > 0 && insideBrowserTimeout < 60000){
+      log.warning("The specified browser timeout is TOO LOW for safe operations and may have"+
+                  "other side-effects\n. Please specify a slightly higher browserTimeout.");
+    }
     int lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
                                   clientGoneTimeout > 0 ? clientGoneTimeout : insideBrowserTimeout);
     this.sleepInterval = lowestNonZero / 10;
@@ -89,7 +93,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
             driver = ((EventFiringWebDriver)driver).getWrappedDriver();
           }
           if (driver instanceof Killable) {
-            session.interrupt();
+            //session.interrupt();
             ((Killable) driver).kill();
             killed = true;
             log.warning("Browser killed and session " + session.getSessionId() + " terminated due to in-browser timeout.");

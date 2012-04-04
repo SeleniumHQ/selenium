@@ -192,6 +192,7 @@ public class TestSession {
     if (browserTimeout > 0){
       final int selenium_server_cleanup_cycle = browserTimeout / 10;
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
+      browserTimeout *=2; // Lets not let this happen too often
     }
     return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout);
   }

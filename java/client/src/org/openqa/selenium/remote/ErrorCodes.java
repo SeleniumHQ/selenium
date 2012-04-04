@@ -56,7 +56,6 @@ public class ErrorCodes {
   public static final int INVALID_XPATH_SELECTOR = 51;
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
   // The following error codes are derived straight from HTTP return codes.
-  public static final int GONE = 404;
   public static final int METHOD_NOT_ALLOWED = 405;
 
   /**

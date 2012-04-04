@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.grid.web.servlet.handler;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -127,6 +128,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
         } catch (ClientGoneException e) {
           log.log(Level.WARNING, "The client is gone for session " + session + ", terminating");
           registry.terminate(session, SessionTerminationReason.CLIENT_GONE);
+        } catch (SocketTimeoutException e){
+          registry.terminate(session, SessionTerminationReason.SO_TIMEOUT);
         } catch (Throwable t) {
           log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);
           registry.terminate(session, SessionTerminationReason.FORWARDING_TO_NODE_FAILED);
