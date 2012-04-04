@@ -218,7 +218,6 @@ public class TestSession {
       HttpRequest proxyRequest = prepareProxyRequest(request/*, config*/);
 
       HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
-
       lastActivity = timeSource.currentTimeInMillis();
 
       final int statusCode = proxyResponse.getStatusLine().getStatusCode();
@@ -265,11 +264,10 @@ public class TestSession {
         wrappedResponse.setForwardedContent(contentBeingForwarded);
         ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
       }
+      response.flushBuffer();
       return res;
     } finally {
       forwardingRequest = false;
-      // Flushing the buffer is important to avoid concurrency problems
-      response.flushBuffer();
       Thread.currentThread().setName(currentThreadName);
     }
   }
