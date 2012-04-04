@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.SessionTerminatedException;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -185,9 +186,7 @@ public class ResultConfig {
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 
     ResultType result;
-    if (isSessionTerminated(sessId, request, response)) {
-      return;
-    }
+    throwUpIfSessionTerminated(sessId);
     final RestishHandler handler = getHandler(pathInfo, sessId);
 
     if (handler instanceof JsonParametersAware) {
@@ -197,9 +196,7 @@ public class ResultConfig {
     request.setAttribute("handler", handler);
 
 
-    if (isSessionTerminated(sessId, request, response)) {
-      return;
-    }
+    throwUpIfSessionTerminated(sessId);
 
     try {
       log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
@@ -207,8 +204,11 @@ public class ResultConfig {
       addHandlerAttributesToRequest(request, handler);
       log.info("Done: " + pathInfo);
     } catch (UnreachableBrowserException e){
+      throwUpIfSessionTerminated(sessId);
       replyError(request, response, e);
       return;
+    } catch (SessionTerminatedException e){
+      throw e;
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
       log.log(Level.WARNING, "Exception thrown", e);
@@ -240,8 +240,8 @@ public class ResultConfig {
       try {
       ((WebDriverHandler) handler).execute(task);
       task.get();
-      } catch (RejectedExecutionException e){  // The session is gone
-        respondSessionError(sessId, request, response);
+      } catch (RejectedExecutionException e){
+        throw new SessionTerminatedException();
       }
 
       if (handler instanceof DeleteSession) {
@@ -268,23 +268,13 @@ public class ResultConfig {
 
   }
 
-  private boolean isSessionTerminated(SessionId sessId, HttpServletRequest request,
-                                      HttpServletResponse response) throws Exception {
-    if (sessId == null) return false;
+  private void throwUpIfSessionTerminated(SessionId sessId) throws Exception {
+    if (sessId == null) return;
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
     if (isTerminated){
-      respondSessionError(sessId, request, response);
+      throw new SessionTerminatedException();
     }
-    return isTerminated;
-  }
-
-  private void respondSessionError(SessionId sessId, HttpServletRequest request,
-                                   HttpServletResponse response) throws Exception {
-    SessionNotFoundException sessionNotFoundException =
-        new SessionNotFoundException("404 session " + sessId + " not found");
-    request.setAttribute("exception", sessionNotFoundException);
-    replyError(request, response, sessionNotFoundException);
   }
 
   @VisibleForTesting

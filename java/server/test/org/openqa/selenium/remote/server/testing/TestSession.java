@@ -55,14 +55,20 @@ public class TestSession implements Session {
     executor.shutdown();
   }
 
-  public <X> X execute(FutureTask<X> future) throws Exception {
-    try {
-      inUseWithThread = Thread.currentThread();
-    executor.execute(future);
+  public <X> X execute(final FutureTask<X> future) throws Exception {
+    executor.execute(new Runnable() {
+          public void run() {
+            inUseWithThread = Thread.currentThread();
+            inUseWithThread.setName("Session " + sessionId + " processing inside browser");
+            try {
+              future.run();
+            } finally {
+              inUseWithThread = null;
+              Thread.currentThread().setName("Session " + sessionId + " awaiting client");
+            }
+          }
+        });
     return future.get();
-    } finally {
-      inUseWithThread = null;
-    }
   }
 
   public WebDriver getDriver() {

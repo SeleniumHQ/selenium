@@ -87,7 +87,8 @@ public class TestSession {
   /**
    * Creates a test session on the specified testSlot.
    */
-  public TestSession(TestSlot slot, Map<String, Object> requestedCapabilities, TimeSource timeSource) {
+  public TestSession(TestSlot slot, Map<String, Object> requestedCapabilities,
+                     TimeSource timeSource) {
     internalKey = UUID.randomUUID().toString();
     this.slot = slot;
     this.requestedCapabilities = requestedCapabilities;
@@ -143,8 +144,8 @@ public class TestSession {
     // seen any new
     // commands during that time frame.
     return slot.getProtocol().isSelenium()
-        && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
-        && sessionCreatedAt == lastActivity;
+           && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
+           && sessionCreatedAt == lastActivity;
   }
 
   /**
@@ -180,7 +181,7 @@ public class TestSession {
   @Override
   public String toString() {
     return externalKey != null ? "ext. key " + externalKey : internalKey
-        + " (int. key, remote not contacted yet.)";
+                                                             + " (int. key, remote not contacted yet.)";
   }
 
 
@@ -191,14 +192,15 @@ public class TestSession {
   /**
    * forwards the request to the node.
    */
-  public String forward(SeleniumBasedRequest request, HttpServletResponse response, boolean newSessionRequest)
+  public String forward(SeleniumBasedRequest request, HttpServletResponse response,
+                        boolean newSessionRequest)
       throws IOException {
     String res = null;
 
     String currentThreadName = Thread.currentThread().getName();
     setThreadDisplayName();
     forwardingRequest = true;
-    
+
     try {
       if (slot.getProxy() instanceof CommandListener) {
         ((CommandListener) slot.getProxy()).beforeCommand(this, request, response);
@@ -212,25 +214,32 @@ public class TestSession {
 
       lastActivity = timeSource.currentTimeInMillis();
 
-      response.setStatus(proxyResponse.getStatusLine().getStatusCode());
+      final int statusCode = proxyResponse.getStatusLine().getStatusCode();
+      response.setStatus(statusCode);
       processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
 
-      if (proxyResponse.getStatusLine().getStatusCode() != 500) {
+      if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
+          statusCode != HttpServletResponse.SC_NOT_FOUND) {
+        System.out.println("regular");
         updateHubIfNewWebDriverSession(request, proxyResponse);
-      } else if (newSessionRequest) {
+      }
+      if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
         removeIncompleteNewSessionRequest();
       }
+      if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
+        removeSessionBrowserTimeout();
+      }
 
-        HttpEntity responseBody = proxyResponse.getEntity();
+      HttpEntity responseBody = proxyResponse.getEntity();
       byte[] contentBeingForwarded = null;
       if (responseBody != null) {
         try {
           InputStream in = responseBody.getContent();
-          
+
           if (request.getRequestType() == RequestType.START_SESSION
               && request instanceof LegacySeleniumRequest) {
             res = getResponseUtf8Content(in);
-          
+
             updateHubNewSeleniumSession(res);
 
             in = new ByteArrayInputStream(res.getBytes("UTF-8"));
@@ -246,7 +255,7 @@ public class TestSession {
       }
 
       if (slot.getProxy() instanceof CommandListener) {
-        SeleniumBasedResponse  wrappedResponse = new SeleniumBasedResponse(response);
+        SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
         wrappedResponse.setForwardedContent(contentBeingForwarded);
         ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
       }
@@ -259,18 +268,22 @@ public class TestSession {
     }
   }
 
-    private void setThreadDisplayName() {
-        DateFormat dfmt=DateFormat.getTimeInstance();
-        String name = "Forwarding " + this + " to " + slot.getRemoteURL() + " at " +
-                dfmt.format(Calendar.getInstance().getTime());
-        Thread.currentThread().setName(name);
-    }
+  private void setThreadDisplayName() {
+    DateFormat dfmt = DateFormat.getTimeInstance();
+    String name = "Forwarding " + this + " to " + slot.getRemoteURL() + " at " +
+                  dfmt.format(Calendar.getInstance().getTime());
+    Thread.currentThread().setName(name);
+  }
 
-    private void removeIncompleteNewSessionRequest() {
+  private void removeIncompleteNewSessionRequest() {
     RemoteProxy proxy = slot.getProxy();
     proxy.getRegistry().terminate(this, SessionTerminationReason.CREATIONFAILED);
   }
 
+  private void removeSessionBrowserTimeout() {
+    RemoteProxy proxy = slot.getProxy();
+    proxy.getRegistry().terminate(this, SessionTerminationReason.BROWSER_TIMEOUT);
+  }
 
   private void updateHubNewSeleniumSession(String content) {
     ExternalSessionKey key = ExternalSessionKey.fromResponseBody(content);
@@ -278,7 +291,7 @@ public class TestSession {
   }
 
   private void updateHubIfNewWebDriverSession(SeleniumBasedRequest request,
-      HttpResponse proxyResponse) {
+                                              HttpResponse proxyResponse) {
     if (request.getRequestType() == RequestType.START_SESSION
         && request instanceof WebDriverRequest) {
       Header h = proxyResponse.getFirstHeader("Location");
@@ -292,7 +305,7 @@ public class TestSession {
   }
 
   private HttpResponse sendRequestToNode(HttpRequest proxyRequest) throws ClientProtocolException,
-      IOException {
+                                                                          IOException {
     HttpClient client = getClient();
     URL remoteURL = slot.getRemoteURL();
     HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
@@ -300,7 +313,8 @@ public class TestSession {
     return client.execute(host, proxyRequest);
   }
 
-  private HttpRequest prepareProxyRequest(HttpServletRequest request/*, ForwardConfiguration config*/)
+  private HttpRequest prepareProxyRequest(HttpServletRequest request
+/*, ForwardConfiguration config*/)
       throws IOException {
     URL remoteURL = slot.getRemoteURL();
 
@@ -308,7 +322,7 @@ public class TestSession {
     String path = request.getRequestURI();
     if (!path.startsWith(pathSpec)) {
       throw new IllegalStateException("Expected path " + path + " to start with pathSpec "
-          + pathSpec);
+                                      + pathSpec);
     }
     String end = path.substring(pathSpec.length());
     String ok = remoteURL + end;
@@ -320,7 +334,7 @@ public class TestSession {
     }
 
     HttpRequest proxyRequest;
-     
+
     if (body != null) {
       BasicHttpEntityEnclosingRequest r =
           new BasicHttpEntityEnclosingRequest(request.getMethod(), uri);
@@ -330,7 +344,7 @@ public class TestSession {
       proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
     }
 
-    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+    for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements(); ) {
       String headerName = (String) e.nextElement();
 
       if ("Content-Length".equalsIgnoreCase(headerName)) {
@@ -399,7 +413,8 @@ public class TestSession {
   }
 
   private void processResponseHeaders(HttpServletRequest request, HttpServletResponse response,
-      URL remoteURL, HttpResponse proxyResponse) throws MalformedURLException {
+                                      URL remoteURL, HttpResponse proxyResponse)
+      throws MalformedURLException {
     String pathSpec = request.getServletPath() + request.getContextPath();
     for (Header header : proxyResponse.getAllHeaders()) {
       String name = header.getName();
@@ -466,7 +481,8 @@ public class TestSession {
       case Selenium:
         request =
             new BasicHttpRequest("POST", remoteURL.toExternalForm()
-                + "/?cmd=testComplete&sessionId=" + getExternalKey().getKey());
+                                         + "/?cmd=testComplete&sessionId=" + getExternalKey()
+                .getKey());
         break;
       case WebDriver:
         String uri = remoteURL.toString() + "/session/" + externalKey;

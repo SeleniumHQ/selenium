@@ -362,6 +362,8 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   private HttpContext createWebDriverRemoteContext(DriverSessions webdrDriverSessions) {
     HttpContext webdriverContext = new HttpContext();
+
+    webdriverContext.setAttribute(RemoteControlConfiguration.KEY, configuration);
     webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, webdrDriverSessions);
     webdriverContext.setContextPath("/wd");
     ServletHandler handler = new ServletHandler();

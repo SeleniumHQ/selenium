@@ -31,9 +31,19 @@ import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.remote.server.testing.UrlInfo;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.seleniumhq.jetty7.server.handler.ContextHandler;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,8 +75,14 @@ public class DriverServletTest {
       @Override
       public void log(String message, Throwable t) {
       }
-    };
 
+      @Override
+      public ServletContext getServletContext() {
+        final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
+        servletContext.setAttribute(RemoteControlConfiguration.KEY, new RemoteControlConfiguration());
+        return servletContext;
+      }
+    };
     driverServlet.init();
   }
 

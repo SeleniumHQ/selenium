@@ -11,6 +11,7 @@ import java.io.File;
  */
 public class RemoteControlConfiguration {
 
+  public static final String KEY = RemoteControlConfiguration.class.getName() + ".config";
   public static final int DEFAULT_PORT = 4444;
   private static final int USE_SAME_PORT = -1;
   public static final int MINUTES = 60;
@@ -52,6 +53,7 @@ public class RemoteControlConfiguration {
   private String forcedBrowserMode;
   private boolean honorSystemProxy;
   private int timeoutInSeconds;
+  private int browserTimeoutInMs;
   private int retryTimeoutInSeconds;
   /**
    * useful for situations where Selenium is being invoked programatically and the outside container
@@ -281,8 +283,20 @@ public class RemoteControlConfiguration {
     return timeoutInSeconds;
   }
 
+  public long getTimeoutInMs() {
+    return timeoutInSeconds * 1000;
+  }
+
   public void setTimeoutInSeconds(int newTimeoutInSeconds) {
     timeoutInSeconds = newTimeoutInSeconds;
+  }
+
+  public int getBrowserTimeoutInMs() {
+    return browserTimeoutInMs;
+  }
+
+  public void setBrowserTimeoutInMs(int browserTimeoutInMs) {
+    this.browserTimeoutInMs = browserTimeoutInMs;
   }
 
   public int getRetryTimeoutInSeconds() {

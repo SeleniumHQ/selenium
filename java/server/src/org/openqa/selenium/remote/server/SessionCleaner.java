@@ -31,6 +31,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
   private final DriverSessions driverSessions;
   private final int clientGoneTimeout;
   private final int insideBrowserTimeout;
+  private final int sleepInterval;
   private final Logger log;
   private volatile boolean running = true;
 
@@ -40,6 +41,12 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     this.clientGoneTimeout = clientGoneTimeout;
     this.insideBrowserTimeout = insideBrowserTimeout;
     this.driverSessions = driverSessions;
+    if (clientGoneTimeout == 0 && insideBrowserTimeout == 0){
+      throw new IllegalStateException("SessionCleaner not supposed to start when no timeouts specified");
+    }
+    int lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
+                                  clientGoneTimeout > 0 ? clientGoneTimeout : insideBrowserTimeout);
+    this.sleepInterval = lowestNonZero / 10;
   }
 
 
@@ -49,7 +56,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     while (running) {
       checkExpiry();
       try {
-        Thread.sleep(clientGoneTimeout / 10);
+        Thread.sleep(sleepInterval);
       } catch (InterruptedException e) {
         log.info("Exiting session cleaner thread");
       }

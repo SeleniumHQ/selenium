@@ -20,7 +20,9 @@ public class RemoteControlLauncher {
     printWrappedErrorLine(INDENT,
         "-port <nnnn>: the port number the selenium server should use (default 4444)");
     printWrappedErrorLine(INDENT,
-        "-timeout <nnnn>: an integer number of seconds before we should give up");
+        "-timeout <nnnn>: an integer number of seconds we should allow a client to be idle");
+    printWrappedErrorLine(INDENT,
+        "-browserTimeout <nnnn>: an integer number of seconds a browser is allowed to hang");
     printWrappedErrorLine(INDENT,
         "-interactive: puts you into interactive mode.  See the tutorial for more details");
     printWrappedErrorLine(

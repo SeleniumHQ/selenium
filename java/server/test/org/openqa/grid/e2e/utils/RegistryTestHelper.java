@@ -43,4 +43,18 @@ public class RegistryTestHelper {
       }
     });
   }
+
+
+  public static void waitForActiveTestSessionCount(final Registry r, final int activeTestSesssions) {
+    TestWaiter.waitFor(new Callable<Integer>() {
+      public Integer call() throws Exception {
+        Integer i = r.getActiveSessions().size();
+        if (i != activeTestSesssions) {
+          return null;
+        } else {
+          return i;
+        }
+      }
+    });
+  }
 }

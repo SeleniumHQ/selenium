@@ -16,7 +16,6 @@ package org.openqa.grid.internal.utils;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
@@ -35,25 +34,22 @@ import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.log.LoggingManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
-
-import junit.framework.Assert;
 
 import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
@@ -86,19 +82,29 @@ public class SelfRegisteringRemote {
 
   public void startRemoteServer() throws Exception {
     
+    System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
+
+
+    nodeConfig.validate();
+    RemoteControlConfiguration remoteControlConfiguration = nodeConfig.getRemoteControlConfiguration();
+
     try {
-      JSONObject hubParameters = getHubConfiguration("timeout");
-      int timeout = hubParameters.getInt("timeout");
-      // TODO freynaud use the timeout from the hub to setup the node ones.
+      final String CLIENT_TIMEOUT = "timeout";
+      final String BROWSER_TIMEOUT = "browserTimeout";
+      JSONObject hubParameters = getHubConfiguration(CLIENT_TIMEOUT, BROWSER_TIMEOUT);
+      if (hubParameters.has(CLIENT_TIMEOUT)){
+        int timeout = hubParameters.getInt(CLIENT_TIMEOUT) / 1000;
+        remoteControlConfiguration.setTimeoutInSeconds(timeout);
+      }
+      if (hubParameters.has(BROWSER_TIMEOUT)) {
+        int browserTimeout = hubParameters.getInt(BROWSER_TIMEOUT);
+        remoteControlConfiguration.setBrowserTimeoutInMs(browserTimeout);
+      }
     }catch (Exception e) {
       log.warning("error getting the parameters from the hub. The node may end up with wrong timeouts."+e.getMessage());
     }
-    
-    nodeConfig.validate();
 
-    System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0");
-
-    server = new SeleniumServer(nodeConfig.getRemoteControlConfiguration());
+    server = new SeleniumServer(remoteControlConfiguration);
 
     Server jetty = server.getServer();
 

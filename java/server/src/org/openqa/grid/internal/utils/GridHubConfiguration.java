@@ -1,5 +1,20 @@
 package org.openqa.grid.internal.utils;
+/*
+Copyright 2011 WebDriver committers
+Copyright 2011 Software Freedom Conservancy
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.grid.common.CommandLineOptionHelper;
@@ -21,12 +36,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import static org.openqa.grid.internal.utils.ServerJsonValues.*;
 
 public class GridHubConfiguration {
 
   private static final Logger log = Logger.getLogger(GridHubConfiguration.class.getName());
 
-  /**
+    /**
    * The hub needs to know its hostname in order to write the proper Location header for the request
    * being forwarded. Usually this can be guessed correctly, but in case it cannot it can be passed
    * via this config param.
@@ -43,13 +59,6 @@ public class GridHubConfiguration {
    * will have that value if they don't specifically mention the parameter.
    */
   private int cleanupCycle;
-
-  /**
-   * how long can a session be idle before being considered timed out. Working together with cleanup
-   * cycle. Worst case scenario, a session can be idle for timout + cleanup cycle before the timeout
-   * is detected
-   */
-  private int timeout;
 
   /**
    * how long a new session request can stay in the queue without being assigned before being
@@ -160,8 +169,11 @@ public class GridHubConfiguration {
     if (helper.isParamPresent("-cleanUpCycle")) {
       cleanupCycle = Integer.parseInt(helper.getParamValue("-cleanUpCycle"));
     }
-    if (helper.isParamPresent("-timeout")) {
-      timeout = Integer.parseInt(helper.getParamValue("-timeout"));
+    if (helper.isParamPresent(CLIENT_TIMEOUT.getKey())) {
+      setTimeout(Integer.parseInt(helper.getParamValue(CLIENT_TIMEOUT.getKey())));
+    }
+    if (helper.isParamPresent(BROWSER_TIMEOUT.getKey())) {
+      setBrowserTimeout(Integer.parseInt(helper.getParamValue(BROWSER_TIMEOUT.getKey())));
     }
     if (helper.isParamPresent("-newSessionWaitTimeout")) {
       newSessionWaitTimeout = Integer.parseInt(helper.getParamValue("-newSessionWaitTimeout"));
@@ -273,7 +285,10 @@ public class GridHubConfiguration {
         cleanupCycle = o.getInt(RegistrationRequest.CLEAN_UP_CYCLE);
       }
       if (o.has(RegistrationRequest.TIME_OUT) && !o.isNull(RegistrationRequest.TIME_OUT)) {
-        timeout = o.getInt(RegistrationRequest.TIME_OUT);
+        setTimeout(o.getInt(RegistrationRequest.TIME_OUT));
+      }
+      if (o.has(RegistrationRequest.BROWSER_TIME_OUT) && !o.isNull(RegistrationRequest.BROWSER_TIME_OUT)) {
+        setBrowserTimeout(o.getInt(RegistrationRequest.BROWSER_TIME_OUT));
       }
       if (o.has("newSessionWaitTimeout") && !o.isNull("newSessionWaitTimeout")) {
         newSessionWaitTimeout = o.getInt("newSessionWaitTimeout");
@@ -331,7 +346,17 @@ public class GridHubConfiguration {
   }
 
   public int getTimeout() {
-    return timeout;
+    final Integer timeout = get(CLIENT_TIMEOUT);
+    return timeout != null ? timeout : 0;
+  }
+
+  public int getBrowserTimeout() {
+    final Integer timeout =get(BROWSER_TIMEOUT);
+    return timeout != null ? timeout : 0;
+  }
+
+  public void setBrowserTimeout(int browserTimeout) {
+      put(BROWSER_TIMEOUT, browserTimeout);
   }
 
   public int getNewSessionWaitTimeout() {
@@ -375,7 +400,16 @@ public class GridHubConfiguration {
   }
 
   public void setTimeout(int timeout) {
-    this.timeout = timeout;
+    put(CLIENT_TIMEOUT, timeout);
+  }
+
+  private void put(JsonKey key, Object value){
+    allParams.put(key.getKey(), value);
+  }
+
+  private <T> T get(JsonKey jsonKey) {
+    //noinspection unchecked
+    return (T) allParams.get(jsonKey.getKey());
   }
 
   public void setNewSessionWaitTimeout(int newSessionWaitTimeout) {
@@ -433,7 +467,8 @@ public class GridHubConfiguration {
     b.append("host: ").append(host).append("\n");
     b.append("port: ").append(port).append("\n");
     b.append("cleanupCycle: ").append(cleanupCycle).append("\n");
-    b.append("timeout: ").append(timeout).append("\n");
+    b.append("timeout: ").append(getTimeout()).append("\n");
+    b.append("browserTimeout: ").append(getBrowserTimeout()).append("\n");
 
     b.append("newSessionWaitTimeout: ").append(newSessionWaitTimeout).append("\n");
     b.append("grid1Mapping: ").append(grid1Mapping).append("\n");

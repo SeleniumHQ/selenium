@@ -210,6 +210,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
     b.append(key("port")).append(config.getPort()).append("</br>");
     b.append(key("cleanUpCycle")).append(config.getCleanupCycle()).append("</br>");
     b.append(key("timeout")).append(config.getTimeout()).append("</br>");
+    b.append(key("browserTimeout")).append(config.getBrowserTimeout()).append("</br>");
+
 
     b.append(key("newSessionWaitTimeout")).append(config.getNewSessionWaitTimeout())
         .append("</br>");

@@ -17,17 +17,7 @@ limitations under the License.
 
 package org.openqa.grid.common;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import com.google.common.collect.Maps;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +30,17 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
-import com.google.common.collect.Maps;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * helper to register to the grid. Using JSON to exchange the object between the node and grid.
@@ -74,7 +74,9 @@ public class RegistrationRequest {
   public static final String REGISTER_CYCLE = "registerCycle";
   public static final String PROXY_CLASS = CapabilityType.PROXY;
   public static final String CLEAN_UP_CYCLE = "cleanUpCycle";
+  // Client timeout
   public static final String TIME_OUT = "timeout";
+  public static final String BROWSER_TIME_OUT = "browserTimeout";
 
   // TODO delete to keep only HUB_HOSt and HUB_PORT
   public static final String REMOTE_HOST = "remoteHost";
@@ -456,6 +458,9 @@ public class RegistrationRequest {
     }
     if (helper.isParamPresent("-timeout")) {
       configuration.put(TIME_OUT, Integer.parseInt(helper.getParamValue("-timeout")));
+    }
+    if (helper.isParamPresent("-browserTimeout")) {
+      configuration.put(BROWSER_TIME_OUT, Integer.parseInt(helper.getParamValue("-browserTimeout")));
     }
     if (helper.isParamPresent("-maxSession")) {
       configuration.put(MAX_SESSION, Integer.parseInt(helper.getParamValue("-maxSession")));

@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.selenium.logging.LoggingHandler;
+import org.openqa.selenium.remote.SessionTerminatedException;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
@@ -143,6 +144,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRenderer;
 import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
@@ -181,15 +183,33 @@ public class DriverServlet extends HttpServlet {
     DriverSessions driverSessions = sessionsSupplier.get();
     setupMappings(driverSessions, logger);
 
-    int sessionTimeOut = Integer.parseInt(System.getProperty("webdriver.server.session.timeout", "1800"));
-    int browserTimeout = Integer.parseInt(System.getProperty("webdriver.server.browser.timeout", "0"));
-    if (sessionTimeOut > 0) {
-      sessionCleaner = new SessionCleaner(driverSessions, logger, 1000 * sessionTimeOut, 1000* browserTimeout);
+    RemoteControlConfiguration rcc =
+        (RemoteControlConfiguration) getServletContext().getAttribute(RemoteControlConfiguration.KEY);
+
+    int sessionTimeOutInMs =
+        getValueToUseInMs("webdriver.server.session.timeout", (int)rcc.getTimeoutInMs(), 1800);
+    int browserTimeoutInMs = getValueToUseInMs(rcc.getBrowserTimeoutInMs(), 0);
+
+    if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
+      sessionCleaner = new SessionCleaner(driverSessions, logger, sessionTimeOutInMs, browserTimeoutInMs);
       sessionCleaner.start();
     }
   }
 
-  @Override
+  private int getValueToUseInMs(String sysPropName, int rccTimeOutMs, int defaultValueIfAllElse) {
+    final String property = System.getProperty(sysPropName);
+    if (property == null){
+      return getValueToUseInMs(rccTimeOutMs, defaultValueIfAllElse);
+    } else {
+      return Integer.parseInt(property) * 1000;
+    }
+  }
+
+    private int getValueToUseInMs(int rccTimeOutMs, int defaultValueIfAllElse) {
+        return (rccTimeOutMs > 0) ? rccTimeOutMs : defaultValueIfAllElse * 1000;
+    }
+
+    @Override
   public void destroy() {
     getLogger().removeHandler(LoggingHandler.getInstance());
     if (sessionCleaner != null) {
@@ -577,6 +597,8 @@ public class DriverServlet extends HttpServlet {
       } else {
         config.handle(request.getPathInfo(), request, response);
       }
+    } catch (SessionTerminatedException e){
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     } catch (Exception e) {
       log("Fatal, unhandled exception: " + request.getPathInfo() + ": " + e);
       throw new ServletException(e);

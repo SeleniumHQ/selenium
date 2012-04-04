@@ -2,7 +2,7 @@
 java_test(name = "test",
   srcs = [
     "misc/**/*.java",
-    "node/**/*.java",
+    "node/*.java",
     "utils/**/*.java",
     
   ],
