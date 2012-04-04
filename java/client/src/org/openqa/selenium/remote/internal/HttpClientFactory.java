@@ -44,20 +44,14 @@ limitations under the License.
 public class HttpClientFactory {
 
   private final DefaultHttpClient httpClient;
-  private final DefaultHttpClient gridClient;
   private final int TIMEOUT_THREE_HOURS = (int) SECONDS.toMillis( 60 * 60 * 3);
+  private final ClientConnectionManager gridClientConnectionManager = getClientConnectionManager();
 
   public HttpClientFactory() {
     httpClient = new DefaultHttpClient(getClientConnectionManager());
     httpClient.setParams(getHttpParams());
     httpClient.setRoutePlanner(
         getRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry()));
-    gridClient = new DefaultHttpClient(getClientConnectionManager());
-    gridClient.setRedirectStrategy(new MyRedirectHandler());
-    gridClient.setParams(getGridHttpParams());
-    gridClient.setRoutePlanner(
-        getRoutePlanner(gridClient.getConnectionManager().getSchemeRegistry()));
-    gridClient.getConnectionManager().closeIdleConnections(100, TimeUnit.MILLISECONDS);
   }
 
   private static ClientConnectionManager getClientConnectionManager() {
@@ -74,7 +68,14 @@ public class HttpClientFactory {
     return httpClient;
   }
 
-  public HttpClient getGridHttpClient() {
+  public HttpClient getGridHttpClient(int timeout) {
+    DefaultHttpClient gridClient = new DefaultHttpClient(gridClientConnectionManager);
+    gridClient.setRedirectStrategy(new MyRedirectHandler());
+    gridClient.setParams(getGridHttpParams(timeout));
+    gridClient.setRoutePlanner(
+        getRoutePlanner(gridClient.getConnectionManager().getSchemeRegistry()));
+    gridClient.getConnectionManager().closeIdleConnections(100, TimeUnit.MILLISECONDS);
+
     return gridClient;
   }
 
@@ -92,16 +93,16 @@ public class HttpClientFactory {
     return new ProxySelectorRoutePlanner(registry, ProxySelector.getDefault());
   }
 
-  public HttpParams getGridHttpParams(){
+  public HttpParams getGridHttpParams(int timeout){
     final HttpParams params = getHttpParams();
-    HttpConnectionParams.setSoTimeout(params, TIMEOUT_THREE_HOURS);
+    HttpConnectionParams.setSoTimeout(params, timeout > 0 ? timeout : TIMEOUT_THREE_HOURS);
     HttpConnectionParams.setConnectionTimeout(params, 120 * 1000);
     return params;
   }
 
   public void close() {
     httpClient.getConnectionManager().shutdown();
-    gridClient.getConnectionManager().shutdown();
+    gridClientConnectionManager.shutdown();
   }
 
   static class MyRedirectHandler implements RedirectStrategy {

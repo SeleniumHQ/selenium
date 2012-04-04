@@ -79,6 +79,7 @@ public class TestSession {
   private volatile boolean ignoreTimeout = false;
   private final TimeSource timeSource;
   private volatile boolean forwardingRequest;
+  private final int MAX_NETWORK_LATENCY = 1000;
 
   public String getInternalKey() {
     return internalKey;
@@ -186,7 +187,13 @@ public class TestSession {
 
 
   private HttpClient getClient() {
-    return slot.getProxy().getHttpClientFactory().getGridHttpClient();
+    Registry reg = slot.getProxy().getRegistry();
+    int browserTimeout = reg.getConfiguration().getBrowserTimeout();
+    if (browserTimeout > 0){
+      final int selenium_server_cleanup_cycle = browserTimeout / 10;
+      browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
+    }
+    return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout);
   }
 
   /**
