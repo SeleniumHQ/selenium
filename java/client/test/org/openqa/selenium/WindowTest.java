@@ -92,7 +92,7 @@ public class WindowTest extends JUnit4TestBase {
     waitFor(yEqual(driver, targetPosition));
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, platforms = Platform.LINUX)
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
   @Test
   public void testCanMaximizeTheWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
@@ -139,7 +139,7 @@ public class WindowTest extends JUnit4TestBase {
       public Boolean call() throws Exception {
         Dimension newSize = driver.manage().window().getSize();
         log.info("waiting for width, Current dimensions are " + newSize);
-        if(newSize.width > size.width) {
+        if(newSize.width != size.width) {
           return true;
         }
 
@@ -153,7 +153,7 @@ public class WindowTest extends JUnit4TestBase {
       public Boolean call() throws Exception {
         Dimension newSize = driver.manage().window().getSize();
         log.info("waiting for height, Current dimensions are " + newSize);
-        if(newSize.height > size.height) {
+        if(newSize.height != size.height) {
           return true;
         }
 
