@@ -130,9 +130,9 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = remoteHost.toExternalForm();
     }
 
-    maxConcurrentSession = (Integer) this.config.get(RegistrationRequest.MAX_SESSION);
-    cleanUpCycle = (Integer) this.config.get(RegistrationRequest.CLEAN_UP_CYCLE);
-    timeOut = (Integer) this.config.get(RegistrationRequest.TIME_OUT);
+    maxConcurrentSession = (Integer) getConfigInteger(RegistrationRequest.MAX_SESSION);
+    cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
+    timeOut = getConfigInteger(RegistrationRequest.TIME_OUT);
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
@@ -159,6 +159,14 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
 
     this.testSlots = Collections.unmodifiableList(slots);
+  }
+
+  private Integer getConfigInteger(String key){
+    Object o = this.config.get(RegistrationRequest.TIME_OUT);
+    if (o instanceof String){
+      return Integer.parseInt((String)o);
+    }
+    return (Integer) o;
   }
 
   private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
@@ -281,7 +289,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       TestSession session = slot.getSession();
       if (session != null) {
         long inactivity = session.getInactivityTime();
-        boolean hasTimedOut = inactivity > timeOut;
+        boolean hasTimedOut = inactivity > timeOut*1000;
         if (hasTimedOut) {
           if (!session.isForwardingRequest()) {
             log.logp(Level.WARNING, "SessionCleanup", null,
