@@ -227,7 +227,6 @@ public class TestSession {
 
       if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
           statusCode != HttpServletResponse.SC_NOT_FOUND) {
-        System.out.println("regular");
         updateHubIfNewWebDriverSession(request, proxyResponse);
       }
       if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
