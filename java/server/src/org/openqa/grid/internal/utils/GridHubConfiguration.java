@@ -346,13 +346,11 @@ public class GridHubConfiguration {
   }
 
   public int getTimeout() {
-    final Integer timeout = get(CLIENT_TIMEOUT);
-    return timeout != null ? timeout : 0;
+    return getIntWith0Default(CLIENT_TIMEOUT);
   }
 
   public int getBrowserTimeout() {
-    final Integer timeout =get(BROWSER_TIMEOUT);
-    return timeout != null ? timeout : 0;
+    return getIntWith0Default(BROWSER_TIMEOUT);
   }
 
   public void setBrowserTimeout(int browserTimeout) {
@@ -410,6 +408,15 @@ public class GridHubConfiguration {
   private <T> T get(JsonKey jsonKey) {
     //noinspection unchecked
     return (T) allParams.get(jsonKey.getKey());
+  }
+
+  private Integer getIntWith0Default(JsonKey jsonKey) {
+    //noinspection unchecked
+    final Object o = allParams.get(jsonKey.getKey());
+    if (o instanceof  String){
+      return Integer.parseInt((String) o);
+    }
+    return o != null ? (Integer) o : 0;
   }
 
   public void setNewSessionWaitTimeout(int newSessionWaitTimeout) {
