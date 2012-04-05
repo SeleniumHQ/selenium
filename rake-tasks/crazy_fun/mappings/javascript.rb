@@ -160,8 +160,7 @@ module Javascript
       seen_list = []
       src_files.each do |input_file|
         seen_list.push(input_file)
-        lines = IO.read(input_file)
-        lines.each do |line|
+        IO.read(input_file).each_line do |line|
           data = @@REQ_REGEX.match(line)
           if data
             req = data[1]
@@ -203,8 +202,7 @@ module Javascript
         dep[:filename] = filename
         dep[:reqs] = []
         dep[:provides] = []
-        lines = IO.read(filename)
-        lines.each do |line|
+        IO.read(filename).each_line do |line|
           data = @@REQ_REGEX.match(line)
           if data
             dep[:reqs].push(data[1])
