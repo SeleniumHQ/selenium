@@ -31,16 +31,16 @@ import java.util.List;
  */
 public interface WebElement extends SearchContext {
   /**
-   * Click this element. If this causes a new page to load, this method will block until the page
-   * has loaded. At this point, you should discard all references to this element and any further
-   * operations performed on this element will have undefined behaviour unless you know that the
-   * element and the page will still be present. If click() causes a new page to be loaded via an
-   * event or is done by sending a native event (which is a common case on Firefox, IE on Windows)
-   * then the method will *not* wait for it to be loaded and the caller should verify that a new
-   * page has been loaded.
+   * Click this element. If this causes a new page to load, this method will attempt to block until 
+   * the page has loaded. At this point, you should discard all references to this element and any 
+   * further operations performed on this element will return a StaleElementReferenceError unless you know 
+   * the element and the page will still be present. If click() causes a new page to be loaded via
+   * an event or is done by sending a native event then the method will *not* wait for it to be 
+   * loaded and the caller should verify that a new page has been loaded.
    * <p/>
-   * If this element is not clickable, then this operation is a no-op since it's pretty common for
-   * someone to accidentally miss the target when clicking in Real Life
+   * There are some preconditions for an element to be clicked.  The element must be visible and 
+   * it must have a height and width greater then 0.
+
    */
   void click();
 
