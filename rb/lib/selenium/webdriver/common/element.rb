@@ -29,8 +29,8 @@ module Selenium
       #
       # Click this element. If this causes a new page to load, this method will
       # attempt to block until the page has loaded.  At this point, you should 
-      # re-find and all references to this element and any further operations 
-      # performed on this element will throw a StaleElementReferenceException 
+      # re-find all references to this element and any further operations 
+      # performed on this element will raise a StaleElementReferenceError
       # unless you know that the element and the page will still be present. If
       # click() causes a new page to be loaded via an event or is done by 
       # sending a native event then the method will *not* wait for it to be 
@@ -45,6 +45,9 @@ module Selenium
       # @example Click on a button
       #
       #    driver.find_element(:tag_name, "button").click
+      #
+      # @raise [StaleElementReferenceError] if the element no longer exists as
+      #  defined
       #
       
       def click
