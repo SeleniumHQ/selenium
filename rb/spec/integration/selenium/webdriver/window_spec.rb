@@ -51,14 +51,16 @@ module Selenium
         end
       end
 
-      it "can maximize the current window" do
-        window.size = old_size = Dimension.new(200, 200)
+      compliant_on :browser => [:ie, :firefox] do
+        it "can maximize the current window", :focus => true do
+          window.size = old_size = Dimension.new(200, 200)
 
-        window.maximize
+          window.maximize
 
-        new_size = window.size
-        new_size.width.should > old_size.width
-        new_size.height.should > old_size.height
+          new_size = window.size
+          new_size.width.should > old_size.width
+          new_size.height.should > old_size.height
+        end
       end
 
     end
