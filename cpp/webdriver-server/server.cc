@@ -551,7 +551,6 @@ void Server::PopulateCommandRepository() {
   this->commands_["/session/:sessionid/window/:windowHandle/position"]["GET"] = GetWindowPosition;
   this->commands_["/session/:sessionid/window/:windowHandle/position"]["POST"] = SetWindowPosition;
   this->commands_["/session/:sessionid/window/:windowHandle/maximize"]["POST"] = MaximizeWindow;
-  this->commands_["/session/:sessionid/window/:windowHandle/restore"]["POST"] = RestoreWindow;
 
   this->commands_["/session/:sessionid/accept_alert"]["POST"] = AcceptAlert;
   this->commands_["/session/:sessionid/dismiss_alert"]["POST"] = DismissAlert;

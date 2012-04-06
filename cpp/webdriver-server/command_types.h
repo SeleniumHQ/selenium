@@ -76,7 +76,6 @@ enum CommandType {
   GetWindowPosition,
   SetWindowPosition,
   MaximizeWindow,
-  RestoreWindow,
 
   AcceptAlert,
   DismissAlert,

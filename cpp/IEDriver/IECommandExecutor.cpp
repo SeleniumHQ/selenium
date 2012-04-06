@@ -60,7 +60,6 @@
 #include "CommandHandlers/NewSessionCommandHandler.h"
 #include "CommandHandlers/QuitCommandHandler.h"
 #include "CommandHandlers/RefreshCommandHandler.h"
-#include "CommandHandlers/RestoreWindowCommandHandler.h"
 #include "CommandHandlers/ScreenshotCommandHandler.h"
 #include "CommandHandlers/SendKeysCommandHandler.h"
 #include "CommandHandlers/SendKeysToActiveElementCommandHandler.h"
@@ -597,7 +596,6 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[GetWindowPosition] = CommandHandlerHandle(new GetWindowPositionCommandHandler);
   this->command_handlers_[SetWindowPosition] = CommandHandlerHandle(new SetWindowPositionCommandHandler);
   this->command_handlers_[MaximizeWindow] = CommandHandlerHandle(new MaximizeWindowCommandHandler);
-  this->command_handlers_[RestoreWindow] = CommandHandlerHandle(new RestoreWindowCommandHandler);
 
   // As-yet unimplemented commands
   this->command_handlers_[Status] = CommandHandlerHandle(new IECommandHandler);

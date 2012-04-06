@@ -62,6 +62,12 @@ class SetWindowSizeCommandHandler : public IECommandHandler {
         return;
       }
 
+      // If the window is maximized, the window needs to be restored.
+      HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
+      if (::IsZoomed(window_handle)) {
+        ::ShowWindow(window_handle, SW_RESTORE);
+      }
+
       CComPtr<IHTMLDocument2> doc;
       browser_wrapper->GetDocument(&doc);
       std::wstring position_script = L"(function() { return function(){ return {'width':arguments[0], 'height':arguments[1]};};})();";

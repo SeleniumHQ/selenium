@@ -246,7 +246,6 @@
     <ClInclude Include="CommandHandlers\GetWindowPositionCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetWindowSizeCommandHandler.h" />
     <ClInclude Include="CommandHandlers\MaximizeWindowCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\RestoreWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendKeysToActiveElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetWindowPositionCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetWindowSizeCommandHandler.h" />
