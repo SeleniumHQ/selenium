@@ -11,7 +11,7 @@ module Selenium
           def record(guard_name, options, data)
             options.each do |opts|
               opts = current_env.merge(opts)
-              key = opts.values_at(:browser, :driver, :platform, :native).join('.')
+              key = opts.values_at(*current_env.keys).join('.')
               guards[key] << [guard_name, data]
             end
           end
@@ -40,10 +40,11 @@ module Selenium
 
           def current_env
             {
-              :browser  => GlobalTestEnv.browser,
-              :driver   => GlobalTestEnv.driver,
-              :platform => Platform.os,
-              :native   => GlobalTestEnv.native_events?
+              :browser        => GlobalTestEnv.browser,
+              :driver         => GlobalTestEnv.driver,
+              :platform       => Platform.os,
+              :native         => GlobalTestEnv.native_events?,
+              :window_manager => !!ENV['DESKTOP_SESSION']
             }
           end
 
