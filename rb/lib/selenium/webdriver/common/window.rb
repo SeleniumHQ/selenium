@@ -90,6 +90,14 @@ module Selenium
         @bridge.setWindowPosition Integer(x), Integer(y)
       end
 
+      #
+      # Maximize the current window
+      #
+
+      def maximize
+        @bridge.maximizeWindow
+      end
+
 
     end
   end

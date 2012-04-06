@@ -217,6 +217,10 @@ module Selenium
                                    :height => height
         end
 
+        def maximizeWindow(handle = :current)
+          execute :maximizeWindow, :window_handle => handle
+        end
+
         def getWindowSize(handle = :current)
           data = execute :getWindowSize, :window_handle => handle
 

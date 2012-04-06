@@ -37,6 +37,7 @@ class Selenium::WebDriver::Remote::Bridge
   command :setWindowPosition,                      :post,    "session/:session_id/window/:window_handle/position"
   command :getWindowSize,                          :get,     "session/:session_id/window/:window_handle/size"
   command :getWindowPosition,                      :get,     "session/:session_id/window/:window_handle/position"
+  command :maximizeWindow,                         :post,    "session/:session_id/window/:window_handle/maximize"
 
   #
   # script execution
