@@ -289,11 +289,6 @@ namespace OpenQA.Selenium.Remote
         public static readonly string MaximizeWindow = "maximizeWindow";
 
         /// <summary>
-        /// Represents RestoreWindow command
-        /// </summary>
-        public static readonly string RestoreWindow = "restoreWindow";
-
-        /// <summary>
         /// Represents the DismissAlert command
         /// </summary>
         public static readonly string DismissAlert = "dismissAlert";

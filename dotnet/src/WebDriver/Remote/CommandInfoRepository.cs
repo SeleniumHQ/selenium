@@ -138,7 +138,6 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.GetWindowPosition, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/window/{windowHandle}/position"));
             this.commandDictionary.Add(DriverCommand.SetWindowPosition, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/{windowHandle}/position"));
             this.commandDictionary.Add(DriverCommand.MaximizeWindow, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/{windowHandle}/maximize"));
-            this.commandDictionary.Add(DriverCommand.RestoreWindow, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/{windowHandle}/restore"));
             this.commandDictionary.Add(DriverCommand.GetOrientation, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/orientation"));
             this.commandDictionary.Add(DriverCommand.SetOrientation, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/orientation"));
             this.commandDictionary.Add(DriverCommand.DismissAlert, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/dismiss_alert"));

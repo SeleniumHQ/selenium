@@ -9,10 +9,19 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class WindowTest : DriverTestFixture
     {
+        private Size originalWindowSize;
+
+        [SetUp]
+        public void GetBrowserWindowSize()
+        {
+            this.originalWindowSize = driver.Manage().Window.Size;
+
+        }
+
         [TearDown]
         public void RestoreBrowserWindow()
         {
-            driver.Manage().Window.Restore();
+            driver.Manage().Window.Size = originalWindowSize;
         }
 
         [Test]
@@ -96,29 +105,6 @@ namespace OpenQA.Selenium
             window.Maximize();
             Assert.Greater(window.Size.Height, size.Height);
             Assert.Greater(window.Size.Width, size.Width);
-
-            window.Restore();
-        }
-
-
-        [Test]
-        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
-        public void ShouldBeAbleToRestoreTheCurrentWindow()
-        {
-            IWindow window = driver.Manage().Window;
-            Size size = window.Size;
-
-            window.Maximize();
-            Assert.Greater(window.Size.Height, size.Height);
-            Assert.Greater(window.Size.Width, size.Width);
-
-            window.Restore();
-            Assert.AreEqual(window.Size.Height, size.Height);
-            Assert.AreEqual(window.Size.Width, size.Width);
         }
     }
 }

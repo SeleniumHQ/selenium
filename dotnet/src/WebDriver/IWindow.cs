@@ -44,10 +44,5 @@ namespace OpenQA.Selenium
         /// Maximizes the current window if it is not already maximized.
         /// </summary>
         void Maximize();
-
-        /// <summary>
-        /// Restores the current window if it is maximized.
-        /// </summary>
-        void Restore();
     }
 }
