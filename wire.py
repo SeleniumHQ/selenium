@@ -770,11 +770,6 @@ relative to the upper left corner of the screen.').
       AddError('NoSuchWindow', 'If the specified window cannot be found.'))
 
   resources.append(
-      SessionResource('/session/:sessionId/window/:windowHandle/restore').
-      Post('''Restore currently selected window if maximized.''').
-      AddError('NoSuchWindow', 'If the specified window cannot be found.'))
-
-  resources.append(
       SessionResource('/session/:sessionId/cookie').
       Get('Retrieve all cookies visible to the current page.').
       SetReturnType('{Array.<object>}', 'A list of [#Cookie_JSON_Object cookies].').
