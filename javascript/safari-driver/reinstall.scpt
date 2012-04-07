@@ -81,4 +81,4 @@ tell application "System Events"
 	end tell
 end tell
 
--- tell application "Safari" to quit
+tell application "Safari" to quit
