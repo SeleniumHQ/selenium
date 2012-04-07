@@ -53,6 +53,12 @@ safaridriver.message.Type = {
   CONNECT: 'connect',
 
   /**
+   * Message sent by the web page content to the injected script after the
+   * page messenger has been fully loaded.
+   */
+  LOADED: 'loaded',
+
+  /**
    * Message sent by the injected page in response to a global page command.
    */
   RESPONSE: 'response'
@@ -65,7 +71,6 @@ safaridriver.message.Type = {
  * script, or the injected script and web page content.
  * @param {!safaridriver.message.Type} type The message type.
  * @constructor
- * @private
  */
 safaridriver.message.Message = function(type) {
 
@@ -127,9 +132,26 @@ safaridriver.message.Message.fromEvent = function(event) {
     case safaridriver.message.Type.RESPONSE:
       return safaridriver.message.ResponseMessage.fromData_(data);
 
+    case safaridriver.message.Type.ACTIVATE:
+    case safaridriver.message.Type.LOADED:
+      return safaridriver.message.Message.fromData_(data);
+
     default:
       throw Error('Unknown message type: ' + JSON.stringify(data));
   }
+};
+
+
+/**
+ * Creates a generic message from a raw data object.
+ * @param {!Object.<*>} data The data object to convert.
+ * @return {!safaridriver.message.Message} The new message.
+ * @private
+ */
+safaridriver.message.Message.fromData_ = function(data) {
+  var type = (/** @type {safaridriver.message.Type} */ data[
+      safaridriver.message.Message.Field.MESSAGE]);
+  return new safaridriver.message.Message(type);
 };
 
 
@@ -178,18 +200,28 @@ safaridriver.message.Message.prototype.isType = function(type) {
 
 /**
  * Sends this message.
- * @param {{dispatchMessage: function(string, *)}} opt_dispatcher The object to
- *     dispatch this message to; only required if running inside the
+ * @param {!(SafariContentBrowserTabProxy|SafariWebPageProxy)=} opt_proxy The
+ *     proxy to dispatch this message to; only required if running inside the
  *     SafariDriver extension.
  */
-safaridriver.message.Message.prototype.send = function(opt_dispatcher) {
-  if (!goog.getObjectByName('safari')) {
+safaridriver.message.Message.prototype.send = function(opt_proxy) {
+  if (!opt_proxy) {
     window.postMessage(this.data_, '*');
-  } else if (!opt_dispatcher) {
-    throw Error('No dispatcher provided!');
   } else {
-    opt_dispatcher.dispatchMessage(this.getType(), this.data_);
+    opt_proxy.dispatchMessage(this.getType(), this.data_);
   }
+};
+
+
+/** @return {!Object.<*>} The JSON representation of this message. */
+safaridriver.message.Message.prototype.toJSON = function() {
+  return this.data_;
+};
+
+
+/** @override */
+safaridriver.message.Message.prototype.toString = function() {
+  return JSON.stringify(this);
 };
 
 
@@ -252,13 +284,21 @@ safaridriver.message.CommandMessage.prototype.getCommand = function() {
 
 
 /** @override */
-safaridriver.message.CommandMessage.prototype.send = function(opt_dispatcher) {
-  // When sending a message, Safari does not use a serialize all data fields
+safaridriver.message.CommandMessage.prototype.toJSON = function() {
+  this.setField(safaridriver.message.CommandMessage.COMMAND_FIELD_,
+      this.command_.toJSON());
+  return goog.base(this, 'toJSON');
+};
+
+
+/** @override */
+safaridriver.message.CommandMessage.prototype.send = function(opt_proxy) {
+  // When sending a message, Safari does not serialize all data fields
   // like normal JSON (e.g., it ignores our toJSON() method). So we must
   // manually set the command field right before sending the message.
   this.setField(safaridriver.message.CommandMessage.COMMAND_FIELD_,
       this.command_.toJSON());
-  goog.base(this, 'send', opt_dispatcher);
+  goog.base(this, 'send', opt_proxy);
 };
 
 

@@ -27,6 +27,7 @@ goog.require('webdriver.promise');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.message');
 goog.require('safaridriver.console');
+goog.require('safaridriver.inject.PageMessenger');
 goog.require('safaridriver.inject.commands');
 
 
@@ -67,48 +68,10 @@ safaridriver.inject.init = function() {
   safari.self.addEventListener('message',
       safaridriver.inject.onExtensionMessage_, false);
 
-  window.addEventListener('message', safaridriver.inject.onPageMessage_, true);
-};
+  var pageMessenger = safaridriver.inject.PageMessenger.getInstance();
+  var onMessage = goog.bind(pageMessenger.onMessage, pageMessenger);
 
-
-/**
- * Attempts to parse a message event.
- * @param {!(MessageEvent|SafariExtensionMessageEvent)} e The message to parse.
- * @return {(!safaridriver.message.Message|undefined)} The parsed message or
- *     undefined if the event could not be parsed.
- * @private
- */
-safaridriver.inject.parseMessage_ = function(e) {
-  var message;
-  try {
-    message = safaridriver.message.Message.fromEvent(e);
-  } catch (ex) {
-    safaridriver.inject.LOG.warning(
-        'Unable to parse message: ' + ex +
-        '\nOriginal message: ' +
-        JSON.stringify(e.message || e.data));
-  }
-  return message;
-};
-
-
-/**
- * Handles messages received from the content page.
- * @param {!MessageEvent} e The message event.
- * @private
- */
-safaridriver.inject.onPageMessage_ = function(e) {
-  var message = safaridriver.inject.parseMessage_(e);
-
-  if (!message || !message.isType(safaridriver.message.Type.CONNECT)) {
-    return;
-  }
-
-  safaridriver.inject.LOG.info(
-      'Content page has requested a WebDriver client connection to ' +
-          message.getUrl());
-
-  message.send(safari.self.tab);
+  window.addEventListener('message', onMessage, true);
 };
 
 
@@ -118,8 +81,12 @@ safaridriver.inject.onPageMessage_ = function(e) {
  * @private
  */
 safaridriver.inject.onExtensionMessage_ = function(e) {
-  var message = safaridriver.inject.parseMessage_(e);
-  if (!message) {
+  try {
+    var message = safaridriver.message.Message.fromEvent(e);
+  } catch (ex) {
+    safaridriver.inject.LOG.warning(
+        'Unable to parse message: ' + ex +
+            '\nOriginal message: ' + JSON.stringify(e.message));
     return;
   }
 
@@ -138,7 +105,7 @@ safaridriver.inject.onExtensionMessage_ = function(e) {
 
     default:
       safaridriver.inject.LOG.warning(
-          'Ignoring unrecognized message: ' + JSON.stringify(e.message));
+          'Ignoring unrecognized message: ' + message);
   }
 };
 
@@ -153,15 +120,14 @@ safaridriver.inject.onCommand_ = function(message) {
     return;
   }
 
-  var jsonMessage = JSON.stringify(message);
   var command = message.getCommand();
   if (!command.getId()) {
     safaridriver.inject.LOG.severe(
-        'Ignoring unidentified command message: ' + jsonMessage);
+        'Ignoring unidentified command message: ' + message);
     return;
   }
 
-  safaridriver.inject.LOG.info('Handling command: ' + jsonMessage);
+  safaridriver.inject.LOG.info('Handling command: ' + message);
 
   var handler = safaridriver.inject.COMMAND_MAP_[command.getName()];
   if (handler) {
@@ -169,13 +135,14 @@ safaridriver.inject.onCommand_ = function(message) {
       // Don't schedule through webdriver.promise.Application; just execute the
       // command immediately. We're assuming the global page is scheduling
       // commands and only dispatching one at a time.
-      var parameters = command.getParameters();
-      webdriver.promise.when(handler(parameters), sendSuccess, sendError);
+      webdriver.promise.when(
+          handler(command, safaridriver.inject.PageMessenger.getInstance()),
+          sendSuccess, sendError);
     } catch (ex) {
       sendError(ex);
     }
   } else {
-    sendError(Error('Unknown command: ' + jsonMessage));
+    sendError(Error('Unknown command: ' + message));
   }
 
   function sendError(error) {
@@ -192,7 +159,7 @@ safaridriver.inject.onCommand_ = function(message) {
 
   function sendResponse(response) {
     safaridriver.inject.LOG.info('Sending response' +
-        '\ncommand:  ' + jsonMessage +
+        '\ncommand:  ' + message +
         '\nresponse: ' + JSON.stringify(response));
 
     response = new safaridriver.message.ResponseMessage(command.id, response);
@@ -203,7 +170,9 @@ safaridriver.inject.onCommand_ = function(message) {
 
 /**
  * Maps command names to the function that handles it.
- * @type {!Object.<(function(!Object.<*>)|function())>}
+ * @type {!Object.<(
+ *     function(!safaridriver.Command, !safaridriver.inject.PageMessenger)|
+ *     function(!safaridriver.Command)|function())>}
  * @private
  */
 safaridriver.inject.COMMAND_MAP_ = {};
@@ -249,5 +218,8 @@ goog.scope(function() {
   map[CommandName.GET_WINDOW_SIZE] = commands.getWindowSize;
   map[CommandName.SET_WINDOW_POSITION] = commands.setWindowPosition;
   map[CommandName.SET_WINDOW_SIZE] = commands.setWindowSize;
+
+  map[CommandName.EXECUTE_SCRIPT] = commands.executeScript;
+  map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeScript;
 });
 

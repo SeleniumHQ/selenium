@@ -10,6 +10,11 @@ js_library(name = "all_js",
     "locators/*.js",
     "html5/*.js"
   ])
+
+js_library(name = "dom",
+  srcs = [
+    "dom.js",
+  ])
   
 js_library(name = "error_lib",
   srcs = [ "error.js" ])

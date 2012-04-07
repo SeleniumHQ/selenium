@@ -23,7 +23,10 @@ js_binary(name = "extension",
     "goog.userAgent.ASSUME_WEBKIT=true",
     "goog.userAgent.product.ASSUME_SAFARI=true"
   ],
-  externs = [ "externs.js" ],
+  externs = [
+    "externs/common.js",
+    "externs/extension.js",
+  ],
   flags = [
     "--jscomp_error=accessControls",
     "--jscomp_error=ambiguousFunctionDecl",
@@ -61,18 +64,24 @@ js_binary(name = "injected",
   srcs = [
     "inject/commands.js",
     "inject/inject.js",
+    "inject/messenger.js",
+    "inject/page.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_WEBKIT=true",
     "goog.userAgent.product.ASSUME_SAFARI=true"
   ],
-  externs = [ "externs.js" ],
+  externs = [
+    "externs/common.js",
+    "externs/webcontent.js",
+  ],
   flags = [
     "--jscomp_error=accessControls",
     "--jscomp_error=ambiguousFunctionDecl",
     "--jscomp_error=checkRegExp",
     "--jscomp_error=checkVars",
     "--jscomp_error=constantProperty",
+    "--jscomp_error=deprecated",
     "--jscomp_error=duplicateMessage",
     "--jscomp_error=es5Strict",
     "--jscomp_error=externsValidation",
@@ -85,11 +94,10 @@ js_binary(name = "injected",
     "--jscomp_error=undefinedVars",
     "--jscomp_error=unknownDefines",
     "--jscomp_error=uselessCode",
+    "--jscomp_error=visibility",
 
     "--jscomp_warning=checkTypes",
-    "--jscomp_warning=deprecated",
     "--jscomp_warning=typeInvalidation",
-    "--jscomp_warning=visibility",
 
     "--output_wrapper='%output%;safaridriver.inject.init();'",
     "--third_party=false",
@@ -99,6 +107,55 @@ js_binary(name = "injected",
     "//javascript/atoms:all_js",
     "//javascript/webdriver:base_lib",
     "//javascript/webdriver/atoms:all_js",
+  ])
+
+
+# Script added to a page by the injected script to execute commands in the
+# context of the page under test.
+js_binary(name = "page",
+  srcs = [
+    "inject/page.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_WEBKIT=true",
+    "goog.userAgent.product.ASSUME_SAFARI=true",
+    "safaridriver.inject.page.EXTENSION=false",
+  ],
+  externs = [
+    "externs/common.js",
+    "externs/webcontent.js",
+  ],
+  flags = [
+    "--jscomp_error=accessControls",
+    "--jscomp_error=ambiguousFunctionDecl",
+    "--jscomp_error=checkRegExp",
+    "--jscomp_error=checkVars",
+    "--jscomp_error=constantProperty",
+    "--jscomp_error=deprecated",
+    "--jscomp_error=duplicateMessage",
+    "--jscomp_error=es5Strict",
+    "--jscomp_error=externsValidation",
+    "--jscomp_error=fileoverviewTags",
+    "--jscomp_error=globalThis",
+    "--jscomp_error=invalidCasts",
+    "--jscomp_error=missingProperties",
+    "--jscomp_error=nonStandardJsDocs",
+    "--jscomp_error=strictModuleDepCheck",
+    "--jscomp_error=undefinedVars",
+    "--jscomp_error=unknownDefines",
+    "--jscomp_error=uselessCode",
+    "--jscomp_error=visibility",
+
+    "--jscomp_warning=checkTypes",
+    "--jscomp_warning=typeInvalidation",
+
+    "--output_wrapper='(function(){%output%;this.init();}).call({});'",
+    "--third_party=false",
+  ],
+  deps = [
+    ":common_lib",
+    "//javascript/atoms:all_js",
+    "//javascript/webdriver:base_lib",
   ])
 
 
@@ -112,5 +169,6 @@ folder(name = "SafariDriver",
   deps = [
     ":extension",
     ":injected",
+    ":page",
   ],
   out = "SafariDriver.safariextension")

@@ -180,6 +180,50 @@ function SafariCloseEvent() {}
 SafariCloseEvent.prototype.type = 'close';
 
 
+/** @constructor */
+function SafariContentNamespace() {}
+
+/** @type {!SafariContentExtension} */
+SafariContentNamespace.prototype.extension;
+
+/** @type {!SafariContentWebPage} */
+SafariContentNamespace.prototype.self;
+
+
+/** @constructor */
+function SafariContentBrowserTabProxy() {}
+
+/**
+ * @param {!Event} event The before-load event.
+ * @param {*} message The message body.
+ */
+SafariContentBrowserTabProxy.prototype.canLoad = function(event, message) {};
+
+/**
+ * @param {string} name The name of hte message.
+ * @param {*=} opt_message The message body.
+ */
+SafariContentBrowserTabProxy.prototype.dispatchMessage =
+    function(name, opt_message) {};
+
+
+/** @constructor */
+function SafariContentExtension() {}
+
+/** @type {string} */
+SafariContentExtension.prototype.baseURI = '';
+
+
+/**
+ * @constructor
+ * @extends {SafariEventTarget}
+ */
+function SafariContentWebPage() {}
+
+/** @type {!SafariContentBrowserTabProxy} */
+SafariContentWebPage.prototype.tab;
+
+
 /**
  * @constructor
  * @extends {SafariEvent}
@@ -310,7 +354,3 @@ function SafariWebPageProxy() {}
  * @param {*=} opt_message
  */
 SafariWebPageProxy.prototype.dispatchMessage = function(name, opt_message) {};
-
-
-/** @type {SafariNamespace} */
-var safari;
