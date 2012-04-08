@@ -248,17 +248,18 @@ public class GridHubConfiguration {
 
     Integer timeout = (Integer) hub.get("sessionMaxIdleTimeInSeconds");
     if (timeout != null) {
-      timeout = timeout.intValue() * 1000;
+      setTimeout(timeout.intValue() * 1000);
     }
 
     Integer port = (Integer) hub.get(RegistrationRequest.PORT);
     if (port != null) {
-      port = port.intValue();
+      setPort(port.intValue());
     }
 
     Integer newSessionWait = (Integer) hub.get("newSessionMaxWaitTimeInSeconds");
     if (newSessionWait != null) {
       newSessionWaitTimeout = newSessionWait.intValue() * 1000;
+      setNewSessionWaitTimeout(newSessionWait.intValue() * 1000);
     }
 
     allParams.put(RegistrationRequest.MAX_SESSION, 1);
