@@ -37,7 +37,14 @@ js_deps(name = "deps",
   ])
 
 js_binary(name = "webdriver",
-  deps = [ ":webdriver_lib" ],
+  srcs = [
+    "*.js",
+    "http/*.js",
+    "node/node.js",
+  ],
+  deps = [
+    "//javascript/atoms:error_lib",
+  ],
   flags = [
     "--generate_exports",
     "--third_party=false",
