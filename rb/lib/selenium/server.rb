@@ -102,6 +102,30 @@ module Selenium
     end
 
     #
+    # The server port
+    #
+
+    attr_accessor :port
+
+    #
+    # The server timeout
+    #
+
+    attr_accessor :timeout
+
+    #
+    # Whether to launch the server in the background
+    #
+
+    attr_accessor :background
+
+    #
+    # Path to log file, or 'true' for stdout.
+    #
+
+    attr_accessor :log
+
+    #
     # @param [String] jar Path to the server jar.
     # @param [Hash] opts the options to create the server process with
     #

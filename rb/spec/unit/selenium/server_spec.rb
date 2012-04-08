@@ -128,4 +128,18 @@ describe Selenium::Server do
 
     lambda { server.start }.should raise_error(Selenium::Server::Error)
   end
+
+  it "sets options after instantiation" do
+    File.should_receive(:exist?).with("selenium-server-test.jar").and_return(true)
+    server = Selenium::Server.new("selenium-server-test.jar")
+    server.port.should == 4444
+    server.timeout.should == 30
+    server.background.should be_false
+    server.log.should be_nil
+
+    server.port = 1234
+    server.timeout = 5
+    server.background = true
+    server.log = "/tmp/server.log"
+  end
 end
