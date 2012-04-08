@@ -128,6 +128,13 @@ safaridriver.extension.Tab.prototype.whenReady = function(callback) {
 safaridriver.extension.Tab.prototype.loadsNewPage = function(url) {
   var from = new goog.Uri(this.browserTab_.url);
   var to = new goog.Uri(url);
+  if (from.toString() === to.toString()) {
+    // If one of the URIs has a fragment, then they must both have one.
+    // Otherwise, we must check if one of them has an empty hash. We must check
+    // for these separately, because goog.Uri strips them off.
+    return !!from.getFragment() ||
+        /#$/.test(this.browserTab_.url) === /#$/.test(url);
+  }
   return from.toString() === to.toString() ||
       from.setFragment('').toString() !== to.setFragment('').toString();
 };
@@ -139,7 +146,9 @@ safaridriver.extension.Tab.prototype.loadsNewPage = function(url) {
  */
 safaridriver.extension.Tab.prototype.onBeforeNavigate_ = function(e) {
   if (this.loadsNewPage(e.url)) {
-    this.log_('Tab is about to load a URL: ' + e.url);
+    this.log_('Tab is about to load a URL' +
+        '\nfrom: ' + this.browserTab_.url +
+        '\nto:   ' + e.url);
     this.isReady_ = false;
     if (this.idleStateWaitKey_) {
       clearTimeout(this.idleStateWaitKey_);
