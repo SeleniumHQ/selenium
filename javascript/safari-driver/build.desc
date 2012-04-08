@@ -106,7 +106,7 @@ js_binary(name = "injected",
     ":common_lib",
     "//javascript/atoms:all_js",
     "//javascript/webdriver:base_lib",
-    "//javascript/webdriver/atoms:all_js",
+    "//javascript/webdriver/atoms:atoms_lib",
   ])
 
 
