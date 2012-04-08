@@ -2,9 +2,19 @@ js_deps(name = "deps",
   srcs = [ "./**/*.js" ],
   deps = "//javascript/atoms:deps")
 
-js_library(name = "all_js",
-  srcs = [ "./**/*.js" ],
+js_library(name = "atoms_lib",
+  srcs = [
+    "*.js",
+    "storage/**/*.js",
+  ],
   deps = [ "//javascript/atoms:all_js" ])
+
+js_library(name = "inject_lib",
+  srcs = [ "inject/**/*.js" ],
+  deps = [
+    ":atoms_lib",
+    "//javascript/atoms:all_js",
+  ])
 
 js_fragment(name = "clear",
   module = "bot.action",
