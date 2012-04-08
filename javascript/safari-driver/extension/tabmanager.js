@@ -65,21 +65,27 @@ safaridriver.extension.TabManager.prototype.commandTab_ = null;
 
 
 /**
- * Iterates over the existing tabs, adding them to our map.
+ * Iterates over the existing tabs. The currently active tab will be added to
+ * our map; all others will be closed.
  * @private
  */
 safaridriver.extension.TabManager.prototype.init_ = function() {
   var commandTab = null;
 
   safari.application.browserWindows.forEach(function(browserWindow) {
+    var isActiveWindow =
+        safari.application.activeBrowserWindow === browserWindow;
+
     browserWindow.tabs.forEach(function(browserTab) {
-      // #getTab() will add the tab if it's not already there. This will be
-      // horribly inefficient if there are lots of windows and tabs already
-      // open.
-      var tab = this.getTab(browserTab);
-      if (safari.application.activeBrowserWindow === browserWindow &&
-          safari.application.activeBrowserWindow.activeTab === browserTab) {
-        commandTab = tab;
+      var isActiveTab = isActiveWindow &&
+          safari.application.activeBrowserWindow.activeTab === browserTab;
+      if (isActiveTab) {
+        // #getTab() will add the tab if it's not already there. This will be
+        // horribly inefficient if there are lots of windows and tabs already
+        // open.
+        commandTab = this.getTab(browserTab);
+      } else {
+        browserTab.close();
       }
     }, this);
   }, this);
