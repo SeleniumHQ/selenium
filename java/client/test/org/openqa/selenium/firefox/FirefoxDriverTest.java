@@ -135,6 +135,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     textarea.sendKeys(sentText);
     String seenText = textarea.getAttribute("value");
     assertThat(seenText, equalTo(expectedText));
+    driver.quit();
   }
 
   @Test
