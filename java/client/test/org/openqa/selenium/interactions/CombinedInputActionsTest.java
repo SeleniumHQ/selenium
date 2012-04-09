@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -47,7 +48,7 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 /**
  * Tests combined input actions.
  */
-@Ignore(ANDROID)
+@Ignore(value =  {ANDROID,CHROME})
 public class CombinedInputActionsTest extends JUnit4TestBase {
 
   // TODO: Check if this could work in any browser without native events.
