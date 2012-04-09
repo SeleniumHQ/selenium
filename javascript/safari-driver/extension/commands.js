@@ -262,7 +262,7 @@ safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_ = 30000;
  * @param {!webdriver.Command} command The command object.
  * @param {number=} opt_additionalTimeout An optional amount of time, in
  *     milliseconds, to wait for a command response. This timeout is added to
- *     the default timeout applie dto all commands.
+ *     the default timeout applied to all commands.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     the command response.
  */
