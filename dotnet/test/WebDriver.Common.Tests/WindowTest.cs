@@ -99,12 +99,39 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
         public void ShouldBeAbleToMaximizeTheCurrentWindow()
         {
+            Size targetSize = new Size(275, 275);
             IWindow window = driver.Manage().Window;
-            Size size = window.Size;
+ 
+            window.Size = targetSize;
+            WaitFor(WindowHeightToBeEqualTo(targetSize.Height));
+            WaitFor(WindowWidthToBeEqualTo(targetSize.Height));
 
             window.Maximize();
-            Assert.Greater(window.Size.Height, size.Height);
-            Assert.Greater(window.Size.Width, size.Width);
+            WaitFor(WindowHeightToBeGreaterThan(targetSize.Height));
+            WaitFor(WindowWidthToBeGreaterThan(targetSize.Width));
+
+            Assert.Greater(window.Size.Height, targetSize.Height);
+            Assert.Greater(window.Size.Width, targetSize.Width);
+        }
+
+        private Func<bool> WindowHeightToBeEqualTo(int height)
+        {
+            return () => { return driver.Manage().Window.Size.Height == height; };
+        }
+
+        private Func<bool> WindowWidthToBeEqualTo(int width)
+        {
+            return () => { return driver.Manage().Window.Size.Width == width; };
+        }
+
+        private Func<bool> WindowHeightToBeGreaterThan(int height)
+        {
+            return () => { return driver.Manage().Window.Size.Height > height; };
+        }
+
+        private Func<bool> WindowWidthToBeGreaterThan(int width)
+        {
+            return () => { return driver.Manage().Window.Size.Width > width; };
         }
     }
 }
