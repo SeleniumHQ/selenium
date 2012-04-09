@@ -17,35 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 /**
  * Tests the basic scroll operations on touch enabled devices..
  */
-public class TouchScrollTest extends JUnit4TestBase {
+public class TouchScrollTest extends TouchTestBase {
 
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanScrollVerticallyFromWebElement() {
@@ -66,8 +55,6 @@ public class TouchScrollTest extends JUnit4TestBase {
     assertTrue("Expected y < 3500, but got y = " + y, y < 3500);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanScrollHorizontallyFromWebElement() {
@@ -88,8 +75,6 @@ public class TouchScrollTest extends JUnit4TestBase {
     assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanScrollVertically() {
@@ -109,8 +94,6 @@ public class TouchScrollTest extends JUnit4TestBase {
     assertTrue(y < 3500);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, OPERA, HTMLUNIT, IE, IPHONE, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanScrollHorizontally() {

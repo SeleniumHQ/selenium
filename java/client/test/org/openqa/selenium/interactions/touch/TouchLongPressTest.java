@@ -17,25 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
+import org.jmock.Expectations;
+import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
-
-import org.jmock.Expectations;
-
-import org.junit.Before;
+import org.openqa.selenium.testing.MockTestBase;
 
 /**
  * Tests the long press action.
@@ -59,8 +48,6 @@ public class TouchLongPressTest extends MockTestBase {
     };
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @Test
   public void testCanLongPress() {
     checking(new Expectations() {{

@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NeedsFreshDriver;
@@ -24,29 +27,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 /**
  * Tests the basic flick operations on touch enabled devices.
  */
-public class TouchFlickTest extends JUnit4TestBase {
+public class TouchFlickTest extends TouchTestBase {
   
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFromWebElement() {
@@ -68,8 +58,6 @@ public class TouchFlickTest extends JUnit4TestBase {
     assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFastFromWebElement() {
@@ -90,8 +78,6 @@ public class TouchFlickTest extends JUnit4TestBase {
     assertTrue("Expected x < 3500, but got: " + x, x < 3500);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontally() {
@@ -111,9 +97,8 @@ public class TouchFlickTest extends JUnit4TestBase {
     assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE, ANDROID},
-      reason = "TouchScreen operations not supported, Android flick's can result in different "
-          + "offsets")
+  @Ignore(value = {ANDROID},
+      reason = "Android flick's can result in different offsets")
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFast() {
@@ -132,8 +117,6 @@ public class TouchFlickTest extends JUnit4TestBase {
     assertTrue("Got: " + x, x < 3000);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanFlickVerticallyFromWebElement() {
@@ -154,8 +137,6 @@ public class TouchFlickTest extends JUnit4TestBase {
     assertTrue("Expected y < 4000, but got: " + y, y < 4000);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanFlickVerticallyFastFromWebElement() {
@@ -176,8 +157,6 @@ public class TouchFlickTest extends JUnit4TestBase {
     assertTrue("Expected y < 8700, but got: " + y, y < 8700);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanFlickVertically() {
@@ -197,8 +176,6 @@ public class TouchFlickTest extends JUnit4TestBase {
     assertTrue("Got: " + y, y < 4200);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-      reason = "TouchScreen operations not supported")
   @NeedsFreshDriver
   @Test
   public void testCanFlickVerticallyFast() {
