@@ -48,7 +48,7 @@ js_binary(name = "webdriver",
   flags = [
     "--generate_exports",
     "--third_party=false",
-    "--output_wrapper='(function(){%output%;for(var key in webdriver)this[key]=webdriver[key];delete this.webdriver;}).call(typeof exports!=='undefined'&&exports===this?exports:this.webdriver=this.webdriver||{})'"
+    "--output_wrapper='(function(){%output%;for(var key in webdriver)this[key]=webdriver[key];delete this.webdriver;}).call(typeof exports==typeof {}&&exports===this?exports:this.webdriver=this.webdriver||{})'"
   ])
 
 js_test(name = "test",
