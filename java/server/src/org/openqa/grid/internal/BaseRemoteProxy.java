@@ -130,7 +130,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = remoteHost.toExternalForm();
     }
 
-    maxConcurrentSession = (Integer) getConfigInteger(RegistrationRequest.MAX_SESSION);
+    maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
     timeOut = getConfigInteger(RegistrationRequest.TIME_OUT);
 
@@ -162,7 +162,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   private Integer getConfigInteger(String key){
-    Object o = this.config.get(RegistrationRequest.TIME_OUT);
+    Object o = this.config.get(key);
     if (o instanceof String){
       return Integer.parseInt((String)o);
     }

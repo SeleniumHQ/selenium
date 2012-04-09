@@ -159,6 +159,15 @@ public class GridHubConfiguration {
 
   public void loadFromCommandLine(String[] args) {
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
+
+
+    // storing them all.
+    List<String> params = helper.getKeys();
+    for (String param : params) {
+      String cleanParam = param.replaceFirst("-", "");
+      String value = helper.getParamValue(param);
+      allParams.put(cleanParam, value);
+    }
     // handle the core config.
     if (helper.isParamPresent("-host")) {
       host = helper.getParamValue("-host");
@@ -169,11 +178,11 @@ public class GridHubConfiguration {
     if (helper.isParamPresent("-cleanUpCycle")) {
       cleanupCycle = Integer.parseInt(helper.getParamValue("-cleanUpCycle"));
     }
-    if (helper.isParamPresent(CLIENT_TIMEOUT.getKey())) {
-      setTimeout(Integer.parseInt(helper.getParamValue(CLIENT_TIMEOUT.getKey())));
+    if (helper.isParamPresent(CLIENT_TIMEOUT.getAsParam())) {
+      setTimeout(Integer.parseInt(helper.getParamValue(CLIENT_TIMEOUT.getAsParam())) * 1000);
     }
-    if (helper.isParamPresent(BROWSER_TIMEOUT.getKey())) {
-      setBrowserTimeout(Integer.parseInt(helper.getParamValue(BROWSER_TIMEOUT.getKey())));
+    if (helper.isParamPresent(BROWSER_TIMEOUT.getAsParam())) {
+      setBrowserTimeout(Integer.parseInt(helper.getParamValue(BROWSER_TIMEOUT.getAsParam())) * 1000);
     }
     if (helper.isParamPresent("-newSessionWaitTimeout")) {
       newSessionWaitTimeout = Integer.parseInt(helper.getParamValue("-newSessionWaitTimeout"));
@@ -193,14 +202,6 @@ public class GridHubConfiguration {
     }
     if (helper.isParamPresent("-log")) {
       logFilename = helper.getParamValue("-log");
-    }
-
-    // storing them all.
-    List<String> params = helper.getKeys();
-    for (String param : params) {
-      String cleanParam = param.replaceFirst("-", "");
-      String value = helper.getParamValue(param);
-      allParams.put(cleanParam, value);
     }
 
   }

@@ -18,5 +18,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/snakeyaml"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/testng"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/selenium-standalone"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>

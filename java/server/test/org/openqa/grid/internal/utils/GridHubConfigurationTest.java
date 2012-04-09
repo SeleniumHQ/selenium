@@ -40,4 +40,13 @@ public class GridHubConfigurationTest {
     assertEquals(1233,gridHubConfiguration.getAllParams().get(BROWSER_TIMEOUT.getKey()));
 
   }
+
+  @Test
+  public void commandLineParsing() throws Exception {
+    GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
+    String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
+    gridHubConfiguration.loadFromCommandLine(args);
+    assertEquals(32123000, gridHubConfiguration.getTimeout());
+    assertEquals(456000, gridHubConfiguration.getBrowserTimeout());
+  }
 }

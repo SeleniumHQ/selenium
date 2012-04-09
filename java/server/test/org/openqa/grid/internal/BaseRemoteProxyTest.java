@@ -137,8 +137,17 @@ public class BaseRemoteProxyTest {
     Assert.assertEquals("abc", p.getId());
 
   }
-  
-  
+
+  @Test
+  public void timeouts() {
+    String remoteHost ="http://machine1:5555";
+    Registry registry = Registry.newInstance();
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc", "-timeout", "23", "-browserTimeout", "12");
+    req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+    Assert.assertEquals( 23, p.getTimeOut());
+  }
+
 
   @AfterClass
   public static void teardown() {
