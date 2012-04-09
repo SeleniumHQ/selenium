@@ -94,7 +94,7 @@ public class WindowTest extends JUnit4TestBase {
     waitFor(yEqual(driver, targetPosition));
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
   @Test
   public void testCanMaximizeTheWindow() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
