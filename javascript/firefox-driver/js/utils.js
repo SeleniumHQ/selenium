@@ -1320,10 +1320,16 @@ Utils.getPageUnloadedIndicator = function(element) {
 Utils.removePageUnloadEventListener = function(element, pageUnloadData) {
   if (pageUnloadData.callback) {
     // Remove event listeners...
-    element.ownerDocument.body.removeEventListener("unload",
-        pageUnloadData.callback, false);
-    element.ownerDocument.defaultView.removeEventListener("pagehide",
-      pageUnloadData.callback, false);
+    if (element.ownerDocument) {
+      if (element.ownerDocument.body) {
+        element.ownerDocument.body.removeEventListener("unload",
+            pageUnloadData.callback, false);
+      }
+      if (element.ownerDocument.defaultView) {
+	element.ownerDocument.defaultView.removeEventListener("pagehide",
+	    pageUnloadData.callback, false);
+      }
+    }
   }
 };
 
