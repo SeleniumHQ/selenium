@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class SessionTimesOutTest {

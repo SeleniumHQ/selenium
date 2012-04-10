@@ -45,11 +45,6 @@ public class DefaultDriverFactory implements DriverFactory {
     return capabilitiesToDriver.get(bestMatchingCapabilities);
   }
 
-  private boolean matches(String value, String value2) {
-    // We don't match on null
-    return value != null && value.equals(value2);
-  }
-
   public WebDriver newInstance(Capabilities capabilities) {
     Class<? extends WebDriver> clazz = getBestMatchFor(capabilities);
 

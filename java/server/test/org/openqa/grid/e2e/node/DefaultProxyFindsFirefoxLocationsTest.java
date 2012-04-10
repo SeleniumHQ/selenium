@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jmock.Mockery;
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;

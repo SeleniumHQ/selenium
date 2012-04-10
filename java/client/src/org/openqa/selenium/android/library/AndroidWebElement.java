@@ -47,8 +47,6 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Represents an Android HTML element.
@@ -412,31 +410,6 @@ public class AndroidWebElement implements WebElement,
 
   public boolean isDisplayed() {
     return (Boolean) driver.executeAtom(AndroidAtoms.IS_DISPLAYED.getValue(), this);
-  }
-
-  /**
-   * Converts a String of a color to hexadecimal.
-   */
-  private String rgbToHex(final String value) {
-    if ("rgba(0, 0, 0, 0)".equals(value)) {
-      return "transparent";
-    }
-    final Pattern rgb = Pattern.compile("rgb\\((\\d{1,3}),\\s(\\d{1,3}),\\s(\\d{1,3})\\)");
-    final Matcher matcher = rgb.matcher(value);
-    if (matcher.find()) {
-      String hex = "#";
-      for (int i = 1; i <= 3; i++) {
-        int colour = Integer.parseInt(matcher.group(i));
-        String s = Integer.toHexString(colour);
-        if (s.length() == 1) {
-          s = "0" + s;
-        }
-        hex += s;
-      }
-      hex = hex.toLowerCase();
-      return hex;
-    }
-    return value;
   }
 
   public WebDriver getWrappedDriver() {

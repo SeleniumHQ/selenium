@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
-import org.openqa.selenium.remote.server.handler.SessionNotFoundException;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;

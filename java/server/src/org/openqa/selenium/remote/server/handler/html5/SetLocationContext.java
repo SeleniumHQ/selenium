@@ -25,7 +25,6 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class SetLocationContext extends WebDriverHandler implements JsonParametersAware {
   private volatile Location location;

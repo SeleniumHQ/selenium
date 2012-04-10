@@ -1,8 +1,6 @@
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
 import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
 import java.util.HashMap;
 import java.util.Map;

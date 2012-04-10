@@ -18,7 +18,6 @@ package org.openqa.selenium.remote.server.testing;
 
 import com.google.common.collect.Maps;
 
-import org.jmock.Mockery;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
@@ -30,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class StaticTestSessions implements DriverSessions {
 

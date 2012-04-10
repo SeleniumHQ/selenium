@@ -30,9 +30,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
-import org.openqa.grid.web.servlet.handler.RequestType;
 
 
 public class PriorityTest {
