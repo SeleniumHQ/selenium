@@ -18,13 +18,13 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.apache.commons.io.IOUtils;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.io.ByteStreams;
 
 /**
  * wrapper around a selenium http request that helps accessing the internal 
@@ -78,7 +78,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     super(httpServletRequest);
     try {
       InputStream is = super.getInputStream();
-      setBody( IOUtils.toByteArray(is));
+      setBody(ByteStreams.toByteArray(is));
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
