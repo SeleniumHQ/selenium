@@ -99,6 +99,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
     switch (detect) {
       case android:
+      case android_real_phone:
         caps = DesiredCapabilities.android();
         break;
 

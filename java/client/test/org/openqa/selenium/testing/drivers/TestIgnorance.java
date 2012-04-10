@@ -166,6 +166,7 @@ public class TestIgnorance {
 
     switch (browser) {
       case android:
+      case android_real_phone:
         comparator.addDriver(ANDROID);
         comparator.addDriver(REMOTE);
         break;

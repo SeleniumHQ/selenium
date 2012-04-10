@@ -65,15 +65,10 @@ public class Jetty7AppServer implements AppServer {
   private final String hostName;
 
   public Jetty7AppServer() {
-    this(getHostname());
+    this(detectHostname());
   }
 
-  private static String getHostname() {
-    if (Browser.detect() == Browser.android) {
-      INetAddress address = networkUtils.getIp4NonLoopbackAddressOfThisMachine();
-      return address.getHostName();
-    }
-    
+  public static String detectHostname() {
     String hostnameFromProperty = System.getenv(HOSTNAME_FOR_TEST_ENV_NAME);
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
   }
@@ -273,7 +268,7 @@ public class Jetty7AppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    Jetty7AppServer server = new Jetty7AppServer(getHostname());
+    Jetty7AppServer server = new Jetty7AppServer(detectHostname());
     server.listenOn(2310);
     System.out.println("Starting server on port 2310");
     server.listenSecurelyOn(2410);

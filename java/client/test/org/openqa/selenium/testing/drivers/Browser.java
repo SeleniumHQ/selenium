@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 public enum Browser {
   android,
+  android_real_phone,
   chrome,
   ff,
   htmlunit {
