@@ -29,13 +29,13 @@ import java.util.logging.Logger;
 class SessionCleaner extends Thread {   // Thread safety reviewed
 
   private final DriverSessions driverSessions;
-  private final int clientGoneTimeout;
-  private final int insideBrowserTimeout;
-  private final int sleepInterval;
+  private final long clientGoneTimeout;
+  private final long insideBrowserTimeout;
+  private final long sleepInterval;
   private final Logger log;
   private volatile boolean running = true;
 
-  SessionCleaner(DriverSessions driverSessions, Logger log, int clientGoneTimeout, int insideBrowserTimeout) {
+  SessionCleaner(DriverSessions driverSessions, Logger log, long clientGoneTimeout, long insideBrowserTimeout) {
     super("DriverServlet Session Cleaner");
     this.log = log;
     this.clientGoneTimeout = clientGoneTimeout;
@@ -48,7 +48,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
       log.warning("The specified browser timeout is TOO LOW for safe operations and may have"+
                   "other side-effects\n. Please specify a slightly higher browserTimeout.");
     }
-    int lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
+    long lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
                                   clientGoneTimeout > 0 ? clientGoneTimeout : insideBrowserTimeout);
     this.sleepInterval = lowestNonZero / 10;
   }

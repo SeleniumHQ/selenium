@@ -360,11 +360,22 @@ public class SeleniumServer implements SslCertificateGenerator {
     return driverContext;
   }
 
-  private HttpContext createWebDriverRemoteContext(DriverSessions webdrDriverSessions) {
+  private HttpContext createWebDriverRemoteContext(DriverSessions webDriverSessions) {
     HttpContext webdriverContext = new HttpContext();
 
-    webdriverContext.setAttribute(RemoteControlConfiguration.KEY, configuration);
-    webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, webdrDriverSessions);
+    long sessionTimeout = configuration.getTimeoutInSeconds();
+    if (sessionTimeout == 0) {
+      sessionTimeout = -1;
+    }
+    long browserTimeout = configuration.getBrowserTimeoutInMs();
+    if (browserTimeout == 0) {
+      browserTimeout = -1;
+    } else {
+      browserTimeout /= 1000;
+    }
+    webdriverContext.setInitParameter("webdriver.server.session.timeout", String.valueOf(sessionTimeout));
+    webdriverContext.setInitParameter("webdriver.server.browser.timeout", String.valueOf(browserTimeout));
+    webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, webDriverSessions);
     webdriverContext.setContextPath("/wd");
     ServletHandler handler = new ServletHandler();
     handler.addServlet("WebDriver remote server", "/hub/*", DriverServlet.class.getName());

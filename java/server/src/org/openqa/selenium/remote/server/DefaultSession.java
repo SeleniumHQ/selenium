@@ -128,7 +128,7 @@ public class DefaultSession implements Session {
     lastAccess = System.currentTimeMillis();
   }
 
-  public boolean isTimedOut(int timeout) {
+  public boolean isTimedOut(long timeout) {
     return timeout > 0 && (lastAccess + timeout) < System.currentTimeMillis();
   }
 

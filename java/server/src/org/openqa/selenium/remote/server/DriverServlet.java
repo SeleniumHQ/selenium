@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -144,7 +145,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRenderer;
 import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
@@ -183,14 +183,8 @@ public class DriverServlet extends HttpServlet {
     DriverSessions driverSessions = sessionsSupplier.get();
     setupMappings(driverSessions, logger);
 
-    RemoteControlConfiguration rcc =
-        (RemoteControlConfiguration) getServletContext().getAttribute(RemoteControlConfiguration.KEY);
-    int configSessionTimeoutMs = rcc == null ? -1 : (int)rcc.getTimeoutInMs();
-    int configBrowserTimeoutMs = rcc == null ? -1 : rcc.getBrowserTimeoutInMs();
-
-    int sessionTimeOutInMs =
-        getValueToUseInMs("webdriver.server.session.timeout", configSessionTimeoutMs, 1800);
-    int browserTimeoutInMs = getValueToUseInMs(configBrowserTimeoutMs, 0);
+    long sessionTimeOutInMs = getValueToUseInMs("webdriver.server.session.timeout", 1800);
+    long browserTimeoutInMs = getValueToUseInMs("webdriver.server.browser.timeout", 0);
 
     if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
       sessionCleaner = new SessionCleaner(driverSessions, logger, sessionTimeOutInMs, browserTimeoutInMs);
@@ -198,18 +192,15 @@ public class DriverServlet extends HttpServlet {
     }
   }
 
-  private int getValueToUseInMs(String sysPropName, int rccTimeOutMs, int defaultValueIfAllElse) {
-    final String property = System.getProperty(sysPropName);
-    if (property == null){
-      return getValueToUseInMs(rccTimeOutMs, defaultValueIfAllElse);
-    } else {
-      return Integer.parseInt(property) * 1000;
+  private long getValueToUseInMs(String propertyName, long defaultValue) {
+    long time = defaultValue;
+    final String property = getInitParameter(propertyName);
+    if (property != null) {
+      time = Long.parseLong(property);
     }
-  }
 
-    private int getValueToUseInMs(int rccTimeOutMs, int defaultValueIfAllElse) {
-        return (rccTimeOutMs > 0) ? rccTimeOutMs : defaultValueIfAllElse * 1000;
-    }
+    return TimeUnit.SECONDS.toMillis(time);
+  }
 
     @Override
   public void destroy() {

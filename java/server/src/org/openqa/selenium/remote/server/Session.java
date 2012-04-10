@@ -40,7 +40,7 @@ public interface Session {
 
   String getAndClearScreenshot();
 
-  boolean isTimedOut(int timeout);
+  boolean isTimedOut(long timeout);
 
     /**
      * Indicates that the session is in use at this moment (being forwarded to browser)
