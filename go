@@ -13,5 +13,5 @@ esac
 unset GEM_HOME
 unset GEM_PATH
 
-java $JAVA_OPTS -Xmx1024m -XX:MaxPermSize=384m -XX:ReservedCodeCacheSize=128m -jar third_party/jruby/jruby-complete.jar -X-C -S rake $*
+java $JAVA_OPTS -Xmx900m -XX:MaxPermSize=384m -XX:ReservedCodeCacheSize=128m -jar third_party/jruby/jruby-complete.jar -X-C -S rake $*
 
