@@ -367,7 +367,7 @@ module Javascript
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
         
-        all_srcs = args[:srcs].nil? ? [] : args[:srcs].collect{|src| Dir[File.join(dir, src)]}
+        all_srcs = args[:srcs].nil? ? js_files : args[:srcs].collect{|src| Dir[File.join(dir, src)]}
         all_srcs = all_srcs.flatten.collect{|src| File.expand_path(src)}
         all_deps = calc_deps(all_srcs.flatten, js_files)
 
