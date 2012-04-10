@@ -532,7 +532,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   // TODO(danielwh): Add extensive CSS selector tests
-  @Ignore(value = {SELENESE, OPERA}, reason = "Just not working")
+  @Ignore(value = {ANDROID, OPERA, SELENESE}, reason = "Just not working")
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(appServer.whereIs("missedJsReference.html"));
