@@ -19,15 +19,17 @@ package org.openqa.selenium;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -503,14 +505,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
 
-    File jqueryFile = new File("common/src/web/jquery-1.3.2.js");
-    if (!jqueryFile.isFile()) {
-      jqueryFile = new File("../common/src/web/jquery-1.3.2.js");
-      if (!jqueryFile.isFile()) {
-        jqueryFile = new File("../../common/src/web/jquery-1.3.2.js");
-      }
-    }
-    String jquery = FileUtils.readFileToString(jqueryFile, "US-ASCII");
+    File jqueryFile = InProject.locate("common/src/web/jquery-1.3.2.js");
+    String jquery = Files.toString(jqueryFile, Charset.forName("US-ASCII"));
     assertTrue("The javascript code should be at least 50 KB.", jquery.length() > 50000);
     // This should not throw an exception ...
     executeScript(jquery);

@@ -26,7 +26,6 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
@@ -34,6 +33,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
@@ -456,7 +456,7 @@ public class FirefoxProfile {
       return;
     }
 
-    FileUtils.copyDirectory(sourceDir, profileDir);
+    FileHandler.copy(sourceDir, profileDir);
   }
 
   protected void installExtensions(File parentDir) throws IOException {
