@@ -24,12 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// Adding this as I remove the native events data from the Ignore. This is not
-// currently wired up into the TestIgnorance, but could be with minimal effort.
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface NativeEventsRequired {
-  boolean enabled() default true;
   Platform[] onlyOn() default {Platform.ANY};
 }
