@@ -726,7 +726,7 @@ Note that this is a platform-independent method of activating IME
       Post('''Change focus to another frame on the page. If the frame ID is \
 `null`, the server
 should switch to the page's default content.''').
-      AddJsonParameter('id', '{string|number|null}',
+      AddJsonParameter('id', '{string|number|null|WebElement JSON Object}',
                        'Identifier for the frame to change focus to.').
       AddError('NoSuchFrame', 'If the frame specified by `id` cannot be found.'))
 
