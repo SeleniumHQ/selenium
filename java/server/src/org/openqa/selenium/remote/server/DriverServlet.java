@@ -185,10 +185,12 @@ public class DriverServlet extends HttpServlet {
 
     RemoteControlConfiguration rcc =
         (RemoteControlConfiguration) getServletContext().getAttribute(RemoteControlConfiguration.KEY);
+    int configSessionTimeoutMs = rcc == null ? -1 : (int)rcc.getTimeoutInMs();
+    int configBrowserTimeoutMs = rcc == null ? -1 : rcc.getBrowserTimeoutInMs();
 
     int sessionTimeOutInMs =
-        getValueToUseInMs("webdriver.server.session.timeout", (int)rcc.getTimeoutInMs(), 1800);
-    int browserTimeoutInMs = getValueToUseInMs(rcc.getBrowserTimeoutInMs(), 0);
+        getValueToUseInMs("webdriver.server.session.timeout", configSessionTimeoutMs, 1800);
+    int browserTimeoutInMs = getValueToUseInMs(configBrowserTimeoutMs, 0);
 
     if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
       sessionCleaner = new SessionCleaner(driverSessions, logger, sessionTimeOutInMs, browserTimeoutInMs);
