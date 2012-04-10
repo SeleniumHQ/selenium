@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.server;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
 
+import junit.framework.Assert;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONException;
@@ -35,6 +37,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.seleniumhq.jetty7.server.handler.ContextHandler;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -53,6 +56,8 @@ public class DriverServletTest {
   private Mockery mockery;
   private TestSessions testSessions;
   private DriverServlet driverServlet;
+  private long clientTimeout;
+  private long browserTimeout;
 
   @Before
   public void setUp() throws ServletException {
@@ -72,8 +77,18 @@ public class DriverServletTest {
       @Override
       public ServletContext getServletContext() {
         final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
-        servletContext.setAttribute(RemoteControlConfiguration.KEY, new RemoteControlConfiguration());
+        servletContext.setInitParameter("webdriver.server.session.timeout", "18");
+        servletContext.setInitParameter("webdriver.server.browser.timeout", "2");
+        servletContext.setAttribute(RemoteControlConfiguration.KEY,
+                                    new RemoteControlConfiguration());
         return servletContext;
+      }
+
+      @Override
+      protected void createSessionCleaner(Logger logger, DriverSessions driverSessions,
+                                          long sessionTimeOutInMs, long browserTimeoutInMs) {
+        clientTimeout = sessionTimeOutInMs;
+        browserTimeout = browserTimeoutInMs;
       }
     };
     driverServlet.init();
@@ -198,4 +213,11 @@ public class DriverServletTest {
       }
     };
   }
+
+  @Test
+  public void timeouts() throws IOException, ServletException, JSONException {
+    Assert.assertEquals(2000, browserTimeout);
+    Assert.assertEquals(18000, clientTimeout);
+  }
+
 }

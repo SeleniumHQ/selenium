@@ -187,14 +187,20 @@ public class DriverServlet extends HttpServlet {
     long browserTimeoutInMs = getValueToUseInMs("webdriver.server.browser.timeout", 0);
 
     if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
-      sessionCleaner = new SessionCleaner(driverSessions, logger, sessionTimeOutInMs, browserTimeoutInMs);
-      sessionCleaner.start();
+      createSessionCleaner(logger, driverSessions, sessionTimeOutInMs, browserTimeoutInMs);
     }
+  }
+
+  @VisibleForTesting
+  protected void createSessionCleaner(Logger logger, DriverSessions driverSessions,
+                                    long sessionTimeOutInMs, long browserTimeoutInMs) {
+    sessionCleaner = new SessionCleaner(driverSessions, logger, sessionTimeOutInMs, browserTimeoutInMs);
+    sessionCleaner.start();
   }
 
   private long getValueToUseInMs(String propertyName, long defaultValue) {
     long time = defaultValue;
-    final String property = getInitParameter(propertyName);
+    final String property = getServletContext().getInitParameter(propertyName);
     if (property != null) {
       time = Long.parseLong(property);
     }
