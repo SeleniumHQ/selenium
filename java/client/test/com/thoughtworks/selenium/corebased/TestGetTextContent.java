@@ -3,8 +3,6 @@ package com.thoughtworks.selenium.corebased;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.drivers.BackedBy;
-import org.openqa.selenium.testing.drivers.Browser;
 
 import static org.openqa.selenium.testing.drivers.BackedBy.*;
 import static org.openqa.selenium.testing.drivers.Browser.*;

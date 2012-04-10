@@ -16,7 +16,6 @@
 package org.openqa.selenium.android.library;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;

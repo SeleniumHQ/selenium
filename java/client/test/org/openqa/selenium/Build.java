@@ -9,7 +9,6 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.BufferedReader;

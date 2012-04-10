@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import com.google.common.base.Splitter;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;

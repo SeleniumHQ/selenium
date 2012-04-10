@@ -1,7 +1,5 @@
 package com.thoughtworks.selenium;
 
-import org.openqa.selenium.Capabilities;
-
 import junit.framework.TestCase;
 
 public class BrowserConfigurationOptionsTest extends TestCase {

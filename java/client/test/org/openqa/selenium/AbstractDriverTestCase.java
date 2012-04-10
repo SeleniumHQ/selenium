@@ -28,9 +28,6 @@ import org.openqa.selenium.environment.webserver.AppServer;
 
 import junit.framework.TestCase;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 /**
  * @deprecated Please migrate tests to inherit from JUnit4TestBase and add them to the
  *    StandardSeleniumTests.

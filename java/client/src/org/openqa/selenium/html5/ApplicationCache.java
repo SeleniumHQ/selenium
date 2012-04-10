@@ -17,10 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import org.openqa.selenium.WebDriverException;
-
-import java.util.List;
-
 public interface ApplicationCache {
   /**
    * The current state of the application cache.

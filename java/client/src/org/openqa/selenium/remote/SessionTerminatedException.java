@@ -17,8 +17,6 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.WebDriverException;
 
-import java.io.IOException;
-
 /**
  * Indicates that the session was terminated by the server
  */

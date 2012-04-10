@@ -32,11 +32,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
   private static Logger log = Logger.getLogger(InternetExplorerDriver.class.getName());

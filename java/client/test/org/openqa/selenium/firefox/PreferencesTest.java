@@ -24,8 +24,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openqa.selenium.testing.SeleniumTestRunner;
 
 import java.io.Reader;
 import java.io.StringReader;

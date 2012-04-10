@@ -26,7 +26,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -4,11 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.SeleniumTestRunner;
 
 import java.io.File;
 
