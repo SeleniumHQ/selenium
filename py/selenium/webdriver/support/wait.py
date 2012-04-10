@@ -63,8 +63,8 @@ class WebDriverWait(object):
           while(True):
               try:
                   value = method(self._driver)
-                  if value:
-                      pass
+                  if not value:
+                      return value
               except NoSuchElementException:
                   return True
               time.sleep(self._poll)

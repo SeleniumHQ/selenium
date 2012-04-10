@@ -102,6 +102,10 @@ class WebDriverWaitTest(unittest.TestCase):
         elements = WebDriverWait(self.driver, 0).until(elements_exists)
         self.assertTrue(len(elements) >= 1)
 
+    def testWaitUntilNotReturnsIfEvaluatesToFalse(self):
+        falsum = lambda driver: False
+        self.assertFalse(WebDriverWait(self.driver, 1).until_not(falsum))
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
 
