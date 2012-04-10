@@ -136,7 +136,8 @@ public class NewProfileExtensionConnection implements ExtensionConnection {
 
     for (newport = port; newport < port + 200; newport++) {
       Socket socket = new Socket();
-      InetSocketAddress address = new InetSocketAddress("localhost", newport);
+      InetSocketAddress address = new InetSocketAddress(networkUtils.obtainLoopbackIp4Address(),
+                                                        newport);
 
       try {
         socket.bind(address);
