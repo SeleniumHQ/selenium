@@ -54,7 +54,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   // timed out. -1 means we never run the cleanup cycle. By default there is
   // no timeout
   private final int cleanUpCycle;
-  private final int timeOut;
+  private final int timeOutMs;
 
   private static final Logger log = Logger.getLogger(BaseRemoteProxy.class.getName());
 
@@ -132,7 +132,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
     maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
-    timeOut = getConfigInteger(RegistrationRequest.TIME_OUT);
+    timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT);
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
@@ -205,7 +205,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   public void setupTimeoutListener() {
     cleanUpThread = null;
     if (this instanceof TimeoutListener) {
-      if (cleanUpCycle > 0 && timeOut > 0) {
+      if (cleanUpCycle > 0 && timeOutMs > 0) {
         log.fine("starting cleanup thread");
         cleanUpThread = new CleanUpThread(this);
         new Thread(cleanUpThread, "RemoteProxy CleanUpThread")
@@ -289,7 +289,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       TestSession session = slot.getSession();
       if (session != null) {
         long inactivity = session.getInactivityTime();
-        boolean hasTimedOut = inactivity > timeOut*1000;
+        boolean hasTimedOut = inactivity > timeOutMs;
         if (hasTimedOut) {
           if (!session.isForwardingRequest()) {
             log.logp(Level.WARNING, "SessionCleanup", null,
@@ -456,7 +456,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   @Override
   public String toString() {
-    return "host :" + getRemoteHost() + (timeOut != -1 ? " time out : " + timeOut : "");
+    return "host :" + getRemoteHost() + (timeOutMs != -1 ? " time out : " + timeOutMs : "");
   }
 
   private final HtmlRenderer renderer = new DefaultHtmlRenderer(this);
@@ -466,7 +466,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   public int getTimeOut() {
-    return timeOut;
+    return timeOutMs;
   }
 
 
