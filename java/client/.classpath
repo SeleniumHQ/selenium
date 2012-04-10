@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/guava-libraries"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/operadriver"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/simple-json"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/testng"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/cglib"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-io"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-exec"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-httpclient"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/easymock"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hamcrest"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/htmlunit"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jmock"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jna"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/android"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-lang"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logging"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-codec"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-collections"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/cssparser"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/nekohtml"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/sac"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/webbit"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/xml-apis"/>
+	<classpathentry kind="lib" path="/third-party/java/junit/junit-dep-4.10.jar" sourcepath="/third-party/java/junit/junit-dep-4.10-src.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-core-1.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-library-1.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.0.1-nobsh-noguice.jar" sourcepath="/third-party/java/testng/testng-6.0.1-nobsh-noguice-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-11.0.1.jar" sourcepath="/third-party/java/guava-libraries/guava-11.0.1-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-2.9.jar" sourcepath="/third-party/java/htmlunit/htmlunit-2.9-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.9.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jna/jna-3.4.0.jar" sourcepath="/third-party/java/jna/jna-3.4.0-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jna/jna-platform-3.4.0.jar" sourcepath="/third-party/java/jna/jna-platform-3.4.0-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-exec/commons-exec-1.1.jar" sourcepath="/third-party/java/commons-exec/commons-exec-1.1-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.6-full.jar" sourcepath="/third-party/java/webbit/webbit-0.4.6-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked-7.6.1.jar" sourcepath="/third-party/java/jetty/jetty-repacked-7.6.1-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/cglib/cglib-nodep-2.1_3.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/json/json-20080701.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar" sourcepath="/third-party/java/servlet-api/servlet-api-2.5-6.1.9-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/easymock/easymock-2.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/easymock/easymockclassextension-2.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-2.5.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-junit4-2.5.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opera-driver/operadriver-v0.11.jar" sourcepath="/third-party/java/opera-driver/operadriver-v0.11-source.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpclient-4.1.3.jar" sourcepath="/third-party/java/apache-httpclient/httpclient-4.1.3-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpcore-4.1.3.jar" sourcepath="/third-party/java/apache-httpclient/httpcore-4.1.3-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/android/android-14.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>

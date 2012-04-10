@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Android 4.0.4 Platform"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/server"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty-android"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/android"/>
-	<classpathentry kind="output" path="build/production"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/third-party/java/android/android-14.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar" sourcepath="/third-party/java/servlet-api/servlet-api-2.5-6.1.9-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-lite-7.2.0-repackaged-for-android.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-11.0.1.jar" sourcepath="/third-party/java/guava-libraries/guava-11.0.1-src.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
