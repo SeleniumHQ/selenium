@@ -29,12 +29,12 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InternetExplorerDriver.cpp">
+    <ClCompile Include="IEDriverServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="InternetExplorerDriver.rc">
+    <ResourceCompile Include="IEDriverServer.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.IE
     /// </summary>
     public sealed class InternetExplorerDriverService : DriverService
     {
-        private const string InternetExplorerDriverServiceFileName = "InternetExplorerDriver.exe";
+        private const string InternetExplorerDriverServiceFileName = "IEDriverServer.exe";
         private const string InternetExplorerDriverDownloadUrl = "http://code.google.com/p/selenium/downloads/list";
 
         /// <summary>

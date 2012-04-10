@@ -191,8 +191,8 @@ visualc_library(name = "ie_win32_exe",
     ":ie_win32_dll"
   ],
   platform = "Win32",
-  project = "InternetExplorerDriver/InternetExplorerDriver.vcxproj",
-  out = "Win32/Release/InternetExplorerDriver.exe"
+  project = "InternetExplorerDriver/IEDriverServer.vcxproj",
+  out = "Win32/Release/IEDriverServer.exe"
 )
 
 visualc_library(name = "ie_x64_exe",
@@ -200,8 +200,8 @@ visualc_library(name = "ie_x64_exe",
     ":ie_x64_dll"
   ],
   platform = "x64",
-  project = "InternetExplorerDriver/InternetExplorerDriver.vcxproj",
-  out = "x64/Release/InternetExplorerDriver.exe"
+  project = "InternetExplorerDriver/IEDriverServer.vcxproj",
+  out = "x64/Release/IEDriverServer.exe"
 )
 
 js_fragment_header(name = "atoms",
