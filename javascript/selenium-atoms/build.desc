@@ -1,15 +1,12 @@
 
 js_deps(name = "deps",
-  srcs = [ "**/*.js" ],
+  srcs = [ "*.js" ],
   deps = [
     "//javascript/atoms:deps",
     "//javascript/webdriver/atoms:deps",
   ])
 
 js_binary(name = "selenium-atoms",
-  srcs = [
-    "**/*.js",
-  ],
   deps = [
     ":deps",
   ],
