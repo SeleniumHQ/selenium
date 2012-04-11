@@ -3,7 +3,7 @@ v2.21.0
 
 WebDriver:
   * Safaridriver has now been added !
-  * Issue 3489, Maximize/restore the browser window
+  * Issue 3489, maximize the browser window
   * Significant stability improvements in firefoxdriver.
   * Issue 3357 log-path for chromedriver
   * IE driver issue 3360
