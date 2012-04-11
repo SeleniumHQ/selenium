@@ -1,3 +1,28 @@
+v2.21.0
+=======
+ * Updated NoSuchFrameException, NoSuchWindowException, and
+   NoAlertPresentException to properly descend from NotFoundException
+   in the .NET bindings.
+ * Modifying .NET PageFactory so that elements marked with the FindBy 
+   attribute can be used with the interactions API.
+ * Updated Json.NET dependency to 4.5r1 and NuGet.exe to 1.7.
+ * Changed the name of the standalone IE driver server from 
+   InternetExplorerDriver.exe to IEDriverServer.exe
+ * Removed recently added restore window command from .NET bindings.
+ * Extracted FindFreePort method in .NET to a common utility class.
+ * Landed the .NET SafariDriver. Woot!
+ * Added a WebSocket server implementation.
+ * Implemented window maximize and restore WebDriver commands for the .NET
+   bindings.
+ * Fixed .NET FirefoxExtension to allow for parallel installation of extensions
+   into profiles being run by parallel tests.
+ * Fixed .NET RemoteWebDriver to translate a single null deliberately passed in
+   as a script arg into an arg array containing the null.
+ * Upped service point connection limit for Selenium RC command processor
+ * Fixed .NET EventFiring WebDriver to switch to a frame using the wrapped
+   element. Fixes issue #3329.
+ * Removed deprecated constructors on .NET bindings InternetExplorerDriver
+
 v2.20.0
 =======
  * No changes specific to the .NET bindings.
