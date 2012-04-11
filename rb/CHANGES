@@ -1,3 +1,20 @@
+2.21.0 (2012-04-11)
+===================
+
+* Add Selenium::WebDriver::Window#maximize (#3489)
+* Safari:
+  * New driver! See http://code.google.com/p/selenium/wiki/SafariDriver.
+* Firefox:
+  * Significant stability improvements.
+  * Native events support for Firefox 11
+  * Dropped native events support for Firefox 4-9
+  * Window maximize implementation.
+* IE:
+  * Ignore invisible dialogs (#3360).
+  * Window maximize implementation.
+* Android:
+  * Accept SSL certificates (#3504).
+
 2.20.0 (2012-02-28)
 ===================
 
