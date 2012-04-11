@@ -11,6 +11,8 @@ WebDriver:
   * Firefox issue 3559, max-connections-per-server
   * Issue 3520
   * Issue 2826
+  * Native events support for Firefox 11
+  * Dropped native events support for Firefoxes 4-9
 
 Grid:
   * Significant changes in the timeout strategy0 between hub, nodes and browser.
