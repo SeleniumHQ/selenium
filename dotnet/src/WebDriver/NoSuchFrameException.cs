@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when a frame is not found.
     /// </summary>
     [Serializable]
-    public class NoSuchFrameException : WebDriverException
+    public class NoSuchFrameException : NotFoundException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NoSuchFrameException"/> class.

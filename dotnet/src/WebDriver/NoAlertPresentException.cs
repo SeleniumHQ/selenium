@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when an alert is not found.
     /// </summary>
     [Serializable]
-    public class NoAlertPresentException : WebDriverException
+    public class NoAlertPresentException : NotFoundException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NoAlertPresentException"/> class.

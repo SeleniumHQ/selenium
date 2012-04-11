@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when a window is not found.
     /// </summary>
     [Serializable]
-    public class NoSuchWindowException : WebDriverException
+    public class NoSuchWindowException : NotFoundException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NoSuchWindowException"/> class.
