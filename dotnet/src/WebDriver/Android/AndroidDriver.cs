@@ -129,7 +129,7 @@ namespace OpenQA.Selenium.Android
 
         private static Uri GetDefaultUrl()
         {
-            return new Uri("http://localhost:8080/hub");
+            return new Uri("http://localhost:8080/wd/hub");
         }
 
         private static DesiredCapabilities GetAndroidCapabilities()
