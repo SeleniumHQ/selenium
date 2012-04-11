@@ -1,26 +1,38 @@
-v2.21.0 (In Progress)
+v2.21.0
 =======
 
 WebDriver:
+  * Safaridriver has now been added !
+  * Issue 3489, Maximize/restore the browser window
   * Significant stability improvements in firefoxdriver.
+  * Issue 3357 log-path for chromedriver
+  * IE driver issue 3360
+  * Android driver issue 3504
+  * Firefox issue 3559, max-connections-per-server
+  * Issue 3520
+  * Issue 2826
 
 Grid:
-  * Significant changes in the timeout strategy between hub, nodes and browser.
+  * Significant changes in the timeout strategy0 between hub, nodes and browser.
     See http://code.google.com/p/selenium/wiki/Grid2 section on timeouts.
     Compatibility note: It is recommended to at least update the nodes
     to 2.21. Upgrading only the hub will effectively disable the 
-    browser-death timeout.
-
-  * Content length issue solved
+    browser-death timeout and is *not* recommended.
+  * Improved error messages on console
+  * Content length issue solved, Issue 2362
+  * Issues 3328,3366
   * Improvements in thread dumps in both hub and node,
     possible to corrolate the two.
+  * Added hub api to query parameters
 
 Server:
-  * -Dwebdriver.server.browser.timeout=<timeoutInSeconds> added to
+  * -browserTimeout <timeoutInSeconds> added to
     differentiate between browser hang and client gone (which is
-    webdriver.server.session.timeout as before)
+    -timeout <timeout>)
+    - System property -Dselenium.server.timeout removed, use -timeout instead.
     See http://code.google.com/p/selenium/wiki/RemoteWebDriverServer 
     for further details.
+    * Issue 3577
 
 
 v2.20.0 
