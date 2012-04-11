@@ -1,3 +1,6 @@
+Selenium 2.21.1
+* focusmanager.testmode messes with native events, removing it.
+
 Selenium 2.21
 * Local File upload capabilities for non-remote browser 
 * Adding maximize_window api call
