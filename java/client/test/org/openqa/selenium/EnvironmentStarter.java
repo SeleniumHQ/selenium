@@ -25,7 +25,7 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 
 public class EnvironmentStarter extends TestSetup {
-
+  
   private TestEnvironment environment;
 
   public EnvironmentStarter(Test test) {
@@ -35,6 +35,7 @@ public class EnvironmentStarter extends TestSetup {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
+    
     if (GlobalTestEnvironment.get() == null) {
       environment = new InProcessTestEnvironment();
       GlobalTestEnvironment.set(environment);

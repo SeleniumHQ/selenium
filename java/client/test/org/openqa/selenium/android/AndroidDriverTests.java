@@ -17,13 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.android;
 
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.android.environment.AndroidTestEnvironment;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.TestEnvironment;
 
 /**
  * Unit tests suite for Android driver.
@@ -33,13 +29,4 @@ import org.openqa.selenium.environment.TestEnvironment;
     StandardSeleniumTests.class
 })
 public class AndroidDriverTests {
-
-  @BeforeClass
-  public static void startEnvironment() {
-    TestEnvironment env = GlobalTestEnvironment.get();
-    if (env != null) {
-      env.stop();
-    }
-    GlobalTestEnvironment.set(new AndroidTestEnvironment());
-  }
 }

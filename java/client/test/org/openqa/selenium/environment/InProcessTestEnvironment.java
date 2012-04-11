@@ -20,13 +20,16 @@ package org.openqa.selenium.environment;
 
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class InProcessTestEnvironment implements TestEnvironment {
 
   private AppServer appServer;
 
   public InProcessTestEnvironment() {
-    appServer = new Jetty7AppServer();
+    String servingHost = getServingHost();
+    appServer = servingHost == null ? new Jetty7AppServer() : new Jetty7AppServer(servingHost);
     appServer.start();
   }
 
@@ -40,5 +43,16 @@ public class InProcessTestEnvironment implements TestEnvironment {
 
   public static void main(String[] args) {
     new InProcessTestEnvironment();
+  }
+  
+  private String getServingHost() {
+    switch (Browser.detect()) {
+      case android:
+        return "10.0.2.2";
+      case android_real_phone:
+        return new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostName();
+      default:
+        return null;
+    }
   }
 }
