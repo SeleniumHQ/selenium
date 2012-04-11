@@ -65,6 +65,11 @@
       });
     }
 
+    // We don't care about sub-pixel resolution, but Macs seem to report it
+    function assertCoordinatesEqual(expected, actual) {
+      assertEquals(Math.floor(expected), Math.floor(actual));
+    }
+
     function setUp() {
       blurClicker();
     }
@@ -115,9 +120,8 @@
       // top left corner of the browser's content area
       var clickSize = goog.style.getSize(clicker);
       var clickPos = goog.style.getClientPosition(clicker);
-      assertEquals(clickedXY.x, Math.floor(clickPos.x + (clickSize.width / 2)));
-      assertEquals(clickedXY.y,
-                   Math.floor(clickPos.y + (clickSize.height / 2)));
+      assertCoordinatesEqual(clickedXY.x, clickPos.x + (clickSize.width / 2));
+      assertCoordinatesEqual(clickedXY.y, clickPos.y + (clickSize.height / 2));
     }
 
     var testClickShouldClickInTheMiddleOfAnElement = goog.partial(
@@ -145,8 +149,8 @@
       // Calculate the coordinates that should be clicked according to the
       // top left corner of the browser's content area
       var clickPos = goog.style.getClientPosition(clicker);
-      assertEquals(clickedXY.x, clickPos.x + coord.x);
-      assertEquals(clickedXY.y, clickPos.y + coord.y);
+      assertCoordinatesEqual(clickedXY.x, clickPos.x + coord.x);
+      assertCoordinatesEqual(clickedXY.y, clickPos.y + coord.y);
     }
 
     var testClickShouldClickTheCoordofAnElement = goog.partial(
@@ -173,8 +177,8 @@
       // Calculate the coordinates that should be clicked according to the
       // top left corner of the browser's content area
       var clickPos = goog.style.getClientPosition(clicker);
-      assertEquals(clickedXY.x, Math.floor(clickPos.x + coord.x));
-      assertEquals(clickedXY.y, Math.floor(clickPos.y + coord.y));
+      assertCoordinatesEqual(clickedXY.x, clickPos.x + coord.x);
+      assertCoordinatesEqual(clickedXY.y, clickPos.y + coord.y);
     }
 
     function testShouldGenerateTheCorrectClickSequence() {
