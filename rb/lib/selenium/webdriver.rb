@@ -31,7 +31,7 @@ module Selenium
     #
     # Create a new Driver instance with the correct bridge for the given browser
     #
-    # @param browser [:ie, :internet_explorer, :remote, :chrome, :firefox, :ff, :android, :iphone, :opera]
+    # @param browser [:ie, :internet_explorer, :remote, :chrome, :firefox, :ff, :android, :iphone, :opera, :safari]
     #   the driver type to use
     # @param *rest
     #   arguments passed to Bridge.new
@@ -45,6 +45,7 @@ module Selenium
     # @see Selenium::WebDriver::Android::Bridge
     # @see Selenium::WebDriver::IPhone::Bridge
     # @see Selenium::WebDriver::Opera::Bridge
+    # @see Selenium::WebDriver::Safari::Bridge
     #
     # @example
     #
