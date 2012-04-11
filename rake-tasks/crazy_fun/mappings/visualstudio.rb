@@ -411,7 +411,7 @@ module CrazyFunDotNet
   class PublishNuGetPackage < Tasks
     def handle(fun, dir, args)
       output_dir = "build/dotnet"
-      package_file = "#{output_dir}/nuget/#{args[:packageid]}.#{version}.nupkg"
+      package_file = "#{output_dir}/nuget/#{args[:packageid]}.#{version}.nupkg".gsub("/", Platform.dir_separator)
       task_name = task_name(dir, args[:name])
       desc "Publishes NuGet package for #{task_name} to NuGet Gallery"
       target = task "#{task_name}" do
