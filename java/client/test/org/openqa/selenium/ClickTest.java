@@ -173,7 +173,7 @@ public class ClickTest extends JUnit4TestBase {
   
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {IPHONE, OPERA, SELENESE}, reason = "Doesn't support multiple windows")
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE}, reason = "Doesn't support multiple windows")
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);

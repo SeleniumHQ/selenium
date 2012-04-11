@@ -46,7 +46,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-@Ignore({CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+@Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
