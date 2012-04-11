@@ -2,6 +2,7 @@ Selenium 2.21
 * Local File upload capabilities for non-remote browser 
 * Adding maximize_window api call
 * Updating default firefox profile to set focusmanager.testmode to true
+    see https://bugzilla.mozilla.org/show_bug.cgi?id=704583
 * bugs fixed: 3506, 3528, 3607
 
 Selenium 2.20
