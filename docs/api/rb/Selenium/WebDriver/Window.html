@@ -143,6 +143,30 @@ A new instance of Window.
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#maximize-instance_method" title="#maximize (instance method)">- (Object) <strong>maximize</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Maximize the current window.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#move_to-instance_method" title="#move_to (instance method)">- (Object) <strong>move_to</strong>(x, y) </a>
     
 
@@ -342,7 +366,47 @@ A new instance of Window
     
     
       <div class="method_details first">
-  <p class="signature first" id="move_to-instance_method">
+  <p class="signature first" id="maximize-instance_method">
+  
+    - (<tt>Object</tt>) <strong>maximize</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Maximize the current window
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/window.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_maximize'>maximize</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_maximizeWindow'>maximizeWindow</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="move_to-instance_method">
   
     - (<tt>Object</tt>) <strong>move_to</strong>(x, y) 
   
@@ -708,7 +772,7 @@ The new size.
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  8 17:38:19 2012 by 
+  Generated on Wed Apr 11 22:54:52 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>

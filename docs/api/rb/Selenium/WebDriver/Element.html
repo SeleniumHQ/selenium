@@ -237,7 +237,33 @@ Clear this element.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Click the element.
+Click this element.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#css_value-instance_method" title="#css_value (instance method)">- (Object) <strong>css_value</strong>(prop) </a>
+    
+
+    
+      (also: #style)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Get the value of the given CSS property.
 </p>
 </div></span>
   
@@ -510,30 +536,6 @@ Get the size of this element.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#style-instance_method" title="#style (instance method)">- (Object) <strong>style</strong>(prop) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>
-Get the value of the given CSS property.
-</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#submit-instance_method" title="#submit (instance method)">- (Object) <strong>submit</strong> </a>
     
 
@@ -572,7 +574,7 @@ Submit this element.
 
   
     <span class="summary_desc"><div class='inline'><p>
-Get the tag name of this element.
+Get the tag name of the element.
 </p>
 </div></span>
   
@@ -756,12 +758,12 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
       <pre class="lines">
 
 
-243
-244
-245</pre>
+268
+269
+270</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 243</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 268</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='lbrace'>{</span> <span class='symbol'>:ELEMENT</span> <span class='op'>=&gt;</span> <span class='ivar'>@id</span> <span class='rbrace'>}</span>
@@ -863,12 +865,12 @@ attribute value
       <pre class="lines">
 
 
-73
-74
-75</pre>
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 97</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_attribute'>attribute</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementAttribute'>getElementAttribute</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span>
@@ -903,12 +905,12 @@ Clear this element
       <pre class="lines">
 
 
-110
-111
-112</pre>
+134
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear'>clear</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_clearElement'>clearElement</span> <span class='ivar'>@id</span>
@@ -928,7 +930,105 @@ Clear this element
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Click the element
+Click this element. If this causes a new page to load, this method will
+attempt to block until the page has loaded.  At this point, you should 
+discard all references to this element and any further operations 
+performed on this element will raise a StaleElementReferenceError unless
+you know that the element and the page will still be present. If click()
+causes a new page to be loaded via an event or is done by  sending a native
+event then the method will <b>not</b> wait for it to be  loaded and the
+caller should verify that a new page has been loaded.
+</p>
+<p>
+There are some preconditions for an element to be clicked.  The element
+must be visible and it must have a height and width greater then 0.
+</p>
+<p>
+Equivalent to:
+</p>
+<pre class="code">
+  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Click on a button
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>button</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span></pre>
+    
+  </div>
+
+<h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>StaleElementReferenceError</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+if the element no longer exists as defined
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_clickElement'>clickElement</span> <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="css_value-instance_method">
+  
+    - (<tt>Object</tt>) <strong>css_value</strong>(prop) 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='style-instance_method'>style</span></span>
+    </span>
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Get the value of the given CSS property
+</p>
+<p>
+Note that shorthand CSS properties (e.g. background, font, border,
+border-top, margin, margin-top, padding, padding-top, list-style, outline,
+pause, cue) are not returned, in accordance with the DOM CSS2 specification
+- you should directly access the longhand properties (e.g.
+background-color) to access the desired values.
 </p>
 
 
@@ -937,21 +1037,28 @@ Click the element
 <div class="tags">
   
 
+  <h3>See Also:</h3>
+  <ul class="see">
+    
+      <li><a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration" target="_parent" title="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration">http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration</a></li>
+    
+  </ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-33
-34
-35</pre>
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 187</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span>
-  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_clickElement'>clickElement</span> <span class='ivar'>@id</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_css_value'>css_value</span><span class='lparen'>(</span><span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementValueOfCssProperty'>getElementValueOfCssProperty</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -996,12 +1103,12 @@ Is the element displayed?
       <pre class="lines">
 
 
-140
-141
-142</pre>
+164
+165
+166</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 164</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_displayed?'>displayed?</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementDisplayed'>isElementDisplayed</span> <span class='ivar'>@id</span>
@@ -1049,12 +1156,12 @@ Is the element enabled?
       <pre class="lines">
 
 
-120
-121
-122</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enabled?'>enabled?</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementEnabled'>isElementEnabled</span> <span class='ivar'>@id</span>
@@ -1158,12 +1265,12 @@ Get the location of this element.
       <pre class="lines">
 
 
-173
-174
-175</pre>
+198
+199
+200</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 173</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 198</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementLocation'>getElementLocation</span> <span class='ivar'>@id</span>
@@ -1212,12 +1319,12 @@ scrolled into view.
       <pre class="lines">
 
 
-183
-184
-185</pre>
+208
+209
+210</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 208</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location_once_scrolled_into_view'>location_once_scrolled_into_view</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span> <span class='ivar'>@id</span>
@@ -1256,12 +1363,12 @@ for SearchContext and execute_script
       <pre class="lines">
 
 
-222
-223
-224</pre>
+247
+248
+249</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 222</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 247</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
   <span class='ivar'>@id</span>
@@ -1309,12 +1416,12 @@ Is the element selected?
       <pre class="lines">
 
 
-130
-131
-132</pre>
+154
+155
+156</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 154</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_selected?'>selected?</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementSelected'>isElementSelected</span> <span class='ivar'>@id</span>
@@ -1382,12 +1489,12 @@ Examples:
       <pre class="lines">
 
 
-101
-102
-103</pre>
+125
+126
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_sendKeysToElement'>sendKeysToElement</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='const'>Keys</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -1435,69 +1542,15 @@ Get the size of this element
       <pre class="lines">
 
 
-193
-194
-195</pre>
+218
+219
+220</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 193</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 218</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementSize'>getElementSize</span> <span class='ivar'>@id</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <p class="signature " id="style-instance_method">
-  
-    - (<tt>Object</tt>) <strong>style</strong>(prop) 
-  
-
-  
-</p><div class="docstring">
-  <div class="discussion">
-    <p>
-Get the value of the given CSS property
-</p>
-<p>
-Note that shorthand CSS properties (e.g. background, font, border,
-border-top, margin, margin-top, padding, padding-top, list-style, outline,
-pause, cue) are not returned, in accordance with the DOM CSS2 specification
-- you should directly access the longhand properties (e.g.
-background-color) to access the desired values.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-  <h3>See Also:</h3>
-  <ul class="see">
-    
-      <li><a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration" target="_parent" title="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration">http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration</a></li>
-    
-  </ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-163
-164
-165</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 163</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_style'>style</span><span class='lparen'>(</span><span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementValueOfCssProperty'>getElementValueOfCssProperty</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1529,12 +1582,12 @@ Submit this element
       <pre class="lines">
 
 
-148
-149
-150</pre>
+172
+173
+174</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 172</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit'>submit</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_submitElement'>submitElement</span> <span class='ivar'>@id</span>
@@ -1554,7 +1607,7 @@ Submit this element
 </p><div class="docstring">
   <div class="discussion">
     <p>
-Get the tag name of this element
+Get the tag name of the element.
 </p>
 
 
@@ -1562,6 +1615,18 @@ Get the tag name of this element
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'><p>
+Get the tagname of an INPUT element(returns &#8220;input&#8221;)
+</p>
+</div></h4>
+      <pre class="example code">
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:xpath</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>//input</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tag_name'>tag_name</span></pre>
+    
+  </div>
+
 <h3>Returns:</h3>
 <ul class="return">
   
@@ -1571,6 +1636,12 @@ Get the tag name of this element
         <span class='type'>(<tt><span class='object_link'><a href="../../String.html" title="String (class)">String</a></span></tt>)</span>
       
       
+      
+        &mdash;
+        <div class='inline'><p>
+The tag name of this element.
+</p>
+</div>
       
     </li>
   
@@ -1582,12 +1653,12 @@ Get the tag name of this element
       <pre class="lines">
 
 
-43
-44
-45</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tag_name'>tag_name</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementTagName'>getElementTagName</span> <span class='ivar'>@id</span>
@@ -1635,12 +1706,12 @@ Get the text content of this element
       <pre class="lines">
 
 
-83
-84
-85</pre>
+107
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_text'>text</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementText'>getElementText</span> <span class='ivar'>@id</span>
@@ -1686,12 +1757,12 @@ Convert to a WebElement JSON Object for transmission over the wire.
       <pre class="lines">
 
 
-233
-234
-235</pre>
+258
+259
+260</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 233</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 258</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='const'>MultiJson</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -1706,7 +1777,7 @@ Convert to a WebElement JSON Object for transmission over the wire.
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  8 17:38:21 2012 by 
+  Generated on Wed Apr 11 22:54:53 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>

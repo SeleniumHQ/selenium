@@ -158,6 +158,31 @@ A new instance of Timeouts.
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#page_load%3D-instance_method" title="#page_load= (instance method)">- (Object) <strong>page_load=</strong>(seconds) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Sets the amount of time to wait for a page load to complete before throwing
+an error.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#script_timeout%3D-instance_method" title="#script_timeout= (instance method)">- (Object) <strong>script_timeout=</strong>(seconds) </a>
     
 
@@ -274,6 +299,47 @@ Set the amount of time the driver should wait when searching for elements.
 </div>
     
       <div class="method_details ">
+  <p class="signature " id="page_load=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>page_load=</strong>(seconds) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Sets the amount of time to wait for a page load to complete before throwing
+an error. If the timeout is negative, page loads can be indefinite.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/timeouts.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_page_load='>page_load=</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setTimeout'>setTimeout</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>page load</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <p class="signature " id="script_timeout=-instance_method">
   
     - (<tt>Object</tt>) <strong>script_timeout=</strong>(seconds) 
@@ -320,7 +386,7 @@ script will be allowed to run indefinitely.
 </div>
     
     <div id="footer">
-  Generated on Wed Feb  8 17:38:21 2012 by 
+  Generated on Wed Apr 11 22:54:53 2012 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.7.4 (ruby-1.9.2).
 </div>
