@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -61,6 +62,20 @@ namespace OpenQA.Selenium.Support.PageObjects
             Assert.AreEqual("form", tagName.ToLower());
         }
 
+        [Test]
+        public void ShouldAllowPageFactoryElementToBeUsedInInteractions()
+        {
+            driver.Url = javascriptPage;
+            var page = new PageFactoryBrowserTest.HoverPage();
+            PageFactory.InitElements(driver, page);
+            
+            Actions actions = new Actions(driver);
+            actions.MoveToElement(page.MenuLink).Perform();
+
+            IWebElement item = driver.FindElement(By.Id("item1"));
+            Assert.AreEqual("Item 1", item.Text);
+        }
+
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
@@ -68,6 +83,12 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;
+        }
+
+        private class HoverPage
+        {
+            [FindsBy(How=How.Id, Using="menu1")]
+            public IWebElement MenuLink;
         }
 
         #pragma warning restore 649

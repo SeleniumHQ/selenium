@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
+using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.PageObjects
@@ -91,7 +92,7 @@ namespace OpenQA.Selenium.Support.PageObjects
                     {
                         var proxyElement = generator.CreateInterfaceProxyWithoutTarget(
                             typeof(IWrapsElement),
-                            new[] { field.FieldType },
+                            new[] { field.FieldType, typeof(ILocatable) },
                             options,
                             interceptor);
 
@@ -101,7 +102,7 @@ namespace OpenQA.Selenium.Support.PageObjects
                     {
                         var proxyElement = generator.CreateInterfaceProxyWithoutTarget(
                             typeof(IWrapsElement),
-                            new[] { property.PropertyType },
+                            new[] { property.PropertyType, typeof(ILocatable) },
                             options,
                             interceptor);
 
@@ -178,6 +179,10 @@ namespace OpenQA.Selenium.Support.PageObjects
                 if (invocation.Method.Name == "get_WrappedElement")
                 {
                     invocation.ReturnValue = this.WrappedElement;
+                }
+                else if (invocation.Method.Name == "get_LocationOnScreenOnceScrolledIntoView" || invocation.Method.Name == "get_Coordinates")
+                {
+                    invocation.ReturnValue = invocation.GetConcreteMethod().Invoke((this.WrappedElement as ILocatable), invocation.Arguments);
                 }
                 else
                 {
