@@ -1,3 +1,9 @@
+Selenium 2.21
+* Local File upload capabilities for non-remote browser 
+* Adding maximize_window api call
+* Updating default firefox profile to set focusmanager.testmode to true
+* bugs fixed: 3506, 3528, 3607
+
 Selenium 2.20
 * disable native events for FF on Mac by default
 * fix webdriverwait to execute at least once when using 0 timeout

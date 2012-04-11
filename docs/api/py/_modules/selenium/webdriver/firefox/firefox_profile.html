@@ -73,6 +73,8 @@
 <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
 <span class="kn">from</span> <span class="nn">distutils</span> <span class="kn">import</span> <span class="n">dir_util</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="kn">import</span> <span class="n">Proxy</span><span class="p">,</span> <span class="n">ProxyType</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
+
 
 <span class="n">WEBDRIVER_EXT</span> <span class="o">=</span> <span class="s">&quot;webdriver.xpi&quot;</span>
 <span class="n">EXTENSION_NAME</span> <span class="o">=</span> <span class="s">&quot;fxdriver@googlecode.com&quot;</span>
@@ -105,6 +107,7 @@
         <span class="s">&quot;browser.safebrowsing.malware.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;startup.homepage_welcome_url&quot;</span><span class="p">:</span> <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">about:blank</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span>
         <span class="s">&quot;devtools.errorconsole.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
+        <span class="s">&quot;focusmanager.testmode&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;dom.disable_open_during_load&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;extensions.autoDisableScopes&quot;</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
         <span class="s">&quot;extensions.logging.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
@@ -136,6 +139,7 @@
         <span class="s">&quot;browser.dom.window.dump.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;webdriver_enable_native_events&quot;</span><span class="p">:</span> <span class="n">native_events</span><span class="p">,</span>
+        <span class="s">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;dom.max_script_run_time&quot;</span><span class="p">:</span> <span class="s">&quot;30&quot;</span><span class="p">,</span>
         <span class="p">}</span>
 
@@ -208,25 +212,42 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the port that WebDriver will be running on</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Port needs to be an integer&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_firefox_port&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;webdriver_firefox_port&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_santise_pref</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">])</span>
 
     <span class="nd">@accept_untrusted_certs.setter</span>
 <div class="viewcode-block" id="FirefoxProfile.accept_untrusted_certs"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs">[docs]</a>    <span class="k">def</span> <span class="nf">accept_untrusted_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Please pass in a Boolean to this call&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;webdriver_accept_untrusted_certs&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">assume_untrusted_cert_issuer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_santise_pref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">])</span>
+
+    <span class="nd">@assume_untrusted_cert_issuer.setter</span>
+<div class="viewcode-block" id="FirefoxProfile.assume_untrusted_cert_issuer"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.assume_untrusted_cert_issuer">[docs]</a>    <span class="k">def</span> <span class="nf">assume_untrusted_cert_issuer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Please pass in a Boolean to this call&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">native_events_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&#39;webdriver_enable_native_events&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_santise_pref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&#39;webdriver_enable_native_events&#39;</span><span class="p">])</span>
 
     <span class="nd">@native_events_enabled.setter</span>
 <div class="viewcode-block" id="FirefoxProfile.native_events_enabled"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.native_events_enabled">[docs]</a>    <span class="k">def</span> <span class="nf">native_events_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span><span class="p">[</span><span class="s">&#39;webdriver_enable_native_events&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Please pass in a Boolean to this call&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;webdriver_enable_native_events&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="FirefoxProfile.encoded"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.encoded">[docs]</a>    <span class="k">def</span> <span class="nf">encoded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -261,8 +282,14 @@
         <span class="k">elif</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span> <span class="ow">is</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.autoconfig_url&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_autoconfig_url</span><span class="p">)</span>
 
-    <span class="c">#Private Methods</span>
-</div>
+    <span class="c">#Private Methods</span></div>
+    <span class="k">def</span> <span class="nf">_santise_pref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s">&#39;true&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s">&#39;false&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">item</span>
     <span class="k">def</span> <span class="nf">_set_manual_proxy_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">setting</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">setting</span> <span class="ow">is</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
             <span class="k">return</span>

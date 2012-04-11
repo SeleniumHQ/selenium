@@ -228,6 +228,7 @@
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/value&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SEND_KEYS_TO_ACTIVE_ELEMENT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/keys&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">UPLOAD_FILE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&quot;/session/$sessionId/file&quot;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_VALUE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/value&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_TAG_NAME</span><span class="p">:</span>
@@ -302,6 +303,8 @@
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">MAXIMIZE_WINDOW</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/maximize&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_SCREEN_ORIENTATION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/orientation&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_SCREEN_ORIENTATION</span><span class="p">:</span>

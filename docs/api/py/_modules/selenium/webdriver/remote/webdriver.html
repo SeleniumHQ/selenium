@@ -511,6 +511,12 @@
 <span class="sd">            driver.window_handles</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_HANDLES</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="WebDriver.maximize_window"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.maximize_window">[docs]</a>    <span class="k">def</span> <span class="nf">maximize_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Maximizes the current window that webdriver is using</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MAXIMIZE_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;windowHandle&quot;</span><span class="p">:</span> <span class="s">&quot;current&quot;</span><span class="p">})</span>
 
     <span class="c">#Target Locators</span></div>
 <div class="viewcode-block" id="WebDriver.switch_to_active_element"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to_active_element">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to_active_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

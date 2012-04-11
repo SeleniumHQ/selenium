@@ -63,6 +63,12 @@
 
 
 <span class="sd">&quot;&quot;&quot;WebElement implementation.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+
+
 <span class="kn">from</span> <span class="nn">command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchAttributeException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
@@ -180,6 +186,10 @@
 </div>
 <div class="viewcode-block" id="WebElement.send_keys"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulates typing into the element.&quot;&quot;&quot;</span>
+        <span class="n">local_file</span> <span class="o">=</span> <span class="n">LocalFileDetector</span><span class="o">.</span><span class="n">is_local_file</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">local_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload</span><span class="p">(</span><span class="n">local_file</span><span class="p">)</span>
+
         <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>
@@ -247,7 +257,40 @@
 </div>
 <div class="viewcode-block" id="WebElement.find_elements"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>
-                             <span class="p">{</span><span class="s">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span></div></div>
+                             <span class="p">{</span><span class="s">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+    <span class="k">def</span> <span class="nf">_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="n">zipped</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span>
+        <span class="n">zipped</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">zipped</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">UPLOAD_FILE</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;file&#39;</span><span class="p">:</span> <span class="n">base64</span><span class="o">.</span><span class="n">encodestring</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="LocalFileDetector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.LocalFileDetector">[docs]</a><span class="k">class</span> <span class="nc">LocalFileDetector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="LocalFileDetector.is_local_file"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.LocalFileDetector.is_local_file">[docs]</a>    <span class="k">def</span> <span class="nf">is_local_file</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">):</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
+                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)):</span>
+                    <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">typing</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_path</span> <span class="ow">is</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">file_path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span></div></div>
 </pre></div>
 
           </div>
