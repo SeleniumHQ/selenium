@@ -93,11 +93,11 @@ java.lang.Object
   <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.AndroidWebDriver</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD>android.location.LocationListener, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD>android.location.LocationListener, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5">ApplicationCache</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>AndroidWebDriver</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, android.location.LocationListener</DL>
+<DT><PRE>public class <B>AndroidWebDriver</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>, <A HREF="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>, <A HREF="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</A>, <A HREF="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</A>, <A HREF="../../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</A>, <A HREF="../../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</A>, <A HREF="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</A>, <A HREF="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</A>, <A HREF="../../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</A>, android.location.LocationListener, <A HREF="../../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5">ApplicationCache</A></DL>
 </PRE>
 
 <P>
@@ -290,6 +290,14 @@ java.lang.Object
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5">AppCacheStatus</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html#getStatus()">getStatus</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The current state of the application cache.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -792,6 +800,24 @@ public java.util.List&lt;<A HREF="../../../../../org/openqa/selenium/WebElement.
 <DT><B>Parameters:</B><DD><CODE>by</CODE> - The locating mechanism to use
 <DT><B>Returns:</B><DD>A list of all <A HREF="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><CODE>WebElement</CODE></A>s, or an empty list if nothing matches<DT><B>See Also:</B><DD><A HREF="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium"><CODE>By</CODE></A>, 
 <A HREF="../../../../../org/openqa/selenium/WebDriver.Timeouts.html" title="interface in org.openqa.selenium"><CODE>WebDriver.Timeouts</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getStatus()"><!-- --></A><H3>
+getStatus</H3>
+<PRE>
+public <A HREF="../../../../../org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5">AppCacheStatus</A> <B>getStatus</B>()</PRE>
+<DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/html5/ApplicationCache.html#getStatus()">ApplicationCache</A></CODE></B></DD>
+<DD>The current state of the application cache.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/html5/ApplicationCache.html#getStatus()">getStatus</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5">ApplicationCache</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD><A HREF="../../../../../org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5"><CODE>AppCacheStatus</CODE></A></DL>
 </DD>
 </DL>
 <HR>

@@ -500,6 +500,16 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebElement.html#setFoundBy(org.openqa.selenium.SearchContext, java.lang.String, java.lang.String)">setFoundBy</A></B>(<A HREF="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>&nbsp;foundFrom,
+           java.lang.String&nbsp;locator,
+           java.lang.String&nbsp;term)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebElement.html#setId(java.lang.String)">setId</A></B>(java.lang.String&nbsp;id)</CODE>
 
@@ -523,6 +533,14 @@ java.lang.Object
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If this current element is a form, or an element within a form, then this will be submitted to
  the remote server.</TD>
 </TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteWebElement.html#toString()">toString</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
@@ -530,7 +548,7 @@ java.lang.Object
 <TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE>clone, finalize, getClass, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+<TD><CODE>clone, finalize, getClass, notify, notifyAll, wait, wait, wait</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -612,6 +630,22 @@ public <B>RemoteWebElement</B>()</PRE>
 </TR>
 </TABLE>
 
+<A NAME="setFoundBy(org.openqa.selenium.SearchContext, java.lang.String, java.lang.String)"><!-- --></A><H3>
+setFoundBy</H3>
+<PRE>
+protected void <B>setFoundBy</B>(<A HREF="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</A>&nbsp;foundFrom,
+                          java.lang.String&nbsp;locator,
+                          java.lang.String&nbsp;term)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="setParent(org.openqa.selenium.remote.RemoteWebDriver)"><!-- --></A><H3>
 setParent</H3>
 <PRE>
@@ -674,16 +708,15 @@ click</H3>
 public void <B>click</B>()</PRE>
 <DL>
 <DD><B>Description copied from interface: <CODE><A HREF="../../../../org/openqa/selenium/WebElement.html#click()">WebElement</A></CODE></B></DD>
-<DD>Click this element. If this causes a new page to load, this method will block until the page
- has loaded. At this point, you should discard all references to this element and any further
- operations performed on this element will have undefined behaviour unless you know that the
- element and the page will still be present. If click() causes a new page to be loaded via an
- event or is done by sending a native event (which is a common case on Firefox, IE on Windows)
- then the method will *not* wait for it to be loaded and the caller should verify that a new
- page has been loaded.
+<DD>Click this element. If this causes a new page to load, this method will attempt to block until 
+ the page has loaded. At this point, you should discard all references to this element and any 
+ further operations performed on this element will throw a StaleElementReferenceException unless
+ you know the element and the page will still be present. If click() causes a new page to be 
+ loaded via an event or is done by sending a native event then the method will *not* wait for
+ it to be loaded and the caller should verify that a new page has been loaded.
  <p/>
- If this element is not clickable, then this operation is a no-op since it's pretty common for
- someone to accidentally miss the target when clicking in Real Life
+ There are some preconditions for an element to be clicked.  The element must be visible and 
+ it must have a height and width greater then 0.
 <P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/WebElement.html#click()">click</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</A></CODE></DL>
@@ -1336,6 +1369,20 @@ public <A HREF="../../../../org/openqa/selenium/interactions/internal/Coordinate
 <DL>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/internal/Locatable.html#getCoordinates()">getCoordinates</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/internal/Locatable.html" title="interface in org.openqa.selenium.internal">Locatable</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="toString()"><!-- --></A><H3>
+toString</H3>
+<PRE>
+public java.lang.String <B>toString</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>toString</CODE> in class <CODE>java.lang.Object</CODE></DL>
 </DD>
 <DD><DL>
 </DL>

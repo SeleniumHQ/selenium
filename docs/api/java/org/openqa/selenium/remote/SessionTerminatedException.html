@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-AppCacheEntry
+SessionTerminatedException
 </TITLE>
 
 
@@ -13,7 +13,7 @@ AppCacheEntry
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="AppCacheEntry";
+        parent.document.title="SessionTerminatedException";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/html5/AppCacheEntry.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AppCacheEntry.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/SessionTerminatedException.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="SessionTerminatedException.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -85,23 +85,32 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.html5</FONT>
+org.openqa.selenium.remote</FONT>
 <BR>
-Class AppCacheEntry</H2>
+Class SessionTerminatedException</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.html5.AppCacheEntry</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.lang.Throwable
+      <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.lang.Exception
+          <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.lang.RuntimeException
+              <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">org.openqa.selenium.WebDriverException</A>
+                  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.SessionTerminatedException</B>
 </PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD>java.io.Serializable</DD>
+</DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>AppCacheEntry</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public class <B>SessionTerminatedException</B><DT>extends <A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></DL>
 </PRE>
 
 <P>
-Represents a cache resource in the application cache.
+Indicates that the session was terminated by the server
 <P>
 
 <P>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../serialized-form.html#org.openqa.selenium.remote.SessionTerminatedException">Serialized Form</A></DL>
 <HR>
 
 <P>
@@ -115,9 +124,7 @@ Represents a cache resource in the application cache.
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/html5/AppCacheEntry.html#AppCacheEntry(org.openqa.selenium.html5.AppCacheType, java.lang.String, java.lang.String)">AppCacheEntry</A></B>(<A HREF="../../../../org/openqa/selenium/html5/AppCacheType.html" title="enum in org.openqa.selenium.html5">AppCacheType</A>&nbsp;type,
-              java.lang.String&nbsp;url,
-              java.lang.String&nbsp;mimeType)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/SessionTerminatedException.html#SessionTerminatedException()">SessionTerminatedException</A></B>()</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -132,37 +139,23 @@ Represents a cache resource in the application cache.
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Method Summary</B></FONT></TH>
 </TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/html5/AppCacheEntry.html#getMimeType()">getMimeType</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets String representation of the Mime type the cache resource is labeled with.</TD>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_org.openqa.selenium.WebDriverException"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class org.openqa.selenium.<A HREF="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</A></B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/html5/AppCacheType.html" title="enum in org.openqa.selenium.html5">AppCacheType</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/html5/AppCacheEntry.html#getType()">getType</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the cache type, which can be any of the resource types listed in <A HREF="../../../../org/openqa/selenium/html5/AppCacheType.html" title="enum in org.openqa.selenium.html5"><CODE>AppCacheType</CODE></A></TD>
+<TD><CODE><A HREF="../../../../org/openqa/selenium/WebDriverException.html#getBuildInformation()">getBuildInformation</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getDriverInformation()">getDriverInformation</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getDriverName(java.lang.StackTraceElement[])">getDriverName</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getMessage()">getMessage</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getSupportUrl()">getSupportUrl</A>, <A HREF="../../../../org/openqa/selenium/WebDriverException.html#getSystemInformation()">getSystemInformation</A></CODE></TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Throwable"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Throwable</B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/html5/AppCacheEntry.html#getUrl()">getUrl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets a String representation of the URL which identifies the cache resource.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/html5/AppCacheEntry.html#toString()">toString</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets a human readable String representation of the cache entry.</TD>
+<TD><CODE>fillInStackTrace, getCause, getLocalizedMessage, getStackTrace, initCause, printStackTrace, printStackTrace, printStackTrace, setStackTrace, toString</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -187,81 +180,11 @@ Represents a cache resource in the application cache.
 </TR>
 </TABLE>
 
-<A NAME="AppCacheEntry(org.openqa.selenium.html5.AppCacheType, java.lang.String, java.lang.String)"><!-- --></A><H3>
-AppCacheEntry</H3>
+<A NAME="SessionTerminatedException()"><!-- --></A><H3>
+SessionTerminatedException</H3>
 <PRE>
-public <B>AppCacheEntry</B>(<A HREF="../../../../org/openqa/selenium/html5/AppCacheType.html" title="enum in org.openqa.selenium.html5">AppCacheType</A>&nbsp;type,
-                     java.lang.String&nbsp;url,
-                     java.lang.String&nbsp;mimeType)</PRE>
+public <B>SessionTerminatedException</B>()</PRE>
 <DL>
-</DL>
-
-<!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="getType()"><!-- --></A><H3>
-getType</H3>
-<PRE>
-public <A HREF="../../../../org/openqa/selenium/html5/AppCacheType.html" title="enum in org.openqa.selenium.html5">AppCacheType</A> <B>getType</B>()</PRE>
-<DL>
-<DD>Gets the cache type, which can be any of the resource types listed in <A HREF="../../../../org/openqa/selenium/html5/AppCacheType.html" title="enum in org.openqa.selenium.html5"><CODE>AppCacheType</CODE></A>
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD><A HREF="../../../../org/openqa/selenium/html5/AppCacheType.html" title="enum in org.openqa.selenium.html5"><CODE>AppCacheType</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getUrl()"><!-- --></A><H3>
-getUrl</H3>
-<PRE>
-public java.lang.String <B>getUrl</B>()</PRE>
-<DL>
-<DD>Gets a String representation of the URL which identifies the cache resource.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>The URL of the cache resource</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getMimeType()"><!-- --></A><H3>
-getMimeType</H3>
-<PRE>
-public java.lang.String <B>getMimeType</B>()</PRE>
-<DL>
-<DD>Gets String representation of the Mime type the cache resource is labeled with.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>Mime type of the cache resource</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="toString()"><!-- --></A><H3>
-toString</H3>
-<PRE>
-public java.lang.String <B>toString</B>()</PRE>
-<DL>
-<DD>Gets a human readable String representation of the cache entry.
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE>toString</CODE> in class <CODE>java.lang.Object</CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>A human readable String.</DL>
-</DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
@@ -293,11 +216,11 @@ public java.lang.String <B>toString</B>()</PRE>
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/html5/AppCacheEntry.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AppCacheEntry.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/SessionTerminatedException.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="SessionTerminatedException.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -314,9 +237,9 @@ public java.lang.String <B>toString</B>()</PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

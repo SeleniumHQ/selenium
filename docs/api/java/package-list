@@ -25,6 +25,7 @@ org.openqa.selenium.net
 org.openqa.selenium.os
 org.openqa.selenium.remote
 org.openqa.selenium.remote.html5
+org.openqa.selenium.safari
 org.openqa.selenium.support
 org.openqa.selenium.support.events
 org.openqa.selenium.support.events.internal
