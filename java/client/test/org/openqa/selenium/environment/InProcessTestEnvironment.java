@@ -46,13 +46,13 @@ public class InProcessTestEnvironment implements TestEnvironment {
   }
   
   private String getServingHost() {
-    switch (Browser.detect()) {
-      case android:
-        return "10.0.2.2";
-      case android_real_phone:
-        return new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostName();
-      default:
-        return null;
+    Browser browser = Browser.detect();
+    if (browser == Browser.android) {
+      return "10.0.2.2";
     }
+    if (browser == Browser.android_real_phone) {
+      return new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    }
+    return null;
   }
 }
