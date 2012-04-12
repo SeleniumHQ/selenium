@@ -37,6 +37,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -53,10 +54,10 @@ public class CookieImplementationTest extends JUnit4TestBase {
   private DomainHelper domainHelper;
   private static final Random random = new Random();
 
-
   @Before
   public void setUp() throws Exception {
     domainHelper = new DomainHelper(appServer);
+    assumeTrue(domainHelper.checkIsOnValidHostname());
 
     // This page is the deepest page we go to in the cookie tests
     // We go to it to ensure that cookies with /common/... paths are deleted
@@ -78,9 +79,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldGetCookieByName() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String key = generateUniqueKey();
     String value = "set";
     assertCookieIsNotPresentWithName(key);
@@ -96,9 +94,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(SELENESE)
   @Test
   public void testShouldBeAbleToAddCookie() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String key = generateUniqueKey();
     String value = "foo";
     Cookie cookie = new Cookie.Builder(key, value).build();
@@ -111,9 +106,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   public void testGetAllCookies() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
 
@@ -140,9 +132,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testDeleteAllCookies() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     ((JavascriptExecutor) driver).executeScript("document.cookie = 'foo=set';");
     assertSomeCookiesArePresent();
 
@@ -154,9 +143,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testDeleteCookieWithName() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
 
@@ -174,9 +160,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   public void testShouldNotDeleteCookiesWithASimilarName() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String cookieOneName = "fish";
     Cookie cookie1 = new Cookie.Builder(cookieOneName, "cod").build();
     Cookie cookie2 = new Cookie.Builder(cookieOneName + "x", "earth").build();
@@ -198,9 +181,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(OPERA)
   @Test
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
     Cookie cookie2 = new Cookie.Builder("planet", "earth").path("/common/").build();
@@ -220,9 +200,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore({CHROME, OPERA})
   @Test
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String cookieName = "fish";
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
     driver.manage().addCookie(cookie);
@@ -233,9 +210,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   public void testShouldNotGetCookieOnDifferentDomain() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String cookieName = "fish";
     driver.manage().addCookie(new Cookie.Builder(cookieName, "cod").build());
     assertCookieIsPresentWithName(cookieName);
@@ -249,10 +223,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
         reason = "Untested browsers.")
   @Test
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
-    if (!domainHelper.checkIsOnValidSubDomain()) {
-      return;
-    }
-
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
@@ -266,10 +236,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(value = {ALL})
   @Test
   public void testsShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod() {
-    if (!domainHelper.checkIsOnValidSubDomain()) {
-      return;
-    }
-
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
@@ -282,10 +248,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore({REMOTE, IE})
   @Test
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
-
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
@@ -300,10 +262,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(IE)
   @Test
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
-
     URI url = new URI(driver.getCurrentUrl());
     String host = url.getHost() + ":" + url.getPort();
 
@@ -317,9 +275,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   public void testShouldWalkThePathToDeleteACookie() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     Cookie cookie1 = new Cookie.Builder("fish", "cod").build();
     driver.manage().addCookie(cookie1);
 
@@ -349,10 +304,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(IE)
   @Test
   public void testShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie() throws Exception {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
-
     URI uri = new URI(driver.getCurrentUrl());
     String host = String.format("%s:%d", uri.getHost(), uri.getPort());
 
@@ -368,10 +319,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(OPERA)
   @Test
   public void testCookieEqualityAfterSetAndGet() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
-
     driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
 
     driver.manage().deleteAllCookies();
@@ -402,10 +349,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
           "Other suppressed browsers have not been tested.")
   @Test
   public void testRetainsCookieExpiry() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
-
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
             .path("/common/animals")
@@ -421,10 +364,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(ANDROID)
   @Test
   public void testSettingACookieThatExpiredInThePast() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
-
     long expires = System.currentTimeMillis() - 1000;
     Cookie cookie = new Cookie.Builder("expired", "yes").expiresOn(new Date(expires)).build();
     driver.manage().addCookie(cookie);
@@ -436,9 +375,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   public void testCanSetCookieWithoutOptionalFieldsSet() {
-    if (!domainHelper.checkIsOnValidHostname()) {
-      return;
-    }
     String key = generateUniqueKey();
     String value = "foo";
     Cookie cookie = new Cookie(key, value);
