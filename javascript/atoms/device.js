@@ -284,7 +284,7 @@ bot.Device.prototype.clickElement = function(coord, button) {
   // FORM(action) No    Yes    Yes    Yes
   var targetLink = null;
   var targetButton = null;
-  if (bot.Device.EXPLICIT_FOLLOW_LINK_) {
+  if (bot.Device.MUST_MANUALLY_FOLLOW_LINKS_) {
     for (var e = this.element_; e; e = e.parentNode) {
       if (bot.dom.isElement(e, goog.dom.TagName.A)) {
         targetLink = /**@type {!Element}*/ (e);
@@ -402,29 +402,16 @@ bot.Device.prototype.focusOnElement = function() {
 
 
 /**
- * Whether extra handling needs to be considered when clicking on a link or a
- * submit button.
+ * Whether links must be manually followed when clicking (because firing click
+ * events doesn't follow them).
+ *
  *
  * @type {boolean}
  * @private
  * @const
  */
-bot.Device.EXPLICIT_FOLLOW_LINK_ = goog.userAgent.IE ||
-    // Normal firefox
-    (goog.userAgent.GECKO && !bot.userAgent.FIREFOX_EXTENSION) ||
-    // Firefox extension prior to Firefox 4
-    (bot.userAgent.FIREFOX_EXTENSION && !bot.userAgent.isProductVersion(4));
-
-
-/**
- * Whether synthesized events are trusted to trigger click actions.
- *
- * @type {boolean}
- * @private
- * @const
- */
-bot.Device.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_ =
-    bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(4);
+bot.Device.MUST_MANUALLY_FOLLOW_LINKS_ =
+    !(bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6));
 
 
 /**
@@ -484,7 +471,7 @@ bot.Device.shouldFollowHref_ = function(element) {
     return true;
   }
 
-  if (bot.Device.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_) {
+  if (!bot.Device.MUST_MANUALLY_FOLLOW_LINKS_) {
     return false;
   }
 

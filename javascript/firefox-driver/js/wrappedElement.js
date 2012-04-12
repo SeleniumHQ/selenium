@@ -98,11 +98,7 @@ WebElement.clickElement = function(respond, parameters) {
     // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
     // to add to the x and y locations.
 
-    var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-        getService(Components.interfaces.nsIXULAppInfo);
-    var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-        getService(Components.interfaces.nsIVersionComparator);
-    if (versionChecker.compare(appInfo.version, '3.6') >= 0) {
+    if (bot.userAgent.isProductVersion(3.6)) {
       // Get the ultimate parent frame
       var current = unwrapped.ownerDocument.defaultView;
       var ultimateParent = unwrapped.ownerDocument.defaultView.parent;
