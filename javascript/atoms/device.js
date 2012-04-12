@@ -411,7 +411,8 @@ bot.Device.prototype.focusOnElement = function() {
  * @const
  */
 bot.Device.MUST_MANUALLY_FOLLOW_LINKS_ =
-    !(bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6));
+    !(goog.userAgent.WEBKIT || goog.userAgent.OPERA ||
+      (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6)));
 
 
 /**
