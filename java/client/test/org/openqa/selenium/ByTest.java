@@ -48,13 +48,12 @@ public class ByTest extends MockTestBase {
   }
 
   @Test
-  @Ignore
-  public void xtestShouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
+  public void shouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
     final OnlyXPath driver = mock(OnlyXPath.class);
 
     checking(new Expectations() {
       {
-        one(driver).findElementByXPath("//*[@name='cheese']");
+        one(driver).findElementByXPath(".//*[@name = 'cheese']");
       }
     });
 
