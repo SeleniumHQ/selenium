@@ -70,7 +70,12 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Any version of the Linux operating system.
         /// </summary>
-        Linux
+        Linux,
+
+        /// <summary>
+        /// A version of the Android mobile operating system.
+        /// </summary>
+        Android
     }
 
     /// <summary>
