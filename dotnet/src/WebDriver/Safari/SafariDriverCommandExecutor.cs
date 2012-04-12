@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Remote;
+using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.Safari
 {
@@ -35,6 +36,7 @@ namespace OpenQA.Selenium.Safari
     {
         private static Random tempFileGenerator = new Random();
         private string temporaryDirectoryPath;
+        private string safariExecutableLocation;
         private Process safariProcess;
         private SafariDriverServer server;
         private SafariDriverConnection connection;
@@ -44,8 +46,19 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         /// <param name="port">The port on which the executor communicates with the extension.</param>
         public SafariDriverCommandExecutor(int port)
+            : this(port, GetDefaultSafariLocation())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafariDriverCommandExecutor"/> class.
+        /// </summary>
+        /// <param name="port">The port on which the executor communicates with the extension.</param>
+        /// <param name="safariLocation">The locatoin of the Safari exectuable</param>
+        public SafariDriverCommandExecutor(int port, string safariLocation)
         {
             this.server = new SafariDriverServer(port);
+            this.safariExecutableLocation = safariLocation;
         }
 
         /// <summary>
@@ -97,11 +110,34 @@ namespace OpenQA.Selenium.Safari
             }
         }
 
+        private static string GetDefaultSafariLocation()
+        {
+            string safariPath = string.Empty;
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                // Safari remains a 32-bit application. Use a hack to look for it
+                // in the 32-bit program files directory. If a 64-bit version of
+                // Safari for Windows is released, this needs to be revisited.
+                string programFilesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                if (Directory.Exists(programFilesDirectory + " (x86)"))
+                {
+                    programFilesDirectory += " (x86)";
+                }
+
+                safariPath = Path.Combine(programFilesDirectory, Path.Combine("Safari", "safari.exe"));
+            }
+            else
+            {
+                safariPath = "/Applications/Safari.app/Contents/MacOS/Safari";
+            }
+
+            return safariPath;
+        }
+
         private void LaunchSafariProcess(string initialPage)
         {
-            string safariLocation = @"C:\Program Files (x86)\Safari\safari.exe";
             this.safariProcess = new Process();
-            this.safariProcess.StartInfo.FileName = safariLocation;
+            this.safariProcess.StartInfo.FileName = this.safariExecutableLocation;
             this.safariProcess.StartInfo.Arguments = initialPage;
             this.safariProcess.Start();
         }
