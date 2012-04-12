@@ -1,11 +1,12 @@
 package org.openqa.selenium.atoms;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import org.openqa.selenium.Build;
+import org.openqa.selenium.testing.InProject;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-
+import com.google.common.io.Files;
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
@@ -18,26 +19,28 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class CompiledAtomsNotLeakingTest {
 
-  private static final String FRAGMENT_PATH = "/scripts/executeScript.js";
+  private static final String FRAGMENT_TASK = "//javascript/webdriver/atoms:execute_script";
+  private static final String FRAGMENT_PATH =
+      "build/javascript/webdriver/atoms/execute_script.js";
+
   private static String fragment;
 
   private ScriptableObject global;
 
   @BeforeClass
-  public static void loadFragment() {
-    URL atomUrl = CompiledAtomsNotLeakingTest.class.getResource(FRAGMENT_PATH);
-    assertNotNull("Fragment not found", atomUrl);
-    try {
-      fragment = Resources.toString(atomUrl, Charsets.UTF_8);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+  public static void loadFragment() throws IOException {
+    File topDir = InProject.locate("Rakefile").getParentFile();
+    File atomFile = new File(topDir, FRAGMENT_PATH);
+    if (!atomFile.exists()) {
+      new Build().of(FRAGMENT_TASK).go();
     }
+    fragment = Files.toString(atomFile, Charsets.UTF_8);
   }
 
   @Before
