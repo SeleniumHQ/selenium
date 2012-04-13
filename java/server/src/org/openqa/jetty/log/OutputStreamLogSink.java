@@ -335,7 +335,6 @@ public class OutputStreamLogSink
      * @param frame The frame that generated the message.
      * @param time The time stamp of the message.
      */
-    @Override
     public  synchronized void log(String tag,
                                   Object o,
                                   Frame frame,
