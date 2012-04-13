@@ -16,18 +16,22 @@
 
 import base64
 import httplib
+import shutil
+import sys
+import urllib2
+from firefox_binary import FirefoxBinary
 from selenium.common.exceptions import ErrorInResponseException
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
+from selenium.webdriver.firefox.extension_connection import ExtensionConnection
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from firefox_binary import FirefoxBinary
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.extension_connection import ExtensionConnection
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
-import urllib2
-import shutil
 
 class WebDriver(RemoteWebDriver):
+
+    # There is no native event support on Mac
+    NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30):
 
@@ -36,7 +40,9 @@ class WebDriver(RemoteWebDriver):
 
         if self.profile is None:
             self.profile = FirefoxProfile()
-        
+       
+        self.profile.native_events_enabled = self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled
+
         if self.binary is None:
             self.binary = FirefoxBinary()
 

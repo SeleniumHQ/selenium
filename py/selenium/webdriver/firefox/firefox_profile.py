@@ -18,7 +18,6 @@ import copy
 import os
 import re
 import shutil
-import sys
 import tempfile
 import zipfile
 from cStringIO import StringIO
@@ -32,11 +31,6 @@ WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
 
 class FirefoxProfile(object):
-
-    if sys.platform == "darwin":
-        native_events = "false"
-    else:
-        native_events = "true"
 
     ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = {
@@ -89,7 +83,7 @@ class FirefoxProfile(object):
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
-        "webdriver_enable_native_events": native_events,
+        "webdriver_enable_native_events": "true",
         "webdriver_assume_untrusted_issuer": "true",
         "dom.max_script_run_time": "30",
         }
