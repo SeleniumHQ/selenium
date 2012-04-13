@@ -540,20 +540,20 @@ public interface Selenium {
    * Add a selection to the set of selected options in a multi-select element using an option
    * locator.
    * 
-   * @see #doSelect for details of option locators
    * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
    * @param optionLocator an option locator (a label by default)
    */
+   //@see #doSelect for details of option locators (THERE IS NO doSelect())
   void addSelection(String locator, String optionLocator);
 
   /**
    * Remove a selection from the set of selected options in a multi-select element using an option
    * locator.
    * 
-   * @see #doSelect for details of option locators
    * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
    * @param optionLocator an option locator (a label by default)
    */
+   //@see #doSelect for details of option locators (NO SUCH METHOD I CAN FIND)
   void removeSelection(String locator, String optionLocator);
 
   /**

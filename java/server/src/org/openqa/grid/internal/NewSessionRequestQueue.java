@@ -94,7 +94,7 @@ class NewSessionRequestQueue {
   /**
    * Remove a specific request
    * @param request The request to remove
-   * @return
+   * @return A boolean result from doing a newSessionRequest.remove(request).
    */
   public synchronized boolean removeNewSessionRequest(RequestHandler request) {
     return newSessionRequests.remove(request);

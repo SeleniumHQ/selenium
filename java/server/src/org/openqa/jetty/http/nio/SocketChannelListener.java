@@ -316,7 +316,7 @@ public class SocketChannelListener extends ThreadPool implements HttpListener
 
     /* ------------------------------------------------------------ */
     /** 
-     * @param sec seconds to linger or -1 to disable linger.
+     * @param ls Seconds to linger or -1 to disable linger.
      */
     public void setLingerTimeSecs(int ls)
     {

@@ -54,7 +54,8 @@ public interface SelfHealingProxy {
    * implementation of this method will be to put the proxy on hold if the network connection is
    * bad, or to restart the remote if the resources used are too important
    * 
-   * @param event
+   * @param events
+   * @param lastInserted
    */
   public void onEvent(List<RemoteException> events, RemoteException lastInserted);
 

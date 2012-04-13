@@ -102,8 +102,8 @@ public class LogStream extends PrintStream
     }
  
     /**
-     * @param out
-     * @param autoflush
+     * @param tag
+     * @param log
      */
     public LogStream(String tag, Log log)
     {

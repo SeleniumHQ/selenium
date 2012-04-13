@@ -29,7 +29,7 @@ public interface ElementLocatorFactory {
    * be called.
    * 
    * @param field
-   * @return
+   * @return An ElementLocator object.
    */
   ElementLocator createLocator(Field field);
 }

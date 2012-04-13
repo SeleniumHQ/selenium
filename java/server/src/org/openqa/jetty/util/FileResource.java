@@ -325,7 +325,8 @@ public class FileResource extends URLResource
     /* ------------------------------------------------------------ */
     /** 
      * @param o
-     * @return 
+     * @return True if o is a FileResource object, and o._file is the same as
+     *         _file for this instance, and _file is not <i>null</i>.
      */
     public boolean equals( Object o)
     {

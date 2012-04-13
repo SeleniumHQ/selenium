@@ -44,7 +44,7 @@ import org.openqa.jetty.log.LogFactory;
  *      Test.report();
  * </pre>
  *
- * @see org.openqa.jetty.util.Code
+ * @see org.openqa.jetty.util.CodeException
  * @version $Id: TestCase.java,v 1.8 2005/08/13 00:01:28 gregwilkins Exp $
  * @author Greg Wilkins
  */

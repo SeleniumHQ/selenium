@@ -22,8 +22,6 @@ import com.thoughtworks.selenium.Selenium;
 import junit.framework.Assert;
 
 /**
- * {@inhreritDoc}
- * <p/>
  * This class throws an {@link junit.framework.AssertionFailedError} when the condition is not met.
  */
 public class JUnitConditionRunner extends DefaultConditionRunner {

@@ -79,10 +79,10 @@ public class CommandLineOptionHelper {
   }
 
   /**
-   * get all occurences of -name
+   * get all occurrences of -name
    * 
    * @param name
-   * @return
+   * @return A List of Strings that have the passed name argument in them.
    */
   public List<String> getAll(String name) {
     List<String> res = new ArrayList<String>();

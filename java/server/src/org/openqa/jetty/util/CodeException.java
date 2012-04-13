@@ -16,10 +16,10 @@
 package org.openqa.jetty.util;
 
 /* ------------------------------------------------------------ */
+ //* @see Code
 /** Code Exception.
  * 
  * Thrown by Code.assert or Code.fail
- * @see Code
  * @version  $Id: CodeException.java,v 1.2 2004/05/09 20:32:49 gregwilkins Exp $
  * @author Greg Wilkins
  */

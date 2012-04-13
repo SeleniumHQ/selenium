@@ -124,7 +124,8 @@ public class SslListener extends SocketListener
 
     /* ------------------------------------------------------------ */
     /** 
-     * @author Tony Jiang
+     * @param cipherSuites
+     * author Tony Jiang
      */
     public void setCipherSuites(String[] cipherSuites) {
         this.cipherSuites = cipherSuites;

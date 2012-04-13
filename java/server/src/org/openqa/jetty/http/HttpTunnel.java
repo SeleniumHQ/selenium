@@ -59,11 +59,8 @@ public class HttpTunnel
     /* ------------------------------------------------------------ */
     /** Constructor. 
      * @param socket The tunnel socket.
-     * @param timeoutMs The maximum time to wait for a read on the tunnel. Note that
-     * sotimer exceptions are ignored by the tunnel.
      * @param in Alternative input stream or null if using normal socket stream
      * @param out Alternative output stream or null if using normal socket stream
-     * @param timeoutMs
      * @throws IOException 
      */
     public HttpTunnel(Socket socket, InputStream in, OutputStream out) throws IOException

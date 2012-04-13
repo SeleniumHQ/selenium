@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Factory class to make using Page Objects simpler and easier.
  * 
- * @see http://code.google.com/p/webdriver/wiki/PageObjects
+ * @see <a href="http://code.google.com/p/webdriver/wiki/PageObjects">Page Objects Wiki</a>
  */
 public class PageFactory {
 

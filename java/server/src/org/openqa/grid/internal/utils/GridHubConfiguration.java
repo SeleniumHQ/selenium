@@ -117,7 +117,8 @@ public class GridHubConfiguration {
    * builds a grid configuration from the parameters passed command line.
    * 
    * @param args
-   * @return
+   * @return A GridHubConfiguration object with options from the grid1 and/or
+   *         grid2 config file(s), plus any command line option overrides.
    */
   public static GridHubConfiguration build(String[] args) {
     GridHubConfiguration res = new GridHubConfiguration();
@@ -208,7 +209,6 @@ public class GridHubConfiguration {
 
   /**
    * @param resource /grid_configuration.yml for instance
-   * @return
    */
   public void loadFromGridYml(String resource) {
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
@@ -268,7 +268,6 @@ public class GridHubConfiguration {
 
   /**
    * @param resource default/DefaultHub.json for instance
-   * @return
    */
   public void loadFromJSON(String resource) {
 

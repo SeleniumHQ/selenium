@@ -54,7 +54,7 @@ public class ByteBufferInputStream extends InputStream
 
     /* ------------------------------------------------------------------------------- */
     /** getSoTimeout.
-     * @return
+     * @return Timeout value for this instance.
      */
     public long getTimeout()
     {

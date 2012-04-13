@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  * <ul>
  * <li>a message (purely used for displaying purposes)
  * <li>an implementation of
- * {@link #isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
+ * {@link Condition isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
  * </ul>
  */
 public abstract class Condition {

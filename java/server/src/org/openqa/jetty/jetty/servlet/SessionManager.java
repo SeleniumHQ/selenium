@@ -126,7 +126,7 @@ public interface SessionManager extends LifeCycle, Serializable
     /* ------------------------------------------------------------ */
     /** Get a Cookie for a session.
      * @param session
-     * @return
+     * @return A Cookie object
      */
     public Cookie getSessionCookie(HttpSession session,boolean requestIsSecure);
     

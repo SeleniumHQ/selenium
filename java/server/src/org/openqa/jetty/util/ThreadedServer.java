@@ -408,10 +408,9 @@ abstract public class ThreadedServer extends ThreadPool
     
     /* ------------------------------------------------------------ */
     /**
-     * Accept socket connection. May be overriden by derived class to create specialist
+     * Accept socket connection. May be overridden by derived class to create specialist
      * serversockets (eg SSL).
      * 
-     * @param serverSocket
      * @param timeout The time to wait for a connection. Normally passed the ThreadPool maxIdleTime.
      * @return Accepted Socket
      */

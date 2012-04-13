@@ -45,14 +45,14 @@ public interface ConditionRunner {
   void waitFor(Condition condition);
 
   /**
-   * As above but with an additonal 'should' phrase narrative used in the event of the condition
+   * As above but with an additional 'should' phrase narrative used in the event of the condition
    * failing to become true
    */
   void waitFor(String narrative, Condition condition);
 
   /**
    * Used by implementations of {@link ConditionRunner#waitFor(Condition)} to provide context to the
-   * {@link Condition#isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)} method
+   * {@link Condition isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)} method
    */
   public interface Context {
 

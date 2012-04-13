@@ -113,7 +113,7 @@ public class SessionLogsToFileRepository {
    * log records in the file.
    * 
    * @param sessionId session-id for which the file logs needs to be returned.
-   * @return
+   * @return A List of LogRecord objects, which can be <i>null</i>.
    * @throws IOException
    */
   public List<LogRecord> getLogRecords(String sessionId) throws IOException {

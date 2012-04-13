@@ -20,8 +20,6 @@ package com.thoughtworks.selenium.condition;
 import com.thoughtworks.selenium.Selenium;
 
 /**
- * {@inhreritDoc}
- * <p/>
  * This class throws an {@link java.lang.AssertionError} when the condition is not met - the same as
  * JUnit4 and TestNG do.
  */

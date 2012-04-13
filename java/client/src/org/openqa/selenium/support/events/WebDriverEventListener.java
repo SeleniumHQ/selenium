@@ -24,36 +24,36 @@ import org.openqa.selenium.WebElement;
 public interface WebDriverEventListener {
 
   /**
-   * Called before {@link WebDriver#get WebDriver.get(String url)} respectively
-   * {@link WebDriver.Navigation#to WebDriver.navigate().to(String url)}.
+   * Called before {@link org.openqa.selenium.WebDriver#get get(String url)} respectively
+   * {@link org.openqa.selenium.WebDriver.Navigation#to navigate().to(String url)}.
    */
   void beforeNavigateTo(String url, WebDriver driver);
 
   /**
-   * Called after {@link WebDriver#get WebDriver.get(String url)} respectively
-   * {@link WebDriver.Navigation#to WebDriver.navigate().to(String url)}. Not called, if an
+   * Called after {@link org.openqa.selenium.WebDriver#get get(String url)} respectively
+   * {@link org.openqa.selenium.WebDriver.Navigation#to navigate().to(String url)}. Not called, if an
    * exception is thrown.
    */
   void afterNavigateTo(String url, WebDriver driver);
 
   /**
-   * Called before {@link WebDriver.Navigation#back WebDriver.navigate().back()}.
+   * Called before {@link org.openqa.selenium.WebDriver.Navigation#back navigate().back()}.
    */
   void beforeNavigateBack(WebDriver driver);
 
   /**
-   * Called after {@link WebDriver.Navigation#back WebDriver.navigate().back()}. Not called, if an
+   * Called after {@link org.openqa.selenium.WebDriver.Navigation navigate().back()}. Not called, if an
    * exception is thrown.
    */
   void afterNavigateBack(WebDriver driver);
 
   /**
-   * Called before {@link WebDriver.Navigation#forward WebDriver.navigate().forward()}.
+   * Called before {@link org.openqa.selenium.WebDriver.Navigation#forward navigate().forward()}.
    */
   void beforeNavigateForward(WebDriver driver);
 
   /**
-   * Called after {@link WebDriver.Navigation#forward WebDriver.navigate().forward()}. Not called,
+   * Called after {@link org.openqa.selenium.WebDriver.Navigation#forward navigate().forward()}. Not called,
    * if an exception is thrown.
    */
   void afterNavigateForward(WebDriver driver);
@@ -89,25 +89,29 @@ public interface WebDriverEventListener {
 
   /**
    * Called before {@link WebElement#clear WebElement.clear()}, {@link WebElement#sendKeys
-   * WebElement.sendKeys(...)}, or {@link WebElement#toggle WebElement.toggle()}.
+   * WebElement.sendKeys(...)}.
    */
   void beforeChangeValueOf(WebElement element, WebDriver driver);
 
   /**
    * Called after {@link WebElement#clear WebElement.clear()}, {@link WebElement#sendKeys
-   * WebElement.sendKeys(...)}, or {@link WebElement#toggle WebElement.toggle()}. Not called, if an
-   * exception is thrown.
+   * WebElement.sendKeys(...)}}. Not called, if an exception is thrown.
    */
   void afterChangeValueOf(WebElement element, WebDriver driver);
 
   /**
-   * Called before {@link WebDriver#executeScript(String)}
+   * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }
    */
+  // Previously: Called before {@link WebDriver#executeScript(String)}
+  // See the same issue below.
   void beforeScript(String script, WebDriver driver);
 
   /**
-   * Called after {@link WebDriver#executeScript(String)}. Not called if an exception is thrown
+   * Called after {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }. Not called if an exception is thrown
    */
+  // Previously: Called after {@link WebDriver#executeScript(String)}. Not called if an exception is thrown
+  // So someone should check if this is right.  There is no executeScript method
+  // in WebDriver, but there is in several other places, like this one
   void afterScript(String script, WebDriver driver);
 
   /**

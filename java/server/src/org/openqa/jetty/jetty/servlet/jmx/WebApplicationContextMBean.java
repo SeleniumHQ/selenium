@@ -116,7 +116,7 @@ public class WebApplicationContextMBean extends ServletHttpContextMBean
     /**getConfigurations
      * Make mbeans for all of the Configurations applied to the
      * WebApplicationContext
-     * @return
+     * @return An array of ObjectName objects.
      */
     public ObjectName[] getConfigurations ()
     { 

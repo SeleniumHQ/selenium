@@ -893,8 +893,6 @@ public class HttpContext extends Container
     /** Add elements to the class path for the context from the jar and zip files found
      *  in the specified resource.
      * @param lib the resource that contains the jar and/or zip files.
-     * @param append true if the classpath entries are to be appended to any
-     * existing classpath, or false if they replace the existing classpath.
      * @see #setClassPath(String)
      */
     public void addClassPaths(Resource lib)
@@ -1399,7 +1397,6 @@ public class HttpContext extends Container
      * handle(pathInContext,request,response).
      * @param request
      * @param response
-     * @return True if the request has been handled.
      * @exception HttpException
      * @exception IOException
      */
@@ -1495,7 +1492,6 @@ public class HttpContext extends Container
      * @param pathParams Path parameters such as encoded Session ID
      * @param request
      * @param response
-     * @return True if the request has been handled.
      * @exception HttpException
      * @exception IOException
      */
@@ -2056,38 +2052,38 @@ public class HttpContext extends Container
         throw new UnsupportedOperationException();
     }   
     
-    
     /**
-     * @return
+     * @return A Resource object from our local ResourceCache object.
      */
     public Resource getBaseResource()
     {
         return _resources.getBaseResource();
     }
+
     /**
      * @param type
-     * @return
+     * @return A String with the MIME type encoding method in it.
      */
     public String getEncodingByMimeType(String type)
     {
         return _resources.getEncodingByMimeType(type);
     }
     /**
-     * @return
+     * @return A Map object from our local ResourcesCache.getEncodingMap() method.
      */
     public Map getEncodingMap()
     {
         return _resources.getEncodingMap();
     }
     /**
-     * @return
+     * @return An int with the max cached file size from our CachedResources object.
      */
     public int getMaxCachedFileSize()
     {
         return _resources.getMaxCachedFileSize();
     }
     /**
-     * @return
+     * @return An int with the max cache size from our CachedResources object.
      */
     public int getMaxCacheSize()
     {
@@ -2095,14 +2091,15 @@ public class HttpContext extends Container
     }
     /**
      * @param filename
-     * @return
+     * @return A String with the MIME type as reported from our CachedResources
+     * object based on the passed filename.
      */
     public String getMimeByExtension(String filename)
     {
         return _resources.getMimeByExtension(filename);
     }
     /**
-     * @return
+     * @return A Map returned from getMimeMap() using our CachedResources object.
      */
     public Map getMimeMap()
     {
@@ -2110,7 +2107,8 @@ public class HttpContext extends Container
     }
     /**
      * @param pathInContext
-     * @return
+     * @return A Resource object using the getResource(pathInContext) method of
+     * our CachedResources object.
      * @throws IOException
      */
     public Resource getResource(String pathInContext) throws IOException
@@ -2118,7 +2116,8 @@ public class HttpContext extends Container
         return _resources.getResource(pathInContext);
     }
     /**
-     * @return
+     * @return The String returned by the getResourceBase() method of our
+     * CachedResources object.
      */
     public String getResourceBase()
     {
@@ -2126,7 +2125,8 @@ public class HttpContext extends Container
     }
     /**
      * @param resource
-     * @return
+     * @return The ResourceMetaData object returned from our CachedResources
+     * object using the getResourceMetaData(resource) method.
      */
     public ResourceMetaData getResourceMetaData(Resource resource)
     {

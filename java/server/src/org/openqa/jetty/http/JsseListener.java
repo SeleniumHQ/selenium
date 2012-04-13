@@ -175,9 +175,11 @@ public abstract class JsseListener extends SocketListener
     /**
      * @param p_address
      * @param p_acceptQueueSize
-     * @return
+     * @return A ServerSocket object using the passed parameters to set it up
+     *         from an SSLServerSocketFactory.
      * @exception IOException
      */
+    @Override
     protected ServerSocket newServerSocket(InetAddrPort p_address, int p_acceptQueueSize) throws IOException
     {
         SSLServerSocketFactory factory = null;
@@ -214,7 +216,7 @@ public abstract class JsseListener extends SocketListener
     /* ------------------------------------------------------------ */
     /**
      * @param p_serverSocket
-     * @return
+     * @return A Socket object, based on p_serverSocket, with SSL enabled.
      * @exception IOException
      */
     protected Socket accept(ServerSocket p_serverSocket) throws IOException

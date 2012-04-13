@@ -33,9 +33,6 @@ package com.thoughtworks.selenium;
  * out-of-sync with the remote process (e.g. browser). When this happens, the browser should be
  * stopped (killed) and the queue should be flushed.
  * 
- * 
- * @see com.thoughtworks.selenium.outbedded.CommandBridge
- * 
  * @author paul
  * 
  */

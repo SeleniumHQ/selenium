@@ -44,7 +44,7 @@ import org.openqa.jetty.util.StringUtil;
  * <p> If LOG_TIMEZONE is set, it is used to set the timezone of the log date
  * format, otherwise GMT is used.
  *
- * @see org.openqa.jetty.util.Log
+ * @see org.openqa.jetty.util.LogSupport
  * @version $Id: OutputStreamLogSink.java,v 1.4 2004/09/19 08:04:57 gregwilkins Exp $
  * @author Greg Wilkins (gregw)
  */
@@ -331,10 +331,11 @@ public class OutputStreamLogSink
      * implementation if the format of the logged messages is to be changed.
      *
      * @param tag Tag for type of log
-     * @param msg The message
+     * @param o The message
      * @param frame The frame that generated the message.
      * @param time The time stamp of the message.
      */
+    @Override
     public  synchronized void log(String tag,
                                   Object o,
                                   Frame frame,

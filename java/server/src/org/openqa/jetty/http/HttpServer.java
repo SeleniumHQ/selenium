@@ -636,7 +636,8 @@ public class HttpServer extends Container
 
     /* ------------------------------------------------------------ */
     /** Set system classes.
-     * @deprecated. Use HttpContext
+     * @param classes
+     * @deprecated Use HttpContext
      */
     public void setSystemClasses(String[] classes)
     {
@@ -645,7 +646,8 @@ public class HttpServer extends Container
 
     /* ------------------------------------------------------------ */
     /** Get system classes.
-     * @deprecated. Use HttpContext
+     * @return A String array with a list of system classes for this instance.
+     * @deprecated Use HttpContext
      */
     public String[] getSystemClasses()
     {
@@ -654,7 +656,8 @@ public class HttpServer extends Container
 
     /* ------------------------------------------------------------ */
     /** Set system classes.
-     * @deprecated. Use HttpContext
+     * @param classes
+     * @deprecated Use HttpContext
      */
     public void setServerClasses(String[] classes)
     {
@@ -663,7 +666,9 @@ public class HttpServer extends Container
 
     /* ------------------------------------------------------------ */
     /** Get system classes.
-     * @deprecated. Use HttpContext
+     * @return String array of server classes set by setServerClasses()
+     * @see #setServerClasses(java.lang.String[])
+     * @deprecated Use HttpContext
      */
     public String[] getServerClasses()
     {

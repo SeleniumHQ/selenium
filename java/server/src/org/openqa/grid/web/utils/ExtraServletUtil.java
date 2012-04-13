@@ -30,7 +30,8 @@ public class ExtraServletUtil {
    * instanciated.
    * 
    * @param className
-   * @return
+   * @return Class object for passed className argument, or <i/null</i> if no
+   *         matching class name can be found.
    */
   public static Class<? extends Servlet> createServlet(String className) {
     try {

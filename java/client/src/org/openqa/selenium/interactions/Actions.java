@@ -144,10 +144,10 @@ public class Actions {
   /**
    * Equivalent to calling:
    * <i>Actions.click(element).sendKeys(keysToSend).</i>
-   * This method is different from {@link WebElement#sendKeys(CharSequence...)} - see
+   * This method is different from {@link org.openqa.selenium.WebElement#sendKeys(CharSequence...)} - see
    * {@link Actions#sendKeys(CharSequence...)} for details how.
    *
-   * @see {@link #sendKeys(CharSequence...)}
+   * @see #sendKeys(java.lang.CharSequence[])
    *
    * @param element element to focus on.
    * @param keysToSend The keys.

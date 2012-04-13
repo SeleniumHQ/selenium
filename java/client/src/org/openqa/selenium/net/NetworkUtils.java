@@ -45,18 +45,18 @@ public class NetworkUtils {
   }
 
   /**
-   * Used by the mobile emulators that refuse to access localhost or 127.0.0.1 The ip4/ip6
+   * Used by the mobile emulators that refuse to access localhost or 127.0.0.1 The IP4/IP6
    * requirements of this method are as-of-yet unspecified, but we return the string that is
-   * associated with the ip4 interface
+   * associated with the IP4 interface
    * 
-   * @return
+   * @return A String representing the host name or non-loopback IP4 address of this machine.
    */
   public String getNonLoopbackAddressOfThisMachine() {
     return getIp4NonLoopbackAddressOfThisMachine().getHostName();
   }
 
   /**
-   * Returns a non-loopback ip4 hostname of the local host.
+   * Returns a non-loopback IP4 hostname of the local host.
    * 
    * @return A string hostName
    */

@@ -97,7 +97,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * Syntactic sugar to use with {@link HamcrestWebDriverTestCase#type(String, Finder<WebElement,
+   * Syntactic sugar to use with {@link org.openqa.selenium.lift.HamcrestWebDriverTestCase type(String, Finder<WebElement,
    * WebDriver>)}, e.g. type("cheese", into(textbox())); The into() method simply returns its
    * argument.
    */

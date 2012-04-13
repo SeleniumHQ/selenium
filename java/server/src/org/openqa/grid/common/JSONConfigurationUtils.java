@@ -31,10 +31,10 @@ import java.io.InputStreamReader;
 public class JSONConfigurationUtils {
 
   /**
-   * load a json file from the resource or file system.
+   * load a JSON file from the resource or file system.
    * 
    * @param resource
-   * @return
+   * @return A JSONObject representing the passed resource argument.
    * @throws IOException
    * @throws JSONException
    */

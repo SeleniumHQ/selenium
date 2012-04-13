@@ -417,7 +417,7 @@ public class Server extends HttpServer
      * Set up the list of classnames of WebApplicationContext.Configuration
      * implementations that will be applied to configure every webapp.
      * The list can be overridden by individual WebApplicationContexts.
-     * @param configurationClasses
+     * @param configurationClassNames
      */
     public void setWebApplicationConfigurationClassNames (String[] configurationClassNames)
     {

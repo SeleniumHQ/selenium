@@ -108,7 +108,9 @@ public class BrowserNameUtils {
    * null.
    * 
    * @param cap
-   * @return
+   * @param registry
+   * @return String with path to icon image file.  Can be <i>null</i> if no icon
+   *         file if available.
    */
   public static String getConsoleIconPath(DesiredCapabilities cap, Registry registry) {
     String name = consoleIconName(cap, registry);

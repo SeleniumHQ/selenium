@@ -116,8 +116,6 @@ public class DefaultConditionRunner implements ConditionRunner {
 
   /**
    * A no-op implementation of {@link Monitor}.
-   * <p/>
-   * {@inheritDoc}
    */
   public static final class NoOpMonitor implements Monitor {
 
@@ -134,8 +132,6 @@ public class DefaultConditionRunner implements ConditionRunner {
 
   /**
    * A Log4j implementation of {@link Monitor}.
-   * <p/>
-   * {@inheritDoc}
    */
   public static final class Log4jMonitor implements Monitor {
     private static final Logger logger =

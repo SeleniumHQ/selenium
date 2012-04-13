@@ -70,7 +70,7 @@ public class Proxy {
   /**
    * Explicitly sets the proxy type, useful for forcing direct connection on Linux.
    * 
-   * @return
+   * @return This Proxy object.
    */
   public Proxy setProxyType(ProxyType proxyType) {
     verifyProxyTypeCompatilibily(ProxyType.AUTODETECT);

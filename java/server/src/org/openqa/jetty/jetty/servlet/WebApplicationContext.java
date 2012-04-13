@@ -856,7 +856,7 @@ public class WebApplicationContext extends ServletHttpContext implements Externa
 
         /* ------------------------------------------------------------------------------- */
         /** Get the context on which the configuration is performed.
-         * @return
+         * @return A WebApplicationContext object.
          */
         public WebApplicationContext getWebApplicationContext ();
         
