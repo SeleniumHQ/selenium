@@ -55,9 +55,10 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
   Registry getRegistry();
 
   /**
-   * See Registry#getCapabilityMatcher.
+   * Returns the capability matcher that will be used to by the remote proxy
+   * to determine whether its test slots can run a requested test session.
    *
-   * @return the registry's capability matcher.
+   * @return the capability matcher.
    */
   CapabilityMatcher getCapabilityHelper();
 
