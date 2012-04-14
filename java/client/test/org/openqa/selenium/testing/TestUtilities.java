@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
+import static org.junit.Assume.assumeTrue;
+
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
@@ -87,5 +89,9 @@ public class TestUtilities {
     }
 
     return Platform.getCurrent();
+  }
+
+  public static void assumeFalse(boolean b) {
+    assumeTrue(!b);
   }
 }

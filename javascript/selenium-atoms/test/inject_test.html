@@ -3,17 +3,27 @@
 <script src="../../webdriver-bootstrap.js"></script>
 <script>
   goog.require('bot.inject');
+  goog.require('bot.userAgent');
   goog.require('core.inject');
   goog.require('goog.array');
   goog.require('goog.dom');
   goog.require('goog.json');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.ExpectedFailures');
 </script>
 <body>
 <script>
   goog.global.MY_GLOBAL_CONSTANT = 123;
 
+  var expectedFailures;
+
+  function setUp() {
+    expectedFailures = new goog.testing.ExpectedFailures();
+  }
+
   function tearDown() {
+    expectedFailures.handleTearDown();
+
     // Force the cache to be recreated on the next access. We cannot
     // "delete" it here because IE complains about it being an unsupported
     // operation.
@@ -54,8 +64,12 @@
   function testCanExecuteScriptsInTheContextOfAnotherWindow() {
     var testFrame = createTestFrame();
     var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
-    assertEquals('undefined',
-        executeScript('return typeof MY_GLOBAL_CONSTANT', testFrameWin));
+    expectedFailures.expectFailureFor(goog.userAgent.IE && !bot.userAction.isVersion(9),
+        'Fails in IE before 9 - issue 3723');
+    expectedFailures.run(function() {
+      assertEquals('undefined',
+          executeScript('return typeof MY_GLOBAL_CONSTANT', testFrameWin));
+    });
   }
 
   function testUpdatesElementReferencesToBeSeleneseLocators() {
