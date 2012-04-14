@@ -58,10 +58,10 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
         if (requestedCapability.get(key) != null) {
           String value = requestedCapability.get(key).toString();
           if (!("ANY".equalsIgnoreCase(value) || "".equals(value) || "*".equals(value))) {
-            Platform requested = exctractPlatform(requestedCapability.get(key));
+            Platform requested = extractPlatform(requestedCapability.get(key));
             // special case for platform
             if (requested != null) {
-              Platform node = exctractPlatform(nodeCapability.get(key));
+              Platform node = extractPlatform(nodeCapability.get(key));
               if (node == null) {
                 return false;
               }
@@ -82,7 +82,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     return true;
   }
 
-  Platform exctractPlatform(Object o) {
+  Platform extractPlatform(Object o) {
     if (o == null) {
       return null;
     }
