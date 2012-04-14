@@ -259,7 +259,6 @@ public class GridHubConfiguration {
 
     Integer newSessionWait = (Integer) hub.get("newSessionMaxWaitTimeInSeconds");
     if (newSessionWait != null) {
-      newSessionWaitTimeout = newSessionWait.intValue() * 1000;
       setNewSessionWaitTimeout(newSessionWait.intValue() * 1000);
     }
 
