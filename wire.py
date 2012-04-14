@@ -766,7 +766,9 @@ relative to the upper left corner of the screen.').
       
   resources.append(
       SessionResource('/session/:sessionId/window/:windowHandle/maximize').
-      Post('''Maximize the currently selected window if not already maximized.''').
+      Post('''Maximize the specified window if not already maximized. If the \
+:windowHandle URL parameter is "current", the currently active window will be \
+maximized.''').
       AddError('NoSuchWindow', 'If the specified window cannot be found.'))
 
   resources.append(
