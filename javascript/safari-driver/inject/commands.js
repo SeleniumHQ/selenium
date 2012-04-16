@@ -74,6 +74,11 @@ safaridriver.inject.commands.unsupportedHistoryNavigation = function() {
       'communicate with the page...');
 };
 
+/** @return {string} The document title. */
+safaridriver.inject.commands.getTitle = function() {
+  return document.title;
+};
+
 /** @return {string} A string representation of the current page source. */
 safaridriver.inject.commands.getPageSource = function() {
   return new XMLSerializer().serializeToString(document);

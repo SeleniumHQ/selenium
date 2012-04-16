@@ -186,6 +186,7 @@ goog.scope(function() {
   map[CommandName.GO_BACK] = commands.unsupportedHistoryNavigation;
   map[CommandName.GO_FORWARD] = commands.unsupportedHistoryNavigation;
 
+  map[CommandName.GET_TITLE] = commands.getTitle;
   map[CommandName.GET_PAGE_SOURCE] = commands.getPageSource;
 
   map[CommandName.ADD_COOKIE] = commands.addCookie;
