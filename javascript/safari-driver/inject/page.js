@@ -22,7 +22,6 @@ goog.provide('safaridriver.inject.page');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
-goog.require('bot.inject');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
@@ -352,22 +351,61 @@ safaridriver.inject.page.executeScript_ = function(command) {
  * @private
  */
 safaridriver.inject.page.executeAsyncScript_ = function(command) {
+  var response = new webdriver.promise.Deferred();
+  // When the response is resolved, we want to wrap it up in a message and
+  // send it back to the injected script. This does all that.
+  response.
+      then(function(value) {
+        value = safaridriver.inject.page.encodeValue(value);
+        return {
+          'status': bot.ErrorCode.SUCCESS,
+          'value': value
+        };
+      }).
+      then(null, webdriver.error.createResponse).
+      then(function(response) {
+        var responseMessage = new safaridriver.message.ResponseMessage(
+            command.getId(), response);
+        safaridriver.inject.page.LOG_.info(
+            'Sending executeAsyncScript response: ' + responseMessage);
+        responseMessage.send();
+      });
+
   try {
     var script = (/** @type {string} */command.getParameter('script'));
+    var scriptFn = new Function(script);
+
     var args = command.getParameter('args');
     args = (/** @type {!Array} */safaridriver.inject.page.decodeValue(args));
+    // The last argument for an async script is the callback that triggers the
+    // response.
+    args.push(function(value) {
+      window.clearTimeout(timeoutId);
+      if (response.isPending()) {
+        response.resolve(value);
+      }
+    });
+
+    var startTime = goog.now();
+    scriptFn.apply(window, args);
+
+    // Register our timeout *after* the function has been invoked. This will
+    // ensure we don't timeout on a function that invokes its callback after a
+    // 0-based timeout:
+    // var scriptFn = function(callback) {
+    //   setTimeout(callback, 0);
+    // };
     var timeout = (/** @type {number} */command.getParameter('timeout'));
-
-    bot.inject.executeAsyncScript(script, args, timeout, sendResponse);
+    var timeoutId = window.setTimeout(function() {
+      if (response.isPending()) {
+        response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
+            'Timed out waiting for an asynchronous script result after ' +
+                (goog.now() - startTime) +  ' ms'));
+      }
+    }, Math.max(0, timeout));
   } catch (ex) {
-    sendResponse(webdriver.error.createResponse(ex));
-  }
-
-  function sendResponse(response) {
-    var responseMessage = new safaridriver.message.ResponseMessage(
-        command.getId(), response);
-    safaridriver.inject.page.LOG_.info(
-        'Sending executeAsyncScript response: ' + responseMessage);
-    responseMessage.send();
+    if (response.isPending()) {
+      response.reject(ex);
+    }
   }
 };
