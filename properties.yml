@@ -3,7 +3,7 @@ default:
     # Path to the android sdk
     androidsdkpath : "../android_sdk/"
     # Target id. To get a list of all targets do "./android list targets".
-    # We want whatever matches android 4.0 (IceCreamSandwich API level 14)
+    # We want whatever matches the latest android 4.0 (IceCreamSandwich, currently API level 15)
     #
     # Note: Android WebDriver will not work on Gingerbread (SDK 2.3) emulator because of
     # an emulator bug. However it will work with Gingerbread (SDK 2.3) devices.
