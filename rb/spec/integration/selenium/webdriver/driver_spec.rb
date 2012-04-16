@@ -226,7 +226,7 @@ describe "Driver" do
     end
   end
 
-  not_compliant_on :browser => [:opera, :iphone, :android, :safari] do
+  not_compliant_on :browser => [:opera, :iphone, :android] do
     describe "execute async script" do
       before {
         driver.manage.timeouts.script_timeout = 0
