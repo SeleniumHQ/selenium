@@ -20,6 +20,8 @@
 
 goog.provide('webdriver.atoms.element');
 
+goog.require('bot.Keyboard.Keys');
+goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -51,7 +53,7 @@ webdriver.atoms.element.isSelected = function(element) {
  *
  * @param {!Element} element The element to use.
  * @param {string} attribute The name of the attribute to look up.
- * @return {string} The string value of the attribute or property, or null.
+ * @return {?string} The string value of the attribute or property, or null.
  */
 webdriver.atoms.element.getAttribute = function(element, attribute) {
   var value = null;
@@ -64,7 +66,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
       value = value.cssText;
     }
 
-    return value;
+    return (/** @type {?string} */value);
   }
 
   if ('selected' == name || 'checked' == name &&
@@ -86,7 +88,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
       // We want the full URL if present
       value = bot.dom.getProperty(element, name);
     }
-    return value;
+    return (/** @type {?string} */value);
   }
 
   var property;
@@ -132,7 +134,7 @@ webdriver.atoms.element.getLocation = function(element) {
 
 
 /**
- * @param {Element} element The element to use.
+ * @param {Node} element The element to use.
  * @return {boolean} Whether the element is in the HEAD tag.
  * @private
  */
@@ -154,7 +156,7 @@ webdriver.atoms.element.isInHead_ = function(element) {
 
 
 /**
- * @param {Element} element The element to get the text from.
+ * @param {!Element} element The element to get the text from.
  * @return {string} The visible text or an empty string.
  */
 webdriver.atoms.element.getText = function(element) {
@@ -162,10 +164,135 @@ webdriver.atoms.element.getText = function(element) {
     var doc = goog.dom.getOwnerDocument(element);
     if (element.tagName.toUpperCase() == goog.dom.TagName.TITLE &&
         goog.dom.getWindow(doc) == bot.window_.top) {
-      return goog.string.trim(doc.title);
+      return goog.string.trim((/** @type {string} */doc.title));
     }
     return '';
   }
 
   return bot.dom.getVisibleText(element);
 };
+
+
+/**
+ * Types keys on the given {@code element} with a virtual keyboard. Converts
+ * special characters from the WebDriver JSON wire protocol to the appropriate
+ * {@link bot.Keyboard.Key} value.
+ *
+ * @param {!Element} element The element to type upon.
+ * @param {!Array.<string>} keys The keys to type on the element.
+ * @see bot.action.type
+ * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ */
+webdriver.atoms.element.type = function(element, keys) {
+  // Convert to bot.Keyboard.Key values.
+  var convertedSequences = [], current;
+  convertedSequences.push(current = []);
+
+  // Collapse into a single string, then iterate over the characters to generate
+  // the sequences to type.
+  goog.array.forEach(keys.join(''), function(key) {
+    if (isWebDriverKey(key)) {
+      var webdriverKey = webdriver.atoms.element.type.JSON_TO_KEY_MAP_[key];
+      // goog.isNull uses ==, which accepts undefined.
+      if (webdriverKey === null) {
+        // bot.action.type does not support a "null" key, so we have to
+        // terminate the entire sequence to release modifier keys.
+        convertedSequences.push(current = []);
+      } else if (goog.isDef(webdriverKey)) {
+        current.push(webdriverKey);
+      }
+
+      throw Error('Unsupported WebDriver key: ' +
+          key.charCodeAt(0).toString(16));
+    }
+
+    // Handle common aliases.
+    switch (key) {
+      case '\n':
+         current.push(bot.Keyboard.Keys.ENTER);
+        break;
+      case '\t':
+        current.push(bot.Keyboard.Keys.TAB);
+        break;
+      case '\b':
+        current.push(bot.Keyboard.Keys.BACKSPACE);
+        break;
+    }
+    current.push(key);
+  });
+
+  goog.array.forEach(convertedSequences, function(sequence) {
+    var args = goog.array.concat(element, sequence);
+    bot.action.type.apply(null, args);
+  });
+
+  function isWebDriverKey(c) {
+    return '\uE000' <= c <= '\uE03D';
+  }
+};
+
+
+/**
+ * Maps JSON wire protocol values to their {@link bot.Keyboard.Key} counterpart.
+ * @type {!Object.<bot.Keyboard.Key>}
+ * @const
+ * @private
+ */
+webdriver.atoms.element.type.JSON_TO_KEY_MAP_ = {};
+goog.scope(function() {
+  var map = webdriver.atoms.element.type.JSON_TO_KEY_MAP_;
+
+  // TODO(jleyba): Extract webdriver.Key to its own file so we can depend on it
+  // here.
+  map['\uE000'] = null;
+  map['\uE003'] = bot.Keyboard.Keys.BACKSPACE;
+  map['\uE004'] = bot.Keyboard.Keys.TAB;
+  map['\uE006'] = bot.Keyboard.Keys.ENTER;
+  map['\uE007'] = bot.Keyboard.Keys.ENTER;
+  map['\uE008'] = bot.Keyboard.Keys.SHIFT;
+  map['\uE009'] = bot.Keyboard.Keys.CONTROL;
+  map['\uE00A'] = bot.Keyboard.Keys.ALT;
+  map['\uE00B'] = bot.Keyboard.Keys.PAUSE;
+  map['\uE00C'] = bot.Keyboard.Keys.ESC;
+  map['\uE00D'] = bot.Keyboard.Keys.SPACE;
+  map['\uE00E'] = bot.Keyboard.Keys.PAGE_UP;
+  map['\uE00F'] = bot.Keyboard.Keys.PAGE_DOWN;
+  map['\uE010'] = bot.Keyboard.Keys.END;
+  map['\uE011'] = bot.Keyboard.Keys.HOME;
+  map['\uE012'] = bot.Keyboard.Keys.LEFT;
+  map['\uE013'] = bot.Keyboard.Keys.UP;
+  map['\uE014'] = bot.Keyboard.Keys.RIGHT;
+  map['\uE015'] = bot.Keyboard.Keys.DOWN;
+  map['\uE016'] = bot.Keyboard.Keys.INSERT;
+  map['\uE017'] = bot.Keyboard.Keys.DELETE;
+  map['\uE018'] = bot.Keyboard.Keys.SEMICOLON;
+  map['\uE019'] = bot.Keyboard.Keys.EQUALS;
+  map['\uE01A'] = bot.Keyboard.Keys.NUM_ZERO;
+  map['\uE01B'] = bot.Keyboard.Keys.NUM_ONE;
+  map['\uE01C'] = bot.Keyboard.Keys.NUM_TWO;
+  map['\uE01D'] = bot.Keyboard.Keys.NUM_THREE;
+  map['\uE01E'] = bot.Keyboard.Keys.NUM_FOUR;
+  map['\uE01F'] = bot.Keyboard.Keys.NUM_FIVE;
+  map['\uE020'] = bot.Keyboard.Keys.NUM_SIX;
+  map['\uE021'] = bot.Keyboard.Keys.NUM_SEVEN;
+  map['\uE022'] = bot.Keyboard.Keys.NUM_EIGHT;
+  map['\uE023'] = bot.Keyboard.Keys.NUM_NINE;
+  map['\uE024'] = bot.Keyboard.Keys.NUM_MULTIPLY;
+  map['\uE025'] = bot.Keyboard.Keys.NUM_PLUS;
+  map['\uE027'] = bot.Keyboard.Keys.NUM_MINUS;
+  map['\uE028'] = bot.Keyboard.Keys.NUM_PERIOD;
+  map['\uE029'] = bot.Keyboard.Keys.NUM_DIVISION;
+  map['\uE031'] = bot.Keyboard.Keys.F1;
+  map['\uE032'] = bot.Keyboard.Keys.F2;
+  map['\uE033'] = bot.Keyboard.Keys.F3;
+  map['\uE034'] = bot.Keyboard.Keys.F4;
+  map['\uE035'] = bot.Keyboard.Keys.F5;
+  map['\uE036'] = bot.Keyboard.Keys.F6;
+  map['\uE037'] = bot.Keyboard.Keys.F7;
+  map['\uE038'] = bot.Keyboard.Keys.F8;
+  map['\uE039'] = bot.Keyboard.Keys.F9;
+  map['\uE03A'] = bot.Keyboard.Keys.F10;
+  map['\uE03B'] = bot.Keyboard.Keys.F11;
+  map['\uE03C'] = bot.Keyboard.Keys.F12;
+  map['\uE03D'] = bot.Keyboard.Keys.META;
+});

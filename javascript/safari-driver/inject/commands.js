@@ -256,10 +256,8 @@ safaridriver.inject.commands.getCssValue =
         'propertyName');
 
 safaridriver.inject.commands.sendKeysToElement =
-    safaridriver.inject.commands.elementCommand_(function(element, keys) {
-      // TODO: Handle special keys encoded in the Unicode PUA
-      return bot.action.type(element, keys.join(''));
-    }, 'value');
+    safaridriver.inject.commands.elementCommand_(
+        webdriver.atoms.element.type, 'value');
 
 safaridriver.inject.commands.getWindowPosition = bot.window.getPosition;
 
