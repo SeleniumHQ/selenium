@@ -22,7 +22,7 @@ import base64
 
 
 from command import Command
-from selenium.common.exceptions import NoSuchAttributeException
+from selenium.common.exceptions import WebDriverException 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -216,7 +216,14 @@ class WebElement(object):
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         zipped.write(filename)
         zipped.close()
-        return self._execute(Command.UPLOAD_FILE, {'file': base64.encodestring(fp.getvalue())})['value']
+        try:
+            return self._execute(Command.UPLOAD_FILE, 
+                            {'file': base64.encodestring(fp.getvalue())})['value']
+        except WebDriverException as e:
+            if "Unrecognized command: POST" in e.__str__():
+                return filename
+            else:
+                raise e
 
 class LocalFileDetector(object):
 
