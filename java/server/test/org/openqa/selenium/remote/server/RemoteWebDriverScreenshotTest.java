@@ -14,10 +14,7 @@
 package org.openqa.selenium.remote.server;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -25,11 +22,18 @@ import org.openqa.selenium.remote.ScreenshotException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.OutputType.BASE64;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @Ignore(HTMLUNIT)
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
@@ -70,4 +74,31 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
 
     assertTrue(screenshot.length() > 0);
   }
+
+  @Test
+  public void testShouldBeAbleToDisableSnapshotOnException() {
+    if (!(driver instanceof RemoteWebDriver)) {
+      System.out.println("Skipping test: driver is not a remote webdriver");
+      return;
+    }
+
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("webdriver.remote.quietExceptions", true);
+
+    WebDriver noScreenshotDriver = new WebDriverBuilder().setCapabilities(caps).get();
+
+    noScreenshotDriver.get(pages.simpleTestPage);
+
+    try {
+        noScreenshotDriver.findElement(By.id("doesnayexist"));
+      fail();
+    } catch (NoSuchElementException e) {
+      Throwable t = e;
+      while (t != null) {
+    	  assertFalse(t instanceof ScreenshotException);
+    	  t = t.getCause();
+      }
+    }
+  }
+
 }

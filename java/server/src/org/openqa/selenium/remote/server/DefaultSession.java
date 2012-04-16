@@ -111,7 +111,7 @@ public class DefaultSession implements Session {
     // Ensure that the browser is created on the single thread.
     EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
 
-    if (!browserCreator.isAndroid()) {
+    if (!browserCreator.isAndroid() && !capabilities.is("webdriver.remote.quietExceptions")) {
       // Memo to self; this is not a constructor escape of "this" - probably ;)
       initialDriver.register(new SnapshotScreenListener(this));
     }
