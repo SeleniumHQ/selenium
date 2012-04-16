@@ -1,3 +1,6 @@
+Selenium 2.21.2
+* Fix typing to file input when not using Selenium Server. Bug 3736
+
 Selenium 2.21.1
 * focusmanager.testmode messes with native events, removing it.
 
