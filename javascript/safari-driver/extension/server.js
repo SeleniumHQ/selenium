@@ -331,9 +331,11 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
   var command = new safaridriver.Command(
       data['id'], data['name'], data['parameters'] || {});
 
-  this.execute(command).addCallback(function(response) {
-    this.send_(command, response);
-  }, this);
+  this.execute(command).
+      addErrback(webdriver.error.createResponse).
+      addCallback(function(response) {
+        this.send_(command, response);
+      }, this);
 
   function checkHasKey(data, key) {
     if (!goog.object.containsKey(data, key)) {
