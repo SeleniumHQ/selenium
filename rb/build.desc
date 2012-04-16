@@ -16,7 +16,7 @@ rubygem(
     "//rb:safari"
   ],
   gemdeps = [
-    { "multi_json"   : "~> 1.0"   },
+    { "multi_json"   : "< 1.3"   },
     { "rubyzip"      : ">= 0"     },
     { "childprocess" : ">= 0.2.5" },
     { "ffi"          : "~> 1.0"   },
