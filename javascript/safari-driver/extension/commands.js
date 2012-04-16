@@ -89,20 +89,6 @@ safaridriver.extension.commands.getCurrentUrl = function(session) {
 
 
 /**
- * @param {!safaridriver.extension.Session} session The session object.
- * @return {!webdriver.promise.Promise} A promise that will resolve to the
- *     current tab's title.
- */
-safaridriver.extension.commands.getTitle = function(session) {
-  var response = new webdriver.promise.Deferred();
-  session.getCommandTab().whenReady(function(tab) {
-    response.resolve(tab.title);
-  });
-  return response.promise;
-};
-
-
-/**
  * Loads a new page in the provided session.
  * @param {!safaridriver.extension.Session} session The session object.
  * @param {!webdriver.Command} command The command object.
