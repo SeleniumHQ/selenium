@@ -45,7 +45,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   }
 
   public WebDriver get() {
-    Capabilities caps = getCabilitiesFor(browser);
+    Capabilities caps = getCapabilitiesFor(browser);
     caps = new DesiredCapabilities(capabilities, caps);
 
     List<Supplier<WebDriver>> suppliers = getSuppliers(caps);
@@ -90,7 +90,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     return suppliers;
   }
 
-  protected Capabilities getCabilitiesFor(Browser detect) {
+  protected Capabilities getCapabilitiesFor(Browser detect) {
     if (detect == null) {
       return null;
     }
