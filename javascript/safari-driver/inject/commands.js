@@ -19,6 +19,8 @@
 goog.provide('safaridriver.inject.commands');
 
 goog.require('bot');
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.inject');
@@ -288,7 +290,34 @@ safaridriver.inject.commands.executeScript = function(command, messenger) {
   webdriver.error.checkResponse(
       (/** @type {!bot.inject.Response} */sendResult));
 
+  var response = new webdriver.promise.Deferred();
+
+  // When executing async script, the bot.inject.executeAsyncScript atom will
+  // detect a page unload event, but the error won't make it back to the
+  // global extension before the unload actually occurs. The message must go
+  // from web page -> injected script -> extension. Each hop is an async
+  // message, so the unload error will get dropped before it makes it to the
+  // extension. So, we check for it here.
+  window.addEventListener('unload', onunload, false);
+
   // Send the command using the provided messenger, then encode the response for
   // WebDriver's wire protocol.
-  return messenger.sendCommand(command).then(bot.inject.wrapValue);
+  messenger.sendCommand(command).then(function(result) {
+    window.removeEventListener('unload', onunload, false);
+    if (response.isPending()) {
+      response.resolve(bot.inject.wrapValue(result));
+    }
+  });
+
+  return response.promise;
+
+  function onunload() {
+    window.removeEventListener('unload', onunload, false);
+    if (response.isPending()) {
+      var error = new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+          'Detected a page unload event; script execution does not work ' +
+          'across page loads.');
+      response.reject(error);
+    }
+  }
 };

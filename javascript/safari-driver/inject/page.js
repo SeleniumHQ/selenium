@@ -22,6 +22,7 @@ goog.provide('safaridriver.inject.page');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
+goog.require('bot.inject');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
@@ -144,6 +145,10 @@ safaridriver.inject.page.onCommand_ = function(message) {
   safaridriver.inject.page.LOG_.info('Handling extension command: ' + message);
   var command = message.getCommand();
   switch (command.getName()) {
+    case webdriver.CommandName.EXECUTE_ASYNC_SCRIPT:
+      safaridriver.inject.page.executeAsyncScript_(command);
+      break;
+
     case webdriver.CommandName.EXECUTE_SCRIPT:
       safaridriver.inject.page.executeScript_(command);
       return;
@@ -338,4 +343,31 @@ safaridriver.inject.page.executeScript_ = function(command) {
   safaridriver.inject.page.LOG_.info(
       'Sending executeScript response: ' + responseMessage);
   responseMessage.send();
+};
+
+
+/**
+ * Handles an executeAsyncScript command.
+ * @param {!safaridriver.Command} command The command to execute.
+ * @private
+ */
+safaridriver.inject.page.executeAsyncScript_ = function(command) {
+  try {
+    var script = (/** @type {string} */command.getParameter('script'));
+    var args = command.getParameter('args');
+    args = (/** @type {!Array} */safaridriver.inject.page.decodeValue(args));
+    var timeout = (/** @type {number} */command.getParameter('timeout'));
+
+    bot.inject.executeAsyncScript(script, args, timeout, sendResponse);
+  } catch (ex) {
+    sendResponse(webdriver.error.createResponse(ex));
+  }
+
+  function sendResponse(response) {
+    var responseMessage = new safaridriver.message.ResponseMessage(
+        command.getId(), response);
+    safaridriver.inject.page.LOG_.info(
+        'Sending executeAsyncScript response: ' + responseMessage);
+    responseMessage.send();
+  }
 };
