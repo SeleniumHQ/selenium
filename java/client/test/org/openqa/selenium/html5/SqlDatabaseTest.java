@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class SqlDatabaseTest extends JUnit4TestBase {
@@ -32,6 +34,11 @@ public class SqlDatabaseTest extends JUnit4TestBase {
       "INSERT INTO docs(docname) VALUES (?)";
   private static final String SELECT_STATEMENT = "SELECT * FROM docs";
   private static final String DELETE_STATEMENT = "DELETE FROM docs";
+
+  @Before
+  public void checkHasDatabaseStorage() {
+    assumeTrue(driver instanceof DatabaseStorage);
+  }
 
   private ResultSet executeQuery(String statement, String... param) {
     // Note: Current HTML5 API of Webdriver only requires the databaseName.
@@ -47,9 +54,6 @@ public class SqlDatabaseTest extends JUnit4TestBase {
 
   @Test
   public void testResultSetsReturnNegativeLastInsertedRowId() {
-    if (!(driver instanceof DatabaseStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
     waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
 
@@ -59,9 +63,6 @@ public class SqlDatabaseTest extends JUnit4TestBase {
 
   @Test
   public void testResultSetsReturnPositiveLastInsertedRowId() {
-    if (!(driver instanceof DatabaseStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
     waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
 
@@ -77,9 +78,6 @@ public class SqlDatabaseTest extends JUnit4TestBase {
 
   @Test
   public void testResultSetsNumberOfRowsAffected() {
-    if (!(driver instanceof DatabaseStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
     waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
 
@@ -100,9 +98,6 @@ public class SqlDatabaseTest extends JUnit4TestBase {
 
   @Test
   public void testResultSetRowsContainsInsertedRows() {
-    if (!(driver instanceof DatabaseStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
     waitFor(WaitingConditions.elementToExist(driver, "db_completed"));
 

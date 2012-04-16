@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -24,13 +25,16 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class SessionStorageTest extends JUnit4TestBase {
+  @Before
+  public void checkHasWebStorage() {
+    assumeTrue(driver instanceof WebStorage);
+  }
+
   @Test
   public void testSessionStorageSetAndGetItem() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
     assertEquals("Session Storage isn't empty.", 0, session.size());
@@ -48,9 +52,6 @@ public class SessionStorageTest extends JUnit4TestBase {
 
   @Test
   public void testSessionStorageKeySet() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
 
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
@@ -71,9 +72,6 @@ public class SessionStorageTest extends JUnit4TestBase {
 
   @Test
   public void testClearSessionStorage() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
     session.setItem("FOO1", "BAR1");
     session.setItem("FOO2", "BAR2");
@@ -86,9 +84,6 @@ public class SessionStorageTest extends JUnit4TestBase {
 
   @Test
   public void testSessionStorageRemoveItem() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
 
     SessionStorage session = ((WebStorage) driver).getSessionStorage();

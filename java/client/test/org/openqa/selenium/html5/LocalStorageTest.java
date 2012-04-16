@@ -17,20 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.html5;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+
 import org.openqa.selenium.testing.JUnit4TestBase;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class LocalStorageTest extends JUnit4TestBase {
+  @Before
+  public void checkHasWebStorage() {
+    assumeTrue(driver instanceof WebStorage);
+  }
+
   @Test
   public void testLocalStorageSetAndGetItem() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
@@ -50,9 +55,6 @@ public class LocalStorageTest extends JUnit4TestBase {
 
   @Test
   public void testLocalStorageKeySet() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
@@ -73,9 +75,6 @@ public class LocalStorageTest extends JUnit4TestBase {
 
   @Test
   public void testClearLocalStorage() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
     local.setItem("FOO1", "BAR1");
     local.setItem("FOO2", "BAR2");
@@ -88,9 +87,6 @@ public class LocalStorageTest extends JUnit4TestBase {
 
   @Test
   public void testLocalStorageRemoveItem() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
@@ -105,9 +101,6 @@ public class LocalStorageTest extends JUnit4TestBase {
 
   @Test
   public void testLocalAndSessionStorageDontInterfereWithEachOther() {
-    if (!(driver instanceof WebStorage)) {
-      return;
-    }
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
