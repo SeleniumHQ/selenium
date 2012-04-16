@@ -223,7 +223,7 @@ module Selenium
         end
 
         def to_json(*args)
-          MultiJson.encode as_json
+          MultiJson.dump as_json
         end
 
         def ==(other)

@@ -27,7 +27,7 @@ module Selenium
           end
 
           def default_preferences
-            @default_preferences ||= MultiJson.decode(
+            @default_preferences ||= MultiJson.load(
               File.read(File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/prefs.json"))
             ).freeze
           end
@@ -241,7 +241,7 @@ module Selenium
               key, value = $1.strip, $2.strip
 
               # wrap the value in an array to make it a valid JSON string.
-              prefs[key] = MultiJson.decode("[#{value}]").first
+              prefs[key] = MultiJson.load("[#{value}]").first
             end
           end
 
@@ -251,7 +251,7 @@ module Selenium
         def write_prefs(prefs, path)
           File.open(path, "w") { |file|
             prefs.each do |key, value|
-              file.puts %{user_pref("#{key}", #{MultiJson.encode value});}
+              file.puts %{user_pref("#{key}", #{MultiJson.dump value});}
             end
           }
         end
