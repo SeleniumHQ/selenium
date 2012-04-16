@@ -11,34 +11,6 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
-        public void StupidTest()
-        {
-            driver.Url = javascriptPage;
-
-            IWebElement element = driver.FindElement(By.Id("menu1"));
-
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            if (inputDevicesDriver == null)
-            {
-                return;
-            }
-
-            IMouse currentMouse = inputDevicesDriver.Mouse;
-            inputDevicesDriver.Mouse = new JavaScriptMouse(driver);
-
-            IWebElement item = driver.FindElement(By.Id("item1"));
-            Assert.AreEqual("", item.Text);
-
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
-            //element.Hover();
-            Actions actionBuilder = new Actions(driver);
-            actionBuilder.MoveToElement(element).Perform();
-            System.Threading.Thread.Sleep(5000);
-            item = driver.FindElement(By.Id("item1"));
-            Assert.AreEqual("Item 1", item.Text);
-        }
-
-        [Test]
         public void ShouldBeAbleToBrowseTransformedXml()
         {
             driver.Url = xhtmlTestPage;
