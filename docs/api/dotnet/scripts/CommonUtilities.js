@@ -103,6 +103,8 @@ function GetDevlangCheckboxId(devlang)
             return devlangsMenu.GetCheckboxId("JSharp");
         case "JavaScript":
             return devlangsMenu.GetCheckboxId("JavaScript");
+        case "XAML":
+            return devlangsMenu.GetCheckboxId("XAML");
         case "FSharp":
             return devlangsMenu.GetCheckboxId("FSharp");
         default:

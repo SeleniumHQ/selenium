@@ -68,8 +68,13 @@ dl
 }
 
 dl.authored dt {
-	font-style:	bold;
-	margin-top: 2;
+	font-weight: bold;
+	margin-top: 5px;
+}
+
+dl.authored dd {
+	margin-left: 20px;
+    margin-bottom: 5px;
 }
 
 dd {
@@ -78,37 +83,23 @@ dd {
 
 ul
 {
-	margin-top:0;
-	margin-bottom:0;
-	margin-left: 17;
-	list-style-type: disc;
-}
-
-ul ul
-{
-	margin-bottom: 4;
-	margin-left: 17;
-	margin-top: 3;
-	list-style-type: disc;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 ol {
-	margin-top:0;
-	margin-bottom:0;
-	margin-left: 28;
-	list-style-type: decimal;
-}
-
-ol ol {
-	margin-bottom: 4;
-	margin-left: 28;
-	margin-top: 3;
-	list-style-type: lower-alpha;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 li {
-	margin-top: 5;
-	margin-bottom: 5;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+ul.nobullet
+{
+    list-style-type: none;
 }
 
 p {
@@ -121,11 +112,11 @@ a:link {
 }
 
 a:visited {
-	color: #DD7C3B;
+	color:	#0000FF;
 }
 
 a:hover {
-	color:	#3366FF;
+	color: #DD7C3B;
 }
 
 div#header a, div#mainSectionMHS a {
@@ -134,7 +125,7 @@ div#header a, div#mainSectionMHS a {
 
 code
 {
-	font-family:	Monospace, Courier New, Courier;
+    font-family: Consolas, "Courier New", Courier, monospace;
 	font-size: 105%;
 	color:	#000066;
 }
@@ -228,6 +219,13 @@ div#header table td
 	margin-bottom:	0;
 	padding-right: 20;
 }
+
+/* Applies to first row in the upper table of the non-scrolling header region. */
+div#header table#toptable td
+{
+	padding-left: 15px;
+}
+
 /* Applies to second row in the upper table of the non-scrolling header region. */
 div#header table tr#headerTableRow2 td
 {
@@ -300,8 +298,8 @@ div.tableSection p
 }	
 li p
 {
-	margin-top:2;
-	margin-bottom:2;
+	margin-top:2px;
+	margin-bottom:8px;
 }
 div.seeAlsoNoToggleSection dl
 {
@@ -367,7 +365,6 @@ span#runningHeaderText
 {
 	color: #8C8C8C;
 	font-size: 90%;
-	padding-left: 13;
 }
 
 /* Applies to the topic title in the second row of the upper table in the
@@ -659,18 +656,21 @@ div.code table td
 /*------------------------------ Begin Note Styles -------------------------------*/
 div.alert table
 {
-	border: 0;
-	font-size: 100%;
-	width:	100%;
+    border: 0px;
+    font-size: 100%;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 div.alert table th
 {
-	background:	#EFEFF7;
-	border-bottom-width: 0;
-	color: #000066;
-	padding-left: 5;
-	padding-right: 5;
+    text-align: left;
+    background: #EFEFF7;
+    border-bottom-width: 0px;
+    color: #000066;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 div.alert table td
@@ -678,11 +678,10 @@ div.alert table td
 	background:	#F7F7FF;
 	border-top-color: #FFFFFF;
 	border-top-style: solid;
-	border-top-width: 1;
-	padding-left: 5;
-	padding-right: 5;
+	border-top-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
-
 
 /*------------------------------ End Note Styles -------------------------------*/
 
@@ -728,13 +727,12 @@ span.copyCodeOnHover
 	cursor: pointer;
 }
 
-/* Formats the code in syntax and usage blocks, and the code in non-snipper code blocks. */
+/* Formats the code in syntax and usage blocks, and the code in non-snippet code blocks. */
 div.code pre
 {
-	font-family:	Monospace, Courier New, Courier;
+    font-family: Consolas, "Courier New", Courier, monospace;
 	font-size: 105%;
 	color:	#000066;
-	word-wrap:	break-word;
 	background: #F7F7FF;
 }
 
@@ -923,10 +921,14 @@ span.fs
 	display: none;
 }
 
-span.code {
-	font-family:	Monospace, Courier New, Courier;
+span.code, span.command {
+    font-family: Consolas, "Courier New", Courier, monospace;
 	font-size: 105%;
-	color:	#000066; 
+	color:	#000066;
+}
+span.literalValue
+{
+	color:#8B0000;
 }
 span.ui {
 	font-weight: bold;
@@ -944,31 +946,66 @@ span.label
 {
 	font-weight: bold;
 }
-span.foreignPhrase {
+q
+{
+	font-style: italic;
+}
+span.foreignPhrase, span.phrase {
 	font-style: italic;
 }
 span.placeholder {
 	font-style: italic;
 }
-span.keyword 
+span.keyword
 {
-	font-weight: bold;
+/*	font-weight: bold;*/
 }
 span.typeparameter
 {
 	font-style:italic;
 }
 
+span.media {
+	margin-left: 5px;
+	margin-right: 5px;
+    vertical-align: middle;
+}
+
+div.mediaNear {
+	text-align: left;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+div.mediaFar {
+	text-align: right;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+div.mediaCenter {
+	text-align: center;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
 div.caption
 {
-	font-weight: bold;
+	margin-top: 1em;
+	margin-bottom: 1em;
 	font-size:100%;
 	color:#003399;
 }
 
+span.captionLead
+{
+  font-weight: bold;
+  margin-right: .5em;
+}
+
 /* syntax styles */
 
-div.code span.identifier 
+div.code span.identifier
 {
 	/*font-weight: bold;*/
 }
@@ -1113,3 +1150,125 @@ span.filter
 	color: #0000FF;
 }
 
+/* Glossary styles */
+
+h1.glossaryTitle
+{
+  color: #000000;
+  font-size: 140%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+div.glossaryDiv
+{
+}
+
+h2.glossaryDivHeading
+{
+  color: Black;
+  font-size: 115%;
+  margin-top: 1em;
+  margin-bottom: 0px;
+}
+
+div.glossaryLetterBar
+{
+  font-size: 90%;
+}
+
+hr.glossaryRule
+{
+  text-align: left;
+  color: Black;
+}
+
+h3.glossaryGroupHeading
+{
+  font-size: 120%;
+  color: Gray;
+  margin: 5px 0 5px 0;
+}
+
+div.glossaryGroup
+{
+}
+
+dl.glossaryGroupList
+{
+  margin: 0;
+  color: Black;
+}
+
+dt.glossaryEntry
+{
+  font-weight: bold;
+  margin-left: 2em;
+}
+
+dd.glossaryEntry
+{
+  margin-left: 2em;
+  margin-bottom: 2em;
+}
+
+div.relatedEntry
+{
+  margin-bottom: 4px;
+}
+
+/* Bibliography */
+div.bibliographStyle
+{
+  padding-top:5px; 
+}
+
+span.bibliographyNumber
+{
+}
+
+span.bibliographyAuthor
+{
+  font-weight: bold;
+}
+
+span.bibliographyTitle
+{
+  font-style: italic;
+}
+
+span.bibliographyPublisher
+{
+}
+
+sup.citation a:link a:visited a:active
+{
+  text-decoration: none;
+}
+
+/* autoOutline styles */
+li.outlineSectionEntry
+{
+}
+
+div.outlineSectionEntrySummary
+{
+}
+
+/* table styles */
+
+table.members th.iconColumn {
+	width: 60px;
+}
+
+table.members th.nameColumn {
+	width: 33%;
+}
+
+table.members th.valueColumn {
+	width: 10%;
+}
+
+table.members th.descriptionColumn {
+/*	No fixed width, use whatever is left over */
+}

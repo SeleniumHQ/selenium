@@ -2,7 +2,24 @@
 <HelpKI>
 
   <HelpKINode Title="Accept method" Url="html/M_OpenQA_Selenium_IAlert_Accept.htm" />
-  <HelpKINode Title="AcceptAlert enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Accept method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Accept.htm" />
+  <HelpKINode Title="Accept method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Accept.htm" />
+  <HelpKINode Title="AcceptAlert field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_AcceptAlert.htm" />
+  <HelpKINode Title="Accepted event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Accepted.htm" />
+  <HelpKINode Title="Accepted event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Accepted.htm" />
+  <HelpKINode Title="AcceptError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_AcceptError.htm" />
+  <HelpKINode Title="AcceptError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_AcceptError.htm" />
+  <HelpKINode Title="AcceptEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+  <HelpKINode Title="AcceptEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+  <HelpKINode Title="AcceptEventArgs class">
+    <HelpKINode Title="about AcceptEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_AcceptEventArgs__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AcceptEventArgs.AcceptEventArgs constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_AcceptEventArgs__ctor.htm" />
+  <HelpKINode Title="AcceptEventArgs.Socket property" Url="html/P_OpenQA_Selenium_Safari_Internal_AcceptEventArgs_Socket.htm" />
   <HelpKINode Title="AcceptSslCertificates field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_AcceptSslCertificates.htm" />
   <HelpKINode Title="AcceptUntrustedCertificates field" Url="html/F_OpenQA_Selenium_Chrome_ChromeDriver_AcceptUntrustedCertificates.htm" />
   <HelpKINode Title="AcceptUntrustedCertificates field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_AcceptUntrustedCertificates.htm" />
@@ -34,9 +51,13 @@
   <HelpKINode Title="ActiveElement method" Url="html/M_OpenQA_Selenium_ITargetLocator_ActiveElement.htm" />
   <HelpKINode Title="Add field" Url="html/F_OpenQA_Selenium_Keys_Add.htm" />
   <HelpKINode Title="AddAction method" Url="html/M_OpenQA_Selenium_Interactions_Actions_AddAction.htm" />
-  <HelpKINode Title="AddCookie enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="AddArgument method" Url="html/M_OpenQA_Selenium_Chrome_ChromeOptions_AddArgument.htm" />
+  <HelpKINode Title="AddArguments method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeOptions_AddArguments.htm" />
+  <HelpKINode Title="AddCookie field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_AddCookie.htm" />
   <HelpKINode Title="AddCookie method" Url="html/M_OpenQA_Selenium_ICookieJar_AddCookie.htm" />
+  <HelpKINode Title="AddExtension method" Url="html/M_OpenQA_Selenium_Chrome_ChromeOptions_AddExtension.htm" />
   <HelpKINode Title="AddExtension method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_AddExtension.htm" />
+  <HelpKINode Title="AddExtensions method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeOptions_AddExtensions.htm" />
   <HelpKINode Title="AddLocationStrategy method" Url="html/M_Selenium_DefaultSelenium_AddLocationStrategy.htm" />
   <HelpKINode Title="AddLocationStrategy method" Url="html/M_Selenium_ISelenium_AddLocationStrategy.htm" />
   <HelpKINode Title="AddScript method" Url="html/M_Selenium_DefaultSelenium_AddScript.htm" />
@@ -74,6 +95,7 @@
   <HelpKINode Title="AnswerOnNextPrompt method" Url="html/M_Selenium_ISelenium_AnswerOnNextPrompt.htm" />
   <HelpKINode Title="Any enumeration member" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
   <HelpKINode Title="Args property" Url="html/P_Selenium_DefaultRemoteCommand_Args.htm" />
+  <HelpKINode Title="Arguments property" Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_Arguments.htm" />
   <HelpKINode Title="ArrowDown field" Url="html/F_OpenQA_Selenium_Keys_ArrowDown.htm" />
   <HelpKINode Title="ArrowLeft field" Url="html/F_OpenQA_Selenium_Keys_ArrowLeft.htm" />
   <HelpKINode Title="ArrowRight field" Url="html/F_OpenQA_Selenium_Keys_ArrowRight.htm" />
@@ -97,15 +119,41 @@
   <HelpKINode Title="AsyncScriptTimeout enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="AttachFile method" Url="html/M_Selenium_DefaultSelenium_AttachFile.htm" />
   <HelpKINode Title="AttachFile method" Url="html/M_Selenium_ISelenium_AttachFile.htm" />
+  <HelpKINode Title="Authenticate method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Authenticate.htm" />
+  <HelpKINode Title="Authenticate method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Authenticate.htm" />
+  <HelpKINode Title="Authenticated event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Authenticated.htm" />
+  <HelpKINode Title="Authenticated event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Authenticated.htm" />
+  <HelpKINode Title="AuthenticateError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_AuthenticateError.htm" />
+  <HelpKINode Title="AuthenticateError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_AuthenticateError.htm" />
   <HelpKINode Title="AutoDetect enumeration member" Url="html/T_OpenQA_Selenium_ProxyKind.htm" />
   <HelpKINode Title="AuxiliaryLocator property" Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_AuxiliaryLocator.htm" />
   <HelpKINode Title="Back method" Url="html/M_OpenQA_Selenium_INavigation_Back.htm" />
   <HelpKINode Title="Backspace field" Url="html/F_OpenQA_Selenium_Keys_Backspace.htm" />
+  <HelpKINode Title="Binary enumeration member" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
   <HelpKINode Title="Binary property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxDriver_Binary.htm" />
   <HelpKINode Title="BinaryCapabilityName field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_BinaryCapabilityName.htm" />
+  <HelpKINode Title="BinaryLocation property" Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_BinaryLocation.htm" />
+  <HelpKINode Title="BinaryMessageHandled event" Url="html/E_OpenQA_Selenium_Safari_Internal_IHandler_BinaryMessageHandled.htm" />
+  <HelpKINode Title="BinaryMessageHandledEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+  <HelpKINode Title="BinaryMessageHandledEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+  <HelpKINode Title="BinaryMessageHandledEventArgs class">
+    <HelpKINode Title="about BinaryMessageHandledEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="BinaryMessageHandledEventArgs.BinaryMessageHandledEventArgs constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs__ctor.htm" />
+  <HelpKINode Title="BinaryMessageHandledEventArgs.Data property" Url="html/P_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs_Data.htm" />
+  <HelpKINode Title="BinaryMessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_BinaryMessageReceived.htm" />
+  <HelpKINode Title="BinaryMessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_BinaryMessageReceived.htm" />
+  <HelpKINode Title="Bind method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Bind.htm" />
+  <HelpKINode Title="Bind method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Bind.htm" />
+  <HelpKINode Title="Body property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Body.htm" />
   <HelpKINode Title="BrowserName field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_BrowserName.htm" />
   <HelpKINode Title="BrowserName property" Url="html/P_OpenQA_Selenium_ICapabilities_BrowserName.htm" />
   <HelpKINode Title="BrowserName property" Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_BrowserName.htm" />
+  <HelpKINode Title="Buffer property" Url="html/P_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs_Buffer.htm" />
   <HelpKINode Title="Build method" Url="html/M_OpenQA_Selenium_Interactions_Actions_Build.htm" />
   <HelpKINode Title="By class" Url="html/AllMembers_T_OpenQA_Selenium_By.htm" />
   <HelpKINode Title="By class" Url="html/T_OpenQA_Selenium_By.htm" />
@@ -133,6 +181,7 @@
   <HelpKINode Title="By.TagName method" Url="html/M_OpenQA_Selenium_By_TagName.htm" />
   <HelpKINode Title="By.ToString method" Url="html/M_OpenQA_Selenium_By_ToString.htm" />
   <HelpKINode Title="By.XPath method" Url="html/M_OpenQA_Selenium_By_XPath.htm" />
+  <HelpKINode Title="BytesRead property" Url="html/P_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs_BytesRead.htm" />
   <HelpKINode Title="CacheLookupAttribute class" Url="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm" />
   <HelpKINode Title="CacheLookupAttribute class" Url="html/T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm" />
   <HelpKINode Title="CacheLookupAttribute class">
@@ -148,6 +197,7 @@
   <HelpKINode Title="Cancel field" Url="html/F_OpenQA_Selenium_Keys_Cancel.htm" />
   <HelpKINode Title="Capabilities property" Url="html/P_OpenQA_Selenium_IHasCapabilities_Capabilities.htm" />
   <HelpKINode Title="Capabilities property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Capabilities.htm" />
+  <HelpKINode Title="Capability field" Url="html/F_OpenQA_Selenium_Chrome_ChromeOptions_Capability.htm" />
   <HelpKINode Title="CapabilityType class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_CapabilityType.htm" />
   <HelpKINode Title="CapabilityType class" Url="html/T_OpenQA_Selenium_Remote_CapabilityType.htm" />
   <HelpKINode Title="CapabilityType class">
@@ -175,6 +225,7 @@
   <HelpKINode Title="CaptureScreenshot method" Url="html/M_Selenium_ISelenium_CaptureScreenshot.htm" />
   <HelpKINode Title="CaptureScreenshotToString method" Url="html/M_Selenium_DefaultSelenium_CaptureScreenshotToString.htm" />
   <HelpKINode Title="CaptureScreenshotToString method" Url="html/M_Selenium_ISelenium_CaptureScreenshotToString.htm" />
+  <HelpKINode Title="Certificate property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_Certificate.htm" />
   <HelpKINode Title="Check method" Url="html/M_Selenium_DefaultSelenium_Check.htm" />
   <HelpKINode Title="Check method" Url="html/M_Selenium_ISelenium_Check.htm" />
   <HelpKINode Title="ChooseCancelOnNextConfirmation method" Url="html/M_Selenium_DefaultSelenium_ChooseCancelOnNextConfirmation.htm" />
@@ -198,8 +249,6 @@
   <HelpKINode Title="ChromeDriver.FindElement method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_FindElement.htm" />
   <HelpKINode Title="ChromeDriver.FindElements method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_FindElements.htm" />
   <HelpKINode Title="ChromeDriver.GetScreenshot method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_GetScreenshot.htm" />
-  <HelpKINode Title="ChromeDriver.StartClient method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_StartClient.htm" />
-  <HelpKINode Title="ChromeDriver.StopClient method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_StopClient.htm" />
   <HelpKINode Title="ChromeDriverService class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" />
   <HelpKINode Title="ChromeDriverService class" Url="html/T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" />
   <HelpKINode Title="ChromeDriverService class">
@@ -209,10 +258,25 @@
     <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" />
   </HelpKINode>
   <HelpKINode Title="ChromeDriverService.CreateDefaultService method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService.htm" />
-  <HelpKINode Title="ChromeDriverService.Dispose method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_Dispose.htm" />
-  <HelpKINode Title="ChromeDriverService.IsRunning property" Url="html/P_OpenQA_Selenium_Chrome_ChromeDriverService_IsRunning.htm" />
-  <HelpKINode Title="ChromeDriverService.ServiceUrl property" Url="html/P_OpenQA_Selenium_Chrome_ChromeDriverService_ServiceUrl.htm" />
-  <HelpKINode Title="ChromeDriverService.Start method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_Start.htm" />
+  <HelpKINode Title="ChromeOptions class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+  <HelpKINode Title="ChromeOptions class" Url="html/T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+  <HelpKINode Title="ChromeOptions class">
+    <HelpKINode Title="about ChromeOptions class" Url="html/T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Chrome_ChromeOptions__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ChromeOptions.AddArgument method" Url="html/M_OpenQA_Selenium_Chrome_ChromeOptions_AddArgument.htm" />
+  <HelpKINode Title="ChromeOptions.AddArguments method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeOptions_AddArguments.htm" />
+  <HelpKINode Title="ChromeOptions.AddExtension method" Url="html/M_OpenQA_Selenium_Chrome_ChromeOptions_AddExtension.htm" />
+  <HelpKINode Title="ChromeOptions.AddExtensions method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeOptions_AddExtensions.htm" />
+  <HelpKINode Title="ChromeOptions.Arguments property" Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_Arguments.htm" />
+  <HelpKINode Title="ChromeOptions.BinaryLocation property" Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_BinaryLocation.htm" />
+  <HelpKINode Title="ChromeOptions.Capability field" Url="html/F_OpenQA_Selenium_Chrome_ChromeOptions_Capability.htm" />
+  <HelpKINode Title="ChromeOptions.ChromeOptions constructor" Url="html/M_OpenQA_Selenium_Chrome_ChromeOptions__ctor.htm" />
+  <HelpKINode Title="ChromeOptions.Extensions property" Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_Extensions.htm" />
   <HelpKINode Title="ChromeWebElement class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" />
   <HelpKINode Title="ChromeWebElement class" Url="html/T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" />
   <HelpKINode Title="ChromeWebElement class">
@@ -236,7 +300,7 @@
   <HelpKINode Title="Clear field" Url="html/F_OpenQA_Selenium_Keys_Clear.htm" />
   <HelpKINode Title="Clear method" Url="html/M_OpenQA_Selenium_IWebElement_Clear.htm" />
   <HelpKINode Title="Clear method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Clear.htm" />
-  <HelpKINode Title="ClearElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="ClearElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ClearElement.htm" />
   <HelpKINode Title="Click method" Url="html/M_OpenQA_Selenium_IMouse_Click.htm" />
   <HelpKINode Title="Click method" Url="html/M_OpenQA_Selenium_IWebElement_Click.htm" />
   <HelpKINode Title="Click method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Click.htm" />
@@ -247,13 +311,24 @@
   <HelpKINode Title="ClickAndHold method" Url="html/Overload_OpenQA_Selenium_Interactions_Actions_ClickAndHold.htm" />
   <HelpKINode Title="ClickAt method" Url="html/M_Selenium_DefaultSelenium_ClickAt.htm" />
   <HelpKINode Title="ClickAt method" Url="html/M_Selenium_ISelenium_ClickAt.htm" />
-  <HelpKINode Title="ClickElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="Close enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="ClickElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ClickElement.htm" />
+  <HelpKINode Title="ClientIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_ClientIPAddress.htm" />
+  <HelpKINode Title="ClientIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_ClientIPAddress.htm" />
+  <HelpKINode Title="Close enumeration member" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
+  <HelpKINode Title="Close field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Close.htm" />
   <HelpKINode Title="Close method" Url="html/M_OpenQA_Selenium_IWebDriver_Close.htm" />
   <HelpKINode Title="Close method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Close.htm" />
+  <HelpKINode Title="Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Close.htm" />
+  <HelpKINode Title="Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Close.htm" />
+  <HelpKINode Title="Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Close.htm" />
+  <HelpKINode Title="Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Close.htm" />
   <HelpKINode Title="Close method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Close.htm" />
   <HelpKINode Title="Close method" Url="html/M_Selenium_DefaultSelenium_Close.htm" />
   <HelpKINode Title="Close method" Url="html/M_Selenium_ISelenium_Close.htm" />
+  <HelpKINode Title="Closed event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Closed.htm" />
+  <HelpKINode Title="Closed event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Closed.htm" />
+  <HelpKINode Title="Closed event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_Closed.htm" />
+  <HelpKINode Title="CloseHandled event" Url="html/E_OpenQA_Selenium_Safari_Internal_IHandler_CloseHandled.htm" />
   <HelpKINode Title="Command class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_Command.htm" />
   <HelpKINode Title="Command class" Url="html/T_OpenQA_Selenium_Remote_Command.htm" />
   <HelpKINode Title="Command class">
@@ -312,6 +387,23 @@
   </HelpKINode>
   <HelpKINode Title="CompoundMutator.CompoundMutator constructor" Url="html/M_Selenium_Internal_SeleniumEmulation_CompoundMutator__ctor.htm" />
   <HelpKINode Title="CompoundMutator.Mutate method" Url="html/M_Selenium_Internal_SeleniumEmulation_CompoundMutator_Mutate.htm" />
+  <HelpKINode Title="Connected property" Url="html/P_OpenQA_Selenium_Safari_Internal_ISocket_Connected.htm" />
+  <HelpKINode Title="Connected property" Url="html/P_OpenQA_Selenium_Safari_Internal_SocketWrapper_Connected.htm" />
+  <HelpKINode Title="Connection property" Url="html/P_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs_Connection.htm" />
+  <HelpKINode Title="Connection property" Url="html/P_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs_Connection.htm" />
+  <HelpKINode Title="ConnectionEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+  <HelpKINode Title="ConnectionEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+  <HelpKINode Title="ConnectionEventArgs class">
+    <HelpKINode Title="about ConnectionEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ConnectionEventArgs.Connection property" Url="html/P_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs_Connection.htm" />
+  <HelpKINode Title="ConnectionEventArgs.ConnectionEventArgs constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs__ctor.htm" />
+  <HelpKINode Title="ConnectionInfo property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_ConnectionInfo.htm" />
+  <HelpKINode Title="ConnectionInfo property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnection_ConnectionInfo.htm" />
   <HelpKINode Title="ConsoleOutput property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxBinary_ConsoleOutput.htm" />
   <HelpKINode Title="ContextClick method" Url="html/M_OpenQA_Selenium_IMouse_ContextClick.htm" />
   <HelpKINode Title="ContextClick method" Url="html/M_OpenQA_Selenium_Interactions_Actions_ContextClick.htm" />
@@ -319,6 +411,7 @@
   <HelpKINode Title="ContextMenu method" Url="html/M_Selenium_ISelenium_ContextMenu.htm" />
   <HelpKINode Title="ContextMenuAt method" Url="html/M_Selenium_DefaultSelenium_ContextMenuAt.htm" />
   <HelpKINode Title="ContextMenuAt method" Url="html/M_Selenium_ISelenium_ContextMenuAt.htm" />
+  <HelpKINode Title="Continuation enumeration member" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
   <HelpKINode Title="Control field" Url="html/F_OpenQA_Selenium_Keys_Control.htm" />
   <HelpKINode Title="ControlKeyDown method" Url="html/M_Selenium_DefaultSelenium_ControlKeyDown.htm" />
   <HelpKINode Title="ControlKeyDown method" Url="html/M_Selenium_ISelenium_ControlKeyDown.htm" />
@@ -344,14 +437,22 @@
   <HelpKINode Title="Cookie.ToString method" Url="html/M_OpenQA_Selenium_Cookie_ToString.htm" />
   <HelpKINode Title="Cookie.Value property" Url="html/P_OpenQA_Selenium_Cookie_Value.htm" />
   <HelpKINode Title="Cookies property" Url="html/P_OpenQA_Selenium_IOptions_Cookies.htm" />
+  <HelpKINode Title="Cookies property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Cookies.htm" />
+  <HelpKINode Title="Cookies property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Cookies.htm" />
   <HelpKINode Title="Coordinates property" Url="html/P_OpenQA_Selenium_ILocatable_Coordinates.htm" />
   <HelpKINode Title="Coordinates property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Coordinates.htm" />
+  <HelpKINode Title="Create method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Create.htm" />
+  <HelpKINode Title="CreateBinaryFrame method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateBinaryFrame.htm" />
+  <HelpKINode Title="CreateCloseFrame method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateCloseFrame.htm" />
   <HelpKINode Title="CreateCookie method" Url="html/M_Selenium_DefaultSelenium_CreateCookie.htm" />
   <HelpKINode Title="CreateCookie method" Url="html/M_Selenium_ISelenium_CreateCookie.htm" />
   <HelpKINode Title="CreateDefaultService method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService.htm" />
+  <HelpKINode Title="CreateDefaultService method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriverService_CreateDefaultService.htm" />
   <HelpKINode Title="CreateElement method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_CreateElement.htm" />
   <HelpKINode Title="CreateElement method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_CreateElement.htm" />
+  <HelpKINode Title="CreateHandshake method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateHandshake.htm" />
   <HelpKINode Title="CreateProfile method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_CreateProfile.htm" />
+  <HelpKINode Title="CreateTextFrame method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateTextFrame.htm" />
   <HelpKINode Title="CreateWebRequest method" Url="html/M_OpenQA_Selenium_Remote_CommandInfo_CreateWebRequest.htm" />
   <HelpKINode Title="CreateWebRequest method" Url="html/M_Selenium_HttpCommandProcessor_CreateWebRequest.htm" />
   <HelpKINode Title="CssSelector enumeration member" Url="html/T_OpenQA_Selenium_Support_PageObjects_How.htm" />
@@ -361,6 +462,7 @@
   <HelpKINode Title="CurrentWindowHandle property" Url="html/P_OpenQA_Selenium_IWebDriver_CurrentWindowHandle.htm" />
   <HelpKINode Title="CurrentWindowHandle property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_CurrentWindowHandle.htm" />
   <HelpKINode Title="CurrentWindowHandle property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_CurrentWindowHandle.htm" />
+  <HelpKINode Title="Data property" Url="html/P_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs_Data.htm" />
   <HelpKINode Title="Decimal field" Url="html/F_OpenQA_Selenium_Keys_Decimal.htm" />
   <HelpKINode Title="DefaultContent method" Url="html/M_OpenQA_Selenium_ITargetLocator_DefaultContent.htm" />
   <HelpKINode Title="DefaultEnableNativeEvents field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_DefaultEnableNativeEvents.htm" />
@@ -572,19 +674,19 @@
   <HelpKINode Title="DefaultWait&lt;T&gt;.ThrowTimeoutException method" Url="html/M_OpenQA_Selenium_Support_UI_DefaultWait_1_ThrowTimeoutException.htm" />
   <HelpKINode Title="DefaultWait&lt;T&gt;.Timeout property" Url="html/P_OpenQA_Selenium_Support_UI_DefaultWait_1_Timeout.htm" />
   <HelpKINode Title="DefaultWait&lt;T&gt;.Until&lt;TResult&gt; method" Url="html/M_OpenQA_Selenium_Support_UI_DefaultWait_1_Until__1.htm" />
-  <HelpKINode Title="DefineDriverMapping enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DefineDriverMapping field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DefineDriverMapping.htm" />
   <HelpKINode Title="Delete field" Url="html/F_OpenQA_Selenium_Keys_Delete.htm" />
-  <HelpKINode Title="DeleteAllCookies enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DeleteAllCookies field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DeleteAllCookies.htm" />
   <HelpKINode Title="DeleteAllCookies method" Url="html/M_OpenQA_Selenium_ICookieJar_DeleteAllCookies.htm" />
   <HelpKINode Title="DeleteAllVisibleCookies method" Url="html/M_Selenium_DefaultSelenium_DeleteAllVisibleCookies.htm" />
   <HelpKINode Title="DeleteAllVisibleCookies method" Url="html/M_Selenium_ISelenium_DeleteAllVisibleCookies.htm" />
   <HelpKINode Title="DeleteCommand field" Url="html/F_OpenQA_Selenium_Remote_CommandInfo_DeleteCommand.htm" />
-  <HelpKINode Title="DeleteCookie enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DeleteCookie field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DeleteCookie.htm" />
   <HelpKINode Title="DeleteCookie method" Url="html/M_OpenQA_Selenium_ICookieJar_DeleteCookie.htm" />
   <HelpKINode Title="DeleteCookie method" Url="html/M_Selenium_DefaultSelenium_DeleteCookie.htm" />
   <HelpKINode Title="DeleteCookie method" Url="html/M_Selenium_ISelenium_DeleteCookie.htm" />
   <HelpKINode Title="DeleteCookieNamed method" Url="html/M_OpenQA_Selenium_ICookieJar_DeleteCookieNamed.htm" />
-  <HelpKINode Title="DescribeElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DescribeElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DescribeElement.htm" />
   <HelpKINode Title="Description property" Url="html/P_OpenQA_Selenium_By_Description.htm" />
   <HelpKINode Title="DeselectAll method" Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectAll.htm" />
   <HelpKINode Title="DeselectByIndex method" Url="html/M_OpenQA_Selenium_Support_UI_SelectElement_DeselectByIndex.htm" />
@@ -618,20 +720,26 @@
   <HelpKINode Title="DesiredCapabilities.IsJavaScriptEnabled property" Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_IsJavaScriptEnabled.htm" />
   <HelpKINode Title="DesiredCapabilities.Opera method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Opera.htm" />
   <HelpKINode Title="DesiredCapabilities.Platform property" Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_Platform.htm" />
+  <HelpKINode Title="DesiredCapabilities.Safari method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Safari.htm" />
   <HelpKINode Title="DesiredCapabilities.SetCapability method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_SetCapability.htm" />
   <HelpKINode Title="DesiredCapabilities.ToString method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_ToString.htm" />
   <HelpKINode Title="DesiredCapabilities.Version property" Url="html/P_OpenQA_Selenium_Remote_DesiredCapabilities_Version.htm" />
   <HelpKINode Title="Direct enumeration member" Url="html/T_OpenQA_Selenium_ProxyKind.htm" />
   <HelpKINode Title="Dismiss method" Url="html/M_OpenQA_Selenium_IAlert_Dismiss.htm" />
-  <HelpKINode Title="DismissAlert enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DismissAlert field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DismissAlert.htm" />
   <HelpKINode Title="Displayed property" Url="html/P_OpenQA_Selenium_IWebElement_Displayed.htm" />
   <HelpKINode Title="Displayed property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Displayed.htm" />
-  <HelpKINode Title="Dispose method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_Dispose.htm" />
   <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Android_AndroidDriver_Dispose.htm" />
   <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_Dispose.htm" />
+  <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_DriverService_Dispose.htm" />
   <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver_Dispose.htm" />
   <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_Dispose.htm" />
   <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebDriver_Dispose.htm" />
+  <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_SocketWrapper_Dispose.htm" />
+  <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketServer_Dispose.htm" />
+  <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Dispose.htm" />
+  <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriverServer_Dispose.htm" />
+  <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriver_Dispose.htm" />
   <HelpKINode Title="Dispose method" Url="html/Overload_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose.htm" />
   <HelpKINode Title="Divide field" Url="html/F_OpenQA_Selenium_Keys_Divide.htm" />
   <HelpKINode Title="DoCommand method" Url="html/M_Selenium_HttpCommandProcessor_DoCommand.htm" />
@@ -653,18 +761,114 @@
   <HelpKINode Title="DragAndDropToOffset method" Url="html/M_OpenQA_Selenium_Interactions_Actions_DragAndDropToOffset.htm" />
   <HelpKINode Title="Dragdrop method" Url="html/M_Selenium_DefaultSelenium_Dragdrop.htm" />
   <HelpKINode Title="Dragdrop method" Url="html/M_Selenium_ISelenium_Dragdrop.htm" />
-  <HelpKINode Title="DragElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="Driver property" Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_Driver.htm" />
   <HelpKINode Title="Driver property" Url="html/P_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs_Driver.htm" />
   <HelpKINode Title="Driver property" Url="html/P_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_Driver.htm" />
   <HelpKINode Title="Driver property" Url="html/P_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs_Driver.htm" />
   <HelpKINode Title="Driver property" Url="html/P_OpenQA_Selenium_Support_Events_WebElementEventArgs_Driver.htm" />
-  <HelpKINode Title="DriverCommand enumeration" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DriverCommand class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DriverCommand class" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="DriverCommand class">
+    <HelpKINode Title="about DriverCommand class" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DriverCommand.AcceptAlert field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_AcceptAlert.htm" />
+  <HelpKINode Title="DriverCommand.AddCookie field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_AddCookie.htm" />
+  <HelpKINode Title="DriverCommand.ClearElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ClearElement.htm" />
+  <HelpKINode Title="DriverCommand.ClickElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ClickElement.htm" />
+  <HelpKINode Title="DriverCommand.Close field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Close.htm" />
+  <HelpKINode Title="DriverCommand.DefineDriverMapping field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DefineDriverMapping.htm" />
+  <HelpKINode Title="DriverCommand.DeleteAllCookies field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DeleteAllCookies.htm" />
+  <HelpKINode Title="DriverCommand.DeleteCookie field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DeleteCookie.htm" />
+  <HelpKINode Title="DriverCommand.DescribeElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DescribeElement.htm" />
+  <HelpKINode Title="DriverCommand.DismissAlert field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_DismissAlert.htm" />
+  <HelpKINode Title="DriverCommand.ElementEquals field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ElementEquals.htm" />
+  <HelpKINode Title="DriverCommand.ExecuteAsyncScript field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ExecuteAsyncScript.htm" />
+  <HelpKINode Title="DriverCommand.ExecuteScript field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ExecuteScript.htm" />
+  <HelpKINode Title="DriverCommand.FindChildElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindChildElement.htm" />
+  <HelpKINode Title="DriverCommand.FindChildElements field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindChildElements.htm" />
+  <HelpKINode Title="DriverCommand.FindElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindElement.htm" />
+  <HelpKINode Title="DriverCommand.FindElements field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindElements.htm" />
+  <HelpKINode Title="DriverCommand.Get field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Get.htm" />
+  <HelpKINode Title="DriverCommand.GetActiveElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetActiveElement.htm" />
+  <HelpKINode Title="DriverCommand.GetAlertText field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetAlertText.htm" />
+  <HelpKINode Title="DriverCommand.GetAllCookies field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetAllCookies.htm" />
+  <HelpKINode Title="DriverCommand.GetCurrentUrl field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetCurrentUrl.htm" />
+  <HelpKINode Title="DriverCommand.GetCurrentWindowHandle field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetCurrentWindowHandle.htm" />
+  <HelpKINode Title="DriverCommand.GetElementAttribute field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementAttribute.htm" />
+  <HelpKINode Title="DriverCommand.GetElementLocation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementLocation.htm" />
+  <HelpKINode Title="DriverCommand.GetElementLocationOnceScrolledIntoView field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementLocationOnceScrolledIntoView.htm" />
+  <HelpKINode Title="DriverCommand.GetElementSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementSize.htm" />
+  <HelpKINode Title="DriverCommand.GetElementTagName field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementTagName.htm" />
+  <HelpKINode Title="DriverCommand.GetElementText field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementText.htm" />
+  <HelpKINode Title="DriverCommand.GetElementValueOfCssProperty field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementValueOfCssProperty.htm" />
+  <HelpKINode Title="DriverCommand.GetOrientation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetOrientation.htm" />
+  <HelpKINode Title="DriverCommand.GetPageSource field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetPageSource.htm" />
+  <HelpKINode Title="DriverCommand.GetSessionCapabilities field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetSessionCapabilities.htm" />
+  <HelpKINode Title="DriverCommand.GetSessionList field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetSessionList.htm" />
+  <HelpKINode Title="DriverCommand.GetTitle field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetTitle.htm" />
+  <HelpKINode Title="DriverCommand.GetWindowHandles field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowHandles.htm" />
+  <HelpKINode Title="DriverCommand.GetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowPosition.htm" />
+  <HelpKINode Title="DriverCommand.GetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowSize.htm" />
+  <HelpKINode Title="DriverCommand.GoBack field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GoBack.htm" />
+  <HelpKINode Title="DriverCommand.GoForward field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GoForward.htm" />
+  <HelpKINode Title="DriverCommand.ImplicitlyWait field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ImplicitlyWait.htm" />
+  <HelpKINode Title="DriverCommand.IsElementDisplayed field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementDisplayed.htm" />
+  <HelpKINode Title="DriverCommand.IsElementEnabled field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementEnabled.htm" />
+  <HelpKINode Title="DriverCommand.IsElementSelected field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementSelected.htm" />
+  <HelpKINode Title="DriverCommand.MaximizeWindow field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MaximizeWindow.htm" />
+  <HelpKINode Title="DriverCommand.MouseClick field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseClick.htm" />
+  <HelpKINode Title="DriverCommand.MouseDoubleClick field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseDoubleClick.htm" />
+  <HelpKINode Title="DriverCommand.MouseDown field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseDown.htm" />
+  <HelpKINode Title="DriverCommand.MouseMoveTo field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseMoveTo.htm" />
+  <HelpKINode Title="DriverCommand.MouseUp field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseUp.htm" />
+  <HelpKINode Title="DriverCommand.NewSession field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_NewSession.htm" />
+  <HelpKINode Title="DriverCommand.Quit field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Quit.htm" />
+  <HelpKINode Title="DriverCommand.Refresh field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Refresh.htm" />
+  <HelpKINode Title="DriverCommand.Screenshot field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Screenshot.htm" />
+  <HelpKINode Title="DriverCommand.SendKeysToActiveElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SendKeysToActiveElement.htm" />
+  <HelpKINode Title="DriverCommand.SendKeysToElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SendKeysToElement.htm" />
+  <HelpKINode Title="DriverCommand.SetAlertValue field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetAlertValue.htm" />
+  <HelpKINode Title="DriverCommand.SetAsyncScriptTimeout field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetAsyncScriptTimeout.htm" />
+  <HelpKINode Title="DriverCommand.SetOrientation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetOrientation.htm" />
+  <HelpKINode Title="DriverCommand.SetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowPosition.htm" />
+  <HelpKINode Title="DriverCommand.SetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowSize.htm" />
+  <HelpKINode Title="DriverCommand.Status field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Status.htm" />
+  <HelpKINode Title="DriverCommand.SubmitElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SubmitElement.htm" />
+  <HelpKINode Title="DriverCommand.SwitchToFrame field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SwitchToFrame.htm" />
+  <HelpKINode Title="DriverCommand.SwitchToWindow field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SwitchToWindow.htm" />
+  <HelpKINode Title="DriverService class" Url="html/AllMembers_T_OpenQA_Selenium_DriverService.htm" />
+  <HelpKINode Title="DriverService class" Url="html/T_OpenQA_Selenium_DriverService.htm" />
+  <HelpKINode Title="DriverService class">
+    <HelpKINode Title="about DriverService class" Url="html/T_OpenQA_Selenium_DriverService.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_DriverService.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_DriverService__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_DriverService.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_DriverService.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DriverService.Dispose method" Url="html/Overload_OpenQA_Selenium_DriverService_Dispose.htm" />
+  <HelpKINode Title="DriverService.DriverService constructor" Url="html/M_OpenQA_Selenium_DriverService__ctor.htm" />
+  <HelpKINode Title="DriverService.DriverServiceExecutableName property" Url="html/P_OpenQA_Selenium_DriverService_DriverServiceExecutableName.htm" />
+  <HelpKINode Title="DriverService.IsRunning property" Url="html/P_OpenQA_Selenium_DriverService_IsRunning.htm" />
+  <HelpKINode Title="DriverService.ServiceUrl property" Url="html/P_OpenQA_Selenium_DriverService_ServiceUrl.htm" />
+  <HelpKINode Title="DriverService.Start method" Url="html/M_OpenQA_Selenium_DriverService_Start.htm" />
+  <HelpKINode Title="DriverServiceExecutableName property" Url="html/P_OpenQA_Selenium_DriverService_DriverServiceExecutableName.htm" />
+  <HelpKINode Title="DriverServiceNotFoundException class" Url="html/AllMembers_T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
+  <HelpKINode Title="DriverServiceNotFoundException class" Url="html/T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
+  <HelpKINode Title="DriverServiceNotFoundException class">
+    <HelpKINode Title="about DriverServiceNotFoundException class" Url="html/T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_DriverServiceNotFoundException__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DriverServiceNotFoundException.DriverServiceNotFoundException constructor" Url="html/Overload_OpenQA_Selenium_DriverServiceNotFoundException__ctor.htm" />
   <HelpKINode Title="Element property" Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_Element.htm" />
   <HelpKINode Title="Element property" Url="html/P_OpenQA_Selenium_Support_Events_WebElementEventArgs_Element.htm" />
   <HelpKINode Title="ElementClicked event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicked.htm" />
   <HelpKINode Title="ElementClicking event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ElementClicking.htm" />
-  <HelpKINode Title="ElementEquals enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="ElementEquals field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ElementEquals.htm" />
   <HelpKINode Title="ElementExists method" Url="html/M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementExists.htm" />
   <HelpKINode Title="ElementIsVisible method" Url="html/M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementIsVisible.htm" />
   <HelpKINode Title="ElementNotDisplayed enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
@@ -695,6 +899,20 @@
   <HelpKINode Title="Equals method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Equals.htm" />
   <HelpKINode Title="Equals method" Url="html/M_OpenQA_Selenium_Remote_SessionId_Equals.htm" />
   <HelpKINode Title="Equals method" Url="html/M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_Equals.htm" />
+  <HelpKINode Title="ErrorEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+  <HelpKINode Title="ErrorEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+  <HelpKINode Title="ErrorEventArgs class">
+    <HelpKINode Title="about ErrorEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_ErrorEventArgs__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ErrorEventArgs.ErrorEventArgs constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_ErrorEventArgs__ctor.htm" />
+  <HelpKINode Title="ErrorEventArgs.Exception property" Url="html/P_OpenQA_Selenium_Safari_Internal_ErrorEventArgs_Exception.htm" />
+  <HelpKINode Title="ErrorOccurred event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_ErrorOccurred.htm" />
+  <HelpKINode Title="ErrorReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_ErrorReceived.htm" />
+  <HelpKINode Title="ErrorReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_ErrorReceived.htm" />
   <HelpKINode Title="ErrorResponse class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
   <HelpKINode Title="ErrorResponse class" Url="html/T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
   <HelpKINode Title="ErrorResponse class">
@@ -768,15 +986,17 @@
   <HelpKINode Title="EventFiringWebDriver.Url property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Url.htm" />
   <HelpKINode Title="EventFiringWebDriver.WindowHandles property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_WindowHandles.htm" />
   <HelpKINode Title="EventFiringWebDriver.WrappedDriver property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_WrappedDriver.htm" />
+  <HelpKINode Title="Exception property" Url="html/P_OpenQA_Selenium_Safari_Internal_ErrorEventArgs_Exception.htm" />
   <HelpKINode Title="ExceptionThrown event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExceptionThrown.htm" />
   <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Remote_ICommandExecutor_Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Execute.htm" />
-  <HelpKINode Title="ExecuteAsyncScript enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Execute method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Execute.htm" />
+  <HelpKINode Title="ExecuteAsyncScript field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ExecuteAsyncScript.htm" />
   <HelpKINode Title="ExecuteAsyncScript method" Url="html/M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteAsyncScript.htm" />
   <HelpKINode Title="ExecuteAsyncScript method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_ExecuteAsyncScript.htm" />
   <HelpKINode Title="ExecuteAsyncScript method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ExecuteAsyncScript.htm" />
-  <HelpKINode Title="ExecuteScript enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="ExecuteScript field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ExecuteScript.htm" />
   <HelpKINode Title="ExecuteScript method" Url="html/M_OpenQA_Selenium_IJavaScriptExecutor_ExecuteScript.htm" />
   <HelpKINode Title="ExecuteScript method" Url="html/M_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor_ExecuteScript.htm" />
   <HelpKINode Title="ExecuteScript method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_ExecuteScript.htm" />
@@ -796,6 +1016,7 @@
   <HelpKINode Title="ExpectedConditions.TitleIs method" Url="html/M_OpenQA_Selenium_Support_UI_ExpectedConditions_TitleIs.htm" />
   <HelpKINode Title="ExpectedError enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="Expiry property" Url="html/P_OpenQA_Selenium_Cookie_Expiry.htm" />
+  <HelpKINode Title="Extensions property" Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_Extensions.htm" />
   <HelpKINode Title="ExtraEnvironmentVariables property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxBinary_ExtraEnvironmentVariables.htm" />
   <HelpKINode Title="F1 field" Url="html/F_OpenQA_Selenium_Keys_F1.htm" />
   <HelpKINode Title="F10 field" Url="html/F_OpenQA_Selenium_Keys_F10.htm" />
@@ -811,9 +1032,9 @@
   <HelpKINode Title="F9 field" Url="html/F_OpenQA_Selenium_Keys_F9.htm" />
   <HelpKINode Title="FileName property" Url="html/P_OpenQA_Selenium_Remote_StackTraceElement_FileName.htm" />
   <HelpKINode Title="FilterElements method" Url="html/M_Selenium_Internal_SeleniumEmulation_IFilterFunction_FilterElements.htm" />
-  <HelpKINode Title="FindChildElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="FindChildElements enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="FindElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="FindChildElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindChildElement.htm" />
+  <HelpKINode Title="FindChildElements field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindChildElements.htm" />
+  <HelpKINode Title="FindElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindElement.htm" />
   <HelpKINode Title="FindElement method" Url="html/M_OpenQA_Selenium_By_FindElement.htm" />
   <HelpKINode Title="FindElement method" Url="html/M_OpenQA_Selenium_ISearchContext_FindElement.htm" />
   <HelpKINode Title="FindElement method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElement.htm" />
@@ -826,6 +1047,7 @@
   <HelpKINode Title="FindElement method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElement.htm" />
   <HelpKINode Title="FindElement method" Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElement.htm" />
   <HelpKINode Title="FindElement method" Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebElement_FindElement.htm" />
+  <HelpKINode Title="FindElement method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriver_FindElement.htm" />
   <HelpKINode Title="FindElementByClassName method" Url="html/M_OpenQA_Selenium_Internal_IFindsByClassName_FindElementByClassName.htm" />
   <HelpKINode Title="FindElementByClassName method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementByClassName.htm" />
   <HelpKINode Title="FindElementByClassName method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementByClassName.htm" />
@@ -865,7 +1087,7 @@
   <HelpKINode Title="FindElementEventArgs.FindElementEventArgs constructor" Url="html/Overload_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor.htm" />
   <HelpKINode Title="FindElementEventArgs.FindMethod property" Url="html/P_OpenQA_Selenium_Support_Events_FindElementEventArgs_FindMethod.htm" />
   <HelpKINode Title="FindElementMethod property" Url="html/P_OpenQA_Selenium_By_FindElementMethod.htm" />
-  <HelpKINode Title="FindElements enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="FindElements field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_FindElements.htm" />
   <HelpKINode Title="FindElements method" Url="html/M_OpenQA_Selenium_By_FindElements.htm" />
   <HelpKINode Title="FindElements method" Url="html/M_OpenQA_Selenium_ISearchContext_FindElements.htm" />
   <HelpKINode Title="FindElements method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_FindElements.htm" />
@@ -878,6 +1100,7 @@
   <HelpKINode Title="FindElements method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElements.htm" />
   <HelpKINode Title="FindElements method" Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebDriver_FindElements.htm" />
   <HelpKINode Title="FindElements method" Url="html/Overload_OpenQA_Selenium_Remote_RemoteWebElement_FindElements.htm" />
+  <HelpKINode Title="FindElements method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriver_FindElements.htm" />
   <HelpKINode Title="FindElementsByClassName method" Url="html/M_OpenQA_Selenium_Internal_IFindsByClassName_FindElementsByClassName.htm" />
   <HelpKINode Title="FindElementsByClassName method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_FindElementsByClassName.htm" />
   <HelpKINode Title="FindElementsByClassName method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_FindElementsByClassName.htm" />
@@ -1031,8 +1254,10 @@
   <HelpKINode Title="Focus method" Url="html/M_Selenium_ISelenium_Focus.htm" />
   <HelpKINode Title="Forward method" Url="html/M_OpenQA_Selenium_INavigation_Forward.htm" />
   <HelpKINode Title="Frame method" Url="html/Overload_OpenQA_Selenium_ITargetLocator_Frame.htm" />
+  <HelpKINode Title="FrameType enumeration" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
   <HelpKINode Title="FromBase64String method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_FromBase64String.htm" />
   <HelpKINode Title="FromJson method" Url="html/M_OpenQA_Selenium_Remote_Response_FromJson.htm" />
+  <HelpKINode Title="FromJson method" Url="html/M_OpenQA_Selenium_Safari_SafariResponse_FromJson.htm" />
   <HelpKINode Title="FtpProxy property" Url="html/P_OpenQA_Selenium_Proxy_FtpProxy.htm" />
   <HelpKINode Title="FunctionDeclaration class" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_FunctionDeclaration.htm" />
   <HelpKINode Title="FunctionDeclaration class" Url="html/T_Selenium_Internal_SeleniumEmulation_FunctionDeclaration.htm" />
@@ -1044,14 +1269,14 @@
   </HelpKINode>
   <HelpKINode Title="FunctionDeclaration.FunctionDeclaration constructor" Url="html/M_Selenium_Internal_SeleniumEmulation_FunctionDeclaration__ctor.htm" />
   <HelpKINode Title="FunctionDeclaration.Mutate method" Url="html/M_Selenium_Internal_SeleniumEmulation_FunctionDeclaration_Mutate.htm" />
-  <HelpKINode Title="Get enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetActiveElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Get field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Get.htm" />
+  <HelpKINode Title="GetActiveElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetActiveElement.htm" />
   <HelpKINode Title="GetAlert method" Url="html/M_Selenium_DefaultSelenium_GetAlert.htm" />
   <HelpKINode Title="GetAlert method" Url="html/M_Selenium_ISelenium_GetAlert.htm" />
-  <HelpKINode Title="GetAlertText enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetAlertText field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetAlertText.htm" />
   <HelpKINode Title="GetAllButtons method" Url="html/M_Selenium_DefaultSelenium_GetAllButtons.htm" />
   <HelpKINode Title="GetAllButtons method" Url="html/M_Selenium_ISelenium_GetAllButtons.htm" />
-  <HelpKINode Title="GetAllCookies enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetAllCookies field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetAllCookies.htm" />
   <HelpKINode Title="GetAllFields method" Url="html/M_Selenium_DefaultSelenium_GetAllFields.htm" />
   <HelpKINode Title="GetAllFields method" Url="html/M_Selenium_ISelenium_GetAllFields.htm" />
   <HelpKINode Title="GetAllLinks method" Url="html/M_Selenium_DefaultSelenium_GetAllLinks.htm" />
@@ -1090,26 +1315,25 @@
   <HelpKINode Title="GetCSSCount method" Url="html/M_Selenium_DefaultSelenium_GetCSSCount.htm" />
   <HelpKINode Title="GetCssValue method" Url="html/M_OpenQA_Selenium_IWebElement_GetCssValue.htm" />
   <HelpKINode Title="GetCssValue method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_GetCssValue.htm" />
-  <HelpKINode Title="GetCurrentUrl enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetCurrentWindowHandle enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetCurrentUrl field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetCurrentUrl.htm" />
+  <HelpKINode Title="GetCurrentWindowHandle field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetCurrentWindowHandle.htm" />
   <HelpKINode Title="GetCursorPosition method" Url="html/M_Selenium_DefaultSelenium_GetCursorPosition.htm" />
   <HelpKINode Title="GetCursorPosition method" Url="html/M_Selenium_ISelenium_GetCursorPosition.htm" />
-  <HelpKINode Title="GetElementAttribute enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetElementAttribute field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementAttribute.htm" />
   <HelpKINode Title="GetElementHeight method" Url="html/M_Selenium_DefaultSelenium_GetElementHeight.htm" />
   <HelpKINode Title="GetElementHeight method" Url="html/M_Selenium_ISelenium_GetElementHeight.htm" />
   <HelpKINode Title="GetElementIndex method" Url="html/M_Selenium_DefaultSelenium_GetElementIndex.htm" />
   <HelpKINode Title="GetElementIndex method" Url="html/M_Selenium_ISelenium_GetElementIndex.htm" />
-  <HelpKINode Title="GetElementLocation enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetElementLocationOnceScrolledIntoView enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetElementLocation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementLocation.htm" />
+  <HelpKINode Title="GetElementLocationOnceScrolledIntoView field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementLocationOnceScrolledIntoView.htm" />
   <HelpKINode Title="GetElementPositionLeft method" Url="html/M_Selenium_DefaultSelenium_GetElementPositionLeft.htm" />
   <HelpKINode Title="GetElementPositionLeft method" Url="html/M_Selenium_ISelenium_GetElementPositionLeft.htm" />
   <HelpKINode Title="GetElementPositionTop method" Url="html/M_Selenium_DefaultSelenium_GetElementPositionTop.htm" />
   <HelpKINode Title="GetElementPositionTop method" Url="html/M_Selenium_ISelenium_GetElementPositionTop.htm" />
-  <HelpKINode Title="GetElementSize enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetElementTagName enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetElementText enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetElementValue enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetElementValueOfCssProperty enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetElementSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementSize.htm" />
+  <HelpKINode Title="GetElementTagName field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementTagName.htm" />
+  <HelpKINode Title="GetElementText field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementText.htm" />
+  <HelpKINode Title="GetElementValueOfCssProperty field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetElementValueOfCssProperty.htm" />
   <HelpKINode Title="GetElementWidth method" Url="html/M_Selenium_DefaultSelenium_GetElementWidth.htm" />
   <HelpKINode Title="GetElementWidth method" Url="html/M_Selenium_ISelenium_GetElementWidth.htm" />
   <HelpKINode Title="GetEval method" Url="html/M_Selenium_DefaultSelenium_GetEval.htm" />
@@ -1136,8 +1360,9 @@
   <HelpKINode Title="GetNumberArray method" Url="html/M_Selenium_HttpCommandProcessor_GetNumberArray.htm" />
   <HelpKINode Title="GetNumberArray method" Url="html/M_Selenium_ICommandProcessor_GetNumberArray.htm" />
   <HelpKINode Title="GetNumberArray method" Url="html/M_Selenium_WebDriverCommandProcessor_GetNumberArray.htm" />
-  <HelpKINode Title="GetOrientation enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetPageSource enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetObjectData method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketException_GetObjectData.htm" />
+  <HelpKINode Title="GetOrientation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetOrientation.htm" />
+  <HelpKINode Title="GetPageSource field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetPageSource.htm" />
   <HelpKINode Title="GetProfile method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfileManager_GetProfile.htm" />
   <HelpKINode Title="GetPrompt method" Url="html/M_Selenium_DefaultSelenium_GetPrompt.htm" />
   <HelpKINode Title="GetPrompt method" Url="html/M_Selenium_ISelenium_GetPrompt.htm" />
@@ -1167,8 +1392,8 @@
   <HelpKINode Title="GetSelectOptions method" Url="html/M_Selenium_DefaultSelenium_GetSelectOptions.htm" />
   <HelpKINode Title="GetSelectOptions method" Url="html/M_Selenium_ISelenium_GetSelectOptions.htm" />
   <HelpKINode Title="GetSeleniumScript method" Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_GetSeleniumScript.htm" />
-  <HelpKINode Title="GetSessionCapabilities enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetSpeed enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetSessionCapabilities field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetSessionCapabilities.htm" />
+  <HelpKINode Title="GetSessionList field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetSessionList.htm" />
   <HelpKINode Title="GetSpeed method" Url="html/M_Selenium_DefaultSelenium_GetSpeed.htm" />
   <HelpKINode Title="GetSpeed method" Url="html/M_Selenium_ISelenium_GetSpeed.htm" />
   <HelpKINode Title="GetString method" Url="html/M_Selenium_HttpCommandProcessor_GetString.htm" />
@@ -1181,7 +1406,7 @@
   <HelpKINode Title="GetTable method" Url="html/M_Selenium_ISelenium_GetTable.htm" />
   <HelpKINode Title="GetText method" Url="html/M_Selenium_DefaultSelenium_GetText.htm" />
   <HelpKINode Title="GetText method" Url="html/M_Selenium_ISelenium_GetText.htm" />
-  <HelpKINode Title="GetTitle enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetTitle field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetTitle.htm" />
   <HelpKINode Title="GetTitle method" Url="html/M_Selenium_DefaultSelenium_GetTitle.htm" />
   <HelpKINode Title="GetTitle method" Url="html/M_Selenium_ISelenium_GetTitle.htm" />
   <HelpKINode Title="GetValue method" Url="html/M_Selenium_DefaultSelenium_GetValue.htm" />
@@ -1190,25 +1415,39 @@
   <HelpKINode Title="GetWhetherThisFrameMatchFrameExpression method" Url="html/M_Selenium_ISelenium_GetWhetherThisFrameMatchFrameExpression.htm" />
   <HelpKINode Title="GetWhetherThisWindowMatchWindowExpression method" Url="html/M_Selenium_DefaultSelenium_GetWhetherThisWindowMatchWindowExpression.htm" />
   <HelpKINode Title="GetWhetherThisWindowMatchWindowExpression method" Url="html/M_Selenium_ISelenium_GetWhetherThisWindowMatchWindowExpression.htm" />
-  <HelpKINode Title="GetWindowHandles enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetWindowPosition enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="GetWindowSize enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GetWindowHandles field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowHandles.htm" />
+  <HelpKINode Title="GetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowPosition.htm" />
+  <HelpKINode Title="GetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowSize.htm" />
   <HelpKINode Title="GetXpathCount method" Url="html/M_Selenium_DefaultSelenium_GetXpathCount.htm" />
   <HelpKINode Title="GetXpathCount method" Url="html/M_Selenium_ISelenium_GetXpathCount.htm" />
-  <HelpKINode Title="GoBack enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GoBack field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GoBack.htm" />
   <HelpKINode Title="GoBack method" Url="html/M_Selenium_DefaultSelenium_GoBack.htm" />
   <HelpKINode Title="GoBack method" Url="html/M_Selenium_ISelenium_GoBack.htm" />
-  <HelpKINode Title="GoForward enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="GoForward field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GoForward.htm" />
   <HelpKINode Title="GoToUrl method" Url="html/Overload_OpenQA_Selenium_INavigation_GoToUrl.htm" />
+  <HelpKINode Title="Handled property" Url="html/P_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs_Handled.htm" />
+  <HelpKINode Title="Handler property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Handler.htm" />
   <HelpKINode Title="HandlesAlerts field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_HandlesAlerts.htm" />
+  <HelpKINode Title="HandshakeException class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+  <HelpKINode Title="HandshakeException class" Url="html/T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+  <HelpKINode Title="HandshakeException class">
+    <HelpKINode Title="about HandshakeException class" Url="html/T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+  </HelpKINode>
+  <HelpKINode Title="HandshakeException.HandshakeException constructor" Url="html/Overload_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor.htm" />
   <HelpKINode Title="HasCapability method" Url="html/M_OpenQA_Selenium_ICapabilities_HasCapability.htm" />
   <HelpKINode Title="HasCapability method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_HasCapability.htm" />
   <HelpKINode Title="HasNativeEvents field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_HasNativeEvents.htm" />
+  <HelpKINode Title="Headers property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Headers.htm" />
   <HelpKINode Title="Help field" Url="html/F_OpenQA_Selenium_Keys_Help.htm" />
   <HelpKINode Title="Highlight method" Url="html/M_Selenium_DefaultSelenium_Highlight.htm" />
   <HelpKINode Title="Highlight method" Url="html/M_Selenium_ISelenium_Highlight.htm" />
   <HelpKINode Title="Home field" Url="html/F_OpenQA_Selenium_Keys_Home.htm" />
-  <HelpKINode Title="HoverOverElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Host property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Host.htm" />
+  <HelpKINode Title="Host property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Host.htm" />
   <HelpKINode Title="How enumeration" Url="html/T_OpenQA_Selenium_Support_PageObjects_How.htm" />
   <HelpKINode Title="How property" Url="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_How.htm" />
   <HelpKINode Title="HtmlUnit method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_HtmlUnit.htm" />
@@ -1336,6 +1575,8 @@
   <HelpKINode Title="Id enumeration member" Url="html/T_OpenQA_Selenium_Support_PageObjects_How.htm" />
   <HelpKINode Title="Id method" Url="html/M_OpenQA_Selenium_By_Id.htm" />
   <HelpKINode Title="Id property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Id.htm" />
+  <HelpKINode Title="Id property" Url="html/P_OpenQA_Selenium_Safari_SafariCommand_Id.htm" />
+  <HelpKINode Title="Id property" Url="html/P_OpenQA_Selenium_Safari_SafariResponse_Id.htm" />
   <HelpKINode Title="IFilterFunction interface" Url="html/AllMembers_T_Selenium_Internal_SeleniumEmulation_IFilterFunction.htm" />
   <HelpKINode Title="IFilterFunction interface" Url="html/T_Selenium_Internal_SeleniumEmulation_IFilterFunction.htm" />
   <HelpKINode Title="IFilterFunction interface">
@@ -1420,6 +1661,22 @@
   <HelpKINode Title="IgnoreAttributesWithoutValue method" Url="html/M_Selenium_ISelenium_IgnoreAttributesWithoutValue.htm" />
   <HelpKINode Title="IgnoreExceptionTypes method" Url="html/M_OpenQA_Selenium_Support_UI_DefaultWait_1_IgnoreExceptionTypes.htm" />
   <HelpKINode Title="IgnoreExceptionTypes method" Url="html/M_OpenQA_Selenium_Support_UI_IWait_1_IgnoreExceptionTypes.htm" />
+  <HelpKINode Title="IHandler interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+  <HelpKINode Title="IHandler interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+  <HelpKINode Title="IHandler interface">
+    <HelpKINode Title="about IHandler interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IHandler.BinaryMessageHandled event" Url="html/E_OpenQA_Selenium_Safari_Internal_IHandler_BinaryMessageHandled.htm" />
+  <HelpKINode Title="IHandler.CloseHandled event" Url="html/E_OpenQA_Selenium_Safari_Internal_IHandler_CloseHandled.htm" />
+  <HelpKINode Title="IHandler.CreateBinaryFrame method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateBinaryFrame.htm" />
+  <HelpKINode Title="IHandler.CreateCloseFrame method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateCloseFrame.htm" />
+  <HelpKINode Title="IHandler.CreateHandshake method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateHandshake.htm" />
+  <HelpKINode Title="IHandler.CreateTextFrame method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_CreateTextFrame.htm" />
+  <HelpKINode Title="IHandler.ProcessData method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_ProcessData.htm" />
+  <HelpKINode Title="IHandler.TextMessageHandled event" Url="html/E_OpenQA_Selenium_Safari_Internal_IHandler_TextMessageHandled.htm" />
   <HelpKINode Title="IHasCapabilities interface" Url="html/AllMembers_T_OpenQA_Selenium_IHasCapabilities.htm" />
   <HelpKINode Title="IHasCapabilities interface" Url="html/T_OpenQA_Selenium_IHasCapabilities.htm" />
   <HelpKINode Title="IHasCapabilities interface">
@@ -1488,7 +1745,7 @@
   <HelpKINode Title="IMouse.MouseDown method" Url="html/M_OpenQA_Selenium_IMouse_MouseDown.htm" />
   <HelpKINode Title="IMouse.MouseMove method" Url="html/Overload_OpenQA_Selenium_IMouse_MouseMove.htm" />
   <HelpKINode Title="IMouse.MouseUp method" Url="html/M_OpenQA_Selenium_IMouse_MouseUp.htm" />
-  <HelpKINode Title="ImplicitlyWait enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="ImplicitlyWait field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ImplicitlyWait.htm" />
   <HelpKINode Title="ImplicitlyWait method" Url="html/M_OpenQA_Selenium_ITimeouts_ImplicitlyWait.htm" />
   <HelpKINode Title="INavigation interface" Url="html/AllMembers_T_OpenQA_Selenium_INavigation.htm" />
   <HelpKINode Title="INavigation interface" Url="html/T_OpenQA_Selenium_INavigation.htm" />
@@ -1513,7 +1770,6 @@
     <HelpKINode Title="about InternetExplorerDriver class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
     <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
     <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver__ctor.htm" />
-    <HelpKINode Title="fields" Url="html/Fields_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
     <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
     <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
   </HelpKINode>
@@ -1522,9 +1778,30 @@
   <HelpKINode Title="InternetExplorerDriver.FindElements method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_FindElements.htm" />
   <HelpKINode Title="InternetExplorerDriver.GetScreenshot method" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_GetScreenshot.htm" />
   <HelpKINode Title="InternetExplorerDriver.InternetExplorerDriver constructor" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver__ctor.htm" />
-  <HelpKINode Title="InternetExplorerDriver.IntroduceInstabilityByIgnoringProtectedModeSettings field" Url="html/F_OpenQA_Selenium_IE_InternetExplorerDriver_IntroduceInstabilityByIgnoringProtectedModeSettings.htm" />
   <HelpKINode Title="InternetExplorerDriver.StartClient method" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StartClient.htm" />
   <HelpKINode Title="InternetExplorerDriver.StopClient method" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StopClient.htm" />
+  <HelpKINode Title="InternetExplorerDriverService class" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+  <HelpKINode Title="InternetExplorerDriverService class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+  <HelpKINode Title="InternetExplorerDriverService class">
+    <HelpKINode Title="about InternetExplorerDriverService class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InternetExplorerDriverService.CreateDefaultService method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriverService_CreateDefaultService.htm" />
+  <HelpKINode Title="InternetExplorerOptions class" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
+  <HelpKINode Title="InternetExplorerOptions class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
+  <HelpKINode Title="InternetExplorerOptions class">
+    <HelpKINode Title="about InternetExplorerOptions class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_IE_InternetExplorerOptions__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InternetExplorerOptions.InternetExplorerOptions constructor" Url="html/M_OpenQA_Selenium_IE_InternetExplorerOptions__ctor.htm" />
+  <HelpKINode Title="InternetExplorerOptions.IntroduceInstabilityByIgnoringProtectedModeSettings property" Url="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_IntroduceInstabilityByIgnoringProtectedModeSettings.htm" />
+  <HelpKINode Title="InternetExplorerOptions.ToCapabilities method" Url="html/M_OpenQA_Selenium_IE_InternetExplorerOptions_ToCapabilities.htm" />
+  <HelpKINode Title="InternetExplorerOptions.UseInternalServer property" Url="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_UseInternalServer.htm" />
   <HelpKINode Title="InternetExplorerWebElement class" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" />
   <HelpKINode Title="InternetExplorerWebElement class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" />
   <HelpKINode Title="InternetExplorerWebElement class">
@@ -1537,7 +1814,7 @@
   <HelpKINode Title="InternetExplorerWebElement.FindElement method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElement.htm" />
   <HelpKINode Title="InternetExplorerWebElement.FindElements method" Url="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElements.htm" />
   <HelpKINode Title="InternetExplorerWebElement.InternetExplorerWebElement constructor" Url="html/M_OpenQA_Selenium_IE_InternetExplorerWebElement__ctor.htm" />
-  <HelpKINode Title="IntroduceInstabilityByIgnoringProtectedModeSettings field" Url="html/F_OpenQA_Selenium_IE_InternetExplorerDriver_IntroduceInstabilityByIgnoringProtectedModeSettings.htm" />
+  <HelpKINode Title="IntroduceInstabilityByIgnoringProtectedModeSettings property" Url="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_IntroduceInstabilityByIgnoringProtectedModeSettings.htm" />
   <HelpKINode Title="InvalidCookieDomain enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="InvalidCookieDomainException class" Url="html/AllMembers_T_OpenQA_Selenium_InvalidCookieDomainException.htm" />
   <HelpKINode Title="InvalidCookieDomainException class" Url="html/T_OpenQA_Selenium_InvalidCookieDomainException.htm" />
@@ -1605,7 +1882,6 @@
   <HelpKINode Title="IsAlertPresent method" Url="html/M_Selenium_DefaultSelenium_IsAlertPresent.htm" />
   <HelpKINode Title="IsAlertPresent method" Url="html/M_Selenium_ISelenium_IsAlertPresent.htm" />
   <HelpKINode Title="IsAutoDetect property" Url="html/P_OpenQA_Selenium_Proxy_IsAutoDetect.htm" />
-  <HelpKINode Title="IsBrowserVisible enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="IsChecked method" Url="html/M_Selenium_DefaultSelenium_IsChecked.htm" />
   <HelpKINode Title="IsChecked method" Url="html/M_Selenium_ISelenium_IsChecked.htm" />
   <HelpKINode Title="IsConfirmationPresent method" Url="html/M_Selenium_DefaultSelenium_IsConfirmationPresent.htm" />
@@ -1631,11 +1907,11 @@
   <HelpKINode Title="ISearchContext.FindElements method" Url="html/M_OpenQA_Selenium_ISearchContext_FindElements.htm" />
   <HelpKINode Title="IsEditable method" Url="html/M_Selenium_DefaultSelenium_IsEditable.htm" />
   <HelpKINode Title="IsEditable method" Url="html/M_Selenium_ISelenium_IsEditable.htm" />
-  <HelpKINode Title="IsElementDisplayed enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="IsElementEnabled enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="IsElementDisplayed field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementDisplayed.htm" />
+  <HelpKINode Title="IsElementEnabled field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementEnabled.htm" />
   <HelpKINode Title="IsElementPresent method" Url="html/M_Selenium_DefaultSelenium_IsElementPresent.htm" />
   <HelpKINode Title="IsElementPresent method" Url="html/M_Selenium_ISelenium_IsElementPresent.htm" />
-  <HelpKINode Title="IsElementSelected enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="IsElementSelected field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementSelected.htm" />
   <HelpKINode Title="ISelenium interface" Url="html/AllMembers_T_Selenium_ISelenium.htm" />
   <HelpKINode Title="ISelenium interface" Url="html/T_Selenium_ISelenium.htm" />
   <HelpKINode Title="ISelenium interface">
@@ -1795,14 +2071,42 @@
   <HelpKINode Title="IsMultiple property" Url="html/P_OpenQA_Selenium_Support_UI_SelectElement_IsMultiple.htm" />
   <HelpKINode Title="IsNowBefore method" Url="html/M_OpenQA_Selenium_Support_UI_IClock_IsNowBefore.htm" />
   <HelpKINode Title="IsNowBefore method" Url="html/M_OpenQA_Selenium_Support_UI_SystemClock_IsNowBefore.htm" />
+  <HelpKINode Title="ISocket interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+  <HelpKINode Title="ISocket interface" Url="html/T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+  <HelpKINode Title="ISocket interface">
+    <HelpKINode Title="about ISocket interface" Url="html/T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ISocket.Accept method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Accept.htm" />
+  <HelpKINode Title="ISocket.Accepted event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Accepted.htm" />
+  <HelpKINode Title="ISocket.AcceptError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_AcceptError.htm" />
+  <HelpKINode Title="ISocket.Authenticate method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Authenticate.htm" />
+  <HelpKINode Title="ISocket.Authenticated event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Authenticated.htm" />
+  <HelpKINode Title="ISocket.AuthenticateError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_AuthenticateError.htm" />
+  <HelpKINode Title="ISocket.Bind method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Bind.htm" />
+  <HelpKINode Title="ISocket.Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Close.htm" />
+  <HelpKINode Title="ISocket.Connected property" Url="html/P_OpenQA_Selenium_Safari_Internal_ISocket_Connected.htm" />
+  <HelpKINode Title="ISocket.Listen method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Listen.htm" />
+  <HelpKINode Title="ISocket.Receive method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Receive.htm" />
+  <HelpKINode Title="ISocket.Received event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Received.htm" />
+  <HelpKINode Title="ISocket.ReceiveError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_ReceiveError.htm" />
+  <HelpKINode Title="ISocket.RemoteIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_ISocket_RemoteIPAddress.htm" />
+  <HelpKINode Title="ISocket.Send method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Send.htm" />
+  <HelpKINode Title="ISocket.SendError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_SendError.htm" />
+  <HelpKINode Title="ISocket.Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Sent.htm" />
+  <HelpKINode Title="ISocket.Stream property" Url="html/P_OpenQA_Selenium_Safari_Internal_ISocket_Stream.htm" />
   <HelpKINode Title="IsOnLinux property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxBinary_IsOnLinux.htm" />
   <HelpKINode Title="IsOrdered method" Url="html/M_Selenium_DefaultSelenium_IsOrdered.htm" />
   <HelpKINode Title="IsOrdered method" Url="html/M_Selenium_ISelenium_IsOrdered.htm" />
   <HelpKINode Title="IsPlatformType method" Url="html/M_OpenQA_Selenium_Platform_IsPlatformType.htm" />
   <HelpKINode Title="IsPromptPresent method" Url="html/M_Selenium_DefaultSelenium_IsPromptPresent.htm" />
   <HelpKINode Title="IsPromptPresent method" Url="html/M_Selenium_ISelenium_IsPromptPresent.htm" />
-  <HelpKINode Title="IsRunning property" Url="html/P_OpenQA_Selenium_Chrome_ChromeDriverService_IsRunning.htm" />
+  <HelpKINode Title="IsRunning property" Url="html/P_OpenQA_Selenium_DriverService_IsRunning.htm" />
   <HelpKINode Title="IsRunning property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_IsRunning.htm" />
+  <HelpKINode Title="IsSecure property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_IsSecure.htm" />
   <HelpKINode Title="IsSomethingSelected method" Url="html/M_Selenium_DefaultSelenium_IsSomethingSelected.htm" />
   <HelpKINode Title="IsSomethingSelected method" Url="html/M_Selenium_ISelenium_IsSomethingSelected.htm" />
   <HelpKINode Title="IsTextPresent method" Url="html/M_Selenium_DefaultSelenium_IsTextPresent.htm" />
@@ -1829,6 +2133,7 @@
   <HelpKINode Title="ITargetLocator.DefaultContent method" Url="html/M_OpenQA_Selenium_ITargetLocator_DefaultContent.htm" />
   <HelpKINode Title="ITargetLocator.Frame method" Url="html/Overload_OpenQA_Selenium_ITargetLocator_Frame.htm" />
   <HelpKINode Title="ITargetLocator.Window method" Url="html/M_OpenQA_Selenium_ITargetLocator_Window.htm" />
+  <HelpKINode Title="Item property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Item.htm" />
   <HelpKINode Title="ITimeouts interface" Url="html/AllMembers_T_OpenQA_Selenium_ITimeouts.htm" />
   <HelpKINode Title="ITimeouts interface" Url="html/T_OpenQA_Selenium_ITimeouts.htm" />
   <HelpKINode Title="ITimeouts interface">
@@ -1903,13 +2208,56 @@
   <HelpKINode Title="IWebElement.Submit method" Url="html/M_OpenQA_Selenium_IWebElement_Submit.htm" />
   <HelpKINode Title="IWebElement.TagName property" Url="html/P_OpenQA_Selenium_IWebElement_TagName.htm" />
   <HelpKINode Title="IWebElement.Text property" Url="html/P_OpenQA_Selenium_IWebElement_Text.htm" />
+  <HelpKINode Title="IWebSocketConnection interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+  <HelpKINode Title="IWebSocketConnection interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+  <HelpKINode Title="IWebSocketConnection interface">
+    <HelpKINode Title="about IWebSocketConnection interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IWebSocketConnection.BinaryMessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_BinaryMessageReceived.htm" />
+  <HelpKINode Title="IWebSocketConnection.Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Close.htm" />
+  <HelpKINode Title="IWebSocketConnection.Closed event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Closed.htm" />
+  <HelpKINode Title="IWebSocketConnection.ConnectionInfo property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_ConnectionInfo.htm" />
+  <HelpKINode Title="IWebSocketConnection.ErrorReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_ErrorReceived.htm" />
+  <HelpKINode Title="IWebSocketConnection.MessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_MessageReceived.htm" />
+  <HelpKINode Title="IWebSocketConnection.Opened event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Opened.htm" />
+  <HelpKINode Title="IWebSocketConnection.Send method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Send.htm" />
+  <HelpKINode Title="IWebSocketConnection.SendRaw method" Url="html/M_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_SendRaw.htm" />
+  <HelpKINode Title="IWebSocketConnection.Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Sent.htm" />
+  <HelpKINode Title="IWebSocketConnection.StandardHttpRequestReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_StandardHttpRequestReceived.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo interface">
+    <HelpKINode Title="about IWebSocketConnectionInfo interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IWebSocketConnectionInfo.ClientIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_ClientIPAddress.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo.Cookies property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Cookies.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo.Host property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Host.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo.Origin property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Origin.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo.Path property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Path.htm" />
+  <HelpKINode Title="IWebSocketConnectionInfo.SubProtocol property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_SubProtocol.htm" />
+  <HelpKINode Title="IWebSocketServer interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketServer.htm" />
+  <HelpKINode Title="IWebSocketServer interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketServer.htm" />
+  <HelpKINode Title="IWebSocketServer interface">
+    <HelpKINode Title="about IWebSocketServer interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketServer.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketServer.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_IWebSocketServer.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IWebSocketServer.Start method" Url="html/M_OpenQA_Selenium_Safari_Internal_IWebSocketServer_Start.htm" />
   <HelpKINode Title="IWindow interface" Url="html/AllMembers_T_OpenQA_Selenium_IWindow.htm" />
   <HelpKINode Title="IWindow interface" Url="html/T_OpenQA_Selenium_IWindow.htm" />
   <HelpKINode Title="IWindow interface">
     <HelpKINode Title="about IWindow interface" Url="html/T_OpenQA_Selenium_IWindow.htm" />
     <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_IWindow.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_IWindow.htm" />
     <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_IWindow.htm" />
   </HelpKINode>
+  <HelpKINode Title="IWindow.Maximize method" Url="html/M_OpenQA_Selenium_IWindow_Maximize.htm" />
   <HelpKINode Title="IWindow.Position property" Url="html/P_OpenQA_Selenium_IWindow_Position.htm" />
   <HelpKINode Title="IWindow.Size property" Url="html/P_OpenQA_Selenium_IWindow_Size.htm" />
   <HelpKINode Title="IWrapsDriver interface" Url="html/AllMembers_T_OpenQA_Selenium_Internal_IWrapsDriver.htm" />
@@ -2037,8 +2385,12 @@
   <HelpKINode Title="LinkText enumeration member" Url="html/T_OpenQA_Selenium_Support_PageObjects_How.htm" />
   <HelpKINode Title="LinkText method" Url="html/M_OpenQA_Selenium_By_LinkText.htm" />
   <HelpKINode Title="Linux enumeration member" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
+  <HelpKINode Title="Listen method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Listen.htm" />
+  <HelpKINode Title="Listen method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Listen.htm" />
+  <HelpKINode Title="ListenerSocket property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_ListenerSocket.htm" />
   <HelpKINode Title="Location property" Url="html/P_OpenQA_Selenium_IWebElement_Location.htm" />
   <HelpKINode Title="Location property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Location.htm" />
+  <HelpKINode Title="Location property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_Location.htm" />
   <HelpKINode Title="LocationInDom property" Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_LocationInDom.htm" />
   <HelpKINode Title="LocationInViewport property" Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_LocationInViewport.htm" />
   <HelpKINode Title="LocationOnScreen property" Url="html/P_OpenQA_Selenium_Interactions_Internal_ICoordinates_LocationOnScreen.htm" />
@@ -2050,22 +2402,29 @@
   <HelpKINode Title="Manage method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Manage.htm" />
   <HelpKINode Title="Manage method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Manage.htm" />
   <HelpKINode Title="Manual enumeration member" Url="html/T_OpenQA_Selenium_ProxyKind.htm" />
+  <HelpKINode Title="Maximize method" Url="html/M_OpenQA_Selenium_IWindow_Maximize.htm" />
+  <HelpKINode Title="MaximizeWindow field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MaximizeWindow.htm" />
   <HelpKINode Title="Message property" Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_Message.htm" />
+  <HelpKINode Title="Message property" Url="html/P_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs_Message.htm" />
   <HelpKINode Title="Message property" Url="html/P_OpenQA_Selenium_Support_UI_DefaultWait_1_Message.htm" />
   <HelpKINode Title="Message property" Url="html/P_OpenQA_Selenium_Support_UI_IWait_1_Message.htm" />
+  <HelpKINode Title="MessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_MessageReceived.htm" />
+  <HelpKINode Title="MessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_MessageReceived.htm" />
+  <HelpKINode Title="MessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_MessageReceived.htm" />
   <HelpKINode Title="Meta field" Url="html/F_OpenQA_Selenium_Keys_Meta.htm" />
   <HelpKINode Title="MetaKeyDown method" Url="html/M_Selenium_DefaultSelenium_MetaKeyDown.htm" />
   <HelpKINode Title="MetaKeyDown method" Url="html/M_Selenium_ISelenium_MetaKeyDown.htm" />
   <HelpKINode Title="MetaKeyUp method" Url="html/M_Selenium_DefaultSelenium_MetaKeyUp.htm" />
   <HelpKINode Title="MetaKeyUp method" Url="html/M_Selenium_ISelenium_MetaKeyUp.htm" />
   <HelpKINode Title="Method property" Url="html/P_OpenQA_Selenium_Remote_CommandInfo_Method.htm" />
+  <HelpKINode Title="Method property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Method.htm" />
   <HelpKINode Title="MethodName property" Url="html/P_OpenQA_Selenium_Remote_StackTraceElement_MethodName.htm" />
   <HelpKINode Title="MinorVersion property" Url="html/P_OpenQA_Selenium_Platform_MinorVersion.htm" />
   <HelpKINode Title="Mouse property" Url="html/P_OpenQA_Selenium_IHasInputDevices_Mouse.htm" />
   <HelpKINode Title="Mouse property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Mouse.htm" />
-  <HelpKINode Title="MouseClick enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="MouseDoubleClick enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="MouseDown enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="MouseClick field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseClick.htm" />
+  <HelpKINode Title="MouseDoubleClick field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseDoubleClick.htm" />
+  <HelpKINode Title="MouseDown field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseDown.htm" />
   <HelpKINode Title="MouseDown method" Url="html/M_OpenQA_Selenium_IMouse_MouseDown.htm" />
   <HelpKINode Title="MouseDown method" Url="html/M_Selenium_DefaultSelenium_MouseDown.htm" />
   <HelpKINode Title="MouseDown method" Url="html/M_Selenium_ISelenium_MouseDown.htm" />
@@ -2080,12 +2439,12 @@
   <HelpKINode Title="MouseMove method" Url="html/Overload_OpenQA_Selenium_IMouse_MouseMove.htm" />
   <HelpKINode Title="MouseMoveAt method" Url="html/M_Selenium_DefaultSelenium_MouseMoveAt.htm" />
   <HelpKINode Title="MouseMoveAt method" Url="html/M_Selenium_ISelenium_MouseMoveAt.htm" />
-  <HelpKINode Title="MouseMoveTo enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="MouseMoveTo field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseMoveTo.htm" />
   <HelpKINode Title="MouseOut method" Url="html/M_Selenium_DefaultSelenium_MouseOut.htm" />
   <HelpKINode Title="MouseOut method" Url="html/M_Selenium_ISelenium_MouseOut.htm" />
   <HelpKINode Title="MouseOver method" Url="html/M_Selenium_DefaultSelenium_MouseOver.htm" />
   <HelpKINode Title="MouseOver method" Url="html/M_Selenium_ISelenium_MouseOver.htm" />
-  <HelpKINode Title="MouseUp enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="MouseUp field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseUp.htm" />
   <HelpKINode Title="MouseUp method" Url="html/M_OpenQA_Selenium_IMouse_MouseUp.htm" />
   <HelpKINode Title="MouseUp method" Url="html/M_Selenium_DefaultSelenium_MouseUp.htm" />
   <HelpKINode Title="MouseUp method" Url="html/M_Selenium_ISelenium_MouseUp.htm" />
@@ -2116,7 +2475,7 @@
   <HelpKINode Title="Navigating event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Navigating.htm" />
   <HelpKINode Title="NavigatingBack event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingBack.htm" />
   <HelpKINode Title="NavigatingForward event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_NavigatingForward.htm" />
-  <HelpKINode Title="NewSession enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="NewSession field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_NewSession.htm" />
   <HelpKINode Title="NoAlertPresent enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="NoAlertPresentException class" Url="html/AllMembers_T_OpenQA_Selenium_NoAlertPresentException.htm" />
   <HelpKINode Title="NoAlertPresentException class" Url="html/T_OpenQA_Selenium_NoAlertPresentException.htm" />
@@ -2195,23 +2554,46 @@
   <HelpKINode Title="NumberPad8 field" Url="html/F_OpenQA_Selenium_Keys_NumberPad8.htm" />
   <HelpKINode Title="NumberPad9 field" Url="html/F_OpenQA_Selenium_Keys_NumberPad9.htm" />
   <HelpKINode Title="ObsoleteElement enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
+  <HelpKINode Title="OnAccepted method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAccepted.htm" />
+  <HelpKINode Title="OnAcceptError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAcceptError.htm" />
+  <HelpKINode Title="OnAuthenticated method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAuthenticated.htm" />
+  <HelpKINode Title="OnAuthenticateError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAuthenticateError.htm" />
+  <HelpKINode Title="OnBinaryMessageReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnBinaryMessageReceived.htm" />
+  <HelpKINode Title="OnClose method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnClose.htm" />
+  <HelpKINode Title="OnConnectionClosed method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnConnectionClosed.htm" />
+  <HelpKINode Title="OnConnectionOpened method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnConnectionOpened.htm" />
   <HelpKINode Title="OnElementClicked method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicked.htm" />
   <HelpKINode Title="OnElementClicking method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementClicking.htm" />
   <HelpKINode Title="OnElementValueChanged method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanged.htm" />
   <HelpKINode Title="OnElementValueChanging method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnElementValueChanging.htm" />
+  <HelpKINode Title="OnError method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnError.htm" />
+  <HelpKINode Title="OnErrorOccurred method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnErrorOccurred.htm" />
   <HelpKINode Title="OnException method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnException.htm" />
   <HelpKINode Title="OnFindElementCompleted method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindElementCompleted.htm" />
   <HelpKINode Title="OnFindingElement method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnFindingElement.htm" />
+  <HelpKINode Title="OnMessageReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnMessageReceived.htm" />
+  <HelpKINode Title="OnMessageReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnMessageReceived.htm" />
   <HelpKINode Title="OnNavigated method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigated.htm" />
   <HelpKINode Title="OnNavigatedBack method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedBack.htm" />
   <HelpKINode Title="OnNavigatedForward method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatedForward.htm" />
   <HelpKINode Title="OnNavigating method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigating.htm" />
   <HelpKINode Title="OnNavigatingBack method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingBack.htm" />
   <HelpKINode Title="OnNavigatingForward method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnNavigatingForward.htm" />
+  <HelpKINode Title="OnOpen method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnOpen.htm" />
+  <HelpKINode Title="OnReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnReceived.htm" />
+  <HelpKINode Title="OnReceiveError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnReceiveError.htm" />
   <HelpKINode Title="OnScriptExecuted method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuted.htm" />
   <HelpKINode Title="OnScriptExecuting method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_OnScriptExecuting.htm" />
+  <HelpKINode Title="OnSend method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnSend.htm" />
+  <HelpKINode Title="OnSendError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnSendError.htm" />
+  <HelpKINode Title="OnSent method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnSent.htm" />
+  <HelpKINode Title="OnStandardHttpRequestReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnStandardHttpRequestReceived.htm" />
+  <HelpKINode Title="OnStandardHttpRequestReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnStandardHttpRequestReceived.htm" />
   <HelpKINode Title="Open method" Url="html/M_Selenium_DefaultSelenium_Open.htm" />
   <HelpKINode Title="Open method" Url="html/M_Selenium_ISelenium_Open.htm" />
+  <HelpKINode Title="Opened event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Opened.htm" />
+  <HelpKINode Title="Opened event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Opened.htm" />
+  <HelpKINode Title="Opened event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_Opened.htm" />
   <HelpKINode Title="OpenQA.Selenium namespace" Url="html/N_OpenQA_Selenium.htm" />
   <HelpKINode Title="OpenQA.Selenium.Android namespace" Url="html/N_OpenQA_Selenium_Android.htm" />
   <HelpKINode Title="OpenQA.Selenium.Android.AndroidDriver class" Url="html/AllMembers_T_OpenQA_Selenium_Android_AndroidDriver.htm" />
@@ -2223,10 +2605,16 @@
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeDriver class" Url="html/T_OpenQA_Selenium_Chrome_ChromeDriver.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeDriverService class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeDriverService class" Url="html/T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeOptions class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeOptions class" Url="html/T_OpenQA_Selenium_Chrome_ChromeOptions.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeWebElement class" Url="html/AllMembers_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" />
   <HelpKINode Title="OpenQA.Selenium.Chrome.ChromeWebElement class" Url="html/T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" />
   <HelpKINode Title="OpenQA.Selenium.Cookie class" Url="html/AllMembers_T_OpenQA_Selenium_Cookie.htm" />
   <HelpKINode Title="OpenQA.Selenium.Cookie class" Url="html/T_OpenQA_Selenium_Cookie.htm" />
+  <HelpKINode Title="OpenQA.Selenium.DriverService class" Url="html/AllMembers_T_OpenQA_Selenium_DriverService.htm" />
+  <HelpKINode Title="OpenQA.Selenium.DriverService class" Url="html/T_OpenQA_Selenium_DriverService.htm" />
+  <HelpKINode Title="OpenQA.Selenium.DriverServiceNotFoundException class" Url="html/AllMembers_T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
+  <HelpKINode Title="OpenQA.Selenium.DriverServiceNotFoundException class" Url="html/T_OpenQA_Selenium_DriverServiceNotFoundException.htm" />
   <HelpKINode Title="OpenQA.Selenium.ElementNotVisibleException class" Url="html/AllMembers_T_OpenQA_Selenium_ElementNotVisibleException.htm" />
   <HelpKINode Title="OpenQA.Selenium.ElementNotVisibleException class" Url="html/T_OpenQA_Selenium_ElementNotVisibleException.htm" />
   <HelpKINode Title="OpenQA.Selenium.Firefox namespace" Url="html/N_OpenQA_Selenium_Firefox.htm" />
@@ -2251,6 +2639,10 @@
   <HelpKINode Title="OpenQA.Selenium.IE namespace" Url="html/N_OpenQA_Selenium_IE.htm" />
   <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerDriver class" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
   <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerDriver class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" />
+  <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerDriverService class" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+  <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerDriverService class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" />
+  <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerOptions class" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
+  <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerOptions class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" />
   <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerWebElement class" Url="html/AllMembers_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" />
   <HelpKINode Title="OpenQA.Selenium.IE.InternetExplorerWebElement class" Url="html/T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" />
   <HelpKINode Title="OpenQA.Selenium.IHasCapabilities interface" Url="html/AllMembers_T_OpenQA_Selenium_IHasCapabilities.htm" />
@@ -2357,7 +2749,8 @@
   <HelpKINode Title="OpenQA.Selenium.Remote.CommandInfoRepository class" Url="html/T_OpenQA_Selenium_Remote_CommandInfoRepository.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.DesiredCapabilities class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_DesiredCapabilities.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.DesiredCapabilities class" Url="html/T_OpenQA_Selenium_Remote_DesiredCapabilities.htm" />
-  <HelpKINode Title="OpenQA.Selenium.Remote.DriverCommand enumeration" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Remote.DriverCommand class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Remote.DriverCommand class" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.ErrorResponse class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.ErrorResponse class" Url="html/T_OpenQA_Selenium_Remote_ErrorResponse.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.ICommandExecutor interface" Url="html/AllMembers_T_OpenQA_Selenium_Remote_ICommandExecutor.htm" />
@@ -2372,6 +2765,59 @@
   <HelpKINode Title="OpenQA.Selenium.Remote.SessionId class" Url="html/T_OpenQA_Selenium_Remote_SessionId.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.StackTraceElement class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_StackTraceElement.htm" />
   <HelpKINode Title="OpenQA.Selenium.Remote.StackTraceElement class" Url="html/T_OpenQA_Selenium_Remote_StackTraceElement.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari namespace" Url="html/N_OpenQA_Selenium_Safari.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal namespace" Url="html/N_OpenQA_Selenium_Safari_Internal.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.AcceptEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.AcceptEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_AcceptEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.BinaryMessageHandledEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.BinaryMessageHandledEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_BinaryMessageHandledEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ConnectionEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ConnectionEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ConnectionEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ErrorEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ErrorEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ErrorEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.FrameType enumeration" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.HandshakeException class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.HandshakeException class" Url="html/T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IHandler interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IHandler interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IHandler.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ISocket interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ISocket interface" Url="html/T_OpenQA_Selenium_Safari_Internal_ISocket.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IWebSocketConnection interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IWebSocketConnection interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketConnection.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IWebSocketConnectionInfo interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IWebSocketConnectionInfo interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IWebSocketServer interface" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_IWebSocketServer.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.IWebSocketServer interface" Url="html/T_OpenQA_Selenium_Safari_Internal_IWebSocketServer.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ReceivedEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.ReceivedEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.SocketWrapper class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.SocketWrapper class" Url="html/T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.StandardHttpRequestReceivedEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.StandardHttpRequestReceivedEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.TextMessageHandledEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.TextMessageHandledEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketConnection class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketConnection class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketConnectionInfo class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketConnectionInfo class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketException class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketException class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketHttpRequest class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketHttpRequest class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketServer class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.Internal.WebSocketServer class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariCommand class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariCommand class" Url="html/T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriver class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriver class" Url="html/T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriverCommandExecutor class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriverCommandExecutor class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriverConnection class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverConnection.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriverConnection class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverConnection.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriverServer class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariDriverServer class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariResponse class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariResponse.htm" />
+  <HelpKINode Title="OpenQA.Selenium.Safari.SafariResponse class" Url="html/T_OpenQA_Selenium_Safari_SafariResponse.htm" />
   <HelpKINode Title="OpenQA.Selenium.ScreenOrientation enumeration" Url="html/T_OpenQA_Selenium_ScreenOrientation.htm" />
   <HelpKINode Title="OpenQA.Selenium.Screenshot class" Url="html/AllMembers_T_OpenQA_Selenium_Screenshot.htm" />
   <HelpKINode Title="OpenQA.Selenium.Screenshot class" Url="html/T_OpenQA_Selenium_Screenshot.htm" />
@@ -2438,6 +2884,8 @@
   <HelpKINode Title="Options property" Url="html/P_OpenQA_Selenium_Support_UI_SelectElement_Options.htm" />
   <HelpKINode Title="Orientation property" Url="html/P_OpenQA_Selenium_Android_AndroidDriver_Orientation.htm" />
   <HelpKINode Title="Orientation property" Url="html/P_OpenQA_Selenium_IRotatable_Orientation.htm" />
+  <HelpKINode Title="Origin property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Origin.htm" />
+  <HelpKINode Title="Origin property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Origin.htm" />
   <HelpKINode Title="PageDown field" Url="html/F_OpenQA_Selenium_Keys_PageDown.htm" />
   <HelpKINode Title="PageFactory class" Url="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm" />
   <HelpKINode Title="PageFactory class" Url="html/T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm" />
@@ -2458,9 +2906,14 @@
   <HelpKINode Title="PartialLinkText enumeration member" Url="html/T_OpenQA_Selenium_Support_PageObjects_How.htm" />
   <HelpKINode Title="PartialLinkText method" Url="html/M_OpenQA_Selenium_By_PartialLinkText.htm" />
   <HelpKINode Title="Path property" Url="html/P_OpenQA_Selenium_Cookie_Path.htm" />
+  <HelpKINode Title="Path property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_Path.htm" />
+  <HelpKINode Title="Path property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Path.htm" />
+  <HelpKINode Title="Path property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Path.htm" />
   <HelpKINode Title="Pause field" Url="html/F_OpenQA_Selenium_Keys_Pause.htm" />
+  <HelpKINode Title="Payload property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Payload.htm" />
   <HelpKINode Title="Perform method" Url="html/M_OpenQA_Selenium_Interactions_Actions_Perform.htm" />
   <HelpKINode Title="Perform method" Url="html/M_OpenQA_Selenium_Interactions_IAction_Perform.htm" />
+  <HelpKINode Title="Ping enumeration member" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
   <HelpKINode Title="Platform class" Url="html/AllMembers_T_OpenQA_Selenium_Platform.htm" />
   <HelpKINode Title="Platform class" Url="html/T_OpenQA_Selenium_Platform.htm" />
   <HelpKINode Title="Platform class">
@@ -2483,6 +2936,7 @@
   <HelpKINode Title="PlatformType property" Url="html/P_OpenQA_Selenium_Platform_PlatformType.htm" />
   <HelpKINode Title="PollingInterval property" Url="html/P_OpenQA_Selenium_Support_UI_DefaultWait_1_PollingInterval.htm" />
   <HelpKINode Title="PollingInterval property" Url="html/P_OpenQA_Selenium_Support_UI_IWait_1_PollingInterval.htm" />
+  <HelpKINode Title="Pong enumeration member" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
   <HelpKINode Title="PopupWindowFinder class" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm" />
   <HelpKINode Title="PopupWindowFinder class" Url="html/T_OpenQA_Selenium_Support_UI_PopupWindowFinder.htm" />
   <HelpKINode Title="PopupWindowFinder class">
@@ -2495,11 +2949,13 @@
   <HelpKINode Title="PopupWindowFinder.Invoke method" Url="html/M_OpenQA_Selenium_Support_UI_PopupWindowFinder_Invoke.htm" />
   <HelpKINode Title="PopupWindowFinder.PopupWindowFinder constructor" Url="html/Overload_OpenQA_Selenium_Support_UI_PopupWindowFinder__ctor.htm" />
   <HelpKINode Title="Port property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_Port.htm" />
+  <HelpKINode Title="Port property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_Port.htm" />
   <HelpKINode Title="Portrait enumeration member" Url="html/T_OpenQA_Selenium_ScreenOrientation.htm" />
   <HelpKINode Title="Position property" Url="html/P_OpenQA_Selenium_IWindow_Position.htm" />
   <HelpKINode Title="PostCommand field" Url="html/F_OpenQA_Selenium_Remote_CommandInfo_PostCommand.htm" />
   <HelpKINode Title="PrepareEnvironment method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_PrepareEnvironment.htm" />
   <HelpKINode Title="PressKey method" Url="html/M_OpenQA_Selenium_IKeyboard_PressKey.htm" />
+  <HelpKINode Title="ProcessData method" Url="html/M_OpenQA_Selenium_Safari_Internal_IHandler_ProcessData.htm" />
   <HelpKINode Title="Processor property" Url="html/P_Selenium_DefaultSelenium_Processor.htm" />
   <HelpKINode Title="Profile property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxDriver_Profile.htm" />
   <HelpKINode Title="ProfileCapabilityName field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_ProfileCapabilityName.htm" />
@@ -2525,18 +2981,38 @@
   <HelpKINode Title="ProxyAutoConfigure enumeration member" Url="html/T_OpenQA_Selenium_ProxyKind.htm" />
   <HelpKINode Title="ProxyAutoConfigUrl property" Url="html/P_OpenQA_Selenium_Proxy_ProxyAutoConfigUrl.htm" />
   <HelpKINode Title="ProxyKind enumeration" Url="html/T_OpenQA_Selenium_ProxyKind.htm" />
-  <HelpKINode Title="Quit enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Quit field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Quit.htm" />
   <HelpKINode Title="Quit method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_Quit.htm" />
   <HelpKINode Title="Quit method" Url="html/M_OpenQA_Selenium_IWebDriver_Quit.htm" />
   <HelpKINode Title="Quit method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_Quit.htm" />
   <HelpKINode Title="Quit method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Quit.htm" />
   <HelpKINode Title="ReadResponse method" Url="html/M_Selenium_HttpCommandProcessor_ReadResponse.htm" />
-  <HelpKINode Title="Refresh enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Receive method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Receive.htm" />
+  <HelpKINode Title="Receive method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Receive.htm" />
+  <HelpKINode Title="Received event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Received.htm" />
+  <HelpKINode Title="Received event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Received.htm" />
+  <HelpKINode Title="ReceivedEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+  <HelpKINode Title="ReceivedEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+  <HelpKINode Title="ReceivedEventArgs class">
+    <HelpKINode Title="about ReceivedEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ReceivedEventArgs.Buffer property" Url="html/P_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs_Buffer.htm" />
+  <HelpKINode Title="ReceivedEventArgs.BytesRead property" Url="html/P_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs_BytesRead.htm" />
+  <HelpKINode Title="ReceivedEventArgs.ReceivedEventArgs constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_ReceivedEventArgs__ctor.htm" />
+  <HelpKINode Title="ReceiveError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_ReceiveError.htm" />
+  <HelpKINode Title="ReceiveError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_ReceiveError.htm" />
+  <HelpKINode Title="Refresh field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Refresh.htm" />
   <HelpKINode Title="Refresh method" Url="html/M_OpenQA_Selenium_INavigation_Refresh.htm" />
   <HelpKINode Title="Refresh method" Url="html/M_Selenium_DefaultSelenium_Refresh.htm" />
   <HelpKINode Title="Refresh method" Url="html/M_Selenium_ISelenium_Refresh.htm" />
   <HelpKINode Title="Release method" Url="html/Overload_OpenQA_Selenium_Interactions_Actions_Release.htm" />
   <HelpKINode Title="ReleaseKey method" Url="html/M_OpenQA_Selenium_IKeyboard_ReleaseKey.htm" />
+  <HelpKINode Title="RemoteIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_ISocket_RemoteIPAddress.htm" />
+  <HelpKINode Title="RemoteIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_SocketWrapper_RemoteIPAddress.htm" />
   <HelpKINode Title="RemoteWebDriver class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm" />
   <HelpKINode Title="RemoteWebDriver class" Url="html/T_OpenQA_Selenium_Remote_RemoteWebDriver.htm" />
   <HelpKINode Title="RemoteWebDriver class">
@@ -2689,7 +3165,84 @@
   <HelpKINode Title="Rotatable field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_Rotatable.htm" />
   <HelpKINode Title="RunScript method" Url="html/M_Selenium_DefaultSelenium_RunScript.htm" />
   <HelpKINode Title="RunScript method" Url="html/M_Selenium_ISelenium_RunScript.htm" />
+  <HelpKINode Title="Safari method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Safari.htm" />
+  <HelpKINode Title="SafariCommand class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+  <HelpKINode Title="SafariCommand class" Url="html/T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+  <HelpKINode Title="SafariCommand class">
+    <HelpKINode Title="about SafariCommand class" Url="html/T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_SafariCommand__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_SafariCommand.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SafariCommand.Id property" Url="html/P_OpenQA_Selenium_Safari_SafariCommand_Id.htm" />
+  <HelpKINode Title="SafariCommand.SafariCommand constructor" Url="html/M_OpenQA_Selenium_Safari_SafariCommand__ctor.htm" />
+  <HelpKINode Title="SafariDriver class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+  <HelpKINode Title="SafariDriver class" Url="html/T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+  <HelpKINode Title="SafariDriver class">
+    <HelpKINode Title="about SafariDriver class" Url="html/T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_SafariDriver__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_SafariDriver.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SafariDriver.Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriver_Dispose.htm" />
+  <HelpKINode Title="SafariDriver.FindElement method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriver_FindElement.htm" />
+  <HelpKINode Title="SafariDriver.FindElements method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriver_FindElements.htm" />
+  <HelpKINode Title="SafariDriver.SafariDriver constructor" Url="html/M_OpenQA_Selenium_Safari_SafariDriver__ctor.htm" />
+  <HelpKINode Title="SafariDriver.StartClient method" Url="html/M_OpenQA_Selenium_Safari_SafariDriver_StartClient.htm" />
+  <HelpKINode Title="SafariDriver.StopClient method" Url="html/M_OpenQA_Selenium_Safari_SafariDriver_StopClient.htm" />
+  <HelpKINode Title="SafariDriverCommandExecutor class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" />
+  <HelpKINode Title="SafariDriverCommandExecutor class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" />
+  <HelpKINode Title="SafariDriverCommandExecutor class">
+    <HelpKINode Title="about SafariDriverCommandExecutor class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SafariDriverCommandExecutor.Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Dispose.htm" />
+  <HelpKINode Title="SafariDriverCommandExecutor.Execute method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Execute.htm" />
+  <HelpKINode Title="SafariDriverCommandExecutor.SafariDriverCommandExecutor constructor" Url="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor__ctor.htm" />
+  <HelpKINode Title="SafariDriverCommandExecutor.Start method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Start.htm" />
+  <HelpKINode Title="SafariDriverConnection class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverConnection.htm" />
+  <HelpKINode Title="SafariDriverConnection class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverConnection.htm" />
+  <HelpKINode Title="SafariDriverConnection class">
+    <HelpKINode Title="about SafariDriverConnection class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverConnection.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverConnection.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_SafariDriverConnection__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_SafariDriverConnection.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SafariDriverConnection.SafariDriverConnection constructor" Url="html/M_OpenQA_Selenium_Safari_SafariDriverConnection__ctor.htm" />
+  <HelpKINode Title="SafariDriverConnection.Send method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverConnection_Send.htm" />
+  <HelpKINode Title="SafariDriverServer class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+  <HelpKINode Title="SafariDriverServer class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+  <HelpKINode Title="SafariDriverServer class">
+    <HelpKINode Title="about SafariDriverServer class" Url="html/T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriverServer__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_SafariDriverServer.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SafariDriverServer.Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriverServer_Dispose.htm" />
+  <HelpKINode Title="SafariDriverServer.SafariDriverServer constructor" Url="html/Overload_OpenQA_Selenium_Safari_SafariDriverServer__ctor.htm" />
+  <HelpKINode Title="SafariDriverServer.ServerUri property" Url="html/P_OpenQA_Selenium_Safari_SafariDriverServer_ServerUri.htm" />
+  <HelpKINode Title="SafariDriverServer.Start method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverServer_Start.htm" />
+  <HelpKINode Title="SafariDriverServer.Stop method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverServer_Stop.htm" />
+  <HelpKINode Title="SafariDriverServer.WaitForConnection method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverServer_WaitForConnection.htm" />
+  <HelpKINode Title="SafariResponse class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariResponse.htm" />
+  <HelpKINode Title="SafariResponse class" Url="html/T_OpenQA_Selenium_Safari_SafariResponse.htm" />
+  <HelpKINode Title="SafariResponse class">
+    <HelpKINode Title="about SafariResponse class" Url="html/T_OpenQA_Selenium_Safari_SafariResponse.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_SafariResponse.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_SafariResponse__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_SafariResponse.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_SafariResponse.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SafariResponse.FromJson method" Url="html/M_OpenQA_Selenium_Safari_SafariResponse_FromJson.htm" />
+  <HelpKINode Title="SafariResponse.Id property" Url="html/P_OpenQA_Selenium_Safari_SafariResponse_Id.htm" />
+  <HelpKINode Title="SafariResponse.SafariResponse constructor" Url="html/M_OpenQA_Selenium_Safari_SafariResponse__ctor.htm" />
   <HelpKINode Title="SaveAsFile method" Url="html/M_OpenQA_Selenium_Screenshot_SaveAsFile.htm" />
+  <HelpKINode Title="Scheme property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Scheme.htm" />
   <HelpKINode Title="ScreenOrientation enumeration" Url="html/T_OpenQA_Selenium_ScreenOrientation.htm" />
   <HelpKINode Title="Screenshot class" Url="html/AllMembers_T_OpenQA_Selenium_Screenshot.htm" />
   <HelpKINode Title="Screenshot class" Url="html/T_OpenQA_Selenium_Screenshot.htm" />
@@ -2700,7 +3253,7 @@
     <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Screenshot.htm" />
     <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Screenshot.htm" />
   </HelpKINode>
-  <HelpKINode Title="Screenshot enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="Screenshot field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Screenshot.htm" />
   <HelpKINode Title="Screenshot property" Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_Screenshot.htm" />
   <HelpKINode Title="Screenshot.AsBase64EncodedString property" Url="html/P_OpenQA_Selenium_Screenshot_AsBase64EncodedString.htm" />
   <HelpKINode Title="Screenshot.AsByteArray property" Url="html/P_OpenQA_Selenium_Screenshot_AsByteArray.htm" />
@@ -2802,15 +3355,29 @@
   <HelpKINode Title="SeleniumMutator.Mutate method" Url="html/M_Selenium_Internal_SeleniumEmulation_SeleniumMutator_Mutate.htm" />
   <HelpKINode Title="SeleniumMutator.SeleniumMutator constructor" Url="html/M_Selenium_Internal_SeleniumEmulation_SeleniumMutator__ctor.htm" />
   <HelpKINode Title="Semicolon field" Url="html/F_OpenQA_Selenium_Keys_Semicolon.htm" />
+  <HelpKINode Title="Send method" Url="html/M_OpenQA_Selenium_Safari_Internal_ISocket_Send.htm" />
+  <HelpKINode Title="Send method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Send.htm" />
+  <HelpKINode Title="Send method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverConnection_Send.htm" />
+  <HelpKINode Title="Send method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Send.htm" />
+  <HelpKINode Title="Send method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Send.htm" />
+  <HelpKINode Title="SendError event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_SendError.htm" />
+  <HelpKINode Title="SendError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_SendError.htm" />
   <HelpKINode Title="SendKeys method" Url="html/M_OpenQA_Selenium_IAlert_SendKeys.htm" />
   <HelpKINode Title="SendKeys method" Url="html/M_OpenQA_Selenium_IKeyboard_SendKeys.htm" />
   <HelpKINode Title="SendKeys method" Url="html/M_OpenQA_Selenium_IWebElement_SendKeys.htm" />
   <HelpKINode Title="SendKeys method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_SendKeys.htm" />
   <HelpKINode Title="SendKeys method" Url="html/Overload_OpenQA_Selenium_Interactions_Actions_SendKeys.htm" />
-  <HelpKINode Title="SendKeysToActiveElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="SendKeysToElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="SendKeysToActiveElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SendKeysToActiveElement.htm" />
+  <HelpKINode Title="SendKeysToElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SendKeysToElement.htm" />
+  <HelpKINode Title="SendRaw method" Url="html/M_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_SendRaw.htm" />
+  <HelpKINode Title="SendRaw method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_SendRaw.htm" />
+  <HelpKINode Title="Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_ISocket_Sent.htm" />
+  <HelpKINode Title="Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Sent.htm" />
+  <HelpKINode Title="Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Sent.htm" />
+  <HelpKINode Title="Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Sent.htm" />
   <HelpKINode Title="Separator field" Url="html/F_OpenQA_Selenium_Keys_Separator.htm" />
-  <HelpKINode Title="ServiceUrl property" Url="html/P_OpenQA_Selenium_Chrome_ChromeDriverService_ServiceUrl.htm" />
+  <HelpKINode Title="ServerUri property" Url="html/P_OpenQA_Selenium_Safari_SafariDriverServer_ServerUri.htm" />
+  <HelpKINode Title="ServiceUrl property" Url="html/P_OpenQA_Selenium_DriverService_ServiceUrl.htm" />
   <HelpKINode Title="SessionId class" Url="html/AllMembers_T_OpenQA_Selenium_Remote_SessionId.htm" />
   <HelpKINode Title="SessionId class" Url="html/T_OpenQA_Selenium_Remote_SessionId.htm" />
   <HelpKINode Title="SessionId class">
@@ -2826,17 +3393,15 @@
   <HelpKINode Title="SessionId.GetHashCode method" Url="html/M_OpenQA_Selenium_Remote_SessionId_GetHashCode.htm" />
   <HelpKINode Title="SessionId.SessionId constructor" Url="html/M_OpenQA_Selenium_Remote_SessionId__ctor.htm" />
   <HelpKINode Title="SessionId.ToString method" Url="html/M_OpenQA_Selenium_Remote_SessionId_ToString.htm" />
-  <HelpKINode Title="SetAlertValue enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="SetAsyncScriptTimeout enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="SetAlertValue field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetAlertValue.htm" />
+  <HelpKINode Title="SetAsyncScriptTimeout field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetAsyncScriptTimeout.htm" />
   <HelpKINode Title="SetBrowserLogLevel method" Url="html/M_Selenium_DefaultSelenium_SetBrowserLogLevel.htm" />
   <HelpKINode Title="SetBrowserLogLevel method" Url="html/M_Selenium_ISelenium_SetBrowserLogLevel.htm" />
-  <HelpKINode Title="SetBrowserVisible enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="SetCapability method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_SetCapability.htm" />
   <HelpKINode Title="SetContext method" Url="html/M_Selenium_DefaultSelenium_SetContext.htm" />
   <HelpKINode Title="SetContext method" Url="html/M_Selenium_ISelenium_SetContext.htm" />
   <HelpKINode Title="SetCursorPosition method" Url="html/M_Selenium_DefaultSelenium_SetCursorPosition.htm" />
   <HelpKINode Title="SetCursorPosition method" Url="html/M_Selenium_ISelenium_SetCursorPosition.htm" />
-  <HelpKINode Title="SetElementSelected enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="SetEnvironmentProperty method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_SetEnvironmentProperty.htm" />
   <HelpKINode Title="SetExtensionJs method" Url="html/M_Selenium_DefaultSelenium_SetExtensionJs.htm" />
   <HelpKINode Title="SetExtensionJs method" Url="html/M_Selenium_HttpCommandProcessor_SetExtensionJs.htm" />
@@ -2845,17 +3410,16 @@
   <HelpKINode Title="SetExtensionJs method" Url="html/M_Selenium_WebDriverCommandProcessor_SetExtensionJs.htm" />
   <HelpKINode Title="SetMouseSpeed method" Url="html/M_Selenium_DefaultSelenium_SetMouseSpeed.htm" />
   <HelpKINode Title="SetMouseSpeed method" Url="html/M_Selenium_ISelenium_SetMouseSpeed.htm" />
-  <HelpKINode Title="SetOrientation enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="SetOrientation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetOrientation.htm" />
   <HelpKINode Title="SetPreference method" Url="html/Overload_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference.htm" />
   <HelpKINode Title="SetProxyPreferences method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_SetProxyPreferences.htm" />
   <HelpKINode Title="SetScriptTimeout method" Url="html/M_OpenQA_Selenium_ITimeouts_SetScriptTimeout.htm" />
-  <HelpKINode Title="SetSpeed enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
   <HelpKINode Title="SetSpeed method" Url="html/M_Selenium_DefaultSelenium_SetSpeed.htm" />
   <HelpKINode Title="SetSpeed method" Url="html/M_Selenium_ISelenium_SetSpeed.htm" />
   <HelpKINode Title="SetTimeout method" Url="html/M_Selenium_DefaultSelenium_SetTimeout.htm" />
   <HelpKINode Title="SetTimeout method" Url="html/M_Selenium_ISelenium_SetTimeout.htm" />
-  <HelpKINode Title="SetWindowPosition enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="SetWindowSize enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="SetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowPosition.htm" />
+  <HelpKINode Title="SetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowSize.htm" />
   <HelpKINode Title="Shift field" Url="html/F_OpenQA_Selenium_Keys_Shift.htm" />
   <HelpKINode Title="ShiftKeyDown method" Url="html/M_Selenium_DefaultSelenium_ShiftKeyDown.htm" />
   <HelpKINode Title="ShiftKeyDown method" Url="html/M_Selenium_ISelenium_ShiftKeyDown.htm" />
@@ -2866,6 +3430,46 @@
   <HelpKINode Title="Size property" Url="html/P_OpenQA_Selenium_IWebElement_Size.htm" />
   <HelpKINode Title="Size property" Url="html/P_OpenQA_Selenium_IWindow_Size.htm" />
   <HelpKINode Title="Size property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Size.htm" />
+  <HelpKINode Title="Socket property" Url="html/P_OpenQA_Selenium_Safari_Internal_AcceptEventArgs_Socket.htm" />
+  <HelpKINode Title="Socket property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Socket.htm" />
+  <HelpKINode Title="SocketWrapper class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+  <HelpKINode Title="SocketWrapper class" Url="html/T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+  <HelpKINode Title="SocketWrapper class">
+    <HelpKINode Title="about SocketWrapper class" Url="html/T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_SocketWrapper.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SocketWrapper.Accept method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Accept.htm" />
+  <HelpKINode Title="SocketWrapper.Accepted event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Accepted.htm" />
+  <HelpKINode Title="SocketWrapper.AcceptError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_AcceptError.htm" />
+  <HelpKINode Title="SocketWrapper.Authenticate method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Authenticate.htm" />
+  <HelpKINode Title="SocketWrapper.Authenticated event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Authenticated.htm" />
+  <HelpKINode Title="SocketWrapper.AuthenticateError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_AuthenticateError.htm" />
+  <HelpKINode Title="SocketWrapper.Bind method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Bind.htm" />
+  <HelpKINode Title="SocketWrapper.Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Close.htm" />
+  <HelpKINode Title="SocketWrapper.Connected property" Url="html/P_OpenQA_Selenium_Safari_Internal_SocketWrapper_Connected.htm" />
+  <HelpKINode Title="SocketWrapper.Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_SocketWrapper_Dispose.htm" />
+  <HelpKINode Title="SocketWrapper.Listen method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Listen.htm" />
+  <HelpKINode Title="SocketWrapper.OnAccepted method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAccepted.htm" />
+  <HelpKINode Title="SocketWrapper.OnAcceptError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAcceptError.htm" />
+  <HelpKINode Title="SocketWrapper.OnAuthenticated method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAuthenticated.htm" />
+  <HelpKINode Title="SocketWrapper.OnAuthenticateError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnAuthenticateError.htm" />
+  <HelpKINode Title="SocketWrapper.OnReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnReceived.htm" />
+  <HelpKINode Title="SocketWrapper.OnReceiveError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnReceiveError.htm" />
+  <HelpKINode Title="SocketWrapper.OnSendError method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnSendError.htm" />
+  <HelpKINode Title="SocketWrapper.OnSent method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_OnSent.htm" />
+  <HelpKINode Title="SocketWrapper.Receive method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Receive.htm" />
+  <HelpKINode Title="SocketWrapper.Received event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Received.htm" />
+  <HelpKINode Title="SocketWrapper.ReceiveError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_ReceiveError.htm" />
+  <HelpKINode Title="SocketWrapper.RemoteIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_SocketWrapper_RemoteIPAddress.htm" />
+  <HelpKINode Title="SocketWrapper.Send method" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Send.htm" />
+  <HelpKINode Title="SocketWrapper.SendError event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_SendError.htm" />
+  <HelpKINode Title="SocketWrapper.Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_SocketWrapper_Sent.htm" />
+  <HelpKINode Title="SocketWrapper.SocketWrapper constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_SocketWrapper__ctor.htm" />
+  <HelpKINode Title="SocketWrapper.Stream property" Url="html/P_OpenQA_Selenium_Safari_Internal_SocketWrapper_Stream.htm" />
   <HelpKINode Title="Space field" Url="html/F_OpenQA_Selenium_Keys_Space.htm" />
   <HelpKINode Title="SslProxy property" Url="html/P_OpenQA_Selenium_Proxy_SslProxy.htm" />
   <HelpKINode Title="StackTrace property" Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_StackTrace.htm" />
@@ -2894,43 +3498,70 @@
     <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_StaleElementReferenceException.htm" />
   </HelpKINode>
   <HelpKINode Title="StaleElementReferenceException.StaleElementReferenceException constructor" Url="html/Overload_OpenQA_Selenium_StaleElementReferenceException__ctor.htm" />
-  <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriverService_Start.htm" />
+  <HelpKINode Title="StandardHttpRequestReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_StandardHttpRequestReceived.htm" />
+  <HelpKINode Title="StandardHttpRequestReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_StandardHttpRequestReceived.htm" />
+  <HelpKINode Title="StandardHttpRequestReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_StandardHttpRequestReceived.htm" />
+  <HelpKINode Title="StandardHttpRequestReceivedEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+  <HelpKINode Title="StandardHttpRequestReceivedEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+  <HelpKINode Title="StandardHttpRequestReceivedEventArgs class">
+    <HelpKINode Title="about StandardHttpRequestReceivedEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="StandardHttpRequestReceivedEventArgs.Connection property" Url="html/P_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs_Connection.htm" />
+  <HelpKINode Title="StandardHttpRequestReceivedEventArgs.Handled property" Url="html/P_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs_Handled.htm" />
+  <HelpKINode Title="StandardHttpRequestReceivedEventArgs.StandardHttpRequestReceivedEventArgs constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_StandardHttpRequestReceivedEventArgs__ctor.htm" />
+  <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_DriverService_Start.htm" />
+  <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_Safari_Internal_IWebSocketServer_Start.htm" />
+  <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_Start.htm" />
+  <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Start.htm" />
+  <HelpKINode Title="Start method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverServer_Start.htm" />
   <HelpKINode Title="Start method" Url="html/M_Selenium_ISelenium_Start.htm" />
   <HelpKINode Title="Start method" Url="html/Overload_Selenium_DefaultSelenium_Start.htm" />
   <HelpKINode Title="Start method" Url="html/Overload_Selenium_HttpCommandProcessor_Start.htm" />
   <HelpKINode Title="Start method" Url="html/Overload_Selenium_ICommandProcessor_Start.htm" />
   <HelpKINode Title="Start method" Url="html/Overload_Selenium_WebDriverBackedSelenium_Start.htm" />
   <HelpKINode Title="Start method" Url="html/Overload_Selenium_WebDriverCommandProcessor_Start.htm" />
-  <HelpKINode Title="StartClient method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_StartClient.htm" />
   <HelpKINode Title="StartClient method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_StartClient.htm" />
   <HelpKINode Title="StartClient method" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StartClient.htm" />
   <HelpKINode Title="StartClient method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_StartClient.htm" />
+  <HelpKINode Title="StartClient method" Url="html/M_OpenQA_Selenium_Safari_SafariDriver_StartClient.htm" />
   <HelpKINode Title="StartFirefoxProcess method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_StartFirefoxProcess.htm" />
   <HelpKINode Title="StartProfile method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxBinary_StartProfile.htm" />
+  <HelpKINode Title="StartReceiving method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_StartReceiving.htm" />
   <HelpKINode Title="StartSession method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_StartSession.htm" />
+  <HelpKINode Title="Status field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Status.htm" />
   <HelpKINode Title="Status property" Url="html/P_OpenQA_Selenium_Remote_Response_Status.htm" />
+  <HelpKINode Title="StatusCode property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketException_StatusCode.htm" />
+  <HelpKINode Title="Stop method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverServer_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_DefaultSelenium_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_HttpCommandProcessor_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_ICommandProcessor_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_ISelenium_Stop.htm" />
   <HelpKINode Title="Stop method" Url="html/M_Selenium_WebDriverCommandProcessor_Stop.htm" />
-  <HelpKINode Title="StopClient method" Url="html/M_OpenQA_Selenium_Chrome_ChromeDriver_StopClient.htm" />
   <HelpKINode Title="StopClient method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_StopClient.htm" />
   <HelpKINode Title="StopClient method" Url="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StopClient.htm" />
   <HelpKINode Title="StopClient method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_StopClient.htm" />
+  <HelpKINode Title="StopClient method" Url="html/M_OpenQA_Selenium_Safari_SafariDriver_StopClient.htm" />
+  <HelpKINode Title="Stream property" Url="html/P_OpenQA_Selenium_Safari_Internal_ISocket_Stream.htm" />
+  <HelpKINode Title="Stream property" Url="html/P_OpenQA_Selenium_Safari_Internal_SocketWrapper_Stream.htm" />
   <HelpKINode Title="Submit method" Url="html/M_OpenQA_Selenium_IWebElement_Submit.htm" />
   <HelpKINode Title="Submit method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Submit.htm" />
   <HelpKINode Title="Submit method" Url="html/M_Selenium_DefaultSelenium_Submit.htm" />
   <HelpKINode Title="Submit method" Url="html/M_Selenium_ISelenium_Submit.htm" />
-  <HelpKINode Title="SubmitElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="SubmitElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SubmitElement.htm" />
+  <HelpKINode Title="SubProtocol property" Url="html/P_OpenQA_Selenium_Safari_Internal_IWebSocketConnectionInfo_SubProtocol.htm" />
+  <HelpKINode Title="SubProtocol property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_SubProtocol.htm" />
   <HelpKINode Title="Subtract field" Url="html/F_OpenQA_Selenium_Keys_Subtract.htm" />
   <HelpKINode Title="Success enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="SupportsFindingByCss field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_SupportsFindingByCss.htm" />
   <HelpKINode Title="SwitchTo method" Url="html/M_OpenQA_Selenium_IWebDriver_SwitchTo.htm" />
   <HelpKINode Title="SwitchTo method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebDriver_SwitchTo.htm" />
   <HelpKINode Title="SwitchTo method" Url="html/M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_SwitchTo.htm" />
-  <HelpKINode Title="SwitchToFrame enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
-  <HelpKINode Title="SwitchToWindow enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="SwitchToFrame field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SwitchToFrame.htm" />
+  <HelpKINode Title="SwitchToWindow field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SwitchToWindow.htm" />
   <HelpKINode Title="System enumeration member" Url="html/T_OpenQA_Selenium_ProxyKind.htm" />
   <HelpKINode Title="SystemClock class" Url="html/AllMembers_T_OpenQA_Selenium_Support_UI_SystemClock.htm" />
   <HelpKINode Title="SystemClock class" Url="html/T_OpenQA_Selenium_Support_UI_SystemClock.htm" />
@@ -2951,9 +3582,22 @@
   <HelpKINode Title="TagName property" Url="html/P_OpenQA_Selenium_IWebElement_TagName.htm" />
   <HelpKINode Title="TagName property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_TagName.htm" />
   <HelpKINode Title="TakesScreenshot field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_TakesScreenshot.htm" />
+  <HelpKINode Title="Text enumeration member" Url="html/T_OpenQA_Selenium_Safari_Internal_FrameType.htm" />
   <HelpKINode Title="Text property" Url="html/P_OpenQA_Selenium_IAlert_Text.htm" />
   <HelpKINode Title="Text property" Url="html/P_OpenQA_Selenium_IWebElement_Text.htm" />
   <HelpKINode Title="Text property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Text.htm" />
+  <HelpKINode Title="TextMessageHandled event" Url="html/E_OpenQA_Selenium_Safari_Internal_IHandler_TextMessageHandled.htm" />
+  <HelpKINode Title="TextMessageHandledEventArgs class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+  <HelpKINode Title="TextMessageHandledEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+  <HelpKINode Title="TextMessageHandledEventArgs class">
+    <HelpKINode Title="about TextMessageHandledEventArgs class" Url="html/T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TextMessageHandledEventArgs.Message property" Url="html/P_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs_Message.htm" />
+  <HelpKINode Title="TextMessageHandledEventArgs.TextMessageHandledEventArgs constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_TextMessageHandledEventArgs__ctor.htm" />
   <HelpKINode Title="ThrownException property" Url="html/P_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs_ThrownException.htm" />
   <HelpKINode Title="ThrowTimeoutException method" Url="html/M_OpenQA_Selenium_Support_UI_DefaultWait_1_ThrowTimeoutException.htm" />
   <HelpKINode Title="Timeout enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
@@ -2968,7 +3612,7 @@
   <HelpKINode Title="TitleContains method" Url="html/M_OpenQA_Selenium_Support_UI_ExpectedConditions_TitleContains.htm" />
   <HelpKINode Title="TitleIs method" Url="html/M_OpenQA_Selenium_Support_UI_ExpectedConditions_TitleIs.htm" />
   <HelpKINode Title="ToBase64String method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxProfile_ToBase64String.htm" />
-  <HelpKINode Title="ToggleElement enumeration member" Url="html/T_OpenQA_Selenium_Remote_DriverCommand.htm" />
+  <HelpKINode Title="ToCapabilities method" Url="html/M_OpenQA_Selenium_IE_InternetExplorerOptions_ToCapabilities.htm" />
   <HelpKINode Title="ToJson method" Url="html/M_OpenQA_Selenium_Remote_Response_ToJson.htm" />
   <HelpKINode Title="ToString method" Url="html/M_OpenQA_Selenium_By_ToString.htm" />
   <HelpKINode Title="ToString method" Url="html/M_OpenQA_Selenium_Cookie_ToString.htm" />
@@ -3035,6 +3679,7 @@
   <HelpKINode Title="Url property" Url="html/P_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Url.htm" />
   <HelpKINode Title="Url property" Url="html/P_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs_Url.htm" />
   <HelpKINode Title="Url property" Url="html/P_Selenium_HttpCommandProcessor_Url.htm" />
+  <HelpKINode Title="UseInternalServer property" Url="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_UseInternalServer.htm" />
   <HelpKINode Title="UseXpathLibrary method" Url="html/M_Selenium_DefaultSelenium_UseXpathLibrary.htm" />
   <HelpKINode Title="UseXpathLibrary method" Url="html/M_Selenium_ISelenium_UseXpathLibrary.htm" />
   <HelpKINode Title="Using property" Url="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_Using.htm" />
@@ -3056,6 +3701,7 @@
   <HelpKINode Title="Vista enumeration member" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
   <HelpKINode Title="WaitForCondition method" Url="html/M_Selenium_DefaultSelenium_WaitForCondition.htm" />
   <HelpKINode Title="WaitForCondition method" Url="html/M_Selenium_ISelenium_WaitForCondition.htm" />
+  <HelpKINode Title="WaitForConnection method" Url="html/M_OpenQA_Selenium_Safari_SafariDriverServer_WaitForConnection.htm" />
   <HelpKINode Title="WaitForFrameToLoad method" Url="html/M_Selenium_DefaultSelenium_WaitForFrameToLoad.htm" />
   <HelpKINode Title="WaitForFrameToLoad method" Url="html/M_Selenium_ISelenium_WaitForFrameToLoad.htm" />
   <HelpKINode Title="WaitForPageToLoad method" Url="html/M_Selenium_DefaultSelenium_WaitForPageToLoad.htm" />
@@ -3177,6 +3823,110 @@
   <HelpKINode Title="WebElementProxyComparer.Equals method" Url="html/M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_Equals.htm" />
   <HelpKINode Title="WebElementProxyComparer.GetHashCode method" Url="html/M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer_GetHashCode.htm" />
   <HelpKINode Title="WebElementProxyComparer.WebElementProxyComparer constructor" Url="html/M_OpenQA_Selenium_Support_PageObjects_WebElementProxyComparer__ctor.htm" />
+  <HelpKINode Title="WebSocketConnection class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+  <HelpKINode Title="WebSocketConnection class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+  <HelpKINode Title="WebSocketConnection class">
+    <HelpKINode Title="about WebSocketConnection class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_WebSocketConnection.htm" />
+  </HelpKINode>
+  <HelpKINode Title="WebSocketConnection.BinaryMessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_BinaryMessageReceived.htm" />
+  <HelpKINode Title="WebSocketConnection.Close method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Close.htm" />
+  <HelpKINode Title="WebSocketConnection.Closed event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Closed.htm" />
+  <HelpKINode Title="WebSocketConnection.ConnectionInfo property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnection_ConnectionInfo.htm" />
+  <HelpKINode Title="WebSocketConnection.ErrorReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_ErrorReceived.htm" />
+  <HelpKINode Title="WebSocketConnection.Handler property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Handler.htm" />
+  <HelpKINode Title="WebSocketConnection.MessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_MessageReceived.htm" />
+  <HelpKINode Title="WebSocketConnection.OnBinaryMessageReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnBinaryMessageReceived.htm" />
+  <HelpKINode Title="WebSocketConnection.OnClose method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnClose.htm" />
+  <HelpKINode Title="WebSocketConnection.OnError method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnError.htm" />
+  <HelpKINode Title="WebSocketConnection.OnMessageReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnMessageReceived.htm" />
+  <HelpKINode Title="WebSocketConnection.OnOpen method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnOpen.htm" />
+  <HelpKINode Title="WebSocketConnection.OnSend method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnSend.htm" />
+  <HelpKINode Title="WebSocketConnection.OnStandardHttpRequestReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_OnStandardHttpRequestReceived.htm" />
+  <HelpKINode Title="WebSocketConnection.Opened event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Opened.htm" />
+  <HelpKINode Title="WebSocketConnection.Send method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Send.htm" />
+  <HelpKINode Title="WebSocketConnection.SendRaw method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_SendRaw.htm" />
+  <HelpKINode Title="WebSocketConnection.Sent event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Sent.htm" />
+  <HelpKINode Title="WebSocketConnection.Socket property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Socket.htm" />
+  <HelpKINode Title="WebSocketConnection.StandardHttpRequestReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketConnection_StandardHttpRequestReceived.htm" />
+  <HelpKINode Title="WebSocketConnection.StartReceiving method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_StartReceiving.htm" />
+  <HelpKINode Title="WebSocketConnection.WebSocketConnection constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnection__ctor.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo class">
+    <HelpKINode Title="about WebSocketConnectionInfo class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo.htm" />
+  </HelpKINode>
+  <HelpKINode Title="WebSocketConnectionInfo.ClientIPAddress property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_ClientIPAddress.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo.Cookies property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Cookies.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo.Create method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Create.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo.Host property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Host.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo.Origin property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Origin.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo.Path property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_Path.htm" />
+  <HelpKINode Title="WebSocketConnectionInfo.SubProtocol property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketConnectionInfo_SubProtocol.htm" />
+  <HelpKINode Title="WebSocketException class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+  <HelpKINode Title="WebSocketException class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+  <HelpKINode Title="WebSocketException class">
+    <HelpKINode Title="about WebSocketException class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" />
+  </HelpKINode>
+  <HelpKINode Title="WebSocketException.GetObjectData method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketException_GetObjectData.htm" />
+  <HelpKINode Title="WebSocketException.StatusCode property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketException_StatusCode.htm" />
+  <HelpKINode Title="WebSocketException.WebSocketException constructor" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor.htm" />
+  <HelpKINode Title="WebSocketHttpRequest class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+  <HelpKINode Title="WebSocketHttpRequest class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+  <HelpKINode Title="WebSocketHttpRequest class">
+    <HelpKINode Title="about WebSocketHttpRequest class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+    <HelpKINode Title="constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest.htm" />
+  </HelpKINode>
+  <HelpKINode Title="WebSocketHttpRequest.Body property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Body.htm" />
+  <HelpKINode Title="WebSocketHttpRequest.Headers property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Headers.htm" />
+  <HelpKINode Title="WebSocketHttpRequest.Item property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Item.htm" />
+  <HelpKINode Title="WebSocketHttpRequest.Method property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Method.htm" />
+  <HelpKINode Title="WebSocketHttpRequest.Path property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Path.htm" />
+  <HelpKINode Title="WebSocketHttpRequest.Payload property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Payload.htm" />
+  <HelpKINode Title="WebSocketHttpRequest.Scheme property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest_Scheme.htm" />
+  <HelpKINode Title="WebSocketHttpRequest.WebSocketHttpRequest constructor" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketHttpRequest__ctor.htm" />
+  <HelpKINode Title="WebSocketServer class" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+  <HelpKINode Title="WebSocketServer class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+  <HelpKINode Title="WebSocketServer class">
+    <HelpKINode Title="about WebSocketServer class" Url="html/T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers_T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketServer__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_Safari_Internal_WebSocketServer.htm" />
+  </HelpKINode>
+  <HelpKINode Title="WebSocketServer.Certificate property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_Certificate.htm" />
+  <HelpKINode Title="WebSocketServer.Closed event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_Closed.htm" />
+  <HelpKINode Title="WebSocketServer.Dispose method" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketServer_Dispose.htm" />
+  <HelpKINode Title="WebSocketServer.ErrorOccurred event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_ErrorOccurred.htm" />
+  <HelpKINode Title="WebSocketServer.IsSecure property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_IsSecure.htm" />
+  <HelpKINode Title="WebSocketServer.ListenerSocket property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_ListenerSocket.htm" />
+  <HelpKINode Title="WebSocketServer.Location property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_Location.htm" />
+  <HelpKINode Title="WebSocketServer.MessageReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_MessageReceived.htm" />
+  <HelpKINode Title="WebSocketServer.OnConnectionClosed method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnConnectionClosed.htm" />
+  <HelpKINode Title="WebSocketServer.OnConnectionOpened method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnConnectionOpened.htm" />
+  <HelpKINode Title="WebSocketServer.OnErrorOccurred method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnErrorOccurred.htm" />
+  <HelpKINode Title="WebSocketServer.OnMessageReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnMessageReceived.htm" />
+  <HelpKINode Title="WebSocketServer.OnStandardHttpRequestReceived method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_OnStandardHttpRequestReceived.htm" />
+  <HelpKINode Title="WebSocketServer.Opened event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_Opened.htm" />
+  <HelpKINode Title="WebSocketServer.Port property" Url="html/P_OpenQA_Selenium_Safari_Internal_WebSocketServer_Port.htm" />
+  <HelpKINode Title="WebSocketServer.StandardHttpRequestReceived event" Url="html/E_OpenQA_Selenium_Safari_Internal_WebSocketServer_StandardHttpRequestReceived.htm" />
+  <HelpKINode Title="WebSocketServer.Start method" Url="html/M_OpenQA_Selenium_Safari_Internal_WebSocketServer_Start.htm" />
+  <HelpKINode Title="WebSocketServer.WebSocketServer constructor" Url="html/Overload_OpenQA_Selenium_Safari_Internal_WebSocketServer__ctor.htm" />
   <HelpKINode Title="Window method" Url="html/M_OpenQA_Selenium_ITargetLocator_Window.htm" />
   <HelpKINode Title="Window property" Url="html/P_OpenQA_Selenium_IOptions_Window.htm" />
   <HelpKINode Title="WindowFocus method" Url="html/M_Selenium_DefaultSelenium_WindowFocus.htm" />

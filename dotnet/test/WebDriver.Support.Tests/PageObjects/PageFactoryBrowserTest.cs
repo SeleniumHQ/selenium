@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -20,7 +21,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             EnvironmentManager.Instance.CloseCurrentDriver();
             EnvironmentManager.Instance.WebServer.Stop();
         }
-        
+
         [Test]
         public void LooksUpAgainAfterPageNavigation()
         {

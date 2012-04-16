@@ -65,6 +65,8 @@ namespace OpenQA.Selenium.Remote
         #region Private members
         private ICommandExecutor executor;
         private ICapabilities capabilities;
+        private IMouse mouse;
+        private IKeyboard keyboard;
         private SessionId sessionId;
         #endregion
 
@@ -79,6 +81,8 @@ namespace OpenQA.Selenium.Remote
             this.executor = commandExecutor;
             this.StartClient();
             this.StartSession(desiredCapabilities);
+            this.mouse = new RemoteMouse(this);
+            this.keyboard = new RemoteKeyboard(this);
         }
 
         /// <summary>
@@ -227,7 +231,8 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public IKeyboard Keyboard
         {
-            get { return new RemoteKeyboard(this); }
+            get { return this.keyboard; }
+            set { this.keyboard = value; }
         }
 
         /// <summary>
@@ -235,7 +240,8 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public IMouse Mouse
         {
-            get { return new RemoteMouse(this); }
+            get { return this.mouse; }
+            set { this.mouse = value; }
         }
         #endregion
 
