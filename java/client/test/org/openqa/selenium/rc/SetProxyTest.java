@@ -60,7 +60,7 @@ public class SetProxyTest {
   }
 
   @AfterClass
-  public static void detroyProxy() {
+  public static void destroyProxy() {
     proxyServer.destroy();
   }
 
