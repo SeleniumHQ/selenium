@@ -184,7 +184,24 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
-      reason = "Does not yet support file uploads")
+          reason = "Does not yet support file uploads")
+  @Test
+  public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument() throws IOException {
+    driver.get(pages.xhtmlFormPage);
+    WebElement uploadElement = driver.findElement(By.id("file"));
+    assertThat(uploadElement.getAttribute("value"), equalTo(""));
+
+    File file = File.createTempFile("test", "txt");
+    file.deleteOnExit();
+
+    uploadElement.sendKeys(file.getAbsolutePath());
+
+    String uploadPath = uploadElement.getAttribute("value");
+    assertTrue(uploadPath.endsWith(file.getName()));
+  }
+
+  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
+          reason = "Does not yet support file uploads")
   @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");

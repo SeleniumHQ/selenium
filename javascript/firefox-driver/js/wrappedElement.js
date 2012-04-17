@@ -28,6 +28,7 @@ goog.require('fxdriver.Logger');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.preconditions');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
 goog.require('webdriver.atoms.element');
 
@@ -250,7 +251,7 @@ WebElement.sendKeysToElement = function(respond, parameters) {
 
   // Handle the special case of the file input element here
 
-  if (element.tagName == "INPUT") {
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var inputtype = element.getAttribute("type");
     if (inputtype && inputtype.toLowerCase() == "file") {
       element.value = parameters.value.join('');

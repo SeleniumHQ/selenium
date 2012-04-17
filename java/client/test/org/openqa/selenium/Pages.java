@@ -28,6 +28,7 @@ public class Pages {
   public String simpleXmlDocument;
   public String xhtmlTestPage;
   public String formPage;
+  public String xhtmlFormPage;
   public String metaRedirectPage;
   public String redirectPage;
   public String javascriptEnhancedForm;
@@ -86,6 +87,7 @@ public class Pages {
     documentWrite = appServer.whereIs("document_write_in_onload.html");
     dynamicPage = appServer.whereIs("dynamic.html");
     errorsPage = appServer.whereIs("errors.html");
+    xhtmlFormPage = appServer.whereIs("xhtmlFormPage.xhtml");
     formPage = appServer.whereIs("formPage.html");
     formSelectionPage = appServer.whereIs("formSelectionPage.html");
     framesetPage = appServer.whereIs("frameset.html");
