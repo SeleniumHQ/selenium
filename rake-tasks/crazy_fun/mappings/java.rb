@@ -688,9 +688,7 @@ module CrazyFunJava
 
         CrazyFunJava.ant.jarjar(:jarfile => jar, :duplicate => 'preserve') do |ant|
           cp.each do |j|
-	    puts "Considering: #{j}"
             unless (j.to_s =~ /^third_party/)
-	      puts "Including #{j}"
               ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
             end
           end
