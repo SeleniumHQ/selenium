@@ -64,7 +64,7 @@
   function testCanExecuteScriptsInTheContextOfAnotherWindow() {
     var testFrame = createTestFrame();
     var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
-    expectedFailures.expectFailureFor(goog.userAgent.IE && !bot.userAgent.isVersion(9),
+    expectedFailures.expectFailureFor(bot.userAgent.IE_DOC_PRE9,
         'Fails in IE before 9 - issue 3723');
     expectedFailures.run(function() {
       assertEquals('undefined',
