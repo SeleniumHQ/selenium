@@ -100,7 +100,7 @@
 
       function testGetAttributeShouldReturnAttributeValueMaintainingCase() {
 	var e = bot.locators.findElement({id: 'mixedCase'});
-	assertEquals('background-image: url("http://localhost:2310/testImage.gif");', bot.dom.getAttribute(e, 'style'));
+	assertContains('testImage.gif', bot.dom.getAttribute(e, 'style'));
       }
 
     </script>
