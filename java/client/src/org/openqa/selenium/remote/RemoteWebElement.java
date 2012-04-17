@@ -143,7 +143,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public String getCssValue(String propertyName) {
-    Response response = parent.execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+    Response response = execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
         ImmutableMap.of("id", id, "propertyName", propertyName));
     return (String) response.getValue();
   }
@@ -291,14 +291,14 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public boolean isDisplayed() {
     Response response =
-        parent.execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id));
+        execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id));
     return (Boolean) response.getValue();
   }
 
   @SuppressWarnings({"unchecked"})
   public Point getLocation() {
     Response response =
-        parent.execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
+        execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
     int x = ((Number) rawPoint.get("x")).intValue();
     int y = ((Number) rawPoint.get("y")).intValue();
@@ -307,7 +307,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Dimension getSize() {
-    Response response = parent.execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
     int width = ((Number) rawSize.get("width")).intValue();
     int height = ((Number) rawSize.get("height")).intValue();
