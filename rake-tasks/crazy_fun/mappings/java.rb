@@ -474,7 +474,7 @@ module CrazyFunJava
               end
 
               if chrome
-                ant.sysproperty :key => 'webdriver.chrome.binary' :value => chrome
+                ant.sysproperty :key => 'webdriver.chrome.binary', :value => chrome
               end
 
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
@@ -688,7 +688,9 @@ module CrazyFunJava
 
         CrazyFunJava.ant.jarjar(:jarfile => jar, :duplicate => 'preserve') do |ant|
           cp.each do |j|
+	    puts "Considering: #{j}"
             unless (j.to_s =~ /^third_party/)
+	      puts "Including #{j}"
               ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
             end
           end
