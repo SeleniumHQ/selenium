@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import with_statement
 
 import base64
 import copy
@@ -254,20 +255,18 @@ class FirefoxProfile(object):
         """
         writes the current user prefs dictionary to disk
         """
-        f = open(self.userPrefs, "w")
-        for pref in user_prefs.keys():
-            f.write('user_pref("%s", %s);\n' % (pref, user_prefs[pref]))
-
-        f.close()
+        with open(self.userPrefs, "w") as f:
+            for key, value in user_prefs.items():
+                f.write('user_pref("%s", %s);\n' % (key, value))
 
     def _read_existing_userjs(self):
+        userjs_path = os.path.join(self.profile_dir, 'user.js')
+        PREF_RE = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
-            f = open(os.path.join(self.profile_dir, 'user.js'), "r")
-            tmp_usr = f.readlines()
-            f.close()
-            for usr in tmp_usr:
-                matches = re.search('user_pref\("(.*)",\s(.*)\)', usr)
-                self.default_preferences[matches.group(1)] = matches.group(2)
+            with open(userjs_path) as f:
+                for usr in f:
+                    matches = re.search(PREF_RE, usr)
+                    self.default_preferences[matches.group(1)] = matches.group(2)
         except:
             # The profile given hasn't had any changes made, i.e no users.js
             pass
@@ -294,9 +293,8 @@ class FirefoxProfile(object):
                     if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
                         os.makedirs(os.path.dirname(os.path.join(tmpdir, name)))
                     data = compressed_file.read(name)
-                    f = open(os.path.join(tmpdir, name), 'wb')
-                    f.write(data)
-                    f.close()
+                    with open(os.path.join(tmpdir, name), 'wb') as f:
+                        f.write(data)
             xpifile = addon
             addon = tmpdir
 
