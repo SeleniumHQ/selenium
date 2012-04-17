@@ -469,6 +469,14 @@ module CrazyFunJava
                 ant.sysproperty :key => 'method', :value => only_run_method
               end
 
+              if chromedriver
+                ant.sysproperty :key => 'webdriver.chrome.driver', :value => chromedriver
+              end
+
+              if chrome
+                ant.sysproperty :key => 'webdriver.chrome.binary' :value => chrome
+              end
+
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
               levels = Array.[]("INFO", "DEBUG", "WARNING", "ERROR")
               if log_level
@@ -518,6 +526,14 @@ module CrazyFunJava
 
     def log_level
       return ENV['log_level']
+    end
+
+    def chromedriver
+      return ENV['chromedriver']
+    end
+
+    def chrome
+      return ENV['chrome']
     end
 
     def leave_running?

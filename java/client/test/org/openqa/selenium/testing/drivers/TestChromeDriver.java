@@ -21,9 +21,11 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -37,11 +39,11 @@ public class TestChromeDriver extends RemoteWebDriver {
   private static ChromeDriverService service;
 
   public TestChromeDriver() {
-    super(chromeWithExtensionsDisabled(null));
+    super(chromeWithCustomCapabilities(null));
   }
 
   public TestChromeDriver(Capabilities capabilities) {
-    super(getServiceUrl(), chromeWithExtensionsDisabled(capabilities));
+    super(getServiceUrl(), chromeWithCustomCapabilities(capabilities));
   }
 
   private static URL getServiceUrl() {
@@ -64,11 +66,17 @@ public class TestChromeDriver extends RemoteWebDriver {
     return service.getUrl();
   }
 
-  private static DesiredCapabilities chromeWithExtensionsDisabled(
+  private static DesiredCapabilities chromeWithCustomCapabilities(
       Capabilities originalCapabilities) {
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("disable-extensions");
+    String chromePath = System.getProperty("webdriver.chrome.binary");
+    if (chromePath != null) {
+      options.setBinary(new File(chromePath));
+    }
+
     DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-    capabilities.setCapability("chrome.switches", Arrays
-        .asList("--disable-extensions"));
+    capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
     if (originalCapabilities != null) {
       capabilities.merge(originalCapabilities);
