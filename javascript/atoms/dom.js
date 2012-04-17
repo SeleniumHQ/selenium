@@ -298,7 +298,7 @@ bot.dom.getAttribute = function(element, attributeName) {
   // (2) ensuring it ends in a trailing semi-colon
   // (3) removing empty style values (which only appear on Opera).
   if (attributeName == 'style') {
-    var css = goog.string.trim(element.style.cssText).toLowerCase();
+    var css = goog.string.trim(element.style.cssText);
     css = css.charAt(css.length - 1) == ';' ? css : css + ';';
     return goog.userAgent.OPERA ? css.replace(/\w+:;/g, '') : css;
   }

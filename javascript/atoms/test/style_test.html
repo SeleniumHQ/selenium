@@ -97,6 +97,12 @@
         var expected = ['green', 'rgb(0, 128, 0)', '#008000'];
         assert(goog.array.contains(expected, color));
       }
+
+      function testGetAttributeShouldReturnAttributeValueMaintainingCase() {
+	var e = bot.locators.findElement({id: 'mixedCase'});
+	assertEquals('background-image: url("http://localhost:2310/testImage.gif");', bot.dom.getAttribute(e, 'style'));
+      }
+
     </script>
 
     <style type="text/css">
@@ -116,6 +122,8 @@
     </div>
 
     <div id="green" style="background-color:green; width:100px; height:50px">
+    </div>
+    <div id="mixedCase" style="background-image:url('http://localhost:2310/testImage.gif');">
     </div>
   </body>
 </html>
