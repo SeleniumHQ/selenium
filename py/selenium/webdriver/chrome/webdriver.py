@@ -20,6 +20,7 @@ import httplib
 import warnings
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.common.exceptions import WebDriverException
 from service import Service
 from options import Options
 
@@ -59,9 +60,13 @@ class WebDriver(RemoteWebDriver):
         self.service = Service(executable_path, port=port)
         self.service.start()
 
-        RemoteWebDriver.__init__(self,
-            command_executor=self.service.service_url,
-            desired_capabilities=desired_capabilities)
+        try:
+            RemoteWebDriver.__init__(self,
+                command_executor=self.service.service_url,
+                desired_capabilities=desired_capabilities)
+        except:
+            self.quit()
+            raise WebDriverException("The Driver was not able to start.")
 
     def quit(self):
         """
