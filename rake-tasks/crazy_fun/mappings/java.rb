@@ -11,6 +11,7 @@ class JavaMappings
     fun.add_mapping("java_library", CrazyFunJava::Javac.new)
     fun.add_mapping("java_library", CrazyFunJava::CopyResources.new)
     fun.add_mapping("java_library", CrazyFunJava::Jar.new)
+    fun.add_mapping("java_library", CrazyFunJava::WriteClassPath.new)
     fun.add_mapping("java_library", CrazyFunJava::TidyTempDir.new)
     fun.add_mapping("java_library", CrazyFunJava::RunBinary.new)
     fun.add_mapping("java_library", CrazyFunJava::CreateSourceJar.new)
@@ -255,6 +256,23 @@ module CrazyFunJava
     end
   end
 
+  class WriteClassPath < BaseJava
+    def handle(fun, dir, args)
+      task_name = task_name(dir, args[:name])
+      jar_name = jar_name(dir, args[:name])
+
+      out_file = jar_name.sub(/\.jar$/, '.classpath')
+
+      desc "Write out the classpath for #{jar_name}"
+      task "#{task_name}:classpath" => jar_name do
+        puts "Writing: #{out_file}"
+        File.open(out_file, "w") do |file|
+          file << ClassPath.new(jar_name).to_s
+        end
+      end
+    end
+  end
+
   class TidyTempDir < BaseJava
     def handle(fun, dir, args)
       return if args[:srcs].nil? and args[:resources].nil?
@@ -274,7 +292,7 @@ module CrazyFunJava
 
       file jar do
         puts "Compiling: #{task_name(dir, args[:name])} as #{jar}"
-        
+
         mkdir_p out_dir
 
         cp = ClassPath.new(jar_name(dir, args[:name])).all
@@ -545,7 +563,7 @@ module CrazyFunJava
 
   class ClassPath
     @@CACHE = {}
-    
+
     def initialize(task_name)
       t = Rake::Task[task_name]
 
@@ -576,25 +594,25 @@ module CrazyFunJava
 
     def build_classpath(cp, dep)
       return @@CACHE[dep.to_s] if @@CACHE[dep.to_s]
-      
+
       ret = []
-      
+
       dep.prerequisites.each do |prereq|
         if prereq.to_s =~ /\.jar$/
-          ret.push(prereq) 
+          ret.push(prereq)
           ret += build_classpath(cp, Rake::Task[prereq])
         end
-        
+
         next unless Rake::Task.task_defined? prereq
-        
+
         t = Rake::Task[prereq]
-        if (t.respond_to?(:out)) 
+        if (t.respond_to?(:out))
           ret.push(t.out) if t.out.to_s =~ /\.jar$/
         end
-        
+
         ret += build_classpath(cp, Rake::Task[prereq])
       end
-      
+
       @@CACHE[dep.to_s] = ret.sort.uniq
     end
   end
