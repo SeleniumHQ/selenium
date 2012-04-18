@@ -20,10 +20,12 @@ package org.openqa.selenium;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.TestUtilities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -183,10 +185,14 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
+  @Ignore(value = {ANDROID, CHROME, IPHONE, OPERA, SELENESE},
           reason = "Does not yet support file uploads")
   @Test
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument() throws IOException {
+    // IE before 9 doesn't handle pages served with an XHTML content type, and just prompts for to
+    // download it
+    assumeTrue(!TestUtilities.isInternetExplorer(driver) || !TestUtilities.isOldIe(driver));
+
     driver.get(pages.xhtmlFormPage);
     WebElement uploadElement = driver.findElement(By.id("file"));
     assertThat(uploadElement.getAttribute("value"), equalTo(""));
