@@ -63,15 +63,28 @@ module Selenium
       WebDriver::Driver.for(*args)
     end
 
-
-    # @api private
-    def self.json_dump(obj)
-      MultiJson.respond_to?(:dump) ? MultiJson.dump(obj) : MultiJson.encode(obj)
+    if MultiJson.respond_to?(:dump)
+      # @api private
+      def self.json_dump(obj)
+        MultiJson.dump(obj)
+      end
+    else
+      # @api private
+      def self.json_dump(obj)
+        MultiJson.encode(obj)
+      end
     end
 
-    # @api private
-    def self.json_load(obj)
-      MultiJson.respond_to?(:load) ? MultiJson.load(obj) : MultiJson.decode(obj)
+    if MultiJson.respond_to?(:load)
+      # @api private
+      def self.json_load(obj)
+        MultiJson.load(obj)
+      end
+    else
+      # @api private
+      def self.json_load(obj)
+        MultiJson.decode(obj)
+      end
     end
 
   end # WebDriver
