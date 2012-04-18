@@ -19,7 +19,7 @@ module Selenium
         end
 
         def send(command)
-          json = MultiJson.dump(command)
+          json = WebDriver.json_dump(command)
           puts ">>> #{json}" if $DEBUG
 
           frame = LibWebSocket::Frame.new(json).to_s
@@ -49,7 +49,7 @@ module Selenium
 
           puts "<<< #{msg}" if $DEBUG
 
-          MultiJson.load msg
+          WebDriver.json_load msg
         end
 
         def ws_uri

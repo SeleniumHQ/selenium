@@ -19,7 +19,7 @@ module Selenium
       end
 
       def to_json(*args)
-        MultiJson.dump as_json
+        WebDriver.json_dump as_json
       end
 
       private
@@ -46,7 +46,7 @@ module Selenium
 
       module ClassMethods
         def from_json(json)
-          data = MultiJson.load(json).fetch('zip')
+          data = WebDriver.json_load(json).fetch('zip')
 
           # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
           # can't use Dir.mktmpdir(&blk) because of http://jira.codehaus.org/browse/JRUBY-4082

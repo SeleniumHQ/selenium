@@ -61,7 +61,7 @@ module Selenium
           prefs_file = prefs_file_for(dir)
 
           FileUtils.mkdir_p File.dirname(prefs_file)
-          File.open(prefs_file, "w") { |file| file << MultiJson.dump(prefs)  }
+          File.open(prefs_file, "w") { |file| file << WebDriver.json_dump(prefs)  }
         end
 
         def prefs
@@ -70,7 +70,7 @@ module Selenium
 
         def read_model_prefs
           return {} unless @model
-          MultiJson.load File.read(prefs_file_for(@model))
+          WebDriver.json_load File.read(prefs_file_for(@model))
         end
 
         def prefs_file_for(dir)

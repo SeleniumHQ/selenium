@@ -28,12 +28,12 @@ module Selenium
 
       #
       # Click this element. If this causes a new page to load, this method will
-      # attempt to block until the page has loaded.  At this point, you should 
-      # discard all references to this element and any further operations 
+      # attempt to block until the page has loaded.  At this point, you should
+      # discard all references to this element and any further operations
       # performed on this element will raise a StaleElementReferenceError
       # unless you know that the element and the page will still be present. If
-      # click() causes a new page to be loaded via an event or is done by 
-      # sending a native event then the method will *not* wait for it to be 
+      # click() causes a new page to be loaded via an event or is done by
+      # sending a native event then the method will *not* wait for it to be
       # loaded and the caller should verify that a new page has been loaded.
       #
       # There are some preconditions for an element to be clicked.  The element
@@ -49,13 +49,13 @@ module Selenium
       # @raise [StaleElementReferenceError] if the element no longer exists as
       #  defined
       #
-      
+
       def click
         bridge.clickElement @id
       end
 
       #
-      # Get the tag name of the element. 
+      # Get the tag name of the element.
       #
       # @example Get the tagname of an INPUT element(returns "input")
       #
@@ -256,7 +256,7 @@ module Selenium
       #
 
       def to_json(*args)
-        MultiJson.dump as_json
+        WebDriver.json_dump as_json
       end
 
       #
