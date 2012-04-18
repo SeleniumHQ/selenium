@@ -11,7 +11,7 @@ describe "Timeouts" do
     after { driver.manage.timeouts.implicit_wait = 0 }
 
     it "should implicitly wait for a single element" do
-      driver.manage.timeouts.implicit_wait = 3
+      driver.manage.timeouts.implicit_wait = 6
 
       driver.find_element(:id => 'adder').click
       driver.find_element(:id => 'box0')
@@ -32,7 +32,7 @@ describe "Timeouts" do
     it "should implicitly wait until at least one element is found when searching for many" do
       add = driver.find_element(:id => "adder")
 
-      driver.manage.timeouts.implicit_wait = 2
+      driver.manage.timeouts.implicit_wait = 6
       add.click
       add.click
 
