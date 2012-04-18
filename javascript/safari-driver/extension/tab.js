@@ -17,14 +17,17 @@ goog.provide('safaridriver.extension.Tab');
 goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
+goog.require('webdriver.EventEmitter');
 
 
 /**
  * Tracks a single SafariBrowserTab.
  * @param {!SafariBrowserTab} browserTab The tab to track.
  * @constructor
+ * @extends {webdriver.EventEmitter}
  */
 safaridriver.extension.Tab = function(browserTab) {
+  goog.base(this);
 
   /**
    * @type {!SafariBrowserTab}
@@ -52,14 +55,18 @@ safaridriver.extension.Tab = function(browserTab) {
 
   var onBeforeNavigate = goog.bind(this.onBeforeNavigate_, this);
   var onNavigate = goog.bind(this.onNavigate_, this);
+  var onMessage = goog.bind(this.onMessage_, this);
 
   browserTab.addEventListener('beforeNavigate', onBeforeNavigate, false);
   browserTab.addEventListener('navigate', onNavigate, false);
+  browserTab.addEventListener('message', onMessage, false);
   browserTab.addEventListener('close', function() {
     browserTab.removeEventListener('beforeNavigate', onBeforeNavigate, false);
     browserTab.removeEventListener('navigate', onNavigate, false);
+    browserTab.removeEventListener('message', onMessage, false);
   }, false);
 };
+goog.inherits(safaridriver.extension.Tab, webdriver.EventEmitter);
 
 
 /**
@@ -93,11 +100,14 @@ safaridriver.extension.Tab.prototype.getId = function() {
 /**
  * @param {string} msg The message to log.
  * @param {goog.debug.Logger.Level=} opt_level The message level.
+ * @param {Error=} opt_error An error message to log with the message.
  * @private
  */
-safaridriver.extension.Tab.prototype.log_ = function(msg, opt_level) {
+safaridriver.extension.Tab.prototype.log_ = function(msg, opt_level,
+                                                     opt_error) {
   var level = opt_level || goog.debug.Logger.Level.INFO;
-  safaridriver.extension.Tab.LOG_.log(level, '[' + this.id_ + '] ' + msg);
+  safaridriver.extension.Tab.LOG_.log(level, '[' + this.id_ + '] ' + msg,
+      opt_error);
 };
 
 
@@ -197,16 +207,17 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   var safariCommand = new safaridriver.Command(id, command);
   var message = new safaridriver.message.CommandMessage(safariCommand);
 
-  var log = goog.bind(this.log_, this);
-  log('Preparing command: ' + JSON.stringify(safariCommand));
+  var self = this;
+  self.log_('Preparing command: ' + JSON.stringify(safariCommand));
   this.whenReady(function(tab) {
-    log('Sending command: ' + JSON.stringify(safariCommand));
+    self.log_('Sending command: ' + JSON.stringify(safariCommand));
 
-    tab.addEventListener('message', onMessage, false);
+    self.addListener('message', onMessage);
 
     if (opt_timeout && opt_timeout > 0) {
       var start = goog.now();
       var timeoutKey = setTimeout(function() {
+        self.removeListener('message', onMessage);
         if (response.isPending()) {
           response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
               'Timed out awaiting response to command "' + command.getName() +
@@ -217,39 +228,31 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
 
     message.send(tab.page);
 
-    function onMessage(e) {
-      try {
-        var message = safaridriver.message.Message.fromEvent(e);
-      } catch (ex) {
-        log(goog.debug.Logger.Level.SEVERE,
-            'Unable to parse message: ' + e.name + ': ' +
-                JSON.stringify(e.message),
-            ex);
-        return;
-      }
-
+    function onMessage(message) {
       if (!message.isType(safaridriver.message.Type.RESPONSE)) {
-        log(goog.debug.Logger.Level.FINE,
-            'Ignoring non-response message: ' + JSON.stringify(e.message));
+        self.log_(
+            'Ignoring non-response message: ' + message,
+            goog.debug.Logger.Level.FINE);
         return;
       }
 
       if (message.getId() !== id) {
-        log(goog.debug.Logger.Level.FINE,
-            'Ignoring response to another command: ' + e.message.id +
-                ' (' + id + ')');
+        self.log_(
+            'Ignoring response to another command: ' + message +
+                ' (' + id + ')',
+            goog.debug.Logger.Level.FINE);
         return;
       }
 
       if (!response.isPending()) {
-        log(goog.debug.Logger.Level.WARNING,
+        self.log_(
             'Received command response after promise has been ' +
-                'resolved; perhaps it previously timed-out? ' +
-                JSON.stringify(e.message));
+                'resolved; perhaps it previously timed-out? ' + message,
+            goog.debug.Logger.Level.WARNING);
         return;
       }
 
-      tab.removeEventListener('message', onMessage, false);
+      self.removeListener('message', onMessage);
       clearTimeout(timeoutKey);
       try {
         response.resolve(webdriver.error.checkResponse(message.getResponse()));
@@ -260,4 +263,22 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   });
 
   return response.promise;
+};
+
+
+/**
+ * @param {!SafariExtensionMessageEvent} e The message event.
+ * @private
+ */
+safaridriver.extension.Tab.prototype.onMessage_ = function(e) {
+  try {
+    var message = safaridriver.message.Message.fromEvent(e);
+    this.emit('message', message);
+  } catch (ex) {
+    this.log_(
+        'Unable to parse message: ' + e.name + ': ' +
+            JSON.stringify(e.message),
+        goog.debug.Logger.Level.SEVERE,
+        ex);
+  }
 };
