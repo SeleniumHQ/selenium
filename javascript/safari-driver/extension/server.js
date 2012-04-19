@@ -142,7 +142,7 @@ goog.scope(function() {
   map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeAsyncScript;
   map[CommandName.SET_SCRIPT_TIMEOUT] = commands.setScriptTimeout;
 
-  map[CommandName.SCREENSHOT] = commands.sendCommand;
+  map[CommandName.SCREENSHOT] = commands.takeScreenshot;
 });
 
 
