@@ -5,27 +5,6 @@ visualc_library(name = "firefox_dll",
   out = "Win32/Release/webdriver-firefox.dll"
 )
 
-visualc_library(name = "firefox5_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-5.vcxproj",
-  file_deps = "third_party/gecko-5/win32",
-  out = "Win32/Release/webdriver-firefox-5.dll"
-)
-
-visualc_library(name = "firefox6_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-6.vcxproj",
-  file_deps = "third_party/gecko-6/win32",
-  out = "Win32/Release/webdriver-firefox-6.dll"
-)
-
-visualc_library(name = "firefox7_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-7.vcxproj",
-  file_deps = "third_party/gecko-7/win32",
-  out = "Win32/Release/webdriver-firefox-7.dll"
-)
-
 visualc_library(name = "firefoxprevious_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-previous.vcxproj",
@@ -51,62 +30,6 @@ mozilla_lib(name = "webdriver_firefox_ff3",
   args = "-DGECKO_19_COMPATIBILITY",
   xpcom_lib = "xpcomglue_s",
   geckoversion="1.9.2")
-
-mozilla_lib(name = "webdriver_firefox_ff4",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "i386",
-  geckoversion="2")
-
-mozilla_lib(name = "webdriver_firefox_ff4_64",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "amd64",
-  geckoversion="2")
-
-mozilla_lib(name = "webdriver_firefox_ff5",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "i386",
-  geckoversion="5")
-
-mozilla_lib(name = "webdriver_firefox_ff5_64",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "amd64",
-  geckoversion="5")
-
-mozilla_lib(name = "webdriver_firefox_ff6",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "i386",
-  geckoversion="6")
-
-mozilla_lib(name = "webdriver_firefox_ff6_64",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "amd64",
-  geckoversion="6")
-
-mozilla_lib(name = "webdriver_firefox_ff7",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "i386",
-  geckoversion="7")
-
-mozilla_lib(name = "webdriver_firefox_ff7_64",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "amd64",
-  geckoversion="7")
 
 mozilla_lib(name = "webdriver_firefox_previous",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
