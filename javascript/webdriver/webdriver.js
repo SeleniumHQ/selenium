@@ -938,6 +938,8 @@ webdriver.WebDriver.Options = function(driver) {
  * @param {string=} opt_path The cookie path.
  * @param {string=} opt_domain The cookie domain.
  * @param {boolean=} opt_isSecure Whether the cookie is secure.
+ * @param {(number|!Date)=} opt_expiry When the cookie expires. If specified as
+ *     a number, should be in milliseconds since midnight, January 1, 1970 UTC.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     cookie has been added to the page.
  * @export
@@ -945,7 +947,8 @@ webdriver.WebDriver.Options = function(driver) {
 webdriver.WebDriver.Options.prototype.addCookie = function(name, value,
                                                            opt_path,
                                                            opt_domain,
-                                                           opt_isSecure) {
+                                                           opt_isSecure,
+                                                           opt_expiry) {
   // We do not allow '=' or ';' in the name.
   if (/[;=]/.test(name)) {
     throw Error('Invalid cookie name "' + name + '"');
@@ -961,13 +964,30 @@ webdriver.WebDriver.Options.prototype.addCookie = function(name, value,
       (opt_path ? ';path=' + opt_path : '') +
       (opt_isSecure ? ';secure' : '');
 
+  var expiry;
+  if (goog.isDef(opt_expiry)) {
+    var expiryDate;
+    if (goog.isNumber(opt_expiry)) {
+      expiryDate = new Date(opt_expiry);
+    } else {
+      expiryDate = (/** @type {!Date} */opt_expiry);
+      opt_expiry = expiryDate.getTime();
+    }
+    cookieString += ';expires=' + expiryDate.toUTCString();
+    // Convert from milliseconds to seconds.
+    expiry = (/** @type {number} */opt_expiry) / 1000;
+  }
+
   return this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.ADD_COOKIE).
-          setParameter('name', name).
-          setParameter('value', value).
-          setParameter('path', opt_path).
-          setParameter('domain', opt_domain).
-          setParameter('secure', !!opt_isSecure),
+          setParameter('cookie', {
+            'name': name,
+            'value': value,
+            'path': opt_path,
+            'domain': opt_domain,
+            'secure': !!opt_isSecure,
+            'expiry': expiry
+          }),
       'WebDriver.manage().addCookie(' + cookieString + ')');
 };
 
