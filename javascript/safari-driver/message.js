@@ -28,6 +28,15 @@ goog.require('safaridriver.Command');
 
 
 /**
+ * @define {(string|number)} Compile time constant that may be used to identify
+ *     where messages originate from. We permit strings or numbers since the
+ *     Selenium build system currently does not support constant string
+ *     expressions. TODO(jleyba): Fix this.
+ */
+safaridriver.message.ORIGIN = 'webdriver';
+
+
+/**
  * Message types used by the SafariDriver extension.
  * @enum {string}
  */
@@ -81,8 +90,8 @@ safaridriver.message.Message = function(type) {
    */
   this.data_ = {};
 
-  this.data_[safaridriver.message.Message.Field.SOURCE] =
-      safaridriver.message.Message.SOURCE;
+  this.data_[safaridriver.message.Message.Field.ORIGIN] =
+      safaridriver.message.ORIGIN;
   this.data_[safaridriver.message.Message.Field.MESSAGE] = type;
 };
 
@@ -92,18 +101,9 @@ safaridriver.message.Message = function(type) {
  * @enum {string}
  */
 safaridriver.message.Message.Field = {
-  SOURCE: 'source',
+  ORIGIN: 'origin',
   MESSAGE: 'message'
 };
-
-
-/**
- * The constant value for the
- * {@link safaridriver.message.Message.Field.SOURCE} field.
- * @type {string}
- * @const
- */
-safaridriver.message.Message.SOURCE = 'webdriver';
 
 
 /**
@@ -117,28 +117,38 @@ safaridriver.message.Message.fromEvent = function(event) {
   var data = event.message || event.data;
 
   if (!goog.isObject(data) ||
-      data[safaridriver.message.Message.Field.SOURCE] !==
-          safaridriver.message.Message.SOURCE) {
+      (!goog.isString(data[safaridriver.message.Message.Field.ORIGIN]) &&
+       !goog.isNumber(data[safaridriver.message.Message.Field.ORIGIN]))) {
     throw Error('Invalid message: ' + JSON.stringify(data));
   }
 
+  var message;
   switch(data[safaridriver.message.Message.Field.MESSAGE]) {
     case safaridriver.message.Type.COMMAND:
-      return safaridriver.message.CommandMessage.fromData_(data);
+      message = safaridriver.message.CommandMessage.fromData_(data);
+      break;
 
     case safaridriver.message.Type.CONNECT:
-      return safaridriver.message.ConnectMessage.fromData_(data);
+      message = safaridriver.message.ConnectMessage.fromData_(data);
+      break;
 
     case safaridriver.message.Type.RESPONSE:
-      return safaridriver.message.ResponseMessage.fromData_(data);
+      message = safaridriver.message.ResponseMessage.fromData_(data);
+      break;
 
     case safaridriver.message.Type.ACTIVATE:
     case safaridriver.message.Type.LOADED:
-      return safaridriver.message.Message.fromData_(data);
+      message = safaridriver.message.Message.fromData_(data);
+      break;
 
     default:
       throw Error('Unknown message type: ' + JSON.stringify(data));
   }
+
+  var origin = (/** @type {(string|number)} */
+      data[safaridriver.message.Message.Field.ORIGIN]);
+  message.setOrigin(origin);
+  return message;
 };
 
 
@@ -161,8 +171,7 @@ safaridriver.message.Message.fromData_ = function(data) {
  * @param {*} value The field value; should be a JSON compatible value.
  */
 safaridriver.message.Message.prototype.setField = function(name, value) {
-  if (name === safaridriver.message.Message.Field.MESSAGE ||
-      name === safaridriver.message.Message.Field.SOURCE) {
+  if (name === safaridriver.message.Message.Field.MESSAGE) {
     throw Error('The specified field may not be overridden: ' + name);
   }
   this.data_[name] = value;
@@ -176,6 +185,24 @@ safaridriver.message.Message.prototype.setField = function(name, value) {
  */
 safaridriver.message.Message.prototype.getField = function(name) {
   return this.data_[name];
+};
+
+
+/**
+ * Sets the origin for this message.
+ * @param {(string|number)} origin The new origin.
+ */
+safaridriver.message.Message.prototype.setOrigin = function(origin) {
+  this.setField(safaridriver.message.Message.Field.ORIGIN, origin);
+};
+
+
+/**
+ * @return {(string|number)} This message's origin.
+ */
+safaridriver.message.Message.prototype.getOrigin = function() {
+  return (/** @type {(string|number)} */this.getField(
+      safaridriver.message.Message.Field.ORIGIN));
 };
 
 
@@ -199,16 +226,17 @@ safaridriver.message.Message.prototype.isType = function(type) {
 
 
 /**
- * Sends this message.
- * @param {!(SafariContentBrowserTabProxy|SafariWebPageProxy)=} opt_proxy The
- *     proxy to dispatch this message to; only required if running inside the
- *     SafariDriver extension.
+ * Sends this message to the given target.
+ * @param {!(SafariContentBrowserTabProxy|SafariWebPageProxy|Window)} target
+ *     The object to send this message to.
  */
-safaridriver.message.Message.prototype.send = function(opt_proxy) {
-  if (!opt_proxy) {
-    window.postMessage(this.data_, '*');
+safaridriver.message.Message.prototype.send = function(target) {
+  this.setOrigin(safaridriver.message.ORIGIN);
+  if (target.postMessage) {
+    (/** @type {!Window} */target).postMessage(this.data_, '*');
   } else {
-    opt_proxy.dispatchMessage(this.getType(), this.data_);
+    (/** @type {!(SafariContentBrowserTabProxy|SafariWebPageProxy)} */
+        target).dispatchMessage(this.getType(), this.data_);
   }
 };
 

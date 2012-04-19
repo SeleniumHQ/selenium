@@ -67,6 +67,13 @@ safaridriver.inject.PageMessenger.prototype.onMessage = function(e) {
     return;
   }
 
+  // Ignore messages that are from this context. How would we receive our own
+  // messages?  Simple - when we post a message to the page, in addition to
+  // going to the page, it will be posted back on our own window.
+  if (message.getOrigin() === safaridriver.message.ORIGIN) {
+    return;
+  }
+
   var type = message.getType();
   switch (type) {
     case safaridriver.message.Type.CONNECT:
@@ -137,7 +144,7 @@ safaridriver.inject.PageMessenger.prototype.sendCommand = function(command) {
 
     var commandResponse = new webdriver.promise.Deferred();
     this.pendingCommands_[command.getId()] = commandResponse;
-    message.send();
+    message.send(window);
     return commandResponse.promise;
   }, this);
 };

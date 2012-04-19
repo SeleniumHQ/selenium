@@ -158,7 +158,7 @@ class SafariDriverServer {
         "window.onload = function() {",
         "  window.postMessage({",
         "    'message': 'connect',",
-        "    'source': 'webdriver',",
+        "    'origin': 'webdriver',",
         "    'url': 'ws://localhost:%d/wd'",
         "  }, '*');",
         "};",

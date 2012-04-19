@@ -21,7 +21,8 @@ js_binary(name = "extension",
   ],
   defines = [
     "goog.userAgent.ASSUME_WEBKIT=true",
-    "goog.userAgent.product.ASSUME_SAFARI=true"
+    "goog.userAgent.product.ASSUME_SAFARI=true",
+    "safaridriver.message.ORIGIN=0"
   ],
   externs = [
     "externs/common.js",
@@ -69,7 +70,8 @@ js_binary(name = "injected",
   ],
   defines = [
     "goog.userAgent.ASSUME_WEBKIT=true",
-    "goog.userAgent.product.ASSUME_SAFARI=true"
+    "goog.userAgent.product.ASSUME_SAFARI=true",
+    "safaridriver.message.ORIGIN=1"
   ],
   externs = [
     "externs/common.js",
@@ -120,6 +122,7 @@ js_binary(name = "page",
     "goog.userAgent.ASSUME_WEBKIT=true",
     "goog.userAgent.product.ASSUME_SAFARI=true",
     "safaridriver.inject.page.EXTENSION=false",
+    "safaridriver.message.ORIGIN=2"
   ],
   externs = [
     "externs/common.js",

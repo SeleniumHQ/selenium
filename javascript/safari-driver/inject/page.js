@@ -88,7 +88,7 @@ safaridriver.inject.page.init = function() {
     var message = new safaridriver.message.Message(
         safaridriver.message.Type.LOADED);
     safaridriver.inject.page.LOG_.info('Sending ' + message);
-    message.send();
+    message.send(window);
 
     script = document.querySelector(
         'script.' + safaridriver.inject.page.SCRIPT_CLASS_NAME_ +
@@ -118,6 +118,13 @@ safaridriver.inject.page.onMessage_ = function(e) {
   } catch (ex) {
     // Silently ignore parse failure; message may not have origininated from the
     // injected script.
+    return;
+  }
+
+  // Ignore messages that are from this context. How would we receive our own
+  // messages?  Simple - when we post a message to the page, in addition to
+  // going to the page, it will be posted back on our own window.
+  if (message.getOrigin() === safaridriver.message.ORIGIN) {
     return;
   }
 
@@ -341,7 +348,7 @@ safaridriver.inject.page.executeScript_ = function(command) {
       command.getId(), response);
   safaridriver.inject.page.LOG_.info(
       'Sending executeScript response: ' + responseMessage);
-  responseMessage.send();
+  responseMessage.send(window);
 };
 
 
@@ -368,7 +375,7 @@ safaridriver.inject.page.executeAsyncScript_ = function(command) {
             command.getId(), response);
         safaridriver.inject.page.LOG_.info(
             'Sending executeAsyncScript response: ' + responseMessage);
-        responseMessage.send();
+        responseMessage.send(window);
       });
 
   try {
