@@ -96,7 +96,7 @@ safaridriver.extension.commands.getCurrentUrl = function(session) {
 safaridriver.extension.commands.takeScreenshot = function(session) {
   var response = new webdriver.promise.Deferred();
   session.getCommandTab().whenReady(function(tab) {
-    tab.visibleContentAsDataURL(function(dataUrl) {
+    tab.visibleContentsAsDataURL(function(dataUrl) {
       response.resolve(dataUrl.substring('data:image/png;base64,'.length));
     });
   });

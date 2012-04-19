@@ -133,7 +133,7 @@ SafariBrowserTab.prototype.close = function() {};
  * @param {function(string)=} opt_callback
  * @return {string}
  */
-SafariBrowserTab.prototype.visibleContentAsDataURL = function(opt_callback) {
+SafariBrowserTab.prototype.visibleContentsAsDataURL = function(opt_callback) {
   return '';
 };
 
