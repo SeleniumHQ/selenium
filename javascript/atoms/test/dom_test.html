@@ -9,6 +9,7 @@
   goog.require('goog.dom');
   goog.require('goog.math.Coordinate');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.userAgent');
 </script>
 <body>
 <script type="text/javascript">
@@ -17,7 +18,7 @@
   }
 
   function testGetInViewLocationWithPositiveOffset() {
-    if (bot.userAgent.MOBILE) {
+    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
     }
@@ -40,7 +41,7 @@
   }
 
   function testGetInViewLocationwithNegativeOffsetX() {
-    if (bot.userAgent.MOBILE) {
+    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
     }
@@ -61,7 +62,7 @@
   }
 
   function testGetInViewLocationwithNegativeOffsetY() {
-    if (bot.userAgent.MOBILE) {
+    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
     }

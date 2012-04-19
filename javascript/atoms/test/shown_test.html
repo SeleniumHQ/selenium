@@ -210,6 +210,9 @@
     }
 
     function testZeroSizedDivIsShownIfDescendantHasSize() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+	return;
+      }
       var element = goog.dom.createDom('div', {style: 'width:0;height:0'},
           goog.dom.createDom('div', null,
               goog.dom.createDom('img', {
@@ -286,7 +289,11 @@
       var noscript = findElement({id: 'noscript'});
       assertFalse(isShown(noscript));
     }
+
     function testThatItemsHiddenWithOverflowHiddenAreFalse() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+	return;
+      }
       var target = findElement({id: 'target'});
       assertFalse(isShown(target));
     }

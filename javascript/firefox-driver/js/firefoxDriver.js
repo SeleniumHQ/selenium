@@ -618,6 +618,13 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
     var numFrames = currentWindow.frames.length;
     for (var i = 0; i < numFrames; i++) {
       var frame = currentWindow.frames[i];
+
+      var Cc = Components.classes;
+      var Ci = Components.interfaces;
+      var prefManager = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
+      prefManager.setCharPref('capability.policy.default.Window.frameElement.get', 'allAccess');
+      prefManager.setCharPref('capability.policy.default.Window.QueryInterface', 'allAccess');
+
       var frameElement = frame.frameElement;
       if (frameElement.name == parameters.id) {
         newWindow = frame;

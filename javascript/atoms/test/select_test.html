@@ -383,7 +383,7 @@
         goog.partial(canSelectOptionFromTransparentSelect, bot.action.tap);
 
     function noErrorAfterSelectWhenOnChangePreventsDefault(action) {
-      if (!checkActionCompatibility(action)) {
+      if (!checkActionCompatibility(action) || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
         return;
       }
       goog.events.listen(radioButtons[1], 'change', function(e) {
