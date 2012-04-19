@@ -53,7 +53,6 @@ public class SafariDriver extends RemoteWebDriver
     executor.stop();
   }
 
-  @Override
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
     // Get the screenshot as base64.
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
