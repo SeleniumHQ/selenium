@@ -190,6 +190,9 @@ webdriver.atoms.element.type = function(element, keys) {
 
   // Collapse into a single string, then iterate over the characters to generate
   // the sequences to type.
+  // This will generate an unnecessary compiler warning for iterating over the
+  // characters in a string. See
+  // http://code.google.com/p/closure-compiler/issues/detail?id=712
   goog.array.forEach(keys.join(''), function(key) {
     if (isWebDriverKey(key)) {
       var webdriverKey = webdriver.atoms.element.type.JSON_TO_KEY_MAP_[key];
