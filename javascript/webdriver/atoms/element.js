@@ -203,10 +203,10 @@ webdriver.atoms.element.type = function(element, keys) {
         convertedSequences.push(current = []);
       } else if (goog.isDef(webdriverKey)) {
         current.push(webdriverKey);
+      } else {
+        throw Error('Unsupported WebDriver key: \\u' +
+            key.charCodeAt(0).toString(16));
       }
-
-      throw Error('Unsupported WebDriver key: ' +
-          key.charCodeAt(0).toString(16));
     }
 
     // Handle common aliases.
@@ -230,7 +230,7 @@ webdriver.atoms.element.type = function(element, keys) {
   });
 
   function isWebDriverKey(c) {
-    return '\uE000' <= c <= '\uE03D';
+    return '\uE000' <= c && c <= '\uE03D';
   }
 };
 
