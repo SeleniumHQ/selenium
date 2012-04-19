@@ -58,7 +58,10 @@ safaridriver.extension.Session.CAPABILITIES = {
   'platform': goog.userAgent.MAC ? 'MAC' : 'WINDOWS',
   'javascriptEnabled': true,
   'takesScreenshot': true,
-  'cssSelectorsEnabled': true
+  'cssSelectorsEnabled': true,
+  // The SafariDriver cannot handle insecure SSL, so indicate that in the
+  // returned capabilities.
+  'secureSsl': true
 };
 
 
