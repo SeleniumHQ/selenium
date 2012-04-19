@@ -22,6 +22,13 @@ goog.require('webdriver.EventEmitter');
 
 /**
  * Tracks a single SafariBrowserTab.
+ *
+ * <p>Upon receiving a message from the managed SafariBrowserTab, each
+ * instance will emit an event whose type matches the original message's
+ * {@link safaridriver.message.Type}. The parsed
+ * {@link safaridriver.message.Message} will be included as the event's data
+ * payload.
+ *
  * @param {!SafariBrowserTab} browserTab The tab to track.
  * @constructor
  * @extends {webdriver.EventEmitter}
@@ -212,12 +219,13 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   this.whenReady(function(tab) {
     self.log_('Sending command: ' + JSON.stringify(safariCommand));
 
-    self.addListener('message', onMessage);
+    var removeResponseListener = goog.bind(self.removeListener, self,
+        safaridriver.message.Type.RESPONSE, onResponse);
 
-    if (opt_timeout && opt_timeout > 0) {
+    if (opt_timeout > 0) {
       var start = goog.now();
       var timeoutKey = setTimeout(function() {
-        self.removeListener('message', onMessage);
+        removeResponseListener();
         if (response.isPending()) {
           response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
               'Timed out awaiting response to command "' + command.getName() +
@@ -227,15 +235,9 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     }
 
     message.send(tab.page);
+    self.addListener(safaridriver.message.Type.RESPONSE, onResponse);
 
-    function onMessage(message) {
-      if (!message.isType(safaridriver.message.Type.RESPONSE)) {
-        self.log_(
-            'Ignoring non-response message: ' + message,
-            goog.debug.Logger.Level.FINE);
-        return;
-      }
-
+    function onResponse(message) {
       if (message.getId() !== id) {
         self.log_(
             'Ignoring response to another command: ' + message +
@@ -252,7 +254,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
         return;
       }
 
-      self.removeListener('message', onMessage);
+      removeResponseListener();
       clearTimeout(timeoutKey);
       try {
         response.resolve(webdriver.error.checkResponse(message.getResponse()));
@@ -273,7 +275,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
 safaridriver.extension.Tab.prototype.onMessage_ = function(e) {
   try {
     var message = safaridriver.message.Message.fromEvent(e);
-    this.emit('message', message);
+    this.emit(message.getType(), message);
   } catch (ex) {
     this.log_(
         'Unable to parse message: ' + e.name + ': ' +
