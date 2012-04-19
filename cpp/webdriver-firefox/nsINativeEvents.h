@@ -1,5 +1,5 @@
 /*
- * DO NOT EDIT.  THIS FILE IS GENERATED FROM nsINativeEvents.idl
+ * DO NOT EDIT.  THIS FILE IS GENERATED FROM cpp/webdriver-firefox/nsINativeEvents.idl
  */
 
 #ifndef __gen_nsINativeEvents_h__
@@ -42,18 +42,6 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   /* void sendKeys (in nsISupports aNode, in wstring value, in boolean releaseModifiers); */
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) = 0;
 
-  /* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) = 0;
-
-  /* void click (in nsISupports aNode, in long x, in long y, in long button); */
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
-
-  /* void mousePress (in nsISupports aNode, in long x, in long y, in long button); */
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
-
-  /* void mouseRelease (in nsISupports anode, in long x, in long y, in long button); */
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
-
   /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) = 0;
 
@@ -72,9 +60,6 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   /* void imeDeactivate (); */
   NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) = 0;
 
-  /* void doubleClick (in nsISupports aNode, in long x, in long y); */
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) = 0;
-
   /* void notifyOfSwitchToWindow (in long windowId); */
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) = 0;
 
@@ -88,51 +73,36 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSINATIVEEVENTS \
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers); \
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY); \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button); \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM); \
   NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM); \
   NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM); \
   NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM); \
   NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM); \
   NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void); \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y); \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId); \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEEVENTS(_to) \
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) { return _to SendKeys(aNode, value, releaseModifiers); } \
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return _to MouseMove(aNode, startX, startY, endX, endY); } \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to Click(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MousePress(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MouseRelease(anode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) { return _to HasUnhandledEvents(aNode, hasEvents); } \
   NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM) { return _to ImeGetAvailableEngines(enginesList); } \
   NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM) { return _to ImeActivateEngine(engine, activationSucceeded); } \
   NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM) { return _to ImeIsActivated(isActive); } \
   NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM) { return _to ImeGetActiveEngine(activeEngine); } \
   NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return _to ImeDeactivate(); } \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return _to DoubleClick(aNode, x, y); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return _to NotifyOfSwitchToWindow(windowId); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return _to NotifyOfCloseWindow(windowId); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEEVENTS(_to) \
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) { return !_to ? NS_ERROR_NULL_POINTER : _to->SendKeys(aNode, value, releaseModifiers); } \
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseMove(aNode, startX, startY, endX, endY); } \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->Click(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MousePress(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseRelease(anode, x, y, button); } \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasUnhandledEvents(aNode, hasEvents); } \
   NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeGetAvailableEngines(enginesList); } \
   NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeActivateEngine(engine, activationSucceeded); } \
   NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeIsActivated(isActive); } \
   NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeGetActiveEngine(activeEngine); } \
   NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeDeactivate(); } \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return !_to ? NS_ERROR_NULL_POINTER : _to->DoubleClick(aNode, x, y); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfSwitchToWindow(windowId); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfCloseWindow(windowId); } 
 
@@ -174,30 +144,6 @@ NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode, const PRUnichar *valu
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
-NS_IMETHODIMP nsNativeEvents::MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void click (in nsISupports aNode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void mousePress (in nsISupports aNode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeEvents::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void mouseRelease (in nsISupports anode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeEvents::MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
 NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM)
 {
@@ -230,12 +176,6 @@ NS_IMETHODIMP nsNativeEvents::ImeGetActiveEngine(nsAString & activeEngine NS_OUT
 
 /* void imeDeactivate (); */
 NS_IMETHODIMP nsNativeEvents::ImeDeactivate()
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void doubleClick (in nsISupports aNode, in long x, in long y); */
-NS_IMETHODIMP nsNativeEvents::DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

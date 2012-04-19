@@ -10,18 +10,6 @@ interface nsINativeEvents : nsISupports
  * the modifier keys, depending on the last parameter. */
 void sendKeys(in nsISupports aNode, in wstring value, in boolean releaseModifiers);
 
-/* Move the mouse from start to end */
-void mouseMove(in nsISupports aNode, in long startX, in long startY, in long endX, in long endY);
-
-/* Click the mouse at this point */
-void click(in nsISupports aNode, in long x, in long y, in long button);
-
-/* Press a mouse button down */
-void mousePress(in nsISupports aNode, in long x, in long y, in long button);
-
-/* Release a mouse button */
-void mouseRelease(in nsISupports anode, in long x, in long y, in long button);
-
 /* Check if there are unhandled keyboard events. */
 void hasUnhandledEvents(in nsISupports aNode, out boolean hasEvents);
 
@@ -41,9 +29,6 @@ void imeGetActiveEngine(out AString activeEngine);
 
 /* De-activate IME input. */
 void imeDeactivate();
-
-/* Double click the mouse at this point */
-void doubleClick(in nsISupports aNode, in long x, in long y);
 
 /* Notifies the x_ignore_nofocus library of switch window events. */
 void notifyOfSwitchToWindow(in long windowId);

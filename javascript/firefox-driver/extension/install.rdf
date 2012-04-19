@@ -8,6 +8,7 @@
         <em:name>Firefox WebDriver</em:name>
         <em:description>WebDriver implementation for Firefox</em:description>
         <em:creator>Simon Stewart</em:creator>
+        <em:unpack>true</em:unpack>
 
         <!-- Firefox -->
         <em:targetApplication>

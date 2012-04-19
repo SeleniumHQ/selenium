@@ -1163,15 +1163,15 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
     var mouseTarget_ownerDocument_windowHandle = {x: mouseTarget_ownerDocument.x + browserOffset.x, y: mouseTarget_ownerDocument.y + browserOffset.y};
 
-    var events = Utils.getNativeEvents();
+    var nativeMouse = Utils.getNativeMouse();
     var node = Utils.getNodeForNativeEvents(elementForNode);
 
-    if (nativeEventsEnabled && events && node) {
+    if (nativeEventsEnabled && nativeMouse && node) {
       var currentPosition = respond.session.getMousePosition();
       var currentPosition_windowHandle = {x: currentPosition.x + browserOffset.x, y: currentPosition.y + browserOffset.y};
       fxdriver.Logger.dumpn("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
         clickPoint_ownerDocumentPostScroll.x + ", " + clickPoint_ownerDocumentPostScroll.y + ")");
-      events.mouseMove(node,
+      nativeMouse.mouseMove(node,
           currentPosition_windowHandle.x, currentPosition_windowHandle.y,
           mouseTarget_ownerDocument_windowHandle.x, mouseTarget_ownerDocument_windowHandle.y);
 
@@ -1179,14 +1179,14 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
         wasUnloaded: false
       };
 
-      Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, jsTimer);
+      Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, jsTimer);
 
       respond.session.setMousePosition(clickPoint_ownerDocumentPostScroll.x, clickPoint_ownerDocumentPostScroll.y);
       if (isMouseButtonPressed) {
         respond.session.setMouseViewportOffset(clickPoint_ownerDocumentPreScroll.x, clickPoint_ownerDocumentPreScroll.y);
       }
     } else {
-      throw generateErrorForNativeEvents(nativeEventsEnabled, events, node);
+      throw generateErrorForNativeEvents(nativeEventsEnabled, nativeMouse, node);
     }
 
   };
@@ -1209,25 +1209,25 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
-  var events = Utils.getNativeEvents();
+  var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);
 
-  if (this.enableNativeEvents && events && node) {
+  if (this.enableNativeEvents && nativeMouse && node) {
     var currentPosition = respond.session.getMousePosition();
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
-    events.mousePress(node, currentPosition.x + browserOffset.x,
+    nativeMouse.mousePress(node, currentPosition.x + browserOffset.x,
         currentPosition.y + browserOffset.y, 1);
 
     var dummyIndicator = {
       wasUnloaded: false
     };
 
-    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
+    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
     respond.session.setMousePressed(true);
     respond.session.setMouseViewportOffset(currentPosition.x, currentPosition.y);
   } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
   }
 
   respond.send();
@@ -1245,10 +1245,10 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
-  var events = Utils.getNativeEvents();
+  var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);
 
-  if (this.enableNativeEvents && events && node) {
+  if (this.enableNativeEvents && nativeMouse && node) {
     var currentPosition = respond.session.getMousePosition();
     var upX = currentPosition.x;
     var upY = currentPosition.y;
@@ -1261,18 +1261,18 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     }
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
-    events.mouseRelease(node, upX + browserOffset.x,
+    nativeMouse.mouseRelease(node, upX + browserOffset.x,
         upY + browserOffset.y, 1);
 
     var dummyIndicator = {
       wasUnloaded: false
     };
 
-    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
+    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
     respond.session.setMousePressed(false);
     respond.session.setMouseViewportOffset(0, 0);
   } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
   }
 
   respond.send();
@@ -1302,24 +1302,24 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
-  var events = Utils.getNativeEvents();
+  var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);
 
-  if (this.enableNativeEvents && events && node) {
+  if (this.enableNativeEvents && nativeMouse && node) {
     var currentPosition = respond.session.getMousePosition();
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
-    events.click(node, currentPosition.x + browserOffset.x,
+    nativeMouse.click(node, currentPosition.x + browserOffset.x,
         currentPosition.y + browserOffset.y, button);
 
     var dummyIndicator = {
       wasUnloaded: false
     };
 
-    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
+    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
 
   } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
   }
 
   respond.send();
@@ -1340,24 +1340,24 @@ FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
-  var events = Utils.getNativeEvents();
+  var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);
 
-  if (this.enableNativeEvents && events && node) {
+  if (this.enableNativeEvents && nativeMouse && node) {
     var currentPosition = respond.session.getMousePosition();
     var browserOffset = getBrowserSpecificOffset_(respond.session.getBrowser());
 
-    events.doubleClick(node, currentPosition.x + browserOffset.x,
+    nativeMouse.doubleClick(node, currentPosition.x + browserOffset.x,
         currentPosition.y + browserOffset.y);
 
     var dummyIndicator = {
       wasUnloaded: false
     };
 
-    Utils.waitForNativeEventsProcessing(elementForNode, events, dummyIndicator, this.jsTimer);
+    Utils.waitForNativeEventsProcessing(elementForNode, Utils.getNativeEvents(), dummyIndicator, this.jsTimer);
 
   } else {
-    throw generateErrorForNativeEvents(this.enableNativeEvents, events, node);
+    throw generateErrorForNativeEvents(this.enableNativeEvents, nativeMouse, node);
   }
 
   respond.send();

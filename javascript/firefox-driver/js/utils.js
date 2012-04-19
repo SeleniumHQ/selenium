@@ -238,6 +238,18 @@ Utils.getNativeEvents = function() {
   }
 };
 
+Utils.getNativeMouse = function() {
+  try {
+    var cid = "@openqa.org/nativemouse;1";
+    var obj = Components.classes[cid].createInstance();
+    return obj.QueryInterface(Components.interfaces.nsINativeMouse);
+  } catch(e) {
+    fxdriver.Logger.dumpn(e);
+    // Unable to retrieve native events. No biggie, because we fall back to
+    // synthesis later
+    return undefined;
+  }
+};
 
 Utils.getNodeForNativeEvents = function(element) {
   try {

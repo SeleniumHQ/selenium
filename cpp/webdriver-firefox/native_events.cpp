@@ -20,6 +20,7 @@
 #include "interactions.h"
 #include "logging.h"
 #include "native_events.h"
+#include "native_mouse.h"
 #include "library_loading.h"
 
 #ifndef GECKO_19_COMPATIBILITY
@@ -122,64 +123,6 @@ NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode,
         return NS_OK;
 }
 
-/* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
-NS_IMETHODIMP nsNativeEvents::MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY)
-{
-  AccessibleDocumentWrapper doc(aNode);
-
-  void* windowHandle = doc.getWindowHandle();
-
-  if (!windowHandle) {
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  WD_RESULT res = mouseMoveTo(windowHandle, 100, startX, startY, endX, endY);
-
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
-}
-
-/* void click (in nsISupports aNode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
-{
-  AccessibleDocumentWrapper doc(aNode);
-
-  void* windowHandle = doc.getWindowHandle();
-  LOG(DEBUG) << "Have click window handle: " << windowHandle;
-
-  if (!windowHandle) {
-    LOG(WARN) << "No window handle!";
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  LOG(DEBUG) << "Calling clickAt: " << x << ", " << y;
-  WD_RESULT res = clickAt(windowHandle, x, y, button);
-
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
-
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
-}
-
-/* void doubleClick (in nsISupports aNode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeEvents::DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y)
-{
-  AccessibleDocumentWrapper doc(aNode);
-
-  void* windowHandle = doc.getWindowHandle();
-  LOG(DEBUG) << "Have doubleClick window handle: " << windowHandle;
-
-  if (!windowHandle) {
-    LOG(WARN) << "No window handle!";
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  LOG(DEBUG) << "Calling doubleClickAt: " << x << ", " << y;
-  WD_RESULT res = doubleClickAt(windowHandle, x, y);
-
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
-
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
-}
-
 /* void notifyOfSwitchToWindow (); */
 NS_IMETHODIMP nsNativeEvents::NotifyOfSwitchToWindow(PRInt32 windowId)
 {
@@ -197,50 +140,6 @@ NS_IMETHODIMP nsNativeEvents::NotifyOfCloseWindow(PRInt32 windowId)
   notify_of_close_window(windowId);
 #endif // BUILD_ON_UNIX
   return NS_OK;
-}
-
-
-/* void mousePress(in nsISupports aNode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeEvents::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
-{
-  AccessibleDocumentWrapper doc(aNode);
-
-  void* windowHandle = doc.getWindowHandle();
-  LOG(DEBUG) << "Have mousePress window handle: " << windowHandle;
-
-  if (!windowHandle) {
-    LOG(WARN) << "No window handle!";
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  LOG(DEBUG) << "Calling mouseDownAt at: " << x << ", " << y << " with button: " << button;
-  WD_RESULT res = mouseDownAt(windowHandle, x, y, button);
-
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
-
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
-}
-
-
-/* void mouseRelease(in nsISupports anode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeEvents::MouseRelease(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
-{
-  AccessibleDocumentWrapper doc(aNode);
-
-  void* windowHandle = doc.getWindowHandle();
-  LOG(DEBUG) << "Have mouseRelease window handle: " << windowHandle;
-
-  if (!windowHandle) {
-    LOG(WARN) << "No window handle!";
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  LOG(DEBUG) << "Calling mouseUpAt: " << x << ", " << y << " with button: " << button;
-  WD_RESULT res = mouseUpAt(windowHandle, x, y, button);
-
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
-
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
 
 
@@ -428,19 +327,23 @@ NS_IMETHODIMP nsNativeEvents::ImeGetAvailableEngines(nsIArray **enginesList)
 }
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeEvents)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeMouse)
 
 // Common case - build for Gecko SDK 2 and up
 #ifndef GECKO_19_COMPATIBILITY
 
 NS_DEFINE_NAMED_CID(EVENTS_CID);
+NS_DEFINE_NAMED_CID(MOUSE_CID);
 
 static const mozilla::Module::CIDEntry kNativeEventsCIDs[] = {
   { &kEVENTS_CID, false, NULL, nsNativeEventsConstructor },
+  { &kMOUSE_CID, false, NULL, nsNativeMouseConstructor },
   { NULL }
 };
 
 static const mozilla::Module::ContractIDEntry kNativeEventsContracts[] = {
   { EVENTS_CONTRACTID, &kEVENTS_CID },
+  { MOUSE_CONTRACTID, &kMOUSE_CID },
   { NULL }
 };
 
@@ -465,8 +368,14 @@ static nsModuleComponentInfo components[] =
     EVENTS_CID,
     EVENTS_CONTRACTID,
     nsNativeEventsConstructor,
+  },
+  {
+    MOUSE_CLASSNAME,
+    MOUSE_CID,
+    MOUSE_CONTRACTID,
+    nsNativeMouseConstructor,
   }
 };
 
-NS_IMPL_NSGETMODULE("NativeEventsModule", components) 
+NS_IMPL_NSGETMODULE("NativeEventsModule", components)
 #endif

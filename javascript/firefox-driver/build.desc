@@ -38,6 +38,7 @@ mozilla_extension(name = "webdriver",
     ":status_xpt",
     ":synthetic_mouse",
     "//cpp:native_events_xpt",
+    "//cpp:native_mouse_xpt",
   ],
   resources = [
     { "//cpp:firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },

@@ -57,7 +57,7 @@ WebElement.clickElement = function(respond, parameters) {
                                    respond.session.getDocument());
 
   var unwrapped = fxdriver.moz.unwrapFor4(element);
-  var nativeEvents = Utils.getNativeEvents();
+  var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(unwrapped);
   var appInfo = Components.classes["@mozilla.org/xre/app-info;1"].
       getService(Components.interfaces.nsIXULAppInfo);
@@ -78,7 +78,7 @@ WebElement.clickElement = function(respond, parameters) {
   var elementHalfWidth = (loc.width ? loc.width / 2 : 0);
   var elementHalfHeight = (loc.height ? loc.height / 2 : 0);
 
-  if (!isOption && this.enableNativeEvents && nativeEvents && node && useNativeClick && thmgr_cls) {
+  if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
     fxdriver.Logger.dumpn("Using native events for click");
 
     var inViewAfterScroll = bot.action.scrollIntoView(
@@ -125,7 +125,7 @@ WebElement.clickElement = function(respond, parameters) {
       var adjustedX = destinationCoordinates.x;
       var adjustedY = destinationCoordinates.y;
 
-      nativeEvents.mouseMove(node,
+      nativeMouse.mouseMove(node,
                              currentPosition.x,
                              currentPosition.y,
                              adjustedX,
@@ -133,11 +133,11 @@ WebElement.clickElement = function(respond, parameters) {
 
       var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(unwrapped);
 
-      nativeEvents.click(node, adjustedX, adjustedY, 1);
+      nativeMouse.click(node, adjustedX, adjustedY, 1);
 
       respond.session.setMousePosition(x, y);
 
-      Utils.waitForNativeEventsProcessing(unwrapped, nativeEvents,
+      Utils.waitForNativeEventsProcessing(unwrapped, Utils.getNativeEvents(),
           pageUnloadedIndicator, this.jsTimer);
 
       respond.send();

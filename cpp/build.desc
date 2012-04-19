@@ -22,6 +22,9 @@ visualc_library(name = "firefoxlatest_dll",
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "webdriver-firefox/nsINativeEvents.idl" ])
 
+mozilla_xpt(name = "native_mouse_xpt",
+  srcs = [ "webdriver-firefox/nsINativeMouse.idl" ])
+
 mozilla_lib(name = "webdriver_firefox_ff3",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
