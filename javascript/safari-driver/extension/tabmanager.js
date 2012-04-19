@@ -50,7 +50,7 @@ safaridriver.extension.TabManager = function() {
   safari.application.addEventListener(
       'open', goog.bind(this.onOpen_, this), true);
   safari.application.addEventListener(
-      'open', goog.bind(this.onClose_, this), true);
+      'close', goog.bind(this.onClose_, this), true);
 
   this.init_();
 };
