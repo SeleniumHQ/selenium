@@ -17,8 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.IOException;
@@ -27,7 +30,8 @@ import java.io.IOException;
  * A WebDriver implementation that controls Safari using a browser extension
  * (consequently, only Safari 5+ is supported).
  */
-public class SafariDriver extends RemoteWebDriver {
+public class SafariDriver extends RemoteWebDriver
+    implements TakesScreenshot {
   
   public SafariDriver() {
     super(new SafariDriverCommandExecutor(0), DesiredCapabilities.safari());
@@ -47,5 +51,13 @@ public class SafariDriver extends RemoteWebDriver {
   protected void stopClient() {
     SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor) this.getCommandExecutor();
     executor.stop();
+  }
+
+  @Override
+  public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+    // Get the screenshot as base64.
+    String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
+    // ... and convert it.
+    return target.convertFromBase64Png(base64);
   }
 }
