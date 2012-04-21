@@ -188,40 +188,37 @@ webdriver.atoms.element.type = function(element, keys) {
   var convertedSequences = [], current;
   convertedSequences.push(current = []);
 
-  // Collapse into a single string, then iterate over the characters to generate
-  // the sequences to type.
-  // This will generate an unnecessary compiler warning for iterating over the
-  // characters in a string. See
-  // http://code.google.com/p/closure-compiler/issues/detail?id=712
-  goog.array.forEach(keys.join(''), function(key) {
-    if (isWebDriverKey(key)) {
-      var webdriverKey = webdriver.atoms.element.type.JSON_TO_KEY_MAP_[key];
-      // goog.isNull uses ==, which accepts undefined.
-      if (webdriverKey === null) {
-        // bot.action.type does not support a "null" key, so we have to
-        // terminate the entire sequence to release modifier keys.
-        convertedSequences.push(current = []);
-      } else if (goog.isDef(webdriverKey)) {
-        current.push(webdriverKey);
-      } else {
-        throw Error('Unsupported WebDriver key: \\u' +
-            key.charCodeAt(0).toString(16));
+  goog.array.forEach(keys, function(sequence) {
+    goog.array.forEach(sequence.split(''), function(key) {
+      if (isWebDriverKey(key)) {
+        var webdriverKey = webdriver.atoms.element.type.JSON_TO_KEY_MAP_[key];
+        // goog.isNull uses ==, which accepts undefined.
+        if (webdriverKey === null) {
+          // bot.action.type does not support a "null" key, so we have to
+          // terminate the entire sequence to release modifier keys.
+          convertedSequences.push(current = []);
+        } else if (goog.isDef(webdriverKey)) {
+          current.push(webdriverKey);
+        } else {
+          throw Error('Unsupported WebDriver key: \\u' +
+              key.charCodeAt(0).toString(16));
+        }
       }
-    }
 
-    // Handle common aliases.
-    switch (key) {
-      case '\n':
-         current.push(bot.Keyboard.Keys.ENTER);
-        break;
-      case '\t':
-        current.push(bot.Keyboard.Keys.TAB);
-        break;
-      case '\b':
-        current.push(bot.Keyboard.Keys.BACKSPACE);
-        break;
-    }
-    current.push(key);
+      // Handle common aliases.
+      switch (key) {
+        case '\n':
+          current.push(bot.Keyboard.Keys.ENTER);
+          break;
+        case '\t':
+          current.push(bot.Keyboard.Keys.TAB);
+          break;
+        case '\b':
+          current.push(bot.Keyboard.Keys.BACKSPACE);
+          break;
+      }
+      current.push(key);
+    });
   });
 
   goog.array.forEach(convertedSequences, function(sequence) {
