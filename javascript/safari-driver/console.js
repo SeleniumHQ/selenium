@@ -29,7 +29,7 @@ goog.require('goog.debug.TextFormatter');
 safaridriver.console.init = function() {
   var formatter = new goog.debug.TextFormatter();
   formatter.showAbsoluteTime = false;
-  formatter.showExceptionText = false;
+  formatter.showExceptionText = true;
 
   goog.debug.LogManager.getRoot().addHandler(function(logRecord) {
     var record = formatter.formatRecord(logRecord);

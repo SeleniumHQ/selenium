@@ -259,9 +259,10 @@ safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_ = 30000;
 
 /**
  * Sends a command to the provided session's current tab.
- * @param {!(safaridriver.extension.Session|safaridriver.extension.Tab)} sessionOrTab Either the
- *     session or tab to send the command to. If given a session, the command
- *     will be sent to the tab the session is currently focused on.
+ * @param {!(safaridriver.extension.Session|safaridriver.extension.Tab)}
+ *     sessionOrTab Either the session or tab to send the command to. If given a
+ *     session, the command will be sent to the tab the session is currently
+ *     focused on.
  * @param {!webdriver.Command} command The command object.
  * @param {number=} opt_additionalTimeout An optional amount of time, in
  *     milliseconds, to wait for a command response. This timeout is added to
@@ -295,7 +296,8 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
   var tab = session.getTab(name);
   if (!tab) {
     // TODO: handle switching by window name.
-    throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW, 'No such window: ' + name);
+    throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW, 'No such window: ' +
+        name);
   }
   session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
 };
@@ -307,11 +309,29 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
  * @param {!webdriver.Command} command The command object.
  */
 safaridriver.extension.commands.switchToFrame = function(session, command) {
-  // If switching to default content, we can silently return, since that is all
-  // we support right now. If switching to something else, go ahead and throw
-  // up. TODO: Implement this correctly.
-  if (command.getParameter('id') !== null) {
-    throw new Error('Unimplemented command: ' + command.getName());
+  var tab = session.getCommandTab();
+  var result = new webdriver.promise.Deferred();
+  safaridriver.extension.commands.sendCommand(tab, command).
+      addCallback(webdriver.error.checkResponse).
+      addErrback(function(e) {
+        tab.removeListener(safaridriver.message.Type.ACTIVATE, onActivate);
+        if (result.isPending()) {
+          result.reject(e);
+        }
+      });
+
+  safaridriver.extension.commands.LOG_.info('Waiting for tab to activate a ' +
+      'new frame');
+  tab.once(safaridriver.message.Type.ACTIVATE, onActivate);
+
+  return result.promise;
+
+  function onActivate() {
+    safaridriver.extension.commands.LOG_.info('Tab has activated a new ' +
+        'frame; completing command');
+    if (result.isPending()) {
+      result.resolve();
+    }
   }
 };
 

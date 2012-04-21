@@ -67,6 +67,7 @@ js_binary(name = "injected",
     "inject/inject.js",
     "inject/messenger.js",
     "inject/page.js",
+    "inject/state.js",
   ],
   defines = [
     "goog.userAgent.ASSUME_WEBKIT=true",

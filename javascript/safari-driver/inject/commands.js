@@ -23,7 +23,9 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.action');
 goog.require('bot.dom');
+goog.require('bot.frame');
 goog.require('bot.inject');
+goog.require('bot.inject.cache');
 goog.require('bot.locators');
 goog.require('bot.window');
 goog.require('goog.array');
@@ -33,6 +35,7 @@ goog.require('goog.math.Size');
 goog.require('goog.net.cookies');
 goog.require('goog.style');
 goog.require('safaridriver.inject.PageMessenger');
+goog.require('safaridriver.inject.state');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.error');
 goog.require('webdriver.promise.Deferred');
@@ -277,7 +280,8 @@ safaridriver.inject.commands.setWindowSize = function(command) {
 
 
 /**
- * Sends
+ * Sends a command to the page to have it execute a user-supplied bit of
+ * JavaScript.
  * @param {!safaridriver.Command} command The command to execute.
  * @param {!safaridriver.inject.PageMessenger} messenger The page messenger to
  *     use.
@@ -323,4 +327,49 @@ safaridriver.inject.commands.executeScript = function(command, messenger) {
       response.reject(error);
     }
   }
+};
+
+
+/**
+ * Locates a frame and sends a message to it to activate itself with the
+ * extension. The located frame will be
+ * @param {!safaridriver.Command} command The command to execute.
+ *     the target of all subsequent commands.
+ * @param {!safaridriver.inject.PageMessenger} messenger The page messenger to
+ *     use.
+ * @throws {Error} If there is an error whilst locating the frame.
+ */
+safaridriver.inject.commands.switchToFrame = function(command, messenger) {
+  var id = command.getParameter('id');
+  var frameWindow;
+  if (goog.isNull(id)) {
+    safaridriver.inject.commands.LOG_.info('Resetting focus to window.top');
+    frameWindow = window.top;
+  } else if (goog.isString(id) || goog.isNumber(id)) {
+    safaridriver.inject.commands.LOG_.info('Switching to frame by index, ' +
+        'name, or ID: ' + id);
+    frameWindow = bot.frame.findFrameByNameOrId(
+        (/** @type {(string|number)} */id));
+  } else {
+    var elementKey = (/** @type {string} */id[bot.inject.ELEMENT_KEY]);
+    safaridriver.inject.commands.LOG_.info('Switching to frame by ' +
+        'WebElement: ' + elementKey);
+    // ID must be a WebElement. Pull it from the cache.
+    var frameElement = bot.inject.cache.getElement(elementKey);
+    frameWindow = bot.frame.getFrameWindow(
+        (/** @type {!(HTMLIFrameElement|HTMLFrameElement)} */frameElement));
+  }
+
+  if (!frameWindow) {
+    throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW,
+        'Unable to locate window with ' + JSON.stringify(id));
+  }
+
+  // De-activate ourselves. We should no longer respond to commands until
+  // we are re-activated.
+  safaridriver.inject.state.setActive(false);
+
+  var message = new safaridriver.message.Message(
+      safaridriver.message.Type.ACTIVATE);
+  message.send(frameWindow);
 };

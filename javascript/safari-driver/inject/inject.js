@@ -29,6 +29,7 @@ goog.require('safaridriver.message');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.PageMessenger');
 goog.require('safaridriver.inject.commands');
+goog.require('safaridriver.inject.state');
 
 
 /**
@@ -39,31 +40,13 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger(
     'safaridriver.inject');
 
 
-/**
- * Whether the window containing this script is active and should respond to
- * commands from the extension's global page.
- *
- * <p>By default, only the top most window is automatically active, as it
- * receives focus first when a new page is loaded. Each sub-frame will be
- * activated in turn as the user switches to them; when a sub-frame is
- * activated, this frame will be deactivated.
- *
- * <p>This is necessary because a window may contain frames that load fully
- * initialize before the top window does. If this happens, the frames will
- * intercept and handle commands from the extension before the appropriate
- * window does.
- *
- * @type {boolean}
- */
-safaridriver.inject.isActive = window === window.top;
-
-
 /** Initializes this injected script. */
 safaridriver.inject.init = function() {
   safaridriver.console.init();
   safaridriver.inject.LOG.info(
       'Loaded injected script for: ' + window.location.href +
-      ' (is ' + (safaridriver.inject.isActive ? '' : 'not ') + 'active)');
+      ' (is ' + (safaridriver.inject.state.isActive() ? '' : 'not ') +
+      'active)');
 
   safari.self.addEventListener('message',
       safaridriver.inject.onExtensionMessage_, false);
@@ -116,7 +99,7 @@ safaridriver.inject.onExtensionMessage_ = function(e) {
  * @private
  */
 safaridriver.inject.onCommand_ = function(message) {
-  if (!safaridriver.inject.isActive) {
+  if (!safaridriver.inject.state.isActive()) {
     return;
   }
 
@@ -127,7 +110,8 @@ safaridriver.inject.onCommand_ = function(message) {
     return;
   }
 
-  safaridriver.inject.LOG.info('Handling command: ' + message);
+  safaridriver.inject.LOG.info('Handling command (is top? ' +
+      (window.top === window) + '): ' + message);
 
   var handler = safaridriver.inject.COMMAND_MAP_[command.getName()];
   if (handler) {
@@ -222,5 +206,7 @@ goog.scope(function() {
 
   map[CommandName.EXECUTE_SCRIPT] = commands.executeScript;
   map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeScript;
+
+  map[CommandName.SWITCH_TO_FRAME] = commands.switchToFrame;
 });
 

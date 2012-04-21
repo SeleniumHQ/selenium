@@ -1,7 +1,22 @@
+// Copyright 2012 Software Freedom Conservancy. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 goog.provide('safaridriver.inject.PageMessenger');
 
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.inject.page');
+goog.require('safaridriver.inject.state');
 goog.require('safaridriver.message');
 goog.require('webdriver.error');
 goog.require('webdriver.promise');
@@ -67,15 +82,28 @@ safaridriver.inject.PageMessenger.prototype.onMessage = function(e) {
     return;
   }
 
-  // Ignore messages that are from this context. How would we receive our own
-  // messages?  Simple - when we post a message to the page, in addition to
-  // going to the page, it will be posted back on our own window.
-  if (message.getOrigin() === safaridriver.message.ORIGIN) {
+  // If we've just received an activate message, only acknowledge it if it came
+  // from our own context. This indicates another frame has just told us to
+  // activate ourselves. Otherwise, ignore messages that are from our own
+  // context. How would we receive our own messages?  Simple - when we post a
+  // message to the page, in addition to going to the page, it will be posted
+  // back on our own window.
+  if (message.isType(safaridriver.message.Type.ACTIVATE)) {
+    if (message.getOrigin() !== safaridriver.message.ORIGIN) {
+      return;
+    }
+  } else if (message.getOrigin() === safaridriver.message.ORIGIN) {
     return;
   }
 
   var type = message.getType();
   switch (type) {
+    case safaridriver.message.Type.ACTIVATE:
+      this.log_.info('Activating frame for future command handling.');
+      safaridriver.inject.state.setActive(true);
+      message.send(safari.self.tab);
+      break;
+
     case safaridriver.message.Type.CONNECT:
       this.log_.info(
           'Content page has requested a WebDriver client connection to ' +
