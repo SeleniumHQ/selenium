@@ -149,7 +149,7 @@ namespace OpenQA.Selenium.Safari
     window.onload = function() {{
       window.postMessage({{
         'message': 'connect',
-        'source': 'webdriver',
+        'origin': 'webdriver',
         'url': 'ws://localhost:{0}/wd'
         }}, '*');
     }};
