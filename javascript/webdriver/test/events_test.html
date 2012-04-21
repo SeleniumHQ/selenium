@@ -124,6 +124,51 @@ limitations under the License.
     emitter.removeAllListeners();
     assertArrayEquals(['foo', 'bar', 'bar', 'foo'], messages);
   }
+
+  function testListenerThatRemovesItself() {
+    var emitter = new webdriver.EventEmitter();
+    emitter.on('foo', listener);
+    emitter.emit('foo');
+
+    function listener() {
+      emitter.removeListener('foo', listener);
+    }
+  }
+
+  function testListenerThatRemovesItself_whenThereAreMultipleListeners() {
+    var emitter = new webdriver.EventEmitter();
+    var messages = [];
+    emitter.on('foo', one);
+    emitter.on('foo', two);
+    emitter.emit('foo');
+    assertArrayEquals(['one', 'two'], messages);
+
+    function one() {
+      messages.push('one');
+      emitter.removeListener('foo', one);
+    }
+
+    function two() {
+      messages.push('two');
+    }
+  }
+
+  function testListenerAddsAnotherForTheSameEventType() {
+    var emitter = new webdriver.EventEmitter();
+    var messages = [];
+    emitter.on('foo', one);
+    emitter.emit('foo');
+    assertArrayEquals(['one', 'two'], messages);
+
+    function one() {
+      messages.push('one');
+      emitter.on('foo', two);
+    }
+
+    function two() {
+      messages.push('two');
+    }
+  }
 </script>
 </body>
 </html>

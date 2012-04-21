@@ -48,13 +48,15 @@ webdriver.EventEmitter.prototype.emit = function(type, var_args) {
   if (!listeners) {
     return;
   }
-  var i = 0;
-  while (i < listeners.length) {
-    listeners[i].fn.apply(null, args);
-    if (listeners[i].oneshot) {
-      listeners.splice(i, 1);
-    } else {
-      i += 1;
+  for (var i = 0; i < listeners.length;) {
+    var listener = listeners[i];
+    listener.fn.apply(null, args);
+    if (listeners[i] === listener) {
+      if (listeners[i].oneshot) {
+        listeners.splice(i, 1);
+      } else {
+        i += 1;
+      }
     }
   }
 };
