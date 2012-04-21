@@ -83,7 +83,7 @@ Server: safaridriver-ruby
 window.onload = function() {
   window.postMessage({
     'message': 'connect',
-    'source': 'webdriver',
+    'origin': 'webdriver',
     'url': '%s'
   }, '*');
 };
