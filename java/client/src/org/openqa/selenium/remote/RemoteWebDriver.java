@@ -538,7 +538,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         String value = (String) rawCookie.get("value");
         String path = (String) rawCookie.get("path");
         String domain = (String) rawCookie.get("domain");
-        Boolean secure = (Boolean) rawCookie.get("secure");
+        boolean secure = rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure");
 
         Number expiryNum = (Number) rawCookie.get("expiry");
         Date expiry = expiryNum == null ? null : new Date(
