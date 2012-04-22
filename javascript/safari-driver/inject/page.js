@@ -184,16 +184,17 @@ safaridriver.inject.page.getElementByXpath_ = function(xpath) {
  */
 safaridriver.inject.page.getElementXPath_ = function(element) {
   var path = '';
-  for(; element; element = bot.dom.getParentElement(element)) {
+  for (var current = element; current;
+       current = bot.dom.getParentElement(current)) {
     var index = 1;
-    for (var sibling = element.previousSibling; sibling;
+    for (var sibling = current.previousSibling; sibling;
         sibling = sibling.previousSibling) {
       if (sibling.nodeType == goog.dom.NodeType.ELEMENT &&
-          sibling.tagName == element.tagName) {
+          sibling.tagName == current.tagName) {
         index++;
       }
     }
-    var tmp = '/' + element.tagName;
+    var tmp = '/' + current.tagName;
     if (index > 1) {
       tmp += '[' + index + ']';
     }
@@ -240,18 +241,20 @@ safaridriver.inject.page.encodeValue = function(value) {
           safaridriver.inject.page.encodeValue);
 
     case 'object':
-      if (bot.dom.isElement(value)) {
+      if (goog.dom.isElement(value)) {
         // We don't permit elements belong to another document because we
         // wouldn't be able to find them again on the other side when the
         // element was decoded.
         if (value.ownerDocument !== document) {
           throw Error('The element does not belong to this document: ' +
-              safaridriver.inject.page.getElementCssSelector_(value));
+              safaridriver.inject.page.getElementXPath_(
+                  (/** @type {!Element} */value)));
         }
 
         var encoded = {};
         encoded[safaridriver.inject.page.ENCODED_ELEMENT_KEY_] =
-            safaridriver.inject.page.getElementCssSelector_(value);
+            safaridriver.inject.page.getElementXPath_(
+                (/** @type {!Element} */value));
         return encoded;
       }
       return goog.object.map((/** @type {!Object} */value),
