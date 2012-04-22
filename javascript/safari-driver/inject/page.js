@@ -148,7 +148,6 @@ safaridriver.inject.page.onMessage_ = function(e) {
  * @private
  */
 safaridriver.inject.page.onCommand_ = function(message) {
-  safaridriver.inject.page.LOG_.info('Handling extension command: ' + message);
   var command = message.getCommand();
   switch (command.getName()) {
     case webdriver.CommandName.EXECUTE_ASYNC_SCRIPT:
@@ -166,47 +165,41 @@ safaridriver.inject.page.onCommand_ = function(message) {
 
 
 /**
- * Generates a CSS selector for the given element.
- * @param {!Element} element The element to build a selector for.
- * @param {boolean=} opt_absolute Whether to compute an absolute selector from
- *     the document root.
- * @return {string} The CSS selector for the given element.
+ * Locates an element by XPath.
+ * @param {string} xpath The XPath expression.
+ * @return {Element} The located element or {@code null}.
  * @private
  */
-safaridriver.inject.page.getElementCssSelector_ = function(element,
-                                                           opt_absolute) {
-  var selector = element.tagName;
-
-  if (element.id) {
-    selector += '#' + safaridriver.inject.page.cssEscape_(element.id);
-  }
-
-  var classes = goog.dom.classes.get(element);
-  if (classes.length) {
-    selector += '.' + goog.array.map(classes,
-        safaridriver.inject.page.cssEscape_).join('.');
-  }
-
-  if (opt_absolute) {
-    var parent = bot.dom.getParentElement(element);
-    if (parent) {
-      var parentSelector = safaridriver.inject.page.getElementCssSelector_(
-          parent, opt_absolute);
-      selector = parentSelector + ' > ' + selector;
-    }
-  }
-
-  return selector;
+safaridriver.inject.page.getElementByXpath_ = function(xpath) {
+  return document.evaluate(xpath, document, null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue;
 };
 
 
 /**
- * @param {string} str The string to escape.
- * @return {string} The escaped string.
+ * Computes the canonical XPath locator for an element.
+ * @param {!Element} element The element to compute an XPath expression for.
+ * @return {string} The element's XPath locator.
  * @private
  */
-safaridriver.inject.page.cssEscape_ = function(str) {
-  return str.replace(/\./g, '\\.').replace(/#/g, '\\#');
+safaridriver.inject.page.getElementXPath_ = function(element) {
+  var path = '';
+  for(; element; element = bot.dom.getParentElement(element)) {
+    var index = 1;
+    for (var sibling = element.previousSibling; sibling;
+        sibling = sibling.previousSibling) {
+      if (sibling.nodeType == goog.dom.NodeType.ELEMENT &&
+          sibling.tagName == element.tagName) {
+        index++;
+      }
+    }
+    var tmp = '/' + element.tagName;
+    if (index > 1) {
+      tmp += '[' + index + ']';
+    }
+    path = tmp + path;
+  }
+  return path;
 };
 
 
@@ -247,7 +240,7 @@ safaridriver.inject.page.encodeValue = function(value) {
           safaridriver.inject.page.encodeValue);
 
     case 'object':
-      if (value instanceof Element) {
+      if (bot.dom.isElement(value)) {
         // We don't permit elements belong to another document because we
         // wouldn't be able to find them again on the other side when the
         // element was decoded.
@@ -258,7 +251,7 @@ safaridriver.inject.page.encodeValue = function(value) {
 
         var encoded = {};
         encoded[safaridriver.inject.page.ENCODED_ELEMENT_KEY_] =
-            safaridriver.inject.page.getElementCssSelector_(value, true);
+            safaridriver.inject.page.getElementCssSelector_(value);
         return encoded;
       }
       return goog.object.map((/** @type {!Object} */value),
@@ -303,11 +296,11 @@ safaridriver.inject.page.decodeValue = function(value) {
       var keys = Object.keys(obj);
       if (keys.length == 1 &&
           keys[0] === safaridriver.inject.page.ENCODED_ELEMENT_KEY_) {
-        var selector = value[safaridriver.inject.page.ENCODED_ELEMENT_KEY_];
-        var element = document.querySelector(selector);
+        var xpath = value[safaridriver.inject.page.ENCODED_ELEMENT_KEY_];
+        var element = safaridriver.inject.page.getElementByXpath_(xpath);
         if (!element) {
           throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
-              'Unable to locate encoded element: ' + selector);
+              'Unable to locate encoded element: ' + xpath);
         }
         return element;
       }
@@ -336,6 +329,7 @@ safaridriver.inject.page.executeScript_ = function(command) {
     args = (/** @type {!Array} */safaridriver.inject.page.decodeValue(args));
 
     response = fn.apply(window, args);
+    console.log('script response', response);
     response = safaridriver.inject.page.encodeValue(response);
     response = {
       'status': bot.ErrorCode.SUCCESS,
