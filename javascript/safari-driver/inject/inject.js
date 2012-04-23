@@ -99,11 +99,18 @@ safaridriver.inject.onExtensionMessage_ = function(e) {
  * @private
  */
 safaridriver.inject.onCommand_ = function(message) {
+  var command = message.getCommand();
+
+  if (command.getName() === webdriver.CommandName.GET) {
+    // Get commands should *only* be handled by the topmost frame. In fact, it
+    // is an implicit frame switch, so do that for the user now.
+    safaridriver.inject.state.setActive(window === window.top);
+  }
+
   if (!safaridriver.inject.state.isActive()) {
     return;
   }
 
-  var command = message.getCommand();
   if (!command.getId()) {
     safaridriver.inject.LOG.severe(
         'Ignoring unidentified command message: ' + message);
