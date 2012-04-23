@@ -37,7 +37,7 @@ public class GridTestHelper {
   }
 
   public static SelfRegisteringRemote getRemoteWithoutCapabilities(URL hub, GridRole role) {
-    RegistrationRequest req = RegistrationRequest.build("-role", "node");
+    RegistrationRequest req = RegistrationRequest.build("-role", "node","-host","localhost");
 
 
     req.getConfiguration().put(RegistrationRequest.PORT, PortProber.findFreePort());
@@ -67,6 +67,7 @@ public class GridTestHelper {
 
   public static Hub getHub() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
+    config.setHost("localhost");
     config.setPort(PortProber.findFreePort());
     return getHub(config);
   }

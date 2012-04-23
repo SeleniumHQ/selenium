@@ -51,6 +51,7 @@ public class WebDriverPriorityDemo {
   public void prepare() throws Exception {
 
     GridHubConfiguration config = new GridHubConfiguration();
+    config.setHost("localhost");
     config.setPort(PortProber.findFreePort());
     hub = new Hub(config);
     hubURL = hub.getUrl();

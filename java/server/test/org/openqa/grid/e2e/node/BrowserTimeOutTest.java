@@ -25,6 +25,7 @@ import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterClass;
@@ -46,6 +47,9 @@ public class BrowserTimeOutTest {
   @BeforeClass(alwaysRun = true)
   public void setup() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
+    gridHubConfiguration.setPort(PortProber.findFreePort());
+    gridHubConfiguration.setHost("localhost");
+    
     gridHubConfiguration.setBrowserTimeout(50);
     gridHubConfiguration.setServlets(Arrays.asList("org.openqa.grid.e2e.node.SlowServlet"));
     hub = GridTestHelper.getHub(gridHubConfiguration);

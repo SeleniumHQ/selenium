@@ -50,6 +50,7 @@ public class NodeRecoveryTest {
   @BeforeClass(alwaysRun = true)
   public void setup() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
+    config.setHost("localhost");
     config.setPort(PortProber.findFreePort());
     hub = new Hub(config);
 

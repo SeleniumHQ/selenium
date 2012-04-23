@@ -48,7 +48,7 @@ public class HubRestart {
 
   @BeforeClass(alwaysRun = false)
   public void prepare() throws Exception {
-
+    config.setHost("localhost");
     config.setPort(PortProber.findFreePort());
     hub = GridTestHelper.getHub(config);
     registry = hub.getRegistry();

@@ -48,7 +48,7 @@ public class HubRestartNeg {
 
   @BeforeClass(alwaysRun = false)
   public void prepare() throws Exception {
-
+    config.setHost("localhost");
     config.setPort(PortProber.findFreePort());
     hub = new Hub(config);
     registry = hub.getRegistry();
