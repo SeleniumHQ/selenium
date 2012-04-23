@@ -27,19 +27,19 @@ limitations under the License.
 
     var xpath = safaridriver.inject.page.getElementXPath_(a1);
     assertEquals('/HTML/BODY/DIV', xpath);
-    assertEquals(a1, safaridriver.inject.page.getElementByXpath_(xpath));
+    assertEquals(a1, bot.locators.xpath.single(xpath, document));
 
     var b1 = document.querySelector('div.b');
     assertEquals('b.1', b1.innerHTML);
     xpath = safaridriver.inject.page.getElementXPath_(b1);
     assertEquals('/HTML/BODY/DIV[3]/DIV/DIV', xpath);
-    assertEquals(b1, safaridriver.inject.page.getElementByXpath_(xpath));
+    assertEquals(b1, bot.locators.xpath.single(xpath, document));
 
     var b2 = document.querySelectorAll('div.b')[1];
     assertEquals('b.2', b2.innerHTML);
     xpath = safaridriver.inject.page.getElementXPath_(b2);
     assertEquals('/HTML/BODY/DIV[3]/DIV/DIV[3]', xpath);
-    assertEquals(b2, safaridriver.inject.page.getElementByXpath_(xpath));
+    assertEquals(b2, bot.locators.xpath.single(xpath, document));
   }
 </script>
 <body>

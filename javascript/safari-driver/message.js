@@ -20,6 +20,7 @@
 goog.provide('safaridriver.message');
 goog.provide('safaridriver.message.CommandMessage');
 goog.provide('safaridriver.message.ConnectMessage');
+goog.provide('safaridriver.message.EncodeMessage');
 goog.provide('safaridriver.message.Message');
 goog.provide('safaridriver.message.ResponseMessage');
 goog.provide('safaridriver.message.Type');
@@ -60,6 +61,12 @@ safaridriver.message.Type = {
    * message will be the URI for the WebSocket.
    */
   CONNECT: 'connect',
+
+  /**
+   * Message sent by a content page to an injected script requesting the
+   * WebElement encoding for an element.
+   */
+  ENCODE: 'encode',
 
   /**
    * Message sent by the web page content to the injected script after the
@@ -130,6 +137,10 @@ safaridriver.message.Message.fromEvent = function(event) {
 
     case safaridriver.message.Type.CONNECT:
       message = safaridriver.message.ConnectMessage.fromData_(data);
+      break;
+
+    case safaridriver.message.Type.ENCODE:
+      message = safaridriver.message.EncodeMessage.fromData_(data);
       break;
 
     case safaridriver.message.Type.RESPONSE:
@@ -378,6 +389,66 @@ safaridriver.message.ConnectMessage.fromData_ = function(data) {
 safaridriver.message.ConnectMessage.prototype.getUrl = function() {
   return (/** @type {string} */ this.getField(
       safaridriver.message.ConnectMessage.URL_FIELD_));
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * A {@link safaridriver.message.Type.ENCODE} message.
+ * @param {string} id The ID from the command this is a response to.
+ * @param {string} xpath The XPath locator for the element to encode.
+ * @constructor
+ * @extends {safaridriver.message.Message}
+ */
+safaridriver.message.EncodeMessage = function(id, xpath) {
+  goog.base(this, safaridriver.message.Type.ENCODE);
+
+  this.setField(safaridriver.message.EncodeMessage.Field_.ID, id);
+  this.setField(safaridriver.message.EncodeMessage.Field_.XPATH, xpath);
+};
+goog.inherits(safaridriver.message.EncodeMessage,
+    safaridriver.message.Message);
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+safaridriver.message.EncodeMessage.Field_ = {
+  ID: 'id',
+  XPATH: 'xpath'
+};
+
+
+/**
+ * @param {!Object.<*>} data The data object to convert.
+ * @return {!safaridriver.message.EncodeMessage} The new message.
+ * @throws {Error} If the data object does not define a valid message.
+ * @private
+ */
+safaridriver.message.EncodeMessage.fromData_ = function(data) {
+  var id = data[safaridriver.message.EncodeMessage.Field_.ID];
+  var xpath = data[safaridriver.message.EncodeMessage.Field_.XPATH];
+  if (!goog.isString(id) || !goog.isString(xpath)) {
+    throw Error('Invalid message: ' + JSON.stringify(data));
+  }
+  return new safaridriver.message.EncodeMessage(id, xpath);
+};
+
+
+/** @return {string} This response's ID. */
+safaridriver.message.EncodeMessage.prototype.getId = function() {
+  return (/** @type {string} */this.getField(
+      safaridriver.message.EncodeMessage.Field_.ID));
+};
+
+
+/** @return {string} The XPath locator of the element to encode. */
+safaridriver.message.EncodeMessage.prototype.getXPath = function() {
+  return (/** @type {string} */this.getField(
+      safaridriver.message.EncodeMessage.Field_.XPATH));
 };
 
 

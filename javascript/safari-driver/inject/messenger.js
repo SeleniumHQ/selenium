@@ -111,6 +111,13 @@ safaridriver.inject.PageMessenger.prototype.onMessage = function(e) {
       message.send(safari.self.tab);
       break;
 
+    case safaridriver.message.Type.ENCODE:
+      this.log_.fine('Encoding element for another window');
+      this.onEncode_(
+          (/** @type {!safaridriver.message.EncodeMessage} */ message),
+          e.source);
+      break;
+
     case safaridriver.message.Type.LOADED:
       if (this.installed_ && this.installed_.isPending()) {
         this.installed_.resolve();
@@ -129,6 +136,30 @@ safaridriver.inject.PageMessenger.prototype.onMessage = function(e) {
       this.log_.fine('Unknown message: ' + message);
       break;
   }
+};
+
+
+/**
+ * @param {!safaridriver.message.EncodeMessage} message The message.
+ * @param {Window} source The window to respond to.
+ * @private
+ */
+safaridriver.inject.PageMessenger.prototype.onEncode_ = function(message,
+    source) {
+  if (!source) {
+    this.log_.severe('Not looking up element: ' + message.getXPath() +
+        '; no window to respond to!');
+    return;
+  }
+
+  var result = bot.inject.executeScript(function() {
+    var xpath = message.getXPath();
+    return bot.locators.xpath.single(xpath, document);
+  }, []);
+
+  var response = new safaridriver.message.ResponseMessage(
+      message.getId(), (/** @type {!webdriver.CommandResponse} */result));
+  response.send(source);
 };
 
 

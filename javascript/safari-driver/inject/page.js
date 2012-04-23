@@ -22,6 +22,8 @@ goog.provide('safaridriver.inject.page');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
+goog.require('bot.inject');
+goog.require('bot.locators.xpath');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
@@ -107,6 +109,13 @@ if (!safaridriver.inject.page.EXTENSION) {
 
 
 /**
+ * @type {!Object.<!webdriver.promise.Deferred>}
+ * @private
+ */
+safaridriver.inject.page.pendingResponses_ = {};
+
+
+/**
  * Responds to messages from the injected script.
  * @param {Event} e The message event.
  * @private
@@ -133,10 +142,15 @@ safaridriver.inject.page.onMessage_ = function(e) {
     case safaridriver.message.Type.COMMAND:
       safaridriver.inject.page.onCommand_(
           (/** @type {!safaridriver.message.CommandMessage} */message));
-      return;
+      break;
+
+    case safaridriver.message.Type.RESPONSE:
+      safaridriver.inject.page.onResponse_(
+          (/** @type {!safaridriver.message.ResponseMessage} */message));
+      break;
 
     default:
-      return;  // Ignore unknown message type.
+      break;  // Ignore unknown message type.
   }
 };
 
@@ -149,30 +163,75 @@ safaridriver.inject.page.onMessage_ = function(e) {
  */
 safaridriver.inject.page.onCommand_ = function(message) {
   var command = message.getCommand();
+
+  var response = new webdriver.promise.Deferred();
+  // When the response is resolved, we want to wrap it up in a message and
+  // send it back to the injected script. This does all that.
+  response.
+      then(function(value) {
+        var encodedValue = safaridriver.inject.page.encodeValue(value);
+        // If the command result contains any DOM elements from another
+        // document, the encoded value will contain promises that will resolve
+        // once the owner documents have encoded the elements. Therefore, we
+        // must wait for those to resolve.
+        return webdriver.promise.fullyResolved(encodedValue);
+      }).
+      then(function(value) {
+        return {
+          'status': bot.ErrorCode.SUCCESS,
+          'value': value
+        };
+      }, function(error) {
+        return webdriver.error.createResponse(error);
+      }).
+      then(function(response) {
+        var responseMessage = new safaridriver.message.ResponseMessage(
+            command.getId(), response);
+        safaridriver.inject.page.LOG_.info(
+            'Sending ' + command.getName() + ' response: ' + responseMessage);
+        responseMessage.send(window);
+      });
+
+  var handlerFn;
   switch (command.getName()) {
     case webdriver.CommandName.EXECUTE_ASYNC_SCRIPT:
-      safaridriver.inject.page.executeAsyncScript_(command);
+      handlerFn = safaridriver.inject.page.executeAsyncScript_;
       break;
 
     case webdriver.CommandName.EXECUTE_SCRIPT:
-      safaridriver.inject.page.executeScript_(command);
-      return;
+      handlerFn = safaridriver.inject.page.executeScript_;
+      break;
+  }
 
-    default:
-      throw Error('Unknown command: ' + command.getName());
+  if (handlerFn) {
+    handlerFn(command).then(response.resolve, response.reject);
+  } else {
+    response.reject(Error('Unknown command: ' + command.getName()));
   }
 };
 
 
 /**
- * Locates an element by XPath.
- * @param {string} xpath The XPath expression.
- * @return {Element} The located element or {@code null}.
+ * Handles response messages.
+ * @param {!safaridriver.message.ResponseMessage} message The message.
  * @private
  */
-safaridriver.inject.page.getElementByXpath_ = function(xpath) {
-  return document.evaluate(xpath, document, null,
-      XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue;
+safaridriver.inject.page.onResponse_ = function(message) {
+  var promise = safaridriver.inject.page.pendingResponses_[message.getId()];
+  if (!promise) {
+    safaridriver.inject.page.LOG_.warning(
+        'Received response to an unknown command: ' + message);
+    return;
+  }
+
+  var response = message.getResponse();
+  try {
+    webdriver.error.checkResponse(response);
+    var value = safaridriver.inject.page.decodeValue(response['value']);
+    promise.resolve(value);
+  } catch (ex) {
+    promise.reject(ex);
+  }
 };
 
 
@@ -208,11 +267,16 @@ safaridriver.inject.page.getElementXPath_ = function(element) {
  * Key used in an object literal to indicate it is the encoded representation of
  * a DOM element. The corresponding property's value will be a CSS selector for
  * the encoded elmeent.
+ *
+ * <p>Note, this constant is very intentionally initialized to a value other
+ * than the standard JSON wire protocol key for WebElements.
+ *
  * @type {string}
  * @const
  * @private
  */
-safaridriver.inject.page.ENCODED_ELEMENT_KEY_ = 'WebElement';
+safaridriver.inject.page.ENCODED_ELEMENT_KEY_ =
+    'ENCODED_' + bot.inject.ELEMENT_KEY;
 
 
 /**
@@ -220,7 +284,9 @@ safaridriver.inject.page.ENCODED_ELEMENT_KEY_ = 'WebElement';
  * document and sandboxed injected script. Any DOM element references will
  * be replaced with an object literal whose sole key is t
  * @param {*} value The value to encode.
- * @return {*} The encoded value.
+ * @return {*} The encoded value. Note, when called from the SafariDriver
+ *     extension's injected script, this value will _never_ be a
+ *     {@link webdriver.promise.Promise}.
  * @throws {Error} If the value is cannot be encoded (e.g. it is a function, or
  *     an array or object with a cyclical reference).
  */
@@ -242,13 +308,18 @@ safaridriver.inject.page.encodeValue = function(value) {
 
     case 'object':
       if (goog.dom.isElement(value)) {
-        // We don't permit elements belong to another document because we
-        // wouldn't be able to find them again on the other side when the
-        // element was decoded.
         if (value.ownerDocument !== document) {
-          throw Error('The element does not belong to this document: ' +
-              safaridriver.inject.page.getElementXPath_(
-                  (/** @type {!Element} */value)));
+          // When called from an extension, we should never try to encode an
+          // element belonging to another document. When called from page
+          // content, however, we can ask the element's parent window for its
+          // encoded representation.
+          if (safaridriver.inject.page.EXTENSION) {
+            throw Error('The element does not belong to this document: ' +
+                safaridriver.inject.page.getElementXPath_(
+                    (/** @type {!Element} */value)));
+          }
+          return safaridriver.inject.page.encodeElement_(
+              (/** @type {!Element} */value));
         }
 
         var encoded = {};
@@ -264,6 +335,24 @@ safaridriver.inject.page.encodeValue = function(value) {
     default:
       throw Error('Invalid value type: ' + type + ' => ' + value);
   }
+};
+
+
+/**
+ * @param {!Element} element The element to encode.
+ * @return {!webdriver.promise.Promise} A promise that will resolve to the
+ *     JSON representation of a WebElement.
+ */
+safaridriver.inject.page.encodeElement_ = function(element) {
+  var webElement = new webdriver.promise.Deferred();
+  var id = goog.string.getRandomString();
+  var xpath = safaridriver.inject.page.getElementXPath_(element);
+  var message = new safaridriver.message.EncodeMessage(id, xpath);
+  var doc = goog.dom.getOwnerDocument(element);
+  var win = (/** @type {!Window} */goog.dom.getWindow(doc));
+  message.send(win);
+  safaridriver.inject.page.pendingResponses_[id] = webElement;
+  return webElement.promise;
 };
 
 
@@ -300,7 +389,7 @@ safaridriver.inject.page.decodeValue = function(value) {
       if (keys.length == 1 &&
           keys[0] === safaridriver.inject.page.ENCODED_ELEMENT_KEY_) {
         var xpath = value[safaridriver.inject.page.ENCODED_ELEMENT_KEY_];
-        var element = safaridriver.inject.page.getElementByXpath_(xpath);
+        var element = bot.locators.xpath.single(xpath, document);
         if (!element) {
           throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
               'Unable to locate encoded element: ' + xpath);
@@ -319,10 +408,12 @@ safaridriver.inject.page.decodeValue = function(value) {
 /**
  * Handles an executeScript command.
  * @param {!safaridriver.Command} command The command to execute.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with
+ *     the script result.
  * @private
  */
 safaridriver.inject.page.executeScript_ = function(command) {
-  var response;
+  var response = new webdriver.promise.Deferred();
   try {
     // TODO: clean-up bot.inject.executeScript so it doesn't pull in so many
     // extra dependencies.
@@ -331,49 +422,25 @@ safaridriver.inject.page.executeScript_ = function(command) {
     var args = command.getParameter('args');
     args = (/** @type {!Array} */safaridriver.inject.page.decodeValue(args));
 
-    response = fn.apply(window, args);
-    console.log('script response', response);
-    response = safaridriver.inject.page.encodeValue(response);
-    response = {
-      'status': bot.ErrorCode.SUCCESS,
-      'value': response
-    };
+    var result = fn.apply(window, args);
+    response.resolve(result);
   } catch (ex) {
-    response = webdriver.error.createResponse(ex);
+    response.reject(ex);
   }
-  var responseMessage = new safaridriver.message.ResponseMessage(
-      command.getId(), response);
-  safaridriver.inject.page.LOG_.info(
-      'Sending executeScript response: ' + responseMessage);
-  responseMessage.send(window);
+
+  return response.promise;
 };
 
 
 /**
  * Handles an executeAsyncScript command.
  * @param {!safaridriver.Command} command The command to execute.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with
+ *     the script result.
  * @private
  */
 safaridriver.inject.page.executeAsyncScript_ = function(command) {
   var response = new webdriver.promise.Deferred();
-  // When the response is resolved, we want to wrap it up in a message and
-  // send it back to the injected script. This does all that.
-  response.
-      then(function(value) {
-        value = safaridriver.inject.page.encodeValue(value);
-        return {
-          'status': bot.ErrorCode.SUCCESS,
-          'value': value
-        };
-      }).
-      then(null, webdriver.error.createResponse).
-      then(function(response) {
-        var responseMessage = new safaridriver.message.ResponseMessage(
-            command.getId(), response);
-        safaridriver.inject.page.LOG_.info(
-            'Sending executeAsyncScript response: ' + responseMessage);
-        responseMessage.send(window);
-      });
 
   try {
     var script = (/** @type {string} */command.getParameter('script'));
@@ -412,4 +479,6 @@ safaridriver.inject.page.executeAsyncScript_ = function(command) {
       response.reject(ex);
     }
   }
+
+  return response.promise;
 };
