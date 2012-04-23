@@ -41,9 +41,9 @@ module Selenium
 
         def quit
           super
-          @launcher.quit
-
           nil
+        ensure
+          @launcher.quit
         end
 
         private
