@@ -53,7 +53,8 @@ public class Issue1586 {
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
-  @Test
+  // extremely slow test, for issue1586. Excluding from regression.
+  @Test(enabled=false)
   public void test() throws MalformedURLException {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = null;
