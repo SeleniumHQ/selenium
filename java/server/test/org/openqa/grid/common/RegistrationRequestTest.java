@@ -117,7 +117,7 @@ public class RegistrationRequestTest {
     String hubHost = "-" + RegistrationRequest.HUB_HOST;
     String hubPort = "-" + RegistrationRequest.HUB_PORT;
     RegistrationRequest req =
-        RegistrationRequest.build("-role", "rc", hubHost, "ABC", hubPort, "1234");
+        RegistrationRequest.build("-role", "rc", hubHost, "ABC", hubPort, "1234","-host","localhost");
 
     Assert.assertEquals(GridRole.NODE, req.getRole());
     Assert.assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
@@ -128,7 +128,7 @@ public class RegistrationRequestTest {
   @Test
   public void commandLineParamDefault() {
     String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC");
+    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
     Assert.assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
     Assert.assertEquals(4444, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
     // the node defaults to current IP.
@@ -139,7 +139,7 @@ public class RegistrationRequestTest {
   @Test
   public void commandLineParamDefaultCapabilities() {
     String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC");
+    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
     Assert.assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
     Assert.assertNotSame(0, req.getCapabilities().size());
 
@@ -148,12 +148,12 @@ public class RegistrationRequestTest {
   @Test
   public void registerParam() {
     String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC");
+    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
     Assert.assertEquals(true, req.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
 
     RegistrationRequest req2 =
         RegistrationRequest.build("-role", "rc", hubHost, "ABC", "-" +
-            RegistrationRequest.AUTO_REGISTER, "false");
+            RegistrationRequest.AUTO_REGISTER, "false","-host","localhost");
     Assert.assertEquals(false, req2.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
 
   }
