@@ -43,16 +43,6 @@ safaridriver.extension.Tab = function(browserTab) {
   this.browserTab_ = browserTab;
 
   /**
-   * A reference to the frame within {@code browserTab} that this instance is
-   * currently focused on.  While this value will always be the same
-   * SafariBrowserTab, the SafariWebPageProxy within it will always be a
-   * reference to the correct frame within the current content page.
-   * @type {!SafariBrowserTab}
-   * @private
-   */
-  this.currentFrame_ = browserTab;
-
-  /**
    * @type {string}
    * @private
    */
@@ -136,7 +126,7 @@ safaridriver.extension.Tab.prototype.log_ = function(msg, opt_level,
  */
 safaridriver.extension.Tab.prototype.whenReady = function(callback) {
   if (this.isReady_) {
-    callback(this.currentFrame_);
+    callback(this.browserTab_);
     return;
   }
 
@@ -204,7 +194,7 @@ safaridriver.extension.Tab.prototype.onNavigate_ = function(e) {
           self.log_('Tab is loading another page');
           return;
         }
-        self.readyListeners_.shift()(self.currentFrame_);
+        self.readyListeners_.shift()(self.browserTab_);
       }
     }, 100);
   }
@@ -288,19 +278,6 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
 safaridriver.extension.Tab.prototype.onMessage_ = function(e) {
   try {
     var message = safaridriver.message.Message.fromEvent(e);
-    if (message.isType(safaridriver.message.Type.ACTIVATE)) {
-      // A new frame, which is the target of this message, has been activated.
-      //
-      // Interestingly, even when target of this message (which is the frame
-      // that sent it) is different from our current target, the following will
-      // be true:
-      //   this.currentFrame_ === e.target
-      //   this.currentFrame_.page === e.target.page
-      //
-      // Nevertheless, by changing our focus to e.target, all future commands
-      // are indeed sent to the correct frame.
-      this.currentFrame_ = (/** @type {!SafariBrowserTab} */e.target);
-    }
     this.emit(message.getType(), message);
   } catch (ex) {
     this.log_(
