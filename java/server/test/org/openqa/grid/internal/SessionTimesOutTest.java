@@ -54,6 +54,7 @@ public class SessionTimesOutTest {
     config.put(CLEAN_UP_CYCLE, 400);
     
     config.put(ID, "abc");
+    config.put("host", "localhost");
 
     req.setConfiguration(config);
   }
@@ -235,6 +236,7 @@ public class SessionTimesOutTest {
         config.put(TIME_OUT, timeout);
         config.put(CLEAN_UP_CYCLE, cycle);
         config.put(ID, "abc");
+        config.put("host", "localhost");
 
         req.setConfiguration(config);
 

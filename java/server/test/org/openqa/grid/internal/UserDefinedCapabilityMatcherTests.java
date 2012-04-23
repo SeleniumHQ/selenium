@@ -12,7 +12,7 @@ public class UserDefinedCapabilityMatcherTests {
   @Test
   public void defaultsToDefaultMatcher() {
     Registry registry = Registry.newInstance();
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc");
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
@@ -27,7 +27,7 @@ public class UserDefinedCapabilityMatcherTests {
     String myMatcherClass = MyCapabilityMatcher.class.getCanonicalName();
     hubConfig.setCapabilityMatcher(myMatcherClass);
     Registry registry = Registry.newInstance((Hub)null,hubConfig);
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc");
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.ID, "abc","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 

@@ -63,6 +63,7 @@ public class StatusServletTests {
     GridHubConfiguration c = new GridHubConfiguration();
     c.getAllParams().put(RegistrationRequest.TIME_OUT, 12345);
     c.setPort(PortProber.findFreePort());
+    c.setHost("localhost");
     hub = new Hub(c);
     Registry registry = hub.getRegistry();
     httpClientFactory = new HttpClientFactory();

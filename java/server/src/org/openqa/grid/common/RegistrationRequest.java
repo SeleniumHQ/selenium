@@ -349,8 +349,9 @@ public class RegistrationRequest {
     }
   }
 
-  public static RegistrationRequest webdriverNoCapabilities() {
-    RegistrationRequest res = build("-role", "webdriver");
+  // TODO freynaud : this is only used in tests. Move the method ?
+  public static RegistrationRequest localWebdriverNoCapabilities() {
+    RegistrationRequest res = build("-role", "webdriver","-host","localhost");
     res.capabilities.clear();
     return res;
   }

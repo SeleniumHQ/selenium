@@ -63,6 +63,7 @@ public class RegistrationListenerTest {
     Map<String, Object> config = new HashMap<String, Object>();
     app1.put(APP, "app1");
     config.put(REMOTE_HOST, "http://machine1:4444");
+    config.put("host","localhost");
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);

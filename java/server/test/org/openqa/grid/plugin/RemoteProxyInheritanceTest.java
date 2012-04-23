@@ -42,7 +42,7 @@ public class RemoteProxyInheritanceTest {
   public void defaultToRemoteProxy() {
 
 
-    RegistrationRequest req = RegistrationRequest.webdriverNoCapabilities();
+    RegistrationRequest req = RegistrationRequest.localWebdriverNoCapabilities();
 
     Map<String, Object> app1 = new HashMap<String, Object>();
     Map<String, Object> config = new HashMap<String, Object>();
@@ -70,7 +70,7 @@ public class RemoteProxyInheritanceTest {
     config.put("Custom1", "A");
     config.put("Custom2", "B");
     config.put(ID, "abc");
-
+   
     req = new RegistrationRequest();
     req.addDesiredCapability(app1);
     req.setConfiguration(config);

@@ -86,7 +86,7 @@ public class BaseRemoteProxyTest {
     registry.getConfiguration().getAllParams().put("Boolean", true);
     registry.getConfiguration().getAllParams().put("Integer", 42);
 
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA");
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
@@ -104,7 +104,7 @@ public class BaseRemoteProxyTest {
     Registry registry = Registry.newInstance();
     registry.getConfiguration().getAllParams().put("A", "A1");
 
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "A2");
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "A2","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
@@ -118,7 +118,7 @@ public class BaseRemoteProxyTest {
     String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
     
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost);
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
@@ -130,7 +130,7 @@ public class BaseRemoteProxyTest {
   public void proxyWithIdSpecified() {
     String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc");
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
@@ -142,7 +142,7 @@ public class BaseRemoteProxyTest {
   public void timeouts() {
     String remoteHost ="http://machine1:5555";
     Registry registry = Registry.newInstance();
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc", "-timeout", "23", "-browserTimeout", "12");
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-"+RegistrationRequest.REMOTE_HOST, remoteHost,"-"+RegistrationRequest.ID, "abc", "-timeout", "23", "-browserTimeout", "12","-host","localhost");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
     Assert.assertEquals( 23, p.getTimeOut());
