@@ -50,18 +50,21 @@ module Selenium
 
           params.merge!(command_hash) if command_hash
 
-          @server.send :id         => @command_id.to_s,
-                       :name       => command,
-                       :parameters => params
+          @server.send(
+            :origin  => "webdriver",
+            :type    => "command",
+            :command => { :id => @command_id.to_s, :name => command, :parameters => params}
+          )
 
-          response = @server.receive
+          raw = @server.receive
+          response = raw.fetch('response')
 
           status_code = response['status']
           if status_code != 0
             raise Error.for_code(status_code), response['value']['message']
           end
 
-          if response['id'] != @command_id.to_s
+          if raw['id'] != @command_id.to_s
             raise Error::WebDriverError, "response id does not match command id"
           end
 
