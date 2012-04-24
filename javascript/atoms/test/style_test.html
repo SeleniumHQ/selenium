@@ -57,14 +57,6 @@
         assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
       }
 
-      function testEffectiveStyleReturnsColorStandardizedToRgbaFromHex() {
-        // TODO: BobS: Tests for getEffectiveStyle with color standardization
-        /*
-        var e = bot.locators.findElement({id: 'child'});
-        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
-        */
-      }
-
       function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
         var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
         assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
@@ -109,13 +101,17 @@
       function testGetAttributeShouldReturnStyleAttributeWithCaseOfValueMaintained() {
         var e = bot.locators.findElement({id: 'mixedCaseValues'});
         var style = bot.dom.getAttribute(e, 'style');
-        assertContains('left: 0px; text-align: center; background-image: url(', style);
+        assertContains('left: 0px;', style);
+        assertContains('text-align: center;', style);
+        assertContains('background-image: url(', style);
         assertContains('http://www.google.ca/Test.gif;?a=b&c=d', style);
       }
 
       function testGetAttributeShouldReturnStyleAttributeWithCaseOfPropertyNormalizedToLowercase() {
         var e = bot.locators.findElement({id: 'mixedCaseProperties'});
-        assertEquals('left: 0px; text-align: center;', bot.dom.getAttribute(e, 'style'));
+        var style = bot.dom.getAttribute(e, 'style');
+        assertContains('left: 0px;', style);
+        assertContains('text-align: center;', style);
       }
 
     </script>
