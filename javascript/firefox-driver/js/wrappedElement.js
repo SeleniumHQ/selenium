@@ -183,7 +183,11 @@ WebElement.clickElement.preconditions =
 WebElement.getElementText = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-  respond.value = webdriver.atoms.element.getText(element);
+  if (bot.dom.isElement(element, goog.dom.TagName.TITLE)) {
+    respond.value = respond.session.getBrowser().contentTitle;
+  } else {
+    respond.value = webdriver.atoms.element.getText(element);
+  }
   respond.send();
 };
 
