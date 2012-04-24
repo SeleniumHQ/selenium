@@ -182,4 +182,13 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    * @return <code>true</code> if the node has any test slots in use.
    */
   boolean isBusy();
+  
+  
+  /**
+   * Return how much resources are currently used on the proxy. Default implementation is runningTests / maxTests
+   * on the proxy. For a proxy with more knowledge about its resources, a finer implementation can also take into 
+   * account CPU usage, RAM usage etc.
+   * @return the percentage of the available resource used. Can be greater than 100 if the grid is under heavy load.
+   */
+  float getResourceUsageInPercent();
 }

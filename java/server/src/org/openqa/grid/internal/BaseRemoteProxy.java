@@ -450,8 +450,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     if (o == null) {
       return -1;
     }
-
-    return getTotalUsed() - o.getTotalUsed();
+    return (int)(getResourceUsageInPercent() - o.getResourceUsageInPercent());
   }
 
   @Override
@@ -517,5 +516,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     rd.close();
 
     return new JSONObject(s.toString());
+  }
+  
+  
+  public float getResourceUsageInPercent() {
+    float percent = 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
+    return percent;
   }
 }
