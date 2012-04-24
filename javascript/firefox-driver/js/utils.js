@@ -154,28 +154,6 @@ Utils.getActiveElement = function(doc) {
 };
 
 
-Utils.isInHead = function(element) {
-  while (element) {
-    if (element.tagName && element.tagName.toLowerCase() == "head") {
-      return true;
-    }
-    try {
-      element = element.parentNode;
-    } catch (e) {
-      // Fine. the DOM has dispeared from underneath us
-      return false;
-    }
-  }
-
-  return false;
-};
-
-
-Utils.isEnabled = function(element) {
-  return !!!element.disabled;
-};
-
-
 Utils.addToKnownElements = function(element) {
   var cache = {};
   Components.utils['import']('resource://fxdriver/modules/web_element_cache.js', cache);
@@ -208,17 +186,6 @@ Utils.isAttachedToDom = function(element) {
     parent = wrapNode(parent.parentNode);
   }
   return parent == documentElement;
-};
-
-
-Utils.platform = function(doc) {
-  if (!this.userAgentPlatformLowercase) {
-    var currentWindow = doc.defaultView;
-    this.userAgentPlatformLowercase =
-    currentWindow.navigator.platform.toLowerCase();
-  }
-
-  return this.userAgentPlatformLowercase;
 };
 
 
@@ -670,32 +637,6 @@ Utils.fireHtmlEvent = function(element, eventName) {
 };
 
 
-Utils.findForm = function(element) {
-  // Are we already on an element that can be used to submit the form?
-  try {
-    element.QueryInterface(Components.interfaces.nsIDOMHTMLButtonElement);
-    return element;
-  } catch(e) {
-  }
-
-  try {
-    var input =
-        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-    if (input.type == "image" || input.type == "submit")
-      return input;
-  } catch(e) {
-  }
-
-  var form = element;
-  while (form) {
-    if (form["submit"])
-      return form;
-    form = form.parentNode;
-  }
-  return undefined;
-};
-
-
 Utils.fireMouseEventOn = function(element, eventName, clientX, clientY) {
   Utils.triggerMouseEvent(element, eventName, clientX, clientY);
 };
@@ -711,50 +652,6 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
   event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY,
       false, false, false, false, 0, element);
   element.dispatchEvent(event);
-};
-
-
-Utils.findDocumentInFrame = function(browser, frameId) {
-  var frame = Utils.findFrame(browser, frameId);
-  return frame ? frame.document : null;
-};
-
-
-Utils.findFrame = function(browser, frameId) {
-  var stringId = "" + frameId;
-  var names = stringId.split(".");
-  var frame = browser.contentWindow;
-  for (var i = 0; i < names.length; i++) {
-    // Try a numerical index first
-    var index = names[i] - 0;
-    if (!isNaN(index)) {
-      frame = frame.frames[index];
-      if (frame) {
-        return frame;
-      }
-    } else {
-      // Fine. Use the name and loop
-      var found = false;
-      for (var j = 0; j < frame.frames.length; j++) {
-        var f = frame.frames[j];
-        var wholeRestOfName = names.slice(i).join(".");
-        if (f.name == wholeRestOfName || f.frameElement.id == wholeRestOfName) {
-          return f;
-        }
-        if (f.name == names[i] || f.frameElement.id == names[i]) {
-          frame = f;
-          found = true;
-          break;
-        }
-      }
-
-      if (!found) {
-        return null;
-      }
-    }
-  }
-
-  return frame;
 };
 
 
@@ -799,32 +696,6 @@ Utils.getElementLocation = function(element) {
   return location;
 };
 
-
-Utils.findElementsByXPath = function (xpath, contextNode, doc) {
-  var result = doc.evaluate(xpath, contextNode, null,
-      Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-  var indices = [];
-  var element = result.iterateNext();
-  while (element) {
-    var index = Utils.addToKnownElements(element);
-    indices.push(index);
-    element = result.iterateNext();
-  }
-  return indices;
-};
-
-Utils.locationsEqual = function(location1, location2) {
-  var locationProperties = ['x', 'y', 'width', 'height'];
-
-  for (var i in locationProperties) {
-    var p = locationProperties[i];
-    if (location1[p] !== location2[p]) {
-      return false;
-    }
-  }
-
-  return true;
-};
 
 Utils.getLocationViaAccessibilityInterface = function(element) {
   var retrieval = Utils.newInstance(
@@ -1024,18 +895,6 @@ Utils.unwrapParameters = function(wrappedParameters, doc) {
 };
 
 
-Utils.isArray_ = function(obj) {
-  return (obj !== undefined &&
-    obj.constructor.toString().indexOf("Array") != -1);
-};
-
-
-Utils.isHtmlCollection_ = function(obj) {
-  return (obj !== undefined && obj['length'] &&
-    obj['item'] && obj['namedItem']); 
-};
-
-
 Utils.wrapResult = function(result, doc) {
   result = fxdriver.moz.unwrap(result);
 
@@ -1093,30 +952,6 @@ Utils.wrapResult = function(result, doc) {
   }
 };
     
-/**
- * Gets canonical xpath of the passed element, e.g. /HTML[1]/BODY[1]/P[1]
- */
-Utils.getXPathOfElement = function(element) {
-  var path = "";
-  for (; element && element.nodeType == 1; element = element.parentNode) {
-    var index = Utils.getElementIndexForXPath_(element);
-    path = "/" + element.tagName + "[" + index + "]" + path;
-  }
-  return path;	
-};
-
-/**
- * Returns n for the nth child of the parent of that element, of type element.tagName, starting at 1
- */
-Utils.getElementIndexForXPath_ = function (element) {
-  var index = 1;
-  for (var sibling = element.previousSibling; sibling ; sibling = sibling.previousSibling) {
-    if (sibling.nodeType == 1 && sibling.tagName == element.tagName) {
-      index++;
-    }
-  }
-  return index;
-};
 
 Utils.loadUrl = function(url) {
   fxdriver.Logger.dumpn("Loading: " + url);

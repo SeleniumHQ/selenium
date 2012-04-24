@@ -24,28 +24,6 @@ goog.require('bot.dom');
 goog.require('Utils');
 
 
-
-/**
- * @param {!Element} element The element to use.
- * @return {boolean} Whether the element is in the HEAD of the document.
- */
-fxdriver.preconditions.isInHead_ = function(element) {
-  while (element) {
-    if (element.tagName && element.tagName.toLowerCase() == "head") {
-      return true;
-    }
-    try {
-      element = element.parentNode;
-    } catch (e) {
-      // Fine. the DOM has disappeared from underneath us
-      return false;
-    }
-  }
-
-  return false;
-};
-
-
 /**
  * Guard that checks whether or not the element would be considered visible.
  *
@@ -55,11 +33,6 @@ fxdriver.preconditions.isInHead_ = function(element) {
 fxdriver.preconditions.visible = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
 
-  if (fxdriver.preconditions.isInHead_(element)) {
-    return new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
-        'Element is in the document HEAD and so may not be interacted with');
-  }
-  
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return new WebDriverError(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with');
@@ -75,7 +48,7 @@ fxdriver.preconditions.visible = function(doc, parameters) {
 fxdriver.preconditions.enabled = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
 
-  if (!!element.disabled) {
+  if (!bot.dom.isEnabled(element)) {
     return new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
         'Element is disabled and so may not be used for actions');
   }

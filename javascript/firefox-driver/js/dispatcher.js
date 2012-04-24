@@ -221,8 +221,7 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.POST, Dispatcher.executeAs('submitElement'));
 
   this.bind_('/session/:sessionId/element/:id/value').
-      on(Request.Method.POST, Dispatcher.executeAs('sendKeysToElement')).
-      on(Request.Method.GET, Dispatcher.executeAs('getElementValue'));
+      on(Request.Method.POST, Dispatcher.executeAs('sendKeysToElement'));
 
   this.bind_('/session/:sessionId/element/:id/name').
       on(Request.Method.GET, Dispatcher.executeAs('getElementTagName'));

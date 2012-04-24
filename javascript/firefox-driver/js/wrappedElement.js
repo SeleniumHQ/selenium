@@ -183,35 +183,8 @@ WebElement.clickElement.preconditions =
 WebElement.getElementText = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-
-  if (element.tagName == "TITLE") {
-    respond.value = respond.session.getBrowser().contentTitle;
-  } else {
-    respond.value = webdriver.atoms.element.getText(element);
-  }
-
+  respond.value = webdriver.atoms.element.getText(element);
   respond.send();
-};
-
-
-WebElement.getElementValue = function(respond, parameters) {
-  var element = Utils.getElementAt(parameters.id,
-                                   respond.session.getDocument());
-
-  if (element["value"] !== undefined) {
-    respond.value = element.value;
-    respond.send();
-    return;
-  }
-
-  if (element.hasAttribute("value")) {
-    respond.value = element.getAttribute("value");
-    respond.send();
-    return;
-  }
-
-  throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
-      'Element does not have a value attribute');
 };
 
 
@@ -315,7 +288,7 @@ WebElement.getElementAttribute = function(respond, parameters) {
 WebElement.isElementEnabled = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
-  respond.value = Utils.isEnabled(element);
+  respond.value = bot.dom.isEnabled(element);
   respond.send();
 };
 
@@ -377,7 +350,7 @@ WebElement.isElementSelected = function(respond, parameters) {
   } catch(e) {
   }
 
-  respond.value = selected;
+ respond.value = selected;
   respond.send();
 };
 
