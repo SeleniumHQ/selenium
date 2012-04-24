@@ -232,7 +232,6 @@ namespace OpenQA.Selenium.Remote
         public IKeyboard Keyboard
         {
             get { return this.keyboard; }
-            set { this.keyboard = value; }
         }
 
         /// <summary>
@@ -241,7 +240,6 @@ namespace OpenQA.Selenium.Remote
         public IMouse Mouse
         {
             get { return this.mouse; }
-            set { this.mouse = value; }
         }
         #endregion
 

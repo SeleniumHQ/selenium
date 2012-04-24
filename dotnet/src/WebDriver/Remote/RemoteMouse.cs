@@ -90,7 +90,7 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("where", "where coordinates cannot be null");
             }
 
-            string elementId = ((RemoteWebElement)where.AuxiliaryLocator).InternalElementId;
+            string elementId = where.AuxiliaryLocator.ToString();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("element", elementId);
             this.driver.InternalExecute(DriverCommand.MouseMoveTo, parameters);
@@ -107,7 +107,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             if (where != null)
             {
-                string elementId = ((RemoteWebElement)where.AuxiliaryLocator).InternalElementId;
+                string elementId = where.AuxiliaryLocator.ToString();
                 parameters.Add("element", elementId);
             }
             else

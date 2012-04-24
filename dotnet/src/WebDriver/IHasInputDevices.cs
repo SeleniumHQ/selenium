@@ -29,13 +29,13 @@ namespace OpenQA.Selenium
     public interface IHasInputDevices
     {
         /// <summary>
-        /// Gets or sets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
+        /// Gets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
         /// </summary>
-        IKeyboard Keyboard { get; set; }
+        IKeyboard Keyboard { get; }
 
         /// <summary>
-        /// Gets or sets an <see cref="IMouse"/> object for sending mouse commands to the browser.
+        /// Gets an <see cref="IMouse"/> object for sending mouse commands to the browser.
         /// </summary>
-        IMouse Mouse { get; set; }
+        IMouse Mouse { get; }
     }
 }
