@@ -68,6 +68,7 @@ java_library(name = "tests",
     "io/*.java",
     "net/*.java",
     "os/*.java",
+    "support/ui/SelectElementTest.java",
   ],
   deps = [
     ":base",

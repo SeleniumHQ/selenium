@@ -25,6 +25,7 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.html5.Html5Tests;
 import org.openqa.selenium.interactions.InteractionTests;
+import org.openqa.selenium.support.ui.SelectElementTest;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 @RunWith(Suite.class)
@@ -59,6 +60,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
     PartialLinkTextMatchTest.class,
     RenderedWebElementTest.class,
     RotatableTest.class,
+    SelectElementTest.class,
     SelectElementHandlingTest.class,
     SlowLoadingPageTest.class,
     StaleElementReferenceTest.class,
