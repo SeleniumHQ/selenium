@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 WebDriver committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 WebDriver committers
 Copyright 2007-2009 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
-import static org.openqa.selenium.net.PortProber.findFreePort;
-
-import org.openqa.selenium.net.INetAddress;
-import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty7.server.Connector;
 import org.seleniumhq.jetty7.server.Handler;
 import org.seleniumhq.jetty7.server.Server;
@@ -38,16 +35,20 @@ import java.io.File;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
+import static org.openqa.selenium.net.PortProber.findFreePort;
+
 public class Jetty7AppServer implements AppServer {
 
   private static final String HOSTNAME_FOR_TEST_ENV_NAME = "HOSTNAME";
   private static final String ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME = "ALTERNATIVE_HOSTNAME";
   private static final String FIXED_HTTP_PORT_ENV_NAME = "TEST_HTTP_PORT";
   private static final String FIXED_HTTPS_PORT_ENV_NAME = "TEST_HTTPS_PORT";
+
+  private static final int DEFAULT_HTTP_PORT = 2310;
+  private static final int DEFAULT_HTTPS_PORT = 2410;
   private static final String DEFAULT_CONTEXT_PATH = "/common";
   private static final String JS_SRC_CONTEXT_PATH = "/javascript";
-  private static final String THIRD_PARTY_JS_CONTEXT_PATH =
-      "/third_party/closure/goog";
+  private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/closure/goog";
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
 
@@ -90,8 +91,7 @@ public class Jetty7AppServer implements AppServer {
 
     defaultContext = addWebApplication(DEFAULT_CONTEXT_PATH, path);
     jsContext = addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
-    thirdPartyJsContext = addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH,
-        thirdPartyJsRoot);
+    thirdPartyJsContext = addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, thirdPartyJsRoot);
 
     server.setHandler(handlers);
 
@@ -142,7 +142,7 @@ public class Jetty7AppServer implements AppServer {
   public String getAlternateHostName() {
     String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
     return alternativeHostnameFromProperty == null ?
-        networkUtils.getPrivateLocalAddress() : alternativeHostnameFromProperty;
+           networkUtils.getPrivateLocalAddress() : alternativeHostnameFromProperty;
   }
 
   public String whereIs(String relativeUrl) {
@@ -223,13 +223,12 @@ public class Jetty7AppServer implements AppServer {
     }
   }
 
-  public void addServlet(String name, String url,
-      Class<? extends Servlet> servletClass) {
+  public void addServlet(String name, String url, Class<? extends Servlet> servletClass) {
     addServlet(defaultContext, name, url, servletClass);
   }
 
   public void addServlet(WebAppContext context, String name, String url,
-      Class<? extends Servlet> servletClass) {
+                         Class<? extends Servlet> servletClass) {
     try {
       context.addServlet(new ServletHolder(servletClass), url);
     } catch (Exception e) {
@@ -242,7 +241,7 @@ public class Jetty7AppServer implements AppServer {
   }
 
   public void addFilter(Class<? extends Filter> filter, String path,
-      int dispatches) {
+                        int dispatches) {
     defaultContext.addFilter(filter, path, dispatches);
   }
 
@@ -250,8 +249,7 @@ public class Jetty7AppServer implements AppServer {
     return addWebApplication(contextPath, rootDir.getAbsolutePath());
   }
 
-  private WebAppContext addWebApplication(String contextPath,
-      String absolutePath) {
+  private WebAppContext addWebApplication(String contextPath, String absolutePath) {
     WebAppContext app = new WebAppContext();
     app.setContextPath(contextPath);
     app.setWar(absolutePath);
@@ -269,10 +267,14 @@ public class Jetty7AppServer implements AppServer {
 
   public static void main(String[] args) {
     Jetty7AppServer server = new Jetty7AppServer(detectHostname());
-    server.listenOn(2310);
-    System.out.println("Starting server on port 2310");
-    server.listenSecurelyOn(2410);
-    System.out.println("HTTPS on 2410");
+
+    server.listenOn(DEFAULT_HTTP_PORT);
+    System.out.println(String.format("Starting server on port %d", DEFAULT_HTTP_PORT));
+
+    server.listenSecurelyOn(DEFAULT_HTTPS_PORT);
+    System.out.println(String.format("HTTPS on %d", DEFAULT_HTTPS_PORT));
+
     server.start();
   }
+
 }
