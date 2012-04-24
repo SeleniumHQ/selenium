@@ -157,7 +157,7 @@ class SafariDriverServer {
         "// SafariDriver extension.",
         "window.onload = function() {",
         "  window.postMessage({",
-        "    'message': 'connect',",
+        "    'type': 'connect',",
         "    'origin': 'webdriver',",
         "    'url': 'ws://localhost:%d/wd'",
         "  }, '*');",

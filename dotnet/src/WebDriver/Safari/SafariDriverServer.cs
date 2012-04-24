@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariDriverServer.cs" company="WebDriver Committers">
+// <copyright file="SafariDriverServer.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -148,7 +148,7 @@ namespace OpenQA.Selenium.Safari
   <script>
     window.onload = function() {{
       window.postMessage({{
-        'message': 'connect',
+        'type': 'connect',
         'origin': 'webdriver',
         'url': 'ws://localhost:{0}/wd'
         }}, '*');

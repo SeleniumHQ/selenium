@@ -99,7 +99,7 @@ safaridriver.message.Message = function(type) {
 
   this.data_[safaridriver.message.Message.Field.ORIGIN] =
       safaridriver.message.ORIGIN;
-  this.data_[safaridriver.message.Message.Field.MESSAGE] = type;
+  this.data_[safaridriver.message.Message.Field.TYPE] = type;
 };
 
 
@@ -109,7 +109,7 @@ safaridriver.message.Message = function(type) {
  */
 safaridriver.message.Message.Field = {
   ORIGIN: 'origin',
-  MESSAGE: 'message'
+  TYPE: 'type'
 };
 
 
@@ -130,7 +130,7 @@ safaridriver.message.Message.fromEvent = function(event) {
   }
 
   var message;
-  switch(data[safaridriver.message.Message.Field.MESSAGE]) {
+  switch(data[safaridriver.message.Message.Field.TYPE]) {
     case safaridriver.message.Type.COMMAND:
       message = safaridriver.message.CommandMessage.fromData_(data);
       break;
@@ -171,7 +171,7 @@ safaridriver.message.Message.fromEvent = function(event) {
  */
 safaridriver.message.Message.fromData_ = function(data) {
   var type = (/** @type {safaridriver.message.Type} */ data[
-      safaridriver.message.Message.Field.MESSAGE]);
+      safaridriver.message.Message.Field.TYPE]);
   return new safaridriver.message.Message(type);
 };
 
@@ -182,7 +182,7 @@ safaridriver.message.Message.fromData_ = function(data) {
  * @param {*} value The field value; should be a JSON compatible value.
  */
 safaridriver.message.Message.prototype.setField = function(name, value) {
-  if (name === safaridriver.message.Message.Field.MESSAGE) {
+  if (name === safaridriver.message.Message.Field.TYPE) {
     throw Error('The specified field may not be overridden: ' + name);
   }
   this.data_[name] = value;
@@ -222,7 +222,7 @@ safaridriver.message.Message.prototype.getOrigin = function() {
  */
 safaridriver.message.Message.prototype.getType = function() {
   return (/** @type {string} */this.getField(
-      safaridriver.message.Message.Field.MESSAGE));
+      safaridriver.message.Message.Field.TYPE));
 };
 
 
@@ -232,7 +232,7 @@ safaridriver.message.Message.prototype.getType = function() {
  * @return {boolean} Whether this message is of the given type.
  */
 safaridriver.message.Message.prototype.isType = function(type) {
-  return this.getField(safaridriver.message.Message.Field.MESSAGE) === type;
+  return this.getField(safaridriver.message.Message.Field.TYPE) === type;
 };
 
 
