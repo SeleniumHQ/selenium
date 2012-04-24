@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Safari
         private bool connectionClosed;
         private IWebSocketConnection connection;
         private Queue<SafariCommand> commandQueue = new Queue<SafariCommand>();
-        private Queue<SafariResponse> responseQueue = new Queue<SafariResponse>();
+        private Queue<SafariResponseMessage> responseQueue = new Queue<SafariResponseMessage>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriverConnection"/> class.
@@ -58,7 +58,8 @@ namespace OpenQA.Selenium.Safari
         {
             SafariCommand wrappedCommand = new SafariCommand(command);
             this.commandQueue.Enqueue(wrappedCommand);
-            string commandJson = JsonConvert.SerializeObject(wrappedCommand);
+            SafariCommandMessage wrapper = new SafariCommandMessage(wrappedCommand);
+            string commandJson = JsonConvert.SerializeObject(wrapper);
             this.connection.Send(commandJson);
             return this.WaitForResponse(TimeSpan.FromSeconds(30));
         }
@@ -110,7 +111,7 @@ namespace OpenQA.Selenium.Safari
             {
                 if (this.responseQueue.Count != 0)
                 {
-                    response = this.responseQueue.Dequeue();
+                    response = this.responseQueue.Dequeue().Response;
                 }
             }
 
@@ -129,7 +130,7 @@ namespace OpenQA.Selenium.Safari
                 return;
             }
 
-            SafariResponse response = SafariResponse.FromJson(e.Message);
+            SafariResponseMessage response = SafariResponseMessage.FromJson(e.Message);
             if (this.commandQueue.Peek().Id != response.Id)
             {
                 throw new WebDriverException("Unmatched command/response ID pair");

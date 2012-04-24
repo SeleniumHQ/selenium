@@ -239,11 +239,12 @@
     <Compile Include="Safari\Internal\WebSocketServer.cs" />
     <Compile Include="Safari\Internal\WebSocketStatusCodes.cs" />
     <Compile Include="Safari\SafariCommand.cs" />
+    <Compile Include="Safari\SafariCommandMessage.cs" />
     <Compile Include="Safari\SafariDriver.cs" />
     <Compile Include="Safari\SafariDriverCommandExecutor.cs" />
     <Compile Include="Safari\SafariDriverConnection.cs" />
     <Compile Include="Safari\SafariDriverServer.cs" />
-    <Compile Include="Safari\SafariResponse.cs" />
+    <Compile Include="Safari\SafariResponseMessage.cs" />
     <Compile Include="ScreenOrientation.cs" />
     <Compile Include="Screenshot.cs" />
     <Compile Include="StaleElementReferenceException.cs" />

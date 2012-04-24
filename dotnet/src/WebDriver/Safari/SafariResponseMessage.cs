@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariResponse.cs" company="WebDriver Committers">
+﻿// <copyright file="SafariResponseMessage.cs" company="WebDriver Committers">
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -26,11 +26,14 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium.Safari
 {
     /// <summary>
-    /// Wraps a response object to give it a unique ID as required by the Safari extension.
+    /// Creates a WebSockets response message according to the SafariDriver specification.
     /// </summary>
-    public class SafariResponse : Response
+    public class SafariResponseMessage
     {
         private string id;
+        private string origin;
+        private string type;
+        private Response internalResponse;
 
         /// <summary>
         /// Gets or sets the ID of the command.
@@ -43,13 +46,43 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
+        /// Gets or sets the origin of the response message.
+        /// </summary>
+        [JsonProperty("origin")]
+        public string MessageOrigin
+        {
+            get { return this.origin; }
+            set { this.origin = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the type of the response message.
+        /// </summary>
+        [JsonProperty("type")]
+        public string MessageType
+        {
+            get { return this.type; }
+            set { this.type = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the internal response for the given command.
+        /// </summary>
+        [JsonProperty("response")]
+        public Response Response
+        {
+            get { return this.internalResponse; }
+            set { this.internalResponse = value; }
+        }
+
+        /// <summary>
         /// Returns a new <see cref="Response"/> from a JSON-encoded string.
         /// </summary>
         /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
-        public static new SafariResponse FromJson(string value)
+        public static SafariResponseMessage FromJson(string value)
         {
-            return JsonConvert.DeserializeObject<SafariResponse>(value);
+            return JsonConvert.DeserializeObject<SafariResponseMessage>(value);
         }
     }
 }
