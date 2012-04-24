@@ -578,9 +578,13 @@ int Element::GetContainingDocument(const bool use_dom_node,
 
   }
 
-  hr = dispatch_doc.QueryInterface<IHTMLDocument2>(doc);
-  if (FAILED(hr)) {
-    LOG(WARN) << "Found document but it's not the expected type";
+  try {
+    hr = dispatch_doc.QueryInterface<IHTMLDocument2>(doc);
+    if (FAILED(hr)) {
+      LOG(WARN) << "Found document but it's not the expected type";
+      return ENOSUCHDOCUMENT;
+    }
+  } catch(...) {
     return ENOSUCHDOCUMENT;
   }
 
@@ -604,8 +608,12 @@ int Element::GetParentDocument(IHTMLWindow2* parent_window,
     if (FAILED(hr)) {
       return ENOSUCHDOCUMENT;
     }
-    hr = parent_doc_dispatch->QueryInterface<IHTMLDocument2>(parent_doc);
-    if (FAILED(hr)) {
+    try {
+      hr = parent_doc_dispatch->QueryInterface<IHTMLDocument2>(parent_doc);
+      if (FAILED(hr)) {
+        return ENOSUCHDOCUMENT;
+      }
+    } catch(...) {
       return ENOSUCHDOCUMENT;
     }
   }
