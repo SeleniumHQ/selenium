@@ -111,7 +111,9 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->PopulateElementFinderMethods();
   this->current_browser_id_ = "";
   this->serialized_response_ = "";
+  this->initial_browser_url_ = "";
   this->ignore_protected_mode_settings_ = false;
+  this->enable_native_events_ = true;
   this->speed_ = 0;
   this->implicit_wait_timeout_ = 0;
   this->last_known_mouse_x_ = 0;
@@ -401,14 +403,23 @@ void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
 }
 
 int IECommandExecutor::CreateNewBrowser(void) {
-  DWORD dwProcId = this->factory_.LaunchBrowserProcess(this->port_,
-                                                       this->ignore_protected_mode_settings_);
-  if (dwProcId == NULL) {
+  vector<char> port_buffer(10);
+  _itoa_s(this->port_, &port_buffer[0], 10, 10);
+  std::string port(&port_buffer[0]);
+
+  std::string initial_url = this->initial_browser_url_;
+  if (this->initial_browser_url_ == "") {
+    initial_url = "http://localhost:" + port + "/";
+  }
+
+  DWORD process_id = this->factory_.LaunchBrowserProcess(initial_url,
+      this->ignore_protected_mode_settings_);
+  if (process_id == NULL) {
     this->is_waiting_ = false;
     return ENOSUCHDRIVER;
   }
   ProcessWindowInfo process_window_info;
-  process_window_info.dwProcessId = dwProcId;
+  process_window_info.dwProcessId = process_id;
   process_window_info.hwndBrowser = NULL;
   process_window_info.pBrowser = NULL;
   this->factory_.AttachToBrowser(&process_window_info);

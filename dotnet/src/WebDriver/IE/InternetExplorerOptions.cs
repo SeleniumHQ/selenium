@@ -50,11 +50,13 @@ namespace OpenQA.Selenium.IE
         // widespread use.
         private const string UseLegacyInternalServerCapability = "useLegacyInternalServer";
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
+        private const string InitialBrowserUrlCapability = "initialBrowserUrl";
 
         // This value should be flipped to false to make using the standalone server the default.
         // It should be removed entirely when the standalone server is in widespread use.
         private bool useInternalServer = true;
         private bool ignoreProtectedModeSettings;
+        private string initialBrowserUrl = string.Empty;
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the settings of the Internet Explorer Protected Mode.
@@ -63,6 +65,22 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.ignoreProtectedModeSettings; }
             set { this.ignoreProtectedModeSettings = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the initial URL displayed when IE is launched. If not set, the browser launches
+        /// with the internal startup page for the WebDriver server.
+        /// </summary>
+        /// <remarks>
+        /// By setting the  <see cref="IntroduceInstabilityByIgnoringProtectedModeSettings"/> to <see langword="true"/>
+        /// and this property to a correct URL, you can launch IE in the Internet Protected Mode zone. This can be helpful
+        /// to avoid the flakiness introduced by ignoring the Protected Mode settings. Nevertheless, setting Protected Mode
+        /// zone settings to the same value in the IE configuration is the preferred method.
+        /// </remarks>
+        public string InitialBrowserUrl
+        {
+            get { return this.initialBrowserUrl; }
+            set { this.initialBrowserUrl = value; }
         }
 
         /// <summary>
@@ -99,6 +117,11 @@ namespace OpenQA.Selenium.IE
             if (this.useInternalServer)
             {
                 capabilities.SetCapability(UseLegacyInternalServerCapability, true);
+            }
+
+            if (!string.IsNullOrEmpty(this.initialBrowserUrl))
+            {
+                capabilities.SetCapability(InitialBrowserUrlCapability, this.initialBrowserUrl);
             }
 
             return capabilities;

@@ -65,7 +65,7 @@ class BrowserFactory {
   BrowserFactory(void);
   virtual ~BrowserFactory(void);
 
-  DWORD LaunchBrowserProcess(const int port,
+  DWORD LaunchBrowserProcess(const std::string& initial_url,
                              const bool ignore_protected_mode_settings);
   IWebBrowser2* CreateBrowser();
   void AttachToBrowser(ProcessWindowInfo* procWinInfo);

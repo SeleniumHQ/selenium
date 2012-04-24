@@ -40,6 +40,8 @@ class NewSessionCommandHandler : public IECommandHandler {
       mutable_executor.set_ignore_protected_mode_settings(ignore_protected_mode_settings.asBool());
       Json::Value enable_native_events = it->second.get("enableNativeEvents", true);
       mutable_executor.set_enable_native_events(enable_native_events.asBool());
+      Json::Value initial_url = it->second.get("initialBrowserUrl", "");
+      mutable_executor.set_initial_browser_url(initial_url.asString());
     }
     int result_code = mutable_executor.CreateNewBrowser();
     if (result_code != SUCCESS) {

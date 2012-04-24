@@ -31,7 +31,7 @@ BrowserFactory::~BrowserFactory(void) {
   }
 }
 
-DWORD BrowserFactory::LaunchBrowserProcess(const int port,
+DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                                            const bool ignore_protected_mode_settings) {
   DWORD process_id = NULL;
   if (ignore_protected_mode_settings || this->ProtectedModeSettingsAreValid()) {
@@ -42,9 +42,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const int port,
     start_info.cb = sizeof(start_info);
     ::ZeroMemory(&proc_info, sizeof(proc_info));
 
-    std::wstringstream url_stream;
-    url_stream << L"http://localhost:" << port << L"/";
-    std::wstring initial_url(url_stream.str());
+    std::wstring wide_initial_url(CA2W(initial_url.c_str(), CP_UTF8));
 
     FARPROC proc_address = 0;
     HMODULE library_handle = ::LoadLibrary(IEFRAME_LIBRARY_NAME);
@@ -57,10 +55,10 @@ DWORD BrowserFactory::LaunchBrowserProcess(const int port,
       // guarantee a new session. Simply using CoCreateInstance to 
       // create the browser will merge sessions, making separate cookie
       // handling impossible.
-      ::IELaunchURL(initial_url.c_str(), &proc_info, NULL);
+      ::IELaunchURL(wide_initial_url.c_str(), &proc_info, NULL);
     } else {
       std::wstring executable_and_url = this->ie_executable_location_ +
-                                        L" " + initial_url;
+                                        L" " + wide_initial_url;
       LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
       wcscpy_s(command_line,
                executable_and_url.size() + 1,
