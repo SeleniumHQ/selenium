@@ -122,6 +122,9 @@ safaridriver.message.Message.Field = {
  */
 safaridriver.message.Message.fromEvent = function(event) {
   var data = event.message || event.data;
+  if (goog.isString(data)) {
+    data = JSON.parse(data);
+  }
 
   if (!goog.isObject(data) ||
       (!goog.isString(data[safaridriver.message.Message.Field.ORIGIN]) &&

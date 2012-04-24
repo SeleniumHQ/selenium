@@ -24,9 +24,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonException;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.webbitserver.WebSocketConnection;
 
@@ -73,8 +75,17 @@ class SafariDriverConnection {
     SafariCommand safariCommand = new SafariCommand(command);
     commands.put(safariCommand);
 
-    String raw = new BeanToJsonConverter().convert(safariCommand);
-    connection.send(raw);
+    String rawJsonCommand = new BeanToJsonConverter().convert(safariCommand);
+    try {
+      // TODO(jleyba): Introduce proper abstractions for this.
+      JSONObject message = new JSONObject()
+          .put("origin", "webdriver")
+          .put("type", "command")
+          .put("command", new JSONObject(rawJsonCommand));
+      connection.send(message.toString());
+    } catch (JSONException e) {
+      throw new JsonException(e);
+    }
 
     return responses.poll(3, TimeUnit.MINUTES);
   }
@@ -95,12 +106,16 @@ class SafariDriverConnection {
 
     Response response;
     try {
+      // TODO(jleyba): Introduce proper abstractions here.
       JSONObject jsonResponse = new JSONObject(message);
-      checkArgument(command.getId().equals(jsonResponse.getString("id")),
-          "Response ID<%s> does not match command ID<%s>",
-          jsonResponse.getString("id"), command.id);
 
-      response = new JsonToBeanConverter().convert(Response.class, message);
+      response = new JsonToBeanConverter().convert(Response.class,
+          jsonResponse.getJSONObject("response").toString());
+      if (response.getStatus() == ErrorCodes.SUCCESS) {
+        checkArgument(command.getId().equals(jsonResponse.getString("id")),
+            "Response ID<%s> does not match command ID<%s>",
+            jsonResponse.getString("id"), command.getId());
+      }
     } catch (Exception e) {
       response = new Response(command.getSessionId());
       response.setStatus(new ErrorCodes().toStatusCode(e));

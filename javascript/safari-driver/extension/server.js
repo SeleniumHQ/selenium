@@ -320,28 +320,22 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
   this.logMessage_('Received a message: ' + event.data);
 
   try {
-    var data = JSON.parse((/** @type {string} */event.data));
-    checkHasKey(data, 'id');
-    checkHasKey(data, 'name');
+    var message = safaridriver.message.Message.fromEvent(event);
+    if (!message.isType(safaridriver.message.Type.COMMAND)) {
+      throw Error('Not a command message: ' + message);
+    }
   } catch (ex) {
     this.send_(null, webdriver.error.createResponse(ex));
     return;
   }
 
-  var command = new safaridriver.Command(
-      data['id'], data['name'], data['parameters'] || {});
+  var command = message.getCommand();
 
   this.execute(command).
       addErrback(webdriver.error.createResponse).
       addCallback(function(response) {
         this.send_(command, response);
       }, this);
-
-  function checkHasKey(data, key) {
-    if (!goog.object.containsKey(data, key)) {
-      throw Error('Invalid command: missing "' + key + '" key');
-    }
-  }
 };
 
 
@@ -353,11 +347,10 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
  * @private
  */
 safaridriver.extension.Server.prototype.send_ = function(command, response) {
-  if (command) {
-    response['id'] = command.id;
-  }
+  var id = command ? command.id : '';
+  var message = new safaridriver.message.ResponseMessage(id, response);
 
-  var str = JSON.stringify(response);
+  var str = message.toString();
 
   this.logMessage_('Sending response: ' + str);
   if (!command && response['status'] === bot.ErrorCode.SUCCESS) {
