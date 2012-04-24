@@ -45,7 +45,7 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
     capabilities["version"] = version_string;
     capabilities["javascriptEnabled"] = true;
     capabilities["platform"] = "WINDOWS";
-    capabilities["nativeEvents"] = true;
+    capabilities["nativeEvents"] = executor.enable_native_events();
     capabilities["cssSelectorsEnabled"] = true;
     capabilities["takesScreenshot"] = true;
     capabilities["handlesAlerts"] = true;

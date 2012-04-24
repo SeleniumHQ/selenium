@@ -157,6 +157,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->ignore_protected_mode_settings_ = ignore_settings;
   }
 
+  bool enable_native_events(void) const {
+    return this->enable_native_events_;
+  }
+  void set_enable_native_events(const bool enable_native_events) {
+    this->enable_native_events_ = enable_native_events;
+  }
+
   ElementFinder element_finder(void) const { return this->element_finder_; }
 
   int browser_version(void) const { return this->factory_.browser_version(); }
@@ -193,6 +200,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   std::string session_id_;
   int port_;
   bool ignore_protected_mode_settings_;
+  bool enable_native_events_;
 
   Command current_command_;
   std::string serialized_response_;
