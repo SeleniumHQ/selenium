@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public object AuxiliaryLocator
         {
-            get { return this.element.InternalElementId; }
+            get { return this.element; }
         }
         #endregion
     }
