@@ -23,6 +23,7 @@ import com.sun.jna.platform.win32.WinNT;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ public class WindowsProcessGroup implements OsProcess {
   private Kernel32 Kernel32;
   private String cmd;
   private WinNT.HANDLE hJob;
+  private String workingDirectory = null;
 
   public WindowsProcessGroup(String executable, String... args) {
     Kernel32 = Kernel32.INSTANCE;
@@ -80,6 +82,10 @@ public class WindowsProcessGroup implements OsProcess {
     throw new UnsupportedOperationException("setInput");
   }
 
+  public void setWorkingDirectory(File workingDirectory) {
+    this.workingDirectory = workingDirectory.getAbsolutePath();
+  }
+
   public void executeAsync() {
     WinBase.STARTUPINFO si = new WinBase.STARTUPINFO();
     si.clear();
@@ -114,7 +120,7 @@ public class WindowsProcessGroup implements OsProcess {
         false, // Set handle inheritance to FALSE.
         new WinDef.DWORD(4 | 16777216), // Suspend so we can add to job | Allow ourselves to breakaway from Vista's PCA if necessary
         null,  // Use parent's environment block.
-        null,  // Use parent's starting directory.
+        workingDirectory,  // Use provided working directory, parent's directory if null.
         si,    // Pointer to STARTUPINFO structure.
         pi);   // Pointer to PROCESS_INFORMATION structure.
     if (!result) {

@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriverException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -150,6 +151,10 @@ SeleniumWatchDog watchdog = executeWatchdog;
 
   public void setInput(String allInput) {
     this.allInput = allInput;
+  }
+
+  public void setWorkingDirectory(File workingDirectory) {
+    executor.setWorkingDirectory(workingDirectory);
   }
 
   @Override

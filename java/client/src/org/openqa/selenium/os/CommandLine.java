@@ -210,6 +210,10 @@ public class CommandLine {
     process.setInput(allInput);
   }
 
+  public void setWorkingDirectory(String workingDirectory) {
+    process.setWorkingDirectory(new File(workingDirectory));
+  }
+
   @Override
   public String toString() {
     return process.toString();

@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.os;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ interface OsProcess {
   void copyOutputTo(OutputStream out);
 
   void setInput(String allInput);
+
+  void setWorkingDirectory(File workingDirectory);
 
   void executeAsync();
 
