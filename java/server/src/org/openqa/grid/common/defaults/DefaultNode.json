@@ -30,6 +30,10 @@
           "browserName": "internet explorer",
           "maxInstances": 1,
           "seleniumProtocol": "WebDriver"
+        }, {
+          "browserName": "opera",
+          "maxInstances": 5,
+          "seleniumProtocol": "WebDriver"
         }
       ],
   "configuration":
