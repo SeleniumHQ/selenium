@@ -271,6 +271,44 @@ bot.dom.BOOLEAN_ATTRIBUTES_ = [
 
 
 /**
+ * Regex to split on semicolons, but not when enclosed in parens or quotes.
+ * Helper for parseStyleAttribute_.
+ * If the style attribute ends with a semicolon this will include an empty string at the end of the array
+ * @type {RegExp}
+ * @private
+ */
+bot.dom.splitStyleAttributeOnSemicolonsRe_ =
+    /[;]+(?=(?:(?:[^"]*"){2})*[^"]*$)(?=(?:(?:[^']*'){2})*[^']*$)(?=(?:[^()]*\([^()]*\))*[^()]*$)/;
+
+
+/**
+ * Standardize a style attribute value, which includes:
+ // (1) converting all property names lowercase
+ // (2) ensuring it ends in a trailing semi-colon
+ // (3) removing empty style values (which only appear on Opera).
+ * @param {string} value The style attribute value.
+ * @return {string} The identical value, with the formatting rules described above applied.
+ * @private
+ */
+bot.dom.standardizeStyleAttribute_ = function(value) {
+  var styleArray = value.split(bot.dom.splitStyleAttributeOnSemicolonsRe_);
+  var css = [];
+  goog.array.forEach(styleArray, function(pair) {
+    var i = pair.indexOf(':');
+    if (i > 0) {
+      var keyValue = [pair.slice(0,i), pair.slice(i+1)];
+      if (keyValue.length == 2) {
+        css.push(keyValue[0].toLowerCase(), ':', keyValue[1], ';');
+      }
+    }
+  });
+  css = css.join('');
+  css = css.charAt(css.length - 1) == ';' ? css : css + ';';
+  return goog.userAgent.OPERA ? css.replace(/\w+:;/g, '') : css;
+};
+
+
+/**
  * Get the user-specified value of the given attribute of the element, or null
  * if no such value. This method endeavours to return consistent values between
  * browsers. For boolean attributes such as "selected" or "checked", it returns
@@ -293,14 +331,10 @@ bot.dom.getAttribute = function(element, attributeName) {
 
   // The style attribute should be a css text string that includes only what
   // the HTML element specifies itself (excluding what is inherited from parent
-  // elements or style sheets). We standardize the format of this string by:
-  // (1) converting it to lowercase
-  // (2) ensuring it ends in a trailing semi-colon
-  // (3) removing empty style values (which only appear on Opera).
+  // elements or style sheets). We standardize the format of this string via the
+  // standardizeStyleAttribute method.
   if (attributeName == 'style') {
-    var css = goog.string.trim(element.style.cssText).toLowerCase();
-    css = css.charAt(css.length - 1) == ';' ? css : css + ';';
-    return goog.userAgent.OPERA ? css.replace(/\w+:;/g, '') : css;
+    return bot.dom.standardizeStyleAttribute_(element.style.cssText);
   }
 
   var attr = element.getAttributeNode(attributeName);
@@ -916,6 +950,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
  * @return {number} Opacity between 0 and 1.
  */
 bot.dom.getOpacity = function(elem) {
+  // TODO: BobS: Does this need to deal with rgba colors?
   if (!goog.userAgent.IE) {
     return bot.dom.getOpacityNonIE_(elem);
   } else {

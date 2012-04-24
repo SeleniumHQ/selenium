@@ -57,6 +57,14 @@
         assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
       }
 
+      function testEffectiveStyleReturnsColorStandardizedToRgbaFromHex() {
+        // TODO: BobS: Tests for getEffectiveStyle with color standardization
+        /*
+        var e = bot.locators.findElement({id: 'child'});
+        assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
+        */
+      }
+
       function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
         var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
         assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
@@ -97,6 +105,19 @@
         var expected = ['green', 'rgb(0, 128, 0)', '#008000'];
         assert(goog.array.contains(expected, color));
       }
+
+      function testGetAttributeShouldReturnStyleAttributeWithCaseOfValueMaintained() {
+        var e = bot.locators.findElement({id: 'mixedCaseValues'});
+        var style = bot.dom.getAttribute(e, 'style');
+        assertContains('left: 0px; text-align: center; background-image: url(', style);
+        assertContains('http://www.google.ca/Test.gif;?a=b&c=d', style);
+      }
+
+      function testGetAttributeShouldReturnStyleAttributeWithCaseOfPropertyNormalizedToLowercase() {
+        var e = bot.locators.findElement({id: 'mixedCaseProperties'});
+        assertEquals('left: 0px; text-align: center;', bot.dom.getAttribute(e, 'style'));
+      }
+
     </script>
 
     <style type="text/css">
@@ -116,6 +137,10 @@
     </div>
 
     <div id="green" style="background-color:green; width:100px; height:50px">
+    </div>
+    <div id="mixedCaseProperties" style="Left: 0px; Text-align: center;">
+    </div>
+    <div id="mixedCaseValues" style="left: 0px; text-align: center; background-image: url(http://www.google.ca/Test.gif;?a=b&c=d);">
     </div>
   </body>
 </html>

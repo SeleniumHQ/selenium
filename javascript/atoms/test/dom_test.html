@@ -124,6 +124,61 @@
       assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
     }
   }
+
+  function testStandardizeStyleAttributeReturnsIdenticalStringWithLowercasedPropertyNames() {
+    toTest = [
+      {input: "Left: 0px; Text-align: center;",
+        expected: "left: 0px; text-align: center;"},
+      {input: "background-image: url('http://www.google.ca/Test.gif');",
+        expected: "background-image: url('http://www.google.ca/Test.gif');"},
+      {input: "-ms-filter: 'progid:DXImageTransform(strength=50)," +
+          " progid:DXImageTransform.(mirror=1)';",
+        expected: "-ms-filter: 'progid:DXImageTransform(strength=50)," +
+            " progid:DXImageTransform.(mirror=1)';"}
+    ];
+    for (var i in toTest) {
+      assertObjectEquals(toTest[i].expected,
+          bot.dom.standardizeStyleAttribute_(toTest[i].input));
+    }
+  }
+
+  function testStandardizeStyleAttributeAppendsAMissingSemicolonToTheEndOfTheString() {
+    assertEquals("background-color:green; width:100px; height:50px;",
+        bot.dom.standardizeStyleAttribute_(
+            "background-color:green; width:100px; height:50px")
+    );
+  }
+
+  function testStandardizeStyleAttributeShouldWorkWithQuotesAndParens() {
+    toTest = [
+      {input: "key:value", expected: "key:value;"},
+      {input: "key:value;", expected: "key:value;"},
+      {input: "key1:value1; key2: value2",
+        expected: "key1:value1; key2: value2;"},
+      {input: "key1:value1; key2: value2(semi;colons;in;here;)",
+        expected: "key1:value1; key2: value2(semi;colons;in;here;);"},
+      {input: "key1:value1; key2: 'string; with; semicolons; and more';",
+        expected: "key1:value1; key2: 'string; with; semicolons; and more';"},
+      {input: "key1:value1; key2: 'string; with; semicolons; and more'",
+        expected: "key1:value1; key2: 'string; with; semicolons; and more';"},
+      {input: "key1:value1;" +
+          " key2: url('something;with;semicolons;?oh=yeah&x=y');" +
+          " key3:'string;with;semicolons;'",
+        expected: "key1:value1;" +
+            " key2: url('something;with;semicolons;?oh=yeah&x=y');" +
+            " key3:'string;with;semicolons;';"},
+      {input: "key1:\"double;quoted;string!\";" +
+          " key2:'single;quoted;string;';" +
+          " key3:it(is;in;parens);",
+        expected: "key1:\"double;quoted;string!\";" +
+            " key2:'single;quoted;string;'; key3:it(is;in;parens);"}
+    ];
+    for (var i in toTest) {
+      assertObjectEquals(toTest[i].expected,
+          bot.dom.standardizeStyleAttribute_(toTest[i].input));
+    }
+  }
+
 </script>
 <div id="green" style="background-color:green; width:100px; height:50px">
 <div id="red" style="background-color:red; width:50px; height:25px; position:
