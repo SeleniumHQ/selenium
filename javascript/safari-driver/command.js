@@ -17,14 +17,15 @@
 goog.provide('safaridriver.Command');
 
 goog.require('webdriver.Command');
+goog.require('webdriver.CommandName');
 
 
 /**
  * Describes a command to execute.
  * @param {string} id The command identifier, used to synchronize between two
  *     end points in the WebDriver wire protocol.
- * @param {(string|!webdriver.Command)} nameOrCommand Either the command name or
- *     another command to wrap.
+ * @param {!(webdriver.CommandName|webdriver.Command)} nameOrCommand Either the
+ *     command name or another command to wrap.
  * @param {!Object.<*>=} opt_parameters The command parameters; ignored if
  *     {@code nameOrCommand} is a command object.
  * @constructor

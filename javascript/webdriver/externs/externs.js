@@ -46,3 +46,17 @@ var NodeHttpResponse;
 function require(str) {}
 
 
+/** @type {!Object} */
+var JSON = {};
+
+/**
+ * @param {string} value
+ * @return {!Object}
+ */
+JSON.parse = function(value) {};
+
+/**
+ * @param {*} value
+ * @return {string}
+ */
+JSON.stringify = function(value) {};

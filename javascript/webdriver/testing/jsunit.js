@@ -216,7 +216,7 @@ webdriver.testing.jsunit.TestRunner.prototype.onComplete_ = function() {
   }
 
   this.writeLog(log);
-  this.client_.sendResultsEvent(this.isSuccess(), this.getReport());
+  this.client_.sendResultsEvent(this.isSuccess(), this.getReport(true));
 };
 
 

@@ -17,6 +17,7 @@ limitations under the License.
 <title>execute_async_script_test.html</title>
 <script src="../test/test_bootstrap.js"></script>
 <script>
+  goog.require('bot.userAgent');
   goog.require('goog.userAgent');
   goog.require('goog.userAgent.product');
   goog.require('webdriver.Builder');
@@ -159,11 +160,23 @@ function testShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
 }
 
 function testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
-  var url = new goog.Uri(window.location.href);
-  url.setPath('/');
+  // Avoid actually triggering an unload event and keep things as stable as
+  // possible. Unfortunately, we can't fire an unload event manually for IE,
+  // so we force one with doc.open/close.  See:
+  // http://msdn.microsoft.com/en-us/library/ms536973(v=vs.85).aspx
+  var script;
+  if (bot.userAgent.IE_DOC_PRE9) {
+    script = 'document.open(); document.close();';
+  } else {
+    script = [
+      'var event = frameWin.document.createEvent("HTMLEvents");',
+      'event.initEvent("unload", true, true);',
+      'frameWin.dispatchEvent(event);'
+    ].join('');
+  }
+
   driver.manage().timeouts().setScriptTimeout(100);
-  driver.executeAsyncScript("window.location = '" + url + "';").
-      addCallbacks(
+  driver.executeAsyncScript(script).addCallbacks(
       function() {
         fail('Page load should have triggered an error.');
       },

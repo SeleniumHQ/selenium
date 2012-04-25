@@ -30,7 +30,6 @@ goog.require('webdriver.process');
  *     module's source. If an error occurs while loading the source, it will be
  *     passed as the first argument to the callback. Otherwise, the source
  *     contents will be passed as the second argument (and null for the first).
- * @export
  */
 webdriver.node.toSource = (function() {
   /**
@@ -87,7 +86,6 @@ webdriver.node.checkIsNative_ = function() {
  *     to.
  * @constructor
  * @implements {webdriver.http.Client}
- * @export
  */
 webdriver.node.HttpClient = function(url) {
   webdriver.node.checkIsNative_();

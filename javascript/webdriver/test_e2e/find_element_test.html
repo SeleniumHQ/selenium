@@ -48,8 +48,7 @@ limitations under the License.
   function testCanFindElementByCssSelector() {
     assertThat(element('div.root').getAttribute('id'),
         equals('test-dom'));
-    assertThat(element('div.root div:nth-child(2)').getInnerHtml(),
-        equals('child 2'));
+    assertThat(element('div.root div').getInnerHtml(), equals('child 1'));
 
     function element(selector) {
       return driver.findElement(By.css(selector));

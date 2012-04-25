@@ -24,7 +24,6 @@ goog.provide('webdriver.EventEmitter');
  * of Closure's event system because it is much more light weight. The API is
  * based on Node's EventEmitters.
  * @constructor
- * @export
  */
 webdriver.EventEmitter = function() {
   /**
@@ -40,7 +39,6 @@ webdriver.EventEmitter = function() {
  * Fires an event and calls all listeners.
  * @param {string} type The type of event to emit.
  * @param {...*} var_args Any arguments to pass to each listener.
- * @export
  */
 webdriver.EventEmitter.prototype.emit = function(type, var_args) {
   var args = Array.prototype.slice.call(arguments, 1);
@@ -84,7 +82,6 @@ webdriver.EventEmitter.prototype.listeners = function(type) {
  * @param {boolean=} opt_oneshot Whether the listener should be removed after
  *    the first event is fired.
  * @return {!webdriver.EventEmitter} A self reference.
- * @export
  */
 webdriver.EventEmitter.prototype.addListener = function(type, listener,
                                                         opt_oneshot) {
@@ -110,7 +107,6 @@ webdriver.EventEmitter.prototype.addListener = function(type, listener,
  * @param {string} type The type of event to listen for.
  * @param {!Function} listener The function to invoke when the event is fired.
  * @return {!webdriver.EventEmitter} A self reference.
- * @export
  */
 webdriver.EventEmitter.prototype.once = function(type, listener) {
   return this.addListener(type, listener, true);
@@ -122,7 +118,6 @@ webdriver.EventEmitter.prototype.once = function(type, listener) {
  * @param {string} type The type of event to listen for.
  * @param {!Function} listener The function to invoke when the event is fired.
  * @return {!webdriver.EventEmitter} A self reference.
- * @export
  */
 webdriver.EventEmitter.prototype.on =
     webdriver.EventEmitter.prototype.addListener;
@@ -133,7 +128,6 @@ webdriver.EventEmitter.prototype.on =
  * @param {string} type The type of event to unregister.
  * @param {!Function} listener The handler function to remove.
  * @return {!webdriver.EventEmitter} A self reference.
- * @export
  */
 webdriver.EventEmitter.prototype.removeListener = function(type, listener) {
   var listeners = this.events_[type];
@@ -155,7 +149,6 @@ webdriver.EventEmitter.prototype.removeListener = function(type, listener) {
  * specified, all listeners across all types will be removed.
  * @param {string=} opt_type The type of event to remove listeners from.
  * @return {!webdriver.EventEmitter} A self reference.
- * @export
  */
 webdriver.EventEmitter.prototype.removeAllListeners = function(opt_type) {
   goog.isDef(opt_type) ? delete this.events_[opt_type] : this.events_ = {};

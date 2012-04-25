@@ -1186,6 +1186,30 @@ function testCallbackRegistersAnotherListener_recursiveCallbacks() {
   assertArrayEquals(['a', 'b', 'c', 'd', 'done'], messages);
 }
 
+
+function testThenReturnsOwnPromiseIfNoCallbacksWereGiven() {
+  var deferred = new webdriver.promise.Deferred();
+  assertEquals(deferred.promise, deferred.then());
+  assertEquals(deferred.promise, deferred.promise.then());
+  assertEquals(deferred.promise, webdriver.promise.when(deferred));
+  assertEquals(deferred.promise, webdriver.promise.when(deferred.promise));
+}
+
+
+function testIsStillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen() {
+  webdriver.promise.rejected('ouch').then();
+  var handler = callbackHelper(function(value) {
+    assertEquals('ouch', value);
+  });
+
+  // so tearDown() doesn't throw
+  var app = webdriver.promise.Application.getInstance();
+  app.reset();
+  app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, handler);
+  clock.tick();
+  handler.assertCalled();
+}
+
 </script>
 </body>
 </html>

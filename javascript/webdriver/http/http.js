@@ -58,7 +58,6 @@ webdriver.http.Client.prototype.send = function(request, callback) {
  *     requests to the server.
  * @constructor
  * @implements {webdriver.CommandExecutor}
- * @export
  */
 webdriver.http.Executor = function(client) {
 
@@ -240,6 +239,14 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           get('/session/:sessionId/element/:id/equals/:other')).
       put(webdriver.CommandName.SWITCH_TO_WINDOW,
           post('/session/:sessionId/window')).
+      put(webdriver.CommandName.GET_WINDOW_POSITION,
+          get('/session/:sessionId/window/:windowHandle/position')).
+      put(webdriver.CommandName.SET_WINDOW_POSITION,
+          post('/session/:sessionId/window/:windowHandle/position')).
+      put(webdriver.CommandName.GET_WINDOW_SIZE,
+          get('/session/:sessionId/window/:windowHandle/size')).
+      put(webdriver.CommandName.SET_WINDOW_SIZE,
+          post('/session/:sessionId/window/:windowHandle/size')).
       put(webdriver.CommandName.SWITCH_TO_FRAME,
           post('/session/:sessionId/frame')).
       put(webdriver.CommandName.GET_PAGE_SOURCE,

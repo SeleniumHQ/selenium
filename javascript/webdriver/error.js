@@ -21,7 +21,7 @@ goog.require('bot.ErrorCode');
 
 
 /**
- * @typedef {{status:bot.ErrorCode, value:(*|{message:string})}}
+ * @typedef {{status: bot.ErrorCode, value: (*|{message: string})}}
  */
 webdriver.error.ResponseObject;
 

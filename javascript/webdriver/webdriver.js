@@ -22,6 +22,7 @@ goog.provide('webdriver.WebDriver.Navigation');
 goog.provide('webdriver.WebDriver.Options');
 goog.provide('webdriver.WebDriver.TargetLocator');
 goog.provide('webdriver.WebDriver.Timeouts');
+goog.provide('webdriver.WebDriver.Window');
 goog.provide('webdriver.WebElement');
 
 goog.require('bot.Error');
@@ -68,7 +69,6 @@ goog.require('webdriver.promise.Promise');
  * @param {!webdriver.CommandExecutor} executor The executor to use when
  *     sending commands to the browser.
  * @constructor
- * @export
  */
 webdriver.WebDriver = function(session, executor) {
 
@@ -94,7 +94,6 @@ webdriver.WebDriver = function(session, executor) {
  *     querying for session details.
  * @param {string} sessionId ID of the session to attach to.
  * @return {!webdriver.WebDriver} A new client for the specified session.
- * @export
  */
 webdriver.WebDriver.attachToSession = function(executor, sessionId) {
   return webdriver.WebDriver.acquireSession_(executor,
@@ -111,7 +110,6 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
  * @param {!Object.<*>} desiredCapabilities The desired capabilities for the
  *     new session.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
- * @export
  */
 webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
   return webdriver.WebDriver.acquireSession_(executor,
@@ -278,7 +276,6 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
 
 /**
  * @return {!webdriver.promise.Promise} A promise for this client's session.
- * @export
  */
 webdriver.WebDriver.prototype.getSession = function() {
   return webdriver.promise.when(this.session_);
@@ -290,7 +287,6 @@ webdriver.WebDriver.prototype.getSession = function() {
  * @param {string} name The name of the capability to query.
  * @return {!webdriver.promise.Promise} A promise that will resolve with the
  *     given capability once its value is ready.
- * @export
  */
 webdriver.WebDriver.prototype.getCapability = function(name) {
   return webdriver.promise.when(this.session_, function(session) {
@@ -305,7 +301,6 @@ webdriver.WebDriver.prototype.getCapability = function(name) {
  * against the browser.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     the command has completed.
- * @export
  */
 webdriver.WebDriver.prototype.quit = function() {
   var result = this.schedule(
@@ -355,7 +350,6 @@ webdriver.WebDriver.prototype.quit = function() {
  * @param {...*} var_args The arguments to pass to the script.
  * @return {!webdriver.promise.Promise} A promise that will resolve to the
  *    scripts return value.
- * @export
  */
  webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
   if (goog.isFunction(script)) {
@@ -447,7 +441,6 @@ webdriver.WebDriver.prototype.quit = function() {
  * @param {...*} var_args The arguments to pass to the script.
  * @return {!webdriver.promise.Promise} A promise that will resolve to the
  *    scripts return value.
- * @export
  */
 webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
   if (goog.isFunction(script)) {
@@ -468,7 +461,6 @@ webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
  * @param {...*} var_args Any arguments to pass to the function.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     function's result.
- * @export
  */
 webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
   var args = goog.array.slice(arguments, 2);
@@ -492,7 +484,6 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
  *     out.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     wait condition has been satisfied.
- * @export
  */
 webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_message) {
   var fnName = fn.name || '<anonymous function>';
@@ -508,7 +499,6 @@ webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_message) {
  * @param {number} ms The amount of time, in milliseconds, to sleep.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     sleep has finished.
- * @export
  */
 webdriver.WebDriver.prototype.sleep = function(ms) {
   return webdriver.promise.Application.getInstance().
@@ -520,7 +510,6 @@ webdriver.WebDriver.prototype.sleep = function(ms) {
  * Schedules a command to retrieve they current window handle.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     current window handle.
- * @export
  */
 webdriver.WebDriver.prototype.getWindowHandle = function() {
   return this.schedule(
@@ -533,7 +522,6 @@ webdriver.WebDriver.prototype.getWindowHandle = function() {
  * Schedules a command to retrieve the current list of available window handles.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with an
  *     array of window handles.
- * @export
  */
 webdriver.WebDriver.prototype.getAllWindowHandles = function() {
   return this.schedule(
@@ -549,7 +537,6 @@ webdriver.WebDriver.prototype.getAllWindowHandles = function() {
  * server.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     current page source.
- * @export
  */
 webdriver.WebDriver.prototype.getPageSource = function() {
   return this.schedule(
@@ -562,7 +549,6 @@ webdriver.WebDriver.prototype.getPageSource = function() {
  * Schedules a command to close the current window.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     this command has completed.
- * @export
  */
 webdriver.WebDriver.prototype.close = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.CLOSE),
@@ -575,7 +561,6 @@ webdriver.WebDriver.prototype.close = function() {
  * @param {string} url The fully qualified URL to open.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     document has finished loading.
- * @export
  */
 webdriver.WebDriver.prototype.get = function(url) {
   return this.navigate().to(url);
@@ -586,7 +571,6 @@ webdriver.WebDriver.prototype.get = function(url) {
  * Schedules a command to retrieve the URL of the current page.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     current URL.
- * @export
  */
 webdriver.WebDriver.prototype.getCurrentUrl = function() {
   return this.schedule(
@@ -599,7 +583,6 @@ webdriver.WebDriver.prototype.getCurrentUrl = function() {
  * Schedules a command to retrieve the current page's title.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     current page's title.
- * @export
  */
 webdriver.WebDriver.prototype.getTitle = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.GET_TITLE),
@@ -642,7 +625,6 @@ webdriver.WebDriver.prototype.getTitle = function() {
  * @return {!webdriver.WebElement} A WebElement that can be used to issue
  *     commands against the located element. If the element is not found, the
  *     element will be invalidated and all scheduled commands aborted.
- * @export
  */
 webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
                                                      var_args) {
@@ -744,7 +726,6 @@ webdriver.WebDriver.prototype.findDomElement_ = function(element) {
  *     JavaScript locator.  Otherwise ignored.
  * @return {!webdriver.promise.Promise} A promise that will resolve to whether
  *     the element is present on the page.
- * @export
  */
 webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
                                                           var_args) {
@@ -767,7 +748,6 @@ webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
  *     JavaScript locator.  Otherwise ignored.
  * @return {!webdriver.promise.Promise} A promise that will be resolved to an
  *     array of the located {@link webdriver.WebElement}s.
- * @export
  */
 webdriver.WebDriver.prototype.findElements = function(locator, var_args) {
   locator = webdriver.Locator.checkLocator(locator);
@@ -807,7 +787,6 @@ webdriver.WebDriver.prototype.findElements = function(locator, var_args) {
  *
  * @return {!webdriver.promise.Promise} A promise that will be resolved to the
  *     screenshot as a base-64 encoded PNG.
- * @export
  */
 webdriver.WebDriver.prototype.takeScreenshot = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.SCREENSHOT),
@@ -818,7 +797,6 @@ webdriver.WebDriver.prototype.takeScreenshot = function() {
 /**
  * @return {!webdriver.WebDriver.Options} The options interface for this
  *     instance.
- * @export
  */
 webdriver.WebDriver.prototype.manage = function() {
   return new webdriver.WebDriver.Options(this);
@@ -828,7 +806,6 @@ webdriver.WebDriver.prototype.manage = function() {
 /**
  * @return {!webdriver.WebDriver.Navigation} The navigation interface for this
  *     instance.
- * @export
  */
 webdriver.WebDriver.prototype.navigate = function() {
   return new webdriver.WebDriver.Navigation(this);
@@ -838,7 +815,6 @@ webdriver.WebDriver.prototype.navigate = function() {
 /**
  * @return {!webdriver.WebDriver.TargetLocator} The target locator interface for
  *     this instance.
- * @export
  */
 webdriver.WebDriver.prototype.switchTo = function() {
   return new webdriver.WebDriver.TargetLocator(this);
@@ -866,7 +842,6 @@ webdriver.WebDriver.Navigation = function(driver) {
  * @param {string} url The URL to navigate to.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     URL has been loaded.
- * @export
  */
 webdriver.WebDriver.Navigation.prototype.to = function(url) {
   return this.driver_.schedule(
@@ -880,7 +855,6 @@ webdriver.WebDriver.Navigation.prototype.to = function(url) {
  * Schedules a command to move backwards in the browser history.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     navigation event has completed.
- * @export
  */
 webdriver.WebDriver.Navigation.prototype.back = function() {
   return this.driver_.schedule(
@@ -893,7 +867,6 @@ webdriver.WebDriver.Navigation.prototype.back = function() {
  * Schedules a command to move forwards in the browser history.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     navigation event has completed.
- * @export
  */
 webdriver.WebDriver.Navigation.prototype.forward = function() {
   return this.driver_.schedule(
@@ -906,7 +879,6 @@ webdriver.WebDriver.Navigation.prototype.forward = function() {
  * Schedules a command to refresh the current page.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     navigation event has completed.
- * @export
  */
 webdriver.WebDriver.Navigation.prototype.refresh = function() {
   return this.driver_.schedule(
@@ -942,7 +914,6 @@ webdriver.WebDriver.Options = function(driver) {
  *     a number, should be in milliseconds since midnight, January 1, 1970 UTC.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     cookie has been added to the page.
- * @export
  */
 webdriver.WebDriver.Options.prototype.addCookie = function(name, value,
                                                            opt_path,
@@ -996,7 +967,6 @@ webdriver.WebDriver.Options.prototype.addCookie = function(name, value,
  * Schedules a command to delete all cookies visible to the current page.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when all
  *     cookies have been deleted.
- * @export
  */
 webdriver.WebDriver.Options.prototype.deleteAllCookies = function() {
   return this.driver_.schedule(
@@ -1012,7 +982,6 @@ webdriver.WebDriver.Options.prototype.deleteAllCookies = function() {
  * @param {string} name The name of the cookie to delete.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     cookie has been deleted.
- * @export
  */
 webdriver.WebDriver.Options.prototype.deleteCookie = function(name) {
   return this.driver_.schedule(
@@ -1028,7 +997,6 @@ webdriver.WebDriver.Options.prototype.deleteCookie = function(name) {
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     cookies visible to the current page.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
- * @export
  */
 webdriver.WebDriver.Options.prototype.getCookies = function() {
   return this.driver_.schedule(
@@ -1045,7 +1013,6 @@ webdriver.WebDriver.Options.prototype.getCookies = function() {
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     named cookie, or {@code null} if there is no such cookie.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
- * @export
  */
 webdriver.WebDriver.Options.prototype.getCookie = function(name) {
   return this.getCookies().addCallback(function(cookies) {
@@ -1059,10 +1026,18 @@ webdriver.WebDriver.Options.prototype.getCookie = function(name) {
 /**
  * @return {!webdriver.WebDriver.Timeouts} The interface for managing driver
  *     timeouts.
- * @export
  */
 webdriver.WebDriver.Options.prototype.timeouts = function() {
   return new webdriver.WebDriver.Timeouts(this.driver_);
+};
+
+
+/**
+ * @return {!webdriver.WebDriver.Window} The interface for managing the
+ *     current window.
+ */
+webdriver.WebDriver.Options.prototype.window = function() {
+  return new webdriver.WebDriver.Window(this.driver_);
 };
 
 
@@ -1102,7 +1077,6 @@ webdriver.WebDriver.Timeouts = function(driver) {
  * @param {number} ms The amount of time to wait, in milliseconds.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     implicit wait timeout has been set.
- * @export
  */
 webdriver.WebDriver.Timeouts.prototype.implicitlyWait = function(ms) {
   return this.driver_.schedule(
@@ -1120,13 +1094,91 @@ webdriver.WebDriver.Timeouts.prototype.implicitlyWait = function(ms) {
  * @param {number} ms The amount of time to wait, in milliseconds.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     script timeout has been set.
- * @export
  */
 webdriver.WebDriver.Timeouts.prototype.setScriptTimeout = function(ms) {
   return this.driver_.schedule(
       new webdriver.Command(webdriver.CommandName.SET_SCRIPT_TIMEOUT).
           setParameter('ms', ms < 0 ? 0 : ms),
       'WebDriver.manage().timeouts().setScriptTimeout(' + ms + ')');
+};
+
+
+/**
+ * An interface for managing the current window.
+ * @param {!webdriver.WebDriver} driver The parent driver.
+ * @constructor
+ */
+webdriver.WebDriver.Window = function(driver) {
+
+  /**
+   * @type {!webdriver.WebDriver}
+   * @private
+   */
+  this.driver_ = driver;
+};
+
+
+/**
+ * Retrieves the window's current position, relative to the top left corner of
+ * the screen.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ *     window's position in the form of a {x:number, y:number} object literal.
+ */
+webdriver.WebDriver.Window.prototype.getPosition = function() {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.GET_WINDOW_POSITION).
+          setParameter('windowHandle', 'current'),
+      'WebDriver.manage().window().getPosition()');
+};
+
+
+/**
+ * Repositions the current window.
+ * @param {number} x The desired horizontal position, relative to the left side
+ *     of the screen.
+ * @param {number} y The desired vertical position, relative to the top of the
+ *     of the screen.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when the
+ *     command has completed.
+ */
+webdriver.WebDriver.Window.prototype.setPosition = function(x, y) {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.SET_WINDOW_POSITION).
+          setParameter('windowHandle', 'current').
+          setParameter('x', x).
+          setParameter('y', y),
+      'WebDriver.manage().window().setPosition(' + x + ', ' + y + ')');
+};
+
+
+/**
+ * Retrieves the window's current size.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ *     window's size in the form of a {width:number, height:number} object
+ *     literal.
+ */
+webdriver.WebDriver.Window.prototype.getSize = function() {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.GET_WINDOW_SIZE).
+          setParameter('windowHandle', 'current'),
+      'WebDriver.manage().window().getSize()');
+};
+
+
+/**
+ * Resizes the current window.
+ * @param {number} width The desired window width.
+ * @param {number} height The desired window height.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when the
+ *     command has completed.
+ */
+webdriver.WebDriver.Window.prototype.setSize = function(width, height) {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.SET_WINDOW_SIZE).
+          setParameter('windowHandle', 'current').
+          setParameter('width', width).
+          setParameter('height', height),
+      'WebDriver.manage().window().setSize(' + width + ', ' + height + ')');
 };
 
 
@@ -1151,7 +1203,6 @@ webdriver.WebDriver.TargetLocator = function(driver) {
  * the current document, or {@code document.body} if activeElement is not
  * available.
  * @return {!webdriver.WebElement} The active element.
- * @export
  */
 webdriver.WebDriver.TargetLocator.prototype.activeElement = function() {
   var id = this.driver_.schedule(
@@ -1166,7 +1217,6 @@ webdriver.WebDriver.TargetLocator.prototype.activeElement = function() {
  * on the page.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     driver has changed focus to the default content.
- * @export
  */
 webdriver.WebDriver.TargetLocator.prototype.defaultContent = function() {
   return this.driver_.schedule(
@@ -1193,7 +1243,6 @@ webdriver.WebDriver.TargetLocator.prototype.defaultContent = function() {
  * @param {string|number} nameOrIndex The frame locator.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     driver has changed focus to the specified frame.
- * @export
  */
 webdriver.WebDriver.TargetLocator.prototype.frame = function(nameOrIndex) {
   return this.driver_.schedule(
@@ -1214,7 +1263,6 @@ webdriver.WebDriver.TargetLocator.prototype.frame = function(nameOrIndex) {
  *     switch focus to.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     driver has changed focus to the specified window.
- * @export
  */
 webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
   return this.driver_.schedule(
@@ -1236,76 +1284,72 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
  * the Unicode PUA (Private Use Area) code points, 0xE000-0xF8FF.  Refer to
  * http://www.google.com.au/search?&q=unicode+pua&btnG=Search
  *
- * While a proper enum, this object is defined as a map so it may be exported
- * as part of WebDriver's public API.
- *
- * @type {!Object.<string>}
- * @export
+ * @enum {string}
  */
 webdriver.Key = {
-  'NULL':         '\uE000',
-  'CANCEL':       '\uE001',  // ^break
-  'HELP':         '\uE002',
-  'BACK_SPACE':   '\uE003',
-  'TAB':          '\uE004',
-  'CLEAR':        '\uE005',
-  'RETURN':       '\uE006',
-  'ENTER':        '\uE007',
-  'SHIFT':        '\uE008',
-  'CONTROL':      '\uE009',
-  'ALT':          '\uE00A',
-  'PAUSE':        '\uE00B',
-  'ESCAPE':       '\uE00C',
-  'SPACE':        '\uE00D',
-  'PAGE_UP':      '\uE00E',
-  'PAGE_DOWN':    '\uE00F',
-  'END':          '\uE010',
-  'HOME':         '\uE011',
-  'ARROW_LEFT':   '\uE012',
-  'LEFT':         '\uE012',
-  'ARROW_UP':     '\uE013',
-  'UP':           '\uE013',
-  'ARROW_RIGHT':  '\uE014',
-  'RIGHT':        '\uE014',
-  'ARROW_DOWN':   '\uE015',
-  'DOWN':         '\uE015',
-  'INSERT':       '\uE016',
-  'DELETE':       '\uE017',
-  'SEMICOLON':    '\uE018',
-  'EQUALS':       '\uE019',
+  NULL:         '\uE000',
+  CANCEL:       '\uE001',  // ^break
+  HELP:         '\uE002',
+  BACK_SPACE:   '\uE003',
+  TAB:          '\uE004',
+  CLEAR:        '\uE005',
+  RETURN:       '\uE006',
+  ENTER:        '\uE007',
+  SHIFT:        '\uE008',
+  CONTROL:      '\uE009',
+  ALT:          '\uE00A',
+  PAUSE:        '\uE00B',
+  ESCAPE:       '\uE00C',
+  SPACE:        '\uE00D',
+  PAGE_UP:      '\uE00E',
+  PAGE_DOWN:    '\uE00F',
+  END:          '\uE010',
+  HOME:         '\uE011',
+  ARROW_LEFT:   '\uE012',
+  LEFT:         '\uE012',
+  ARROW_UP:     '\uE013',
+  UP:           '\uE013',
+  ARROW_RIGHT:  '\uE014',
+  RIGHT:        '\uE014',
+  ARROW_DOWN:   '\uE015',
+  DOWN:         '\uE015',
+  INSERT:       '\uE016',
+  DELETE:       '\uE017',
+  SEMICOLON:    '\uE018',
+  EQUALS:       '\uE019',
 
-  'NUMPAD0':      '\uE01A',  // number pad keys
-  'NUMPAD1':      '\uE01B',
-  'NUMPAD2':      '\uE01C',
-  'NUMPAD3':      '\uE01D',
-  'NUMPAD4':      '\uE01E',
-  'NUMPAD5':      '\uE01F',
-  'NUMPAD6':      '\uE020',
-  'NUMPAD7':      '\uE021',
-  'NUMPAD8':      '\uE022',
-  'NUMPAD9':      '\uE023',
-  'MULTIPLY':     '\uE024',
-  'ADD':          '\uE025',
-  'SEPARATOR':    '\uE026',
-  'SUBTRACT':     '\uE027',
-  'DECIMAL':      '\uE028',
-  'DIVIDE':       '\uE029',
+  NUMPAD0:      '\uE01A',  // number pad keys
+  NUMPAD1:      '\uE01B',
+  NUMPAD2:      '\uE01C',
+  NUMPAD3:      '\uE01D',
+  NUMPAD4:      '\uE01E',
+  NUMPAD5:      '\uE01F',
+  NUMPAD6:      '\uE020',
+  NUMPAD7:      '\uE021',
+  NUMPAD8:      '\uE022',
+  NUMPAD9:      '\uE023',
+  MULTIPLY:     '\uE024',
+  ADD:          '\uE025',
+  SEPARATOR:    '\uE026',
+  SUBTRACT:     '\uE027',
+  DECIMAL:      '\uE028',
+  DIVIDE:       '\uE029',
 
-  'F1':           '\uE031',  // function keys
-  'F2':           '\uE032',
-  'F3':           '\uE033',
-  'F4':           '\uE034',
-  'F5':           '\uE035',
-  'F6':           '\uE036',
-  'F7':           '\uE037',
-  'F8':           '\uE038',
-  'F9':           '\uE039',
-  'F10':          '\uE03A',
-  'F11':          '\uE03B',
-  'F12':          '\uE03C',
+  F1:           '\uE031',  // function keys
+  F2:           '\uE032',
+  F3:           '\uE033',
+  F4:           '\uE034',
+  F5:           '\uE035',
+  F6:           '\uE036',
+  F7:           '\uE037',
+  F8:           '\uE038',
+  F9:           '\uE039',
+  F10:          '\uE03A',
+  F11:          '\uE03B',
+  F12:          '\uE03C',
 
-  'COMMAND':      '\uE03D',  // Apple command key
-  'META':         '\uE03D'   // alias for Windows key
+  COMMAND:      '\uE03D',  // Apple command key
+  META:         '\uE03D'   // alias for Windows key
 };
 
 
@@ -1320,7 +1364,6 @@ webdriver.Key = {
  *
  * @param {...string} var_args The key sequence to concatenate.
  * @see http://code.google.com/p/webdriver/issues/detail?id=79
- * @export
  */
 webdriver.Key.chord = function(var_args) {
   var sequence = goog.array.reduce(
@@ -1416,7 +1459,6 @@ goog.inherits(webdriver.WebElement, webdriver.promise.Deferred);
  * contains the ID of a WebElement.
  * @type {string}
  * @const
- * @export
  */
 webdriver.WebElement.ELEMENT_KEY = 'ELEMENT';
 
@@ -1451,7 +1493,6 @@ webdriver.WebElement.equals = function(a, b) {
 
 /**
  * @return {!webdriver.WebDriver} The parent driver for this instance.
- * @export
  */
 webdriver.WebElement.prototype.getDriver = function() {
   return this.driver_;
@@ -1513,7 +1554,6 @@ webdriver.WebElement.prototype.schedule_ = function(command, description) {
  * @return {webdriver.WebElement} A WebElement that can be used to issue
  *     commands against the located element. If the element is not found, the
  *     element will be invalidated and all scheduled commands aborted.
- * @export
  */
 webdriver.WebElement.prototype.findElement = function(locator, var_args) {
   locator = webdriver.Locator.checkLocator(locator);
@@ -1542,7 +1582,6 @@ webdriver.WebElement.prototype.findElement = function(locator, var_args) {
  *     using a JavaScript locator.  Otherwise ignored.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     whether an element could be located on the page.
- * @export
  */
 webdriver.WebElement.prototype.isElementPresent = function(locator, var_args) {
   locator = webdriver.Locator.checkLocator(locator);
@@ -1568,7 +1607,6 @@ webdriver.WebElement.prototype.isElementPresent = function(locator, var_args) {
  *     using a JavaScript locator.  Otherwise ignored.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with an
  *     array of located {@link webdriver.WebElement}s.
- * @export
  */
 webdriver.WebElement.prototype.findElements = function(locator, var_args) {
   locator = webdriver.Locator.checkLocator(locator);
@@ -1587,7 +1625,6 @@ webdriver.WebElement.prototype.findElements = function(locator, var_args) {
  * Schedules a command to click on this element.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     the click command has completed.
- * @export
  */
 webdriver.WebElement.prototype.click = function() {
   return this.schedule_(
@@ -1635,7 +1672,6 @@ webdriver.WebElement.prototype.click = function() {
  *     permitted for convenience).
  * @return {!webdriver.promise.Promise} A promise that will be resolved when all
  *     keys have been typed.
- * @export
  */
 webdriver.WebElement.prototype.sendKeys = function(var_args) {
   // Coerce every argument to a string. This protects us from users that
@@ -1658,7 +1694,6 @@ webdriver.WebElement.prototype.sendKeys = function(var_args) {
  * Schedules a command to query for the tag/node name of this element.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     element's tag name.
- * @export
  */
 webdriver.WebElement.prototype.getTagName = function() {
   return this.schedule_(
@@ -1681,7 +1716,6 @@ webdriver.WebElement.prototype.getTagName = function() {
  *     up.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     requested CSS value.
- * @export
  */
 webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
   var name = webdriver.CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
@@ -1718,7 +1752,6 @@ webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
  * @param {string} attributeName The name of the attribute to query.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     attribute's value.
- * @export
  */
 webdriver.WebElement.prototype.getAttribute = function(attributeName) {
   return this.schedule_(
@@ -1733,7 +1766,6 @@ webdriver.WebElement.prototype.getAttribute = function(attributeName) {
  * sub-elements, without any leading or trailing whitespace.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     element's visible text.
- * @export
  */
 webdriver.WebElement.prototype.getText = function() {
   return this.schedule_(
@@ -1747,7 +1779,6 @@ webdriver.WebElement.prototype.getText = function() {
  * pixels.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     element's size as a {@code {width:number, height:number}} object.
- * @export
  */
 webdriver.WebElement.prototype.getSize = function() {
   return this.schedule_(
@@ -1760,7 +1791,6 @@ webdriver.WebElement.prototype.getSize = function() {
  * Schedules a command to compute the location of this element in page space.
  * @return {!webdriver.promise.Promise} A promise that will be resolved to the
  *     element's location as a {@code {x:number, y:number}} object.
- * @export
  */
 webdriver.WebElement.prototype.getLocation = function() {
   return this.schedule_(
@@ -1775,7 +1805,6 @@ webdriver.WebElement.prototype.getLocation = function() {
  * instance is enabled, as dicted by the {@code disabled} attribute.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     whether this element is currently enabled.
- * @export
  */
 webdriver.WebElement.prototype.isEnabled = function() {
   return this.schedule_(
@@ -1788,7 +1817,6 @@ webdriver.WebElement.prototype.isEnabled = function() {
  * Schedules a command to query whether this element is selected.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     whether this element is currently selected.
- * @export
  */
 webdriver.WebElement.prototype.isSelected = function() {
   return this.schedule_(
@@ -1803,7 +1831,6 @@ webdriver.WebElement.prototype.isSelected = function() {
  * not contained in a form.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     the form has been submitted.
- * @export
  */
 webdriver.WebElement.prototype.submit = function() {
   return this.schedule_(
@@ -1818,7 +1845,6 @@ webdriver.WebElement.prototype.submit = function() {
  * nor a TEXTAREA element.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     the element has been cleared.
- * @export
  */
 webdriver.WebElement.prototype.clear = function() {
   return this.schedule_(
@@ -1831,7 +1857,6 @@ webdriver.WebElement.prototype.clear = function() {
  * Schedules a command to test whether this element is currently displayed.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     whether this element is currently visible on the page.
- * @export
  */
 webdriver.WebElement.prototype.isDisplayed = function() {
   return this.schedule_(
@@ -1844,7 +1869,6 @@ webdriver.WebElement.prototype.isDisplayed = function() {
  * Schedules a command to retrieve the outer HTML of this element.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     the element's outer HTML.
- * @export
  */
 webdriver.WebElement.prototype.getOuterHtml = function() {
   return this.driver_.executeScript(function() {
@@ -1864,7 +1888,6 @@ webdriver.WebElement.prototype.getOuterHtml = function() {
  * Schedules a command to retrieve the inner HTML of this element.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     element's inner HTML.
- * @export
  */
 webdriver.WebElement.prototype.getInnerHtml = function() {
   return this.driver_.executeScript('return arguments[0].innerHTML', this);

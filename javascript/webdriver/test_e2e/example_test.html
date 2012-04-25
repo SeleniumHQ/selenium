@@ -18,24 +18,23 @@ limitations under the License.
 <script src="../test/test_bootstrap.js"></script>
 <script>
   goog.require('bot.ErrorCode');
+  goog.require('goog.string');
   goog.require('goog.userAgent');
   goog.require('goog.userAgent.product');
   goog.require('webdriver.Builder');
-  goog.require('webdriver.test_e2e.TestUtil');
+  goog.require('webdriver.testing.Window');
   goog.require('webdriver.testing.jsunit');
 </script>
 <script>
-  var TestUtil = webdriver.test_e2e.TestUtil;
   var IOS = goog.userAgent.product.IPAD || goog.userAgent.product.IOS;
 
-  function setUpPage() {
-    if (!IOS)
-      TestUtil.openTestWindow();
-  }
+  var testWindow;
 
-  function tearDownPage() {
-    if (!IOS)
-      TestUtil.closeTestWindow();
+  function tearDown() {
+    if (testWindow) {
+      testWindow.close();
+      testWindow = null;
+    }
   }
 
   // If this doesn't pass, none of the WebDriverJS tests will!
@@ -64,8 +63,9 @@ limitations under the License.
   function testCanType() {
     var driver = new webdriver.Builder().build();
 
-    if (!IOS)
-      TestUtil.switchToMainWindow(driver);
+    if (!IOS) {
+      webdriver.testing.Window.focusOnWindow(driver, window);
+    }
 
     var inputElement = driver.findElement(By.tagName('input'));
     driver.executeScript('arguments[0].value = "";', inputElement);
@@ -80,10 +80,14 @@ limitations under the License.
       // Switch to our test window before navigating or we'll lose the page
       // running this script.  Using an iframe won't work.  WebDriver's
       // navigation commands always apply to window.top!
-      TestUtil.switchToTestWindow(driver);
+      testWindow = webdriver.testing.Window.create(driver, null, 2000);
 
       driver.get(window.frames[0].location.href);
-      assertThat(driver.getTitle(), equals('ajaxy_page'));
+      driver.wait(function() {
+        return driver.getTitle().then(function(title) {
+          return title === 'ajaxy_page';
+        });
+      }, 5000, 'Timed out waiting for new page to load.');
     };
   }
 
@@ -91,8 +95,9 @@ limitations under the License.
     var driver = new webdriver.Builder().build();
 
     // Make sure this window is selected.
-    if (!IOS)
-      TestUtil.switchToMainWindow(driver);
+    if (!IOS) {
+      webdriver.testing.Window.focusOnWindow(driver, window);
+    }
 
     driver.switchTo().frame(0);
     assertThat(driver.executeScript('return document.title'),
@@ -107,8 +112,9 @@ limitations under the License.
     var driver = new webdriver.Builder().build();
 
     // Make sure this window is selected.
-    if (!IOS)
-      TestUtil.switchToMainWindow(driver);
+    if (!IOS) {
+      webdriver.testing.Window.focusOnWindow(driver, window);
+    }
     assertThat(driver.findElement(div).getInnerHtml(), equals('hello world'));
   }
 </script>

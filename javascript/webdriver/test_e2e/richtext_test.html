@@ -23,13 +23,7 @@ limitations under the License.
   goog.require('webdriver.Key');
   goog.require('webdriver.testing.jsunit');
 </script>
-<iframe name="testFrame" id="testFame" src="javascript:void(0)"></iframe>
-<script>
-  var testFrameWindow = window.frames[0];
-  if (testFrameWindow) {
-    testFrameWindow.document.designMode = 'on';
-  }
-</script>
+<iframe name="testFrame" id="testFame"></iframe>
 <div id="editable" contenteditable="true"
     style="border:1px solid black; height:20px; width: 100%;"></div>
 <script>
@@ -52,9 +46,11 @@ limitations under the License.
     // WebDriver will not let us type on it (just like a user wouldn't be able
     // to). Set the innerHTML to a single BR tag so it has enough for us to
     // type on.
-    driver.switchTo().frame(0);
-    driver.executeScript('document.body.innerHTML = "<br/" + ">"');
-    driver.switchTo().defaultContent();
+    if (!goog.userAgent.IE) {
+      driver.switchTo().frame(0);
+      driver.executeScript('document.body.innerHTML = "<br/" + ">"');
+      driver.switchTo().defaultContent();
+    }
     driver.executeScript(
         'document.getElementById("editable").innerHTML = "<br/" + ">"');
   }
@@ -75,13 +71,13 @@ limitations under the License.
     slowDownForDemo();
 
     target.sendKeys(MODIFER_KEY, 'v');
-    assertThat(target.getText(), equals('abc123'));
+    assertThat(target.getText(), matchesRegex(/abc123\s?/));
     slowDownForDemo();
   }
 
   function testCutAndPaste_designModeDoc() {
-    if (!goog.userAgent.GECKO) {
-      G_testRunner.testCase.saveMessage('Skipping test; not Gecko');
+    if (goog.userAgent.IE) {
+      G_testRunner.testCase.saveMessage('Skipping test; is IE');
       return;
     }
     driver.switchTo().frame('testFrame');

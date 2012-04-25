@@ -21,7 +21,6 @@ goog.provide('webdriver.Session');
  * @param {!Object.<*>} capabilities A map describing the capabilities
  *     of this session.
  * @constructor
- * @export
  */
 webdriver.Session = function(id, capabilities) {
 
@@ -41,7 +40,6 @@ webdriver.Session = function(id, capabilities) {
 
 /**
  * @return {string} This session's ID.
- * @export
  */
 webdriver.Session.prototype.getId = function() {
   return this.id;
@@ -50,7 +48,6 @@ webdriver.Session.prototype.getId = function() {
 
 /**
  * @return {!Object.<*>} This session's capabilities.
- * @export
  */
 webdriver.Session.prototype.getCapabilities = function() {
   return this.capabilities;

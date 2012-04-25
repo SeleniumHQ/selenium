@@ -38,7 +38,6 @@ goog.require('webdriver.process');
  *       WebDriver's control.</dd>
  * </dl>
  * @constructor
- * @export
  */
 webdriver.Builder = function() {
 
@@ -82,7 +81,6 @@ webdriver.Builder = function() {
  * @type {string}
  * @const
  * @see webdriver.process.getEnv
- * @export
  */
 webdriver.Builder.SESSION_ID_ENV = 'wdsid';
 
@@ -94,7 +92,6 @@ webdriver.Builder.SESSION_ID_ENV = 'wdsid';
  * @type {string}
  * @const
  * @see webdriver.process.getEnv
- * @export
  */
 webdriver.Builder.SERVER_URL_ENV = 'wdurl';
 
@@ -104,7 +101,6 @@ webdriver.Builder.SERVER_URL_ENV = 'wdurl';
  * {@link webdriver.Builder.SERVER_URL_ENV} is not set.
  * @type {string}
  * @const
- * @export
  */
 webdriver.Builder.DEFAULT_SERVER_URL = 'http://localhost:4444/wd/hub';
 
@@ -115,7 +111,6 @@ webdriver.Builder.DEFAULT_SERVER_URL = 'http://localhost:4444/wd/hub';
  * instantion of this instance.
  * @param {string} url URL of the server to use.
  * @return {!webdriver.Builder} This Builder instance for chain calling.
- * @export
  */
 webdriver.Builder.prototype.usingServer = function(url) {
   this.serverUrl_ = url;
@@ -128,7 +123,6 @@ webdriver.Builder.prototype.usingServer = function(url) {
  * session.
  * @param {string} id The existing session ID to use.
  * @return {!webdriver.Builder} This Builder instance for chain calling.
- * @export
  */
 webdriver.Builder.prototype.usingSession = function(id) {
   this.sessionId_ = id;
@@ -141,7 +135,6 @@ webdriver.Builder.prototype.usingSession = function(id) {
  * @param {!Object.<*>} capabilities The desired capabilities for a new
  *     session.
  * @return {!webdriver.Builder} This Builder instance for chain calling.
- * @export
  */
 webdriver.Builder.prototype.withCapabilities = function(capabilities) {
   this.capabilities_ = capabilities;
@@ -153,7 +146,6 @@ webdriver.Builder.prototype.withCapabilities = function(capabilities) {
  * Builds a new {@code webdriver.WebDriver} instance using this builder's
  * current configuration.
  * @return {!webdriver.WebDriver} A new WebDriver client.
- * @export
  */
 webdriver.Builder.prototype.build = function() {
   var executor;

@@ -35,7 +35,6 @@ goog.require('goog.json');
 /**
  * @return {boolean} Whether the current process is Node's native process
  *     object.
- * @export
  */
 webdriver.process.isNative = function() {
   return webdriver.process.IS_NATIVE_PROCESS_;
@@ -48,7 +47,6 @@ webdriver.process.isNative = function() {
  * @param {string=} opt_default The default value if the named variable is not
  *     defined.
  * @return {string} The queried environment variable.
- * @export
  */
 webdriver.process.getEnv = function(name, opt_default) {
   var value = webdriver.process.PROCESS_.env[name];
@@ -61,7 +59,6 @@ webdriver.process.getEnv = function(name, opt_default) {
  *     environment variable will be cleared.
  * @param {string} name The value to set.
  * @param {*} value The new value; will be coerced to a string.
- * @export
  */
 webdriver.process.setEnv = function(name, value) {
   webdriver.process.PROCESS_.env[name] =

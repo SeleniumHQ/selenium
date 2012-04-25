@@ -56,7 +56,7 @@ limitations under the License.
 
   function testCanFindElementByCssSelector() {
     var root = driver.findElement(By.css('div.root'));
-    var child = root.findElement(By.css('div[id]:nth-child(2)'));
+    var child = root.findElement(By.css('div[id="child-2"]'));
     assertThat(child.getInnerHtml(), equals('child 2'));
   }
 </script>

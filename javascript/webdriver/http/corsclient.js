@@ -59,7 +59,6 @@ goog.require('webdriver.http.Response');
  * @see <a href="http://www.w3.org/TR/cors/">CORS Spec</a>
  * @see <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">
  *     JSON wire protocol</a>
- * @export
  */
 webdriver.http.CorsClient = function(url) {
   if (!webdriver.http.CorsClient.isAvailable()) {
@@ -115,6 +114,12 @@ webdriver.http.CorsClient.prototype.send = function(request, callback) {
         'with valid access control headers?'
       ].join('')));
     };
+
+    // Define event handlers for all events on the XDomainRequest. Apparently,
+    // if we don't do this, IE9+10 will silently abort our request. Yay IE.
+    // Note, we're not using goog.nullFunction, because it tends to get
+    // optimized away by the compiler, which leaves us where we were before.
+    xhr.onprogress = xhr.ontimeout = function() {};
 
     xhr.send(goog.json.serialize({
       'method': request.method,
