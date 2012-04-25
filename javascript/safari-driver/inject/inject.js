@@ -118,7 +118,7 @@ safaridriver.inject.onCommand_ = function(message) {
   }
 
   safaridriver.inject.LOG.info('Handling command (is top? ' +
-      (window.top === window) + '): ' + message);
+      (window.top === window) + '):\n' + message);
 
   var handler = safaridriver.inject.COMMAND_MAP_[command.getName()];
   if (handler) {

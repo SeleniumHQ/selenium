@@ -193,10 +193,6 @@ safaridriver.inject.commands.deleteCookie = function(command) {
 safaridriver.inject.commands.elementCommand_ = function(handlerFn, var_args) {
   var keys = goog.array.slice(arguments, 1);
   return function(command) {
-    safaridriver.inject.commands.LOG_.info(
-        'Parsing element command parameters: ' + JSON.stringify(
-            command.getParameters()));
-
     var element = command.getParameter('id');
     if (!goog.isObject(element)) {
       element = {'ELEMENT': element};
@@ -205,8 +201,6 @@ safaridriver.inject.commands.elementCommand_ = function(handlerFn, var_args) {
       return command.getParameter(key);
     }));
 
-    safaridriver.inject.commands.LOG_.info(
-        'Executing script with args: ' + JSON.stringify(args));
     return bot.inject.executeScript(handlerFn, args);
   };
 };
