@@ -273,7 +273,8 @@ bot.dom.BOOLEAN_ATTRIBUTES_ = [
 /**
  * Regex to split on semicolons, but not when enclosed in parens or quotes.
  * Helper for parseStyleAttribute_.
- * If the style attribute ends with a semicolon this will include an empty string at the end of the array
+ * If the style attribute ends with a semicolon this will include an empty
+ * string at the end of the array
  * @type {RegExp}
  * @private
  */
@@ -287,7 +288,8 @@ bot.dom.splitStyleAttributeOnSemicolonsRe_ =
  // (2) ensuring it ends in a trailing semi-colon
  // (3) removing empty style values (which only appear on Opera).
  * @param {string} value The style attribute value.
- * @return {string} The identical value, with the formatting rules described above applied.
+ * @return {string} The identical value, with the formatting rules described
+ * above applied.
  * @private
  */
 bot.dom.standardizeStyleAttribute_ = function(value) {
