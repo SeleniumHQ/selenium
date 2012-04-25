@@ -39,5 +39,6 @@ java_library(name = "test_selenium_server",
     "//java/client/src/org/openqa/selenium/os",
     "//java/client/test/org/openqa/selenium:build",
     "//java/client/test/org/openqa/selenium/v1:selenium_backed_webdriver",
-    "//java/server/src/org/openqa/grid/selenium:selenium:uber",
+    "//java/server/src/org/openqa/grid/selenium:selenium",
+    "//java/server/src/org/openqa/grid/selenium:selenium:classpath",
   ])

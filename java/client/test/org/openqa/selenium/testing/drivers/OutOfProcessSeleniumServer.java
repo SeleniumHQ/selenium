@@ -19,6 +19,7 @@ package org.openqa.selenium.testing.drivers;
 
 import com.google.common.base.Throwables;
 
+import com.google.common.io.Files;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.NetworkUtils;
@@ -28,8 +29,11 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.InProject;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -42,16 +46,19 @@ public class OutOfProcessSeleniumServer {
     if (command != null) {
       throw new RuntimeException("Server already started");
     }
-    String path = buildServer();
+
+    String classPath = buildServerAndClasspath();
 
     int port = PortProber.findFreePort();
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
-    command = new CommandLine("java", "-jar", path, "-port", String.valueOf((port)), "-browserSideLog");
+    command = new CommandLine("java", "-cp", classPath, "org.openqa.grid.selenium.GridLauncher",
+        "-port", String.valueOf((port)), "-browserSideLog");
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
     }
+    command.setWorkingDirectory(InProject.locate("Rakefile").getParentFile().getAbsolutePath());
     command.executeAsync();
 
     try {
@@ -80,12 +87,21 @@ public class OutOfProcessSeleniumServer {
     command = null;
   }
 
-  private String buildServer() {
-    new Build().of("//java/server/src/org/openqa/grid/selenium:selenium:uber").go();
-    return InProject.locate(
-        "build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar").getAbsolutePath();
-  }
+  private String buildServerAndClasspath() {
+    new Build().of("//java/server/src/org/openqa/grid/selenium:selenium")
+        .of("//java/server/src/org/openqa/grid/selenium:selenium:classpath")
+        .go();
 
+    String classpathFile = InProject.locate(
+        "build/java/server/src/org/openqa/grid/selenium/selenium.classpath").getAbsolutePath();
+    try {
+      return Files.readFirstLine(new File(classpathFile), Charset.defaultCharset());
+    } catch (IOException e) {
+      Throwables.propagate(e);
+    }
+
+    return "";
+  }
   public URL getWebDriverUrl() {
     try {
       return new URL(baseUrl + "/wd/hub");
