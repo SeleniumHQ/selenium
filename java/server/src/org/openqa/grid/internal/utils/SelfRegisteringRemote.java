@@ -38,10 +38,6 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.log.LoggingManager;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Node;
-import com.opera.core.systems.OperaDriver;
-import com.opera.core.systems.OperaPaths;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
