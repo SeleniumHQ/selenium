@@ -44,7 +44,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -64,36 +63,9 @@ public class SelfRegisteringRemote {
 
   public SelfRegisteringRemote(RegistrationRequest config) {
     this.nodeConfig = config;
-    removeInvalidCapabilities();
     this.httpClientFactory = new HttpClientFactory();
   }
 
-  private void removeInvalidCapabilities(){
-    List<DesiredCapabilities> toRemove = new ArrayList<DesiredCapabilities>();
-    
-    for (DesiredCapabilities cap : nodeConfig.getCapabilities()){
-      
-      // IE only on windows.
-      if (isIE(cap) && ! Platform.getCurrent().is(Platform.WINDOWS)){
-        toRemove.add(cap);
-      }
-      // opera not installed.
-      if (isOpera(cap) && OperaPaths.operaPath()==null){
-        toRemove.add(cap);
-      }
-    }
-    for (DesiredCapabilities rm : toRemove){
-      nodeConfig.getCapabilities().remove(rm);
-    }
-  }
-  
-  private boolean isOpera(DesiredCapabilities cap){
-    return DesiredCapabilities.opera().getBrowserName().equals(cap.getBrowserName());
-  }
-  private boolean isIE(DesiredCapabilities cap){
-    return DesiredCapabilities.internetExplorer().getBrowserName().equals(cap.getBrowserName());
-  }
-  
   public URL getRemoteURL() {
     String host = (String) nodeConfig.getConfiguration().get(RegistrationRequest.HOST);
     String port = (String) nodeConfig.getConfiguration().get(RegistrationRequest.PORT);
