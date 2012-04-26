@@ -402,7 +402,7 @@ void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
   }
 }
 
-int IECommandExecutor::CreateNewBrowser(void) {
+int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   vector<char> port_buffer(10);
   _itoa_s(this->port_, &port_buffer[0], 10, 10);
   std::string port(&port_buffer[0]);
@@ -413,7 +413,7 @@ int IECommandExecutor::CreateNewBrowser(void) {
   }
 
   DWORD process_id = this->factory_.LaunchBrowserProcess(initial_url,
-      this->ignore_protected_mode_settings_);
+      this->ignore_protected_mode_settings_, error_message);
   if (process_id == NULL) {
     this->is_waiting_ = false;
     return ENOSUCHDRIVER;

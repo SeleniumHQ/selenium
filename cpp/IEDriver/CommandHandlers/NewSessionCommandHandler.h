@@ -43,14 +43,15 @@ class NewSessionCommandHandler : public IECommandHandler {
       Json::Value initial_url = it->second.get("initialBrowserUrl", "");
       mutable_executor.set_initial_browser_url(initial_url.asString());
     }
-    int result_code = mutable_executor.CreateNewBrowser();
+    std::string create_browser_error_message = "";
+    int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);
     if (result_code != SUCCESS) {
       // The browser was not created successfully, therefore the
       // session must be marked as invalid so the server can
       // properly shut it down.
       mutable_executor.set_is_valid(false);
       response->SetErrorResponse(result_code,
-                                 "Unexpected error launching Internet Explorer. Protected Mode must be set to the same value (enabled or disabled) for all zones.");
+                                 "Unexpected error launching Internet Explorer. " + create_browser_error_message);
       return;
     }
     std::string id = executor.session_id();

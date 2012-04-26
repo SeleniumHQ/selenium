@@ -32,7 +32,8 @@ BrowserFactory::~BrowserFactory(void) {
 }
 
 DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
-                                           const bool ignore_protected_mode_settings) {
+                                           const bool ignore_protected_mode_settings,
+                                           std::string* error_message) {
   DWORD process_id = NULL;
   if (ignore_protected_mode_settings || this->ProtectedModeSettingsAreValid()) {
     STARTUPINFO start_info;
@@ -50,13 +51,30 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       proc_address = ::GetProcAddress(library_handle, IELAUNCHURL_FUNCTION_NAME);
     }
 
+    std::string launch_api = "The IELaunchURL() API";
     if (proc_address != 0) {
       // If we have the IELaunchURL API, expressly use it. This will
       // guarantee a new session. Simply using CoCreateInstance to 
       // create the browser will merge sessions, making separate cookie
       // handling impossible.
-      ::IELaunchURL(wide_initial_url.c_str(), &proc_info, NULL);
+      HRESULT launch_result = ::IELaunchURL(wide_initial_url.c_str(),
+                                            &proc_info,
+                                            NULL);
+      if (FAILED(launch_result)) {
+        size_t launch_msg_count = _scprintf(IELAUNCHURL_ERROR_MESSAGE,
+                                            launch_result,
+                                            initial_url);
+        vector<char> launch_result_msg(launch_msg_count + 1);
+        _snprintf_s(&launch_result_msg[0],
+                    sizeof(launch_result_msg),
+                    launch_msg_count + 1,
+                    IELAUNCHURL_ERROR_MESSAGE,
+                    launch_result,
+                    initial_url);
+        *error_message = &launch_result_msg[0];
+      }
     } else {
+      launch_api = "The CreateProcess() API";
       std::wstring executable_and_url = this->ie_executable_location_ +
                                         L" " + wide_initial_url;
       LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
@@ -64,20 +82,34 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                executable_and_url.size() + 1,
                executable_and_url.c_str());
       command_line[executable_and_url.size()] = L'\0';
-      ::CreateProcess(NULL,
-                      command_line,
-                      NULL,
-                      NULL,
-                      FALSE,
-                      0,
-                      NULL,
-                      NULL,
-                      &start_info,
-                      &proc_info);
+      BOOL create_process_result = ::CreateProcess(NULL,
+                                                   command_line,
+                                                   NULL,
+                                                   NULL,
+                                                   FALSE,
+                                                   0,
+                                                   NULL,
+                                                   NULL,
+                                                   &start_info,
+                                                   &proc_info);
+      if (!create_process_result) {
+        int create_proc_msg_count = _scwprintf(CREATEPROCESS_ERROR_MESSAGE,
+                                               command_line);
+        vector<wchar_t> create_proc_result_msg(create_proc_msg_count + 1);
+        _snwprintf_s(&create_proc_result_msg[0],
+                     sizeof(create_proc_result_msg),
+                     create_proc_msg_count,
+                     CREATEPROCESS_ERROR_MESSAGE,
+                     command_line);
+        *error_message = CW2A(&create_proc_result_msg[0], CP_UTF8);
+      }
       delete[] command_line;
     }
 
     process_id = proc_info.dwProcessId;
+    if (process_id == NULL) {
+      *error_message = launch_api + NULL_PROCESS_ID_ERROR_MESSAGE;
+    }
 
     if (proc_info.hThread != NULL) {
       ::CloseHandle(proc_info.hThread);
@@ -90,6 +122,8 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
     if (library_handle != NULL) {
       ::FreeLibrary(library_handle);
     }
+  } else {
+    *error_message = PROTECTED_MODE_SETTING_ERROR_MESSAGE;
   }
   return process_id;
 }
@@ -501,6 +535,7 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
         }
       }
       ::RegCloseKey(key_handle);
+    } else {
     }
   }
   return settings_are_valid;

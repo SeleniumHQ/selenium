@@ -89,7 +89,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->current_browser_id_ = browser_id;
   }
 
-  int CreateNewBrowser(void);
+  int CreateNewBrowser(std::string* error_message);
 
   int GetManagedBrowser(const std::string& browser_id,
                         BrowserHandle* browser_wrapper) const;

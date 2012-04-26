@@ -44,6 +44,11 @@
 
 #define IE_PROTECTED_MODE_SETTING_VALUE_NAME L"2500"
 
+#define IELAUNCHURL_ERROR_MESSAGE "IELaunchURL() returned %X for URL '%s'"
+#define CREATEPROCESS_ERROR_MESSAGE L"CreateProcess() failed for command line '%s'"
+#define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
+#define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
+
 #define ZONE_MY_COMPUTER L"0"
 #define ZONE_LOCAL_INTRANET L"1"
 #define ZONE_TRUSTED_SITES L"2"
@@ -66,7 +71,8 @@ class BrowserFactory {
   virtual ~BrowserFactory(void);
 
   DWORD LaunchBrowserProcess(const std::string& initial_url,
-                             const bool ignore_protected_mode_settings);
+                             const bool ignore_protected_mode_settings,
+                             std::string* error_message);
   IWebBrowser2* CreateBrowser();
   void AttachToBrowser(ProcessWindowInfo* procWinInfo);
   bool GetDocumentFromWindowHandle(HWND window_handle,
