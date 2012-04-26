@@ -28,6 +28,7 @@ goog.addDependency(
     // SafariDriver's dependency graph.
     [
         'goog.debug.ErrorHandler',
+        'goog.events.BrowserEvent',
         'goog.events.Event',
         'goog.events.EventHandler',
         'goog.events.EventTarget'

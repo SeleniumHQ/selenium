@@ -1037,7 +1037,7 @@ bot.dom.calculateViewportScrolling_ =
  *
  * @param {!goog.math.Coordinate} targetLocation The target location relative
  *     to (0, 0) coordinate of the viewport.
- * @param {!Window=} opt_currentWindow The current browser window.
+ * @param {Window=} opt_currentWindow The current browser window.
  * @return {!goog.math.Coordinate} The target location within the viewport
  *     after scrolling.
  */
