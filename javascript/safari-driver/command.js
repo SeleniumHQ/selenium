@@ -24,24 +24,21 @@ goog.require('webdriver.CommandName');
  * Describes a command to execute.
  * @param {string} id The command identifier, used to synchronize between two
  *     end points in the WebDriver wire protocol.
- * @param {!(webdriver.CommandName|webdriver.Command)} nameOrCommand Either the
- *     command name or another command to wrap.
+ * @param {!webdriver.CommandName} name The command name.
  * @param {!Object.<*>=} opt_parameters The command parameters; ignored if
  *     {@code nameOrCommand} is a command object.
  * @constructor
  * @extends {webdriver.Command}
  */
-safaridriver.Command = function(id, nameOrCommand, opt_parameters) {
-  var name = goog.isString(nameOrCommand)
-      ? nameOrCommand : nameOrCommand.getName();
-
+safaridriver.Command = function(id, name, opt_parameters) {
   goog.base(this, name);
 
   /** @type {string} */
   this.id = id;
 
-  this.setParameters(goog.isString(nameOrCommand)
-      ? opt_parameters || {} : nameOrCommand.getParameters());
+  if (opt_parameters) {
+    this.setParameters(opt_parameters);
+  }
 };
 goog.inherits(safaridriver.Command, webdriver.Command);
 
