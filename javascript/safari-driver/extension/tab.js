@@ -203,7 +203,7 @@ safaridriver.extension.Tab.prototype.onNavigate_ = function(e) {
 
 /**
  * Sends a command to this tab's injected script.
- * @param {!webdriver.Command} command The command to send.
+ * @param {!safaridriver.Command} command The command to send.
  * @param {number=} opt_timeout How long, in milliseconds, to wait for a
  *     response before timing out. If not specified, or non-positive, no timeout
  *     will be applied.
@@ -211,16 +211,13 @@ safaridriver.extension.Tab.prototype.onNavigate_ = function(e) {
  *     the message
  */
 safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
-  var id = goog.string.getRandomString();
-
   var response = new webdriver.promise.Deferred();
-  var safariCommand = new safaridriver.Command(id, command);
-  var message = new safaridriver.message.CommandMessage(safariCommand);
+  var message = new safaridriver.message.CommandMessage(command);
 
   var self = this;
-  self.log_('Preparing command: ' + JSON.stringify(safariCommand));
+  self.log_('Preparing command: ' + JSON.stringify(command));
   this.whenReady(function(tab) {
-    self.log_('Sending command: ' + JSON.stringify(safariCommand));
+    self.log_('Sending command: ' + JSON.stringify(command));
 
     var removeResponseListener = goog.bind(self.removeListener, self,
         safaridriver.message.Type.RESPONSE, onResponse);
@@ -241,10 +238,16 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     self.addListener(safaridriver.message.Type.RESPONSE, onResponse);
 
     function onResponse(message) {
-      if (message.getId() !== id) {
+      if (!response.isPending()) {
+        // Whoops! We shouldn't be listening for responses anymore.
+        removeResponseListener();
+        return;
+      }
+
+      if (message.getId() !== command.getId()) {
         self.log_(
             'Ignoring response to another command: ' + message +
-                ' (' + id + ')',
+                ' (' + command.getId() + ')',
             goog.debug.Logger.Level.FINE);
         return;
       }

@@ -18,6 +18,8 @@ goog.require('bot.ErrorCode');
 goog.require('goog.Disposable');
 goog.require('goog.debug.Logger');
 goog.require('goog.object');
+goog.require('goog.string');
+goog.require('safaridriver.Command');
 goog.require('safaridriver.extension.commands');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.error');
@@ -64,7 +66,8 @@ goog.inherits(safaridriver.extension.Server, goog.Disposable);
 
 /**
  * Maps command names to their handler functions.
- * @type {!Object.<(function(!safaridriver.extension.Session, !webdriver.Command)|
+ * @type {!Object.<(function(!safaridriver.extension.Session,
+ *                           !safaridriver.Command)|
  *                  function(!safaridriver.extension.Session))>}
  * @const
  * @private
@@ -224,6 +227,11 @@ safaridriver.extension.Server.prototype.connect = function(url) {
  */
 safaridriver.extension.Server.prototype.execute = function(command,
                                                            opt_callback) {
+  // Normally command will be an instanceof safaridriver.Command, but it will be
+  // a standard webdriver.Command if it came from
+  // safaridriver.extension.driver (via the extension builder REPL).
+  command = new safaridriver.Command(goog.string.getRandomString(),
+      command.getName(), command.getParameters());
   var handler = safaridriver.extension.Server.COMMAND_MAP_[command.getName()];
   if (!handler) {
     this.logMessage_('Unknown command: ' + command.getName(),
