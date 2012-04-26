@@ -262,30 +262,40 @@ bot.Mouse.prototype.move = function(element, coords) {
   var pos = goog.style.getClientPosition(element);
   this.clientXY_.x = coords.x + pos.x;
   this.clientXY_.y = coords.y + pos.y;
+  var fromElement = this.getElement();
 
-  if (element != this.getElement()) {
-    // For the first mouse interaction on a page, if the mouse was over the
-    // browser window, the browser will pass null as the relatedTarget for the
-    // mousever event. For subsequent interactions, it will pass the
-    // last-focused element. Unfortunately, we don't have anywhere to keep the
-    // state of which elements have been focused across Mouse instances, so we
-    // treat every Mouse initially positioned over the documentElement or body
-    // as if it's on a new page. Accordingly, for complex actions (e.g.
-    // drag-and-drop), a single Mouse instance should be used for the whole
-    // action, to ensure the correct relatedTargets are fired for any events.
-    var isRootElement =
-        this.getElement() === bot.getDocument().documentElement ||
-        this.getElement() === bot.getDocument().body;
-    var prevElement =
-        (!this.hasEverInteracted_ && isRootElement) ? null : this.getElement();
+  if (element != fromElement) {
+    // If the window of fromElement is closed, set fromElement to null as a flag
+    // to skip the mouseout event and so relatedTarget of the mouseover is null.
+    try {
+      if (goog.dom.getWindow(goog.dom.getOwnerDocument(fromElement)).closed) {
+        fromElement = null;
+      }
+    } catch (ignore) {
+      // Sometimes accessing a window that no longer exists causes an error.
+      fromElement = null;
+    }
 
-    this.fireMouseEvent_(bot.events.EventType.MOUSEOUT, element);
+    if (fromElement) {
+      // For the first mouse interaction on a page, if the mouse was over the
+      // browser window, the browser will pass null as the relatedTarget for the
+      // mouseover event. For subsequent interactions, it will pass the
+      // last-focused element. Unfortunately, we don't have anywhere to keep the
+      // state of which elements have been focused across Mouse instances, so we
+      // treat every Mouse initially positioned over the documentElement or body
+      // as if it's on a new page. Accordingly, for complex actions (e.g.
+      // drag-and-drop), a single Mouse instance should be used for the whole
+      // action, to ensure the correct relatedTargets are fired for any events.
+      var isRoot = fromElement === bot.getDocument().documentElement ||
+                   fromElement === bot.getDocument().body;
+      fromElement = (!this.hasEverInteracted_ && isRoot) ? null : fromElement;
+      this.fireMouseEvent_(bot.events.EventType.MOUSEOUT, element);
+    }
     this.setElement(element);
-    this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, prevElement);
+    this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement);
   }
 
   this.fireMouseEvent_(bot.events.EventType.MOUSEMOVE);
-
   this.nextClickIsDoubleClick_ = false;
 };
 

@@ -72,8 +72,7 @@
 
     function elementThatMovesDuringDrag(action) {
       // IE is not compatible with touch actions.
-      if ((action == bot.action.swipe && !bot.events.SUPPORTS_TOUCH_EVENTS) ||
-	  (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+      if (action == bot.action.swipe && !bot.events.SUPPORTS_TOUCH_EVENTS) {
         return;
       }
       // Setup a simple Drag and Drop object

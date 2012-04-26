@@ -23,6 +23,8 @@ goog.provide('bot.Device');
 goog.require('bot');
 goog.require('bot.dom');
 goog.require('bot.userAgent');
+goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 
 
@@ -284,7 +286,7 @@ bot.Device.prototype.clickElement = function(coord, button) {
   // FORM(action) No    Yes    Yes    Yes
   var targetLink = null;
   var targetButton = null;
-  if (bot.Device.MUST_MANUALLY_FOLLOW_LINKS_) {
+  if (bot.Device.EXPLICIT_FOLLOW_LINK_) {
     for (var e = this.element_; e; e = e.parentNode) {
       if (bot.dom.isElement(e, goog.dom.TagName.A)) {
         targetLink = /**@type {!Element}*/ (e);
@@ -402,17 +404,29 @@ bot.Device.prototype.focusOnElement = function() {
 
 
 /**
- * Whether links must be manually followed when clicking (because firing click
- * events doesn't follow them).
- *
+ * Whether extra handling needs to be considered when clicking on a link or a
+ * submit button.
  *
  * @type {boolean}
  * @private
  * @const
  */
-bot.Device.MUST_MANUALLY_FOLLOW_LINKS_ =
-    !(goog.userAgent.WEBKIT || goog.userAgent.OPERA ||
-      (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6)));
+bot.Device.EXPLICIT_FOLLOW_LINK_ = goog.userAgent.IE ||
+    // Normal firefox
+    (goog.userAgent.GECKO && !bot.userAgent.FIREFOX_EXTENSION) ||
+    // Firefox extension prior to Firefox 4
+    (bot.userAgent.FIREFOX_EXTENSION && !bot.userAgent.isProductVersion(4));
+
+
+/**
+ * Whether synthesized events are trusted to trigger click actions.
+ *
+ * @type {boolean}
+ * @private
+ * @const
+ */
+bot.Device.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_ =
+    bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(4);
 
 
 /**
@@ -472,7 +486,7 @@ bot.Device.shouldFollowHref_ = function(element) {
     return true;
   }
 
-  if (!bot.Device.MUST_MANUALLY_FOLLOW_LINKS_) {
+  if (bot.Device.CAN_SYNTHESISED_EVENTS_FOLLOW_LINKS_) {
     return false;
   }
 
@@ -531,8 +545,10 @@ bot.Device.prototype.toggleOption_ = function(wasSelected) {
     return;
   }
   this.element_.selected = !wasSelected;
-  // Only WebKit fires the change event itself and only for multi-selects.
-  if (!(goog.userAgent.WEBKIT && select.multiple)) {
+  // Only WebKit fires the change event itself and only for multi-selects,
+  // except for Android versions >= 4.0.
+  if (!(goog.userAgent.WEBKIT && select.multiple) ||
+      (goog.userAgent.product.ANDROID && bot.userAgent.isProductVersion(4))) {
     bot.events.fire(select, bot.events.EventType.CHANGE);
   }
 };

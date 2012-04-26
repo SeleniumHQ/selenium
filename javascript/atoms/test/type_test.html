@@ -98,7 +98,7 @@
         inputBox.value = initValue;
         inputCountBox.value = '0';
         textInputCountBox.value = '0';
-        bot.action.type.apply(null, [inputBox].concat(input));
+        bot.action.type(inputBox, input);
         assertEquals(finalValue, inputBox.value);
 
         // On IE the onpropertychange event is not fired reliably when type is
@@ -269,7 +269,7 @@
       var history = setupAllToggleListeners(listenerKeys);
       try {
         var textBox = document.getElementById('textbox');
-        bot.action.type.apply(null, [textBox].concat(input));
+        bot.action.type(textBox, input);
       } finally {
         for (var i = 0; i < listenerKeys.length; i++) {
           goog.events.unlistenByKey(listenerKeys[i]);

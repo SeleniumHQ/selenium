@@ -12,10 +12,17 @@
   goog.require('goog.events.EventType');
   goog.require('goog.math.Coordinate');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.AsyncTestCase');
   goog.require('goog.userAgent');
 </script>
 <body>
+<div id="green" style="background-color:green; width:100px; height:50px">
+<div id="red" style="background-color:red; width:50px; height:25px;
+position: relative; top:25px;">Red</div>
+</div>
 <script type="text/javascript">
+  var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+
   // The goog.events.EventType enum is missing mouse scrolling event types.
   // This a little hacky but gives us some stylistic consistency :).
   goog.events.EventType.MOUSEWHEEL =
@@ -226,14 +233,15 @@
     goog.events.listenOnce(greenDiv, goog.events.EventType.MOUSEOVER,
         function(e) {
           fired++;
-          assertNull(e.relatedTarget);
+          // Even though bot.events.fire explicitly sets relatedTarget to null,
+          // it sometimes becomes undefined in Firefox.
+          assertEvaluatesToFalse(e.relatedTarget);
         });
 
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
 
     assertEquals(1, fired);
   }
-
 
   function testSecondMoveHasRelatedSet() {
     var mouse = new bot.Mouse();
@@ -253,6 +261,29 @@
     assertEquals('mouseover event not fired', 1, fired);
     assertNotNull(relatedTarget);
     assertNotEquals(redDiv, relatedTarget);
+  }
+
+  function testMoveMouseFromClosedWindowDoesNotError() {
+    var mouse = new bot.Mouse();
+    var coord =  new goog.math.Coordinate(0, 0);
+    var iframe = document.createElement('iframe');
+
+    goog.events.listenOnce(iframe, 'load', function() {
+      asyncTestCase.continueTesting();
+      mouse.move(iframe.contentWindow.document.body, coord);
+      goog.events.listenOnce(iframe, 'load', function() {
+        asyncTestCase.continueTesting();
+        mouse.move(iframe.contentWindow.document.body, coord);
+        document.body.removeChild(iframe);
+      });
+
+      asyncTestCase.waitForAsync('waiting for second iframe page to load');
+      iframe.src = 'testdata/iframe_page.html';
+    });
+
+    asyncTestCase.waitForAsync('waiting for first iframe page to load');
+    iframe.src = 'testdata/blank_page.html';
+    document.body.appendChild(iframe);
   }
 
   function testScrollMouseZeroTicksThrowsError() {
@@ -308,10 +339,5 @@
     }
   }
 </script>
-<div id="green" style="background-color:green; width:100px; height:50px">
-<div id="red" style="background-color:red; width:50px; height:25px;
-position: relative; top:25px;">
-Red</div>
-</div>
 </body>
 </html>

@@ -609,9 +609,8 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
 /**
  * @param {!Element} element The element to use.
  * @return {!goog.math.Size} The dimensions of the element.
- * @private
  */
-bot.dom.getElementSize_ = function(element) {
+bot.dom.getElementSize = function(element) {
   if (goog.isFunction(element['getBBox'])) {
     try {
       var bb = element['getBBox']();
@@ -730,7 +729,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
 
   // Any element without positive size dimensions is not shown.
   function positiveSize(e) {
-    var size = bot.dom.getElementSize_(e);
+    var size = bot.dom.getElementSize(e);
     if (size.height > 0 && size.width > 0) {
       return true;
     }
@@ -746,16 +745,15 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   }
 
   // Elements should be hidden if their parent has a fixed size AND has the style
-  // overflow:hidden AND the element's location is not within the fixed size 
+  // overflow:hidden AND the element's location is not within the fixed size
   // of the parent
   function isOverflowHiding(e) {
     var parent = bot.dom.getParentElement(e);
     if (parent && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden') {
-      var sizeOfParent = bot.dom.getElementSize_(parent); 
+      var sizeOfParent = bot.dom.getElementSize(parent);
       var locOfParent = goog.style.getClientPosition(parent);
       var locOfElement = goog.style.getClientPosition(e);
-
-      if (locOfParent.x + sizeOfParent.width < locOfElement.x) {
+         if (locOfParent.x + sizeOfParent.width < locOfElement.x) {
         return false;
       }
       if (locOfParent.y + sizeOfParent.height < locOfElement.y) {
@@ -952,7 +950,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
  * @return {number} Opacity between 0 and 1.
  */
 bot.dom.getOpacity = function(elem) {
-  // TODO: BobS: Does this need to deal with rgba colors?
+  // TODO(BobS): Does this need to deal with rgba colors?
   if (!goog.userAgent.IE) {
     return bot.dom.getOpacityNonIE_(elem);
   } else {
@@ -1039,7 +1037,7 @@ bot.dom.calculateViewportScrolling_ =
  *
  * @param {!goog.math.Coordinate} targetLocation The target location relative
  *     to (0, 0) coordinate of the viewport.
- * @param {Window=} opt_currentWindow The current browser window.
+ * @param {!Window=} opt_currentWindow The current browser window.
  * @return {!goog.math.Coordinate} The target location within the viewport
  *     after scrolling.
  */

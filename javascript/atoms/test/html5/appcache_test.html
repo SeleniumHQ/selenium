@@ -8,12 +8,14 @@
     goog.require('bot.html5');
     goog.require('bot.test');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
 
   <script type="text/javascript">
-    // WebDriver does not enable application cache for Android (b/5478400).
+    var asyncTestCase = null;
+    // WebDriver does not enable application cache for Android-Froyo (b/5478400).
     // WebDriver does not enable application cache for Firefox (b/5787180).
     // Selenium breaks application cache on Opera (b/578165).
     var APPCACHE_NOT_WORKING =
@@ -22,17 +24,27 @@
       goog.userAgent.product.FIREFOX ||
       (goog.userAgent.OPERA && bot.test.isSeleniumBacked());
 
+
     function testGetStatusWithHtmlManifest() {
       if (APPCACHE_NOT_WORKING) {
         return;
       }
 
       var win = bot.getWindow();
-      assertEquals(win.applicationCache.IDLE, bot.appcache.getStatus());
+      if (win.applicationCache.IDLE != bot.appcache.getStatus()) {
+        asyncTestCase.waitForAsync('waiting for cache to be downloaded.');
+        goog.events.listenOnce(win.applicationCache, 'cached', function(e) {
+          asyncTestCase.continueTesting();
+          assertEquals(win.applicationCache.IDLE, bot.appcache.getStatus());
+        });
+      }
     }
   </script>
 </head>
 <body>
+  <script>
+    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  </script>
 Test
 <img id="red" src="testdata/ps_logo2.png">
 </body>

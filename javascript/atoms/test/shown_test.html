@@ -203,15 +203,15 @@
       var element = goog.dom.createDom('div', null,
           goog.dom.createDom('div'));
       document.body.appendChild(element);
-      var size = bot.dom.getElementSize_(element);
+      var size = bot.dom.getElementSize(element);
       // Width will be equivalent of width:100%
       assertEquals('Should have 0 height', 0, size.height);
       assertFalse(isShown(element));
     }
 
     function testZeroSizedDivIsShownIfDescendantHasSize() {
-      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
-	return;
+       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+       return;
       }
       var element = goog.dom.createDom('div', {style: 'width:0;height:0'},
           goog.dom.createDom('div', null,
@@ -219,7 +219,7 @@
                 src: 'testdata/map.png'
               })));
       document.body.appendChild(element);
-      var size = bot.dom.getElementSize_(element);
+      var size = bot.dom.getElementSize(element);
       assertEquals('Should have 0 width', 0, size.width);
       assertEquals('Should have 0 height', 0, size.height);
       assertTrue(isShown(element));
@@ -253,7 +253,7 @@
       root.appendChild(child);
       document.body.appendChild(root);
 
-      var size = bot.dom.getElementSize_(root);
+      var size = bot.dom.getElementSize(root);
       assertEquals('Should have 0 width', 0, size.width);
       assertEquals('Should have 0 height', 0, size.height);
       assertTrue('Should still be considered shown', isShown(root));
@@ -292,7 +292,7 @@
 
     function testThatItemsHiddenWithOverflowHiddenAreFalse() {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
-	return;
+       return;
       }
       var target = findElement({id: 'target'});
       assertFalse(isShown(target));
@@ -417,7 +417,7 @@
   }
   #box ul{
     height: 250px;
-    overflow: hidden;               
+    overflow: hidden;
   }
   #box ul > li{
     height: 50px;
@@ -439,11 +439,10 @@
    </ul>
 </div>
 <div id="grandparent" style="display:none;width:10px;">
-  <div id="parent" style="position:absolute:right:10px;">
+  <div id="parent" style="position:absolute;right:10px;">
     <div id="iHaveAbsolutePosition" style="display:block">I am over here</div>
   </div>
-<div>
-    
+</div>
 
 </body>
 </html>

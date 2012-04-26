@@ -75,7 +75,7 @@ webdriver.atoms.inject.dom.getAttributeValue = function(element, attribute) {
  *     defined by the wire protocol.
  */
 webdriver.atoms.inject.dom.getSize = function(element) {
-  return bot.inject.executeScript(bot.dom.getElementSize_, [element], true);
+  return bot.inject.executeScript(bot.dom.getElementSize, [element], true);
 };
 
 

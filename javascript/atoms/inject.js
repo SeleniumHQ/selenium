@@ -28,11 +28,10 @@ goog.provide('bot.inject.cache');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.json');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.events');
-goog.require('goog.json');
 goog.require('goog.object');
 
 
@@ -239,11 +238,11 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
     fn = bot.inject.recompileFunction_(fn, win);
     var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue_(args,
         win.document));
-    ret = bot.inject.wrapResponse_(fn.apply(null, unwrappedArgs));
+    ret = bot.inject.wrapResponse(fn.apply(null, unwrappedArgs));
   } catch (ex) {
-    ret = bot.inject.wrapError_(ex);
+    ret = bot.inject.wrapError(ex);
   }
-  return opt_stringify ? goog.json.serialize(ret) : ret;
+  return opt_stringify ? bot.json.stringify(ret) : ret;
 };
 
 
@@ -284,21 +283,26 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
 bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
                                          opt_stringify, opt_window) {
   var win = opt_window || window;
-  var timeoutId, onunloadKey;
+  var timeoutId;
   var responseSent = false;
 
   function sendResponse(status, value) {
     if (!responseSent) {
-      goog.events.unlistenByKey(onunloadKey);
+      if (win.removeEventListener) {
+        win.removeEventListener('unload', onunload, true);
+      } else {
+        win.detachEvent('onunload', onunload);
+      }
+
       win.clearTimeout(timeoutId);
       if (status != bot.ErrorCode.SUCCESS) {
         var err = new bot.Error(status, value.message || value + '');
         err.stack = value.stack;
-        value = bot.inject.wrapError_(err);
+        value = bot.inject.wrapError(err);
       } else {
-        value = bot.inject.wrapResponse_(value);
+        value = bot.inject.wrapResponse(value);
       }
-      onDone(opt_stringify ? goog.json.serialize(value) : value);
+      onDone(opt_stringify ? bot.json.stringify(value) : value);
       responseSent = true;
     }
   }
@@ -313,12 +317,11 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
   args = /** @type {Array.<*>} */bot.inject.unwrapValue_(args, win.document);
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
 
-  onunloadKey = goog.events.listen(win, goog.events.EventType.UNLOAD,
-      function() {
-        sendResponse(bot.ErrorCode.UNKNOWN_ERROR,
-            Error('Detected a page unload event; asynchronous script ' +
-                  'execution does not work across page loads.'));
-      }, true);
+  if (win.addEventListener) {
+    win.addEventListener('unload', onunload, true);
+  } else {
+    win.attachEvent('onunload', onunload);
+  }
 
   var startTime = goog.now();
   try {
@@ -335,6 +338,12 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
   } catch (ex) {
     sendResponse(ex.code || bot.ErrorCode.UNKNOWN_ERROR, ex);
   }
+
+  function onunload() {
+    sendResponse(bot.ErrorCode.UNKNOWN_ERROR,
+        Error('Detected a page unload event; asynchronous script ' +
+              'execution does not work across page loads.'));
+  }
 };
 
 
@@ -345,9 +354,8 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
  * @param {*} value The script result.
  * @return {{status:bot.ErrorCode,value:*}} The wrapped value.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
- * @private
  */
-bot.inject.wrapResponse_ = function(value) {
+bot.inject.wrapResponse = function(value) {
   return {
     'status': bot.ErrorCode.SUCCESS,
     'value': bot.inject.wrapValue(value)
@@ -361,9 +369,8 @@ bot.inject.wrapResponse_ = function(value) {
  * @param {Error} err The error to wrap.
  * @return {{status:bot.ErrorCode,value:*}} The wrapped error object.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
- * @private
  */
-bot.inject.wrapError_ = function(err) {
+bot.inject.wrapError = function(err) {
   // TODO(user): Parse stackTrace
   return {
     'status': goog.object.containsKey(err, 'code') ?

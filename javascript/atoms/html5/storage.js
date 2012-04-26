@@ -123,7 +123,7 @@ bot.storage.Storage.prototype.setItem = function(key, value) {
  */
 bot.storage.Storage.prototype.getItem = function(key) {
   var value = this.storageMap_.getItem(key);
-  return  /** @type {string} */ value;
+  return  /** @type {?string} */ value;
 };
 
 
@@ -146,10 +146,10 @@ bot.storage.Storage.prototype.keySet = function() {
  * Removes an item with a given key.
  *
  * @param {string} key The key item of the key/value pair.
- * @return {*} The removed value if present, otherwise null.
+ * @return {?string} The removed value if present, otherwise null.
  */
 bot.storage.Storage.prototype.removeItem = function(key) {
-  var value = this.storageMap_.getItem(key);
+  var value = this.getItem(key);
   this.storageMap_.removeItem(key);
   return value;
 };

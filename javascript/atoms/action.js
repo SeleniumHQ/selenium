@@ -120,27 +120,28 @@ bot.action.focusOnElement = function(element) {
 /**
  * Types keys on the given {@code element} with a virtual keyboard.
  *
- * <p>Callers can pass in either strings or members of bot.Keyboard.Key. If a
- * modifier key is provided, it is pressed but not released, until it is either
- * is listed again or the function ends.
+ * <p>Callers can pass in a string, a key in bot.Keyboard.Key, or an array
+ * of strings or keys. If a modifier key is provided, it is pressed but not
+ * released, until it is either is listed again or the function ends.
  *
  * <p>Example:
- *   bot.keys.type(element, 'ab', bot.Keyboard.Key.LEFT,
- *                 bot.Keyboard.Key.DELETE, bot.Keyboard.Key.SHIFT, 'cd');
+ *   bot.keys.type(element, ['ab', bot.Keyboard.Key.LEFT,
+ *                           bot.Keyboard.Key.SHIFT, 'cd']);
  *
  * @param {!Element} element The element receiving the event.
- * @param {...(string|!bot.Keyboard.Key)} var_args Values to type on the
- *    element, either strings or members of bot.Keyboard.Key.
+ * @param {(string|!bot.Keyboard.Key|!Array.<(string|!bot.Keyboard.Key)>)}
+ *    values Value or values to type on the element.
+ * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
+ *    constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.type = function(element, var_args) {
+bot.action.type = function(element, values, opt_keyboard) {
   bot.action.checkShown_(element);
   bot.action.checkInteractable_(element);
-  var keyboard = new bot.Keyboard();
+  var keyboard = opt_keyboard || new bot.Keyboard();
   keyboard.moveCursor(element);
 
-  var values = goog.array.slice(arguments, 1);
-  goog.array.forEach(values, function(value) {
+  function typeValue(value) {
     if (goog.isString(value)) {
       goog.array.forEach(value.split(''), function(ch) {
         var keyShiftPair = bot.Keyboard.Key.fromChar(ch);
@@ -163,7 +164,13 @@ bot.action.type = function(element, var_args) {
       keyboard.pressKey(value);
       keyboard.releaseKey(value);
     }
-  });
+  }
+
+  if (goog.isArray(values)) {
+    goog.array.forEach(values, typeValue);
+  } else {
+    typeValue(values);
+  }
 
   // Release all the modifier keys.
   goog.array.forEach(bot.Keyboard.MODIFIERS, function(key) {
@@ -203,7 +210,9 @@ bot.action.submit = function(element) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.moveMouse = function(element, opt_coords, opt_mouse) {
-  bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
 };
 
 
@@ -217,8 +226,11 @@ bot.action.moveMouse = function(element, opt_coords, opt_mouse) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.click = function(element, opt_coords, opt_mouse) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
-  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
+  mouse.pressButton(bot.Mouse.Button.LEFT);
+  mouse.releaseButton();
 };
 
 
@@ -232,8 +244,11 @@ bot.action.click = function(element, opt_coords, opt_mouse) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.rightClick = function(element, opt_coords, opt_mouse) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
-  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.RIGHT);
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
+  mouse.pressButton(bot.Mouse.Button.RIGHT);
+  mouse.releaseButton();
 };
 
 
@@ -247,9 +262,13 @@ bot.action.rightClick = function(element, opt_coords, opt_mouse) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
-  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
-  bot.action.pressAndReleaseButton_(mouse, element, bot.Mouse.Button.LEFT);
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
+  mouse.pressButton(bot.Mouse.Button.LEFT);
+  mouse.releaseButton();
+  mouse.pressButton(bot.Mouse.Button.LEFT);
+  mouse.releaseButton();
 };
 
 
@@ -257,13 +276,17 @@ bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
  * Scrolls the mouse wheel on the given {@code element} with a virtual mouse.
  *
  * @param {!Element} element The element to scroll the mouse wheel on.
+ * @param {number} ticks Number of ticks to scroll the mouse wheel; a positive
+ *   number scrolls down and a negative scrolls up.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.scrollMouse = function(element, ticks, opt_coords, opt_mouse) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords, opt_mouse);
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
   mouse.scroll(ticks);
 };
 
@@ -280,19 +303,20 @@ bot.action.scrollMouse = function(element, ticks, opt_coords, opt_mouse) {
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.drag = function(element, dx, dy, opt_coords, opt_mouse) {
-  var mouse = bot.action.moveAndReturnMouse_(element, opt_coords);
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
   mouse.pressButton(bot.Mouse.Button.LEFT);
 
   // Fire two mousemoves (middle and destination) to trigger a drag action.
   var initPos = goog.style.getClientPosition(element);
-  var midXY = new goog.math.Coordinate(opt_coords.x + Math.floor(dx / 2),
-                                       opt_coords.y + Math.floor(dy / 2));
+  var midXY = new goog.math.Coordinate(coords.x + Math.floor(dx / 2),
+                                       coords.y + Math.floor(dy / 2));
   mouse.move(element, midXY);
 
   var midPos = goog.style.getClientPosition(element);
-  var finalXY = new goog.math.Coordinate(
-      initPos.x + opt_coords.x + dx - midPos.x,
-      initPos.y + opt_coords.y + dy - midPos.y);
+  var finalXY = new goog.math.Coordinate(initPos.x + coords.x + dx - midPos.x,
+                                         initPos.y + coords.y + dy - midPos.y);
   mouse.move(element, finalXY);
 
   mouse.releaseButton();
@@ -300,20 +324,192 @@ bot.action.drag = function(element, dx, dy, opt_coords, opt_mouse) {
 
 
 /**
- * A helper function which prepares a virtual mouse for an action on the given
- * {@code element}. It checks if the the element is shown, scrolls the element
- * into view, and moves the mouse to the given {@code opt_coords} if provided;
- * if not provided, the mouse is moved to the center of the element.
+ * Taps on the given {@code element} with a virtual touch screen.
  *
- * @param {!Element} element The element to click.
- * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
+ * @param {!Element} element The element to tap.
+ * @param {goog.math.Coordinate=} opt_coords Finger position relative to the
  *   target.
- * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
- * @return {!bot.Mouse} The mouse object used for the click.
+ * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
+ *    provided, constructs one.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.tap = function(element, opt_coords, opt_touchscreen) {
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var touchscreen = opt_touchscreen || new bot.Touchscreen();
+  touchscreen.move(element, coords);
+  touchscreen.press();
+  touchscreen.release();
+};
+
+
+/**
+ * Swipes the given {@code element} by (dx, dy) with a virtual touch screen.
+ *
+ * @param {!Element} element The element to swipe.
+ * @param {number} dx Increment in x coordinate.
+ * @param {number} dy Increment in y coordinate.
+ * @param {goog.math.Coordinate=} opt_coords Swipe start position relative to
+ *   the element.
+ * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
+ *    provided, constructs one.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.swipe = function(element, dx, dy, opt_coords, opt_touchscreen) {
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var touchscreen = opt_touchscreen || new bot.Touchscreen();
+  touchscreen.move(element, coords);
+  touchscreen.press();
+
+  // Fire two touchmoves (middle and destination) to trigger a drag action.
+  var initPos = goog.style.getClientPosition(element);
+  var midXY = new goog.math.Coordinate(coords.x + Math.floor(dx / 2),
+                                       coords.y + Math.floor(dy / 2));
+  touchscreen.move(element, midXY);
+
+  var midPos = goog.style.getClientPosition(element);
+  var finalXY = new goog.math.Coordinate(initPos.x + coords.x + dx - midPos.x,
+                                         initPos.y + coords.y + dy - midPos.y);
+  touchscreen.move(element, finalXY);
+
+  touchscreen.release();
+};
+
+
+/**
+ * Pinches the given {@code element} by the given distance with a virtual touch
+ * screen. A positive distance moves two fingers inward toward each and a
+ * negative distances spreds them outward. The optional coordinate is the point
+ * the fingers move towards (for positive distances) or away from (for negative
+ * distances); and if not provided, defaults to the center of the element.
+ *
+ * @param {!Element} element The element to pinch.
+ * @param {number} distance The distance by which to pinch the element.
+ * @param {goog.math.Coordinate=} opt_coords Position relative to the element
+ *   at the center of the pinch.
+ * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
+ *    provided, constructs one.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.pinch = function(element, distance, opt_coords, opt_touchscreen) {
+  if (distance == 0) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+                        'Cannot pinch by a distance of zero.');
+  }
+  function startSoThatEndsAtMax(offsetVec) {
+    if (distance < 0) {
+      var magnitude = offsetVec.magnitude();
+      offsetVec.scale(magnitude ? (magnitude + distance) / magnitude : 0);
+    }
+  }
+  var halfDistance = distance / 2;
+  function scaleByHalfDistance(offsetVec) {
+    var magnitude = offsetVec.magnitude();
+    offsetVec.scale(magnitude ? (magnitude - halfDistance) / magnitude : 0);
+  }
+  bot.action.multiTouchAction_(element,
+                               startSoThatEndsAtMax,
+                               scaleByHalfDistance,
+                               opt_coords,
+                               opt_touchscreen);
+};
+
+
+/**
+ * Rotates the given {@code element} by the given angle with a virtual touch
+ * screen. A positive angle moves two fingers clockwise and a negative angle
+ * moves them counter-clockwise. The optional coordinate is the point to
+ * rotate around; and if not provided, defaults to the center of the element.
+ *
+ * @param {!Element} element The element to rotate.
+ * @param {number} angle The angle by which to rotate the element.
+ * @param {goog.math.Coordinate=} opt_coords Position relative to the element
+ *   at the center of the rotation.
+ * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
+ *    provided, constructs one.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.rotate = function(element, angle, opt_coords, opt_touchscreen) {
+  if (angle == 0) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+                        'Cannot rotate by an angle of zero.');
+  }
+  function startHalfwayToMax(offsetVec) {
+    offsetVec.scale(0.5);
+  }
+  var halfRadians = Math.PI * (angle / 180) / 2;
+  function rotateByHalfAngle(offsetVec) {
+    offsetVec.rotate(halfRadians);
+  }
+  bot.action.multiTouchAction_(element,
+                               startHalfwayToMax,
+                               rotateByHalfAngle,
+                               opt_coords,
+                               opt_touchscreen);
+};
+
+
+/**
+ * Performs a multi-touch action with two fingers on the given element. This
+ * helper function works by manipulating an "offsetVector", which is the vector
+ * away from the center of the interaction at which the fingers are positioned.
+ * It computes the maximum offset vector and passes it to transformStart to
+ * find the starting position of the fingers; it then passes it to transformHalf
+ * twice to find the midpoint and final position of the fingers.
+ *
+ * @param {!Element} element Element to interact with.
+ * @param {function(goog.math.Vec2)} transformStart Function to transform the
+ *   maximum offset vector to the starting offset vector.
+ * @param {function(goog.math.Vec2)} transformHalf Function to transform the
+ *   offset vector halfway to its destination.
+ * @param {goog.math.Coordinate=} opt_coords Position relative to the element
+ *   at the center of the pinch.
+ * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
+ *    provided, constructs one.
+ * @private
+ */
+bot.action.multiTouchAction_ = function(element, transformStart, transformHalf,
+                                        opt_coords, opt_touchscreen) {
+  var center = bot.action.prepareToInteractWith_(element, opt_coords);
+  var size = bot.action.getInteractableSize_(element);
+  var offsetVec = new goog.math.Vec2(
+      Math.min(center.x, size.width - center.x),
+      Math.min(center.y, size.height - center.y));
+
+  var touchScreen = opt_touchscreen || new bot.Touchscreen();
+  transformStart(offsetVec);
+  var start1 = goog.math.Vec2.sum(center, offsetVec);
+  var start2 = goog.math.Vec2.difference(center, offsetVec);
+  touchScreen.move(element, start1, start2);
+  touchScreen.press(/*Two Finger Press*/ true);
+
+  var initPos = goog.style.getClientPosition(element);
+  transformHalf(offsetVec);
+  var mid1 = goog.math.Vec2.sum(center, offsetVec);
+  var mid2 = goog.math.Vec2.difference(center, offsetVec);
+  touchScreen.move(element, mid1, mid2);
+
+  var movedVec = goog.math.Vec2.difference(
+      goog.style.getClientPosition(element), initPos);
+  transformHalf(offsetVec);
+  var end1 = goog.math.Vec2.sum(center, offsetVec).subtract(movedVec);
+  var end2 = goog.math.Vec2.difference(center, offsetVec).subtract(movedVec);
+  touchScreen.move(element, end1, end2);
+  touchScreen.release();
+};
+
+
+/**
+ * Prepares to interact with the given {@code element}. It checks if the the
+ * element is shown, scrolls the element into view, and returns the coordinates
+ * of the interaction, which if not provided, is the center of the element.
+ *
+ * @param {!Element} element The element to be interacted with.
+ * @param {goog.math.Coordinate=} opt_coords Position relative to the target.
+ * @return {!goog.math.Vec2} Coordinates at the center of the interaction.
  * @throws {bot.Error} If the element cannot be interacted with.
  * @private
  */
-bot.action.moveAndReturnMouse_ = function(element, opt_coords, opt_mouse) {
+bot.action.prepareToInteractWith_ = function(element, opt_coords) {
   bot.action.checkShown_(element);
 
   // Unlike element.scrollIntoView(), this scrolls the minimal amount
@@ -330,186 +526,26 @@ bot.action.moveAndReturnMouse_ = function(element, opt_coords, opt_mouse) {
   // (2) Elements with children styled as position:absolute will often not have
   // a bounding box that surrounds all of their children, but it is useful for
   // the user to be able to interact with this parent element as if it does.
-  if (!opt_coords) {
-    var size = goog.style.getSize(element);
-    opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
+  if (opt_coords) {
+    return goog.math.Vec2.fromCoordinate(opt_coords);
+  } else {
+    var size = bot.action.getInteractableSize_(element);
+    return new goog.math.Vec2(size.width / 2, size.height / 2);
   }
-
-  var mouse = opt_mouse || new bot.Mouse();
-  mouse.move(element, opt_coords);
-  return mouse;
 };
 
 
 /**
- * A helper function which triggers a mouse press and mouse release.
+ * Returns the interactable size of an element.
  *
- * @param {!bot.Mouse} mouse The object which is used to trigger the mouse
- * events.
- * @param {!Element} element The element to click.
- * @param {!bot.Mouse.Button} button The mouse button.
- * {@code element}.
+ * @param {!Element} elem Element.
+ * @return {!goog.math.Size} size Size of the element.
  * @private
  */
-bot.action.pressAndReleaseButton_ = function(mouse, element, button) {
-  mouse.pressButton(button);
-  mouse.releaseButton();
-};
-
-
-/**
- * Taps on the given {@code element} with a virtual touch screen.
- *
- * @param {!Element} element The element to tap.
- * @param {goog.math.Coordinate=} opt_coords Finger position relative to the
- *   target.
- * @throws {bot.Error} If the element cannot be interacted with.
- */
-bot.action.tap = function(element, opt_coords) {
-  bot.action.checkShown_(element);
-
-  var touchScreen = new bot.Touchscreen();
-  if (!opt_coords) {
-    var size = goog.style.getSize(element);
-    opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
-  }
-  touchScreen.move(element, opt_coords);
-  touchScreen.press();
-  touchScreen.release();
-};
-
-
-/**
- * Swipes the given {@code element} by (dx, dy) with a virtual touch screen.
- *
- * @param {!Element} element The element to swipe.
- * @param {number} dx Increment in x coordinate.
- * @param {number} dy Increment in y coordinate.
- * @param {goog.math.Coordinate=} opt_coords swipe start position relative to
- *   the element.
- * @throws {bot.Error} If the element cannot be interacted with.
- */
-bot.action.swipe = function(element, dx, dy, opt_coords) {
-  bot.action.checkInteractable_(element);
-
-  var touchScreen = new bot.Touchscreen();
-  if (!opt_coords) {
-    var size = goog.style.getSize(element);
-    opt_coords = new goog.math.Coordinate(size.width / 2, size.height / 2);
-  }
-  touchScreen.move(element, opt_coords);
-  touchScreen.press();
-
-  // Fire two touchmoves (middle and destination) to trigger a drag action.
-  var initPos = goog.style.getClientPosition(element);
-  var midXY = new goog.math.Coordinate(opt_coords.x + Math.floor(dx / 2),
-                                       opt_coords.y + Math.floor(dy / 2));
-  touchScreen.move(element, midXY);
-
-  var midPos = goog.style.getClientPosition(element);
-  var finalXY = new goog.math.Coordinate(
-      initPos.x + opt_coords.x + dx - midPos.x,
-      initPos.y + opt_coords.y + dy - midPos.y);
-  touchScreen.move(element, finalXY);
-
-  touchScreen.release();
-};
-
-
-/**
- * Helper function that has common logic needing for the pinch and zoom actions.
- *
- * @param {!Element} element The element to scale.
- * @param {boolean} isZoom Whether or not to zoom.
- * @private
- */
-bot.action.scale_ = function(element, isZoom) {
-  bot.action.checkInteractable_(element);
-  var size = goog.style.getSize(element);
-  var center = new goog.math.Vec2(size.width / 2, size.height / 2);
-  // To choose the default coordinate, we imagine a circle centered on the
-  // element's center. The first finger coordinate is the top of this circle
-  // i.e. the 12 o'clock mark and the second finger is at 6 o'clock.
-  var outer1 = new goog.math.Coordinate(size.width / 2, 0);
-  var outer2 = new goog.math.Coordinate(size.width / 2, size.height);
-  var mid1 = new goog.math.Coordinate(size.width / 2, size.height);
-  var mid2 = new goog.math.Coordinate(size.width / 2, 3 * size.height / 4);
-
-  // For zoom, start from the center and go outwards and vice versa for pinch.
-  var start1 = isZoom ? center : outer1;
-  var start2 = isZoom ? center : outer2;
-  var end1 = isZoom ? outer1 : center;
-  var end2 = isZoom ? outer2 : center;
-
-  var touchScreen = new bot.Touchscreen();
-  touchScreen.move(element, start1, start2);
-  touchScreen.press(/*Two Finger Press*/ true);
-  touchScreen.move(element, mid1, mid2);
-  touchScreen.move(element, end1, end2);
-  touchScreen.release();
-};
-
-
-/**
- * Pinches the given {@code element} (moves fingers inward to its center) with a
- * virtual touch screen.
- *
- * @param {!Element} element The element to pinch.
- * @throws {bot.Error} If the element cannot be interacted with.
- */
-bot.action.pinch = function(element) {
-  bot.action.scale_(element, /* isZoom */ false);
-};
-
-
-/**
- * Zooms the given {@code element} (moves fingers outward to its edge) with a
- * virtual touch screen.
- *
- * @param {!Element} element The element to zoom.
- * @throws {bot.Error} If the element cannot be interacted with.
- */
-bot.action.zoom = function(element) {
-  bot.action.scale_(element, /* isZoom */ true);
-};
-
-
-/**
- * Rotates the given {@code element} (moves fingers along a circular arc) with a
- * virtual touch screen by the given rotation {@code angle}.
- *
- * @param {!Element} element The element to rotate.
- * @param {number} angle The degrees of rotation between -180 and 180.  A
- *   positve number indicates a clockwise rotation.
- * @throws {bot.Error} If the element cannot be interacted with.
- */
-bot.action.rotate = function(element, angle) {
-  bot.action.checkInteractable_(element);
-  var size = goog.style.getSize(element);
-  var center = new goog.math.Vec2(size.width / 2, size.height / 2);
-  // To choose the default coordinate, we imagine a circle centered on the
-  // element's center. The first finger coordinate is the top of this circle
-  // i.e. the 12 o'clock mark and the second finger is at 6 o'clock.
-  var coords1 = new goog.math.Vec2(size.width / 2, 0);
-  var coords2 = new goog.math.Vec2(size.width / 2, size.height);
-
-  // Convert the degrees to radians.
-  var halfRadians = Math.PI * (angle / 180) / 2;
-
-  var touchScreen = new bot.Touchscreen();
-  touchScreen.move(element, coords1, coords2);
-  touchScreen.press(/*Two Finger Press*/ true);
-
-  // Complete the rotation in two steps.
-  var mid1 = goog.math.Vec2.rotateAroundPoint(coords1, center, halfRadians);
-  var mid2 = goog.math.Vec2.rotateAroundPoint(coords2, center, halfRadians);
-  touchScreen.move(element, mid1, mid2);
-
-  var end1 = goog.math.Vec2.rotateAroundPoint(mid1, center, halfRadians);
-  var end2 = goog.math.Vec2.rotateAroundPoint(mid2, center, halfRadians);
-  touchScreen.move(element, end1, end2);
-
-  touchScreen.release();
+bot.action.getInteractableSize_ = function(elem) {
+  var size = goog.style.getSize(elem);
+  return ((size.width > 0 && size.height > 0) || !elem.offsetParent) ? size :
+      bot.action.getInteractableSize_(elem.offsetParent);
 };
 
 
