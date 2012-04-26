@@ -9,6 +9,9 @@ js_library(name = "base_lib",
     "//javascript/atoms:error_lib"
   ])
 
+js_library(name = "key_lib",
+  srcs = [ "key.js" ])
+
 js_library(name = "webdriver_lib",
   srcs = [
     "*.js",
