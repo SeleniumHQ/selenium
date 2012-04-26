@@ -72,10 +72,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WebDriver.Support\WebDriver.Support.csproj">
-      <Project>{A9779443-E254-47E9-B733-8AC6D3662CA6}</Project>
-      <Name>WebDriver.Support</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\WebDriver\WebDriver.csproj">
       <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
       <Name>WebDriver</Name>

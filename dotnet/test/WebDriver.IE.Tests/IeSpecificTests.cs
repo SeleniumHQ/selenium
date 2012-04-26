@@ -3,7 +3,6 @@ using System;
 using OpenQA.Selenium.Environment;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.UI;
 
 namespace OpenQA.Selenium.IE
 {
