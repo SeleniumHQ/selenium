@@ -298,6 +298,24 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   return [[NSArray alloc] initWithObjects:@"1", nil];
 }
 
+// Return the device's current orientation as a string
+-(NSString*)currentOrientation {
+  
+  if (([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft) || 
+      ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)) {
+
+    return @"LANDSCAPE";
+  }
+  if (([[UIDevice currentDevice] orientation] == UIDeviceOrientationPortrait) || 
+      ([[UIDevice currentDevice] orientation] == UIDeviceOrientationPortraitUpsideDown)) {
+
+    return @"PORTRAIT";
+  }
+  // I'm not sure why but the initial state of the app seems to set the current orientation
+  // to unknown (0). Will hopefully look into this in the near future ;) TODO (lukeis)
+  return @"UNKNOWN";
+}
+
 -(void)window:(NSDictionary*)ignored {
   // window switching isn't supported
   return;

@@ -124,6 +124,13 @@ static NSString* const SESSION_STORAGE = @"sessionStorage";
                               POST:NULL
                           withName:@"window_handles"];
   
+  // Get current orientation
+  // note not implementing the POST because the simulator and iphone
+  //  can not be programmatically rotated via the api (that i can see)
+  [self setResourceToViewMethodGET:@selector(currentOrientation)
+                              POST:NULL
+                          withName:@"orientation"];
+  
   // switch to window
   [self setResourceToViewMethodGET:NULL
                               POST:@selector(window:)
