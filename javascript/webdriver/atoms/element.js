@@ -186,8 +186,11 @@ webdriver.atoms.element.getText = function(element) {
  */
 webdriver.atoms.element.type = function(element, keys) {
   // Convert to bot.Keyboard.Key values.
-  var convertedSequences = [], current;
-  convertedSequences.push(current = []);
+  /** @type {!Array.<!Array.<(string|!bot.Keyboard.Key)>>} */
+  var convertedSequences = [];
+  /** @type {!Array.<(string|!bot.Keyboard.Key)>} */
+  var current = [];
+  convertedSequences.push(current);
 
   goog.array.forEach(keys, function(sequence) {
     goog.array.forEach(sequence.split(''), function(key) {
@@ -223,8 +226,7 @@ webdriver.atoms.element.type = function(element, keys) {
   });
 
   goog.array.forEach(convertedSequences, function(sequence) {
-    var args = goog.array.concat(element, sequence);
-    bot.action.type.apply(null, args);
+    bot.action.type(element, sequence);
   });
 
   function isWebDriverKey(c) {
