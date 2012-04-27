@@ -181,10 +181,12 @@ webdriver.atoms.element.getText = function(element) {
  *
  * @param {!Element} element The element to type upon.
  * @param {!Array.<string>} keys The keys to type on the element.
+ * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
+ *    constructs one.
  * @see bot.action.type
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
  */
-webdriver.atoms.element.type = function(element, keys) {
+webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
   // Convert to bot.Keyboard.Key values.
   /** @type {!Array.<!Array.<(string|!bot.Keyboard.Key)>>} */
   var convertedSequences = [];
@@ -226,7 +228,7 @@ webdriver.atoms.element.type = function(element, keys) {
   });
 
   goog.array.forEach(convertedSequences, function(sequence) {
-    bot.action.type(element, sequence);
+    bot.action.type(element, sequence, opt_keyboard);
   });
 
   function isWebDriverKey(c) {
