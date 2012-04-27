@@ -444,6 +444,7 @@ module Javascript
       output = js_name(dir, args[:name])
       name = task_name(dir, args[:name])
       defines = ""
+      minify = args[:minify]
 
       if !@target_platform.nil?
         output = output.sub(/\.js$/, "_#{@target_platform}.js")
@@ -476,7 +477,7 @@ module Javascript
             "--third_party=true " <<
             "--js_output_file=#{output} " <<
             "--output_wrapper='#{wrapper}' " <<
-            "--compilation_level=#{compilation_level} " <<
+            "--compilation_level=#{compilation_level(minify)} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "#{defines} " <<
             "--js='" <<
@@ -501,8 +502,13 @@ module Javascript
       Rake::Task[name].out = output
     end
 
-    def compilation_level
-      ENV['minify'] == 'false' ? 'WHITESPACE_ONLY' : 'ADVANCED_OPTIMIZATIONS'
+    def compilation_level(minify)
+p "Minify from env: #{ENV['minify']}"
+p "Minify from pass in: #{minify}"
+
+      to_minify = ENV['minify'] || minify
+
+      to_minify == 'false' ? 'WHITESPACE_ONLY' : 'ADVANCED_OPTIMIZATIONS'
     end
   end
 
