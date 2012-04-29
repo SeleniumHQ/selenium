@@ -118,8 +118,8 @@ limitations under the License.
     goog.events.listen(dialog, goog.ui.Component.EventType.ACTION, onAction);
 
     dialog.setVisible(true);
-    bot.action.type(dialog.getUrlElement(), 'foo bar',
-        bot.Keyboard.Keys.ENTER);
+    bot.action.type(dialog.getUrlElement(),
+        ['foo bar', bot.Keyboard.Keys.ENTER]);
     assertDialogNotVisible();
     assertEquals('foo bar', dialog.getUserSelection());
     assertEquals(1, onAction.getCallCount());
