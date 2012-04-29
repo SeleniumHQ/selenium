@@ -12,39 +12,60 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** @fileoverview Error utilities for WebDriverJS. */
+/**
+ * @fileoverview Utilities for working with WebDriver response objects.
+ * See: http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
+ */
 
-goog.provide('webdriver.error');
+goog.provide('bot.response');
+goog.provide('bot.response.ResponseObject');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 
 
 /**
+ * Type definition for a response object, as defined by the JSON wire protocol.
  * @typedef {{status: bot.ErrorCode, value: (*|{message: string})}}
+ * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
  */
-webdriver.error.ResponseObject;
+bot.response.ResponseObject;
 
 
 /**
  * @param {*} value The value to test.
  * @return {boolean} Whether the given value is a response object.
  */
-webdriver.error.isResponseObject = function(value) {
+bot.response.isResponseObject = function(value) {
   return goog.isObject(value) && goog.isNumber(value['status']);
+};
+
+
+/**
+ * Creates a new success response object with the provided value.
+ * @param {*} value The response value.
+ * @return {!bot.response.ResponseObject} The new response object.
+ */
+bot.response.createResponse = function(value) {
+  if (bot.response.isResponseObject(value)) {
+    return (/** @type {!bot.response.ResponseObject} */value);
+  }
+  return {
+    'status': bot.ErrorCode.SUCCESS,
+    'value': value
+  };
 };
 
 
 /**
  * Converts an error value into its JSON representation as defined by the
  * WebDriver wire protocol.
- * @param {*} error The error value to convert.
- * @return {!webdriver.error.ResponseObject} The converted response.
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
+ * @param {(bot.Error|Error|*)} error The error value to convert.
+ * @return {!bot.response.ResponseObject} The new response object.
  */
-webdriver.error.createResponse = function(error) {
-  if (webdriver.error.isResponseObject(error)) {
-    return (/** @type {!webdriver.error.ResponseObject} */error);
+bot.response.createErrorResponse = function(error) {
+  if (bot.response.isResponseObject(error)) {
+    return (/** @type {!bot.response.ResponseObject} */error);
   }
 
   var statusCode = error && goog.isNumber(error.code) ? error.code :
@@ -52,25 +73,23 @@ webdriver.error.createResponse = function(error) {
   return {
     'status': (/** @type {bot.ErrorCode} */statusCode),
     'value': {
-      'message': error && error.message || error + ''
-      // TODO(jleyba): Parse stack trace info.
+      'message': (error && error.message || error) + ''
     }
   };
 };
 
 
 /**
- * Checks that a response object does not define a {@code bot.Error} as defined
- * by the WebDriver wire protocol. If the response object defines an error, it
- * will be thrown. Otherwise, the response will be returned as is.
- *
- * @param {!webdriver.error.ResponseObject} responseObj The response object to
+ * Checks that a response object does not specify an error as defined by the
+ * WebDriver wire protocol. If the response object defines an error, it will
+ * be thrown. Otherwise, the response will be returned as is.
+ * @param {!bot.response.ResponseObject} responseObj The response object to
  *     check.
- * @return {!webdriver.error.ResponseObject} The checked response object.
+ * @return {!bot.response.ResponseObject} The checked response object.
  * @throws {bot.Error} If the response describes an error.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
  */
-webdriver.error.checkResponse = function(responseObj) {
+bot.response.checkResponse = function(responseObj) {
   var status = responseObj['status'];
   if (status == bot.ErrorCode.SUCCESS) {
     return responseObj;
@@ -84,6 +103,5 @@ webdriver.error.checkResponse = function(responseObj) {
     throw new bot.Error(status, value + '');
   }
 
-  // TODO(jleyba): Handle stack traces.
   throw new bot.Error(status, value['message'] + '');
 };

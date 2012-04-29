@@ -26,6 +26,7 @@ goog.provide('webdriver.WebElement');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('webdriver.Command');
@@ -33,7 +34,6 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.Key');
 goog.require('webdriver.Locator');
 goog.require('webdriver.Session');
-goog.require('webdriver.error');
 goog.require('webdriver.promise');
 goog.require('webdriver.promise.Application');
 goog.require('webdriver.promise.Deferred');
@@ -136,7 +136,7 @@ webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
   var session = webdriver.promise.Application.getInstance().schedule(
       description, function() {
         return webdriver.promise.checkedNodeCall(fn).then(function(response) {
-          webdriver.error.checkResponse(response);
+          bot.response.checkResponse(response);
           return new webdriver.Session(response['sessionId'],
                                        response['value']);
         });
@@ -255,7 +255,7 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
         });
       }).
       then(function(response) {
-        webdriver.error.checkResponse(response);
+        bot.response.checkResponse(response);
         return webdriver.WebDriver.fromWireValue_(self, response['value']);
       });
 

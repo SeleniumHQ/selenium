@@ -28,7 +28,7 @@ goog.require('webdriver.atoms.storage.session');
  *
  * @param {string} key The key of the item.
  * @param {*} value The value of the item.
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.session.setItem = function(key, value) {
@@ -41,7 +41,7 @@ webdriver.atoms.inject.storage.session.setItem = function(key, value) {
  * Gets an item from the session storage.
  *
  * @param {string} key The key of the item.
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.session.getItem = function(key) {
@@ -53,7 +53,7 @@ webdriver.atoms.inject.storage.session.getItem = function(key) {
 /**
  * Gets the key set of the entries.
  *
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.session.keySet = function() {
@@ -66,7 +66,7 @@ webdriver.atoms.inject.storage.session.keySet = function() {
  * Removes an item in the session storage.
  *
  * @param {string} key The key of the item.
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.session.removeItem = function(key) {
@@ -78,7 +78,7 @@ webdriver.atoms.inject.storage.session.removeItem = function(key) {
 /**
  * Clears the session storage.
  *
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.session.clear = function() {
@@ -90,7 +90,7 @@ webdriver.atoms.inject.storage.session.clear = function() {
 /**
  * Gets the size of the session storage.
  *
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.session.size = function() {

@@ -16,26 +16,26 @@ limitations under the License.
 -->
 <html>
 <head>
-  <title>error_test.html</title>
+  <title>response_test</title>
   <script src="test_bootstrap.js"></script>
   <script>
     goog.require('bot.Error');
     goog.require('bot.ErrorCode');
+    goog.require('bot.response');
     goog.require('goog.testing.jsunit');
-    goog.require('webdriver.error');
   </script>
 </head>
 <body>
 <script>
 function testCheckResponse_statusOk() {
   var obj = {status: 0, value: 'foo'};
-  assertEquals(obj, webdriver.error.checkResponse(obj));
+  assertEquals(obj, bot.response.checkResponse(obj));
 }
 
 function testCheckResponse_valueHasMesage() {
   var threw = false;
   try {
-    webdriver.error.checkResponse({
+    bot.response.checkResponse({
       status: 7,
       value: {
         message: 'Ouch'
@@ -52,7 +52,7 @@ function testCheckResponse_valueHasMesage() {
 function testCheckResponse_valueIsString() {
   var threw = false;
   try {
-    webdriver.error.checkResponse({
+    bot.response.checkResponse({
       status: 7,
       value: 'No soup for you'
     });
@@ -67,7 +67,7 @@ function testCheckResponse_valueIsString() {
 function testCheckResponse_noStatus() {
   var threw = false;
   try {
-    webdriver.error.checkResponse({
+    bot.response.checkResponse({
       value: 'No soup for you'
     });
   } catch (ex) {

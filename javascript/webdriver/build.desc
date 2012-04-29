@@ -1,7 +1,6 @@
 js_library(name = "base_lib",
   srcs = [
     "command.js",
-    "error.js",
     "events.js",
     "promise.js"
   ],

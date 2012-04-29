@@ -36,14 +36,6 @@ goog.require('goog.object');
 
 
 /**
- * WebDriver wire protocol definition of a command response.
- * @typedef {{status:bot.ErrorCode, value:*}}
- * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
- */
-bot.inject.Response;
-
-
-/**
  * Key used to identify DOM elements in the WebDriver wire protocol.
  * @type {string}
  * @const
@@ -227,7 +219,7 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
  *     serialized JSON string.
  * @param {!Window=} opt_window The window in whose context the function should
  *     be invoked; defaults to the current window.
- * @return {!(string|bot.inject.Response)} The response object. If
+ * @return {!(string|bot.response.ResponseObject)} The response object. If
  *     opt_stringify is true, the result will be serialized and returned in
  *     string format.
  */
@@ -250,7 +242,7 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
  * Executes an injected script, which is expected to finish asynchronously
  * before the given {@code timeout}. When the script finishes or an error
  * occurs, the given {@code onDone} callback will be invoked. This callback
- * will have a single argument, a {@code bot.inject.Response} object.
+ * will have a single argument, a {@link bot.response.ResponseObject} object.
  *
  * The script signals its completion by invoking a supplied callback given
  * as its last argument. The callback may be invoked with a single value.
@@ -271,14 +263,13 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
  *     the WebDriver wire protocol.
  * @param {number} timeout The amount of time, in milliseconds, the script
  *     should be permitted to run; must be non-negative.
- * @param {function(string)|function(!bot.inject.Response)} onDone
+ * @param {function(string)|function(!bot.response.ResponseObject)} onDone
  *     The function to call when the given {@code fn} invokes its callback,
  *     or when an exception or timeout occurs. This will always be called.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
  *     serialized JSON string.
  * @param {!Window=} opt_window The window to synchronize the script with;
  *     defaults to the current window.
- * @return {null} Doesn't return anything, but will call "onDone".
  */
 bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
                                          opt_stringify, opt_window) {

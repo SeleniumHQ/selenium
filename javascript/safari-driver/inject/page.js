@@ -24,6 +24,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.inject');
 goog.require('bot.locators.xpath');
+goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
@@ -33,7 +34,6 @@ goog.require('goog.dom.classes');
 goog.require('safaridriver.console');
 goog.require('safaridriver.message');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.error');
 goog.require('webdriver.promise');
 
 
@@ -176,14 +176,7 @@ safaridriver.inject.page.onCommand_ = function(message) {
         // must wait for those to resolve.
         return webdriver.promise.fullyResolved(encodedValue);
       }).
-      then(function(value) {
-        return {
-          'status': bot.ErrorCode.SUCCESS,
-          'value': value
-        };
-      }, function(error) {
-        return webdriver.error.createResponse(error);
-      }).
+      then(bot.response.createResponse, bot.response.createErrorResponse).
       then(function(response) {
         var responseMessage = new safaridriver.message.ResponseMessage(
             command.getId(), response);
@@ -226,7 +219,7 @@ safaridriver.inject.page.onResponse_ = function(message) {
 
   var response = message.getResponse();
   try {
-    webdriver.error.checkResponse(response);
+    bot.response.checkResponse(response);
     var value = safaridriver.inject.page.decodeValue(response['value']);
     promise.resolve(value);
   } catch (ex) {

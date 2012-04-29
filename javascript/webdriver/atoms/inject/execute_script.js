@@ -31,7 +31,7 @@ goog.require('bot.inject.cache');
  * @param {Array.<*>} args Array of arguments to pass to fn.
  * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
  *     object to be read from the cache.
- * @return {!(string|bot.inject.Response)} The response object. If
+ * @return {!(string|bot.response.ResponseObject)} The response object. If
  *     opt_stringify is true, the result will be serialized and returned in
  *     string format.
  */
@@ -48,7 +48,7 @@ webdriver.atoms.inject.executeScript = function(fn, args, opt_window) {
  * @param {int} timeout The timeout to wait up to in millis.
  * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
  *     object to be read from the cache.
- * @return {!(string|bot.inject.Response)} The response object. If
+ * @return {!(string|bot.response.ResponseObject)} The response object. If
  *     opt_stringify is true, the result will be serialized and returned in
  *     string format.
  */

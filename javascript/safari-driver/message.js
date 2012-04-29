@@ -461,7 +461,7 @@ safaridriver.message.EncodeMessage.prototype.getXPath = function() {
 /**
  * A {@link safaridriver.message.Type.RESPONSE} message.
  * @param {string} id The ID from the command this is a response to.
- * @param {!webdriver.CommandResponse} responseObj The raw response object.
+ * @param {!bot.response.ResponseObject} responseObj The raw response object.
  * @constructor
  * @extends {safaridriver.message.Message}
  */
@@ -514,10 +514,10 @@ safaridriver.message.ResponseMessage.prototype.getId = function() {
 
 
 /**
- * @return {!webdriver.CommandResponse} The raw response encoded in this
+ * @return {!bot.response.ResponseObject} The raw response encoded in this
  *     message.
  */
 safaridriver.message.ResponseMessage.prototype.getResponse = function() {
-  return (/** @type {!webdriver.CommandResponse} */this.getField(
+  return (/** @type {!bot.response.ResponseObject} */this.getField(
       safaridriver.message.ResponseMessage.Field_.RESPONSE));
 };

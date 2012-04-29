@@ -27,6 +27,7 @@ goog.require('bot.frame');
 goog.require('bot.inject');
 goog.require('bot.inject.cache');
 goog.require('bot.locators');
+goog.require('bot.response');
 goog.require('bot.window');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
@@ -37,7 +38,6 @@ goog.require('goog.style');
 goog.require('safaridriver.inject.PageMessenger');
 goog.require('safaridriver.inject.state');
 goog.require('webdriver.atoms.element');
-goog.require('webdriver.error');
 goog.require('webdriver.promise.Deferred');
 
 
@@ -92,8 +92,8 @@ safaridriver.inject.commands.getPageSource = function() {
  * @param {function(!Object, (Document|Element)=):
  *     (Element|!goog.array.ArrayLike.<Element>)} locatorFn The locator function
  *     that should be used.
- * @return {function(!safaridriver.Command): !bot.inject.Response} The locator
- *     command function.
+ * @return {function(!safaridriver.Command): !bot.response.ResponseObject} The
+ *     locator command function.
  * @private
  */
 safaridriver.inject.commands.findElementCommand_ = function(locatorFn) {
@@ -113,7 +113,7 @@ safaridriver.inject.commands.findElementCommand_ = function(locatorFn) {
 /**
  * Locates an element on the page.
  * @param {!safaridriver.Command} command The command object.
- * @return {bot.inject.Response} The command response.
+ * @return {!bot.response.ResponseObject} The command response.
  */
 safaridriver.inject.commands.findElement =
     safaridriver.inject.commands.findElementCommand_(bot.locators.findElement);
@@ -121,17 +121,17 @@ safaridriver.inject.commands.findElement =
 /**
  * Locates multiple elements on the page.
  * @param {!safaridriver.Command} command The command object.
- * @return {bot.inject.Response} The command response.
+ * @return {bot.response.ResponseObject} The command response.
  */
 safaridriver.inject.commands.findElements =
     safaridriver.inject.commands.findElementCommand_(bot.locators.findElements);
 
 /**
  * Retrieves the element that currently has focus.
- * @return {!bot.inject.Response} The response object.
+ * @return {!bot.response.ResponseObject} The response object.
  */
 safaridriver.inject.commands.getActiveElement = function() {
-  return (/** @type {!bot.inject.Response} */bot.inject.executeScript(
+  return (/** @type {!bot.response.ResponseObject} */bot.inject.executeScript(
       bot.dom.getActiveElement, [bot.getWindow()]));
 };
 
@@ -280,7 +280,7 @@ safaridriver.inject.commands.setWindowSize = function(command) {
  * @param {!safaridriver.inject.PageMessenger} messenger The page messenger to
  *     use.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     {@link webdriver.CommandResponse} from the page.
+ *     {@link bot.response.ResponseObject} from the page.
  * @throws {Error} If there is an error while sending the command to the page.
  */
 safaridriver.inject.commands.executeScript = function(command, messenger) {
@@ -288,8 +288,8 @@ safaridriver.inject.commands.executeScript = function(command, messenger) {
   var sendResult = bot.inject.executeScript(function(args) {
     command.setParameter('args', args);
   }, [command.getParameter('args')]);
-  webdriver.error.checkResponse(
-      (/** @type {!bot.inject.Response} */sendResult));
+  bot.response.checkResponse(
+      (/** @type {!bot.response.ResponseObject} */sendResult));
 
   var response = new webdriver.promise.Deferred();
 

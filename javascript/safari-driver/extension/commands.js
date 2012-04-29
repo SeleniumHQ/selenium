@@ -19,12 +19,12 @@
 
 goog.provide('safaridriver.extension.commands');
 
+goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('safaridriver.extension.Tab');
 goog.require('safaridriver.message');
-goog.require('webdriver.error');
 goog.require('webdriver.promise');
 
 
@@ -312,7 +312,7 @@ safaridriver.extension.commands.switchToFrame = function(session, command) {
   var tab = session.getCommandTab();
   var result = new webdriver.promise.Deferred();
   safaridriver.extension.commands.sendCommand(tab, command).
-      addCallback(webdriver.error.checkResponse).
+      addCallback(bot.response.checkResponse).
       addErrback(function(e) {
         tab.removeListener(safaridriver.message.Type.ACTIVATE, onActivate);
         if (result.isPending()) {

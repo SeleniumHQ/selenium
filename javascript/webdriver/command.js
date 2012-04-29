@@ -19,7 +19,6 @@
 goog.provide('webdriver.Command');
 goog.provide('webdriver.CommandExecutor');
 goog.provide('webdriver.CommandName');
-goog.provide('webdriver.CommandResponse');
 
 
 
@@ -221,14 +220,6 @@ webdriver.CommandName = {
 
 
 /**
- * Type definition for a WebDriver response object as defined by the wire
- * protocol.
- * @typedef {{status: bot.ErrorCode, value: (*|{message: string})}}
- */
-webdriver.CommandResponse;
-
-
-/**
  * Handles the execution of {@code webdriver.Command} objects.
  * @interface
  */
@@ -239,9 +230,9 @@ webdriver.CommandExecutor = function() {};
  * Executes the given {@code command}. If there is an error executing the
  * command, the provided callback will be invoked with the offending error.
  * Otherwise, the callback will be invoked with a null Error and non-null
- * {@code webdriver.CommandResponse} object.
+ * {@link bot.response.ResponseObject} object.
  * @param {!webdriver.Command} command The command to execute.
- * @param {function(Error, !webdriver.CommandResponse=)} callback the function
+ * @param {function(Error, !bot.response.ResponseObject=)} callback the function
  *     to invoke when the command response is ready.
  */
 webdriver.CommandExecutor.prototype.execute = goog.abstractMethod;

@@ -19,10 +19,10 @@
 goog.provide('safaridriver.inject');
 
 goog.require('bot.ErrorCode');
+goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.error');
 goog.require('webdriver.promise');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.message');
@@ -137,14 +137,11 @@ safaridriver.inject.onCommand_ = function(message) {
   }
 
   function sendError(error) {
-    sendResponse(webdriver.error.createResponse(error));
+    sendResponse(bot.response.createErrorResponse(error));
   }
 
   function sendSuccess(value) {
-    var response = webdriver.error.isResponseObject(value) ? value : {
-      'status': bot.ErrorCode.SUCCESS,
-      'value': value
-    };
+    var response = bot.response.createResponse(value);
     sendResponse(response);
   }
 

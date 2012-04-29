@@ -136,12 +136,12 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
  * Callback used to parse {@link webdriver.http.Response} objects from a
  * {@link webdriver.http.Client}.
  * @param {!webdriver.http.Response} httpResponse The HTTP response to parse.
- * @return {!webdriver.CommandResponse} The parsed response.
+ * @return {!bot.response.ResponseObject} The parsed response.
  * @private
  */
 webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
   try {
-    return (/** @type {!webdriver.CommandResponse} */goog.json.parse(
+    return (/** @type {!bot.response.ResponseObject} */goog.json.parse(
         httpResponse.body));
   } catch (ex) {
     // Whoops, looks like the server sent us a malformed response. We'll need

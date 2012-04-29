@@ -14,12 +14,11 @@
 
 goog.provide('webdriver.FirefoxDomExecutor');
 
+goog.require('bot.response');
 goog.require('goog.json');
 goog.require('goog.userAgent.product');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.CommandResponse');
-goog.require('webdriver.error');
 
 
 /**
@@ -161,8 +160,8 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
       webdriver.FirefoxDomExecutor.Attribute_.RESPONSE);
 
   try {
-    var response = webdriver.error.checkResponse(
-        (/** @type {webdriver.CommandResponse} */goog.json.parse(json)));
+    var response = bot.response.checkResponse(
+        (/** @type {!bot.response.ResponseObject} */goog.json.parse(json)));
   } catch (ex) {
     command.callback(ex);
     return;

@@ -14,6 +14,7 @@
 
 goog.provide('safaridriver.extension.Tab');
 
+goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
@@ -263,7 +264,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
       removeResponseListener();
       clearTimeout(timeoutKey);
       try {
-        response.resolve(webdriver.error.checkResponse(message.getResponse()));
+        response.resolve(bot.response.checkResponse(message.getResponse()));
       } catch (ex) {
         response.reject(ex);
       }

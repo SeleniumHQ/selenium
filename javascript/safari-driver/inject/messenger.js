@@ -14,11 +14,11 @@
 
 goog.provide('safaridriver.inject.PageMessenger');
 
+goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.inject.page');
 goog.require('safaridriver.inject.state');
 goog.require('safaridriver.message');
-goog.require('webdriver.error');
 goog.require('webdriver.promise');
 
 
@@ -158,7 +158,7 @@ safaridriver.inject.PageMessenger.prototype.onEncode_ = function(message,
   }, []);
 
   var response = new safaridriver.message.ResponseMessage(
-      message.getId(), (/** @type {!webdriver.CommandResponse} */result));
+      message.getId(), (/** @type {!bot.response.ResponseObject} */result));
   response.send(source);
 };
 
@@ -180,7 +180,7 @@ safaridriver.inject.PageMessenger.prototype.onResponse_ = function(message) {
     response['value'] = safaridriver.inject.page.decodeValue(response['value']);
     promise.resolve(response);
   } catch (ex) {
-    promise.reject(webdriver.error.createResponse(ex));
+    promise.reject(bot.response.createErrorResponse(ex));
   }
 };
 

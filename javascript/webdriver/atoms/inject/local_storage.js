@@ -28,7 +28,7 @@ goog.require('webdriver.atoms.storage.local');
  *
  * @param {string} key The key of the item.
  * @param {*} value The value of the item.
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.local.setItem = function(key, value) {
@@ -41,7 +41,7 @@ webdriver.atoms.inject.storage.local.setItem = function(key, value) {
  * Gets an item from the local storage.
  *
  * @param {string} key The key of the item.
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.local.getItem = function(key) {
@@ -53,7 +53,7 @@ webdriver.atoms.inject.storage.local.getItem = function(key) {
 /**
  * Gets the key set of the entries.
  *
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.local.keySet = function() {
@@ -66,7 +66,7 @@ webdriver.atoms.inject.storage.local.keySet = function() {
  * Removes an item in the local storage.
  *
  * @param {string} key The key of the item.
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.local.removeItem = function(key) {
@@ -78,7 +78,7 @@ webdriver.atoms.inject.storage.local.removeItem = function(key) {
 /**
  * Clears the local storage.
  *
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.local.clear = function() {
@@ -90,7 +90,7 @@ webdriver.atoms.inject.storage.local.clear = function() {
 /**
  * Gets the size of the local storage.
  *
- * @return {!bot.inject.Response} The result wrapped according
+ * @return {!bot.response.ResponseObject} The result wrapped according
  *     to the wire protocol.
  */
 webdriver.atoms.inject.storage.local.size = function() {

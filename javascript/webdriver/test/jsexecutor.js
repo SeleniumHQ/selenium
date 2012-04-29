@@ -42,7 +42,7 @@ webdriver.test.JsExecutor.prototype.execute = function(command, callback) {
 /**
  * Maps command names to the functions which execute them.
  * @type {!Object.<function(!Object,
- *                          function(Error, !webdriver.CommandResponse=))>}
+ *                          function(Error, !bot.response.ResponseObject=))>}
  * @const
  * @private
  */

@@ -14,6 +14,7 @@
 
 goog.provide('remote.ui.Client');
 
+goog.require('bot.response');
 goog.require('goog.Disposable');
 goog.require('goog.Uri');
 goog.require('goog.array');
@@ -30,7 +31,6 @@ goog.require('remote.ui.WebDriverScriptButton');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Session');
-goog.require('webdriver.error');
 goog.require('webdriver.promise');
 
 
@@ -198,7 +198,7 @@ remote.ui.Client.prototype.execute_ = function(command) {
   this.banner_.setVisible(false);
   var fn = goog.bind(this.executor_.execute, this.executor_, command);
   return webdriver.promise.checkedNodeCall(fn).
-      then(webdriver.error.checkResponse);
+      then(bot.response.checkResponse);
 };
 
 

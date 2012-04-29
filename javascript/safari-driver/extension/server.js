@@ -15,6 +15,7 @@
 goog.provide('safaridriver.extension.Server');
 
 goog.require('bot.ErrorCode');
+goog.require('bot.response');
 goog.require('goog.Disposable');
 goog.require('goog.debug.Logger');
 goog.require('goog.object');
@@ -22,7 +23,6 @@ goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.extension.commands');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.error');
 goog.require('webdriver.promise');
 
 
@@ -219,11 +219,12 @@ safaridriver.extension.Server.prototype.connect = function(url) {
 /**
  * Executes a single command once all those received before it have completed.
  * @param {!webdriver.Command} command The command to execute.
- * @param {function(Error, !webdriver.CommandResponse=)=} opt_callback A
+ * @param {function(Error, !bot.response.ResponseObject=)=} opt_callback A
  *     callback function for adherence to the {@link webdriver.CommandExecutor}
  *     interface.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with a
- *     {@link webdriver.CommandResponse} object once the command has completed.
+ *     {@link bot.response.ResponseObject} object once the command has
+ *     completed.
  */
 safaridriver.extension.Server.prototype.execute = function(command,
                                                            opt_callback) {
@@ -236,7 +237,7 @@ safaridriver.extension.Server.prototype.execute = function(command,
   if (!handler) {
     this.logMessage_('Unknown command: ' + command.getName(),
         goog.debug.Logger.Level.SEVERE);
-    return webdriver.promise.rejected(webdriver.error.createResponse(
+    return webdriver.promise.rejected(bot.response.createErrorResponse(
         Error('Unknown command: ' + command.getName())));
   }
 
@@ -247,17 +248,12 @@ safaridriver.extension.Server.prototype.execute = function(command,
         this.logMessage_('Executing command: ' + command.getName());
         return handler(this.session_, command);
       }, this)).
-      then(function(value) {
-        return webdriver.error.isResponseObject(value) ? value : {
-          'status': bot.ErrorCode.SUCCESS,
-          'value': value
-        };
-      }, webdriver.error.createResponse);
+      then(bot.response.createResponse, bot.response.createErrorResponse);
 
   // If we were given a callback, massage the result to fit the
   // webdriver.CommandExecutor contract.
   if (opt_callback) {
-    result.then(webdriver.error.checkResponse).
+    result.then(bot.response.checkResponse).
         then(goog.partial(opt_callback, null), opt_callback);
   }
 
@@ -333,14 +329,14 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
       throw Error('Not a command message: ' + message);
     }
   } catch (ex) {
-    this.send_(null, webdriver.error.createResponse(ex));
+    this.send_(null, bot.response.createErrorResponse(ex));
     return;
   }
 
   var command = message.getCommand();
 
   this.execute(command).
-      addErrback(webdriver.error.createResponse).
+      addErrback(bot.response.createErrorResponse).
       addCallback(function(response) {
         this.send_(command, response);
       }, this);
@@ -351,7 +347,7 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
  * Sends a response to the client.
  * @param {safaridriver.Command} command The command this is a response to, or
  *     {@code null} if the response indicates a parse error with the command.
- * @param {!webdriver.CommandResponse} response The response to send.
+ * @param {!bot.response.ResponseObject} response The response to send.
  * @private
  */
 safaridriver.extension.Server.prototype.send_ = function(command, response) {
