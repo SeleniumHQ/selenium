@@ -65,7 +65,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SELENESE}, reason = "SeleniumRC cannot return null values.")
   public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined() {
     driver.get(pages.ajaxyPage);
     assertNull(executor.executeAsyncScript("arguments[arguments.length - 1](null)"));
@@ -74,7 +73,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SELENESE}, reason = "Selenium cannot return arrays")
   public void shouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
 
@@ -86,7 +84,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SELENESE}, reason = "Selenium cannot return arrays")
   public void shouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
 
@@ -98,8 +95,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {ANDROID, SELENESE},
-      reason = "Android does not properly handle arrays; Selenium cannot return arrays")
+  @Ignore(value = {ANDROID},
+      reason = "Android does not properly handle arrays")
   public void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
@@ -120,7 +117,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = SELENESE, reason = "Selenium cannot return elements from scripts")
   public void shouldBeAbleToReturnWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
@@ -131,8 +127,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {ANDROID, SELENESE},
-      reason = "Android does not properly handle arrays; Selenium cannot return elements")
+  @Ignore(value = {ANDROID},
+      reason = "Android does not properly handle arrays")
   public void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 

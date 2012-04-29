@@ -12,7 +12,6 @@ goog.addDependency("../../../javascript/atoms/json.js", ['bot.json'], ['bot.user
 goog.addDependency("../../../javascript/atoms/keyboard.js", ['bot.Keyboard', 'bot.Keyboard.Key', 'bot.Keyboard.Keys'], ['bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events.EventType', 'goog.array', 'goog.dom.selection', 'goog.events.KeyCodes', 'goog.structs.Set', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/mouse.js", ['bot.Mouse', 'bot.Mouse.Button'], ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events.EventType', 'bot.userAgent', 'goog.dom', 'goog.dom.Range', 'goog.dom.TagName', 'goog.math.Coordinate', 'goog.style', 'goog.userAgent']);
 goog.addDependency("../../../javascript/atoms/response.js", ['bot.response', 'bot.response.ResponseObject'], ['bot.Error', 'bot.ErrorCode']);
-goog.addDependency("../../../javascript/atoms/script.js", ['bot.script'], ['bot.Error', 'bot.ErrorCode', 'goog.events', 'goog.events.EventType']);
 goog.addDependency("../../../javascript/atoms/touchscreen.js", ['bot.Touchscreen'], ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.events.EventType', 'goog.math.Coordinate', 'goog.style', 'goog.userAgent.product']);
 goog.addDependency("../../../javascript/atoms/userAgent.js", ['bot.userAgent'], ['goog.string', 'goog.userAgent', 'goog.userAgent.product', 'goog.userAgent.product.isVersion']);
 goog.addDependency("../../../javascript/atoms/window.js", ['bot.window'], ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.userAgent', 'goog.array', 'goog.dom', 'goog.math.Coordinate', 'goog.math.Size', 'goog.userAgent']);
@@ -116,10 +115,9 @@ goog.addDependency("../../../javascript/selenium-atoms/core.js", ['core.Error'],
 goog.addDependency("../../../javascript/selenium-atoms/events.js", ['core.events'], ['bot.dom', 'bot.events', 'bot.events.EventType', 'bot.events.MouseArgs', 'bot.userAgent', 'core.Error', 'core.locators', 'goog.dom', 'goog.dom.TagName', 'goog.style', 'goog.userAgent.product']);
 goog.addDependency("../../../javascript/selenium-atoms/filters.js", ['core.filters'], ['bot.dom', 'core.Error', 'goog.array']);
 goog.addDependency("../../../javascript/selenium-atoms/firefox-chrome.js", ['core.firefox'], []);
-goog.addDependency("../../../javascript/selenium-atoms/inject.js", ['core.inject'], ['bot.inject', 'goog.array', 'goog.json', 'goog.object']);
+goog.addDependency("../../../javascript/selenium-atoms/inject.js", ['core.inject'], ['bot.dom', 'bot.inject', 'core.firefox', 'goog.array', 'goog.json', 'goog.object']);
 goog.addDependency("../../../javascript/selenium-atoms/locator_strategies.js", ['core.LocatorStrategies'], ['bot.inject.cache', 'bot.locators', 'core.Error', 'core.filters', 'goog.string']);
 goog.addDependency("../../../javascript/selenium-atoms/pattern_matcher.js", ['core.patternMatcher'], []);
-goog.addDependency("../../../javascript/selenium-atoms/script.js", ['core.script'], ['bot.script']);
 goog.addDependency("../../../javascript/selenium-atoms/se_element.js", ['core.element'], ['bot.dom', 'core.Error', 'core.locators']);
 goog.addDependency("../../../javascript/selenium-atoms/se_locators.js", ['core.locators', 'core.locators.Locator'], ['core.Error', 'core.LocatorStrategies', 'goog.dom.NodeType', 'goog.string']);
 goog.addDependency("../../../javascript/selenium-atoms/select.js", ['core.select', 'core.select.option'], ['bot.action', 'bot.dom', 'core.Error', 'core.locators', 'core.patternMatcher']);

@@ -18,15 +18,8 @@ limitations under the License.
 package org.openqa.selenium.internal.selenesedriver;
 
 import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
 
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriverException;
-
-import org.json.JSONException;
-import org.json.JSONWriter;
-
-import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
 public class ExecuteAsyncScript implements SeleneseFunction<Object> {
@@ -34,44 +27,13 @@ public class ExecuteAsyncScript implements SeleneseFunction<Object> {
   private long timeoutMillis = 0;
 
   public Object apply(Selenium selenium, Map<String, ?> parameters) {
-    StringWriter sw = new StringWriter();
-    try {
-      new JSONWriter(sw)
-          .object()
-          .key("script").value(parameters.get("script"))
-          .key("args").value(parameters.get("args"))
-          .key("timeout").value(timeoutMillis)
-          .endObject();
-    } catch (JSONException e) {
-      throw new WebDriverException(e);
-    }
+    String script = (String) parameters.get("script");
 
-    String script = "core.script.execute(" + sw + ")";
-    String value;
-    try {
-      value = selenium.getEval(script);
-    } catch (SeleniumException e) {
-      if (e.getMessage().startsWith("ScriptTimeoutError")) {
-        throw new TimeoutException(e.getMessage(), e);
-      }
-      throw e;
-    }
-    return populateReturnValue(value);
-  }
+    @SuppressWarnings({"unchecked"})
+    List<Object> args = (List<Object>) parameters.get("args");
 
-  private Object populateReturnValue(String value) {
-    if ("__undefined__".equals(value)) {
-      return null;
-    } else if (value.matches("^\\d+$")) {
-      return Long.parseLong(value);
-    } else if (value.matches("^\\d+\\.\\d+$")) {
-      return Double.parseDouble(value);
-    } else if ("true".equals(value) || "false".equals(value)) {
-      return Boolean.parseBoolean(value);
-    } else {
-      // Falll back to a string
-      return value;
-    }
+    return new ScriptExecutor(selenium)
+        .executeAsyncScript(script, args, timeoutMillis);
   }
 
   public SeleneseFunction<Object> setScriptTimeout() {

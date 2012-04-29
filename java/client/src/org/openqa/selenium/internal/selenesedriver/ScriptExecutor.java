@@ -50,7 +50,6 @@ class ScriptExecutor {
     return executeScript(script, Lists.newArrayList(args));
   }
 
-  @SuppressWarnings({"unchecked"})
   public <T> T executeScript(String script, List<Object> args) {
 
     StringWriter sw = new StringWriter();
@@ -66,10 +65,31 @@ class ScriptExecutor {
 
     String evalScript = String.format("core.inject.executeScript(%s, %s);",
         sw, inAppUnderTest ? "selenium.browserbot.getCurrentWindow()" : "null");
+    return evaluateScript(evalScript);
+  }
 
+  public <T> T executeAsyncScript(String script, List<Object> args, long timeoutMillis) {
+    StringWriter sw = new StringWriter();
+    try {
+      new JSONWriter(sw)
+          .object()
+          .key("script").value(script)
+          .key("args").value(args)
+          .key("timeout").value(timeoutMillis)
+          .endObject();
+    } catch (JSONException e) {
+      throw new JsonException(e);
+    }
+
+    String evalScript = String.format("core.inject.executeAsyncScript(%s);", sw);
+    return evaluateScript(evalScript);
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private <T> T evaluateScript(String script) {
     Stopwatch stopWatch = new Stopwatch();
     stopWatch.start();
-    String result = selenium.getEval(evalScript);
+    String result = selenium.getEval(script);
     stopWatch.stop();
 
     Response response = new JsonToBeanConverter()
