@@ -503,9 +503,6 @@ module Javascript
     end
 
     def compilation_level(minify)
-p "Minify from env: #{ENV['minify']}"
-p "Minify from pass in: #{minify}"
-
       to_minify = ENV['minify'] || minify
 
       to_minify == 'false' ? 'WHITESPACE_ONLY' : 'ADVANCED_OPTIMIZATIONS'
