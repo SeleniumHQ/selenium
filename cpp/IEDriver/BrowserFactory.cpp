@@ -543,7 +543,7 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
 
 int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
                                                 const std::wstring& zone_subkey_name) {
-  int protected_mode_value = 0;
+  int protected_mode_value = 3;
   HKEY subkey_handle;
   if (ERROR_SUCCESS == ::RegOpenKeyEx(key_handle,
                                       zone_subkey_name.c_str(),
@@ -567,10 +567,13 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
     // is "on" for the Local Intranet zone in IE7 only (the default was
     // changed to "off" for Local Intranet in IE8), and "off" everywhere
     // else.
+    // Note that a value of 0 in the registry value indicates that Protected
+    // Mode is "on" for that zone; a value of 3 indicates that Protected Mode
+    // is "off" for that zone.
     if (zone_subkey_name == ZONE_INTERNET ||
         zone_subkey_name == ZONE_RESTRICTED_SITES ||
         (zone_subkey_name == ZONE_LOCAL_INTRANET && this->ie_major_version_ == 7)) {
-      protected_mode_value = 3;
+      protected_mode_value = 0;
     }
   }
   return protected_mode_value;
