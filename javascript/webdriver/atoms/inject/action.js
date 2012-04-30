@@ -28,9 +28,10 @@ goog.require('goog.dom.selection');
  * Submits the form containing the given element.
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to submit.
+ * @return {string} A stringified {@link bot.response.ResponseObject}.
  */
 webdriver.atoms.inject.action.submit = function(element) {
-  bot.inject.executeScript(bot.action.submit, [element], true);
+  return bot.inject.executeScript(bot.action.submit, [element], true);
 };
 
 
@@ -38,10 +39,11 @@ webdriver.atoms.inject.action.submit = function(element) {
  * Clear an element.
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to clear.
+ * @return {string} A stringified {@link bot.response.ResponseObject}.
  * @see bot.action.clear
  */
 webdriver.atoms.inject.action.clear = function(element) {
-  bot.inject.executeScript(bot.action.clear, [element], true);
+  return bot.inject.executeScript(bot.action.clear, [element], true);
 };
 
 
@@ -49,9 +51,10 @@ webdriver.atoms.inject.action.clear = function(element) {
  * Click an element.
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to click.
+ * @return {string} A stringified {@link bot.response.ResponseObject}.
  * @see bot.action.click
  */
 webdriver.atoms.inject.action.click = function(element) {
-  bot.inject.executeScript(bot.action.click, [element], true);
+  return bot.inject.executeScript(bot.action.click, [element], true);
 };
 
