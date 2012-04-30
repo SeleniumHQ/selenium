@@ -45,7 +45,10 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
     capabilities["version"] = version_string;
     capabilities["javascriptEnabled"] = true;
     capabilities["platform"] = "WINDOWS";
-    capabilities["nativeEvents"] = executor.enable_native_events();
+    // TODO(JimEvans): Change this to not hard-code the returned capability
+    // when synthetic events are implemented in the IE driver.
+    // capabilities["nativeEvents"] = executor.enable_native_events();
+    capabilities["nativeEvents"] = true;
     capabilities["cssSelectorsEnabled"] = true;
     capabilities["takesScreenshot"] = true;
     capabilities["handlesAlerts"] = true;
