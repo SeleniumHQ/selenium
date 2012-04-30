@@ -10,7 +10,7 @@ describe "Selenium::WebDriver::TargetLocator" do
     end
   end
 
-  not_compliant_on :browser => [:iphone, :safari] do
+  not_compliant_on :browser => [:iphone] do
     it "should switch to a frame" do
       driver.navigate.to url_for("iframes.html")
       driver.switch_to.frame("iframe1")
