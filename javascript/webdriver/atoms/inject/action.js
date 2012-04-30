@@ -22,6 +22,20 @@ goog.provide('webdriver.atoms.inject.action');
 goog.require('bot.action');
 goog.require('bot.inject');
 goog.require('goog.dom.selection');
+goog.require('webdriver.atoms.element');
+
+
+/**
+ * Sends key events to simulating typing on an element.
+ *
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to submit.
+ * @param {!Array.<string>} keys The keys to type.
+ * @return {string} A stringified {@link bot.response.ResponseObject}.
+ */
+webdriver.atoms.inject.action.type = function(element, keys) {
+  return bot.inject.executeScript(webdriver.atoms.element.type,
+      [element, keys], true);
+};
 
 
 /**

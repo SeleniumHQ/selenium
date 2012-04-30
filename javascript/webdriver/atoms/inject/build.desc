@@ -69,6 +69,11 @@ js_fragment(name = "submit",
   function = "webdriver.atoms.inject.action.submit",
   deps = [":deps"])
 
+js_fragment(name = "type",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.type",
+  deps = [":deps"])
+
 js_fragment(name = "frame_by_id_or_name",
   module = "webdriver.atoms.inject.frame",
   function = "webdriver.atoms.inject.frame.findFrameByIdOrName",
