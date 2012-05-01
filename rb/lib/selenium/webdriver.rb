@@ -8,6 +8,8 @@ require 'selenium/webdriver/common'
 
 module Selenium
   module WebDriver
+    extend JsonHelper
+
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
     Location  = Struct.new(:latitude, :longitude, :altitude)
@@ -61,30 +63,6 @@ module Selenium
 
     def self.for(*args)
       WebDriver::Driver.for(*args)
-    end
-
-    if MultiJson.respond_to?(:dump)
-      # @api private
-      def self.json_dump(obj)
-        MultiJson.dump(obj)
-      end
-    else
-      # @api private
-      def self.json_dump(obj)
-        MultiJson.encode(obj)
-      end
-    end
-
-    if MultiJson.respond_to?(:load)
-      # @api private
-      def self.json_load(obj)
-        MultiJson.load(obj)
-      end
-    else
-      # @api private
-      def self.json_load(obj)
-        MultiJson.decode(obj)
-      end
     end
 
   end # WebDriver
