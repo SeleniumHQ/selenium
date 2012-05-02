@@ -81,18 +81,23 @@ module Selenium
       end
 
       def with_timeout(&blk)
-        max_time = Time.now + @timeout
+        max_time = time_now + @timeout
 
         (
           return true if yield
           wait
-        ) until Time.now > max_time
+        ) until time_now > max_time
 
         false
       end
 
       def wait
         sleep @interval
+      end
+
+      # for testability
+      def time_now
+        Time.now
       end
 
     end # SocketPoller
