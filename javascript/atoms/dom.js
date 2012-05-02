@@ -22,6 +22,7 @@ goog.provide('bot.dom');
 goog.require('bot');
 goog.require('bot.locators.xpath');
 goog.require('bot.userAgent');
+goog.require('bot.window');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeIterator');
@@ -624,6 +625,17 @@ bot.dom.getElementSize = function(element) {
       // even if the function exists.
     }
   }
+
+  // If the element is the BODY, then get the visible size.
+  if (bot.dom.isElement(element, goog.dom.TagName.BODY)) {
+    var doc = goog.dom.getOwnerDocument(element);
+    var win = goog.dom.getWindow(doc);
+    if (bot.dom.getEffectiveStyle(element, 'overflow') == 'hidden') {
+      return goog.dom.getViewportSize(win);
+    }
+    return bot.window.getInteractableSize(win);
+  }
+
   return goog.style.getSize(element);
 };
 
@@ -748,12 +760,12 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // overflow:hidden AND the element's location is not within the fixed size
   // of the parent
   function isOverflowHiding(e) {
-    var parent = bot.dom.getParentElement(e);
+    var parent = goog.style.getOffsetParent(e);
     if (parent && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden') {
       var sizeOfParent = bot.dom.getElementSize(parent);
       var locOfParent = goog.style.getClientPosition(parent);
       var locOfElement = goog.style.getClientPosition(e);
-         if (locOfParent.x + sizeOfParent.width < locOfElement.x) {
+      if (locOfParent.x + sizeOfParent.width < locOfElement.x) {
         return false;
       }
       if (locOfParent.y + sizeOfParent.height < locOfElement.y) {

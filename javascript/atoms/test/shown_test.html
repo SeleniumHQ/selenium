@@ -302,6 +302,14 @@
       var target = findElement({id: 'iHaveAbsolutePosition'});
       assertFalse(isShown(target));
     }
+
+    function testParentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden() {
+      document.body.style = 'overflow: hidden;';
+      var target = findElement({id: 'suggest'});
+      var shown = isShown(target);
+      document.body.style = 'overflow: none;';
+      assertTrue(shown);
+    }
   </script>
 
   <style type="text/css">
@@ -333,9 +341,17 @@
           width: 70px;
           height: 0;
         }
-    </style>
+        .box-popup {
+            border : 1px;
+            min-width : 150px;
+        }
+  </style>
 </head>
 <body>
+<div style="left: 30px; top: 10px; visibility: visible; position: absolute; overflow: visible;"
+     class="box-popup" id="suggest">
+    <p>Hello world. I like cheese.</p>
+</div>
 <div>
     <p id="displayed">Displayed</p>
 
@@ -443,6 +459,5 @@
     <div id="iHaveAbsolutePosition" style="display:block">I am over here</div>
   </div>
 </div>
-
 </body>
 </html>

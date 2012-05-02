@@ -153,4 +153,13 @@ public class VisibilityTest extends JUnit4TestBase {
       }
     };
   }
+
+  @Test
+  public void parentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden() {
+    String url = appServer.whereIs("visibility-css.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("suggest"));
+    assertTrue(element.isDisplayed());
+  }
 }
