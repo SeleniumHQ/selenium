@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import com.google.common.base.Throwables;
-
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -50,14 +48,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   @Test
   public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
     driver.get(pages.simpleTestPage);
-    //TODO(eran): This fails consistently on Linux machines due to issue #2099. Remove
-    // the sleep after it's fixed.
-    try {
-      Thread.sleep(500);
-    } catch (InterruptedException e) {
-      throw Throwables.propagate(e);
-    }
-
     WebElement head = driver.findElement(By.xpath("/html"));
     String attribute = head.getAttribute("cheese");
     assertThat(attribute, is(nullValue()));
