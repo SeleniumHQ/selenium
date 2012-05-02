@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 WebDriver committers
+Copyright 2007-2012 WebDriver committers
 Copyright 2007-2009 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,24 +13,22 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
-
-// Copyright 2008 Google Inc.  All Rights Reserved.
+*/
 
 package org.openqa.selenium.remote;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LoggingPreferences;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -53,13 +51,14 @@ public class BeanToJsonConverter {
   /**
    * Convert an object that may or may not be a JSONArray or JSONObject into its JSON string
    * representation, handling the case where it is neither in a graceful way.
-   * 
+   *
    * @param object which needs conversion
    * @return the JSON string representation of object
    */
   public String convert(Object object) {
-    if (object == null)
+    if (object == null) {
       return null;
+    }
 
     try {
       Object converted = convertObject(object, MAX_DEPTH);
@@ -80,9 +79,9 @@ public class BeanToJsonConverter {
    * Convert a JSON[Array|Object] into the equivalent Java Collection type (that is, List|Map)
    * returning other objects untouched. This method is used for preparing values for use by the
    * HttpCommandExecutor
-   * 
+   *
    * @param o Object to convert
-   * @return a Map, List or the unconverted Object.
+   * @return a Map, List or the unconverted Object
    */
   private Object convertUnknownObjectFromJson(Object o) {
     if (o instanceof JSONArray) {
@@ -123,10 +122,11 @@ public class BeanToJsonConverter {
     return toReturn;
   }
 
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings("unchecked")
   private Object convertObject(Object toConvert, int maxDepth) throws Exception {
-    if (toConvert == null)
+    if (toConvert == null) {
       return JSONObject.NULL;
+    }
 
     if (toConvert instanceof Boolean ||
         toConvert instanceof CharSequence ||
@@ -204,6 +204,10 @@ public class BeanToJsonConverter {
       return TimeUnit.MILLISECONDS.toSeconds(((Date) toConvert).getTime());
     }
 
+    if (toConvert instanceof File) {
+      return ((File) toConvert).getAbsolutePath();
+    }
+
     Method toJson = getToJsonMethod(toConvert);
     if (toJson != null) {
       try {
@@ -237,21 +241,23 @@ public class BeanToJsonConverter {
   }
 
   private Object mapObject(Object toConvert, int maxDepth, boolean skipNulls) throws Exception {
-    if (maxDepth == 0)
+    if (maxDepth == 0) {
       return null;
+    }
 
     // Raw object via reflection? Nope, not needed
     JSONObject mapped = new JSONObject();
-    for (SimplePropertyDescriptor pd : SimplePropertyDescriptor.getPropertyDescriptors(toConvert
-        .getClass())) {
+    for (SimplePropertyDescriptor pd : SimplePropertyDescriptor
+        .getPropertyDescriptors(toConvert.getClass())) {
       if ("class".equals(pd.getName())) {
         mapped.put("class", toConvert.getClass().getName());
         continue;
       }
 
       Method readMethod = pd.getReadMethod();
-      if (readMethod == null)
+      if (readMethod == null) {
         continue;
+      }
 
       if (readMethod.getParameterTypes().length > 0) {
         continue;
@@ -265,6 +271,8 @@ public class BeanToJsonConverter {
         mapped.put(pd.getName(), result);
       }
     }
+
     return mapped;
   }
+
 }
