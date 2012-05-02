@@ -15,7 +15,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       driver.navigate.to url_for("iframes.html")
       driver.switch_to.frame("iframe1")
 
-      # TODO: expectations?
+      driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
     end
 
     it "should switch to a frame by Element" do
@@ -24,7 +24,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       iframe = driver.find_element(:tag_name => "iframe")
       driver.switch_to.frame(iframe)
 
-      # TODO: expectations?
+      driver.find_element(:name, 'login').should be_kind_of(WebDriver::Element)
     end
   end
 
