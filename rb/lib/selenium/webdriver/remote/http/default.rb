@@ -13,7 +13,6 @@ module Selenium
 
           def initialize
             super
-            @proxy = nil
           end
 
           def http
@@ -82,10 +81,11 @@ module Selenium
           end
 
           def new_http_client
-            if @proxy
-              unless @proxy.respond_to?(:http) && url = @proxy.http
+            if proxy
+              unless proxy.respond_to?(:http) && url = @proxy.http
                 raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
               end
+
               proxy = URI.parse(url)
 
               clazz = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password)
@@ -93,6 +93,16 @@ module Selenium
             else
               Net::HTTP.new server_url.host, server_url.port
             end
+          end
+
+          def proxy
+            @proxy ||= (
+              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+              if proxy
+                proxy = "http://#{proxy}" unless proxy.start_with?("http://")
+                Proxy.new(:http => proxy)
+              end
+            )
           end
 
         end # Default

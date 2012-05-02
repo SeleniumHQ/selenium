@@ -37,6 +37,36 @@ module Selenium
             client.proxy = Proxy.new(:ftp => "ftp://example.com")
             lambda { client.send :http }.should raise_error(Error::WebDriverError)
           end
+
+          it "honors the http_proxy environment varable" do
+            with_env("http_proxy" => "http://proxy.org:8080") do
+              http = client.send :http
+
+              http.should be_proxy
+              http.proxy_address.should == "proxy.org"
+              http.proxy_port.should == 8080
+            end
+          end
+
+          it "honors the HTTP_PROXY environment variable" do
+            with_env("HTTP_PROXY" => "http://proxy.org:8080") do
+              http = client.send :http
+
+              http.should be_proxy
+              http.proxy_address.should == "proxy.org"
+              http.proxy_port.should == 8080
+            end
+          end
+
+          it "handles HTTP_PROXY without http://" do
+            with_env("HTTP_PROXY" => "proxy.org:8080") do
+              http = client.send :http
+
+              http.should be_proxy
+              http.proxy_address.should == "proxy.org"
+              http.proxy_port.should == 8080
+            end
+          end
         end
 
       end # Http

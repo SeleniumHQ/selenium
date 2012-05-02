@@ -81,8 +81,13 @@ describe Selenium::Server do
   end
 
   it "automatically repairs http_proxy settings that do not start with http://" do
-    ENV['http_proxy'] = 'proxy.com'
-    Selenium::Server.net_http.proxy_address.should == 'proxy.com'
+    with_env("http_proxy" => "proxy.com") do
+      Selenium::Server.net_http.proxy_address.should == 'proxy.com'
+    end
+
+    with_env("HTTP_PROXY" => "proxy.com") do
+      Selenium::Server.net_http.proxy_address.should == 'proxy.com'
+    end
   end
 
   it "only downloads a jar if it is not present in the current directory" do
