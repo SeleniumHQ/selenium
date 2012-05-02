@@ -507,12 +507,23 @@ bot.Keyboard.prototype.getChar_ = function(key) {
 
 
 /**
+ * Whether firing a keypress event causes text to be edited without any
+ * additional logic to surgically apply the edit.
+ *
+ * @const
+ * @type {boolean}
+ * @private
+ */
+bot.Keyboard.KEYPRESS_EDITS_TEXT_ = goog.userAgent.GECKO &&
+    !bot.userAgent.isEngineVersion(12)
+
+
+/**
  * @param {!bot.Keyboard.Key} key Key with character to insert.
  * @private
  */
 bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
-  // Gecko updates the element as a result of the keypress.
-  if (goog.userAgent.GECKO) {
+  if (bot.Keyboard.KEYPRESS_EDITS_TEXT_) {
     return;
   }
 
@@ -533,8 +544,7 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
  * @private
  */
 bot.Keyboard.prototype.updateOnEnter_ = function() {
-  // Gecko updates the element as a result of the keypress.
-  if (goog.userAgent.GECKO) {
+  if (bot.Keyboard.KEYPRESS_EDITS_TEXT_) {
     return;
   }
 
@@ -560,8 +570,7 @@ bot.Keyboard.prototype.updateOnEnter_ = function() {
  * @private
  */
 bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
-  // Gecko updates the element as a result of the keypress.
-  if (goog.userAgent.GECKO) {
+  if (bot.Keyboard.KEYPRESS_EDITS_TEXT_) {
     return;
   }
 
@@ -591,7 +600,8 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
   //  In a textbox/password box, backspace always sends an input event unless
   //  the box has no text.  Delete behaves the same way in Firefox 3.0, but
   //  in later versions it only fires an input event if no text changes.
-  if (!goog.userAgent.IE && textChanged) {
+  if (!goog.userAgent.IE && textChanged ||
+      (goog.userAgent.GECKO && key == bot.Keyboard.Keys.BACKSPACE)) {
     this.fireHtmlEvent(bot.events.EventType.INPUT);
   }
 };
