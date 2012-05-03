@@ -9,7 +9,7 @@ namespace OpenQA.Selenium.Environment
     {
         private Process webserverProcess;
 
-        private string standaloneTestJar = @"build\java\client\test\org\openqa\selenium\tests-standalone.jar";
+        private string standaloneTestJar = @"build/java/client/test/org/openqa/selenium/tests-standalone.jar";
         private string webserverClassName = "org.openqa.selenium.environment.webserver.Jetty7AppServer";
         private string projectRootPath;
 
@@ -22,6 +22,7 @@ namespace OpenQA.Selenium.Environment
         {
             if (webserverProcess == null || webserverProcess.HasExited)
             {
+                standaloneTestJar = standaloneTestJar.Replace('/', Path.DirectorySeparatorChar);
                 if (!File.Exists(Path.Combine(projectRootPath, standaloneTestJar)))
                 {
                     throw new FileNotFoundException(
@@ -31,8 +32,14 @@ namespace OpenQA.Selenium.Environment
                             "go //java/client/test/org/openqa/selenium:tests:uber"));
                 }
 
+                string javaExecutableName = "java";
+                if (System.Environment.OSVersion.Platform == PlatformID.Win32NT || System.Environment.OSVersion.Platform == PlatformID.Win32Windows)
+                {
+                    javaExecutableName = javaExecutableName + ".exe";
+                }
+
                 webserverProcess = new Process();
-                webserverProcess.StartInfo.FileName = "java.exe";
+                webserverProcess.StartInfo.FileName = javaExecutableName;
                 webserverProcess.StartInfo.Arguments = "-cp " + standaloneTestJar + " " + webserverClassName;
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
