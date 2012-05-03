@@ -25,7 +25,7 @@ module Selenium
         end
 
         def initialize(jar, opts = {})
-          opts.merge! :background => true, :port => PortProber.random
+          opts.merge! :background => true, :port => PortProber.above(4444)
           opts.merge! :log => !!$DEBUG if $DEBUG
           @server = Selenium::Server.new File.expand_path(jar), opts
         end

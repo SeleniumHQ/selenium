@@ -5,6 +5,7 @@ module Selenium
       class Bridge < Remote::Bridge
         COMMAND_TIMEOUT = 60
 
+
         def initialize(opts = {})
           port = Integer(opts[:port] || PortProber.random)
           timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)

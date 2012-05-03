@@ -56,7 +56,7 @@ module Selenium
         def remote_server
           @remote_server ||= (
             Selenium::Server.new(remote_server_jar,
-              :port       => PortProber.random,
+              :port       => PortProber.above(4444),
               :log        => !!$DEBUG,
               :background => true,
               :timeout    => 60
