@@ -97,7 +97,7 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
         public ChromeDriver(string chromeDriverDirectory, ChromeOptions options)
-            : this(ChromeDriverService.CreateDefaultService(chromeDriverDirectory), options, TimeSpan.FromSeconds(60))
+            : this(chromeDriverDirectory, options, TimeSpan.FromSeconds(60))
         {
         }
 

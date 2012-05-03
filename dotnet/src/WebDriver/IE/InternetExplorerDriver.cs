@@ -133,7 +133,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="internetExplorerDriverDirectory">The full path to the directory containing InternetExplorerDriver.exe.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(string internetExplorerDriverDirectory, InternetExplorerOptions options)
-            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverDirectory), options, TimeSpan.FromSeconds(60))
+            : this(internetExplorerDriverDirectory, options, TimeSpan.FromSeconds(60))
         {
         }
 
