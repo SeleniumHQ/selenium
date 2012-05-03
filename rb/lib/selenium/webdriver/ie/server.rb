@@ -10,6 +10,7 @@ module Selenium
           if binary
             new(binary)
           else
+            # TODO: deprecation warning
             require 'selenium/webdrier/ie/in_process_server'
             InProcessServer.new
           end
