@@ -13,95 +13,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 /**
-* @fileoverview Synthetic events for fun and profit.
-*/
+ * @fileoverview Synthetic events for fun and profit.
+ */
 
 goog.provide('webdriver.atoms.inputs');
 
 goog.require('bot.Keyboard');
 goog.require('bot.Mouse');
 goog.require('bot.action');
-goog.require('bot.userAgent');
 goog.require('goog.array');
-goog.require('goog.string');
 
 
 /**
-* Examines the opt_keyboard parameter, and returns either that or a new
-* keyboard instance, which is stored on the document for later use.
-*
-* @param {bot.Keyboard=} opt_keyboard A mouse to use.
-* @return {!bot.Keyboard} A mouse instance.
-*/
-webdriver.atoms.inputs.getKeyboard_ = function (opt_keyboard) {
-    if (opt_keyboard) {
-        return opt_keyboard;
-    }
+ * Send keyboard input to a particular element.
+ *
+ * @param {!Element} element The element to send the keyboard input to.
+ * @param {Array.<!bot.Keyboard.Key>} opt_state The keyboard to use, or construct one.
+ * @param {...(string|!Array.<string>)} var_args What to type.
+ * @return {Array.<!bot.Keyboard.Key>} The keyboard state.
+ */
+webdriver.atoms.inputs.sendKeys = function (element, opt_state, var_args) {
+  var keyboard = new bot.Keyboard(opt_state);
+  var to_type = goog.array.slice(arguments, 2);
+  var flattened = goog.array.flatten(to_type);
 
-    if (!bot.userAgent.FIREFOX_EXTENSION && document['__webdriver_keyboard']) {
-        return document['__webdriver_keyboard'];
-    }
+  bot.action.type(element, flattened, keyboard);
 
-    var keyboard = new bot.Keyboard();
-    if (!bot.userAgent.FIREFOX_EXTENSION) {
-        document['__webdriver_keyboard'] = keyboard;
-    }
-
-    return keyboard;
+  return keyboard.getState();
 };
+goog.exportSymbol('sendKeys', webdriver.atoms.inputs.sendKeys);
 
 
 /**
-* Examines the opt_mouse parameter, and returns either that or a new mouse
-* instance, which is stored on the document for later use.
-*
-* @param {bot.Mouse=} opt_mouse A mouse to use.
-* @return {!bot.Mouse} A mouse instance.
-*/
-webdriver.atoms.inputs.getMouse_ = function (opt_mouse) {
-    if (opt_mouse) {
-        return opt_mouse;
-    }
+ * Click on an element.
+ *
+ * @param {!Element} element The element to click.
+ */
+webdriver.atoms.inputs.click = function (element) {
+  var mouse = new bot.Mouse();
 
-    if (!bot.userAgent.FIREFOX_EXTENSION && document['__webdriver_mouse']) {
-        return document['__webdriver_mouse'];
-    }
-
-    var mouse = new bot.Mouse();
-    if (!bot.userAgent.FIREFOX_EXTENSION) {
-        document['__webdriver_mouse'] = mouse;
-    }
-
-    return mouse;
+  bot.action.click(element, null, mouse);
 };
-
-
-/**
-*
-* @param {!Element} element The element to send the keyboard input to.
-* @param {...(string|!Array.<string>)} var_args What to type.
-* @param {bot.Keyboard=} opt_keyboard The keyboard to use, or construct one.
-*/
-webdriver.atoms.inputs.sendKeys = function (
-    element, var_args, opt_keyboard) {
-    var keyboard = webdriver.atoms.inputs.getKeyboard_(opt_keyboard);
-    var to_type = goog.array.slice(arguments, 2);
-    var flattened = goog.array.flatten(values);
-
-    bot.action.type(element, flattened, keyboard);
-};
-
-
-/**
-* Click on an element.
-*
-* @param {!Element} element The element to click.
-* @param {bot.Mouse=} opt_mouse The mouse to use, or constructs one.
-*/
-webdriver.atoms.inputs.click = function (element, opt_mouse) {
-    var mouse = webdriver.atoms.inputs.getMouse_(opt_mouse);
-
-    bot.action.click(element, null, mouse);
-};
+goog.exportSymbol('click', webdriver.atoms.inputs.click);
