@@ -39,9 +39,10 @@ goog.require('goog.userAgent');
  * A keyboard that provides atomic typing actions.
  *
  * @constructor
+ * @param {Array.<!bot.Keyboard.Key>} opt_state Optional keyboard state.
  * @extends {bot.Device}
  */
-bot.Keyboard = function() {
+bot.Keyboard = function(opt_state) {
   goog.base(this);
 
   /**
@@ -55,6 +56,10 @@ bot.Keyboard = function() {
    * @private
    */
   this.pressed_ = new goog.structs.Set();
+
+  if (opt_state) {
+    this.pressed_.addAll(opt_state);
+  }
 };
 goog.inherits(bot.Keyboard, bot.Device);
 
@@ -664,4 +669,14 @@ bot.Keyboard.prototype.moveCursor = function(element) {
   if (this.editable_ && focusChanged) {
     goog.dom.selection.setCursorPosition(element, element.value.length);
   }
+};
+
+
+/**
+ * Serialize the current state of the keyboard.
+ *
+ * @return {!Array.<!bot.Keyboard.Key>} The current keyboard state.
+ */
+bot.Keyboard.prototype.getState = function() {
+  return this.pressed_.getValues();
 };
