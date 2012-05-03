@@ -8,6 +8,7 @@ java_library(name = "ie",
   deps = [
     ":ie_result_type_java",
     "//cpp:sizzle",
+    "//java/client/src/org/openqa/selenium/browserlaunchers",
     "//java/client/src/org/openqa/selenium/browserlaunchers:windows_proxy_manager",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote",

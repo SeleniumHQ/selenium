@@ -24,6 +24,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.browserlaunchers.DriverCommandExecutor;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
@@ -45,6 +46,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
 
   private InternetExplorerDriverServer server;
   private WindowsProxyManager proxyManager;
+  private boolean useLegacyServer = false;
 
   public InternetExplorerDriver() {
     assertOnWindows();
@@ -101,9 +103,18 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   }
 
   private void setup(Capabilities capabilities, int port) {
-    server = new InternetExplorerDriverServer(port);
-    startClient();
-    setCommandExecutor(new HttpCommandExecutor(server.getUrl()));
+    if (capabilities.is("useLegacyInternalServer")) {
+      setupLegacyServer(port);
+    } else {
+      try {
+        setCommandExecutor(new DriverCommandExecutor(
+            InternetExplorerDriverService.createDefaultService()));
+      } catch (IllegalStateException ex) {
+        System.err.println(ex.getMessage());
+        // fallback
+        setupLegacyServer(port);
+      }
+    }
     setElementConverter(new JsonToWebElementConverter(this) {
       @Override
       protected RemoteWebElement newRemoteWebElement() {
@@ -113,9 +124,18 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     startSession(capabilities);
   }
 
+  private void setupLegacyServer(int port) {
+    useLegacyServer = true;
+    server = new InternetExplorerDriverServer(port);
+    startClient();
+    setCommandExecutor(new HttpCommandExecutor(server.getUrl()));
+  }
+
   @Override
   protected void startClient() {
-    server.start();
+    if (useLegacyServer) {
+      server.start();
+    }
   }
 
   @Override

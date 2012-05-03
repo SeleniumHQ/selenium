@@ -3,6 +3,8 @@ java_library(name = "browserlaunchers",
   srcs = [
     "BrowserLauncher.java",
     "MacProxyManager.java",
+    "DriverCommandExecutor.java",
+    "DriverService.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
@@ -16,6 +18,7 @@ java_library(name = "browserlaunchers",
     "//java/client/src/org/openqa/selenium/browserlaunchers/locators",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/os",
+    "//java/client/src/org/openqa/selenium/remote",
   ])
 
 java_library(name = "proxies",

@@ -16,57 +16,25 @@
 
 package org.openqa.selenium.chrome;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.os.CommandLine.findExecutable;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.browserlaunchers.DriverService;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Manages the life and death of a chromedriver server.
  */
-public class ChromeDriverService {
+public class ChromeDriverService extends DriverService {
 
   /**
    * System property that defines the location of the chromedriver executable that will be used by
    * the {@link #createDefaultService() default service}.
    */
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
-
-  /**
-   * The base URL for the managed server.
-   */
-  private final URL url;
-
-  /**
-   * Controls access to {@link #process}.
-   */
-  private final ReentrantLock lock = new ReentrantLock();
-
-  /**
-   * A reference to the current child process. Will be {@code null} whenever this service is not
-   * running. Protected by {@link #lock}.
-   */
-  private CommandLine process = null;
-  private final String executable;
-  private final ImmutableList<String> args;
-  private final ImmutableMap<String, String> environment;
 
   /**
    *
@@ -78,26 +46,7 @@ public class ChromeDriverService {
    */
   private ChromeDriverService(File executable, int port,
       ImmutableMap<String, String> environment, File logFile) throws IOException {
-    this.executable = executable.getCanonicalPath();
-    args = buildArgsFrom(port, logFile);
-    url = new URL(String.format("http://localhost:%d", port));
-    this.environment = environment;
-  }
-
-  private ImmutableList<String> buildArgsFrom(int port, File logFile) {
-    ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-    argsBuilder.add(String.format("--port=%d", port));
-    if (logFile != null) {
-      argsBuilder.add(String.format("--log-path=%s", logFile.getAbsolutePath()));
-    }
-    return argsBuilder.build();
-  }
-
-  /**
-   * @return The base URL for the managed chromedriver server.
-   */
-  public URL getUrl() {
-    return url;
+    super(executable, port, environment, logFile);
   }
 
   /**
@@ -109,111 +58,16 @@ public class ChromeDriverService {
    * @return A new ChromeDriverService using the default configuration.
    */
   public static ChromeDriverService createDefaultService() {
-    String defaultPath = findExecutable("chromedriver");
-    String exePath = System.getProperty(CHROME_DRIVER_EXE_PROPERTY, defaultPath);
-    checkState(exePath != null,
-        "The path to the chromedriver executable must be set by the %s system property;"
-            + " for more information, see http://code.google.com/p/selenium/wiki/ChromeDriver. "
-            + "The latest version can be downloaded from "
-            + "http://code.google.com/p/chromedriver/downloads/list", CHROME_DRIVER_EXE_PROPERTY);
-
-    File exe = new File(exePath);
-    checkState(exe.exists(),
-        "The %s system property defined chromedriver executable does not exist: %s",
-        CHROME_DRIVER_EXE_PROPERTY, exe.getAbsolutePath());
-    checkState(!exe.isDirectory(),
-        "The %s system property defined chromedriver executable is a directory: %s",
-        CHROME_DRIVER_EXE_PROPERTY, exe.getAbsolutePath());
-    // TODO(jleyba): Check file.canExecute() once we support Java 1.6
-    // checkState(exe.canExecute(),
-    // "The %s system property defined chromedriver is not executable: %s",
-    // CHROME_DRIVER_EXE_PROPERTY, exe.getAbsolutePath());
-
+    File exe = findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
+      "http://code.google.com/p/selenium/wiki/ChromeDriver",
+      "http://code.google.com/p/chromedriver/downloads/list");
     return new Builder().usingChromeDriverExecutable(exe).usingAnyFreePort().build();
-  }
-
-  /**
-   * Checks whether the chromedriver child proces is currently running.
-   *
-   * @return Whether the chromedriver child process is still running.
-   */
-  public boolean isRunning() {
-    lock.lock();
-    try {
-      if (process == null) {
-        return false;
-      }
-      process.destroy();
-      return false;
-    } catch (IllegalThreadStateException e) {
-      return true;
-    } finally {
-      lock.unlock();
-    }
-  }
-
-  /**
-   * Starts this service if it is not already running. This method will block until the server has
-   * been fully started and is ready to handle commands.
-   *
-   * @throws IOException If an error occurs while spawning the child process.
-   * @see #stop()
-   */
-  public void start() throws IOException {
-    lock.lock();
-    try {
-      if (process != null) {
-        return;
-      }
-      process = new CommandLine(this.executable, args.toArray(new String[] {}));
-      process.setEnvironmentVariables(environment);
-      process.copyOutputTo(System.err);
-      process.executeAsync();
-
-      URL status = new URL(url.toString() + "/status");
-      URL healthz = new URL(url.toString() + "/healthz");
-      new UrlChecker().waitUntilAvailable(20, SECONDS, status, healthz);
-    } catch (UrlChecker.TimeoutException e) {
-      throw new WebDriverException("Timed out waiting for ChromeDriver server to start.", e);
-    } finally {
-      lock.unlock();
-    }
-  }
-
-  /**
-   * Stops this service is it is currently running. This method will attempt to block until the
-   * server has been fully shutdown.
-   *
-   * @see #start()
-   */
-  public void stop() {
-    lock.lock();
-    try {
-      if (process == null) {
-        return;
-      }
-      URL killUrl = new URL(url.toString() + "/shutdown");
-      new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
-      process.destroy();
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    } catch (UrlChecker.TimeoutException e) {
-      throw new WebDriverException("Timed out waiting for ChromeDriver server to shutdown.", e);
-    } finally {
-      process = null;
-      lock.unlock();
-    }
   }
 
   /**
    * Builder used to configure new {@link ChromeDriverService} instances.
    */
-  public static class Builder {
-
-    private int port = 0;
-    private File exe = null;
-    private ImmutableMap<String, String> environment = ImmutableMap.of();
-    private File logFile;
+  public static class Builder extends DriverService.Builder {
 
     /**
      * Sets which chromedriver executable the builder will use.
@@ -222,14 +76,7 @@ public class ChromeDriverService {
      * @return A self reference.
      */
     public Builder usingChromeDriverExecutable(File file) {
-      checkNotNull(file);
-      checkArgument(file.exists(), "Specified chromedriver executable does not exist: %s",
-          file.getPath());
-      checkArgument(!file.isDirectory(), "Specified chromedriver executable is a directory: %s",
-          file.getPath());
-      // TODO(jleyba): Check file.canExecute() once we support Java 1.6
-      // checkArgument(file.canExecute(), "File is not executable: %s", file.getPath());
-      this.exe = file;
+      usingDriverExecutable(file);
       return this;
     }
 
@@ -241,8 +88,7 @@ public class ChromeDriverService {
      * @return A self reference.
      */
     public Builder usingPort(int port) {
-      checkArgument(port >= 0, "Invalid port number: %d", port);
-      this.port = port;
+      super.usingPort(port);
       return this;
     }
 
@@ -252,7 +98,7 @@ public class ChromeDriverService {
      * @return A self reference.
      */
     public Builder usingAnyFreePort() {
-      this.port = 0;
+      super.usingAnyFreePort();
       return this;
     }
 
@@ -267,12 +113,12 @@ public class ChromeDriverService {
      */
     @Beta
     public Builder withEnvironment(Map<String, String> environment) {
-      this.environment = ImmutableMap.copyOf(environment);
+      super.withEnvironment(environment);
       return this;
     }
     
     public Builder withLogFile(File logFile) {
-      this.logFile = logFile;
+      super.withLogFile(logFile);
       return this;
     }
 
@@ -285,17 +131,11 @@ public class ChromeDriverService {
      * @return The new binary.
      */
     public ChromeDriverService build() {
-      if (port == 0) {
-        port = PortProber.findFreePort();
-      }
+      return (ChromeDriverService) super.build();
+    }
 
-      checkState(exe != null, "Path to the chromedriver executable not specified");
-
-      try {
-        return new ChromeDriverService(exe, port, environment, logFile);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
+    protected DriverService buildDriverService() throws IOException {
+      return new ChromeDriverService(exe, port, environment, logFile);
     }
   }
 }

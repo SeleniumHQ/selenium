@@ -4,6 +4,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.browserlaunchers.DriverCommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -130,7 +131,7 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new ChromeCommandExecutor(service), capabilities);
+    super(new DriverCommandExecutor(service), capabilities);
   }
 
   /**
@@ -141,7 +142,7 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    * @param options The options to use.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    super(new ChromeCommandExecutor(service), options.toCapabilities());
+    super(new DriverCommandExecutor(service), options.toCapabilities());
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
