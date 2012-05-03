@@ -31,6 +31,7 @@ namespace webdriver {
 class Server {
  public:
   explicit Server(const int port);
+  Server(const int port, const std::string& host);
   virtual ~Server(void);
 
   static void* OnHttpEvent(enum mg_event event_raised,
@@ -56,6 +57,8 @@ class Server {
   typedef std::map<std::string, int> VerbMap;
   typedef std::map<std::string, VerbMap> UrlMap;
   typedef std::map<std::string, SessionHandle> SessionMap;
+
+  void Initialize(const int port, const std::string& host);
 
   std::string ListSessions(void);
   int LookupCommand(const std::string& uri,
@@ -101,6 +104,8 @@ class Server {
 
   // The port used for communicating with this server.
   int port_;
+  // The host IP address to which the server should bind.
+  std::string host_;
   // The map of all command URIs (URL and HTTP verb), and 
   // the corresponding numerical value of the command.
   UrlMap commands_;

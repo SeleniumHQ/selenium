@@ -14,8 +14,12 @@
 #include "WebDriver.h"
 
 webdriver::Server* StartServer(int port) {
+  return StartServerEx(port, "");
+}
+
+webdriver::Server* StartServerEx(int port, const std::string& host) {
   if (server == NULL) {
-    server = new webdriver::IEServer(port);
+    server = new webdriver::IEServer(port, host);
     if (!server->Start()) {
       delete server;
       server = NULL;

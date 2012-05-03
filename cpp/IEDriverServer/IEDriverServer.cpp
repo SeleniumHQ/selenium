@@ -17,16 +17,17 @@
 
 // TODO(JimEvans): Change the prototypes of these functions in the
 // IEDriver project to match the prototype specified here.
-typedef void (__cdecl *STARTSERVERPROC)(int); 
+typedef void* (__cdecl *STARTSERVEREXPROC)(int, const std::string& host); 
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
 #define ERR_DLL_LOAD_FAIL 2
 #define ERR_FUNCTION_NOT_FOUND 3
+#define ERR_SERVER_START 4
 
 #define RESOURCE_TYPE L"BINARY"
 #define TEMP_FILE_PREFIX L"IEDriver"
-#define START_SERVER_API_NAME "StartServer"
+#define START_SERVER_EX_API_NAME "StartServerEx"
 #define STOP_SERVER_API_NAME "StopServer"
 
 bool ExtractResource(unsigned short resource_id,
@@ -96,6 +97,23 @@ int GetPort(int argc, _TCHAR* argv[]) {
     }
   }
   return port;
+}
+
+std::string GetHost(int argc, _TCHAR* argv[]) {
+  std::string host = "";
+  if (argc >= 2) {
+    for (int i = 1; i < argc; i++) {
+      std::wstring arg(argv[i]);
+      if (arg.find(L"--host=") == 0 ||
+          arg.find(L"-host=") == 0 ||
+          arg.find(L"/host=") == 0) {
+        size_t equal_pos = arg.find(L"=");
+        host = CW2A(arg.substr(equal_pos + 1).c_str(), CP_UTF8);
+        break;
+      }
+    }
+  }
+  return host;
 }
 
 std::string GetProcessArchitectureDescription() {
@@ -179,22 +197,31 @@ int _tmain(int argc, _TCHAR* argv[]) {
     return ERR_DLL_LOAD_FAIL;
   }
 
-  STARTSERVERPROC start_server_proc = reinterpret_cast<STARTSERVERPROC>(
-      ::GetProcAddress(module_handle, START_SERVER_API_NAME));
+  STARTSERVEREXPROC start_server_ex_proc = reinterpret_cast<STARTSERVEREXPROC>(
+      ::GetProcAddress(module_handle, START_SERVER_EX_API_NAME));
   STOPSERVERPROC stop_server_proc = reinterpret_cast<STOPSERVERPROC>(
       ::GetProcAddress(module_handle, STOP_SERVER_API_NAME));
-  if (start_server_proc == NULL || stop_server_proc == NULL) {
+  if (start_server_ex_proc == NULL || stop_server_proc == NULL) {
     return ERR_FUNCTION_NOT_FOUND;
   }
 
   int port = GetPort(argc, argv);
-  start_server_proc(port);
+  std::string host_address = GetHost(argc, argv);
+  void* server_value = start_server_ex_proc(port, host_address);
+  if (server_value == NULL) {
+    return ERR_SERVER_START;
+  }
   std::cout << "Started InternetExplorerDriver server"
             << " (" << GetProcessArchitectureDescription() << ")"
             << std::endl;
   std::cout << GetExecutableVersion()
             << std::endl;
   std::cout << "Listening on port " << port << std::endl;
+  if (host_address.size() > 0) {
+    std::cout << "Bound to network adapter with IP address " 
+              << host_address
+              << std::endl;
+  }
 
   // Create the shutdown event and wait for it to be signaled.
   DWORD process_id = ::GetCurrentProcessId();

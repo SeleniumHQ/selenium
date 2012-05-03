@@ -25,6 +25,7 @@ extern "C" {
 webdriver::Server* server = NULL;
 
 EXPORT webdriver::Server* StartServer(int port);
+EXPORT webdriver::Server* StartServerEx(int port, const std::string& host);
 EXPORT void StopServer(webdriver::Server* myserver);
 EXPORT int GetServerSessionCount();
 EXPORT bool ServerIsRunning();

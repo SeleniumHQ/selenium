@@ -16,7 +16,7 @@
 
 namespace webdriver {
 
-IEServer::IEServer(int port) : Server(port) {
+IEServer::IEServer(int port, const std::string& host) : Server(port, host) {
 }
 
 IEServer::~IEServer(void) {

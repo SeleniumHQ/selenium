@@ -22,11 +22,11 @@
 namespace webdriver {
 
 Server::Server(const int port) {
-  // It's possible to set the log level at compile time using this:
-  LOG::Level("FATAL");
-  LOG(INFO) << "Starting WebDriver server on port: " << port;
-  this->port_ = port;
-  this->PopulateCommandRepository();
+  this->Initialize(port, "");
+}
+
+Server::Server(const int port, const std::string& host) {
+  this->Initialize(port, host);
 }
 
 Server::~Server(void) {
@@ -37,6 +37,15 @@ Server::~Server(void) {
   }
 }
 
+void Server::Initialize(const int port, const std::string& host) {
+  // It's possible to set the log level at compile time using this:
+  LOG::Level("FATAL");
+  LOG(INFO) << "Starting WebDriver server on port: " << port;
+  this->port_ = port;
+  this->host_ = host;
+  this->PopulateCommandRepository();
+}
+
 void* Server::OnHttpEvent(enum mg_event event_raised,
                           struct mg_connection* conn,
                           const struct mg_request_info* request_info) {
@@ -44,15 +53,36 @@ void* Server::OnHttpEvent(enum mg_event event_raised,
   if (event_raised == MG_NEW_REQUEST) {
     handler_result_code = reinterpret_cast<Server*>(request_info->user_data)->
         ProcessRequest(conn, request_info);
+  } else if (event_raised == MG_EVENT_LOG) {
+    if (NULL != strstr(request_info->log_message, "cannot bind to") || 
+        NULL != strstr(request_info->log_message, "invalid port spec")) {
+      std::cout << request_info->log_message;
+    }
   }
 
   return reinterpret_cast<void*>(handler_result_code);
 }
 
 bool Server::Start() {
-  char buffer[10];
-  _itoa_s(this->port(), buffer, 10, 10);
-  const char* options[] = { "listening_ports", buffer,
+  std::string port_format_string = "%s:%d";
+  if (this->host_.size() == 0) {
+    // If the host name is an empty string, then we don't want the colon
+    // in the listening ports string. Remove it from the format string,
+    // and when we use printf to format, the %s will be replaced by an
+    // empty string.
+    port_format_string = "%s%d";
+  }
+  int formatted_string_size = _scprintf(port_format_string.c_str(),
+                                        this->host_.c_str(),
+                                        this->port_);
+  char* listening_ports_buffer = new char[formatted_string_size + 1];
+  _snprintf_s(listening_ports_buffer,
+              formatted_string_size + 1,
+              formatted_string_size,
+              port_format_string.c_str(),
+              this->host_.c_str(),
+              this->port_);
+  const char* options[] = { "listening_ports", listening_ports_buffer,
                             "access_control_list", "-0.0.0.0/0,+127.0.0.1",
                             // "enable_keep_alive", "yes",
                             NULL };
