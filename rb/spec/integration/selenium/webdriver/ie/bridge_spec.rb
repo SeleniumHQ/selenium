@@ -6,12 +6,13 @@ module Selenium
     module IE
 
       describe Bridge do
-        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities }}
+        let(:resp)    { {"sessionId" => "foo", "value" => @default_capabilities.as_json }}
         let(:server)  { mock(Server, :start => 5555, :uri => "http://example.com") }
         let(:caps)    { {} }
         let(:http)    { mock(Remote::Http::Default, :call => resp).as_null_object   }
-        
+
         before do
+          Server.stub!(:get => server)
           @default_capabilities = Remote::Capabilities.internet_explorer
           Remote::Capabilities.stub!(:internet_explorer => caps)
         end
@@ -19,12 +20,16 @@ module Selenium
         it "raises ArgumentError if passed invalid options" do
           lambda { Bridge.new(:foo => 'bar') }.should raise_error(ArgumentError)
         end
-        
+
         it "accepts the :introduce_flakiness_by_ignoring_security_domains option" do
-          Bridge.new(:introduce_flakiness_by_ignoring_security_domains => true)
+          Bridge.new(
+            :introduce_flakiness_by_ignoring_security_domains => true,
+            :http_client => http
+          )
+
           caps['ignoreProtectedModeSettings'].should be_true
         end
-        
+
       end
 
     end

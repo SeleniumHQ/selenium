@@ -14,7 +14,7 @@ module Selenium
 
         def initialize(opts = {})
           timeout     = opts.delete(:timeout) { DEFAULT_TIMEOUT }
-          port        = opts.delete(:port) { DEFAULT_PORT }
+          port        = opts.delete(:port) { PortProber.above(DEFAULT_PORT) }
           http_client = opts.delete(:http_client)
           ignore_mode = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
 
@@ -22,7 +22,7 @@ module Selenium
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
-          @server = Server.new
+          @server = Server.get
           @port = @server.start Integer(port), timeout
 
           caps = Remote::Capabilities.internet_explorer
@@ -50,9 +50,9 @@ module Selenium
 
         def quit
           super
-          @server.stop
-
           nil
+        ensure
+          @server.stop
         end
 
       end # Bridge
