@@ -230,7 +230,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     // If we get this far, then we're all good.
   }
 
-  @Ignore(value = {IPHONE}, reason = "iPhone: sendKeys implemented incorrectly.")
+  @Ignore(value = {IPHONE, OPERA}, reason = "iPhone: sendKeys implemented incorrectly.")
   @Test
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
