@@ -58,7 +58,7 @@ public class OpacityTest extends JUnit4TestBase {
    *      http://code.google.com/p/selenium/issues/detail?id=1941</a>
    */
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, SELENESE, OPERA})
+  @Ignore({ANDROID, HTMLUNIT, IE, SELENESE})
   @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);
