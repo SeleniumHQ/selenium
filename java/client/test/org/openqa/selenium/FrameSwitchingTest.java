@@ -17,6 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.After;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -33,16 +42,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import org.junit.After;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
 public class FrameSwitchingTest extends JUnit4TestBase {
+
   private static final int TIMEOUT = 4000;
 
   @After
@@ -123,7 +124,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.name("id-name1")).getAttribute("value"), equalTo("name"));
   }
 
-  @Ignore(OPERA)
   @Test
   public void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
     driver.get(pages.framesetPage);
@@ -195,7 +195,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
 
-  @Ignore({ANDROID, OPERA})
+  @Ignore({ANDROID})
   @Test
   public void testShouldSelectChildFramesByChainedCalls() {
     driver.get(pages.framesetPage);
@@ -265,7 +265,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     waitFor(WaitingConditions.elementTextToEqual(driver, By.xpath("//p"), "Success!"));
   }
 
-  @Ignore(value = {ANDROID, OPERA}, reason = "Android does not detect that the select frame has disappeared")
+  @Ignore(value = {ANDROID, OPERA},
+          reason = "Android does not detect that the select frame has disappeared")
   @Test
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
       throws Exception {
@@ -331,7 +332,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.switchTo().frame("sixth")
         .switchTo().frame("iframe1");
 
-    // This should replaxe frame "iframe1" inside frame "sixth" ...
+    // This should replace frame "iframe1" inside frame "sixth" ...
     driver.findElement(By.id("submitButton")).click();
     // driver should still be focused on frame "iframe1" inside frame "sixth" ...
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
@@ -343,7 +344,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @NoDriverAfterTest
-  @Ignore({IPHONE, OPERA})
+  @Ignore({IPHONE})
   @Test
   public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
     driver.get(pages.simpleTestPage);
@@ -397,7 +398,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     url = appServer.whereIs("iframes.html");
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl(), equalTo(url));
-
 
     url = appServer.whereIs("formPage.html");
     driver.switchTo().frame("iframe1");
