@@ -13,11 +13,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore({IPHONE, SELENESE})
 public class ElementEqualityTest extends JUnit4TestBase {
+
   @Test
   public void testSameElementLookedUpDifferentWaysShouldBeEqual() {
     driver.get(pages.simpleTestPage);
@@ -56,7 +56,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {
     String url = appServer.whereIs("missedJsReference.html");
@@ -69,7 +69,6 @@ public class ElementEqualityTest extends JUnit4TestBase {
     WebElement element = (WebElement) ((JavascriptExecutor) driver).executeScript(
         "return frames[0].document.getElementById('oneline');");
 
-
     driver.switchTo().frame("inner");
 
     WebElement second = driver.findElement(By.id("oneline"));
@@ -77,7 +76,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
     checkIdEqualityIfRemote(first, element);
     checkIdEqualityIfRemote(second, element);
   }
-  
+
   private void checkIdEqualityIfRemote(WebElement first, WebElement second) {
     String firstId = getId(unwrapIfNecessary(first));
     String secondId = getId(unwrapIfNecessary(second));
@@ -96,7 +95,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
 
   private WebElement unwrapIfNecessary(WebElement element) {
     if (element instanceof WrapsElement) {
-      return ((WrapsElement)element).getWrappedElement();
+      return ((WrapsElement) element).getWrappedElement();
     }
     return element;
   }
