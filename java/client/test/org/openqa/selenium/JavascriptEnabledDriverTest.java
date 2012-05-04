@@ -18,10 +18,26 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.either;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -29,24 +45,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.Is.is;
-import static org.junit.matchers.JUnitMatchers.either;
-
-import org.junit.Test;
-import org.openqa.selenium.internal.Locatable;
-
-import org.hamcrest.Matchers;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Test case for browsers that support using Javascript
@@ -85,8 +83,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, IPHONE, OPERA, SELENESE, ANDROID},
-      reason = "iPhone: does not detect that a new page loaded.")
+  @Ignore(value = {IE, IPHONE, SELENESE, ANDROID},
+          reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -98,8 +96,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID},
-      reason = "iPhone: does not detect that a new page loaded.")
+  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID},
+          reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -136,8 +134,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, OPERA},
-      reason = "iPhone: sendKeys not implemented correctly")
+  @Ignore(value = {IPHONE},
+          reason = "iPhone: sendKeys not implemented correctly")
   @Test
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
@@ -216,8 +214,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, OPERA, REMOTE, SELENESE},
-      reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = {IE, FIREFOX, REMOTE, SELENESE},
+          reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   @Test
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
@@ -226,17 +224,17 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     input.sendKeys("test");
     moveFocus();
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-        either(is("focus change blur")).or(is("focus blur change")));
+               either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     moveFocus();
-    
+
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-        either(is("focus change blur focus blur"))
-            .or(is("focus blur change focus blur"))
-            .or(is("focus blur change focus blur change"))
-            .or(is("focus change blur focus change blur"))); // What Chrome does
+               either(is("focus change blur focus blur"))
+                   .or(is("focus blur change focus blur"))
+                   .or(is("focus blur change focus blur change"))
+                   .or(is("focus change blur focus change blur"))); // What Chrome does
   }
 
   /**
@@ -275,10 +273,10 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     Point point = ((Locatable) element).getLocationOnScreenOnceScrolledIntoView();
 
     assertTrue(String.format("Non-positive X coordinates: %d", point.getX()),
-        point.getX() > 1);
+               point.getX() > 1);
     // Element's Y coordinates can be 0, as the element is scrolled right to the top of the window.
     assertTrue(String.format("Negative Y coordinates: %d", point.getY()),
-        point.getY() >= 0);
+               point.getY() >= 0);
   }
 
 
