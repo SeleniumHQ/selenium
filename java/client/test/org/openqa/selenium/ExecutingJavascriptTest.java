@@ -500,6 +500,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(OPERA)
   @Test
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
@@ -543,6 +544,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(OPERA)
   @Test
   public void testShouldBeAbleToCreateAPersistentValue() {
     driver.get(pages.formPage);
@@ -555,6 +557,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(OPERA)
   @Test
   public void testCanHandleAnArrayOfElementsAsAnObjectArray() {
     driver.get(pages.formPage);
