@@ -17,6 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -33,14 +41,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
@@ -69,7 +69,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({SELENESE, OPERA})
+  @Ignore({SELENESE})
   @Test
   public void testShouldThrowNoSuchWindowException() {
     driver.get(pages.xhtmlTestPage);
@@ -131,7 +131,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {IE, SELENESE, OPERA},
-      reason = "IE: can show a dialog 'The web page you are viewing is trying to close the window'")
+          reason = "IE: can show a dialog 'The web page you are viewing is trying to close the window'")
   @JavascriptEnabled
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
@@ -263,7 +263,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({SELENESE, OPERA})
+  @Ignore({SELENESE})
   @Test
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
