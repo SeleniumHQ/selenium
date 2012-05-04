@@ -55,9 +55,9 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 /**
  * Tests operations that involve mouse and keyboard.
- * 
  */
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
+
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
@@ -127,16 +127,16 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore({ANDROID, IE, IPHONE, SELENESE})
   @Test
   public void testDoubleClickThenGet() {
-      // Fails in ff3 if WebLoadingListener removes browser listener
-      driver.get(pages.javascriptPage);
+    // Fails in ff3 if WebLoadingListener removes browser listener
+    driver.get(pages.javascriptPage);
 
-      WebElement toClick = driver.findElement(By.id("clickField"));
+    WebElement toClick = driver.findElement(By.id("clickField"));
 
-      Action dblClick = getBuilder(driver).doubleClick(toClick).build();
-      dblClick.perform();
+    Action dblClick = getBuilder(driver).doubleClick(toClick).build();
+    dblClick.perform();
 
-      driver.get(pages.droppableItems);
-    }
+    driver.get(pages.droppableItems);
+  }
 
   @JavascriptEnabled
   @Ignore({ANDROID, IE, IPHONE, SELENESE})
@@ -147,7 +147,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     long waitEndTime = System.currentTimeMillis() + 15000;
 
     while (!isElementAvailable(driver, By.id("draggable")) &&
-        (System.currentTimeMillis() < waitEndTime)) {
+           (System.currentTimeMillis() < waitEndTime)) {
       Thread.sleep(200);
     }
 
@@ -189,7 +189,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     String testFieldContent = TestWaiter.waitFor(
         elementValueToEqual(toDoubleClick, "DoubleClicked"), 5, TimeUnit.SECONDS);
     assertEquals("Value should change to DoubleClicked.", "DoubleClicked",
-        testFieldContent);
+                 testFieldContent);
   }
 
   @JavascriptEnabled
@@ -204,7 +204,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     contextClick.perform();
     assertEquals("Value should change to ContextClicked.", "ContextClicked",
-        toContextClick.getAttribute("value"));
+                 toContextClick.getAttribute("value"));
   }
 
   @JavascriptEnabled
@@ -222,7 +222,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     waitFor(elementValueToEqual(toClick, "Clicked"));
 
     assertEquals("Value should change to Clicked.", "Clicked",
-        toClick.getAttribute("value"));
+                 toClick.getAttribute("value"));
   }
 
   @JavascriptEnabled
@@ -239,7 +239,19 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     } catch (IllegalArgumentException expected) {
       // Expected.
     }
+  }
 
+  @JavascriptEnabled
+  @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE, FIREFOX, OPERA})
+  @Test
+  public void testMousePositionIsNotPreservedInActionsChain() {
+    driver.get(pages.javascriptPage);
+    WebElement toMoveTo = driver.findElement(By.id("clickField"));
+
+    getBuilder(driver).moveToElement(toMoveTo).build().perform();
+
+    // TODO(andreastt): Is this correct behaviour?  Should the last known mouse position be
+    // disregarded if calling click() from a an Actions chain?
     try {
       getBuilder(driver).click().build().perform();
       fail("Shouldn't be allowed to click without a context.");
@@ -249,14 +261,14 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, SELENESE, FIREFOX, OPERA},
-      reason = "Behaviour not finalized yet regarding linked images.")
+          reason = "Behaviour not finalized yet regarding linked images.")
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);
 
     if (isFirefox30(driver) || isFirefox35(driver)) {
       System.out.println("Not performing testMovingIntoAnImageEnclosedInALink - no way to " +
-          "compensate for accessibility-provided offsets on Firefox 3.0 or 3.5");
+                         "compensate for accessibility-provided offsets on Firefox 3.0 or 3.5");
       return;
     }
     // Note: For some reason, the Accessibility API in Firefox will not be available before we
@@ -281,7 +293,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   private int getHeight(Map<String, Object> sizeRect) {
     if (sizeRect.containsKey("height")) {
-      return getFieldValue(sizeRect, "height"); 
+      return getFieldValue(sizeRect, "height");
     } else {
       return getFieldValue(sizeRect, "bottom") - getFieldValue(sizeRect, "top");
     }
@@ -292,7 +304,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME},
-      reason = "Not implemented yet.")
+          reason = "Not implemented yet.")
   @Test
   public void testMovingMousePastViewPort() {
     if (!isNativeEventsEnabled(driver)) {
@@ -320,7 +332,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     Map<String, Object> parentSize = getElementSize(driver.findElement(By.id("parent")));
 
     int verticalMove = getFieldValue(parentSize, "top") + getHeight(parentSize) / 2 -
-      assumedMouseY;
+                       assumedMouseY;
 
     // Move by verticalMove pixels down and -50 pixels left:
     // we should be hitting the element with id 'parent'
@@ -331,13 +343,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME, OPERA},
-      reason = "Not implemented yet.")
+          reason = "Not implemented yet.")
   @Test
   public void testMovingMouseBackAndForthPastViewPort() {
 
     if (isFirefox(driver) && !isNativeEventsEnabled(driver)) {
       System.out.println("Skipping testMovingMouseBackAndForthPastViewPort: " +
-          "Native events are disabled.");
+                         "Native events are disabled.");
       return;
     }
 
@@ -375,7 +387,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       WebElement element = driver.findElement(By.id("otherframe"));
       new Actions(driver).moveToElement(element).click().perform();
       driver.switchTo().defaultContent()
-            .switchTo().frame("target");
+          .switchTo().frame("target");
       waitFor(elementTextToEqual(driver, By.id("span"), "An inline element"));
     } finally {
       driver.switchTo().defaultContent();
