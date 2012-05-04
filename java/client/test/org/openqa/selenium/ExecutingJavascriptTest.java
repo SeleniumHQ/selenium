@@ -184,10 +184,10 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     // Cannot do an exact match; Firefox 4 inserts a few extra keys in our object; this is OK, as
     // long as the expected keys are there.
     assertThat("Expected:<" + expected + ">, but was:<" + map + ">",
-        map.size(), greaterThanOrEqualTo(expected.size()));
+               map.size(), greaterThanOrEqualTo(expected.size()));
     for (Map.Entry<String, Object> entry : expected.entrySet()) {
       assertEquals("Difference at key:<" + entry.getKey() + ">",
-          entry.getValue(), map.get(entry.getKey()));
+                   entry.getValue(), map.get(entry.getKey()));
     }
   }
 
@@ -217,19 +217,19 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
     Object result = executeScript(
         "return {foo:'bar', baz: ['a', 'b', 'c'], " +
-            "person: {first: 'John',last: 'Doe'}};");
+        "person: {first: 'John',last: 'Doe'}};");
     assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof Map);
 
     Map<String, Object> map = (Map<String, Object>) result;
     assertThat("Expected:<" + expectedResult + ">, but was:<" + map + ">",
-        map.size(), greaterThanOrEqualTo(3));
+               map.size(), greaterThanOrEqualTo(3));
     assertEquals("bar", map.get("foo"));
     assertTrue(compareLists((List<?>) expectedResult.get("baz"),
-        (List<?>) map.get("baz")));
+                            (List<?>) map.get("baz")));
 
     Map<String, String> person = (Map<String, String>) map.get("person");
     assertThat("Expected:<{first:John, last:Doe}>, but was:<" + person + ">",
-        person.size(), greaterThanOrEqualTo(2));
+               person.size(), greaterThanOrEqualTo(2));
     assertEquals("John", person.get("first"));
     assertEquals("Doe", person.get("last"));
   }
@@ -263,7 +263,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     Long expectedResult = 1L;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be an Integer or Long but was a " +
-        result.getClass(), result instanceof Integer || result instanceof Long);
+               result.getClass(), result instanceof Integer || result instanceof Long);
     assertEquals(expectedResult.longValue(), result);
   }
 
@@ -278,7 +278,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     Double expectedResult = 1.2;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be a Double or Float but was a " +
-        result.getClass(), result instanceof Float || result instanceof Double);
+               result.getClass(), result instanceof Float || result instanceof Double);
     assertEquals(expectedResult.doubleValue(), result);
   }
 
@@ -382,7 +382,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     }
 
     driver.get(pages.javascriptPage);
-    Object[] array = new Object[] {"zero", 1, true, 3.14159, false};
+    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
     String value = (String) executeScript("return arguments[0]", array);
     assertEquals(array[0], value);
   }
@@ -396,7 +396,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     }
 
     driver.get(pages.javascriptPage);
-    Object[] array = new Object[] {"zero", 1, true, 3.14159, false};
+    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
     long length = (Long) executeScript("return arguments[1].length", "string", array);
     assertEquals(array.length, length);
   }
@@ -455,8 +455,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = {IPHONE, OPERA},
-      reason = "iPhone: Frame switching not yet implemented.")
+  @Ignore(value = {IPHONE},
+          reason = "iPhone: Frame switching not yet implemented.")
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
@@ -500,7 +500,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(OPERA)
   @Test
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
@@ -561,7 +560,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.formPage);
 
     List<WebElement> forms = driver.findElements(By.tagName("form"));
-    Object[] args = new Object[] {forms};
+    Object[] args = new Object[]{forms};
 
     String name = (String) ((JavascriptExecutor) driver).executeScript(
         "return arguments[0][0].tagName", args);
@@ -571,14 +570,14 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, OPERA},
-          reason = "Opera and HtmlUnit obey the method contract. Androidn, IE and iOS, not tested")
+          reason = "Opera and HtmlUnit obey the method contract. Android, IE and iOS, not tested")
   @Test
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
-    
+
     List<Integer> nums = ImmutableList.of(1, 2);
     Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
-    
+
     Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
 
     assertEquals(2, ((Number) res).intValue());
