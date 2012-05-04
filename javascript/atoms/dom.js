@@ -299,7 +299,7 @@ bot.dom.standardizeStyleAttribute_ = function(value) {
   goog.array.forEach(styleArray, function(pair) {
     var i = pair.indexOf(':');
     if (i > 0) {
-      var keyValue = [pair.slice(0,i), pair.slice(i+1)];
+      var keyValue = [pair.slice(0, i), pair.slice(i + 1)];
       if (keyValue.length == 2) {
         css.push(keyValue[0].toLowerCase(), ':', keyValue[1], ';');
       }
@@ -756,9 +756,9 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return false;
   }
 
-  // Elements should be hidden if their parent has a fixed size AND has the style
-  // overflow:hidden AND the element's location is not within the fixed size
-  // of the parent
+  // Elements should be hidden if their parent has a fixed size AND has the
+  // style overflow:hidden AND the element's location is not within the fixed
+  // size of the parent
   function isOverflowHiding(e) {
     var parent = goog.style.getOffsetParent(e);
     if (parent && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden') {
@@ -776,7 +776,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return true;
   }
 
-  if (!isOverflowHiding(elem)){
+  if (!isOverflowHiding(elem)) {
     return false;
   }
 

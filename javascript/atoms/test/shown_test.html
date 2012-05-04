@@ -15,6 +15,21 @@
     goog.require('goog.userAgent.platform');
   </script>
 
+  <style>
+    #box{
+      border: 1px solid black;
+    }
+    #box ul{
+      height: 250px;
+      overflow: hidden;
+    }
+    #box ul > li{
+      height: 50px;
+    }
+    #box ul > li > a{
+      height: 26px;
+    }
+  </style>
   <script type="text/javascript">
     var isShown = bot.dom.isShown;
     var findElement = bot.locators.findElement;
@@ -427,21 +442,6 @@
 <iframe id="iframe" src="testdata/iframe_page.html"></iframe>
 
 <span id="onlyWhitespace">  </span>
-<style>
-  #box{
-    border: 1px solid black;
-  }
-  #box ul{
-    height: 250px;
-    overflow: hidden;
-  }
-  #box ul > li{
-    height: 50px;
-  }
-  #box ul > li > a{
-    height: 26px;
-  }
-</style>
 <div id="box">
    <ul id="list1">
      <li><a>Item 1</a></li>

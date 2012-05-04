@@ -14,7 +14,7 @@
 
 /**
  * @fileoverview Utilities for working with WebDriver response objects.
- * See: http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
+ * @see: http://code.google.com/p/selenium/wiki/JsonWireProtocol#Responses
  */
 
 goog.provide('bot.response');

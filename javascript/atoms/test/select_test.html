@@ -336,7 +336,7 @@
       // WebKit and Firefox < 11 select a radio button even when the handler
       // prevents the default; IE and Opera do not.
       if (goog.userAgent.WEBKIT ||
-	  (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11))) {
+          (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11))) {
         // Gecko does toggle the radio button, but doesn't fire a change event.
         assertChanges(goog.userAgent.GECKO ? 0 : 1);
         assertTrue(bot.dom.isSelected(elem));
