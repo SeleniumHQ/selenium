@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 WebDriver committers
+Copyright 2007-2012 WebDriver committers
 Copyright 2007-2009 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
-
 import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
@@ -41,8 +27,21 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+
 @Ignore(
-    value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE},
+    value = {ANDROID, HTMLUNIT, IPHONE, SELENESE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends JUnit4TestBase {
 
@@ -67,6 +66,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(OPERA)
   @Test
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
@@ -91,7 +91,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE})
+  @Ignore({CHROME, IE, OPERA})
   @Test
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
@@ -130,7 +130,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   private void drag(WebElement elem, Point expectedLocation,
-      int moveRightBy, int moveDownBy) {
+                    int moveRightBy, int moveDownBy) {
     new Actions(driver)
         .dragAndDropBy(elem, moveRightBy, moveDownBy)
         .perform();
@@ -138,6 +138,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(OPERA)
   @Test
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
