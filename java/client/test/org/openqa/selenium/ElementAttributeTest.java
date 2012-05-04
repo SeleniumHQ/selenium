@@ -21,6 +21,12 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -35,13 +41,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNull.nullValue;
-
-import java.util.List;
 
 public class ElementAttributeTest extends JUnit4TestBase {
 
@@ -61,7 +60,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(attribute, is(nullValue()));
   }
 
-  @Ignore(OPERA)
   @Test
   public void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
@@ -70,7 +68,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(attribute, equalTo(appServer.whereIs("icon.gif")));
   }
 
-  @Ignore(OPERA)
   @Test
   public void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
@@ -131,7 +128,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {IPHONE, SELENESE},
-      reason = "sendKeys does not determine whether the element is disabled")
+          reason = "sendKeys does not determine whether the element is disabled")
   @Test
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
@@ -268,7 +265,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
       Thread.sleep(1000);
     } catch (InterruptedException e) {
       e.printStackTrace(); // To change body of catch statement use File | Settings | File
-                           // Templates.
+      // Templates.
     }
 
     WebElement th1 = driver.findElement(By.id("th1"));
@@ -302,7 +299,8 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {IE, IPHONE, ANDROID}, reason = "IE7 Does not support SVG; " +
-      "SVG elements crash the iWebDriver app (issue 1134)", issues = {1134})
+                                                  "SVG elements crash the iWebDriver app (issue 1134)",
+          issues = {1134})
   @Test
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
@@ -348,7 +346,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertNull(element2.getAttribute("nowrap"));
   }
 
-  @Ignore({IE, IPHONE, ANDROID, REMOTE, SELENESE})
+  @Ignore({IE, IPHONE, ANDROID, SELENESE})
   @Test
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
