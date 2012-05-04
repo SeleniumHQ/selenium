@@ -222,6 +222,10 @@ class WebElement(object):
         except WebDriverException as e:
             if "Unrecognized command: POST" in e.__str__():
                 return filename
+            elif "Command not found: POST " in e.__str__():
+                return filename
+            elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
+                return filename
             else:
                 raise e
 
