@@ -23,7 +23,7 @@ from errorhandler import ErrorHandler
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
-from selenium.common.exceptions import WebDriverException
+
 
 class WebDriver(object):
     """
