@@ -26,12 +26,14 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.PortProber;
 
+import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -127,7 +129,9 @@ public class InternetExplorerDriverServer {
             + File.pathSeparator + parentDir);
 
     try {
-      return (IEServer) Native.loadLibrary("IEDriver", IEServer.class);
+      IEServer server = (IEServer) Native.loadLibrary("IEDriver", IEServer.class);
+      Runtime.getRuntime().addShutdownHook(new IEDriverDllCleaner(parentDir));
+      return server;
     } catch (UnsatisfiedLinkError e) {
       System.out.println("new File(\".\").getAbsolutePath() = "
           + new File(".").getAbsolutePath());
@@ -143,5 +147,19 @@ public class InternetExplorerDriverServer {
     int GetServerPort();
 
     boolean ServerIsRunning();
+  }
+  
+  private static class IEDriverDllCleaner extends Thread {
+    private final File parentDir;
+
+    public IEDriverDllCleaner(File parentDir) {
+      this.parentDir = parentDir;
+    }
+
+    @Override
+    public void run() {
+      ((Library.Handler) Proxy.getInvocationHandler(lib)).getNativeLibrary().dispose();
+      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(parentDir);
+    }
   }
 }
