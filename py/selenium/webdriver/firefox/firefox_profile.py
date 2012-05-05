@@ -106,7 +106,8 @@ class FirefoxProfile(object):
         else:
             newprof = os.path.join(tempfile.mkdtemp(),
                 "webdriver-py-profilecopy")
-            shutil.copytree(self.profile_dir, newprof)
+            shutil.copytree(self.profile_dir, newprof,
+                ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
             self.profile_dir = newprof
             self._read_existing_userjs()
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
