@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -39,6 +40,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Manages the life and death of a native executable driver server.
+ * 
+ * It is expected that the driver server implements the
+ * <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
+ * In particular, it should implement /status command that is used to check if the server is alive.
+ * In addition to this, it is supposed that the driver server implements /shutdown hook that is
+ * used to stop the server.
  */
 public class DriverService {
 
@@ -94,7 +101,18 @@ public class DriverService {
     return url;
   }
 
-  protected static File findExecutable(String exeName, String exeProperty, String exeDocs, String exeDownload) {
+  /**
+   * 
+   * @param exeName Name of the executable file to look for in PATH
+   * @param exeProperty Name of a system property that specifies the path to the executable file
+   * @param exeDocs The link to the driver documentation page
+   * @param exeDownload The link to the driver download page
+   * 
+   * @return The driver executable as a {@link File} object
+   * @throws IllegalStateException If the executable not found or cannot be executed
+   */
+  protected static File findExecutable(String exeName, String exeProperty, String exeDocs,
+      String exeDownload) {
     String defaultPath = CommandLine.findExecutable(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
     checkState(exePath != null,
@@ -104,17 +122,17 @@ public class DriverService {
             exeProperty, exeDocs, exeDownload);
 
     File exe = new File(exePath);
-    checkState(exe.exists(),
-        "The %s system property defined driver executable does not exist: %s",
-        exeProperty, exe.getAbsolutePath());
-    checkState(!exe.isDirectory(),
-        "The %s system property defined driver executable is a directory: %s",
-        exeProperty, exe.getAbsolutePath());
-    // TODO(jleyba): Check file.canExecute() once we support Java 1.6
-    // checkState(exe.canExecute(),
-    // "The %s system property defined driver is not executable: %s",
-    // exeProperty, exe.getAbsolutePath());
+    checkExecutable(exe);
     return exe;
+  }
+
+  private static void checkExecutable(File exe) {
+    checkState(exe.exists(),
+        "The driver executable does not exist: %s", exe.getAbsolutePath());
+    checkState(!exe.isDirectory(),
+        "The driver executable is a directory: %s", exe.getAbsolutePath());
+    checkState(FileHandler.canExecute(exe),
+        "The driver is not executable: %s", exe.getAbsolutePath());
   }
 
   /**
@@ -207,12 +225,7 @@ public class DriverService {
      */
     public Builder usingDriverExecutable(File file) {
       checkNotNull(file);
-      checkArgument(file.exists(), "Specified driver executable does not exist: %s",
-          file.getPath());
-      checkArgument(!file.isDirectory(), "Specified driver executable is a directory: %s",
-          file.getPath());
-      // TODO(jleyba): Check file.canExecute() once we support Java 1.6
-      // checkArgument(file.canExecute(), "File is not executable: %s", file.getPath());
+      checkExecutable(file);
       this.exe = file;
       return this;
     }
@@ -255,18 +268,23 @@ public class DriverService {
       return this;
     }
     
+    /**
+     * Configures the driver server to write log to the given file.
+     *
+     * @param logFile A file to write log to.
+     * @return A self reference.
+     */
     public Builder withLogFile(File logFile) {
       this.logFile = logFile;
       return this;
     }
 
     /**
-     * Creates a new binary to manage the driver server. Before creating a new binary, the
-     * builder will check that either the user defined the location of the driver executable
-     * through {@link #usingDriverExecutable(File) the API} or with the
-     * {@code webdriver.chrome.driver} system property.
+     * Creates a new service to manage the driver server. Before creating a new service, the
+     * builder will find a port for the server to listen to.
      *
-     * @return The new binary.
+     * @return The new service object.
+     * @see #buildDriverService
      */
     public DriverService build() {
       if (port == 0) {
@@ -281,7 +299,14 @@ public class DriverService {
         throw new WebDriverException(e);
       }
     }
-    
-    abstract protected DriverService buildDriverService() throws IOException;
+
+    /**
+     * Used by a template method {@link #build} to perform the driver specific checks
+     * and instantiate the specific service object.
+     * 
+     * @return The new service object.
+     * @throws IOException If an I/O error occurs.
+     */
+    protected abstract DriverService buildDriverService() throws IOException;
   }
 }

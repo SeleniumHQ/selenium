@@ -61,7 +61,7 @@ public class ChromeDriverService extends DriverService {
     File exe = findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
       "http://code.google.com/p/selenium/wiki/ChromeDriver",
       "http://code.google.com/p/chromedriver/downloads/list");
-    return new Builder().usingChromeDriverExecutable(exe).usingAnyFreePort().build();
+    return new Builder().usingDriverExecutable(exe).usingAnyFreePort().build();
   }
 
   /**
@@ -70,70 +70,53 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder {
 
     /**
-     * Sets which chromedriver executable the builder will use.
+     * A synonym for {@link #usingDriverExecutable(File)}.
      *
      * @param file The executable to use.
      * @return A self reference.
+     * @deprecated Use {@link #usingDriverExecutable(File)} instead
      */
     public Builder usingChromeDriverExecutable(File file) {
-      usingDriverExecutable(file);
+      return usingDriverExecutable(file);
+    }
+
+    @Override
+    public Builder usingDriverExecutable(File file) {
+      super.usingDriverExecutable(file);
       return this;
     }
 
-    /**
-     * Sets which port the chromedriver server should be started on. A value of 0 indicates that any
-     * free port may be used.
-     *
-     * @param port The port to use; must be non-negative.
-     * @return A self reference.
-     */
+    @Override
     public Builder usingPort(int port) {
       super.usingPort(port);
       return this;
     }
 
-    /**
-     * Configures the chromedriver server to start on any available port.
-     *
-     * @return A self reference.
-     */
+    @Override
     public Builder usingAnyFreePort() {
       super.usingAnyFreePort();
       return this;
     }
 
-    /**
-     * Defines the environment for the launched chromedriver server. These
-     * settings will be inherited by every browser session launched by the
-     * server.
-     *
-     * @param environment A map of the environment variables to launch the
-     *     server with.
-     * @return A self reference.
-     */
     @Beta
+    @Override
     public Builder withEnvironment(Map<String, String> environment) {
       super.withEnvironment(environment);
       return this;
     }
-    
+
+    @Override
     public Builder withLogFile(File logFile) {
       super.withLogFile(logFile);
       return this;
     }
 
-    /**
-     * Creates a new binary to manage the chromedriver server. Before creating a new binary, the
-     * builder will check that either the user defined the location of the chromedriver executable
-     * through {@link #usingChromeDriverExecutable(File) the API} or with the
-     * {@code webdriver.chrome.driver} system property.
-     *
-     * @return The new binary.
-     */
+    @Override
     public ChromeDriverService build() {
       return (ChromeDriverService) super.build();
     }
 
+    @Override
     protected DriverService buildDriverService() throws IOException {
       return new ChromeDriverService(exe, port, environment, logFile);
     }
