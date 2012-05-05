@@ -29,7 +29,7 @@ goog.require('goog.array');
  * Send keyboard input to a particular element.
  *
  * @param {!Element} element The element to send the keyboard input to.
- * @param {Array.<!bot.Keyboard.Key>} opt_state The keyboard to use, or construct one.
+ * @param {Array.<!bot.Keyboard.Key>=} opt_state The keyboard to use, or construct one.
  * @param {...(string|!Array.<string>)} var_args What to type.
  * @return {Array.<!bot.Keyboard.Key>} The keyboard state.
  */
@@ -42,7 +42,8 @@ webdriver.atoms.inputs.sendKeys = function (element, opt_state, var_args) {
 
   return keyboard.getState();
 };
-goog.exportSymbol('sendKeys', webdriver.atoms.inputs.sendKeys);
+goog.exportSymbol('webdriver.atoms.inputs.sendKeys',
+                  webdriver.atoms.inputs.sendKeys);
 
 
 /**
@@ -55,4 +56,6 @@ webdriver.atoms.inputs.click = function (element) {
 
   bot.action.click(element, null, mouse);
 };
-goog.exportSymbol('click', webdriver.atoms.inputs.click);
+goog.exportSymbol('webdriver.atoms.inputs.click',
+                  webdriver.atoms.inputs.click);
+
