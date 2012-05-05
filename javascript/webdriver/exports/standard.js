@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Configures which symbols shoudl always be exported from the
+ * @fileoverview Configures which symbols should always be exported from the
  * WebDriverJS API.
  */
 
