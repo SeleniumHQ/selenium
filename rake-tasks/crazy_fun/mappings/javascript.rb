@@ -176,7 +176,8 @@ module Javascript
     private
     @@REQ_REGEX = /^goog\.require\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\)/
     @@PROV_REGEX = /^goog\.provide\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\)/
-        
+    @@DEP_MAP = {}
+
     def resolve_deps(req, search_hash, result_list, seen_list)
       if !search_hash[req]
         raise StandardError, "Missing provider for (#{req})"
@@ -197,21 +198,25 @@ module Javascript
       filenames = []
       files.each do |filename|
         next if filenames.index(filename) != nil
-  
-        dep = {}
-        dep[:filename] = filename
-        dep[:reqs] = []
-        dep[:provides] = []
-        IO.read(filename).each_line do |line|
-          data = @@REQ_REGEX.match(line)
-          if data
-            dep[:reqs].push(data[1])
-            next
-          end
-            
-          data = @@PROV_REGEX.match(line)
-          if data
-            dep[:provides].push(data[1])
+
+        if !@@DEP_MAP[filename].nil?
+          dep = @@DEP_MAP[filename]
+        else
+          @@DEP_MAP[filename] = dep = {}
+          dep[:filename] = filename
+          dep[:reqs] = []
+          dep[:provides] = []
+          IO.read(filename).each_line do |line|
+            data = @@REQ_REGEX.match(line)
+            if data
+              dep[:reqs].push(data[1])
+              next
+            end
+
+            data = @@PROV_REGEX.match(line)
+            if data
+              dep[:provides].push(data[1])
+            end
           end
         end
         result.push(dep)
