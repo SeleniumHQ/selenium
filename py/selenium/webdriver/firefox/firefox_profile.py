@@ -24,7 +24,7 @@ import zipfile
 from cStringIO import StringIO
 from xml.dom import minidom
 from distutils import dir_util
-from selenium.webdriver.common.proxy import Proxy, ProxyType
+from selenium.webdriver.common.proxy import ProxyType
 from selenium.common.exceptions import WebDriverException
 
 
