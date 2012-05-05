@@ -51,7 +51,7 @@ class WebDriver(object):
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
         self.command_executor = command_executor
-        if type(self.command_executor) is str:
+        if type(self.command_executor) is str or type(self.command_executor) is unicode:
             self.command_executor = RemoteConnection(command_executor)
         self.session_id = None
         self.capabilities = {}
