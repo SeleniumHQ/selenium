@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="guava-libraries" level="project" />
     <orderEntry type="library" name="junit" level="project" />
@@ -36,6 +36,8 @@
     <orderEntry type="library" scope="RUNTIME" name="sac" level="project" />
     <orderEntry type="library" name="webbit" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="xml-apis" level="project" />
+    <orderEntry type="library" name="netty" level="project" />
+    <orderEntry type="library" name="commons-fileupload" level="project" />
   </component>
 </module>
 

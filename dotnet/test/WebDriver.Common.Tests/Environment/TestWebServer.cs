@@ -10,7 +10,7 @@ namespace OpenQA.Selenium.Environment
         private Process webserverProcess;
 
         private string standaloneTestJar = @"build/java/client/test/org/openqa/selenium/tests-standalone.jar";
-        private string webserverClassName = "org.openqa.selenium.environment.webserver.Jetty7AppServer";
+        private string webserverClassName = "org.openqa.selenium.environment.webserver.WebbitAppServer";
         private string projectRootPath;
 
         public TestWebServer(string projectRoot)

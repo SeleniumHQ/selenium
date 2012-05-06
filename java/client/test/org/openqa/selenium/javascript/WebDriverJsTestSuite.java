@@ -22,7 +22,7 @@ import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty7AppServer;
+import org.openqa.selenium.environment.webserver.WebbitAppServer;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -34,8 +34,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.seleniumhq.jetty7.servlet.ServletContextHandler;
-import org.seleniumhq.jetty7.servlet.ServletHolder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,15 +43,15 @@ import java.util.concurrent.TimeUnit;
 public class WebDriverJsTestSuite {
 
   public static Test suite() {
-    final TestEventServlet testEventServlet = new TestEventServlet();
-    final AppServer appServer = createAppServer(testEventServlet);
+    final TestEventHandler testEventHandler = new TestEventHandler();
+    final AppServer appServer = createAppServer(testEventHandler);
 
     Test test = new JsTestSuiteBuilder()
         .withDriverSupplier(createDriverSupplier())
         .withTestFactory(new Function<String, Test>() {
           public Test apply(String testPath) {
             return new WebDriverJsTestCase(testPath, appServer,
-                testEventServlet);
+                testEventHandler);
           }
         })
         .build();
@@ -64,14 +62,9 @@ public class WebDriverJsTestSuite {
     return test;
   }
 
-  private static AppServer createAppServer(TestEventServlet resultsServlet) {
-    ServletContextHandler context = new ServletContextHandler(
-        ServletContextHandler.SESSIONS|ServletContextHandler.SECURITY);
-    context.setContextPath("/");
-    context.addServlet(new ServletHolder(resultsServlet), "/testevent");
-
-    Jetty7AppServer appServer = new Jetty7AppServer();
-    appServer.addHandler(context);
+  private static AppServer createAppServer(TestEventHandler resultsHandler) {
+    WebbitAppServer appServer = new WebbitAppServer();
+    appServer.addHandler("/testevent", resultsHandler);
     return appServer;
   }
   
@@ -110,14 +103,14 @@ public class WebDriverJsTestSuite {
 
     private final String relativeUrl;
     private final AppServer appServer;
-    private final TestEventServlet testEventServlet;
+    private final TestEventSupplier testEventSupplier;
     private RemoteWebDriver driver;
 
     private WebDriverJsTestCase(String relativeUrl, AppServer appServer,
-        TestEventServlet testEventServlet) {
+        TestEventSupplier testEventSupplier) {
       this.relativeUrl = relativeUrl;
       this.appServer = appServer;
-      this.testEventServlet = testEventServlet;
+      this.testEventSupplier = testEventSupplier;
       this.setName(relativeUrl);
     }
 
@@ -129,7 +122,7 @@ public class WebDriverJsTestSuite {
       long start = System.nanoTime();
 
       while (true) {
-        TestEvent testEvent = testEventServlet.getTestEvent(1, TimeUnit.SECONDS);
+        TestEvent testEvent = testEventSupplier.getTestEvent(1, TimeUnit.SECONDS);
 
         if (isRelevantEvent(relativeUrl, testEvent)) {
           if ("RESULTS".equals(testEvent.getType())) {

@@ -1,4 +1,7 @@
 
 java_library(name = "webbit",
-  deps = [ "webbit-0.4.6-full.jar" ])
+  deps = [
+    "webbit-0.4.8-SNAPSHOT.jar",
+    "//third_party/java/netty",
+   ])
 

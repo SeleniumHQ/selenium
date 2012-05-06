@@ -1,0 +1,9 @@
+java_library(
+  name = "webserver",
+  srcs = [ "*.java" ],
+  main = "org.openqa.selenium.environment.webserver.WebbitAppServer",
+  deps = [
+    "//java/client/test/org/openqa/selenium/testing:util",
+    "//third_party/java/commons-fileupload",
+    "//third_party/java/webbit",
+  ])

@@ -1,6 +1,7 @@
 /*
 Copyright 2007-2009 WebDriver committers
 Copyright 2007-2009 Google Inc.
+Portions copyright 2011 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,20 +18,25 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
-import java.io.IOException;
+public interface AppServer {
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+  String getHostName();
 
-public class KillSwitchServlet extends HttpServlet {
-  @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-      IOException {
-    String res = "<html><head><title>Quitting</title></head><body>Killing JVM</body></html>";
-    resp.getOutputStream().println(res);
-    log("Killing JVM");
-    System.exit(0);
-  }
+  String getAlternateHostName();
+
+  String whereIs(String relativeUrl);
+
+  String whereElseIs(String relativeUrl);
+
+  String whereIsSecure(String relativeUrl);
+
+  String whereIsWithCredentials(String relativeUrl, String user, String password);
+
+  void start();
+
+  void stop();
+
+  void listenOn(int port);
+
+  void listenSecurelyOn(int port);
 }

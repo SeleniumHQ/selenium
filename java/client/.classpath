@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="/third-party/java/jna/jna-3.4.0.jar" sourcepath="/third-party/java/jna/jna-3.4.0-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jna/jna-platform-3.4.0.jar" sourcepath="/third-party/java/jna/jna-platform-3.4.0-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-exec/commons-exec-1.1.jar" sourcepath="/third-party/java/commons-exec/commons-exec-1.1-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.6-full.jar" sourcepath="/third-party/java/webbit/webbit-0.4.6-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked-7.6.1.jar" sourcepath="/third-party/java/jetty/jetty-repacked-7.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/cglib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/json/json-20080701.jar"/>
@@ -37,5 +36,8 @@
 	<classpathentry kind="lib" path="/third-party/java/xml/xercesImpl-2.9.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/nekohtml/nekohtml-1.9.15.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xml/xalan-2.7.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-fileupload/commons-fileupload-1.2.2.jar" sourcepath="/third-party/java/commons-fileupload/commons-fileupload-1.2.2-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.2.7.Final.jar" sourcepath="/third-party/java/netty/netty-3.2.7.Final-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.8-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>

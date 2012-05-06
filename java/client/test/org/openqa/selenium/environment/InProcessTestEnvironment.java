@@ -19,7 +19,7 @@ limitations under the License.
 package org.openqa.selenium.environment;
 
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty7AppServer;
+import org.openqa.selenium.environment.webserver.WebbitAppServer;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.testing.drivers.Browser;
 
@@ -29,7 +29,7 @@ public class InProcessTestEnvironment implements TestEnvironment {
 
   public InProcessTestEnvironment() {
     String servingHost = getServingHost();
-    appServer = servingHost == null ? new Jetty7AppServer() : new Jetty7AppServer(servingHost);
+    appServer = servingHost == null ? new WebbitAppServer() : new WebbitAppServer(servingHost);
     appServer.start();
   }
 
