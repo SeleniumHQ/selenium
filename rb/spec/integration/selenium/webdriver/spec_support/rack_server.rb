@@ -98,7 +98,7 @@ module Selenium
           end
 
           def call(env)
-            case env['REQUEST_PATH']
+            case env['PATH_INFO']
             when "/common/upload"
               req = Rack::Request.new(env)
 
