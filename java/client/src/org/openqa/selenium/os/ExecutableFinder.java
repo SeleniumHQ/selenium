@@ -63,7 +63,7 @@ public class ExecutableFinder {
         }
       }
     }
-    String pathVariable = env.get(pathName);
+    String path = env.get(pathName);
     if (path != null) {
       pathSegmentBuilder.add(path.split(File.pathSeparator));
     }
