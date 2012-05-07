@@ -87,9 +87,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\IClock.cs" />
+    <Compile Include="UI\ILoadableComponent.cs" />
     <Compile Include="UI\IWait.cs" />
+    <Compile Include="UI\LoadableComponent.cs" />
+    <Compile Include="UI\LoadableComponentException.cs" />
     <Compile Include="UI\PopupWindowFinder.cs" />
     <Compile Include="UI\SelectElement.cs" />
+    <Compile Include="UI\SlowLoadableComponent.cs" />
     <Compile Include="UI\SystemClock.cs" />
     <Compile Include="UI\UnexpectedTagNameException.cs" />
     <Compile Include="UI\WebDriverWait.cs" />

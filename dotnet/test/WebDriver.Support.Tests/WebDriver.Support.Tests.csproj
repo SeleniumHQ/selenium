@@ -81,8 +81,11 @@
     <Compile Include="PageObjects\PageFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\DefaultWaitTest.cs" />
+    <Compile Include="UI\FakeClock.cs" />
+    <Compile Include="UI\LoadableComponentTests.cs" />
     <Compile Include="UI\PopupWindowFinderTest.cs" />
     <Compile Include="UI\SelectTests.cs" />
+    <Compile Include="UI\SlowLoadableComponentTest.cs" />
     <Compile Include="UI\WebDriverWaitTest.cs" />
   </ItemGroup>
   <ItemGroup>
