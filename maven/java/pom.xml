@@ -85,6 +85,7 @@
                                 <copy todir="src/main/java" includeEmptyDirs="false">
                                     <fileset dir="../../java/client/src">
                                         <include name="**/*.java" />
+                                        <exclude name="org/openqa/selenium/environment/**/*" />
                                         <not>
                                             <or>
                                                 <present targetdir="../android-driver/src/main/java" />
