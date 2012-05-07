@@ -55,15 +55,18 @@ public class ExecutableFinder {
   private void addPathFromEnvironment() {
     String pathName = "PATH";
     Map<String, String> env = System.getenv();
-    if (!env.containsKey("PATH")) {
+    if (!env.containsKey(pathName)) {
       for (String key : env.keySet()) {
-        if ("path".equalsIgnoreCase(key)) {
+        if (pathName.equalsIgnoreCase(key)) {
           pathName = key;
           break;
         }
       }
     }
-    pathSegmentBuilder.add(env.get(pathName).split(File.pathSeparator));
+    String pathVariable = env.get(pathName);
+    if (path != null) {
+      pathSegmentBuilder.add(path.split(File.pathSeparator));
+    }
   }
 
   private void addMacSpecificPath() {
