@@ -1,6 +1,18 @@
 java_library(
   name = "webserver",
-  srcs = [ "*.java" ],
+  srcs = [ 
+    "AppServer.java",
+    "BasicAuthHandler.java",
+    "ImprovedStaticFileHandler.java",
+    "LastPathSegmentHandler.java",
+    "PathAugmentingStaticFileHandler.java",
+    "PathForwardingHandler.java",
+    "QuitQuitQuitHandler.java",
+    "RedirectHandler.java",
+    "SleepHandler.java",
+    "UploadFileHandler.java",
+    "WebbitAppServer.java",
+  ],
   main = "org.openqa.selenium.environment.webserver.WebbitAppServer",
   deps = [
     "//java/client/test/org/openqa/selenium/testing:util",
@@ -9,7 +21,9 @@ java_library(
   ])
 
 java_test(name = "webserver_test",
-  srcs = [ "*.java" ],
+  srcs = [
+    "AppServerTest.java",
+  ],
   deps = [
     ":webserver",
     "//java/client/src/org/openqa/selenium/chrome",
