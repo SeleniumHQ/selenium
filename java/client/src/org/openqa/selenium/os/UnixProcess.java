@@ -58,7 +58,7 @@ class UnixProcess implements OsProcess {
   private final Map<String, String> env = new ConcurrentHashMap<String, String>();
 
   public UnixProcess(String executable, String... args) {
-    String actualExe = checkNotNull(CommandLine.findExecutable(executable),
+    String actualExe = checkNotNull(new ExecutableFinder().find(executable),
         "Unable to find executable for: %s", executable);
     cl = new org.apache.commons.exec.CommandLine(actualExe);
     cl.addArguments(args, false);

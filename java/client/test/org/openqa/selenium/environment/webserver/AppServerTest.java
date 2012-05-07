@@ -2,7 +2,6 @@ package org.openqa.selenium.environment.webserver;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.TestUtilities.which;
 
 import java.io.File;
 
@@ -23,6 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
@@ -36,7 +36,7 @@ public class AppServerTest {
 
   @BeforeClass
   public static void startDriver() throws Throwable {
-    System.setProperty("webdriver.chrome.driver", which("chromedriver").getAbsolutePath());
+    System.setProperty("webdriver.chrome.driver", new ExecutableFinder().find("chromedriver"));
     driver = new ChromeDriver();
   }
 

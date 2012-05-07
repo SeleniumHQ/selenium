@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.os;
 
-import static org.openqa.selenium.Platform.WINDOWS;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -26,13 +25,10 @@ import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public class CommandLine {
 
-  private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
   private OsProcess process;
 
   public CommandLine(String executable, String... args) {
@@ -101,48 +97,6 @@ public class CommandLine {
     }
   }
 
-  /**
-   * Find the executable by scanning the file system and the PATH. In the case of Windows this
-   * method allows common executable endings (".com", ".bat" and ".exe") to be omitted.
-   *
-   * @param named The name of the executable to find
-   * @return The absolute path to the executable, or null if no match is made.
-   */
-  public static String findExecutable(String named) {
-    File file = new File(named);
-    if (canExecute(file)) {
-      return named;
-    }
-
-    Map<String, String> env = System.getenv();
-    String pathName = "PATH";
-    if (!env.containsKey("PATH")) {
-      for (String key : env.keySet()) {
-        if ("path".equalsIgnoreCase(key)) {
-          pathName = key;
-          break;
-        }
-      }
-    }
-
-    String path = env.get(pathName);
-    String[] endings = new String[]{""};
-    if (Platform.getCurrent().is(WINDOWS)) {
-      endings = new String[]{"", ".exe", ".com", ".bat"};
-    }
-
-    for (String segment : path.split(File.pathSeparator)) {
-      for (String ending : endings) {
-        file = new File(segment, named + ending);
-        if (canExecute(file)) {
-          return file.getAbsolutePath();
-        }
-      }
-    }
-
-    return null;
-  }
-
   public void executeAsync() {
     process.executeAsync();
   }
@@ -179,31 +133,6 @@ public class CommandLine {
    */
   public int destroy() {
     return process.destroy();
-  }
-
-  private static boolean canExecute(File file) {
-    if (!file.exists() || file.isDirectory()) {
-      return false;
-    }
-
-    if (JDK6_CAN_EXECUTE != null) {
-      try {
-        return (Boolean) JDK6_CAN_EXECUTE.invoke(file);
-      } catch (IllegalAccessException e) {
-        // Do nothing
-      } catch (InvocationTargetException e) {
-        // Still do nothing
-      }
-    }
-    return true;
-  }
-
-  private static Method findJdk6CanExecuteMethod() {
-    try {
-      return File.class.getMethod("canExecute");
-    } catch (NoSuchMethodException e) {
-      return null;
-    }
   }
 
   public void setInput(String allInput) {

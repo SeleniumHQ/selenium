@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
@@ -157,7 +158,8 @@ public class Executable {
         // Do nothing
     }
 
-    return binary != null && binary.exists() ? binary : findBinary(BrowserType.FIREFOX, BrowserType.FIREFOX_3);
+    return binary != null &&
+        binary.exists() ? binary : new File(new ExecutableFinder().find(BrowserType.FIREFOX));
   }
 
   private static File findExistingBinary(final ImmutableList<String> paths) {
@@ -183,32 +185,6 @@ public class Executable {
       return value;
     }
     return defaultValue;
-  }
-
-  /**
-   * Walk a PATH to locate binaries with a specified name. Binaries will be searched for in the
-   * order they are provided.
-   *
-   * @param binaryNames the binary names to search for
-   * @return the first binary found matching that name.
-   */
-  private static File findBinary(String... binaryNames) {
-    final String[] paths = System.getenv("PATH").split(File.pathSeparator);
-    for (String binaryName : binaryNames) {
-      for (String path : paths) {
-        File file = new File(path, binaryName);
-        if (file.exists() && !file.isDirectory()) {
-          return file;
-        }
-        if (Platform.getCurrent().is(Platform.WINDOWS)) {
-          File exe = new File(path, binaryName + ".exe");
-          if (exe.exists() && !exe.isDirectory()) {
-            return exe;
-          }
-        }
-      }
-    }
-    return null;
   }
 
   public OutputStream getDefaultOutputStream() {

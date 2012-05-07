@@ -24,6 +24,7 @@ import com.google.common.io.Closeables;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -293,17 +294,8 @@ public class FileHandler {
    * In JDK5 and earlier, we have to use a chmod command from the path.
    */
   private static File findChmodCommand() {
-
-    // Search the path for chmod
-    String allPaths = System.getenv("PATH");
-    String[] paths = allPaths.split(File.pathSeparator);
-    for (String path : paths) {
-      File chmod = new File(path, "chmod");
-      if (chmod.exists()) {
-        return chmod;
-      }
-    }
-    return null;
+    String chmod = new ExecutableFinder().find("chmod");
+    return chmod == null ? null : new File(chmod);
   }
 
   /**

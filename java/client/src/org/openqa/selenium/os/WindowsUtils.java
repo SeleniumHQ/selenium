@@ -227,29 +227,6 @@ public class WindowsUtils {
   }
 
   /**
-   * Retrieve the exact case-sensitive name of the "Path" environment variable, which may be any one
-   * of "PATH", "Path" or "path".
-   * 
-   * @return the exact case-sensitive name of the "Path" environment variable
-   */
-  public static String getExactPathEnvKey() {
-    loadEnvironment();
-    for (Iterator i = env.keySet().iterator(); i.hasNext();) {
-      String key = (String) i.next();
-      if (key.equalsIgnoreCase("PATH")) {
-        return key;
-      }
-    }
-    // They don't have a path???
-    return "PATH";
-  }
-
-  public static String getPath() {
-    loadEnvironment();
-    return getEnvVarIgnoreCase("PATH");
-  }
-
-  /**
    * Returns the path to the Windows Program Files. On non-English versions, this is not necessarily
    * "C:\Program Files".
    * 
@@ -419,7 +396,7 @@ public class WindowsUtils {
       reg = regExe.getAbsolutePath();
       return reg;
     }
-    reg = CommandLine.findExecutable("reg.exe");
+    reg = new ExecutableFinder().find("reg.exe");
     if (reg != null) {
       return reg;
     }

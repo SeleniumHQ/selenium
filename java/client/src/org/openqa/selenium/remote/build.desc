@@ -76,6 +76,7 @@ java_library(name = "remote",
   deps = [
     ":common",
     "//java/client/src/org/openqa/selenium/net",
+    "//java/client/src/org/openqa/selenium/io",
     "//java/client/src/org/openqa/selenium/os",
     "//third_party/java/apache-httpclient",
     "//third_party/java/cglib",

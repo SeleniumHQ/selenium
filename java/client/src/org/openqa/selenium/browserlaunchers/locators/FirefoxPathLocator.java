@@ -20,6 +20,7 @@ package org.openqa.selenium.browserlaunchers.locators;
 
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -34,7 +35,7 @@ public class FirefoxPathLocator implements BrowserLocator {
 
   public BrowserInstallation findBrowserLocation() {
     for (String name : commonNames) {
-      String executable = CommandLine.findExecutable(name);
+      String executable = new ExecutableFinder().find(name);
       if (executable == null) {
         continue;
       }

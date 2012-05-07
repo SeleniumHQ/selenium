@@ -101,38 +101,4 @@ public class TestUtilities {
   public static void assumeFalse(boolean b) {
     assumeTrue(!b);
   }
-
-  public static File which(String filename) {
-    for (String path : getPaths()) {
-      File file = new File(path, filename);
-      if (file.exists() && !file.isDirectory()) {
-        return file;
-      }
-      if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        File exe = new File(path, filename + ".exe");
-        if (exe.exists() && !exe.isDirectory()) {
-          return exe;
-        }
-      }
-    }
-    return null;
-  }
-
-  private static Iterable<String> getPaths() {
-    ImmutableSet.Builder<String> pathsBuilder = new ImmutableSet.Builder<String>();
-    for (String path : System.getenv("PATH").split(File.pathSeparator)) {
-      pathsBuilder.add(path);
-    }
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      File pathFile = new File("/etc/paths");
-      if (pathFile.exists()) {
-        try {
-          pathsBuilder.addAll(Files.readLines(pathFile, Charsets.UTF_8));
-        } catch (IOException e) {
-          // Guess we won't include those, then
-        }
-      }
-    }
-    return pathsBuilder.build();
-  }
 }

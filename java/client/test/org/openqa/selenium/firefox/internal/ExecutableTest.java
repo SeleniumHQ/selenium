@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ public class ExecutableTest {
 
   @Test
   public void testEnvironmentDiscovery() {
-    if (CommandLine.findExecutable(executableName) == null) {
+    if (new ExecutableFinder().find(executableName) == null) {
       System.out.println("Skipping test: no firefox present");
       return;
     }

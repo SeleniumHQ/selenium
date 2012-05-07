@@ -9,7 +9,7 @@ import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.os.WindowsProcessGroup;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
@@ -53,7 +53,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     if (defaultLocation.exists()) {
       return defaultLocation.getAbsolutePath();
     }
-    String mshtaEXE = CommandLine.findExecutable("mshta.exe");
+    String mshtaEXE = new ExecutableFinder().find("mshta.exe");
     if (mshtaEXE != null) return mshtaEXE;
     throw new RuntimeException("MSHTA.exe couldn't be found in the path!\n" +
         "Please add the directory containing mshta.exe to your PATH environment\n" +

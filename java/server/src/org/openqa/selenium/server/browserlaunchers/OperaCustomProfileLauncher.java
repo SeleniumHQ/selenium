@@ -17,10 +17,12 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
@@ -57,7 +59,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
   private static String additionalSettings = "";
 
   protected File locateBinaryInPath(String commandPath) {
-    return new File(CommandLine.findExecutable(commandPath));
+    return new File(new ExecutableFinder().find(commandPath));
   }
 
   public OperaCustomProfileLauncher(Capabilities browserOptions,
@@ -101,23 +103,12 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     if (defaultLocation.exists()) {
       return defaultLocation.getAbsolutePath();
     }
-    if (WindowsUtils.thisIsWindows()) {
-      String operaEXE = CommandLine.findExecutable("opera.exe");
-      if (operaEXE != null) return operaEXE;
-      throw new RuntimeException("Opera could not be found in the path!\n" +
-          "Please add the directory containing opera.exe to your PATH environment\n" +
-          "variable, or explicitly specify a path to Opera like this:\n" +
-          "*opera c:\\blah\\opera.exe");
-    }
-    // On unix, prefer operaBin if it's on the path
-    String operaBin = CommandLine.findExecutable("opera");
-    if (operaBin != null) {
-      return operaBin;
-    }
+    String operaBin = new ExecutableFinder().find("opera");
+    if (operaBin != null) return operaBin;
     throw new RuntimeException("Opera could not be found in the path!\n" +
-        "Please add the directory containing 'opera' to your PATH environment\n" +
-        "variable, or explicitly specify a path to Opera like this:\n" +
-        "*opera /blah/blah/opera");
+        "Please add the directory containing opera.exe to your PATH environment\n" +
+        "variable, or explicitly specify a path to Opera like this:\n *opera " +
+        (Platform.getCurrent().is(Platform.WINDOWS) ? "/blah/blah/opera" : "C:\\blah\\opera.exe"));
   }
 
   static final Pattern JAVA_STYLE_UNC_URL = Pattern.compile("^file:////([^/]+/.*)$");
