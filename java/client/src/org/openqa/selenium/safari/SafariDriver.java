@@ -22,6 +22,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.IOException;
@@ -35,6 +36,13 @@ public class SafariDriver extends RemoteWebDriver
   
   public SafariDriver() {
     super(new SafariDriverCommandExecutor(0), DesiredCapabilities.safari());
+  }
+
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+        "Setting the file detector only works on remote webdriver instances obtained " +
+        "via RemoteWebDriver");
   }
 
   @Override

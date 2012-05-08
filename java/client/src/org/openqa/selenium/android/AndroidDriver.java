@@ -38,6 +38,7 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocalStorage;
@@ -92,6 +93,13 @@ public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, R
     localStorage = new RemoteLocalStorage(getExecuteMethod());
     sessionStorage = new RemoteSessionStorage(getExecuteMethod());
     locationContext = new RemoteLocationContext(getExecuteMethod());
+  }
+
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+        "Setting the file detector only works on remote webdriver instances obtained " +
+        "via RemoteWebDriver");
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {

@@ -28,6 +28,7 @@ import org.openqa.selenium.browserlaunchers.DriverCommandExecutor;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -68,26 +69,16 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     setup(DesiredCapabilities.internetExplorer(), port);
   }
 
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+        "Setting the file detector only works on remote webdriver instances obtained " +
+        "via RemoteWebDriver");
+  }
+
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
     String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
-
-    // There's a bug in some versions of IE where images are returned as
-    // being completely black. We're not sure _why_, but try and work
-    // around this.
-//    BufferedImage image = ImageIO.read(new ByteArrayInputStream(
-//        OutputType.BYTES.convertFromBase64Png(base64)));
-//    int width = image.getWidth();
-//    int height = image.getHeight();
-//    int[] rgb = new int[width * height];
-//    image.getRGB(0, 0, width, height, rgb, 0, width);
-//    boolean allBlack = true;
-//    for (int i = 0; i < (width * height) && allBlack; i++) {
-//      allBlack &= rgb[i] == 0;
-//    }
-//    if (allBlack) {
-//      base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
-//    }
 
     // ... and convert it.
     return target.convertFromBase64Png(base64);

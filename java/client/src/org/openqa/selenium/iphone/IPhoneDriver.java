@@ -27,6 +27,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
@@ -34,6 +35,7 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.common.collect.ImmutableMap;
@@ -98,6 +100,13 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot, We
 
   public IPhoneDriver(Capabilities ignored) throws Exception {
     this();
+  }
+
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+        "Setting the file detector only works on remote webdriver instances obtained " +
+        "via RemoteWebDriver");
   }
 
   @Override

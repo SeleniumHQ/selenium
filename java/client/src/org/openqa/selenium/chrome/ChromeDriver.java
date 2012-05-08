@@ -4,8 +4,10 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DriverCommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
@@ -143,6 +145,13 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
     super(new DriverCommandExecutor(service), options.toCapabilities());
+  }
+
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+        "Setting the file detector only works on remote webdriver instances obtained " +
+        "via RemoteWebDriver");
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
