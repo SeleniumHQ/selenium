@@ -22,11 +22,11 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
-import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -60,7 +60,7 @@ public class CrossDomainRpcRenderer implements Renderer {
         : propertyName;
   }
 
-  public void render(HttpServletRequest request, HttpServletResponse response,
+  public void render(HttpRequest request, HttpServletResponse response,
       RestishHandler handler) throws Exception {
     Object result = request.getAttribute(responsePropertyName);
     if (result == null) {
@@ -88,8 +88,8 @@ public class CrossDomainRpcRenderer implements Renderer {
     response.getOutputStream().flush();
   }
 
-  private Response createEmtpySuccessResponse(HttpServletRequest request) {
-    String sessionId = HttpCommandExecutor.getSessionId(request.getRequestURI());
+  private Response createEmtpySuccessResponse(HttpRequest request) {
+    String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
 
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);

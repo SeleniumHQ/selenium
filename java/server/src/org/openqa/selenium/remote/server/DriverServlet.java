@@ -594,7 +594,7 @@ public class DriverServlet extends HttpServlet {
       if (config == null) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       } else {
-        config.handle(request.getPathInfo(), request, response);
+        config.handle(request.getPathInfo(), new JeeServletHttpRequest(request), response);
       }
     } catch (SessionTerminatedException e){
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -16,13 +16,13 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import junit.framework.TestCase;
-
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 import java.io.IOException;
@@ -30,26 +30,28 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for {@link CrossDomainRpcRenderer}
  */
-public class CrossDomainRpcRendererTest extends TestCase {
+public class CrossDomainRpcRendererTest {
   
   private Mockery mockery;
-  private HttpServletRequest mockRequest;
+  private HttpRequest mockRequest;
   private HttpServletResponse mockResponse;
   private RestishHandler mockHandler;
 
   private StringWriter stringWriter;
   private ServletOutputStream servletOutputStream;
 
-  @Override
-  protected void setUp() {
+  @Before
+  public void setUp() {
     mockery = new Mockery();
-    mockRequest = mockery.mock(HttpServletRequest.class);
+    mockRequest = mockery.mock(HttpRequest.class);
     mockResponse = mockery.mock(HttpServletResponse.class);
     mockHandler = mockery.mock(RestishHandler.class);
     
@@ -101,7 +103,7 @@ public class CrossDomainRpcRendererTest extends TestCase {
       allowing(mockRequest).getAttribute("error");
       will(returnValue(null));
       
-      allowing(mockRequest).getRequestURI();
+      allowing(mockRequest).getUri();
       will(returnValue("http://localhost:4444/wd/hub/session/foo/url"));
 
       one(mockResponse).setStatus(200);

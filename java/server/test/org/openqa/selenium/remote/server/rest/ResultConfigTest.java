@@ -25,14 +25,13 @@ import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.StubHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -142,7 +141,7 @@ public class ResultConfigTest {
   @Test
   public void testFailsWhenUnableToDetermineResultTypeForRequest_noHandlersRegistered() {
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
-    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+    final HttpRequest mockRequest = context.mock(HttpRequest.class);
 
     context.checking(new Expectations());
 
@@ -157,10 +156,10 @@ public class ResultConfigTest {
   public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypesSpecified() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+    final HttpRequest mockRequest = context.mock(HttpRequest.class);
 
     context.checking(new Expectations() {{
-      one(mockRequest).getHeader("Accept");
+      allowing(mockRequest).getHeader("Accept");
       will(returnValue("application/json"));
     }});
 
@@ -168,6 +167,7 @@ public class ResultConfigTest {
         .on(ResultType.SUCCESS, mockRenderer1)
         .on(ResultType.SUCCESS, mockRenderer2);
 
+    System.out.println("config = " + config.getRenderer(ResultType.SUCCESS, mockRequest));
     assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
@@ -175,7 +175,7 @@ public class ResultConfigTest {
   public void testSelectsRenderWithMimeTypeMatch() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+    final HttpRequest mockRequest = context.mock(HttpRequest.class);
 
     context.checking(new Expectations() {{
       one(mockRequest).getHeader("Accept");
@@ -193,7 +193,7 @@ public class ResultConfigTest {
   public void testUsesFirstRegisteredRendererWhenNoMimeTypeMatches() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+    final HttpRequest mockRequest = context.mock(HttpRequest.class);
 
     context.checking(new Expectations() {{
       one(mockRequest).getHeader("Accept");
@@ -211,7 +211,7 @@ public class ResultConfigTest {
   public void testSkipsRenderersThatRequireASpecificTypeOfMimeType() {
     Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
     Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpServletRequest mockRequest = context.mock(HttpServletRequest.class);
+    final HttpRequest mockRequest = context.mock(HttpRequest.class);
 
     context.checking(new Expectations() {{
       one(mockRequest).getHeader("Accept");

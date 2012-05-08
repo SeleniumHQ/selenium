@@ -17,11 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
+import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ForwardResult implements Renderer {
@@ -32,11 +31,9 @@ public class ForwardResult implements Renderer {
     this.to = to;
   }
 
-  public void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler)
+  public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
       throws Exception {
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher(to);
-    dispatcher.forward(request, response);
+    request.forward(response, to);
   }
-
 }

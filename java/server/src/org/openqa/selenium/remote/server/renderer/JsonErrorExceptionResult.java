@@ -21,6 +21,7 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 import org.json.JSONException;
@@ -40,7 +41,7 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
   }
 
   @Override
-  public void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler)
+  public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
       throws Exception {
     Response res = prepareResponseObject(request);
 
@@ -49,13 +50,13 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
     super.render(request, response, handler);
   }
 
-  public Response prepareResponseObject(HttpServletRequest request)
+  public Response prepareResponseObject(HttpRequest request)
       throws JSONException {
     Throwable thrown = (Throwable) request.getAttribute(exceptionName);
 
     Response res = new Response();
     res.setStatus(errorCodes.toStatusCode(thrown));
-    String sessionId = HttpCommandExecutor.getSessionId(request.getRequestURI());
+    String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
     res.setSessionId(sessionId != null ? sessionId : "");
 
     if (thrown != null) {

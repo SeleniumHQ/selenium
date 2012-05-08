@@ -32,6 +32,8 @@ import org.openqa.selenium.remote.SessionTerminatedException;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.JeeServletHttpRequest;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
@@ -40,6 +42,7 @@ import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.io.BufferedReader;
+import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -179,9 +182,9 @@ public class ResultConfig {
     return this;
   }
 
-  public void handle(String pathInfo, final HttpServletRequest request,
+  public void handle(String pathInfo, final HttpRequest request,
       final HttpServletResponse response) throws Exception {
-    String sessionId = HttpCommandExecutor.getSessionId(request.getRequestURI());
+    String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 
     ResultType result;
@@ -258,10 +261,10 @@ public class ResultConfig {
     }
   }
 
-  private void replyError(HttpServletRequest request, final HttpServletResponse response, Exception e)
+  private void replyError(HttpRequest request, final HttpServletResponse response, Exception e)
       throws Exception {
     response.reset();
-    Renderer renderer2 = getRenderer( ResultType.EXCEPTION, request);
+    Renderer renderer2 = getRenderer(ResultType.EXCEPTION, request);
     request.setAttribute("exception",  e);
     renderer2.render(request, response, null);
 
@@ -277,7 +280,7 @@ public class ResultConfig {
   }
 
   @VisibleForTesting
-  Renderer getRenderer(ResultType resultType, HttpServletRequest request) {
+  Renderer getRenderer(ResultType resultType, HttpRequest request) {
     Collection<Result> results = checkNotNull(resultToRender.get(resultType));
     Result tempToUse = null;
     for (Result res : results) {
@@ -290,8 +293,8 @@ public class ResultConfig {
   }
 
   @SuppressWarnings("unchecked")
-  private void setJsonParameters(HttpServletRequest request, RestishHandler handler) throws Exception {
-    BufferedReader reader = request.getReader();
+  private void setJsonParameters(HttpRequest request, RestishHandler handler) throws Exception {
+    BufferedReader reader = new BufferedReader(request.getReader());
     StringBuilder builder = new StringBuilder();
     for (String line = reader.readLine(); line != null; line = reader.readLine())
       builder.append(line);
@@ -305,7 +308,7 @@ public class ResultConfig {
     }
   }
 
-  protected void addHandlerAttributesToRequest(HttpServletRequest request, RestishHandler handler)
+  protected void addHandlerAttributesToRequest(HttpRequest request, RestishHandler handler)
       throws Exception {
     SimplePropertyDescriptor[] properties =
         SimplePropertyDescriptor.getPropertyDescriptors(handler.getClass());

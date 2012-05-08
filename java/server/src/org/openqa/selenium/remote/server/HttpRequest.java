@@ -15,14 +15,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server.rest;
+package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.remote.server.HttpRequest;
+import java.io.Reader;
 
 import javax.servlet.http.HttpServletResponse;
 
-public interface Renderer {
+public interface HttpRequest {
 
-  void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
-      throws Exception;
+  String getAppUri();
+
+  String getUri();
+
+  String getHeader(String header);
+
+  Object getAttribute(String attributeName);
+
+  void setAttribute(String attributeName, Object value);
+
+  Reader getReader();
+
+  // TODO(simon): Remove this reference to j2ee
+  void forward(HttpServletResponse response, String to);
 }

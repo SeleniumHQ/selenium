@@ -18,12 +18,12 @@ limitations under the License.
 package org.openqa.selenium.remote.server.renderer;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
 import java.nio.charset.Charset;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class JsonResult implements Renderer {
@@ -38,7 +38,7 @@ public class JsonResult implements Renderer {
     }
   }
 
-  public void render(HttpServletRequest request, HttpServletResponse response, RestishHandler handler)
+  public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
       throws Exception {
     Object result = request.getAttribute(propertyName);
 
