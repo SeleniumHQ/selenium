@@ -50,8 +50,6 @@ public class RedirectResult implements Renderer {
       }
     }
 
-    System.out.println("builder = " + builder);
-
     response.sendRedirect(builder.toString());
   }
 
