@@ -1,3 +1,8 @@
+Selenium 2.21.3
+* Fix for File Upload to remote servers
+* Better handling of typing in input=file. Bug 3831, 3736
+* Better handling of unicode URLS Bug 3740
+
 Selenium 2.21.2
 * Fix typing to file input when not using Selenium Server. Bug 3736
 
