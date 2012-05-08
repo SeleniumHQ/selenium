@@ -189,11 +189,15 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
   std::wstring temp_file_name(&temp_file_name_buffer[0]);
   if (!ExtractResource(IDR_DRIVER_LIBRARY, temp_file_name)) {
+    std::wcout << L"Failed to extract the library to temp directory: "
+               << temp_file_name;
     return ERR_DLL_EXTRACT_FAIL;
   }
 
   HMODULE module_handle = ::LoadLibrary(temp_file_name.c_str());
   if (module_handle == NULL) {
+    std::wcout << L"Failed to load the library from temp directory: "
+               << temp_file_name;
     return ERR_DLL_LOAD_FAIL;
   }
 
@@ -202,6 +206,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
   STOPSERVERPROC stop_server_proc = reinterpret_cast<STOPSERVERPROC>(
       ::GetProcAddress(module_handle, STOP_SERVER_API_NAME));
   if (start_server_ex_proc == NULL || stop_server_proc == NULL) {
+    std::wcout << L"Could not find entry point in extracted library: "
+               << temp_file_name;
     return ERR_FUNCTION_NOT_FOUND;
   }
 
@@ -209,6 +215,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
   std::string host_address = GetHost(argc, argv);
   void* server_value = start_server_ex_proc(port, host_address);
   if (server_value == NULL) {
+    std::cout << "Start of server failed";
     return ERR_SERVER_START;
   }
   std::cout << "Started InternetExplorerDriver server"
