@@ -16,6 +16,8 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
+import com.google.common.base.Charsets;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONObject;
@@ -23,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 import java.io.IOException;
@@ -30,7 +33,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +44,7 @@ public class CrossDomainRpcRendererTest {
   
   private Mockery mockery;
   private HttpRequest mockRequest;
-  private HttpServletResponse mockResponse;
+  private HttpResponse mockResponse;
   private RestishHandler mockHandler;
 
   private StringWriter stringWriter;
@@ -52,7 +54,7 @@ public class CrossDomainRpcRendererTest {
   public void setUp() {
     mockery = new Mockery();
     mockRequest = mockery.mock(HttpRequest.class);
-    mockResponse = mockery.mock(HttpServletResponse.class);
+    mockResponse = mockery.mock(HttpResponse.class);
     mockHandler = mockery.mock(RestishHandler.class);
     
     stringWriter = new StringWriter();
@@ -74,10 +76,9 @@ public class CrossDomainRpcRendererTest {
 
       one(mockResponse).setStatus(200);
       one(mockResponse).setContentType("application/json");
-      one(mockResponse).setCharacterEncoding("UTF-8");
-      one(mockResponse).setContentLength(response.length());
-      allowing(mockResponse).getOutputStream();
-      will(returnValue(servletOutputStream));
+      one(mockResponse).setEncoding(Charsets.UTF_8);
+//      allowing(mockResponse).getOutputStream();
+//      will(returnValue(servletOutputStream));
     }});
 
     new CrossDomainRpcRenderer(":response", ":error")
@@ -108,10 +109,10 @@ public class CrossDomainRpcRendererTest {
 
       one(mockResponse).setStatus(200);
       one(mockResponse).setContentType("application/json");
-      one(mockResponse).setCharacterEncoding("UTF-8");
-      one(mockResponse).setContentLength(with(any(Integer.class)));
-      allowing(mockResponse).getOutputStream();
-      will(returnValue(servletOutputStream));
+      one(mockResponse).setEncoding(Charsets.UTF_8);
+//      one(mockResponse).setContentLength(with(any(Integer.class)));
+//      allowing(mockResponse).getOutputStream();
+//      will(returnValue(servletOutputStream));
     }});
 
     new CrossDomainRpcRenderer(":response", ":error")

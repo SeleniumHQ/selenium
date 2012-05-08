@@ -35,6 +35,5 @@ public interface HttpRequest {
 
   Reader getReader();
 
-  // TODO(simon): Remove this reference to j2ee
-  void forward(HttpServletResponse response, String to);
+  void forward(HttpResponse response, String to);
 }

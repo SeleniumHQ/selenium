@@ -20,6 +20,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.renderer;
 
 import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class ErrorJsonResult extends JsonResult {
   }
 
   @Override
-  public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
+  public void render(HttpRequest request, HttpResponse response, RestishHandler handler)
       throws Exception {
     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     super.render(request, response, handler);

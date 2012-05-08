@@ -17,14 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
+import com.google.common.base.Charsets;
+
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
 import java.nio.charset.Charset;
-
-import javax.servlet.http.HttpServletResponse;
 
 public class JsonResult implements Renderer {
 
@@ -38,19 +39,16 @@ public class JsonResult implements Renderer {
     }
   }
 
-  public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
+  public void render(HttpRequest request, HttpResponse response, RestishHandler handler)
       throws Exception {
     Object result = request.getAttribute(propertyName);
 
     String json = new BeanToJsonConverter().convert(result);
-    byte[] data = Charset.forName("utf-8").encode(json).array();
+    byte[] data = Charsets.UTF_8.encode(json).array();
 
-    int length = json == null ? 0 : data.length;
-
-    response.setContentLength(length);
     response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
-    response.getOutputStream().write(data);
-    response.getOutputStream().flush();
+    response.setEncoding(Charsets.UTF_8);
+    response.setContent(data);
+    response.end();
   }
 }

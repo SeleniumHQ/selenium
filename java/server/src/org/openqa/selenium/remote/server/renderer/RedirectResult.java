@@ -19,10 +19,9 @@ package org.openqa.selenium.remote.server.renderer;
 
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
-
-import javax.servlet.http.HttpServletResponse;
 
 public class RedirectResult implements Renderer {
 
@@ -32,7 +31,7 @@ public class RedirectResult implements Renderer {
     this.url = url;
   }
 
-  public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
+  public void render(HttpRequest request, HttpResponse response, RestishHandler handler)
       throws Exception {
     StringBuilder builder = new StringBuilder(request.getAppUri());
 

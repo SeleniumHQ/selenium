@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.rest.Renderer;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
@@ -60,7 +61,7 @@ public class CrossDomainRpcRenderer implements Renderer {
         : propertyName;
   }
 
-  public void render(HttpRequest request, HttpServletResponse response,
+  public void render(HttpRequest request, HttpResponse response,
       RestishHandler handler) throws Exception {
     Object result = request.getAttribute(responsePropertyName);
     if (result == null) {
@@ -82,10 +83,9 @@ public class CrossDomainRpcRenderer implements Renderer {
 
     response.setStatus(HttpServletResponse.SC_OK);
     response.setContentType("application/json");
-    response.setCharacterEncoding(Charsets.UTF_8.toString());
-    response.setContentLength(length);
-    response.getOutputStream().write(data);
-    response.getOutputStream().flush();
+    response.setEncoding(Charsets.UTF_8);
+    response.setContent(data);
+    response.end();
   }
 
   private Response createEmtpySuccessResponse(HttpRequest request) {

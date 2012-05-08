@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.base.Preconditions;
+
 import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
@@ -25,7 +27,8 @@ import java.io.Reader;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class JeeServletHttpRequest implements HttpRequest {
   private final HttpServletRequest request;
@@ -54,10 +57,12 @@ public class JeeServletHttpRequest implements HttpRequest {
     }
   }
 
-  public void forward(HttpServletResponse response, String to) {
+  public void forward(HttpResponse response, String to) {
+    checkArgument(response instanceof JeeServletHttpResponse);
+
     RequestDispatcher dispatcher = request.getRequestDispatcher(to);
     try {
-      dispatcher.forward(request, response);
+      dispatcher.forward(request, ((JeeServletHttpResponse) response).getServletResponse());
     } catch (ServletException e) {
       throw new WebDriverException(e);
     } catch (IOException e) {

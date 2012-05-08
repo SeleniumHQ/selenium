@@ -15,15 +15,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server.rest;
+package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.remote.server.HttpRequest;
-import org.openqa.selenium.remote.server.HttpResponse;
+import java.nio.charset.Charset;
 
-import javax.servlet.http.HttpServletResponse;
+public interface HttpResponse {
 
-public interface Renderer {
+  void setStatus(int status);
 
-  void render(HttpRequest request, HttpResponse response, RestishHandler handler)
-      throws Exception;
+  void setContentType(String mimeType);
+
+  void setContent(byte[] data);
+
+  void setContent(String message);
+
+  void setEncoding(Charset charset);
+
+  void sendRedirect(String to);
+
+  void end();
+
+
 }

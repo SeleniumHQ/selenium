@@ -26,11 +26,10 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.StubHandler;
 
 import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletResponse;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -137,7 +136,7 @@ public class UrlMapperTest {
   }
 
   private static class StubRenderer implements Renderer {
-    public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler) throws Exception {
+    public void render(HttpRequest request, HttpResponse response, RestishHandler handler) throws Exception {
     }
   }
 }

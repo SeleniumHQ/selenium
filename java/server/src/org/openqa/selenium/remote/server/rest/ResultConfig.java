@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.HttpRequest;
-import org.openqa.selenium.remote.server.JeeServletHttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
@@ -42,7 +42,6 @@ import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.io.BufferedReader;
-import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -56,9 +55,6 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -183,7 +179,7 @@ public class ResultConfig {
   }
 
   public void handle(String pathInfo, final HttpRequest request,
-      final HttpServletResponse response) throws Exception {
+      final HttpResponse response) throws Exception {
     String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 
@@ -234,7 +230,7 @@ public class ResultConfig {
       FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
         public ResultType call() throws Exception {
           renderer.render(request, response, handler);
-          response.flushBuffer();
+          response.end();
           return null;
         }
       });
@@ -257,17 +253,15 @@ public class ResultConfig {
 
     } else {
       renderer.render(request, response, handler);
-      response.flushBuffer();
+      response.end();
     }
   }
 
-  private void replyError(HttpRequest request, final HttpServletResponse response, Exception e)
+  private void replyError(HttpRequest request, final HttpResponse response, Exception e)
       throws Exception {
-    response.reset();
     Renderer renderer2 = getRenderer(ResultType.EXCEPTION, request);
     request.setAttribute("exception",  e);
     renderer2.render(request, response, null);
-
   }
 
   private void throwUpIfSessionTerminated(SessionId sessId) throws Exception {

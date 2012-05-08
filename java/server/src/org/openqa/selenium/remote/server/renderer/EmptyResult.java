@@ -18,13 +18,14 @@ limitations under the License.
 package org.openqa.selenium.remote.server.renderer;
 
 import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
 import javax.servlet.http.HttpServletResponse;
 
 public class EmptyResult implements Renderer {
-  public void render(HttpRequest request, HttpServletResponse response, RestishHandler handler)
+  public void render(HttpRequest request, HttpResponse response, RestishHandler handler)
       throws Exception {
     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
   }
