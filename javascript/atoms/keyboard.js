@@ -39,7 +39,7 @@ goog.require('goog.userAgent');
  * A keyboard that provides atomic typing actions.
  *
  * @constructor
- * @param {Array.<!bot.Keyboard.Key>} opt_state Optional keyboard state.
+ * @param {Array.<!bot.Keyboard.Key>=} opt_state Optional keyboard state.
  * @extends {bot.Device}
  */
 bot.Keyboard = function(opt_state) {
