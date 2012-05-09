@@ -39,14 +39,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
   @Before
   public void createDriver() throws Exception {
-    driver = storedDriver.get();
-    
-    if (driver != null) {
-      return;
-    }
-
-    driver = new WebDriverBuilder().get();
-    storedDriver.set(driver);
+    actuallyCreateDriver();
   }
 
   public WebDriver getWrappedDriver() {
@@ -56,6 +49,17 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   @Before
   public void createEnvironment() {
     environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+  }
+
+  public static void actuallyCreateDriver() {
+    WebDriver driver = storedDriver.get();
+    
+    if (driver != null) {
+      return;
+    }
+
+    driver = new WebDriverBuilder().get();
+    storedDriver.set(driver);
   }
 
   public static void removeDriver() {

@@ -77,7 +77,24 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     if (ignorance.isIgnored(method, test)) {
       notifier.fireTestIgnored(description);
     } else {
-      runLeaf(methodBlock(method, test), description, notifier);
+      try {
+        runLeaf(methodBlock(method, test), description, notifier);
+      } catch (Throwable t) {
+        // TODO(dawagner): Maybe retry the method which failed
+        dealWithSauceFailureIfNecessary(t);
+        throw Throwables.propagate(t);
+      }
+    }
+  }
+
+  private void dealWithSauceFailureIfNecessary(Throwable t) {
+    if (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce")) {
+      JUnit4TestBase.removeDriver();
+      try {
+        JUnit4TestBase.actuallyCreateDriver();
+      } catch (Exception e) {
+        throw new RuntimeException("Exception creating driver, after Sauce-detected exception", e);
+      }
     }
   }
 
