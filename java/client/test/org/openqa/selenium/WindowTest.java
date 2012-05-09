@@ -102,13 +102,50 @@ public class WindowTest extends JUnit4TestBase {
       return;
     }
 
+    changeSizeTo(new Dimension(275, 275));
+    maximize();
+  }
 
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+  @Test
+  public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
+    if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
+      // This test requires a window manager on Linux, and Sauce currently doesn't have one.
+      return;
+    }
+
+    driver.get(pages.framesetPage);
+    changeSizeTo(new Dimension(275, 275));
+
+    driver.switchTo().frame("fourth");
+    maximize();
+  }
+
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+  @Test
+  public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
+    if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
+      // This test requires a window manager on Linux, and Sauce currently doesn't have one.
+      return;
+    }
+
+    driver.get(pages.iframePage);
+    changeSizeTo(new Dimension(275, 275));
+
+    driver.switchTo().frame("iframe1-name");
+    maximize();
+  }
+
+  private void changeSizeTo(Dimension targetSize) {
     WebDriver.Window window = driver.manage().window();
 
-    Dimension targetSize = new Dimension(275, 275);
     window.setSize(targetSize);
     waitFor(windowHeightToEqual(driver,targetSize));
     waitFor(windowWidthToEqual(driver, targetSize));
+  }
+
+  private void maximize() {
+    WebDriver.Window window = driver.manage().window();
 
     Dimension size = window.getSize();
 

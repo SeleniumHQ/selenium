@@ -1435,7 +1435,7 @@ FirefoxDriver.prototype.maximizeWindow = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
   var documentWindow = respond.session.getWindow();
-  var chromeWindow = getChromeWindowFromDocumentWindow(documentWindow);
+  var chromeWindow = this.getChromeWindowFromDocumentWindow(documentWindow);
   
   chromeWindow.maximize();
 
@@ -1443,7 +1443,7 @@ FirefoxDriver.prototype.maximizeWindow = function(respond, parameters) {
 };
 
 
-function getChromeWindowFromDocumentWindow(documentWindow){
+FirefoxDriver.prototype.getChromeWindowFromDocumentWindow = function(documentWindow){
   // Find the chrome window for the requested document window. 
   // This will ignore unfocused tabs
   var wm = fxdriver.moz.getService(
@@ -1453,11 +1453,11 @@ function getChromeWindowFromDocumentWindow(documentWindow){
   while (allWindows.hasMoreElements()) {
     var chromeWindow = allWindows.getNext()	  
 
-    if (chromeWindow.gBrowser.contentWindow == documentWindow) {
+    if (chromeWindow.gBrowser.contentWindow == documentWindow.top) {
       return chromeWindow;
     }
   }  
-}
+};
 
 //TODO(jari): could this be made into a precondition?
 FirefoxDriver.prototype.assertTargetsCurrentWindow_ = function(parameters) {
