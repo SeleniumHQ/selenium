@@ -8,10 +8,10 @@ module Selenium
       # TODO: clean this spec up
       #
 
-      let(:base_file_name)    { "file.txt" }
-      let(:file_content) { "content" }
-      let(:zip_file)     { File.join(Dir.tmpdir, "test.zip") }
-      let(:dir_to_zip)   { Dir.mktmpdir("zipper")            }
+      let(:base_file_name) { "file.txt" }
+      let(:file_content)   { "content" }
+      let(:zip_file)       { File.join(Dir.tmpdir, "test.zip") }
+      let(:dir_to_zip)     { Dir.mktmpdir("webdriver-spec-zipper") }
 
       def create_file
         filename = File.join(dir_to_zip, base_file_name)

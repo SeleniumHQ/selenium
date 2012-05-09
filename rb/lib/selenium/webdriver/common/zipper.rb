@@ -15,7 +15,7 @@ module Selenium
       class << self
 
         def unzip(path)
-          destination = Dir.mktmpdir("unzip")
+          destination = Dir.mktmpdir("webdriver-unzip")
           FileReaper << destination
 
           Zip::ZipFile.open(path) do |zip|
