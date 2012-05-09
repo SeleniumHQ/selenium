@@ -963,7 +963,7 @@ FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
 
 // IME library mapping
 FirefoxDriver.prototype.imeGetAvailableEngines = function(respond) {
-  var obj = Utils.getNativeEvents();
+  var obj = Utils.getNativeIME();
   var engines = {};
 
   try {
@@ -979,7 +979,7 @@ FirefoxDriver.prototype.imeGetAvailableEngines = function(respond) {
 };
 
 FirefoxDriver.prototype.imeGetActiveEngine = function(respond) {
-  var obj = Utils.getNativeEvents();
+  var obj = Utils.getNativeIME();
   var activeEngine = {};
   try {
     obj.imeGetActiveEngine(activeEngine);
@@ -992,7 +992,7 @@ FirefoxDriver.prototype.imeGetActiveEngine = function(respond) {
 };
 
 FirefoxDriver.prototype.imeIsActivated = function(respond) {
-  var obj = Utils.getNativeEvents();
+  var obj = Utils.getNativeIME();
   var isActive = {};
   try {
     obj.imeIsActivated(isActive);
@@ -1005,7 +1005,7 @@ FirefoxDriver.prototype.imeIsActivated = function(respond) {
 };
 
 FirefoxDriver.prototype.imeDeactivate = function(respond) {
-  var obj = Utils.getNativeEvents();
+  var obj = Utils.getNativeIME();
   try {
     obj.imeDeactivate();
   } catch (e) {
@@ -1017,7 +1017,7 @@ FirefoxDriver.prototype.imeDeactivate = function(respond) {
 };
 
 FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
-  var obj = Utils.getNativeEvents();
+  var obj = Utils.getNativeIME();
   var successfulActivation = {};
   var engineToActivate = parameters['engine'];
   try {

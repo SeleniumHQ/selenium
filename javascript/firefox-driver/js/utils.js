@@ -192,30 +192,32 @@ Utils.isAttachedToDom = function(element) {
 Utils.shiftCount = 0;
 
 
-Utils.getNativeEvents = function() {
+Utils.getNativeComponent = function(componentId, componentInterface) {
   try {
-    var cid = "@openqa.org/nativeevents;1";
-    var obj = Components.classes[cid].createInstance();
-    return obj.QueryInterface(Components.interfaces.nsINativeEvents);
+    var obj = Components.classes[componentId].createInstance();
+    return obj.QueryInterface(componentInterface);
   } catch(e) {
     fxdriver.Logger.dumpn(e);
     // Unable to retrieve native events. No biggie, because we fall back to
     // synthesis later
     return undefined;
   }
+}
+
+Utils.getNativeEvents = function() {
+  return Utils.getNativeComponent("@openqa.org/nativeevents;1", Components.interfaces.nsINativeEvents);
 };
 
 Utils.getNativeMouse = function() {
-  try {
-    var cid = "@openqa.org/nativemouse;1";
-    var obj = Components.classes[cid].createInstance();
-    return obj.QueryInterface(Components.interfaces.nsINativeMouse);
-  } catch(e) {
-    fxdriver.Logger.dumpn(e);
-    // Unable to retrieve native events. No biggie, because we fall back to
-    // synthesis later
-    return undefined;
-  }
+  return Utils.getNativeComponent("@openqa.org/nativemouse;1", Components.interfaces.nsINativeMouse);
+};
+
+Utils.getNativeKeyboard = function() {
+  return Utils.getNativeComponent("@openqa.org/nativekeyboard;1", Components.interfaces.nsINativeKeyboard);
+};
+
+Utils.getNativeIME = function() {
+  return Utils.getNativeComponent("@openqa.org/nativeime;1", Components.interfaces.nsINativeIME);
 };
 
 Utils.getNodeForNativeEvents = function(element) {
@@ -251,7 +253,7 @@ Utils.useNativeEvents = function() {
 Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
     opt_keysState) {
 
-  var obj = Utils.getNativeEvents();
+  var obj = Utils.getNativeKeyboard();
   var node = Utils.getNodeForNativeEvents(element);
   var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
   var isUsingNativeEvents = opt_useNativeEvents && obj && node && thmgr_cls;
@@ -268,7 +270,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     // Now do the native thing.
     obj.sendKeys(node, text, releaseModifiers);
 
-    Utils.waitForNativeEventsProcessing(element, obj, pageUnloadedIndicator, jsTimer);
+    Utils.waitForNativeEventsProcessing(element, Utils.getNativeEvents(), pageUnloadedIndicator, jsTimer);
 
     return;
   }

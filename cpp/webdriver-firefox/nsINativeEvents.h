@@ -39,26 +39,8 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
 
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_INATIVEEVENTS_IID)
 
-  /* void sendKeys (in nsISupports aNode, in wstring value, in boolean releaseModifiers); */
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) = 0;
-
   /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) = 0;
-
-  /* void imeGetAvailableEngines (out nsIArray enginesList); */
-  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM) = 0;
-
-  /* void imeActivateEngine (in string engine, out boolean activationSucceeded); */
-  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM) = 0;
-
-  /* void imeIsActivated (out boolean isActive); */
-  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM) = 0;
-
-  /* void imeGetActiveEngine (out AString activeEngine); */
-  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM) = 0;
-
-  /* void imeDeactivate (); */
-  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) = 0;
 
   /* void notifyOfSwitchToWindow (in long windowId); */
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) = 0;
@@ -72,37 +54,19 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSINATIVEEVENTS \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers); \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM); \
-  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM); \
-  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM); \
-  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM); \
-  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM); \
-  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void); \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId); \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEEVENTS(_to) \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) { return _to SendKeys(aNode, value, releaseModifiers); } \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) { return _to HasUnhandledEvents(aNode, hasEvents); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM) { return _to ImeGetAvailableEngines(enginesList); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM) { return _to ImeActivateEngine(engine, activationSucceeded); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM) { return _to ImeIsActivated(isActive); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM) { return _to ImeGetActiveEngine(activeEngine); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return _to ImeDeactivate(); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return _to NotifyOfSwitchToWindow(windowId); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return _to NotifyOfCloseWindow(windowId); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEEVENTS(_to) \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) { return !_to ? NS_ERROR_NULL_POINTER : _to->SendKeys(aNode, value, releaseModifiers); } \
   NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasUnhandledEvents(aNode, hasEvents); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeGetAvailableEngines(enginesList); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeActivateEngine(engine, activationSucceeded); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeIsActivated(PRBool *isActive NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeIsActivated(isActive); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeGetActiveEngine(activeEngine); } \
-  NS_SCRIPTABLE NS_IMETHOD ImeDeactivate(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ImeDeactivate(); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfSwitchToWindow(windowId); } \
   NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfCloseWindow(windowId); } 
 
@@ -138,44 +102,8 @@ nsNativeEvents::~nsNativeEvents()
   /* destructor code */
 }
 
-/* void sendKeys (in nsISupports aNode, in wstring value, in boolean releaseModifiers); */
-NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
 NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void imeGetAvailableEngines (out nsIArray enginesList); */
-NS_IMETHODIMP nsNativeEvents::ImeGetAvailableEngines(nsIArray **enginesList NS_OUTPARAM)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void imeActivateEngine (in string engine, out boolean activationSucceeded); */
-NS_IMETHODIMP nsNativeEvents::ImeActivateEngine(const char *engine, PRBool *activationSucceeded NS_OUTPARAM)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void imeIsActivated (out boolean isActive); */
-NS_IMETHODIMP nsNativeEvents::ImeIsActivated(PRBool *isActive NS_OUTPARAM)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void imeGetActiveEngine (out AString activeEngine); */
-NS_IMETHODIMP nsNativeEvents::ImeGetActiveEngine(nsAString & activeEngine NS_OUTPARAM)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void imeDeactivate (); */
-NS_IMETHODIMP nsNativeEvents::ImeDeactivate()
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

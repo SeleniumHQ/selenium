@@ -182,10 +182,14 @@
     <ClCompile Include="library_loading.cpp" />
     <ClCompile Include="native_events.cpp" />
     <ClCompile Include="native_mouse.cpp" />
+    <ClCompile Include="native_ime.cpp" />
+    <ClCompile Include="native_keyboard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="native_events.h" />
     <ClInclude Include="native_mouse.h" />
+    <ClInclude Include="native_ime.h" />
+    <ClInclude Include="native_keyboard.h" />
     <ClInclude Include="gecko18\nsIAccessibleDocument.h" />
     <ClInclude Include="gecko19\nsIAccessibleDocument.h" />
     <ClInclude Include="nsIAccessibleDocumentWrapper.h" />

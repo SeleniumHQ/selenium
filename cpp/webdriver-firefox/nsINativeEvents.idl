@@ -6,29 +6,8 @@
 [scriptable, uuid(5A86850B-F376-4ae6-860D-53A441CAFCE4)]
 interface nsINativeEvents : nsISupports
 {
-/* Send keyboard input to the window of this element. May release
- * the modifier keys, depending on the last parameter. */
-void sendKeys(in nsISupports aNode, in wstring value, in boolean releaseModifiers);
-
 /* Check if there are unhandled keyboard events. */
 void hasUnhandledEvents(in nsISupports aNode, out boolean hasEvents);
-
-/* Input methods interactions */
-/* List of IME engines available for use on this machine (comma-separated) */
-void imeGetAvailableEngines(out nsIArray enginesList);
-
-/* Activate the engine - cause it to produce IME input. */
-void imeActivateEngine(in string engine, out boolean activationSucceeded);
-
-/* Query whether IME input is active or not. */
-void imeIsActivated(out boolean isActive);
-
-/* Get the active engine. May return a value even if the engine is not
- * activated. */
-void imeGetActiveEngine(out AString activeEngine);
-
-/* De-activate IME input. */
-void imeDeactivate();
 
 /* Notifies the x_ignore_nofocus library of switch window events. */
 void notifyOfSwitchToWindow(in long windowId);

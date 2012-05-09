@@ -25,6 +25,12 @@ mozilla_xpt(name = "native_events_xpt",
 mozilla_xpt(name = "native_mouse_xpt",
   srcs = [ "webdriver-firefox/nsINativeMouse.idl" ])
 
+mozilla_xpt(name = "native_keyboard_xpt",
+  srcs = [ "webdriver-firefox/nsINativeKeyboard.idl" ])
+
+mozilla_xpt(name = "native_ime_xpt",
+  srcs = [ "webdriver-firefox/nsINativeIME.idl" ])
+
 mozilla_lib(name = "webdriver_firefox_ff3",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
