@@ -40,6 +40,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   @Before
   public void createDriver() throws Exception {
     actuallyCreateDriver();
+    driver = storedDriver.get();
   }
 
   public WebDriver getWrappedDriver() {
