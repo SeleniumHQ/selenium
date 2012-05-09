@@ -507,10 +507,10 @@ file "cpp/IEDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
 end
 task :sizzle_header => [ "cpp/IEDriver/sizzle.h" ]
 
-file "javascript/deps.js" => FileList[
+file "build/javascript/deps.js" => FileList[
     "third_party/closure/goog/**/*.js",
-    "javascript/*-atom*/*.js",
-    "javascript/chrome-driver/*.js" ] do
+    "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
+  ] do
   our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
   our_cmd << "--output_mode=deps --path=javascript "
   our_cmd << "--dep=third_party/closure/goog"
@@ -525,11 +525,16 @@ file "javascript/deps.js" => FileList[
       line = line.gsub("\\\\", "/")
       output << line.gsub(/common\/(.*)\/js/, 'js/\1')
     end
-  File.open("javascript/deps.js", "w") do |f| f.write(output); end
+
+  built_deps = "build/javascript/deps.js"
+  puts "Writing #{built_deps}"
+  mkdir_p File.dirname(built_deps)
+  File.open(built_deps, "w") do |f| f.write(output); end
+  cp built_deps, "javascript/deps.js"
 end
 
 desc "Calculate dependencies required for testing the automation atoms"
-task :calcdeps => "javascript/deps.js"
+task :calcdeps => "build/javascript/deps.js"
 
 task :test_webdriverjs => [
   "//javascript/webdriver:test:run",

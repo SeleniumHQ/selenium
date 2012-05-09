@@ -15,6 +15,7 @@ java_library(
   ],
   main = "org.openqa.selenium.environment.webserver.WebbitAppServer",
   deps = [
+    "//javascript:calcdeps",
     "//java/client/test/org/openqa/selenium/testing:util",
     "//third_party/java/commons-fileupload",
     "//third_party/java/webbit",

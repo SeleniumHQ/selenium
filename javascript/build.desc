@@ -1,0 +1,3 @@
+rake_task(name = "calcdeps",
+  task_name = "calcdeps",
+  out = "javascript/deps.js")
