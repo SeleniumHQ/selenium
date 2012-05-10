@@ -45,7 +45,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
       throw new IllegalStateException("SessionCleaner not supposed to start when no timeouts specified");
     }
     if (insideBrowserTimeout > 0 && insideBrowserTimeout < 60000){
-      log.warning("The specified browser timeout is TOO LOW for safe operations and may have"+
+      log.warning("The specified browser timeout is TOO LOW for safe operations and may have " +
                   "other side-effects\n. Please specify a slightly higher browserTimeout.");
     }
     long lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
