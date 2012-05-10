@@ -20,8 +20,6 @@ import com.google.common.base.Throwables;
 
 /**
  * A simple app server used to host test files, using Webbit as the underlying web server.
- * 
- * @author dawagner@gmail.com (Daniel Wagner-Hall)
  */
 public class WebbitAppServer implements AppServer {
 
