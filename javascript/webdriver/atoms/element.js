@@ -92,6 +92,10 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
     return (/** @type {?string} */value);
   }
 
+  if (bot.dom.isBooleanAttribute(attribute)) {
+    return bot.dom.hasAttribute(element, attribute) ? 'true' : null;
+  }
+
   var property;
   try {
     property = bot.dom.getProperty(element, attribute);

@@ -284,6 +284,15 @@ bot.dom.splitStyleAttributeOnSemicolonsRe_ =
 
 
 /**
+ * @param {string} attributeName The name of the attribute to check.
+ * @return {boolean} Whether the specified attribute is a boolean attribute.
+ */
+bot.dom.isBooleanAttribute = function(attributeName) {
+  return goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName);
+};
+
+
+/**
  * Standardize a style attribute value, which includes:
  // (1) converting all property names lowercase
  // (2) ensuring it ends in a trailing semi-colon
@@ -347,7 +356,7 @@ bot.dom.getAttribute = function(element, attributeName) {
   // out when compiled for non-IE browsers.
   if (goog.userAgent.IE) {
     if (!attr && goog.userAgent.isVersion(8) &&
-        goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
+        bot.dom.isBooleanAttribute(attributeName)) {
       attr = element[attributeName];
     }
   }
@@ -362,7 +371,7 @@ bot.dom.getAttribute = function(element, attributeName) {
   // that is sometimes false for user-specified boolean attributes.
   // IE does consistently yield 'true' or 'false' strings for boolean attribute
   // values, and so we know 'false' attribute values were not user-specified.
-  if (goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
+  if (bot.dom.isBooleanAttribute(attributeName)) {
     return bot.userAgent.IE_DOC_PRE9 && attr.value == 'false' ? null : 'true';
   }
 
@@ -392,7 +401,7 @@ bot.dom.hasAttribute = function(element, attributeName) {
       return false;
     }
   }
-}
+};
 
 
 /**

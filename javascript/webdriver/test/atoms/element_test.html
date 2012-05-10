@@ -55,7 +55,6 @@ limitations under the License.
             normalElement = bot.locators.findElement({id: 'normal'});
 
       assertEquals("true", webdriver.atoms.element.getAttribute(readOnlyElement, 'readonly'));
-      assertEquals("false", webdriver.atoms.element.getAttribute(normalElement, 'readonly'));
     }
 
     function testSettingAnyValueForABooleanAttributeSetsItToTrue() {
@@ -119,12 +118,12 @@ limitations under the License.
       assertEquals('body', webdriver.atoms.element.getAttribute(element, 'name'));
     }
 
-    function testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet() {
+    function testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
       var notInput = bot.locators.findElement({id: 'has_id'});
-      assertEquals("false", webdriver.atoms.element.getAttribute(notInput, 'disabled'));
+      assertNull(webdriver.atoms.element.getAttribute(notInput, 'disabled'));
 
       var enabled =  bot.locators.findElement({id: 'normal'});
-      assertEquals("false", webdriver.atoms.element.getAttribute(enabled, 'disabled'));
+      assertNull(webdriver.atoms.element.getAttribute(enabled, 'disabled'));
 
       var broken =  bot.locators.findElement({id: 'disabled'});
       assertEquals("true", webdriver.atoms.element.getAttribute(broken, 'disabled'));
@@ -163,6 +162,11 @@ limitations under the License.
       var image = bot.locators.findElement({id: 'invalidImgTag'});
       var url = webdriver.atoms.element.getAttribute(image, 'src');
       assertNull(url);
+    }
+
+    function testShouldReturnNullForNonPresentBooleanAttribute() {
+      var el = document.getElementById('disabled');
+      assertNull(webdriver.atoms.element.getAttribute(el, 'required'));
     }
   </script>
 </head>

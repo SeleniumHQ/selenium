@@ -336,7 +336,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
-  @Ignore({FIREFOX, CHROME, OPERA, IPHONE, ANDROID, REMOTE, SELENESE})
+  @Ignore({CHROME, OPERA, IPHONE, ANDROID, SELENESE})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
