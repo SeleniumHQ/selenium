@@ -114,7 +114,8 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
   }
 
   private void dealWithSauceFailureIfNecessary(Throwable t) {
-    if (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce")) {
+    if (t.getMessage() != null
+        && (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce"))) {
       JUnit4TestBase.removeDriver();
       try {
         JUnit4TestBase.actuallyCreateDriver();
