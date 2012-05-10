@@ -101,8 +101,8 @@ safaridriver.extension.Session.prototype.setCommandTab = function(tab) {
 /**
  * Retrieves the entry matching the provided ID or SafariBrowserTab.
  * @param {string} id The ID of the tab to look up.
- * @return {safaridriver.extension.Tab} The located entry, or {@code null} if none
- *     was found.
+ * @return {safaridriver.extension.Tab} The located entry, or {@code null} if
+ *     none was found.
  */
 safaridriver.extension.Session.prototype.getTab = function(id) {
   return this.tabManager_.getTab(id);

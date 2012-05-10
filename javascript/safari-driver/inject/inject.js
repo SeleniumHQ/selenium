@@ -55,6 +55,23 @@ safaridriver.inject.init = function() {
   var onMessage = goog.bind(pageMessenger.onMessage, pageMessenger);
 
   window.addEventListener('message', onMessage, true);
+
+  if (safaridriver.inject.state.IS_TOP) {
+    window.addEventListener('load', function() {
+      var message = new safaridriver.message.Message(
+          safaridriver.message.Type.LOADED);
+      message.send(safari.self.tab);
+    }, true);
+
+    window.addEventListener('unload', function() {
+      var message = new safaridriver.message.Message(
+          safaridriver.message.Type.UNLOADED);
+      // If we send this message asynchronously, which is the norm, then the
+      // page will complete its unload before the message is sent. Use sendSync
+      // to ensure the extension gets our message.
+      message.sendSync(safari.self.tab);
+    }, true);
+  }
 };
 
 
@@ -77,6 +94,17 @@ safaridriver.inject.onExtensionMessage_ = function(e) {
     case safaridriver.message.Type.COMMAND:
       safaridriver.inject.onCommand_(
           (/** @type {!safaridriver.message.CommandMessage} */message));
+      break;
+
+    case safaridriver.message.Type.DEACTIVATE:
+      // When the extension sends a deactivate message, it is broadcast to all
+      // frames as a signal that it is about to switch focus to another window.
+      // Since the top-frame always activates itself on load and it will be
+      // re-activated when this window is refocused by the extension, we cheat
+      // and simply activate it here. This saves the extension from having to
+      // send a switchToFrame(null) message the next time it re-selects this
+      // window.
+      safaridriver.inject.state.setActive(safaridriver.inject.state.IS_TOP);
       break;
 
     case safaridriver.message.Type.CONNECT:
@@ -104,7 +132,17 @@ safaridriver.inject.onCommand_ = function(message) {
   if (command.getName() === webdriver.CommandName.GET) {
     // Get commands should *only* be handled by the topmost frame. In fact, it
     // is an implicit frame switch, so do that for the user now.
-    safaridriver.inject.state.setActive(window === window.top);
+    safaridriver.inject.state.setActive(safaridriver.inject.state.IS_TOP);
+  }
+
+  if (command.getName() === webdriver.CommandName.SWITCH_TO_WINDOW) {
+    // The extension handles window switching directly. If it sends the
+    // switch to window command to us, it's to query for our window name.
+    // Only the top-most frame should handle this.
+    if (safaridriver.inject.state.IS_TOP) {
+      sendResponse(bot.response.createResponse(window.name));
+    }
+    return;
   }
 
   if (!safaridriver.inject.state.isActive()) {

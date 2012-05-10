@@ -42,42 +42,14 @@ safaridriver.message.ORIGIN = 'webdriver';
  * @enum {string}
  */
 safaridriver.message.Type = {
-
-  /**
-   * Message sent from an injected script to a child frame to indicate that
-   * frame should activate itself with the global page.
-   */
   ACTIVATE: 'activate',
-
-  /**
-   * Message sent by the global page when there is a command for the injected
-   * script to execute.
-   */
   COMMAND: 'command',
-
-  /**
-   * Message sent by an injected script to the global page to indicate it should
-   * open a WebSocket connection to a WebDriver client. The data for this
-   * message will be the URI for the WebSocket.
-   */
   CONNECT: 'connect',
-
-  /**
-   * Message sent by a content page to an injected script requesting the
-   * WebElement encoding for an element.
-   */
+  DEACTIVATE: 'deactivate',
   ENCODE: 'encode',
-
-  /**
-   * Message sent by the web page content to the injected script after the
-   * page messenger has been fully loaded.
-   */
   LOADED: 'loaded',
-
-  /**
-   * Message sent by the injected page in response to a global page command.
-   */
-  RESPONSE: 'response'
+  RESPONSE: 'response',
+  UNLOADED: 'unloaded'
 };
 
 
@@ -152,6 +124,7 @@ safaridriver.message.Message.fromEvent = function(event) {
 
     case safaridriver.message.Type.ACTIVATE:
     case safaridriver.message.Type.LOADED:
+    case safaridriver.message.Type.UNLOADED:
       message = safaridriver.message.Message.fromData_(data);
       break;
 
@@ -252,6 +225,20 @@ safaridriver.message.Message.prototype.send = function(target) {
     (/** @type {!(SafariContentBrowserTabProxy|SafariWebPageProxy)} */
         target).dispatchMessage(this.getType(), this.data_);
   }
+};
+
+
+/**
+ * Sends this message synchronously to the proved tab proxy.
+ * @param {!SafariContentBrowserTabProxy} proxy The proxy to send this message
+ *     to.
+ */
+safaridriver.message.Message.prototype.sendSync = function(proxy) {
+  // Create a beforeload event, which is required by the canLoad function.
+  var stubEvent = document.createEvent('Events');
+  stubEvent.initEvent('beforeload', false, false);
+  proxy.canLoad(stubEvent, this.data_);
+  // TODO(jleyba): Handle the synchronous response.
 };
 
 

@@ -10,10 +10,18 @@ goog.provide('safaridriver.inject.state');
 
 
 /**
+ * Whether this script is running in the top-most window.
+ * @type {boolean}
+ * @const
+ */
+safaridriver.inject.state.IS_TOP = window === window.top;
+
+
+/**
  * @type {boolean}
  * @private
  */
-safaridriver.inject.state.isActive_ = window === window.top;
+safaridriver.inject.state.isActive_ = safaridriver.inject.state.IS_TOP;
 
 
 /**

@@ -61,16 +61,10 @@ safaridriver.extension.Tab = function(browserTab) {
    */
   this.readyListeners_ = [];
 
-  var onBeforeNavigate = goog.bind(this.onBeforeNavigate_, this);
-  var onNavigate = goog.bind(this.onNavigate_, this);
   var onMessage = goog.bind(this.onMessage_, this);
 
-  browserTab.addEventListener('beforeNavigate', onBeforeNavigate, false);
-  browserTab.addEventListener('navigate', onNavigate, false);
   browserTab.addEventListener('message', onMessage, false);
   browserTab.addEventListener('close', function() {
-    browserTab.removeEventListener('beforeNavigate', onBeforeNavigate, false);
-    browserTab.removeEventListener('navigate', onNavigate, false);
     browserTab.removeEventListener('message', onMessage, false);
   }, false);
 };
@@ -159,29 +153,23 @@ safaridriver.extension.Tab.prototype.loadsNewPage = function(url) {
 
 
 /**
- * @param {SafariBeforeNavigateEvent} e The before navigate event.
  * @private
  */
-safaridriver.extension.Tab.prototype.onBeforeNavigate_ = function(e) {
-  if (this.loadsNewPage(e.url)) {
-    this.log_('Tab is about to load a URL' +
-        '\nfrom: ' + this.browserTab_.url +
-        '\nto:   ' + e.url);
-    this.isReady_ = false;
-    if (this.idleStateWaitKey_) {
-      clearTimeout(this.idleStateWaitKey_);
-      this.idleStateWaitKey_ = null;
-    }
+safaridriver.extension.Tab.prototype.onUnload_ = function() {
+  this.log_('Tab frame has been unloaded');
+  this.isReady_ = false;
+  if (this.idleStateWaitKey_) {
+    clearTimeout(this.idleStateWaitKey_);
+    this.idleStateWaitKey_ = null;
   }
 };
 
 
 /**
- * @param {SafariNavigateEvent} e The navigate event.
  * @private
  */
-safaridriver.extension.Tab.prototype.onNavigate_ = function(e) {
-  this.log_('New URL loaded; waiting for idle state');
+safaridriver.extension.Tab.prototype.onLoad_ = function() {
+  this.log_('Frame has loaded a new page; waiting for idle state');
   var self = this;
   self.isReady_ = true;
 
@@ -282,12 +270,25 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
 safaridriver.extension.Tab.prototype.onMessage_ = function(e) {
   try {
     var message = safaridriver.message.Message.fromEvent(e);
-    this.emit(message.getType(), message);
   } catch (ex) {
     this.log_(
         'Unable to parse message: ' + e.name + ': ' +
             JSON.stringify(e.message),
         goog.debug.Logger.Level.SEVERE,
         ex);
+    return;
   }
+
+  this.log_('Received message: ' + message);
+  switch (message.getType()) {
+    case safaridriver.message.Type.LOADED:
+      this.onLoad_();
+      break;
+
+    case safaridriver.message.Type.UNLOADED:
+      this.onUnload_();
+      break;
+  }
+
+  this.emit(message.getType(), message);
 };

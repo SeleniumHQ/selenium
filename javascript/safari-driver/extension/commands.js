@@ -124,19 +124,19 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
   }
 
   var response = new webdriver.promise.Deferred();
-  session.getCommandTab().whenReady(function(tab) {
-    var expectLoad = session.getCommandTab().loadsNewPage(uri);
+  var tab = session.getCommandTab();
+  tab.whenReady(function() {
+    var expectLoad = tab.loadsNewPage(uri);
     if (expectLoad) {
-      tab.addEventListener('navigate', onNavigate, false);
+      tab.once(safaridriver.message.Type.LOADED, onLoad);
     }
     safaridriver.extension.commands.sendCommand(session, command).
         then(onSuccess, onFailure);
 
-    function onNavigate() {
+    function onLoad() {
       if (response.isPending()) {
-        tab.removeEventListener('navigate', onNavigate, false);
         safaridriver.extension.commands.LOG_.info(
-            'Page load finished; returning: ' + tab.url);
+            'Page load finished; returning');
         response.resolve();
       }
     }
@@ -153,7 +153,7 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
       if (response.isPending()) {
         safaridriver.extension.commands.LOG_.severe(
             'Error while loading page; failing', e);
-        tab.removeEventListener('navigate', onNavigate, false);
+        tab.removeListener(safaridriver.message.Type.LOADED, onLoad);
         response.reject(e);
       }
     }
@@ -170,20 +170,20 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
  */
 safaridriver.extension.commands.refresh = function(session, command) {
   var response = new webdriver.promise.Deferred();
-  session.getCommandTab().whenReady(function(tab) {
-    tab.addEventListener('navigate', onNavigate, false);
+  var tab = session.getCommandTab();
+  tab.whenReady(function() {
+    tab.once(safaridriver.message.Type.LOADED, onLoad);
 
     safaridriver.extension.commands.sendCommand(session, command).
         addErrback(function(e) {
           if (response.isPending()) {
-            tab.removeEventListener('navigate', onNavigate, false);
+            tab.removeListener(safaridriver.message.Type.LOADED, onLoad);
             response.reject(e);
           }
         });
 
-    function onNavigate() {
+    function onLoad() {
       if (response.isPending()) {
-        tab.removeEventListener('navigate', onNavigate, false);
         response.resolve();
       }
     }
@@ -288,18 +288,74 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command,
  * @param {!safaridriver.Command} command The command object.
  */
 safaridriver.extension.commands.switchToWindow = function(session, command) {
+  var result = new webdriver.promise.Deferred();
   var name = (/** @type {string} */ command.getParameter('name'));
-  if (!name) {
-    throw Error('Invalid command: missing required parameter "name"');
-  }
 
   var tab = session.getTab(name);
-  if (!tab) {
-    // TODO: handle switching by window name.
-    throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW, 'No such window: ' +
-        name);
+  if (tab) {
+    switchToTab(tab);
+    return result.promise;
   }
-  session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
+
+  var tabIds = session.getTabIds();
+  safaridriver.extension.commands.LOG_.info(
+      'Window handle not found; collecting open window names');
+  var windowNames = goog.array.map(tabIds, function(tabId) {
+    var tab = session.getTab(tabId);
+    if (!tab) {
+      // The window was closed in the time it took us to ask it for its name.
+      // Hopefully, this will never happen.
+      return null;
+    }
+    return safaridriver.extension.commands.sendCommand(tab, command).
+        then(bot.response.checkResponse).
+        then(function(responseObj) {
+          return responseObj['value'];
+        });
+  });
+
+  webdriver.promise.fullyResolved(windowNames).then(function(windowNames) {
+    safaridriver.extension.commands.LOG_.info(
+        'Open window names: ' + JSON.stringify(windowNames));
+    var index = goog.array.findIndex(windowNames, function(windowName) {
+      return windowName === name;
+    });
+
+    if (index < 0) {
+      result.reject(new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW,
+          'No such window: ' + name));
+      return;
+    }
+
+    var tab = session.getTab(tabIds[index]);
+    switchToTab(tab);
+  }, result.reject);
+
+  return result.promise;
+
+  function switchToTab(tab) {
+    // Tell the currently active tab to deactivate before activating the new
+    // tab. There is no need to wait for a response here.
+    try {
+      session.getCommandTab().whenReady(function(currentTab) {
+        var message = new safaridriver.message.Message(
+            safaridriver.message.Type.DEACTIVATE);
+        message.send(currentTab.page);
+        session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
+        result.resolve();
+      });
+    } catch (ex) {
+      // If we attempt to retrieve the current tab after it's been closed,
+      // we'll receive a NoSuchWindowError. When this happens, just ignore it
+      // and move along. Any other error should be reported to the user.
+      if (ex.code !== bot.ErrorCode.NO_SUCH_WINDOW) {
+        throw ex;
+      }
+
+      session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
+      result.resolve();
+    }
+  }
 };
 
 
