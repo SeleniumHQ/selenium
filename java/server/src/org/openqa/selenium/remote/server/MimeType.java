@@ -17,25 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.io.Reader;
-
-public interface HttpRequest {
-
-  String getAppUri();
-
-  String getUri();
-
-  String getPath();
-
-  String getMethod();
-
-  String getHeader(String header);
-
-  Object getAttribute(String attributeName);
-
-  void setAttribute(String attributeName, Object value);
-
-  Reader getReader();
-
-  void forward(HttpResponse response, String to);
+interface MimeType {
+  static final String EMPTY = "";
+  static final String CROSS_DOMAIN_RPC = "application/xdrpc";
 }

@@ -17,15 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
-import org.openqa.selenium.remote.server.HttpRequest;
-import org.openqa.selenium.remote.server.HttpResponse;
-import org.openqa.selenium.remote.server.rest.RestishHandler;
-import org.openqa.selenium.remote.server.rest.Renderer;
-
 import com.google.common.io.ByteStreams;
 
-import javax.servlet.http.HttpServletResponse;
+import org.openqa.selenium.remote.server.HttpRequest;
+import org.openqa.selenium.remote.server.HttpResponse;
+import org.openqa.selenium.remote.server.rest.Renderer;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
+
 import java.net.URL;
+
+import static org.openqa.selenium.remote.server.HttpStatusCodes.NOT_FOUND;
+import static org.openqa.selenium.remote.server.HttpStatusCodes.OK;
 
 public class ResourceCopyResult implements Renderer {
 
@@ -42,11 +44,11 @@ public class ResourceCopyResult implements Renderer {
   public void render(HttpRequest request, HttpResponse response, RestishHandler handler) throws Exception {
     URL resource = (URL) request.getAttribute(propertyName);
     if (resource == null) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.setStatus(NOT_FOUND);
       return;
     }
 
-    response.setStatus(HttpServletResponse.SC_OK);
+    response.setStatus(OK);
     response.setContent(ByteStreams.toByteArray(resource.openStream()));
   }
 }

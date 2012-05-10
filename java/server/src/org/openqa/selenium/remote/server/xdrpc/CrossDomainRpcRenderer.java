@@ -24,11 +24,12 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
+import org.openqa.selenium.remote.server.HttpStatusCodes;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.rest.Renderer;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
-import javax.servlet.http.HttpServletResponse;
+import static org.openqa.selenium.remote.server.HttpStatusCodes.OK;
 
 /**
  * Renders a HTTP response for a {@link CrossDomainRpc}.
@@ -81,7 +82,7 @@ public class CrossDomainRpcRenderer implements Renderer {
       length--;
     }
 
-    response.setStatus(HttpServletResponse.SC_OK);
+    response.setStatus(OK);
     response.setContentType("application/json");
     response.setEncoding(Charsets.UTF_8);
     response.setContent(data);

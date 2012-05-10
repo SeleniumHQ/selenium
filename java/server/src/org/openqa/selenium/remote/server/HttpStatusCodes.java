@@ -17,25 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import java.io.Reader;
+public interface HttpStatusCodes {
+  int OK = 200;
+  int NO_CONTENT = 204;
 
-public interface HttpRequest {
+  int NOT_FOUND = 404;
 
-  String getAppUri();
-
-  String getUri();
-
-  String getPath();
-
-  String getMethod();
-
-  String getHeader(String header);
-
-  Object getAttribute(String attributeName);
-
-  void setAttribute(String attributeName, Object value);
-
-  Reader getReader();
-
-  void forward(HttpResponse response, String to);
+  int INTERNAL_SERVER_ERROR = 500;
 }

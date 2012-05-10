@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.base.Preconditions;
+
 import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 public class JeeServletHttpResponse implements HttpResponse {
@@ -30,7 +31,7 @@ public class JeeServletHttpResponse implements HttpResponse {
   private final HttpServletResponse response;
 
   public JeeServletHttpResponse(HttpServletResponse response) {
-    this.response = response;
+    this.response = Preconditions.checkNotNull(response);
   }
 
   public void setStatus(int status) {

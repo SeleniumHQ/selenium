@@ -19,14 +19,14 @@ package org.openqa.selenium.remote.server.renderer;
 
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
-import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
 
-import javax.servlet.http.HttpServletResponse;
+import static org.openqa.selenium.remote.server.HttpStatusCodes.NO_CONTENT;
 
 public class EmptyResult implements Renderer {
   public void render(HttpRequest request, HttpResponse response, RestishHandler handler)
       throws Exception {
-    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    response.setStatus(NO_CONTENT);
   }
 }

@@ -16,15 +16,16 @@
     <orderEntry type="library" name="commons-io" level="project" />
     <orderEntry type="library" name="commons-logging" level="project" />
     <orderEntry type="library" name="jcip-annotations" level="project" />
-    <orderEntry type="library" scope="TEST" name="easymock" level="project" />
-    <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
-    <orderEntry type="library" scope="TEST" name="jmock" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="mx4j" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="snakeyaml" level="project" />
     <orderEntry type="library" name="testng" level="project" />
+    <orderEntry type="library" name="webbit" level="project" />
+    <orderEntry type="library" scope="TEST" name="easymock" level="project" />
+    <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
+    <orderEntry type="library" scope="TEST" name="jmock" level="project" />
   </component>
 </module>
 

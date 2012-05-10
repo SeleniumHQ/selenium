@@ -34,7 +34,7 @@ public class JeeServletHttpRequest implements HttpRequest {
   private final HttpServletRequest request;
 
   public JeeServletHttpRequest(HttpServletRequest request) {
-    this.request = request;
+    this.request = Preconditions.checkNotNull(request);
   }
 
   public String getAppUri() {
@@ -45,8 +45,16 @@ public class JeeServletHttpRequest implements HttpRequest {
     return request.getRequestURI();
   }
 
+  public String getMethod() {
+    return request.getMethod();
+  }
+
   public String getHeader(String header) {
     return request.getHeader(header);
+  }
+
+  public String getPath() {
+    return request.getPathInfo();
   }
 
   public Reader getReader() {
