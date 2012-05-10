@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-legacy-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/easymock/easymock-2.4.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/easymock/easymockclassextension-2.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.8-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
