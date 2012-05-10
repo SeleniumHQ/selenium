@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include "BrowserFactory.h"
+#include <iostream>
 
 namespace webdriver {
 
@@ -438,6 +439,16 @@ void BrowserFactory::GetIEVersion() {
   DWORD dummy;
   DWORD length = ::GetFileVersionInfoSize(this->ie_executable_location_.c_str(),
                                           &dummy);
+  if (length == 0) {
+    // 64-bit Windows 8 has a bug where it does not return the executable location properly
+    this->ie_major_version_ = -1;
+    std::wcerr << L"Couldn't find IE version for executable "
+               << this->ie_executable_location_
+               << L", falling back to "
+               << this->ie_major_version_
+               << std::endl;
+    return;
+  }
   std::vector<BYTE> version_buffer(length);
   ::GetFileVersionInfo(this->ie_executable_location_.c_str(),
                        dummy,
