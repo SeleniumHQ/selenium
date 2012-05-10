@@ -43,6 +43,7 @@ safaridriver.extension.init = function() {
   var server = safaridriver.extension.createSessionServer_();
   safaridriver.extension.driver = new webdriver.WebDriver(
       new webdriver.Session('debug', {}), server);
+  goog.exportSymbol('driver', safaridriver.extension.driver);
 
   // Now that we're initialized, we sit and wait for a page to send us a client
   // to attempt connecting to.
