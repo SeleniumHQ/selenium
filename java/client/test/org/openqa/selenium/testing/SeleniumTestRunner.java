@@ -77,24 +77,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     if (ignorance.isIgnored(method, test)) {
       notifier.fireTestIgnored(description);
     } else {
-      try {
-        runLeaf(methodBlock(method, test), description, notifier);
-      } catch (Throwable t) {
-        // TODO(dawagner): Maybe retry the method which failed
-        dealWithSauceFailureIfNecessary(t);
-        throw Throwables.propagate(t);
-      }
-    }
-  }
-
-  private void dealWithSauceFailureIfNecessary(Throwable t) {
-    if (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce")) {
-      JUnit4TestBase.removeDriver();
-      try {
-        JUnit4TestBase.actuallyCreateDriver();
-      } catch (Exception e) {
-        throw new RuntimeException("Exception creating driver, after Sauce-detected exception", e);
-      }
+      runLeaf(methodBlock(method, test), description, notifier);
     }
   }
 
@@ -110,8 +93,35 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
       JUnit4TestBase base = (JUnit4TestBase) test;
       statement = withNoDriverAfterTest(method, statement);
       statement = withFreshDriver(method, base, statement);
+      statement = coveringUpSauceErrors(statement);
     }
     return statement;
+  }
+
+  private Statement coveringUpSauceErrors(final Statement statement) {
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+        // TODO(dawagner): Maybe retry the method which failed
+        try {
+          statement.evaluate();
+        } catch (Throwable t) {
+          dealWithSauceFailureIfNecessary(t);
+          throw Throwables.propagate(t);
+        }
+      }
+    };
+  }
+
+  private void dealWithSauceFailureIfNecessary(Throwable t) {
+    if (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce")) {
+      JUnit4TestBase.removeDriver();
+      try {
+        JUnit4TestBase.actuallyCreateDriver();
+      } catch (Exception e) {
+        throw new RuntimeException("Exception creating driver, after Sauce-detected exception", e);
+      }
+    }
   }
 
   private Statement withFreshDriver(
