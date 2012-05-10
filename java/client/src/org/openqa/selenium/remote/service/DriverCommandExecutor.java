@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-package org.openqa.selenium.browserlaunchers;
+package org.openqa.selenium.remote.service;
 
 import com.google.common.base.Throwables;
 

@@ -72,6 +72,8 @@ java_library(name = "remote",
     "internal/JsonToWebElementConverter.java",
     "internal/HttpClientFactory.java",
     "internal/WebElementToJsonConverter.java",
+    "service/DriverCommandExecutor.java",
+    "service/DriverService.java",
   ],
   deps = [
     ":common",

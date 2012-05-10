@@ -18,7 +18,7 @@ package org.openqa.selenium.ie;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.browserlaunchers.DriverService;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
