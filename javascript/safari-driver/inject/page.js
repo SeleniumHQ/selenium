@@ -88,7 +88,7 @@ safaridriver.inject.page.init = function() {
         true);
 
     var message = new safaridriver.message.Message(
-        safaridriver.message.Type.LOADED);
+        safaridriver.message.Type.LOAD);
     safaridriver.inject.page.LOG_.info('Sending ' + message);
     message.send(window);
 

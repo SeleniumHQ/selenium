@@ -128,7 +128,7 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
   tab.whenReady(function() {
     var expectLoad = tab.loadsNewPage(uri);
     if (expectLoad) {
-      tab.once(safaridriver.message.Type.LOADED, onLoad);
+      tab.once(safaridriver.message.Type.LOAD, onLoad);
     }
     safaridriver.extension.commands.sendCommand(session, command).
         then(onSuccess, onFailure);
@@ -153,7 +153,7 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
       if (response.isPending()) {
         safaridriver.extension.commands.LOG_.severe(
             'Error while loading page; failing', e);
-        tab.removeListener(safaridriver.message.Type.LOADED, onLoad);
+        tab.removeListener(safaridriver.message.Type.LOAD, onLoad);
         response.reject(e);
       }
     }
@@ -172,12 +172,12 @@ safaridriver.extension.commands.refresh = function(session, command) {
   var response = new webdriver.promise.Deferred();
   var tab = session.getCommandTab();
   tab.whenReady(function() {
-    tab.once(safaridriver.message.Type.LOADED, onLoad);
+    tab.once(safaridriver.message.Type.LOAD, onLoad);
 
     safaridriver.extension.commands.sendCommand(session, command).
         addErrback(function(e) {
           if (response.isPending()) {
-            tab.removeListener(safaridriver.message.Type.LOADED, onLoad);
+            tab.removeListener(safaridriver.message.Type.LOAD, onLoad);
             response.reject(e);
           }
         });

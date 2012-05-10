@@ -281,11 +281,11 @@ safaridriver.extension.Tab.prototype.onMessage_ = function(e) {
 
   this.log_('Received message: ' + message);
   switch (message.getType()) {
-    case safaridriver.message.Type.LOADED:
+    case safaridriver.message.Type.LOAD:
       this.onLoad_();
       break;
 
-    case safaridriver.message.Type.UNLOADED:
+    case safaridriver.message.Type.UNLOAD:
       this.onUnload_();
       break;
   }

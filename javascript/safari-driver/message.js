@@ -47,9 +47,9 @@ safaridriver.message.Type = {
   CONNECT: 'connect',
   DEACTIVATE: 'deactivate',
   ENCODE: 'encode',
-  LOADED: 'loaded',
+  LOAD: 'load',
   RESPONSE: 'response',
-  UNLOADED: 'unloaded'
+  UNLOAD: 'unload'
 };
 
 
@@ -123,8 +123,8 @@ safaridriver.message.Message.fromEvent = function(event) {
       break;
 
     case safaridriver.message.Type.ACTIVATE:
-    case safaridriver.message.Type.LOADED:
-    case safaridriver.message.Type.UNLOADED:
+    case safaridriver.message.Type.LOAD:
+    case safaridriver.message.Type.UNLOAD:
       message = safaridriver.message.Message.fromData_(data);
       break;
 

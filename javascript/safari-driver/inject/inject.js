@@ -59,13 +59,13 @@ safaridriver.inject.init = function() {
   if (safaridriver.inject.state.IS_TOP) {
     window.addEventListener('load', function() {
       var message = new safaridriver.message.Message(
-          safaridriver.message.Type.LOADED);
+          safaridriver.message.Type.LOAD);
       message.send(safari.self.tab);
     }, true);
 
     window.addEventListener('unload', function() {
       var message = new safaridriver.message.Message(
-          safaridriver.message.Type.UNLOADED);
+          safaridriver.message.Type.UNLOAD);
       // If we send this message asynchronously, which is the norm, then the
       // page will complete its unload before the message is sent. Use sendSync
       // to ensure the extension gets our message.

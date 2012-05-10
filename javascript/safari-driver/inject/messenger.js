@@ -118,7 +118,7 @@ safaridriver.inject.PageMessenger.prototype.onMessage = function(e) {
           e.source);
       break;
 
-    case safaridriver.message.Type.LOADED:
+    case safaridriver.message.Type.LOAD:
       if (this.installed_ && this.installed_.isPending()) {
         this.installed_.resolve();
       } else {
