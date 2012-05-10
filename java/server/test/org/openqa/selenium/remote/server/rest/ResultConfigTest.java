@@ -167,7 +167,6 @@ public class ResultConfigTest {
         .on(ResultType.SUCCESS, mockRenderer1)
         .on(ResultType.SUCCESS, mockRenderer2);
 
-    System.out.println("config = " + config.getRenderer(ResultType.SUCCESS, mockRequest));
     assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
