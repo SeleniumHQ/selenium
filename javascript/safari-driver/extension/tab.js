@@ -208,13 +208,15 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   this.whenReady(function(tab) {
     self.log_('Sending command: ' + JSON.stringify(command));
 
-    var removeResponseListener = goog.bind(self.removeListener, self,
-        safaridriver.message.Type.RESPONSE, onResponse);
+    var removeListeners = function() {
+      self.removeListener(safaridriver.message.Type.RESPONSE, onResponse);
+      tab.removeEventListener('close', onClose, true);
+    };
 
     if (opt_timeout > 0) {
       var start = goog.now();
       var timeoutKey = setTimeout(function() {
-        removeResponseListener();
+        removeListeners();
         if (response.isPending()) {
           response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
               'Timed out awaiting response to command "' + command.getName() +
@@ -225,11 +227,12 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
 
     message.send(tab.page);
     self.addListener(safaridriver.message.Type.RESPONSE, onResponse);
+    tab.addEventListener('close', onClose, true);
 
     function onResponse(message) {
       if (!response.isPending()) {
         // Whoops! We shouldn't be listening for responses anymore.
-        removeResponseListener();
+        removeListeners();
         return;
       }
 
@@ -249,12 +252,25 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
         return;
       }
 
-      removeResponseListener();
+      removeListeners();
       clearTimeout(timeoutKey);
       try {
         response.resolve(bot.response.checkResponse(message.getResponse()));
       } catch (ex) {
         response.reject(ex);
+      }
+    }
+
+    function onClose() {
+      removeListeners();
+      if (response.isPending()) {
+        self.log_(
+            'The window closed before a response was received.' +
+                'returning a null-success response.',
+            goog.debug.Logger.Level.WARNING);
+        // TODO(jleyba): Is a null success response always the correct action
+        // when the window closes before a response is received?
+        response.resolve(bot.response.createResponse(null));
       }
     }
   });
