@@ -20,7 +20,7 @@ module Selenium
           Socket.should_receive(:new).any_number_of_times.and_return socket
           states.each { |state|
             socket.should_receive(:connect_nonblock).
-                   and_raise(state ? Errno::EISCONN : Errno::ECONNREFUSED)
+                   and_raise(state ? Errno::EISCONN.new("connection in progress") : Errno::ECONNREFUSED.new("connection refused"))
           }
         end
       end
