@@ -324,7 +324,7 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
   this.logMessage_('Received a message: ' + event.data);
 
   try {
-    var message = safaridriver.message.Message.fromEvent(event);
+    var message = safaridriver.message.fromEvent(event);
     if (!message.isType(safaridriver.message.Type.COMMAND)) {
       throw Error('Not a command message: ' + message);
     }

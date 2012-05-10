@@ -84,7 +84,7 @@ safaridriver.extension.driver;
  * @private
  */
 safaridriver.extension.onMessage_ = function(e) {
-  var message = safaridriver.message.Message.fromEvent(e);
+  var message = safaridriver.message.fromEvent(e);
   if (message.isType(safaridriver.message.Type.CONNECT)) {
     var url = (/** @type {!safaridriver.message.ConnectMessage} */ message).
         getUrl();

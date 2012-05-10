@@ -269,7 +269,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
  */
 safaridriver.extension.Tab.prototype.onMessage_ = function(e) {
   try {
-    var message = safaridriver.message.Message.fromEvent(e);
+    var message = safaridriver.message.fromEvent(e);
   } catch (ex) {
     this.log_(
         'Unable to parse message: ' + e.name + ': ' +

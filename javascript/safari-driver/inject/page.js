@@ -122,7 +122,7 @@ safaridriver.inject.page.pendingResponses_ = {};
  */
 safaridriver.inject.page.onMessage_ = function(e) {
   try {
-    var message = safaridriver.message.Message.fromEvent(
+    var message = safaridriver.message.fromEvent(
         (/** @type {!MessageEvent} */e));
   } catch (ex) {
     // Silently ignore parse failure; message may not have origininated from the

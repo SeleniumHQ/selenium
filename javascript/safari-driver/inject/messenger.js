@@ -75,7 +75,7 @@ safaridriver.inject.PageMessenger.prototype.install = function() {
 safaridriver.inject.PageMessenger.prototype.onMessage = function(e) {
   this.log_.fine('Received page message: ' + JSON.stringify(e.data));
   try {
-    var message = safaridriver.message.Message.fromEvent(e);
+    var message = safaridriver.message.fromEvent(e);
   } catch (ex) {
     this.log_.warning('Unable to parse page message: ' + ex +
         '\nOriginal message: ' + JSON.stringify(e.data));

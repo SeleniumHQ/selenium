@@ -54,45 +54,13 @@ safaridriver.message.Type = {
 
 
 /**
- * Base class for messages exchanged between components of the SafariDriver.
- * may either be exchanged between the extension's global page and injected
- * script, or the injected script and web page content.
- * @param {!safaridriver.message.Type} type The message type.
- * @constructor
- */
-safaridriver.message.Message = function(type) {
-
-  /**
-   * The JSON data associated with this message.
-   * @type {!Object.<*>}
-   * @private
-   */
-  this.data_ = {};
-
-  this.data_[safaridriver.message.Message.Field.ORIGIN] =
-      safaridriver.message.ORIGIN;
-  this.data_[safaridriver.message.Message.Field.TYPE] = type;
-};
-
-
-/**
- * The standard fields in a {@link safaridriver.message.Message}.
- * @enum {string}
- */
-safaridriver.message.Message.Field = {
-  ORIGIN: 'origin',
-  TYPE: 'type'
-};
-
-
-/**
  * Creates a {@link safaridriver.message.Message} from a message event.
  * @param {!(SafariExtensionMessageEvent|MessageEvent)} event The raw event to
  *     convert to a message.
  * @return {!safaridriver.message.Message} The new message.
  * @throws {Error} If the event does not conform to the message protocol.
  */
-safaridriver.message.Message.fromEvent = function(event) {
+safaridriver.message.fromEvent = function(event) {
   var data = event.message || event.data;
   if (goog.isString(data)) {
     data = JSON.parse(data);
@@ -100,7 +68,7 @@ safaridriver.message.Message.fromEvent = function(event) {
 
   if (!goog.isObject(data) ||
       (!goog.isString(data[safaridriver.message.Message.Field.ORIGIN]) &&
-       !goog.isNumber(data[safaridriver.message.Message.Field.ORIGIN]))) {
+          !goog.isNumber(data[safaridriver.message.Message.Field.ORIGIN]))) {
     throw Error('Invalid message: ' + JSON.stringify(data));
   }
 
@@ -136,6 +104,38 @@ safaridriver.message.Message.fromEvent = function(event) {
       data[safaridriver.message.Message.Field.ORIGIN]);
   message.setOrigin(origin);
   return message;
+};
+
+
+/**
+ * Base class for messages exchanged between components of the SafariDriver.
+ * may either be exchanged between the extension's global page and injected
+ * script, or the injected script and web page content.
+ * @param {!safaridriver.message.Type} type The message type.
+ * @constructor
+ */
+safaridriver.message.Message = function(type) {
+
+  /**
+   * The JSON data associated with this message.
+   * @type {!Object.<*>}
+   * @private
+   */
+  this.data_ = {};
+
+  this.data_[safaridriver.message.Message.Field.ORIGIN] =
+      safaridriver.message.ORIGIN;
+  this.data_[safaridriver.message.Message.Field.TYPE] = type;
+};
+
+
+/**
+ * The standard fields in a {@link safaridriver.message.Message}.
+ * @enum {string}
+ */
+safaridriver.message.Message.Field = {
+  ORIGIN: 'origin',
+  TYPE: 'type'
 };
 
 

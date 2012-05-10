@@ -82,7 +82,7 @@ safaridriver.inject.init = function() {
  */
 safaridriver.inject.onExtensionMessage_ = function(e) {
   try {
-    var message = safaridriver.message.Message.fromEvent(e);
+    var message = safaridriver.message.fromEvent(e);
   } catch (ex) {
     safaridriver.inject.LOG.warning(
         'Unable to parse message: ' + ex +
