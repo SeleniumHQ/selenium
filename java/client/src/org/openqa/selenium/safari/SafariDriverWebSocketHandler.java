@@ -62,7 +62,7 @@ class SafariDriverWebSocketHandler extends BaseWebSocketHandler {
 
   @Override
   public void onMessage(WebSocketConnection connection, String msg) throws Throwable {
-    LOG.info("Received message: " + msg);
+    LOG.fine("Received message: " + msg);
 
     SafariDriverConnection safariConnection = connections.get(connection);
     if (safariConnection == null) {
