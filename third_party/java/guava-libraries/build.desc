@@ -1,3 +1,3 @@
 
 java_library(name = "guava-libraries",
-  deps = [ "guava-11.0.1.jar" ])
+  deps = [ "guava-12.0.jar" ])
