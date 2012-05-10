@@ -17,34 +17,41 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+
+import org.openqa.selenium.internal.FindsByCssSelector;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
 @Ignore(
-    value = {HTMLUNIT, IE, CHROME, REMOTE, SELENESE, OPERA},
+    value = {HTMLUNIT, IE, OPERA, SELENESE},
     reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgElementTest extends JUnit4TestBase {
+
+  @Before
+  public void checkSupportsCssSelectors() {
+    assumeTrue(driver instanceof FindsByCssSelector);
+  }
 
   @Test
   public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
-    WebElement svg = driver.findElement(By.tagName("svg:svg"));
+    WebElement svg = driver.findElement(By.cssSelector("svg"));
 
     if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
       System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
@@ -52,7 +59,7 @@ public class SvgElementTest extends JUnit4TestBase {
       return;
     }
 
-    List<WebElement> groupElements = svg.findElements(By.tagName("svg:g"));
+    List<WebElement> groupElements = svg.findElements(By.cssSelector("g"));
     assertEquals(5, groupElements.size());
 
     groupElements.get(1).click();
@@ -81,8 +88,8 @@ public class SvgElementTest extends JUnit4TestBase {
   @Test
   public void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
-    WebElement svg = driver.findElement(By.tagName("svg:svg"));
-    List<WebElement> textElements = svg.findElements(By.tagName("svg:text"));
+    WebElement svg = driver.findElement(By.cssSelector("svg"));
+    List<WebElement> textElements = svg.findElements(By.cssSelector("text"));
 
     if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
       System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
