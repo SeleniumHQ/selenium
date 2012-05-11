@@ -21,6 +21,8 @@ import org.openqa.selenium.internal.BuildInfo;
 
 public class WebDriverException extends RuntimeException {
 
+  private static final long serialVersionUID = 8507264323622431595L;
+
   public WebDriverException() {
     super();
   }

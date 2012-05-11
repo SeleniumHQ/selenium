@@ -22,6 +22,9 @@ package org.openqa.selenium;
  * excpetion would be thrown is when By.className() is used with a compound class name.
  */
 public class IllegalLocatorException extends WebDriverException {
+
+  private static final long serialVersionUID = 5663388907491879269L;
+
   public IllegalLocatorException(String message) {
     super(message);
   }

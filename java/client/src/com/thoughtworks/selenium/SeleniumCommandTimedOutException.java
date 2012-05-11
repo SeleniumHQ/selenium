@@ -32,8 +32,9 @@ package com.thoughtworks.selenium;
  * When a SeleniumCommandTimedOutException is thrown, we have to assume that the command queue is
  * out-of-sync with the remote process (e.g. browser). When this happens, the browser should be
  * stopped (killed) and the queue should be flushed.
- * 
- * @author paul
- * 
  */
-public class SeleniumCommandTimedOutException extends RuntimeException {}
+public class SeleniumCommandTimedOutException extends RuntimeException {
+
+  private static final long serialVersionUID = -1225524179543129304L;
+  
+}

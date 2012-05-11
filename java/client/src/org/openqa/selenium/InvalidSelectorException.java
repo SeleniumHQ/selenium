@@ -29,6 +29,8 @@ package org.openqa.selenium;
  */
 public class InvalidSelectorException extends NoSuchElementException {
 
+  private static final long serialVersionUID = 4756838510092473220L;
+
   public InvalidSelectorException(String reason) {
     super(reason);
   }

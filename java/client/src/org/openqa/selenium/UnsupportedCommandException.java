@@ -22,6 +22,7 @@ package org.openqa.selenium;
  */
 public class UnsupportedCommandException extends WebDriverException {
 
+  private static final long serialVersionUID = 1627610118479812117L;
 
   public UnsupportedCommandException() {
     super();

@@ -32,6 +32,9 @@ import org.openqa.selenium.WebDriverException;
  * 1)
  */
 public class UnreachableBrowserException extends WebDriverException {
+
+  private static final long serialVersionUID = -510065514533169642L;
+
   public UnreachableBrowserException(String message, Throwable cause) {
     super(message, cause);
   }

@@ -23,6 +23,9 @@ package org.openqa.selenium;
  * @see org.openqa.selenium.WebDriver.Options#addCookie(Cookie)
  */
 public class UnableToSetCookieException extends WebDriverException {
+
+  private static final long serialVersionUID = 2417508193766570029L;
+
   public UnableToSetCookieException() {
   }
 

@@ -1,6 +1,9 @@
 package org.openqa.selenium;
 
 public class XPathLookupException extends WebDriverException {
+
+  private static final long serialVersionUID = -2891159411394127442L;
+
   public XPathLookupException() {
     super();
   }

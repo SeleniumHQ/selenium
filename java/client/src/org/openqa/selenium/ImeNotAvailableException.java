@@ -23,6 +23,9 @@ package org.openqa.selenium;
  * method call if IME support is not available on the machine.
  */
 public class ImeNotAvailableException extends WebDriverException {
+
+  private static final long serialVersionUID = 1085722778558838097L;
+
   public ImeNotAvailableException(String message) {
     super(message);
   }

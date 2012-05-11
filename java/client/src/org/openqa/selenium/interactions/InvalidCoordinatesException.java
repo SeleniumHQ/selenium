@@ -26,6 +26,8 @@ import org.openqa.selenium.WebDriverException;
  */
 public class InvalidCoordinatesException extends WebDriverException {
 
+  private static final long serialVersionUID = 9108268691981365832L;
+
   public InvalidCoordinatesException(String message) {
     super(message);
   }

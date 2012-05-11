@@ -22,6 +22,8 @@ import org.openqa.selenium.WebDriverException;
  */
 public class SessionTerminatedException extends WebDriverException {
 
+  private static final long serialVersionUID = -237496199954763616L;
+
   public SessionTerminatedException() {
   }
 

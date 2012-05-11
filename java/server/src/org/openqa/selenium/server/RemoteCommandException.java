@@ -6,6 +6,9 @@ package org.openqa.selenium.server;
  * @author Matthew Purland
  */
 public class RemoteCommandException extends Exception {
+
+  private static final long serialVersionUID = -6260844589756058216L;
+
   // Result of the remote command that an exception occurred
   private String result;
 

@@ -20,6 +20,8 @@ import java.io.IOException;
 
 public class ClientGoneException extends IOException {
 
+  private static final long serialVersionUID = 1407672566502727323L;
+
   public ClientGoneException(Throwable cause) {
     super(cause);
   }

@@ -22,6 +22,9 @@ package org.openqa.selenium;
  * not able to be interacted with.
  */
 public class ElementNotVisibleException extends WebDriverException {
+
+  private static final long serialVersionUID = 901163093929767870L;
+
   public ElementNotVisibleException(String message) {
     super(message);
   }

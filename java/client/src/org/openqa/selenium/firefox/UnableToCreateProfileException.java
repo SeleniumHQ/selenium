@@ -20,6 +20,9 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.WebDriverException;
 
 public class UnableToCreateProfileException extends WebDriverException {
+
+  private static final long serialVersionUID = 1222232173588022729L;
+
   public UnableToCreateProfileException(Throwable e) {
     super(e);
   }

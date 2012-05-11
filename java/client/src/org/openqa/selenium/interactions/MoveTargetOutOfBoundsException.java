@@ -24,6 +24,9 @@ import org.openqa.selenium.WebDriverException;
  * the size of the window.
  */
 public class MoveTargetOutOfBoundsException extends WebDriverException {
+
+  private static final long serialVersionUID = 135491202491170886L;
+
   public MoveTargetOutOfBoundsException(String message) {
     super(message);
   }
