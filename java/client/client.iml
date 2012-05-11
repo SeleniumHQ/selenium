@@ -38,6 +38,8 @@
     <orderEntry type="library" scope="RUNTIME" name="xml-apis" level="project" />
     <orderEntry type="library" name="netty" level="project" />
     <orderEntry type="library" name="commons-fileupload" level="project" />
+    <orderEntry type="library" name="google-protobuffers" level="project" />
+    <orderEntry type="library" name="commons-jxpath" level="project" />
   </component>
 </module>
 
