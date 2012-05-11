@@ -84,14 +84,14 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet() {
+  public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
-    assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
+    assertThat(inputElement.getAttribute("disabled"), equalTo(null));
     assertThat(inputElement.isEnabled(), equalTo(true));
 
     WebElement pElement = driver.findElement(By.id("peas"));
-    assertThat(pElement.getAttribute("disabled"), equalTo("false"));
+    assertThat(pElement.getAttribute("disabled"), equalTo(null));
     assertThat(pElement.isEnabled(), equalTo(true));
   }
 
