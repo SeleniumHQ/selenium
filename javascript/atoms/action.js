@@ -516,7 +516,7 @@ bot.action.prepareToInteractWith_ = function(element, opt_coords) {
   // necessary, not scrolling at all if the element is already in view.
   var doc = goog.dom.getOwnerDocument(element);
   goog.style.scrollIntoContainerView(element,
-      goog.userAgent.WEBKIT ? doc.body : doc.documentElement);
+      goog.userAgent.WEBKIT || goog.userAgent.IE ? doc.body : doc.documentElement);
 
   // NOTE(user): Ideally, we would check that any provided coordinates fall
   // within the bounds of the element, but this has proven difficult, because:

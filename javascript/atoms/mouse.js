@@ -44,7 +44,7 @@ goog.require('goog.userAgent');
  * @constructor
  * @extends {bot.Device}
  */
-bot.Mouse = function() {
+bot.Mouse = function(opt_state) {
   goog.base(this);
 
   /**
@@ -78,6 +78,27 @@ bot.Mouse = function() {
    * @private
    */
   this.hasEverInteracted_ = false;
+
+  if (opt_state) {
+    this.buttonPressed_ = opt_state.buttonPressed;
+    try {
+      if (bot.dom.isElement(opt_state.elementPressed)) {
+        this.elementPressed_ = opt_state.elementPressed;
+      }
+    } catch (ignored) {
+      this.buttonPressed_ = null;
+    }
+    this.clientXY_ = opt_state.clientXY;
+    this.nextClickIsDoubleClick_ = opt_state.nextClickIsDoubleClick;
+    this.hasEverInteracted_ = opt_state.hasEverInteracted_;
+    try {
+      if(bot.dom.isElement(opt_state.element)) {
+        this.element_ = opt_state.element;
+      }
+    } catch (ignored) {
+      this.buttonPressed_ = null;
+    }
+  }
 };
 goog.inherits(bot.Mouse, bot.Device);
 
@@ -368,4 +389,20 @@ bot.Mouse.prototype.getButtonValue_ = function(eventType) {
         'Event does not permit the specified mouse button.');
   }
   return buttonValue;
+};
+
+/**
+* Serialize the current state of the mouse.
+*
+* @return {!Object} The current mouse state.
+*/
+bot.Mouse.prototype.getState = function () {
+  var state = {};
+  state.buttonPressed = this.buttonPressed_;
+  state.elementPressed = this.elementPressed_;
+  state.clientXY = this.clientXY_;
+  state.nextClickIsDoubleClick = this.nextClickIsDoubleClick_;
+  state.hasEverInteracted = this.hasEverInteracted_;
+  state.element = this.element_;
+  return state;
 };
