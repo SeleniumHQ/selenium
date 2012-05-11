@@ -50,7 +50,7 @@ class WebDriver(object):
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
-        if not isinstance(desired_capabilities, dict)
+        if not isinstance(desired_capabilities, dict):
             raise WebDriverException("Desired Capabilities must be a dictionary")
         self.command_executor = command_executor
         if type(self.command_executor) is str or type(self.command_executor) is unicode:
