@@ -59,3 +59,12 @@ maven/*/src
 maven/*/target
 java/client/build/
 java/server/build/
+
+*.user
+*.cache
+obj/
+*.opensdf
+*.suo
+*.sdf
+Generated/
+
