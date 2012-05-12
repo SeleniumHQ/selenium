@@ -242,7 +242,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE, FIREFOX, OPERA})
+  @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE, FIREFOX, OPERA, HTMLUNIT})
   @Test
   public void testMousePositionIsNotPreservedInActionsChain() {
     driver.get(pages.javascriptPage);
