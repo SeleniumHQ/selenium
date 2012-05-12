@@ -79,23 +79,26 @@ webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset, opt_sta
   var mouse = new bot.Mouse(opt_state);
   var target = element || mouse.getElement();
 
+  var offset_specified = (x_offset != null) && (y_offset != null);
   x_offset = x_offset || 0;
   y_offset = y_offset || 0;
 
-  // Right now, we're using the upper-left corner of the element.
-  // I believe this is wrong, and we should be using the center,
-  // if the offset is set to 0, 0.
-  // if (element) {
-  //   if (x_offset == 0 && y_offset == 0) {
-  //     var source_element_size = bot.action.getInteractableSize_(element);
-  //     x_offset = Math.round(source_element_size.width / 2);
-  //     y_offset = Math.round(source_element_size.height / 2);
-  //   }
-  // } else {
-  //   var target_element_size = bot.action.getInteractableSize_(target);
-  //   x_offset += Math.round(target_element_size.width / 2);
-  //   y_offset += Math.round(target_element_size.height / 2);
-  // }
+  // If we have specified an element and no offset, we should
+  // move the mouse to the center of the specified element.
+  if (element) {
+    if (!offset_specified) {
+      var source_element_size = bot.action.getInteractableSize_(element);
+      x_offset = Math.floor(source_element_size.width / 2);
+      y_offset = Math.floor(source_element_size.height / 2);
+    }
+  } else {
+    // Moving to an absolute offset from the current target element,
+    // so we have to account for the existing offset of the current
+    // mouse position to the element origin (upper-left corner).
+    var pos = goog.style.getClientPosition(target);
+    x_offset += (mouse.clientXY_.x - pos.x);
+    y_offset += (mouse.clientXY_.y - pos.y);
+  }
 
   var doc = goog.dom.getOwnerDocument(target);
   var win = goog.dom.getWindow(doc);
