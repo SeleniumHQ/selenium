@@ -51,6 +51,7 @@ public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
 
   private static final String defaultPrefs = "/org/openqa/selenium/firefox/webdriver.json";
+
   private Preferences additionalPrefs;
 
   private Map<String, Extension> extensions = Maps.newHashMap();
@@ -422,6 +423,10 @@ public class FirefoxProfile {
     new Zip().unzip(json, dir);
 
     return new FirefoxProfile(dir);
+  }
+
+  protected void cleanTemporaryModel() {
+    clean(model);
   }
 
   /**
