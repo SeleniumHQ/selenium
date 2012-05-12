@@ -51,11 +51,13 @@ namespace OpenQA.Selenium.IE
         private const string UseLegacyInternalServerCapability = "useLegacyInternalServer";
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
+        private const string EnableNativeEventsCapability = "nativeEvents";
 
         // This value should be flipped to false to make using the standalone server the default.
         // It should be removed entirely when the standalone server is in widespread use.
         private bool useInternalServer = true;
         private bool ignoreProtectedModeSettings;
+        private bool enableNativeEvents = true;
         private string initialBrowserUrl = string.Empty;
 
         /// <summary>
@@ -65,6 +67,15 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.ignoreProtectedModeSettings; }
             set { this.ignoreProtectedModeSettings = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use native events in interacting with elements.
+        /// </summary>
+        public bool EnableNativeEvents
+        {
+            get { return enableNativeEvents; }
+            set { enableNativeEvents = value; }
         }
 
         /// <summary>
@@ -107,6 +118,7 @@ namespace OpenQA.Selenium.IE
         public ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
+            capabilities.SetCapability(EnableNativeEventsCapability, this.enableNativeEvents);
             if (this.ignoreProtectedModeSettings)
             {
                 capabilities.SetCapability(IgnoreProtectedModeSettingsCapability, true);
