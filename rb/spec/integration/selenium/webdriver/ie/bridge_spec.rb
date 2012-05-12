@@ -30,6 +30,21 @@ module Selenium
           caps['ignoreProtectedModeSettings'].should be_true
         end
 
+        it "has native events enabled by default" do
+          Bridge.new(:http_client => http)
+
+          caps['nativeEvents'].should be_true
+        end
+
+        it "can disable native events" do
+          Bridge.new(
+            :native_events => false,
+            :http_client => http
+          )
+
+          caps['nativeEvents'].should be_false
+        end
+
       end
 
     end

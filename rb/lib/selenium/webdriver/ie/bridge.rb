@@ -13,10 +13,11 @@ module Selenium
         DEFAULT_TIMEOUT = 30
 
         def initialize(opts = {})
-          timeout     = opts.delete(:timeout) { DEFAULT_TIMEOUT }
-          port        = opts.delete(:port) { PortProber.above(DEFAULT_PORT) }
-          http_client = opts.delete(:http_client)
-          ignore_mode = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
+          timeout       = opts.delete(:timeout) { DEFAULT_TIMEOUT }
+          port          = opts.delete(:port) { PortProber.above(DEFAULT_PORT) }
+          http_client   = opts.delete(:http_client)
+          ignore_mode   = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
+          native_events = opts.delete(:native_events) != false
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -29,6 +30,8 @@ module Selenium
           if ignore_mode
             caps['ignoreProtectedModeSettings'] = true
           end
+
+          caps['nativeEvents'] = native_events
 
           remote_opts = {
             :url => @server.uri,
