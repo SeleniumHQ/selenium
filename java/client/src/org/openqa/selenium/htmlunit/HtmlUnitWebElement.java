@@ -368,7 +368,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     if (element instanceof HtmlInput &&
         ("selected".equals(lowerName) || "checked".equals(lowerName))) {
-      return ((HtmlInput) element).isChecked() ? "true" : null;
+      return trueOrNull(((HtmlInput) element).isChecked());
     }
 
     if ("href".equals(lowerName) || "src".equals(lowerName)) {
@@ -385,20 +385,20 @@ public class HtmlUnitWebElement implements WrapsDriver,
       }
     }
     if ("disabled".equals(lowerName)) {
-      return isEnabled() ? "false" : "true";
+      return trueOrNull(! isEnabled());
     }
 
     if ("multiple".equals(lowerName) && element instanceof HtmlSelect) {
       String multipleAttribute = ((HtmlSelect) element).getMultipleAttribute();
       if ("".equals(multipleAttribute)) {
-        return Boolean.toString(element.hasAttribute("multiple"));
+        return trueOrNull(element.hasAttribute("multiple"));
       }
       return "true";
     }
 
     for (String booleanAttribute : booleanAttributes) {
       if (booleanAttribute.equals(lowerName)) {
-        return element.hasAttribute(lowerName) ? "true" : null;
+        return trueOrNull(element.hasAttribute(lowerName));
       }
     }
     if ("index".equals(lowerName) && element instanceof HtmlOption) {
@@ -415,11 +415,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
     if ("readonly".equalsIgnoreCase(lowerName)) {
       if (element instanceof HtmlInput) {
-        return String.valueOf(((HtmlInput) element).isReadOnly());
+        return trueOrNull(((HtmlInput) element).isReadOnly());
       }
 
       if (element instanceof HtmlTextArea) {
-        return "".equals(((HtmlTextArea) element).getReadOnlyAttribute()) ? "false" : "true";
+        return trueOrNull("".equals(((HtmlTextArea) element).getReadOnlyAttribute()));
       }
 
       return null;
@@ -450,6 +450,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     return null;
+  }
+
+  private String trueOrNull(boolean condition) {
+    return condition ? "true" : null;
   }
 
   public boolean isSelected() {
