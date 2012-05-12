@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 public class GetMultipleAttributeTest extends JUnit4TestBase {
 
   @Test
-  public void testMultipleAttributeShouldBeFalseWhenNotSet() {
+  public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithoutMultiple"));
     assertEquals(null, element.getAttribute("multiple"));
