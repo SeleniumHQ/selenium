@@ -53,15 +53,33 @@ class ClickElementCommandHandler : public IECommandHandler {
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == SUCCESS) {
-        if (IsOptionElement(element_wrapper)) {
-          this->ClickOption(browser_wrapper, element_wrapper, response);
-          return;
-        } else {
-          status_code = element_wrapper->Click();
-          browser_wrapper->set_wait_required(true);
-          if (status_code != SUCCESS) {
-            response->SetErrorResponse(status_code, "Cannot click on element");
+        if (executor.enable_native_events()) {
+          if (IsOptionElement(element_wrapper)) {
+            this->ClickOption(browser_wrapper, element_wrapper, response);
             return;
+          } else {
+            status_code = element_wrapper->Click();
+            browser_wrapper->set_wait_required(true);
+            if (status_code != SUCCESS) {
+              response->SetErrorResponse(status_code, "Cannot click on element");
+              return;
+            }
+          }
+        } else {
+          std::wstring script_source = L"(function() { return function(){" + 
+                                       atoms::asString(atoms::INPUTS) + 
+                                       L"; return webdriver.atoms.inputs.click(arguments[0], arguments[1]);" + 
+                                       L"};})();";
+
+          CComPtr<IHTMLDocument2> doc;
+          browser_wrapper->GetDocument(&doc);
+          Script script_wrapper(doc, script_source, 2);
+          script_wrapper.AddArgument(element_wrapper);
+          script_wrapper.AddArgument(executor.mouse_state());
+          status_code = script_wrapper.Execute();
+          if (status_code == SUCCESS) {
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+            mutable_executor.set_mouse_state(script_wrapper.result());
           }
         }
       } else {

@@ -178,6 +178,12 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     return this->managed_browsers_.size();
   }
 
+  CComVariant keyboard_state(void) const { return this->keyboard_state_; }
+  void set_keyboard_state(VARIANT state) { this->keyboard_state_ = state; }
+
+  CComVariant mouse_state(void) const { return this->mouse_state_; }
+  void set_mouse_state(VARIANT state) { this->mouse_state_ = state; }
+
  private:
   typedef std::tr1::unordered_map<std::string, ElementHandle> ElementMap;
   typedef std::tr1::unordered_map<std::string, BrowserHandle> BrowserMap;
@@ -218,6 +224,9 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   long last_known_mouse_x_;
   long last_known_mouse_y_;
+
+  CComVariant keyboard_state_;
+  CComVariant mouse_state_;
 };
 
 } // namespace webdriver

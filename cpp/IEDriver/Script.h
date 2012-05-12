@@ -53,6 +53,7 @@ class Script {
   void AddArgument(ElementHandle argument);
   void AddArgument(IHTMLElement* argument);
   void AddArgument(VARIANT argument);
+  void AddNullArgument(void);
 
   bool ResultIsEmpty(void);
   bool ResultIsString(void);

@@ -40,9 +40,25 @@ class MouseDoubleClickCommandHandler : public IECommandHandler {
       response->SetErrorResponse(status_code, "Unable to get current browser");
     }
 
-    HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+    if (executor.enable_native_events()) {
+      HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+      doubleClickAt(browser_window_handle, executor.last_known_mouse_x(), executor.last_known_mouse_y());
+    } else {
+      std::wstring script_source = L"(function() { return function(){" + 
+                                   atoms::asString(atoms::INPUTS) + 
+                                   L"; return webdriver.atoms.inputs.doubleClick(arguments[0]);" + 
+                                   L"};})();";
 
-    doubleClickAt(browser_window_handle, executor.last_known_mouse_x(), executor.last_known_mouse_y());
+      CComPtr<IHTMLDocument2> doc;
+      browser_wrapper->GetDocument(&doc);
+      Script script_wrapper(doc, script_source, 1);
+      script_wrapper.AddArgument(executor.mouse_state());
+      status_code = script_wrapper.Execute();
+      if (status_code == SUCCESS) {
+        IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+        mutable_executor.set_mouse_state(script_wrapper.result());
+      }
+    }
     response->SetSuccessResponse(Json::Value::null);
   }
 };

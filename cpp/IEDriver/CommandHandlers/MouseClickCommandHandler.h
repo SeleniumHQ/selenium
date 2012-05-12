@@ -47,11 +47,43 @@ class MouseClickCommandHandler : public IECommandHandler {
                                    "Unable to get current browser");
       }
 
-      HWND browser_window_handle = browser_wrapper->GetWindowHandle();
-      clickAt(browser_window_handle,
-              executor.last_known_mouse_x(),
-              executor.last_known_mouse_y(),
-              button);
+      if (executor.enable_native_events()) {
+        HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+        clickAt(browser_window_handle,
+                executor.last_known_mouse_x(),
+                executor.last_known_mouse_y(),
+                button);
+      } else {
+        int script_arg_count = 2;
+        std::wstring script_source = L"(function() { return function(){" + 
+                                     atoms::asString(atoms::INPUTS) + 
+                                     L"; return webdriver.atoms.inputs.click(arguments[0], arguments[1]);" + 
+                                     L"};})();";
+        if (button == 2) {
+          script_arg_count = 1;
+          script_source = L"(function() { return function(){" + 
+                         atoms::asString(atoms::INPUTS) + 
+                         L"; return webdriver.atoms.inputs.rightClick(arguments[0]);" + 
+                         L"};})();";
+        }
+
+        CComPtr<IHTMLDocument2> doc;
+        browser_wrapper->GetDocument(&doc);
+        Script script_wrapper(doc, script_source, script_arg_count);
+
+        if (script_arg_count > 1) {
+          CComVariant null_element;
+          null_element.vt = VT_NULL;
+          script_wrapper.AddArgument(null_element);
+        }
+
+        script_wrapper.AddArgument(executor.mouse_state());
+        status_code = script_wrapper.Execute();
+        if (status_code == SUCCESS) {
+          IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+          mutable_executor.set_mouse_state(script_wrapper.result());
+        }
+      }
       response->SetSuccessResponse(Json::Value::null);
     }
   }

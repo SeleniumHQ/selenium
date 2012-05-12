@@ -92,6 +92,12 @@ void Script::AddArgument(VARIANT argument) {
   ++this->current_arg_index_;
 }
 
+void Script::AddNullArgument() {
+  CComVariant null_arg;
+  null_arg.vt = VT_NULL;
+  this->AddArgument(null_arg);
+}
+
 bool Script::ResultIsString() {
   return this->result_.vt == VT_BSTR;
 }

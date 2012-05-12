@@ -118,6 +118,14 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->implicit_wait_timeout_ = 0;
   this->last_known_mouse_x_ = 0;
   this->last_known_mouse_y_ = 0;
+
+  CComVariant keyboard_state;
+  keyboard_state.vt = VT_NULL;
+  this->keyboard_state_ = keyboard_state;
+
+  CComVariant mouse_state;
+  mouse_state.vt = VT_NULL;
+  this->mouse_state_ = mouse_state;
   return 0;
 }
 

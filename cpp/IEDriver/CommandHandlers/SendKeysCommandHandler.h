@@ -135,9 +135,27 @@ class SendKeysCommandHandler : public IECommandHandler {
         }
 
         this->WaitUntilElementFocused(element);
+        if (executor.enable_native_events()) {
+          sendKeys(window_handle, keys.c_str(), executor.speed());
+          releaseModifierKeys(window_handle, executor.speed());
+        } else {
+          std::wstring script_source = L"(function() { return function(){" + 
+                                       atoms::asString(atoms::INPUTS) + 
+                                       L"; return webdriver.atoms.inputs.sendKeys(arguments[0], arguments[1], arguments[2]);" + 
+                                       L"};})();";
 
-        sendKeys(window_handle, keys.c_str(), executor.speed());
-        releaseModifierKeys(window_handle, executor.speed());
+          CComPtr<IHTMLDocument2> doc;
+          browser_wrapper->GetDocument(&doc);
+          Script script_wrapper(doc, script_source, 3);
+          script_wrapper.AddArgument(element_wrapper);
+          script_wrapper.AddArgument(executor.keyboard_state());
+          script_wrapper.AddArgument(keys);
+          status_code = script_wrapper.Execute();
+          if (status_code == SUCCESS) {
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+            mutable_executor.set_keyboard_state(script_wrapper.result());
+          }
+        }
         response->SetSuccessResponse(Json::Value::null);
         return;
       } else {

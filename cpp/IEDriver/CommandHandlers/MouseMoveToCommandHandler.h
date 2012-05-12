@@ -46,49 +46,86 @@ class MouseMoveToCommandHandler : public IECommandHandler {
       return;
     } else {
       int status_code = SUCCESS;
-
-      long start_x = executor.last_known_mouse_x();
-      long start_y = executor.last_known_mouse_y();
-
-      long end_x = start_x;
-      long end_y = start_y;
-      if (element_specified && !element_parameter_iterator->second.isNull()) {
-        std::string element_id = element_parameter_iterator->second.asString();
-        status_code = this->GetElementCoordinates(executor,
-                                                  element_id,
-                                                  offset_specified,
-                                                  &end_x,
-                                                  &end_y);
-        if (status_code != SUCCESS) {
-          response->SetErrorResponse(status_code,
-                                     "Unable to locate element with id " + element_id);
-        }
-      }
-
-      if (offset_specified) {
-        end_x += xoffset_parameter_iterator->second.asInt();
-        end_y += yoffset_parameter_iterator->second.asInt();
-      }
-
+      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       BrowserHandle browser_wrapper;
       status_code = executor.GetCurrentBrowser(&browser_wrapper);
       if (status_code != SUCCESS) {
         response->SetErrorResponse(status_code,
-                                   "Unable to get current browser");
+                                    "Unable to get current browser");
       }
 
-      HWND browser_window_handle = browser_wrapper->GetWindowHandle();
-      LRESULT move_result = mouseMoveTo(browser_window_handle,
-                                        executor.speed(),
-                                        start_x,
-                                        start_y,
-                                        end_x,
-                                        end_y);
+      if (executor.enable_native_events()) {
+        long start_x = executor.last_known_mouse_x();
+        long start_y = executor.last_known_mouse_y();
 
-      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-      mutable_executor.set_last_known_mouse_x(end_x);
-      mutable_executor.set_last_known_mouse_y(end_y);
+        long end_x = start_x;
+        long end_y = start_y;
+        if (element_specified && !element_parameter_iterator->second.isNull()) {
+          std::string element_id = element_parameter_iterator->second.asString();
+          status_code = this->GetElementCoordinates(executor,
+                                                    element_id,
+                                                    offset_specified,
+                                                    &end_x,
+                                                    &end_y);
+          if (status_code != SUCCESS) {
+            response->SetErrorResponse(status_code,
+                                       "Unable to locate element with id " + element_id);
+          }
+        }
 
+        if (offset_specified) {
+          end_x += xoffset_parameter_iterator->second.asInt();
+          end_y += yoffset_parameter_iterator->second.asInt();
+        }
+
+
+        HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+        LRESULT move_result = mouseMoveTo(browser_window_handle,
+                                          executor.speed(),
+                                          start_x,
+                                          start_y,
+                                          end_x,
+                                          end_y);
+
+        mutable_executor.set_last_known_mouse_x(end_x);
+        mutable_executor.set_last_known_mouse_y(end_y);
+      } else {
+        std::wstring script_source = L"(function() { return function(){" + 
+                                      atoms::asString(atoms::INPUTS) + 
+                                      L"; return webdriver.atoms.inputs.mouseMove(arguments[0], arguments[1], arguments[2], arguments[3]);" + 
+                                      L"};})();";
+
+        CComPtr<IHTMLDocument2> doc;
+        browser_wrapper->GetDocument(&doc);
+        Script script_wrapper(doc, script_source, 4);
+
+        if (element_specified && !element_parameter_iterator->second.isNull()) {
+          std::string element_id = element_parameter_iterator->second.asString();
+          ElementHandle target_element;
+          int status_code = this->GetElement(executor, element_id, &target_element);
+          script_wrapper.AddArgument(target_element->element());
+        } else {
+          script_wrapper.AddNullArgument();
+        }
+
+        int x_offset = 0;
+        int y_offset = 0;
+        if (offset_specified) {
+          x_offset = xoffset_parameter_iterator->second.asInt();
+          y_offset = yoffset_parameter_iterator->second.asInt();
+          script_wrapper.AddArgument(x_offset);
+          script_wrapper.AddArgument(y_offset);
+        } else {
+          script_wrapper.AddNullArgument();
+          script_wrapper.AddNullArgument();
+        }
+
+        script_wrapper.AddArgument(executor.mouse_state());
+        status_code = script_wrapper.Execute();
+        if (status_code == SUCCESS) {
+          mutable_executor.set_mouse_state(script_wrapper.result());
+        }
+      }
       response->SetSuccessResponse(Json::Value::null);
       return;
     }

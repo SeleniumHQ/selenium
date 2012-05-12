@@ -152,7 +152,8 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver/atoms:is_selected:ie",
     "//javascript/webdriver/atoms:submit:ie",
     "//javascript/webdriver/atoms:set_window_size:ie",
-    "//javascript/webdriver/atoms:set_window_position:ie"
+    "//javascript/webdriver/atoms:set_window_position:ie",
+	"//javascript/webdriver/atoms:inputs"
   ],
   out = "cpp/IEDriver/Generated/atoms.h"
 )
