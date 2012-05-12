@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Interactions
             IAction releaseShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
             releaseShift.Perform();
 
-            Assert.IsTrue(logText.EndsWith("keydown"), "Key down event not isolated, got: " + logText);
+            Assert.IsTrue(logText.EndsWith("keydown"), "Key down event not isolated. Log text should end with 'keydown', got: " + logText);
         }
 
         [Test]
@@ -74,14 +74,14 @@ namespace OpenQA.Selenium.Interactions
             IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
 
             string eventsText = keyLoggingElement.Text;
-            Assert.IsTrue(keyLoggingElement.Text.EndsWith("keydown"), "Key down should be isolated for this test to be meaningful. Got events: " + eventsText);
+            Assert.IsTrue(keyLoggingElement.Text.EndsWith("keydown"), "Key down should be isolated for this test to be meaningful. Event text should end with 'keydown', got events: " + eventsText);
 
             IAction releaseShift = actionProvider.KeyUp(keysEventInput, Keys.Shift).Build();
 
             releaseShift.Perform();
 
             eventsText = keyLoggingElement.Text;
-            Assert.IsTrue(keyLoggingElement.Text.EndsWith("keyup"), "Key up event not isolated, got: " + eventsText);
+            Assert.IsTrue(keyLoggingElement.Text.EndsWith("keyup"), "Key up event not isolated. Event text should end with 'keyup', got: " + eventsText);
         }
 
         [Test]
