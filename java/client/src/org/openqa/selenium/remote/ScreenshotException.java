@@ -21,8 +21,6 @@ import org.openqa.selenium.WebDriverException;
 
 public class ScreenshotException extends WebDriverException {
 
-  private static final long serialVersionUID = 7957355361170314608L;
-
   private final String screenshot;
 
   public ScreenshotException(String screenGrab) {

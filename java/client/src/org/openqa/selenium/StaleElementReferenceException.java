@@ -23,9 +23,6 @@ package org.openqa.selenium;
  * DOM of the page.
  */
 public class StaleElementReferenceException extends WebDriverException {
-
-  private static final long serialVersionUID = 8706805493530877516L;
-
   public StaleElementReferenceException(String message) {
     super(message);
   }

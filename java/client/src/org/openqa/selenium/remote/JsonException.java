@@ -22,9 +22,6 @@ import org.openqa.selenium.WebDriverException;
 import org.json.JSONException;
 
 public class JsonException extends WebDriverException {
-
-  private static final long serialVersionUID = -5004663270203235210L;
-
   public JsonException(JSONException e) {
     super(e);
   }

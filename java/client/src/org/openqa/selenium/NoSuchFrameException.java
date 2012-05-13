@@ -23,8 +23,6 @@ package org.openqa.selenium;
  */
 public class NoSuchFrameException extends NotFoundException {
 
-  private static final long serialVersionUID = 1924634768188146788L;
-
   public NoSuchFrameException(String reason) {
     super(reason);
   }

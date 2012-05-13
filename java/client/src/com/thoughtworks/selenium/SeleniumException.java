@@ -23,9 +23,6 @@ package com.thoughtworks.selenium;
  * @version $Revision$
  */
 public class SeleniumException extends RuntimeException {
-
-  private static final long serialVersionUID = 7022157871083339774L;
-
   public SeleniumException(String message) {
     super(message);
   }

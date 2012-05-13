@@ -21,9 +21,6 @@ package org.openqa.selenium;
  * Indicates that a user has tried to access an alert when one is not present.
  */
 public class NoAlertPresentException extends NotFoundException {
-
-  private static final long serialVersionUID = 9034506184051753366L;
-
   public NoAlertPresentException() {
     this("No alert was present");
   }

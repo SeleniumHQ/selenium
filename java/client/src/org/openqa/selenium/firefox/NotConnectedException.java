@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.net.URL;
 
 public class NotConnectedException extends IOException {
-
-  private static final long serialVersionUID = -5002348505659787246L;
-
   public NotConnectedException(URL url, long timeToWaitInMilliSeconds, String consoleOutput) {
     super(getMessage(url, timeToWaitInMilliSeconds, consoleOutput));
   }

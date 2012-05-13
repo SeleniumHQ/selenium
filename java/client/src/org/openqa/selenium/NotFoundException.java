@@ -19,8 +19,6 @@ package org.openqa.selenium;
 
 public class NotFoundException extends WebDriverException {
 
-  private static final long serialVersionUID = -8927979393420805995L;
-
   public NotFoundException() {
   }
 

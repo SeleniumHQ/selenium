@@ -21,9 +21,7 @@ package org.openqa.selenium;
 import java.io.Serializable;
 
 public class UnhandledAlertException extends WebDriverException {
-
-  private static final long serialVersionUID = 6012434129494632007L;
-
+  
   private final String alertText;
 
   public UnhandledAlertException(String commandName) {

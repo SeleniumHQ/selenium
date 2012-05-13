@@ -19,10 +19,9 @@ package org.openqa.grid.common.exception;
 
 public class GridConfigurationException extends GridException {
 
-  private static final long serialVersionUID = -6538982862733369864L;
-
   public GridConfigurationException(String msg) {
     super(msg);
+
   }
 
   public GridConfigurationException(String msg, Throwable e) {

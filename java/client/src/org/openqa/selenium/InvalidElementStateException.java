@@ -18,9 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 public class InvalidElementStateException extends WebDriverException {
-
-  private static final long serialVersionUID = -3446245293442114066L;
-
   public InvalidElementStateException() {
     super();
   }

@@ -23,8 +23,6 @@ package org.openqa.selenium;
  */
 public class NoSuchWindowException extends NotFoundException {
 
-  private static final long serialVersionUID = -542266981039621511L;
-
   public NoSuchWindowException(String reason) {
     super(reason);
   }

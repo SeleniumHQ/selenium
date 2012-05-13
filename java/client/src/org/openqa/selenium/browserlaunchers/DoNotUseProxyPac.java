@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
  * A representation of a proxy configuration file.
  */
 public class DoNotUseProxyPac implements Serializable {
-
   // Note that we put the dash character at the end of the pattern
   private static final Pattern acceptableShExpPattern =
       Pattern.compile("[\\w\\*\\?:/\\.-]*");
@@ -34,8 +33,6 @@ public class DoNotUseProxyPac implements Serializable {
   // TODO(simon): Is this right? Really?
   private String defaultProxy = ""; // Does nothing. Emulates old behaviour of Selenium
   private URI deriveFrom;
-
-  private static final long serialVersionUID = 1L;
 
   /**
    * Output the PAC file to the given writer.

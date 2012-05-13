@@ -34,8 +34,4 @@ package org.openqa.selenium.server;
  * 
  * @author paul
  */
-public class SeleniumCommandTimedOutException extends RuntimeException {
-
-  private static final long serialVersionUID = -2364260075417367558L;
-  
-}
+public class SeleniumCommandTimedOutException extends RuntimeException {}

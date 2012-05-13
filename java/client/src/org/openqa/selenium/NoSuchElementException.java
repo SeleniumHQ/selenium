@@ -24,8 +24,6 @@ package org.openqa.selenium;
  */
 public class NoSuchElementException extends NotFoundException {
 
-  private static final long serialVersionUID = -9209861898193147145L;
-
   public NoSuchElementException(String reason) {
     super(reason);
   }

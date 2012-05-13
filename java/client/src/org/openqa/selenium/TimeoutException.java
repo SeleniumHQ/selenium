@@ -5,8 +5,6 @@ package org.openqa.selenium;
  */
 public class TimeoutException extends WebDriverException {
 
-  private static final long serialVersionUID = -8455508423410370890L;
-
   public TimeoutException() {
   }
 

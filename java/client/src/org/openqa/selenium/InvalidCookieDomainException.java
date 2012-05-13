@@ -6,9 +6,6 @@ package org.openqa.selenium;
  * @see org.openqa.selenium.WebDriver.Options#addCookie(Cookie)
  */
 public class InvalidCookieDomainException extends WebDriverException {
-
-  private static final long serialVersionUID = 4510066184462771609L;
-
   public InvalidCookieDomainException() {
   }
 

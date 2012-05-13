@@ -22,9 +22,6 @@ package org.openqa.selenium;
  * Indicates that activating an IME engine has failed.
  */
 public class ImeActivationFailedException extends WebDriverException {
-
-  private static final long serialVersionUID = -4871965510497524740L;
-
   public ImeActivationFailedException(String message) {
     super(message);
   }
