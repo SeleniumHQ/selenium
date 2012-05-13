@@ -105,7 +105,7 @@ public class GridHubConfiguration {
   /**
    * original command line param, useful for debugging
    */
-  private String[] args;
+  private String[] args = {};
   private String grid1Yml = null;
   private String grid2JSON = null;
 
