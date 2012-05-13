@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -79,6 +80,9 @@ public class Hub {
   }
 
   public Hub(GridHubConfiguration config) {
+    Level logLevel = config.isDebug() ? Level.FINE : Level.INFO;
+    Logger.getLogger("").setLevel(logLevel);
+
     String logFilename =
         config.getLogFilename() == null
         ? RemoteControlConfiguration.getDefaultLogOutFile()
@@ -87,13 +91,15 @@ public class Hub {
       try {
         Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
         logFile.setFormatter(new TerseFormatter(true));
-        logFile.setLevel(Level.INFO);
-
-        Logger.getLogger("").setLevel(Level.INFO);
+        logFile.setLevel(logLevel);
         Logger.getLogger("").addHandler(logFile);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
+    } else {
+      Handler console = new ConsoleHandler();
+      console.setLevel(logLevel);
+      Logger.getLogger("").addHandler(console);
     }
 
     registry = Registry.newInstance(this, config);

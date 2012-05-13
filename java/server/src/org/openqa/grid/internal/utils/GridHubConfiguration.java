@@ -35,12 +35,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import static org.openqa.grid.internal.utils.ServerJsonValues.*;
 
 public class GridHubConfiguration {
-
-  private static final Logger log = Logger.getLogger(GridHubConfiguration.class.getName());
 
     /**
    * The hub needs to know its hostname in order to write the proper Location header for the request
@@ -99,6 +96,11 @@ public class GridHubConfiguration {
    * STDOUT.
    */
   private String logFilename;
+
+  /**
+   * to specify that logging level should be set to Level.DEBUG
+   */
+  private boolean isDebug = false;
 
   private Map<String, Object> allParams = new HashMap<String, Object>();
 
@@ -203,6 +205,9 @@ public class GridHubConfiguration {
     }
     if (helper.isParamPresent("-log")) {
       logFilename = helper.getParamValue("-log");
+    }
+    if (helper.isParamPresent("-debug")) {
+      isDebug = true;
     }
 
   }
@@ -367,6 +372,10 @@ public class GridHubConfiguration {
 
   public String getLogFilename() {
     return logFilename;
+  }
+
+  public boolean isDebug() {
+    return isDebug;
   }
 
   public Map<String, String> getGrid1Mapping() {
