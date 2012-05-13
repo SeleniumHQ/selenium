@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -57,16 +56,34 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   public void testSetsTheSizeOfTheCurrentWindow() {
-    WebDriver.Window window = driver.manage().window();
-    Dimension size = window.getSize();
-
     // resize relative to the initial size, since we don't know what it is
-    Dimension targetSize = new Dimension(size.width - 20, size.height - 20);
-    window.setSize(targetSize);
+    changeSizeBy(-20, -20);
+  }
 
-    Dimension newSize = window.getSize();
-    assertEquals(targetSize.width, newSize.width);
-    assertEquals(targetSize.height, newSize.height);
+  @Ignore(issues = {3897})
+  @Test
+  public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
+    driver.get(pages.framesetPage);
+    driver.switchTo().frame("fourth");
+    try {
+      // resize relative to the initial size, since we don't know what it is
+      changeSizeBy(-20, -20);
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+
+  @Ignore(issues = {3897})
+  @Test
+  public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
+    driver.get(pages.iframePage);
+    driver.switchTo().frame("iframe1-name");
+    try {
+      // resize relative to the initial size, since we don't know what it is
+      changeSizeBy(-20, -20);
+    } finally {
+      driver.switchTo().defaultContent();
+    }
   }
 
   @Ignore(IE)
@@ -118,7 +135,11 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeTo(new Dimension(275, 275));
 
     driver.switchTo().frame("fourth");
-    maximize();
+    try {
+      maximize();
+    } finally {
+      driver.switchTo().defaultContent();
+    }
   }
 
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
@@ -133,7 +154,17 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeTo(new Dimension(275, 275));
 
     driver.switchTo().frame("iframe1-name");
-    maximize();
+    try {
+      maximize();
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+
+  private void changeSizeBy(int deltaX, int deltaY) {
+    WebDriver.Window window = driver.manage().window();
+    Dimension size = window.getSize();
+    changeSizeTo(new Dimension(size.width + deltaX, size.height + deltaY));
   }
 
   private void changeSizeTo(Dimension targetSize) {
