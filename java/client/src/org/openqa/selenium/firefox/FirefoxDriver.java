@@ -275,7 +275,9 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
         connection.quit();
         connection = null;
       }
-      profile.cleanTemporaryModel();
+      if (profile != null) {
+        profile.cleanTemporaryModel();
+      }
     }
 
     public Response execute(Command command) throws IOException {
