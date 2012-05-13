@@ -3,6 +3,7 @@ java_library(name = "safari",
     "*.java",
   ],
   deps = [
+    "//javascript/safari-driver:SafariDriver",
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium/browserlaunchers/locators",
     "//java/client/src/org/openqa/selenium/io",
