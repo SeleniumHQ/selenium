@@ -339,7 +339,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
         throw new UnsupportedOperationException("Not supported yet.");
       }
 
-      public Object getAuxiliry() {
+      public Object getAuxiliary() {
         return getId();
       }
     };

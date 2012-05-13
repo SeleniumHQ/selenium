@@ -983,7 +983,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         return getLocation();
       }
 
-      public Object getAuxiliry() {
+      public Object getAuxiliary() {
         return getElement();
       }
     };

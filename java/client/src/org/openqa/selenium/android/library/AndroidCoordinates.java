@@ -42,7 +42,7 @@ class AndroidCoordinates implements Coordinates {
     return point;
   }
 
-  public Object getAuxiliry() {
+  public Object getAuxiliary() {
     return elementId; 
   }
 

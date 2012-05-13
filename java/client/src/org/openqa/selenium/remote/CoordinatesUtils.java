@@ -32,7 +32,7 @@ import java.util.Map;
     Map<String, Object> params = Maps.newHashMap();
 
     if (where != null) {
-      String id = (String) where.getAuxiliry();
+      String id = (String) where.getAuxiliary();
       params.put("element", id);
     }
 

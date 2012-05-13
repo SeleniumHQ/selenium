@@ -14,5 +14,5 @@ public interface Coordinates {
 
   Point getLocationInDOM();
 
-  Object getAuxiliry();
+  Object getAuxiliary();
 }

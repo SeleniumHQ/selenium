@@ -47,7 +47,7 @@ public class HtmlUnitMouse implements Mouse {
 
   private HtmlElement getElementForOperation(Coordinates potentialCoordinates) {
     if (potentialCoordinates != null) {
-      return (HtmlElement) potentialCoordinates.getAuxiliry();
+      return (HtmlElement) potentialCoordinates.getAuxiliary();
     }
 
     if (currentActiveElement == null) {
@@ -171,7 +171,7 @@ public class HtmlUnitMouse implements Mouse {
 
   public void mouseMove(Coordinates elementCoordinates) {
     Preconditions.checkNotNull(elementCoordinates);
-    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliry();
+    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliary();
 
     moveOutIfNeeded(element);
 
