@@ -40,7 +40,7 @@ goog.require('goog.userAgent');
 /**
  * A mouse that provides atomic mouse actions. This mouse currently only
  * supports having one button pressed at a time.
- *
+ * @param {bot.Mouse.State=} opt_state The mouse's initial state.
  * @constructor
  * @extends {bot.Device}
  */
@@ -81,6 +81,7 @@ bot.Mouse = function(opt_state) {
 
   if (opt_state) {
     this.buttonPressed_ = opt_state.buttonPressed;
+
     try {
       if (bot.dom.isElement(opt_state.elementPressed)) {
         this.elementPressed_ = opt_state.elementPressed;
@@ -88,12 +89,14 @@ bot.Mouse = function(opt_state) {
     } catch (ignored) {
       this.buttonPressed_ = null;
     }
+
     this.clientXY_ = opt_state.clientXY;
     this.nextClickIsDoubleClick_ = opt_state.nextClickIsDoubleClick;
-    this.hasEverInteracted_ = opt_state.hasEverInteracted_;
+    this.hasEverInteracted_ = opt_state.hasEverInteracted;
+
     try {
       if(bot.dom.isElement(opt_state.element)) {
-        this.element_ = opt_state.element;
+        this.setElement((/** @type {!Element} */opt_state.element));
       }
     } catch (ignored) {
       this.buttonPressed_ = null;
@@ -101,6 +104,17 @@ bot.Mouse = function(opt_state) {
   }
 };
 goog.inherits(bot.Mouse, bot.Device);
+
+
+/**
+ * @typedef {{buttonPressed: ?bot.Mouse.Button,
+ *           elementPressed: Element,
+ *           clientXY: !goog.math.Coordinate,
+ *           nextClickIsDoubleClick: boolean,
+ *           hasEverInteracted: boolean,
+ *           element: Element}}
+ */
+bot.Mouse.State;
 
 
 /**
@@ -393,8 +407,7 @@ bot.Mouse.prototype.getButtonValue_ = function(eventType) {
 
 /**
 * Serialize the current state of the mouse.
-*
-* @return {!Object} The current mouse state.
+* @return {!bot.Mouse.State} The current mouse state.
 */
 bot.Mouse.prototype.getState = function () {
   var state = {};
@@ -403,6 +416,6 @@ bot.Mouse.prototype.getState = function () {
   state.clientXY = this.clientXY_;
   state.nextClickIsDoubleClick = this.nextClickIsDoubleClick_;
   state.hasEverInteracted = this.hasEverInteracted_;
-  state.element = this.element_;
+  state.element = this.getElement();
   return state;
 };

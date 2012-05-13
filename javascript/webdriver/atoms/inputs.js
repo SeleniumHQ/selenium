@@ -29,7 +29,8 @@ goog.require('goog.array');
  * Send keyboard input to a particular element.
  *
  * @param {!Element} element The element to send the keyboard input to.
- * @param {Array.<!bot.Keyboard.Key>=} opt_state The keyboard to use, or construct one.
+ * @param {Array.<!bot.Keyboard.Key>=} opt_state The keyboard to use, or
+ *     construct one.
  * @param {...(string|!Array.<string>)} var_args What to type.
  * @return {Array.<!bot.Keyboard.Key>} The keyboard state.
  */
@@ -50,11 +51,12 @@ goog.exportSymbol('webdriver.atoms.inputs.sendKeys',
 
 
 /**
-* Click on an element.
-*
-* @param {!Element} element The element to click.
-* @return {Object} The mouse state.
-*/
+ * Click on an element.
+ *
+ * @param {!Element} element The element to click.
+ * @return {!bot.Mouse.State} The mouse state.
+ * @return {Object} The mouse state.
+ */
 webdriver.atoms.inputs.click = function(element, opt_state) {
   var mouse = new bot.Mouse(opt_state);
   if (!element) {
@@ -67,15 +69,16 @@ goog.exportSymbol('webdriver.atoms.inputs.click',
                   webdriver.atoms.inputs.click);
 
 /**
-* Move the mouse to a specific element and/or coordinate location.
-*
-* @param {!Element} element The element to move the mouse to.
-* @param {int} x_offset The x coordinate to use as an offset.
-* @param {int} y_offset The y coordinate to use as an offset.
-* @param {Object} opt_state The serialized state of the mouse.
-* @return {Object} The mouse state.
-*/
-webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset, opt_state) {
+ * Move the mouse to a specific element and/or coordinate location.
+ *
+ * @param {!Element} element The element to move the mouse to.
+ * @param {number} x_offset The x coordinate to use as an offset.
+ * @param {number} y_offset The y coordinate to use as an offset.
+ * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
+ * @return {!bot.Mouse.State} The mouse state.
+ */
+webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset,
+    opt_state) {
   var mouse = new bot.Mouse(opt_state);
   var target = element || mouse.getElement();
 
