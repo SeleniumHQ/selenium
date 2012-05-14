@@ -1,4 +1,3 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
 package org.openqa.selenium.interactions.internal;
 
 import org.openqa.selenium.Point;

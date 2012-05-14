@@ -1,6 +1,5 @@
 /*
 Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
 Portions copyright 2011 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
