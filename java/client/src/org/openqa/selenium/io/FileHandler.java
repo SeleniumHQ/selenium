@@ -22,7 +22,7 @@ import com.google.common.io.Closeables;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.os.CommandLine;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +37,8 @@ import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 /**
  * Utility methods for common filesystem activities
  */
@@ -44,7 +46,6 @@ public class FileHandler {
   private static final Method JDK6_CANEXECUTE = findJdk6CanExecuteMethod();
   private static final Method JDK6_SETWRITABLE = findJdk6SetWritableMethod();
   private static final Method JDK6_SETEXECUTABLE = findJdk6SetExecutableMethod();
-  private static final File CHMOD = findChmodCommand();
 
   // TODO(simon): Move to using Zip class
   public static File unzip(InputStream resource) throws IOException {
@@ -126,13 +127,12 @@ public class FileHandler {
       } catch (InvocationTargetException e) {
         // Do nothing. We return false in the end
       }
-    } else if (CHMOD != null) {
+    } else if (!Platform.getCurrent().is(WINDOWS)) {
       try {
-        Process process = Runtime.getRuntime().exec(
-            new String[] {CHMOD.getAbsolutePath(), "+w", file.getAbsolutePath()});
-        process.waitFor();
+        CommandLine cmd = new CommandLine("chmod", "+w", file.getAbsolutePath());
+        cmd.execute();
         return file.canWrite();
-      } catch (InterruptedException e1) {
+      } catch (WebDriverException e1) {
         throw new WebDriverException(e1);
       }
     }
@@ -152,13 +152,12 @@ public class FileHandler {
       } catch (InvocationTargetException e) {
         // Do nothing. We return false in the end
       }
-    } else if (CHMOD != null) {
+    } else if (!Platform.getCurrent().is(WINDOWS)) {
       try {
-        Process process = Runtime.getRuntime().exec(
-            new String[] {CHMOD.getAbsolutePath(), "+x", file.getAbsolutePath()});
-        process.waitFor();
+        CommandLine cmd = new CommandLine("chmod", "+x", file.getAbsolutePath());
+        cmd.execute();
         return canExecute(file) == Boolean.TRUE;
-      } catch (InterruptedException e1) {
+      } catch (WebDriverException e1) {
         throw new WebDriverException(e1);
       }
     }
@@ -286,14 +285,6 @@ public class FileHandler {
     } catch (NoSuchMethodException e) {
       return null;
     }
-  }
-
-  /**
-   * In JDK5 and earlier, we have to use a chmod command from the path.
-   */
-  private static File findChmodCommand() {
-    String chmod = new ExecutableFinder().find("chmod");
-    return chmod == null ? null : new File(chmod);
   }
 
   /**

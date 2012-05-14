@@ -17,7 +17,6 @@
 package org.openqa.selenium.browserlaunchers;
 
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.util.Arrays;
@@ -98,7 +97,7 @@ public class MacProxyManager {
     if (defaultLocation.exists()) {
       return defaultLocation.getAbsolutePath();
     }
-    String networkSetupBin = new ExecutableFinder().find("networksetup");
+    String networkSetupBin = CommandLine.find("networksetup");
     if (networkSetupBin != null) {
       return networkSetupBin;
     }
@@ -199,7 +198,7 @@ public class MacProxyManager {
     if (defaultLocation.exists()) {
       return defaultLocation.getAbsolutePath();
     }
-    String scutilBin = new ExecutableFinder().find("scutil");
+    String scutilBin = CommandLine.find("scutil");
     if (scutilBin != null) {
       return scutilBin;
     }

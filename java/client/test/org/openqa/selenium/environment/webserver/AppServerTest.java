@@ -22,7 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.os.CommandLine;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
@@ -36,7 +36,7 @@ public class AppServerTest {
 
   @BeforeClass
   public static void startDriver() throws Throwable {
-    System.setProperty("webdriver.chrome.driver", new ExecutableFinder().find("chromedriver"));
+    System.setProperty("webdriver.chrome.driver", CommandLine.find("chromedriver"));
     driver = new ChromeDriver();
   }
 

@@ -97,6 +97,14 @@ public class CommandLine {
     }
   }
 
+  /**
+   * @deprecated Use the commandline itself to execute your command.
+   */
+  @Deprecated
+  public static String find(String executable) {
+    return new ExecutableFinder().find(executable);
+  }
+
   public void executeAsync() {
     process.executeAsync();
   }

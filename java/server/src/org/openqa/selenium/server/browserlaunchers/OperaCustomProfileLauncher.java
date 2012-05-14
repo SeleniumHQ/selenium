@@ -22,7 +22,6 @@ import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
@@ -59,7 +58,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
   private static String additionalSettings = "";
 
   protected File locateBinaryInPath(String commandPath) {
-    return new File(new ExecutableFinder().find(commandPath));
+    return new File(CommandLine.find(commandPath));
   }
 
   public OperaCustomProfileLauncher(Capabilities browserOptions,
@@ -103,7 +102,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     if (defaultLocation.exists()) {
       return defaultLocation.getAbsolutePath();
     }
-    String operaBin = new ExecutableFinder().find("opera");
+    String operaBin = CommandLine.find("opera");
     if (operaBin != null) return operaBin;
     throw new RuntimeException("Opera could not be found in the path!\n" +
         "Please add the directory containing opera.exe to your PATH environment\n" +

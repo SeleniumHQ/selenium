@@ -14,7 +14,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
-public class ExecutableFinder {
+class ExecutableFinder {
   private static final ImmutableSet<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
       ImmutableSet.of("", ".exe", ".com", ".bat") : ImmutableSet.of("");
 

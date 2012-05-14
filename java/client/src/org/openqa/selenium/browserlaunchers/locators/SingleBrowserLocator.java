@@ -2,7 +2,6 @@ package org.openqa.selenium.browserlaunchers.locators;
 
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.File;
@@ -88,7 +87,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
   }
 
   public BrowserInstallation findFileInPath(String fileName) {
-    return retrieveValidInstallationPath(new ExecutableFinder().find(fileName));
+    return retrieveValidInstallationPath(CommandLine.find(fileName));
   }
 
   protected String couldNotFindAnyInstallationMessage() {
