@@ -50,9 +50,7 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 public class ExecutingJavascriptTest extends JUnit4TestBase {
 
@@ -120,9 +118,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IPHONE})
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray() {
+  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
     }
@@ -140,7 +137,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IPHONE})
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -164,7 +160,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, IPHONE})
+  @Ignore(IE)
   @Test
   public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -193,7 +189,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, IPHONE})
+  @Ignore(IE)
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -388,7 +384,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore
+  @Ignore(OPERA)
   @Test
   public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -402,7 +398,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, REMOTE})
+  @Ignore(IE)
   @Test
   public void testShouldBeAbleToPassACollectionAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -455,8 +451,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = {IPHONE},
-          reason = "iPhone: Frame switching not yet implemented.")
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
@@ -473,7 +467,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore
+  @Ignore(value = IE, reason = "Untested")
   @Test
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
@@ -514,7 +508,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({REMOTE, IPHONE})
   @Test
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
@@ -529,9 +522,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore
-  // Reason for ignore: Failure indicates hang condition,
-  // which would break the test suite. Really needs a timeout set.
+  @Ignore(reason = "Failure indicates hang condition, which would break the" +
+      " test suite. Really needs a timeout set.")
   @Test
   public void testShouldThrowExceptionIfExecutingOnNoPage() {
     try {
@@ -572,8 +564,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, OPERA},
-          reason = "Opera and HtmlUnit obey the method contract. Android, IE and iOS, not tested")
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, OPERA},
+          reason = "Opera and HtmlUnit obey the method contract. Android and IE not tested")
   @Test
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
