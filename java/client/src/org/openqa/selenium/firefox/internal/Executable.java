@@ -157,8 +157,15 @@ public class Executable {
         // Do nothing
     }
 
-    return binary != null &&
-        binary.exists() ? binary : new File(CommandLine.find(BrowserType.FIREFOX));
+    if (binary != null && binary.exists()) {
+      return binary;
+    }
+
+    String systemFirefox = CommandLine.find(BrowserType.FIREFOX);
+    if (systemFirefox != null) {
+      new File(systemFirefox);
+    }
+    return null;
   }
 
   private static File findExistingBinary(final ImmutableList<String> paths) {
