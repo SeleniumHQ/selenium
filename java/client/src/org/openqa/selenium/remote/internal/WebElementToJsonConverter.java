@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.internal;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.internal.WrapsElement;
@@ -50,6 +51,10 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
 
     if (arg instanceof RemoteWebElement) {
       return ImmutableMap.of("ELEMENT", ((RemoteWebElement) arg).getId());
+    }
+
+    if (arg.getClass().isArray()) {
+      arg = Lists.newArrayList((Object[]) arg);
     }
 
     if (arg instanceof Collection<?>) {
