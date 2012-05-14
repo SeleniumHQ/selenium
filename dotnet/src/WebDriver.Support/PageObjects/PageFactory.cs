@@ -64,22 +64,30 @@ namespace OpenQA.Selenium.Support.PageObjects
                 members.AddRange(type.GetProperties(NonPublicBindingOptions));
                 type = type.BaseType;
             }
-            
+
             foreach (var member in members)
             {
+                List<By> bys = new List<By>();
+                bool cache = false;
                 var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
-                foreach (var attribute in attributes)
+                if (attributes.Length > 0)
                 {
-                    var castedAttribute = (FindsByAttribute)attribute;
-                    if (castedAttribute.Using == null)
+                    Array.Sort(attributes);
+                    foreach (var attribute in attributes)
                     {
-                        castedAttribute.Using = member.Name;
+                        var castedAttribute = (FindsByAttribute)attribute;
+                        if (castedAttribute.Using == null)
+                        {
+                            castedAttribute.Using = member.Name;
+                        }
+
+                        bys.Add(castedAttribute.Finder);
                     }
 
                     var cacheAttributeType = typeof(CacheLookupAttribute);
-                    var cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
-                    
-                    var interceptor = new ProxiedWebElementInterceptor(driver, castedAttribute.Bys, cache);
+                    cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
+
+                    var interceptor = new ProxiedWebElementInterceptor(driver, bys, cache);
 
                     var options = new ProxyGenerationOptions
                         {
@@ -182,7 +190,7 @@ namespace OpenQA.Selenium.Support.PageObjects
                 }
                 else if (invocation.Method.Name == "get_LocationOnScreenOnceScrolledIntoView" || invocation.Method.Name == "get_Coordinates")
                 {
-                    invocation.ReturnValue = invocation.GetConcreteMethod().Invoke((this.WrappedElement as ILocatable), invocation.Arguments);
+                    invocation.ReturnValue = invocation.GetConcreteMethod().Invoke(this.WrappedElement as ILocatable, invocation.Arguments);
                 }
                 else
                 {

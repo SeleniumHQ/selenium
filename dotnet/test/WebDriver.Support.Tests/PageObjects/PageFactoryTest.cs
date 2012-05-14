@@ -118,34 +118,33 @@ namespace OpenQA.Selenium.Support.PageObjects
             AssertFindsElement(page, () => page.element);
         }
 
-        //TODO: Implement FindBys
-        //[Test]
-        //public void FallsBackOnOtherLocatorsOnFailure()
-        //{
-        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
-        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("form")).Will(Return.Value(mockElement));
-        //    Expect.Never.On(mockDriver).Method("FindElement").With(By.Id("notthiseither")).Will(Return.Value(mockElement));
+        [Test]
+        public void FallsBackOnOtherLocatorsOnFailure()
+        {
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("form")).Will(Return.Value(mockElement));
+            Expect.Never.On(mockDriver).Method("FindElement").With(By.Id("notthiseither")).Will(Return.Value(mockElement));
 
-        //    Expect.Once.On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
+            Expect.Once.On(mockElement).GetProperty("TagName").Will(Return.Value("form"));
 
-        //    var page = new FallsbackPage();
-        //    PageFactory.InitElements(mockDriver, page);
+            var page = new FallsbackPage();
+            PageFactory.InitElements(mockDriver, page);
 
-        //    AssertFoundElement(page.formElement);
-        //}
+            AssertFoundElement(page.formElement);
+        }
 
-        //[Test]
-        //public void ThrowsIfAllLocatorsFail()
-        //{
-        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
-        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("notthiseither")).Will(Throw.Exception(new NoSuchElementException()));
-        //    Expect.Once.On(mockDriver).Method("FindElement").With(By.Id("stillnotthis")).Will(Throw.Exception(new NoSuchElementException()));
+        [Test]
+        public void ThrowsIfAllLocatorsFail()
+        {
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("notthisname")).Will(Throw.Exception(new NoSuchElementException()));
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.TagName("notthiseither")).Will(Throw.Exception(new NoSuchElementException()));
+            Expect.Once.On(mockDriver).Method("FindElement").With(By.Id("stillnotthis")).Will(Throw.Exception(new NoSuchElementException()));
 
-        //    var page = new FailsToFallbackPage();
-        //    PageFactory.InitElements(mockDriver, page);
+            var page = new FailsToFallbackPage();
+            PageFactory.InitElements(mockDriver, page);
 
-        //    Assert.Throws(typeof(NoSuchElementException), page.formElement.Clear);
-        //}
+            Assert.Throws(typeof(NoSuchElementException), page.formElement.Clear);
+        }
 
         [Test]
         public void CachesElement()
@@ -270,17 +269,21 @@ namespace OpenQA.Selenium.Support.PageObjects
             public override IWebElement element { get; set; }
         }
 
-        //private class FallsbackPage
-        //{
-        //    [FindsBy(Name = "notthisname", TagName = "form", Id = "notthiseither")]
-        //    public IWebElement formElement;
-        //}
+        private class FallsbackPage
+        {
+            [FindsBy(How = How.Name, Using = "notthisname", Priority = 0)]
+            [FindsBy(How = How.TagName, Using = "form", Priority = 1)]
+            [FindsBy(How = How.Id, Using = "notthiseither", Priority = 2)]
+            public IWebElement formElement;
+        }
 
-        //private class FailsToFallbackPage
-        //{
-        //    [FindsBy(Name = "notthisname", TagName = "notthiseither", Id = "stillnotthis")]
-        //    public IWebElement formElement;
-        //}
+        private class FailsToFallbackPage
+        {
+            [FindsBy(How = How.Name, Using = "notthisname", Priority = 0)]
+            [FindsBy(How = How.TagName, Using = "notthiseither", Priority = 1)]
+            [FindsBy(How = How.Id, Using = "stillnotthis", Priority = 2)]
+            public IWebElement formElement;
+        }
 
         private class ElementAsPropertyPage
         {

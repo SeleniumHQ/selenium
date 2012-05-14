@@ -75,6 +75,7 @@
     <Compile Include="Events\WebDriverScriptEventArgs.cs" />
     <Compile Include="Events\WebElementEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="PageObjects\ByChained.cs" />
     <Compile Include="PageObjects\ByFactory.cs" />
     <Compile Include="PageObjects\CacheLookupAttribute.cs" />
     <Compile Include="PageObjects\FindsByAttribute.cs" />
