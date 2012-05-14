@@ -157,7 +157,7 @@ module Selenium
         def create_remote_driver
           WebDriver::Driver.for(:remote,
             :desired_capabilities => remote_capabilities,
-            :url                  => remote_server.webdriver_url,
+            :url                  => ENV['WD_REMOTE_URL'] || remote_server.webdriver_url,
             :http_client          => keep_alive_client || http_client
           )
         end
