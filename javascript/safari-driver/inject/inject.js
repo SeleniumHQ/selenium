@@ -19,17 +19,18 @@
 goog.provide('safaridriver.inject');
 
 goog.require('bot.ErrorCode');
+goog.require('bot.locators.xpath');
 goog.require('bot.response');
 goog.require('goog.debug.Logger');
-goog.require('webdriver.Command');
-goog.require('webdriver.CommandName');
-goog.require('webdriver.promise');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.message');
 goog.require('safaridriver.console');
-goog.require('safaridriver.inject.PageMessenger');
 goog.require('safaridriver.inject.commands');
+goog.require('safaridriver.inject.page');
 goog.require('safaridriver.inject.state');
+goog.require('webdriver.Command');
+goog.require('webdriver.CommandName');
+goog.require('webdriver.promise');
 
 
 /**
@@ -38,6 +39,22 @@ goog.require('safaridriver.inject.state');
  */
 safaridriver.inject.LOG = goog.debug.Logger.getLogger(
     'safaridriver.inject');
+
+
+/**
+ * @type {!Object.<!webdriver.promise.Deferred>}
+ * @private
+ */
+safaridriver.inject.pendingCommands_ = {};
+
+
+/**
+ * A promise that is resolved once the SafariDriver page script has been
+ * loaded by the current page.
+ * @type {webdriver.promise.Deferred}
+ * @private
+ */
+safaridriver.inject.installedPageScript_ = null;
 
 
 /** Initializes this injected script. */
@@ -51,10 +68,8 @@ safaridriver.inject.init = function() {
   safari.self.addEventListener('message',
       safaridriver.inject.onExtensionMessage_, false);
 
-  var pageMessenger = safaridriver.inject.PageMessenger.getInstance();
-  var onMessage = goog.bind(pageMessenger.onMessage, pageMessenger);
-
-  window.addEventListener('message', onMessage, true);
+  window.addEventListener('message',
+      safaridriver.inject.onWindowMessage_, true);
 
   if (safaridriver.inject.state.IS_TOP) {
     window.addEventListener('load', function() {
@@ -72,6 +87,24 @@ safaridriver.inject.init = function() {
       message.sendSync(safari.self.tab);
     }, true);
   }
+};
+
+
+/**
+ * Installs a script in the web page that facilitates communication between this
+ * sandboxed environment and the web page.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when the
+ *     page has been fully initialized.
+ * @private
+ */
+safaridriver.inject.installPageScript_ = function() {
+  if (!safaridriver.inject.installedPageScript_) {
+    safaridriver.inject.LOG.info('Installing page script');
+    safaridriver.inject.installedPageScript_ =
+        new webdriver.promise.Deferred();
+    safaridriver.inject.page.init();
+  }
+  return safaridriver.inject.installedPageScript_.promise;
 };
 
 
@@ -122,6 +155,126 @@ safaridriver.inject.onExtensionMessage_ = function(e) {
 
 
 /**
+ * Handles messages received from another window.
+ * @param {Event} e The message event.
+ * @private
+ */
+safaridriver.inject.onWindowMessage_ = function(e) {
+  try {
+    var message = safaridriver.message.fromEvent(
+        (/** @type {!MessageEvent} */e));
+  } catch (ex) {
+    safaridriver.inject.LOG.warning(
+        'Unable to parse message: ' + ex +
+            '\nOriginal message: ' + JSON.stringify(e.data));
+    return;
+  }
+
+  // If we've just received an activate message, only acknowledge it if it came
+  // from our own context. This indicates another frame has just told us to
+  // activate ourselves. Otherwise, ignore messages that are from our own
+  // context. How would we receive our own messages?  Simple - when we post a
+  // message to the page, in addition to going to the page, it will be posted
+  // back on our own window.
+  if (message.isType(safaridriver.message.Type.ACTIVATE)) {
+    if (message.getOrigin() !== safaridriver.message.ORIGIN) {
+      return;
+    }
+  } else if (message.getOrigin() === safaridriver.message.ORIGIN) {
+    return;
+  }
+
+  var type = message.getType();
+  switch (type) {
+    case safaridriver.message.Type.ACTIVATE:
+      safaridriver.inject.LOG.info(
+          'Activating frame for future command handling.');
+      safaridriver.inject.state.setActive(true);
+      message.send(safari.self.tab);
+      break;
+
+    case safaridriver.message.Type.CONNECT:
+      safaridriver.inject.LOG.info(
+          'Content page has requested a WebDriver client connection to ' +
+              message.getUrl());
+      message.send(safari.self.tab);
+      break;
+
+    case safaridriver.message.Type.ENCODE:
+      safaridriver.inject.LOG.fine('Encoding element for another window');
+      safaridriver.inject.onEncode_(
+          (/** @type {!safaridriver.message.EncodeMessage} */ message),
+          e.source);
+      break;
+
+    case safaridriver.message.Type.LOAD:
+      if (safaridriver.inject.installedPageScript_ &&
+          safaridriver.inject.installedPageScript_.isPending()) {
+        safaridriver.inject.installedPageScript_.resolve();
+      }
+      break;
+
+    case safaridriver.message.Type.RESPONSE:
+      safaridriver.inject.onResponse_(
+          (/** @type {!safaridriver.message.ResponseMessage} */ message));
+      break;
+
+    default:
+      safaridriver.inject.LOG.fine('Unknown message: ' + message);
+      break;
+  }
+};
+
+
+/**
+ * @param {!safaridriver.message.EncodeMessage} message The message.
+ * @param {Window} source The window to respond to.
+ * @private
+ */
+safaridriver.inject.onEncode_ = function(message, source) {
+  if (!source) {
+    safaridriver.inject.LOG.severe('Not looking up element: ' +
+        message.getXPath() + '; no window to respond to!');
+    return;
+  }
+
+  var result = bot.inject.executeScript(function() {
+    var xpath = message.getXPath();
+    return bot.locators.xpath.single(xpath, document);
+  }, []);
+
+  var response = new safaridriver.message.ResponseMessage(
+      message.getId(), (/** @type {!bot.response.ResponseObject} */result));
+  response.send(source);
+};
+
+
+/**
+ * Handles response messages from the page.
+ * @param {!safaridriver.message.ResponseMessage} message The message.
+ * @private
+ */
+safaridriver.inject.onResponse_ = function(message) {
+  var promise = safaridriver.inject.pendingCommands_[message.getId()];
+  if (!promise) {
+    safaridriver.inject.LOG.warning(
+        'Received response to an unknown command: ' + message);
+    return;
+  }
+
+  delete safaridriver.inject.pendingCommands_[message.getId()];
+
+  var response = message.getResponse();
+  try {
+    response['value'] = safaridriver.inject.page.decodeValue(response['value']);
+    promise.resolve(response);
+  } catch (ex) {
+    promise.reject(bot.response.createErrorResponse(ex));
+  }
+};
+
+
+/**
  * Command message handler.
  * @param {!safaridriver.message.CommandMessage} message The command message.
  * @private
@@ -165,7 +318,7 @@ safaridriver.inject.onCommand_ = function(message) {
       // command immediately. We're assuming the global page is scheduling
       // commands and only dispatching one at a time.
       webdriver.promise.when(
-          handler(command, safaridriver.inject.PageMessenger.getInstance()),
+          handler(command, safaridriver.inject.sendCommandToPage),
           sendSuccess, sendError);
     } catch (ex) {
       sendError(ex);
@@ -195,10 +348,35 @@ safaridriver.inject.onCommand_ = function(message) {
 
 
 /**
+ * Sends a command message to the page.
+ * @param {!safaridriver.Command} command The command to send.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     a response message has been received.
+ */
+safaridriver.inject.sendCommandToPage = function(command) {
+  return safaridriver.inject.installPageScript_().addCallback(function() {
+    var parameters = command.getParameters();
+    parameters = (/** @type {!Object.<*>} */
+        safaridriver.inject.page.encodeValue(parameters));
+    command.setParameters(parameters);
+
+    var message = new safaridriver.message.CommandMessage(command);
+    safaridriver.inject.LOG.info('Sending message: ' + message);
+
+    var commandResponse = new webdriver.promise.Deferred();
+    safaridriver.inject.pendingCommands_[command.getId()] = commandResponse;
+    message.send(window);
+    return commandResponse.promise;
+  });
+};
+
+
+/**
  * Maps command names to the function that handles it.
  * @type {!Object.<(
- *     function(!safaridriver.Command, !safaridriver.inject.PageMessenger)|
- *     function(!safaridriver.Command)|function())>}
+ *     function(!safaridriver.Command, function(!safaridriver.Command))|
+ *     function(!safaridriver.Command)|
+ *     function())>}
  * @private
  */
 safaridriver.inject.COMMAND_MAP_ = {};

@@ -35,7 +35,6 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.net.cookies');
 goog.require('goog.style');
-goog.require('safaridriver.inject.PageMessenger');
 goog.require('safaridriver.inject.state');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.promise.Deferred');
@@ -277,13 +276,13 @@ safaridriver.inject.commands.setWindowSize = function(command) {
  * Sends a command to the page to have it execute a user-supplied bit of
  * JavaScript.
  * @param {!safaridriver.Command} command The command to execute.
- * @param {!safaridriver.inject.PageMessenger} messenger The page messenger to
- *     use.
+ * @param {function(!safaridriver.Command)} pageExecutor Function to use to
+ *     execute the script command in the context of the page under test.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     {@link bot.response.ResponseObject} from the page.
  * @throws {Error} If there is an error while sending the command to the page.
  */
-safaridriver.inject.commands.executeScript = function(command, messenger) {
+safaridriver.inject.commands.executeScript = function(command, pageExecutor) {
   // Decode the command arguments from WebDriver's wire protocol.
   var sendResult = bot.inject.executeScript(function(args) {
     command.setParameter('args', args);
@@ -301,9 +300,9 @@ safaridriver.inject.commands.executeScript = function(command, messenger) {
   // extension. So, we check for it here.
   window.addEventListener('unload', onunload, false);
 
-  // Send the command using the provided messenger, then encode the response for
-  // WebDriver's wire protocol.
-  messenger.sendCommand(command).then(function(result) {
+  // Execute the command in the context of the page, then encode the response
+  // for WebDriver's wire protocol.
+  pageExecutor(command).then(function(result) {
     window.removeEventListener('unload', onunload, false);
     if (response.isPending()) {
       response.resolve(bot.inject.wrapValue(result));
@@ -329,11 +328,9 @@ safaridriver.inject.commands.executeScript = function(command, messenger) {
  * extension. The located frame will be
  * @param {!safaridriver.Command} command The command to execute.
  *     the target of all subsequent commands.
- * @param {!safaridriver.inject.PageMessenger} messenger The page messenger to
- *     use.
  * @throws {Error} If there is an error whilst locating the frame.
  */
-safaridriver.inject.commands.switchToFrame = function(command, messenger) {
+safaridriver.inject.commands.switchToFrame = function(command) {
   var id = command.getParameter('id');
   var frameWindow;
   if (goog.isNull(id)) {
