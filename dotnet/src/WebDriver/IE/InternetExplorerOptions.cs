@@ -74,8 +74,8 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public bool EnableNativeEvents
         {
-            get { return enableNativeEvents; }
-            set { enableNativeEvents = value; }
+            get { return this.enableNativeEvents; }
+            set { this.enableNativeEvents = value; }
         }
 
         /// <summary>
