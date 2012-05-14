@@ -1,6 +1,6 @@
 package org.openqa.selenium.net;
 /*
-Copyright 2011 WebDriver committers
+Copyright 2011 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

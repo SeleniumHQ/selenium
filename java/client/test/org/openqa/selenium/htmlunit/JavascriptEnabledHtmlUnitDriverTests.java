@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 WebDriver committers
+Copyright 2007-2009 Selenium committers
 Copyright 2007-2009 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");

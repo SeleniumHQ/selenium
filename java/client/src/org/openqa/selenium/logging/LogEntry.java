@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2011 WebDriver committers
+Copyright 2007-2011 Selenium committers
 
 Portions copyright 2011 Software Freedom Conservancy
 

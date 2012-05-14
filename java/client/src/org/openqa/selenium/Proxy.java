@@ -1,4 +1,4 @@
-// Copyright 2007-2009 WebDriver committers
+// Copyright 2007-2009 Selenium committers
 package org.openqa.selenium;
 
 import java.util.Map;
