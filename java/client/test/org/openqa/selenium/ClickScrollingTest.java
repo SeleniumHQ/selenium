@@ -100,7 +100,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertEquals("Should not have scrolled", 0, yOffset);
   }
 
-  @Ignore({CHROME, IPHONE})
+  @Ignore({CHROME, IPHONE, SELENESE})
   @Test
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));

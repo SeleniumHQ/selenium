@@ -22,7 +22,10 @@ import java.util.Map;
 
 public class ClickElement extends ElementFunction<Void> {
   public Void apply(Selenium selenium, Map<String, ?> args) {
-    selenium.click(getLocator(args));
+    String locator = getLocator(args);
+
+    selenium.getEval("var e = selenium.browserbot.findElement('" + locator +
+                     "'); webdriver.atoms.inputs.click(e)");
     return null;
   }
 }

@@ -145,7 +145,7 @@ public class SelectElementTest extends JUnit4TestBase {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
-    WebElement firstSelected = select.getFirstSelectedOption();
+    select.getFirstSelectedOption();
   }
 
   @Test
