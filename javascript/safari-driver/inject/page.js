@@ -321,6 +321,13 @@ safaridriver.inject.page.encodeValue = function(value) {
                 (/** @type {!Element} */value));
         return encoded;
       }
+
+      // Check for a NodeList.
+      if (goog.isArrayLike(value)) {
+        return goog.array.map((/** @type {!goog.array.ArrayLike} */value),
+            safaridriver.inject.page.encodeValue);
+      }
+
       return goog.object.map((/** @type {!Object} */value),
           safaridriver.inject.page.encodeValue);
 
