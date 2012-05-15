@@ -54,6 +54,6 @@ public class ConfigureTimeout extends WebDriverHandler implements JsonParameters
 
   @Override
   public String toString() {
-    return String.format("[implicitly wait: %s]", millis);
+    return String.format("[%s wait: %s]", type, millis);
   }
 }
