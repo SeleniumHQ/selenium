@@ -179,9 +179,9 @@ public class Executable {
       return binary;
     }
 
-    String systemFirefox = CommandLine.find(BrowserType.FIREFOX);
+    String systemFirefox = CommandLine.find("firefox");
     if (systemFirefox != null) {
-      new File(systemFirefox);
+      return new File(systemFirefox);
     }
     return null;
   }
