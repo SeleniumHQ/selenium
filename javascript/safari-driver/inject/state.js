@@ -7,6 +7,7 @@
 goog.provide('safaridriver.inject.state');
 
 // DO NOT ADD DEPENDENCIES ON ANYTHING FROM safaridriver.inject !!!
+goog.require('goog.asserts');
 
 
 /**
@@ -22,6 +23,13 @@ safaridriver.inject.state.IS_TOP = window === window.top;
  * @private
  */
 safaridriver.inject.state.isActive_ = safaridriver.inject.state.IS_TOP;
+
+
+/**
+ * @type {Window}
+ * @private
+ */
+safaridriver.inject.state.activeFrame_ = null;
 
 
 /**
@@ -52,4 +60,30 @@ safaridriver.inject.state.isActive = function() {
  */
 safaridriver.inject.state.setActive = function(active) {
   safaridriver.inject.state.isActive_ = active;
+  if (active && safaridriver.inject.state.IS_TOP) {
+    safaridriver.inject.state.setActiveFrame(null);
+  }
+};
+
+
+/**
+ * Sets which within this frame is active.
+ * @param {Window} win The new active frame, or {@code null} if none are
+ *     active.
+ */
+safaridriver.inject.state.setActiveFrame = function(win) {
+  goog.asserts.assert(safaridriver.inject.state.IS_TOP,
+      'Active frames may only be saved with the top-most frame');
+  goog.asserts.assert(goog.isNull(win) || win.top === window,
+      'Frame does not belong to this window.');
+  safaridriver.inject.state.activeFrame_ = win;
+};
+
+
+/**
+ * @return {Window} The active frame for this window, or null if the top-most
+ *     frame is active.
+ */
+safaridriver.inject.state.getActiveFrame = function() {
+  return safaridriver.inject.state.activeFrame_;
 };

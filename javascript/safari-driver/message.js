@@ -68,7 +68,8 @@ safaridriver.message.fromEvent = function(event) {
 
   if (!goog.isObject(data) ||
       (!goog.isString(data[safaridriver.message.Message.Field.ORIGIN]) &&
-          !goog.isNumber(data[safaridriver.message.Message.Field.ORIGIN]))) {
+          !goog.isNumber(data[safaridriver.message.Message.Field.ORIGIN])) ||
+      !goog.isString(data[safaridriver.message.Message.Field.TYPE])) {
     throw Error('Invalid message: ' + JSON.stringify(data));
   }
 
@@ -90,14 +91,9 @@ safaridriver.message.fromEvent = function(event) {
       message = safaridriver.message.ResponseMessage.fromData_(data);
       break;
 
-    case safaridriver.message.Type.ACTIVATE:
-    case safaridriver.message.Type.LOAD:
-    case safaridriver.message.Type.UNLOAD:
+    default:
       message = safaridriver.message.Message.fromData_(data);
       break;
-
-    default:
-      throw Error('Unknown message type: ' + JSON.stringify(data));
   }
 
   var origin = (/** @type {(string|number)} */
@@ -111,7 +107,7 @@ safaridriver.message.fromEvent = function(event) {
  * Base class for messages exchanged between components of the SafariDriver.
  * may either be exchanged between the extension's global page and injected
  * script, or the injected script and web page content.
- * @param {!safaridriver.message.Type} type The message type.
+ * @param {string} type The message type.
  * @constructor
  */
 safaridriver.message.Message = function(type) {
@@ -213,7 +209,7 @@ safaridriver.message.Message.prototype.getType = function() {
 
 /**
  * Tests whether this message has the givne {@code type}.
- * @param {!safaridriver.message.Type} type The type to test for.
+ * @param {string} type The type to test for.
  * @return {boolean} Whether this message is of the given type.
  */
 safaridriver.message.Message.prototype.isType = function(type) {
@@ -238,16 +234,24 @@ safaridriver.message.Message.prototype.send = function(target) {
 
 
 /**
- * Sends this message synchronously to the proved tab proxy.
- * @param {!SafariContentBrowserTabProxy} proxy The proxy to send this message
- *     to.
+ * Sends this message synchronously to the proved tab proxy or window.
+ * @param {!(SafariContentBrowserTabProxy|Window)} target The proxy to send
+ *     this message to.
  */
-safaridriver.message.Message.prototype.sendSync = function(proxy) {
-  // Create a beforeload event, which is required by the canLoad function.
-  var stubEvent = document.createEvent('Events');
-  stubEvent.initEvent('beforeload', false, false);
-  proxy.canLoad(stubEvent, this.data_);
-  // TODO(jleyba): Handle the synchronous response.
+safaridriver.message.Message.prototype.sendSync = function(target) {
+  if (target.postMessage) {
+    var messageEvent = document.createEvent('MessageEvent');
+    messageEvent.initMessageEvent('message', false, false, this.data_,
+        // origin is a non-standard property on location.
+        window.location['origin'], '0', window, null);
+    target.dispatchEvent(messageEvent);
+  } else {
+    // Create a beforeload event, which is required by the canLoad function.
+    var stubEvent = document.createEvent('Events');
+    stubEvent.initEvent('beforeload', false, false);
+    target.canLoad(stubEvent, this.data_);
+    // TODO(jleyba): Handle the synchronous response.
+  }
 };
 
 

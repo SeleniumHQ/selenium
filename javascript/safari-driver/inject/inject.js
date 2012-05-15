@@ -44,6 +44,15 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger(
 
 
 /**
+ * @enum {string}
+ * @private
+ */
+safaridriver.inject.MessageType_ = {
+  ACTIVATE_FRAME: 'activate-frame'
+};
+
+
+/**
  * @type {!Object.<!webdriver.promise.Deferred>}
  * @private
  */
@@ -73,27 +82,33 @@ safaridriver.inject.init = function() {
 
   new safaridriver.message.MessageTarget(window).
       on(safaridriver.message.Type.ACTIVATE, safaridriver.inject.onActivate_).
+      on(safaridriver.inject.MessageType_.ACTIVATE_FRAME,
+         safaridriver.inject.onActivateFrame_).
       on(safaridriver.message.Type.CONNECT, safaridriver.inject.onConnect_).
       on(safaridriver.message.Type.ENCODE, safaridriver.inject.onEncode_).
       on(safaridriver.message.Type.LOAD, safaridriver.inject.onLoad_).
       on(safaridriver.message.Type.RESPONSE, safaridriver.inject.onResponse_);
 
-  if (safaridriver.inject.state.IS_TOP) {
-    window.addEventListener('load', function() {
-      var message = new safaridriver.message.Message(
-          safaridriver.message.Type.LOAD);
-      message.send(safari.self.tab);
-    }, true);
+  window.addEventListener('load', function() {
+    var message = new safaridriver.message.Message(
+        safaridriver.message.Type.LOAD);
 
-    window.addEventListener('unload', function() {
+    var target = safaridriver.inject.state.IS_TOP
+        ? safari.self.tab : window.top;
+    message.send(target);
+  }, true);
+
+  window.addEventListener('unload', function() {
+    if (safaridriver.inject.state.IS_TOP ||
+        safaridriver.inject.state.isActive()) {
       var message = new safaridriver.message.Message(
           safaridriver.message.Type.UNLOAD);
       // If we send this message asynchronously, which is the norm, then the
       // page will complete its unload before the message is sent. Use sendSync
       // to ensure the extension gets our message.
       message.sendSync(safari.self.tab);
-    }, true);
-  }
+    }
+  }, true);
 };
 
 
@@ -135,6 +150,26 @@ safaridriver.inject.onActivate_ = function(message, e) {
 
   // Notify the extension that a new frame has been activated.
   message.send(safari.self.tab);
+
+  if (!safaridriver.inject.state.IS_TOP) {
+    message = new safaridriver.message.Message(
+        safaridriver.inject.MessageType_.ACTIVATE_FRAME);
+    message.sendSync(window.top);
+  }
+};
+
+
+/**
+ * @param {!safaridriver.message.Message} message The activate message.
+ * @param {!MessageEvent} e The original message event.
+ * @private
+ */
+safaridriver.inject.onActivateFrame_ = function(message, e) {
+  if (safaridriver.inject.state.IS_TOP &&
+      safaridriver.inject.message.isFromFrame(e)) {
+    safaridriver.inject.LOG.info('Sub-frame has been activated');
+    safaridriver.inject.state.setActiveFrame(e.source);
+  }
 };
 
 
@@ -163,11 +198,26 @@ safaridriver.inject.onConnect_ = function(message, e) {
  * @private
  */
 safaridriver.inject.onLoad_ = function(message, e) {
-  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
-    return;
-  }
+  if (message.isSameOrigin()) {
+    if (safaridriver.inject.message.isFromFrame(e) &&
+        e.source &&
+        e.source === safaridriver.inject.state.getActiveFrame()) {
+      safaridriver.inject.LOG.info('Active frame has reloaded');
 
-  if (safaridriver.inject.installedPageScript_ &&
+      // Step 1: Tell the extension that the page has loaded and is ready for
+      // commands again. This message is async.
+      message = new safaridriver.message.Message(
+          safaridriver.message.Type.LOAD);
+      message.send(safari.self.tab);
+
+      // Step 2: The frame reloaded and will have forgotten to activate itself.
+      // Reactivate it - synchronously.
+      message = new safaridriver.message.Message(
+          safaridriver.message.Type.ACTIVATE);
+      message.sendSync((/** @type {!Window} */e.source));
+    }
+  } else if (safaridriver.inject.message.isFromSelf(e) &&
+      safaridriver.inject.installedPageScript_ &&
       safaridriver.inject.installedPageScript_.isPending()) {
     safaridriver.inject.installedPageScript_.resolve();
   }
