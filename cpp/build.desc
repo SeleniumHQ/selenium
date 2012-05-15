@@ -40,6 +40,25 @@ mozilla_lib(name = "webdriver_firefox_ff3",
   xpcom_lib = "xpcomglue_s",
   geckoversion="1.9.2")
 
+# Firefox 10 is an ESR release. We probably want to allow an overlap when the
+# next ESR release is made.
+mozilla_lib(name = "webdriver_firefox_10",
+  srcs = [ 
+    "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "i386",
+  geckoversion="10")
+
+mozilla_lib(name = "webdriver_firefox_10_64",
+  srcs = [ 
+    "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "amd64",
+  geckoversion="10")
+
+
 mozilla_lib(name = "webdriver_firefox_previous",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",

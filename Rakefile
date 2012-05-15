@@ -304,6 +304,14 @@ GeckoSDKs.new do |sdks|
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/2.0/sdk/xulrunner-2.0.en-US.win32.sdk.zip',
            '5cfa95a2d46334ce6283a772eff19382'
 
+  sdks.add 'third_party/gecko-10/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.linux-i686.sdk.tar.bz2',
+           '9ce89327cab356bc133675e5307cbdd3'
+
+  sdks.add 'third_party/gecko-10/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.linux-x86_64.sdk.tar.bz2',
+           '251cd1529050aa656a633a26883f12ac'
+
   sdks.add 'third_party/gecko-10/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/10.0/sdk/xulrunner-10.0.en-US.win32.sdk.zip',
            'c160fb382345282603ded4bf87abff45'
