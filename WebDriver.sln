@@ -72,6 +72,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Safari.Tests", "d
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriverServer", "cpp\IEDriverServer\IEDriverServer.vcxproj", "{08C3286F-F132-44EC-80F0-2DF30D87A5D3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-10", "cpp\webdriver-firefox\webdriver-firefox-10.vcxproj", "{979D51D1-AB6B-482D-AC3F-C5B226CFB904}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -444,6 +446,22 @@ Global
 		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|Win32.Build.0 = Release|Win32
 		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|x64.ActiveCfg = Release|x64
 		{08C3286F-F132-44EC-80F0-2DF30D87A5D3}.Release|x64.Build.0 = Release|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|.NET.ActiveCfg = Debug|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|Win32.ActiveCfg = Debug|Win32
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|Win32.Build.0 = Debug|Win32
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|x64.ActiveCfg = Debug|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|x64.Build.0 = Debug|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|.NET.ActiveCfg = Release|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Any CPU.ActiveCfg = Release|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Mixed Platforms.Build.0 = Release|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Win32.ActiveCfg = Release|Win32
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Win32.Build.0 = Release|Win32
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|x64.ActiveCfg = Release|x64
+		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,6 +5,13 @@ visualc_library(name = "firefox_dll",
   out = "Win32/Release/webdriver-firefox.dll"
 )
 
+visualc_library(name = "firefox10_dll",
+  platform = "Win32",
+  project = "webdriver-firefox/webdriver-firefox-10.vcxproj",
+  file_deps = "third_party/gecko-10/win32",
+  out = "Win32/Release/webdriver-firefox-10.dll"
+)
+
 visualc_library(name = "firefoxprevious_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-previous.vcxproj",

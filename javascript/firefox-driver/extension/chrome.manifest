@@ -45,6 +45,7 @@ contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE0
 
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=12
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll ABI=WINNT_x86-msvc appversion>=11a1 appversion<12
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-10.dll ABI=WINNT_x86-msvc appversion>=10a1 appversion<11
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc appversion<4
 
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc

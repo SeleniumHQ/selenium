@@ -44,6 +44,7 @@ mozilla_extension(name = "webdriver",
   ],
   resources = [
     { "//cpp:firefox_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
+    { "//cpp:firefox10_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox-10.dll" },
     { "//cpp:firefoxprevious_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll" },
     { "//cpp:firefoxlatest_dll" : "platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll" },
     { "//cpp:imehandler_dll" : "platform/WINNT_x86-msvc/components/imehandler.dll" },
