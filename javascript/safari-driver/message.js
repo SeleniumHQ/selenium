@@ -194,6 +194,15 @@ safaridriver.message.Message.prototype.getOrigin = function() {
 
 
 /**
+ * @return {boolean} Whether this message originated from the same context as
+ *     this script.
+ */
+safaridriver.message.Message.prototype.isSameOrigin = function() {
+  return this.getOrigin() === safaridriver.message.ORIGIN;
+};
+
+
+/**
  * @return {string} This message's type.
  */
 safaridriver.message.Message.prototype.getType = function() {

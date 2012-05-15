@@ -18,7 +18,7 @@ goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
-goog.require('webdriver.EventEmitter');
+goog.require('safaridriver.message.MessageTarget');
 
 
 /**
@@ -32,10 +32,10 @@ goog.require('webdriver.EventEmitter');
  *
  * @param {!SafariBrowserTab} browserTab The tab to track.
  * @constructor
- * @extends {webdriver.EventEmitter}
+ * @extends {safaridriver.message.MessageTarget}
  */
 safaridriver.extension.Tab = function(browserTab) {
-  goog.base(this);
+  goog.base(this, browserTab);
 
   /**
    * @type {!SafariBrowserTab}
@@ -61,14 +61,12 @@ safaridriver.extension.Tab = function(browserTab) {
    */
   this.readyListeners_ = [];
 
-  var onMessage = goog.bind(this.onMessage_, this);
-
-  browserTab.addEventListener('message', onMessage, false);
-  browserTab.addEventListener('close', function() {
-    browserTab.removeEventListener('message', onMessage, false);
-  }, false);
+  var dispose = goog.bind(this.dispose, this);
+  browserTab.addEventListener('close', goog.bind(this.dispose, this), false);
+  this.on(safaridriver.message.Type.LOAD, goog.bind(this.onLoad_, this));
+  this.on(safaridriver.message.Type.UNLOAD, goog.bind(this.onUnload_, this));
 };
-goog.inherits(safaridriver.extension.Tab, webdriver.EventEmitter);
+goog.inherits(safaridriver.extension.Tab, safaridriver.message.MessageTarget);
 
 
 /**
@@ -99,17 +97,9 @@ safaridriver.extension.Tab.prototype.getId = function() {
 };
 
 
-/**
- * @param {string} msg The message to log.
- * @param {goog.debug.Logger.Level=} opt_level The message level.
- * @param {Error=} opt_error An error message to log with the message.
- * @private
- */
-safaridriver.extension.Tab.prototype.log_ = function(msg, opt_level,
-                                                     opt_error) {
-  var level = opt_level || goog.debug.Logger.Level.INFO;
-  safaridriver.extension.Tab.LOG_.log(level, '[' + this.id_ + '] ' + msg,
-      opt_error);
+/** @override */
+safaridriver.extension.Tab.prototype.log = function(msg, opt_level, opt_error) {
+  goog.base(this, 'log', '[' + this.id_ + '] ' + msg, opt_level, opt_error);
 };
 
 
@@ -125,7 +115,7 @@ safaridriver.extension.Tab.prototype.whenReady = function(callback) {
     return;
   }
 
-  this.log_('Tab is not ready for commands; registering callback');
+  this.log('Tab is not ready for commands; registering callback');
   this.readyListeners_.push(callback);
 };
 
@@ -156,7 +146,7 @@ safaridriver.extension.Tab.prototype.loadsNewPage = function(url) {
  * @private
  */
 safaridriver.extension.Tab.prototype.onUnload_ = function() {
-  this.log_('Tab frame has been unloaded');
+  this.log('Tab frame has been unloaded');
   this.isReady_ = false;
   if (this.idleStateWaitKey_) {
     clearTimeout(this.idleStateWaitKey_);
@@ -169,7 +159,7 @@ safaridriver.extension.Tab.prototype.onUnload_ = function() {
  * @private
  */
 safaridriver.extension.Tab.prototype.onLoad_ = function() {
-  this.log_('Frame has loaded a new page; waiting for idle state');
+  this.log('Frame has loaded a new page; waiting for idle state');
   var self = this;
   self.isReady_ = true;
 
@@ -177,10 +167,10 @@ safaridriver.extension.Tab.prototype.onLoad_ = function() {
   if (!self.idleStateWaitKey_) {
     self.idleStateWaitKey_ = setTimeout(function() {
       self.idleStateWaitKey_ = null;
-      self.log_('Tab looks ready; notifying listeners');
+      self.log('Tab looks ready; notifying listeners');
       while (self.readyListeners_.length) {
         if (!self.isReady_) {
-          self.log_('Tab is loading another page');
+          self.log('Tab is loading another page');
           return;
         }
         self.readyListeners_.shift()(self.browserTab_);
@@ -204,9 +194,9 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   var message = new safaridriver.message.CommandMessage(command);
 
   var self = this;
-  self.log_('Preparing command: ' + JSON.stringify(command));
+  self.log('Preparing command: ' + JSON.stringify(command));
   this.whenReady(function(tab) {
-    self.log_('Sending command: ' + JSON.stringify(command));
+    self.log('Sending command: ' + JSON.stringify(command));
 
     var removeListeners = function() {
       self.removeListener(safaridriver.message.Type.RESPONSE, onResponse);
@@ -237,7 +227,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
       }
 
       if (message.getId() !== command.getId()) {
-        self.log_(
+        self.log(
             'Ignoring response to another command: ' + message +
                 ' (' + command.getId() + ')',
             goog.debug.Logger.Level.FINE);
@@ -245,7 +235,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
       }
 
       if (!response.isPending()) {
-        self.log_(
+        self.log(
             'Received command response after promise has been ' +
                 'resolved; perhaps it previously timed-out? ' + message,
             goog.debug.Logger.Level.WARNING);
@@ -264,7 +254,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     function onClose() {
       removeListeners();
       if (response.isPending()) {
-        self.log_(
+        self.log(
             'The window closed before a response was received.' +
                 'returning a null-success response.',
             goog.debug.Logger.Level.WARNING);
@@ -276,35 +266,4 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   });
 
   return response.promise;
-};
-
-
-/**
- * @param {!SafariExtensionMessageEvent} e The message event.
- * @private
- */
-safaridriver.extension.Tab.prototype.onMessage_ = function(e) {
-  try {
-    var message = safaridriver.message.fromEvent(e);
-  } catch (ex) {
-    this.log_(
-        'Unable to parse message: ' + e.name + ': ' +
-            JSON.stringify(e.message),
-        goog.debug.Logger.Level.SEVERE,
-        ex);
-    return;
-  }
-
-  this.log_('Received message: ' + message);
-  switch (message.getType()) {
-    case safaridriver.message.Type.LOAD:
-      this.onLoad_();
-      break;
-
-    case safaridriver.message.Type.UNLOAD:
-      this.onUnload_();
-      break;
-  }
-
-  this.emit(message.getType(), message);
 };

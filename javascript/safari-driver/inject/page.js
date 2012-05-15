@@ -33,6 +33,7 @@ goog.require('goog.string');
 goog.require('goog.dom.classes');
 goog.require('safaridriver.console');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.MessageTarget');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
 
@@ -84,8 +85,11 @@ safaridriver.inject.page.init = function() {
     safaridriver.console.init();
     safaridriver.inject.page.LOG_.info('Initializing for page');
 
-    window.addEventListener('message', safaridriver.inject.page.onMessage_,
-        true);
+    new safaridriver.message.MessageTarget(window)
+        .on(safaridriver.message.Type.COMMAND,
+            safaridriver.inject.page.onCommand_)
+        .on(safaridriver.message.Type.RESPONSE,
+            safaridriver.inject.page.onResponse_);
 
     var message = new safaridriver.message.Message(
         safaridriver.message.Type.LOAD);
@@ -116,52 +120,16 @@ safaridriver.inject.page.pendingResponses_ = {};
 
 
 /**
- * Responds to messages from the injected script.
- * @param {Event} e The message event.
- * @private
- */
-safaridriver.inject.page.onMessage_ = function(e) {
-  try {
-    var message = safaridriver.message.fromEvent(
-        (/** @type {!MessageEvent} */e));
-  } catch (ex) {
-    // Silently ignore parse failure; message may not have origininated from the
-    // injected script.
-    return;
-  }
-
-  // Ignore messages that are from this context. How would we receive our own
-  // messages?  Simple - when we post a message to the page, in addition to
-  // going to the page, it will be posted back on our own window.
-  if (message.getOrigin() === safaridriver.message.ORIGIN) {
-    return;
-  }
-
-  safaridriver.inject.page.LOG_.info('onMessage: ' + JSON.stringify(message));
-  switch (message.getType()) {
-    case safaridriver.message.Type.COMMAND:
-      safaridriver.inject.page.onCommand_(
-          (/** @type {!safaridriver.message.CommandMessage} */message));
-      break;
-
-    case safaridriver.message.Type.RESPONSE:
-      safaridriver.inject.page.onResponse_(
-          (/** @type {!safaridriver.message.ResponseMessage} */message));
-      break;
-
-    default:
-      break;  // Ignore unknown message type.
-  }
-};
-
-
-/**
  * Handles command messages from the injected script.
  * @param {!safaridriver.message.CommandMessage} message The command message.
  * @throws {Error} If the command is not supported by this script.
  * @private
  */
 safaridriver.inject.page.onCommand_ = function(message) {
+  if (message.isSameOrigin()) {
+    return;
+  }
+
   var command = message.getCommand();
 
   var response = new webdriver.promise.Deferred();
@@ -210,6 +178,10 @@ safaridriver.inject.page.onCommand_ = function(message) {
  * @private
  */
 safaridriver.inject.page.onResponse_ = function(message) {
+  if (message.isSameOrigin()) {
+    return;
+  }
+
   var promise = safaridriver.inject.page.pendingResponses_[message.getId()];
   if (!promise) {
     safaridriver.inject.page.LOG_.warning(

@@ -24,8 +24,10 @@ goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.commands');
+goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.page');
 goog.require('safaridriver.inject.state');
 goog.require('webdriver.Command');
@@ -65,11 +67,16 @@ safaridriver.inject.init = function() {
       ' (is ' + (safaridriver.inject.state.isActive() ? '' : 'not ') +
       'active)');
 
-  safari.self.addEventListener('message',
-      safaridriver.inject.onExtensionMessage_, false);
+  new safaridriver.message.MessageTarget(safari.self).
+      on(safaridriver.message.Type.COMMAND, safaridriver.inject.onCommand_).
+      on(safaridriver.message.Type.DEACTIVATE, safaridriver.inject.onDeactive_);
 
-  window.addEventListener('message',
-      safaridriver.inject.onWindowMessage_, true);
+  new safaridriver.message.MessageTarget(window).
+      on(safaridriver.message.Type.ACTIVATE, safaridriver.inject.onActivate_).
+      on(safaridriver.message.Type.CONNECT, safaridriver.inject.onConnect_).
+      on(safaridriver.message.Type.ENCODE, safaridriver.inject.onEncode_).
+      on(safaridriver.message.Type.LOAD, safaridriver.inject.onLoad_).
+      on(safaridriver.message.Type.RESPONSE, safaridriver.inject.onResponse_);
 
   if (safaridriver.inject.state.IS_TOP) {
     window.addEventListener('load', function() {
@@ -109,130 +116,71 @@ safaridriver.inject.installPageScript_ = function() {
 
 
 /**
- * Handles messages received from the extension's global page.
- * @param {!SafariExtensionMessageEvent} e The message event.
+ * Responds to an activate message sent from another frame in this window.
+ * @param {!safaridriver.message.Message} message The activate message.
+ * @param {!MessageEvent} e The original message event.
  * @private
  */
-safaridriver.inject.onExtensionMessage_ = function(e) {
-  try {
-    var message = safaridriver.message.fromEvent(e);
-  } catch (ex) {
-    safaridriver.inject.LOG.warning(
-        'Unable to parse message: ' + ex +
-            '\nOriginal message: ' + JSON.stringify(e.message));
+safaridriver.inject.onActivate_ = function(message, e) {
+  // Only respond to messages that came from another injected script in a frame
+  // belonging to this window.
+  if (!message.isSameOrigin() ||
+      !safaridriver.inject.message.isFromFrame(e)) {
     return;
   }
 
-  switch (message.getType()) {
-    case safaridriver.message.Type.COMMAND:
-      safaridriver.inject.onCommand_(
-          (/** @type {!safaridriver.message.CommandMessage} */message));
-      break;
+  safaridriver.inject.LOG.info(
+      'Activating frame for future command handling.');
+  safaridriver.inject.state.setActive(true);
 
-    case safaridriver.message.Type.DEACTIVATE:
-      // When the extension sends a deactivate message, it is broadcast to all
-      // frames as a signal that it is about to switch focus to another window.
-      // Since the top-frame always activates itself on load and it will be
-      // re-activated when this window is refocused by the extension, we cheat
-      // and simply activate it here. This saves the extension from having to
-      // send a switchToFrame(null) message the next time it re-selects this
-      // window.
-      safaridriver.inject.state.setActive(safaridriver.inject.state.IS_TOP);
-      break;
-
-    case safaridriver.message.Type.CONNECT:
-    case safaridriver.message.Type.RESPONSE:
-      safaridriver.inject.LOG.severe(
-          'Injected scripts should never receive ' + message.getType() +
-              ' messages: ' + JSON.stringify(e.message));
-      break;
-
-    default:
-      safaridriver.inject.LOG.warning(
-          'Ignoring unrecognized message: ' + message);
-  }
+  // Notify the extension that a new frame has been activated.
+  message.send(safari.self.tab);
 };
 
 
 /**
- * Handles messages received from another window.
- * @param {Event} e The message event.
+ * Forwards connection requests from the content page to the extension.
+ * @param {!safaridriver.message.Message} message The connect message.
+ * @param {!MessageEvent} e The original message event.
  * @private
  */
-safaridriver.inject.onWindowMessage_ = function(e) {
-  try {
-    var message = safaridriver.message.fromEvent(
-        (/** @type {!MessageEvent} */e));
-  } catch (ex) {
-    safaridriver.inject.LOG.warning(
-        'Unable to parse message: ' + ex +
-            '\nOriginal message: ' + JSON.stringify(e.data));
+safaridriver.inject.onConnect_ = function(message, e) {
+  if (message.isSameOrigin() ||
+      !safaridriver.inject.message.isFromFrame(e)) {
+    return;
+  }
+  safaridriver.inject.LOG.info(
+      'Content page has requested a WebDriver client connection to ' +
+          message.getUrl());
+  message.send(safari.self.tab);
+};
+
+
+/**
+ * Responds to load messages.
+ * @param {!safaridriver.message.Message} message The message.
+ * @param {!MessageEvent} e The original message event.
+ * @private
+ */
+safaridriver.inject.onLoad_ = function(message, e) {
+  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
     return;
   }
 
-  // If we've just received an activate message, only acknowledge it if it came
-  // from our own context. This indicates another frame has just told us to
-  // activate ourselves. Otherwise, ignore messages that are from our own
-  // context. How would we receive our own messages?  Simple - when we post a
-  // message to the page, in addition to going to the page, it will be posted
-  // back on our own window.
-  if (message.isType(safaridriver.message.Type.ACTIVATE)) {
-    if (message.getOrigin() !== safaridriver.message.ORIGIN) {
-      return;
-    }
-  } else if (message.getOrigin() === safaridriver.message.ORIGIN) {
-    return;
-  }
-
-  var type = message.getType();
-  switch (type) {
-    case safaridriver.message.Type.ACTIVATE:
-      safaridriver.inject.LOG.info(
-          'Activating frame for future command handling.');
-      safaridriver.inject.state.setActive(true);
-      message.send(safari.self.tab);
-      break;
-
-    case safaridriver.message.Type.CONNECT:
-      safaridriver.inject.LOG.info(
-          'Content page has requested a WebDriver client connection to ' +
-              message.getUrl());
-      message.send(safari.self.tab);
-      break;
-
-    case safaridriver.message.Type.ENCODE:
-      safaridriver.inject.LOG.fine('Encoding element for another window');
-      safaridriver.inject.onEncode_(
-          (/** @type {!safaridriver.message.EncodeMessage} */ message),
-          e.source);
-      break;
-
-    case safaridriver.message.Type.LOAD:
-      if (safaridriver.inject.installedPageScript_ &&
-          safaridriver.inject.installedPageScript_.isPending()) {
-        safaridriver.inject.installedPageScript_.resolve();
-      }
-      break;
-
-    case safaridriver.message.Type.RESPONSE:
-      safaridriver.inject.onResponse_(
-          (/** @type {!safaridriver.message.ResponseMessage} */ message));
-      break;
-
-    default:
-      safaridriver.inject.LOG.fine('Unknown message: ' + message);
-      break;
+  if (safaridriver.inject.installedPageScript_ &&
+      safaridriver.inject.installedPageScript_.isPending()) {
+    safaridriver.inject.installedPageScript_.resolve();
   }
 };
 
 
 /**
  * @param {!safaridriver.message.EncodeMessage} message The message.
- * @param {Window} source The window to respond to.
+ * @param {!MessageEvent} e The original message event.
  * @private
  */
-safaridriver.inject.onEncode_ = function(message, source) {
-  if (!source) {
+safaridriver.inject.onEncode_ = function(message, e) {
+  if (!e.source) {
     safaridriver.inject.LOG.severe('Not looking up element: ' +
         message.getXPath() + '; no window to respond to!');
     return;
@@ -245,16 +193,37 @@ safaridriver.inject.onEncode_ = function(message, source) {
 
   var response = new safaridriver.message.ResponseMessage(
       message.getId(), (/** @type {!bot.response.ResponseObject} */result));
-  response.send(source);
+  response.send(e.source);
+};
+
+
+/**
+ * Responds to deactivation messages from the extension. These messages are
+ * broadcast to all frames as a signal that the extension is about to switch
+ * focus to another window.
+ * @private
+ */
+safaridriver.inject.onDeactive_ = function() {
+  // Since the top-frame always activates itself on load and it will be
+  // re-activated when this window is refocused by the extension, we cheat
+  // and simply activate it here. This saves the extension from having to
+  // send a switchToFrame(null) message the next time it re-selects this
+  // window.
+  safaridriver.inject.state.setActive(safaridriver.inject.state.IS_TOP);
 };
 
 
 /**
  * Handles response messages from the page.
  * @param {!safaridriver.message.ResponseMessage} message The message.
+ * @param {!MessageEvent} e The original message.
  * @private
  */
-safaridriver.inject.onResponse_ = function(message) {
+safaridriver.inject.onResponse_ = function(message, e) {
+  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
+    return;
+  }
+
   var promise = safaridriver.inject.pendingCommands_[message.getId()];
   if (!promise) {
     safaridriver.inject.LOG.warning(
