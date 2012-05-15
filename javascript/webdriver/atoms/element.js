@@ -213,21 +213,21 @@ webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
           throw Error('Unsupported WebDriver key: \\u' +
               key.charCodeAt(0).toString(16));
         }
+      } else {
+        // Handle common aliases.
+        switch (key) {
+          case '\n':
+            current.push(bot.Keyboard.Keys.ENTER);
+            break;
+          case '\t':
+            current.push(bot.Keyboard.Keys.TAB);
+            break;
+          case '\b':
+            current.push(bot.Keyboard.Keys.BACKSPACE);
+            break;
+        }
+        current.push(key);
       }
-
-      // Handle common aliases.
-      switch (key) {
-        case '\n':
-          current.push(bot.Keyboard.Keys.ENTER);
-          break;
-        case '\t':
-          current.push(bot.Keyboard.Keys.TAB);
-          break;
-        case '\b':
-          current.push(bot.Keyboard.Keys.BACKSPACE);
-          break;
-      }
-      current.push(key);
     });
   });
 
