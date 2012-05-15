@@ -306,6 +306,30 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
         detail, /*screenX*/ 0, /*screenY*/ 0, args.clientX, args.clientY,
         args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, args.button,
         args.relatedTarget);
+
+    // Lifted from jquery-ui tests/jquery.simulate.js
+    // IE 9+ creates events with pageX and pageY set to 0.
+    // Trying to modify the properties throws an error,
+    // so we define getters to return the correct values.
+    if ( event.pageX === 0 && event.pageY === 0 && Object.defineProperty ) {
+      var doc = bot.getDocument().documentElement;
+      var body = bot.getDocument().body;
+
+      Object.defineProperty( event, "pageX", {
+        get: function() {
+          return args.clientX +
+            ( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
+            ( doc && doc.clientLeft || body && body.clientLeft || 0 );
+        }
+      });
+      Object.defineProperty( event, "pageY", {
+        get: function() {
+          return args.clientY +
+          ( doc && doc.scrollTop || body && body.scrollTop || 0 ) -
+          ( doc && doc.clientTop || body && body.clientTop || 0 );
+        }
+      });
+    }
   }
 
   return event;
