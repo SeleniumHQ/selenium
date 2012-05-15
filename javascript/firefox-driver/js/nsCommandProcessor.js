@@ -441,11 +441,19 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   }
 
   var sessionWindow = response.session.getChromeWindow();
+
   var driver = sessionWindow.fxdriver;  // TODO(jmleyba): We only need to store an ID on the window!
   if (!driver) {
     response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Session [' + response.session.getId() + '] has no driver.' +
         ' The browser window may have been closed.'));
+    return;
+  }
+
+  var contentWindow = sessionWindow.getBrowser().contentWindow;
+  if (!contentWindow) {
+    response.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_WINDOW,
+        'Window not found. The browser window may have been closed.'));
     return;
   }
 

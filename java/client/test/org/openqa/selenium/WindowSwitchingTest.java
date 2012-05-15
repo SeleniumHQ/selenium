@@ -84,9 +84,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({FIREFOX, OPERA, CHROME, REMOTE, SELENESE})
+  @Ignore({OPERA, CHROME, REMOTE, SELENESE})
   @Test
-  public void testShouldThrowNoSuchWindowExceptionIfAWindowIsClosed() {
+  public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
 
@@ -99,6 +99,60 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     try {
       driver.getWindowHandle();
+      fail("NoSuchWindowException expected");
+    } catch (NoSuchWindowException e) {
+      // Expected.
+    }
+
+    driver.switchTo().window(current);
+  }
+
+  @Ignore({IE, OPERA, CHROME, REMOTE, SELENESE})
+  @Test
+  public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
+    driver.get(pages.xhtmlTestPage);
+    String current = driver.getWindowHandle();
+
+    driver.findElement(By.linkText("Open new window")).click();
+
+    sleepBecauseWindowsTakeTimeToOpen();
+
+    driver.switchTo().window("result");
+    driver.close();
+
+    try {
+      driver.getTitle();
+      fail("NoSuchWindowException expected");
+    } catch (NoSuchWindowException e) {
+      // Expected.
+    }
+
+    try {
+      driver.findElement(By.tagName("body"));
+      fail("NoSuchWindowException expected");
+    } catch (NoSuchWindowException e) {
+      // Expected.
+    }
+
+    driver.switchTo().window(current);
+  }
+
+  @Ignore({IE, OPERA, CHROME, REMOTE, SELENESE})
+  @Test
+  public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
+    driver.get(pages.xhtmlTestPage);
+    String current = driver.getWindowHandle();
+
+    driver.findElement(By.linkText("Open new window")).click();
+
+    sleepBecauseWindowsTakeTimeToOpen();
+
+    driver.switchTo().window("result");
+    WebElement body = driver.findElement(By.tagName("body"));
+    driver.close();
+
+    try {
+      body.getText();
       fail("NoSuchWindowException expected");
     } catch (NoSuchWindowException e) {
       // Expected.
