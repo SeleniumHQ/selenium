@@ -214,7 +214,7 @@ class WebElement(object):
     def _upload(self, filename):
         fp = StringIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
-        zipped.write(filename, filename.split('/')[-1])
+        zipped.write(filename, os.path.split(filename)[1])
         zipped.close()
         try:
             return self._execute(Command.UPLOAD_FILE, 
