@@ -40,6 +40,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
@@ -102,12 +103,12 @@ public class WindowSwitchingTest extends JUnit4TestBase {
       fail("NoSuchWindowException expected");
     } catch (NoSuchWindowException e) {
       // Expected.
+    } finally {
+      driver.switchTo().window(current);
     }
-
-    driver.switchTo().window(current);
   }
 
-  @Ignore({IE, OPERA, CHROME, REMOTE, SELENESE})
+  @Ignore({IE, OPERA, CHROME, REMOTE, SELENESE, HTMLUNIT})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -121,23 +122,25 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.close();
 
     try {
-      driver.getTitle();
-      fail("NoSuchWindowException expected");
-    } catch (NoSuchWindowException e) {
-      // Expected.
+      try {
+        driver.getTitle();
+        fail("NoSuchWindowException expected");
+      } catch (NoSuchWindowException e) {
+        // Expected.
+      }
+  
+      try {
+        driver.findElement(By.tagName("body"));
+        fail("NoSuchWindowException expected");
+      } catch (NoSuchWindowException e) {
+        // Expected.
+      }
+    } finally {
+      driver.switchTo().window(current);
     }
-
-    try {
-      driver.findElement(By.tagName("body"));
-      fail("NoSuchWindowException expected");
-    } catch (NoSuchWindowException e) {
-      // Expected.
-    }
-
-    driver.switchTo().window(current);
   }
 
-  @Ignore({IE, OPERA, CHROME, REMOTE, SELENESE})
+  @Ignore({IE, OPERA, CHROME, REMOTE, SELENESE, HTMLUNIT})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -156,9 +159,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
       fail("NoSuchWindowException expected");
     } catch (NoSuchWindowException e) {
       // Expected.
+    } finally {
+      driver.switchTo().window(current);
     }
-
-    driver.switchTo().window(current);
   }
 
   @NeedsFreshDriver
