@@ -9,11 +9,11 @@ namespace OpenQA.Selenium
     public class GetMultipleAttributeTest : DriverTestFixture
     {
         [Test]
-        public void MultipleAttributeShouldBeFalseWhenNotSet()
+        public void MultipleAttributeShouldBeNullWhenNotSet()
         {
             driver.Url = selectPage;
             IWebElement element = driver.FindElement(By.Id("selectWithoutMultiple"));
-            Assert.AreEqual("false", element.GetAttribute("multiple"));
+            Assert.IsNull(element.GetAttribute("multiple"));
         }
 
         [Test]

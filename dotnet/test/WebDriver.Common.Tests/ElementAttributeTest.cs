@@ -58,15 +58,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet()
+        public void ShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet()
         {
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
-            Assert.AreEqual("false", inputElement.GetAttribute("disabled"));
+            Assert.IsNull(inputElement.GetAttribute("disabled"));
             Assert.IsTrue(inputElement.Enabled);
 
             IWebElement pElement = driver.FindElement(By.Id("peas"));
-            Assert.AreEqual("false", inputElement.GetAttribute("disabled"));
+            Assert.IsNull(inputElement.GetAttribute("disabled"));
             Assert.IsTrue(inputElement.Enabled);
         }
 
@@ -231,7 +231,9 @@ namespace OpenQA.Selenium
             IWebElement textInput = driver.FindElement(By.Name("x"));
             string notReadOnly = textInput.GetAttribute("readonly");
 
-            Assert.AreNotEqual(readOnlyAttribute, notReadOnly);
+            // NUnit's equality assertion doesn't handle null strings.
+            // Assert.AreNotEqual(readOnlyAttribute, notReadOnly);
+            Assert.IsNull(notReadOnly);
         }
 
         [Test]
@@ -335,6 +337,38 @@ namespace OpenQA.Selenium
             IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
             String className = wallace.GetAttribute("class");
             Assert.AreEqual("gromit", className);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.IPhone)]
+        public void ShouldReturnNullForNonPresentBooleanAttributes()
+        {
+            driver.Url = booleanAttributes;
+            IWebElement element1 = driver.FindElement(By.Id("working"));
+            Assert.IsNull(element1.GetAttribute("required"));
+            IWebElement element2 = driver.FindElement(By.Id("wallace"));
+            Assert.IsNull(element2.GetAttribute("nowrap"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Android)]
+        public void ShouldReturnTrueForPresentBooleanAttributes()
+        {
+            driver.Url = booleanAttributes;
+            IWebElement element1 = driver.FindElement(By.Id("emailRequired"));
+            Assert.AreEqual("true", element1.GetAttribute("required"));
+            IWebElement element2 = driver.FindElement(By.Id("emptyTextAreaRequired"));
+            Assert.AreEqual("true", element2.GetAttribute("required"));
+            IWebElement element3 = driver.FindElement(By.Id("inputRequired"));
+            Assert.AreEqual("true", element3.GetAttribute("required"));
+            IWebElement element4 = driver.FindElement(By.Id("textAreaRequired"));
+            Assert.AreEqual("true", element4.GetAttribute("required"));
+            IWebElement element5 = driver.FindElement(By.Id("unwrappable"));
+            Assert.AreEqual("true", element5.GetAttribute("nowrap"));
         }
     }
 }

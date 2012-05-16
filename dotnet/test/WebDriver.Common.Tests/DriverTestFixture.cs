@@ -68,6 +68,7 @@ namespace OpenQA.Selenium
         public string mouseTrackerPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("mousePositionTracker.html");
         public string readOnlyPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("readOnlyPage.html");
         public string clicksPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clicks.html");
+        public string booleanAttributes = EnvironmentManager.Instance.UrlBuilder.WhereIs("booleanAttributes.html");
 
         protected IWebDriver driver;
 
