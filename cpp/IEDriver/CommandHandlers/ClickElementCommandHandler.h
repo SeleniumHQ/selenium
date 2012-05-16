@@ -77,7 +77,14 @@ class ClickElementCommandHandler : public IECommandHandler {
           script_wrapper.AddArgument(element_wrapper);
           script_wrapper.AddArgument(executor.mouse_state());
           status_code = script_wrapper.Execute();
-          if (status_code == SUCCESS) {
+          if (status_code != SUCCESS) {
+            // This is a hack. We should change this when we can get proper error
+            // codes back from the atoms. We'll assume the script failed because
+            // the element isn't visible.
+            response->SetErrorResponse(EELEMENTNOTDISPLAYED, 
+                "Received a JavaScript error attempting to click on the element using synthetic events. We are assuming this is because the element isn't displayed, but it may be due to other problems with executing JavaScript.");
+            return;
+          } else {
             IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
             mutable_executor.set_mouse_state(script_wrapper.result());
           }
