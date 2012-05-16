@@ -206,6 +206,21 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
+  @Ignore(ANDROID)
+  @JavascriptEnabled
+  @Test
+  public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
+    driver.switchTo().frame("iframeWithIframe").switchTo().frame("iframeWithAlert");
+
+    driver.findElement(By.id("alertInFrame")).click();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    alert.accept();
+
+    // If we can perform any action, we're good to go
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
   @Ignore({ANDROID, CHROME, HTMLUNIT})
   @Test
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert() {
