@@ -23,6 +23,7 @@ goog.require('bot.Keyboard');
 goog.require('bot.Mouse');
 goog.require('bot.action');
 goog.require('goog.array');
+goog.require('webdriver.atoms.element');
 
 
 /**
@@ -38,11 +39,10 @@ webdriver.atoms.inputs.sendKeys = function(element, opt_state, var_args) {
   var keyboard = new bot.Keyboard(opt_state);
   var to_type = goog.array.slice(arguments, 2);
   var flattened = goog.array.flatten(to_type);
-
   if (!element) {
     element = bot.dom.getActiveElement(document);
   }
-  bot.action.type(element, flattened, keyboard);
+  webdriver.atoms.element.type(element, flattened, keyboard);
 
   return keyboard.getState();
 };
