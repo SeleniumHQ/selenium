@@ -199,7 +199,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
     array.addAll(Lists.newArrayList(getCommandLineFlagsAsArray()));
     array.add(url);
 
-    return (String[]) array.toArray(new String[array.size()]);
+    return array.toArray(new String[array.size()]);
   }
 
   /**
