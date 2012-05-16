@@ -453,7 +453,6 @@ Global
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|Win32.ActiveCfg = Debug|Win32
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|Win32.Build.0 = Debug|Win32
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|x64.ActiveCfg = Debug|x64
-		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Debug|x64.Build.0 = Debug|x64
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|.NET.ActiveCfg = Release|x64
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Any CPU.ActiveCfg = Release|x64
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Mixed Platforms.ActiveCfg = Release|x64
@@ -461,7 +460,6 @@ Global
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Win32.ActiveCfg = Release|Win32
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Win32.Build.0 = Release|Win32
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|x64.ActiveCfg = Release|x64
-		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
