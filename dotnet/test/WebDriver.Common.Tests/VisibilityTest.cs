@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Drawing;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -115,6 +116,16 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(0, size.Width, "Should have 0 width");
             Assert.AreEqual(0, size.Height, "Should have 0 height");
+            Assert.IsTrue(element.Displayed);
+        }
+
+        [Test]
+        public void ParentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden()
+        {
+            String url = EnvironmentManager.Instance.UrlBuilder.WhereIs("visibility-css.html");
+            driver.Url = url;
+
+            IWebElement element = driver.FindElement(By.Id("suggest"));
             Assert.IsTrue(element.Displayed);
         }
     }
