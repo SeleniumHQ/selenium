@@ -301,37 +301,21 @@ safaridriver.inject.onResponse_ = function(message, e) {
 safaridriver.inject.onCommand_ = function(message) {
   var command = message.getCommand();
 
-  if (command.getName() === webdriver.CommandName.GET) {
-    // Get commands should *only* be handled by the topmost frame. In fact, it
-    // is an implicit frame switch, so do that for the user now.
-    safaridriver.inject.state.setActive(safaridriver.inject.state.IS_TOP);
-  }
-
-  if (command.getName() === webdriver.CommandName.SWITCH_TO_WINDOW) {
-    // The extension handles window switching directly. If it sends the
-    // switch to window command to us, it's to query for our window name.
-    // Only the top-most frame should handle this.
-    if (safaridriver.inject.state.IS_TOP) {
-      sendResponse(bot.response.createResponse(window.name));
-    }
-    return;
-  }
-
-  if (!safaridriver.inject.state.isActive()) {
-    return;
-  }
-
-  if (!command.getId()) {
-    safaridriver.inject.LOG.severe(
-        'Ignoring unidentified command message: ' + message);
-    return;
-  }
-
-  safaridriver.inject.LOG.info('Handling command (is top? ' +
-      (window.top === window) + '):\n' + message);
-
-  var handler = safaridriver.inject.COMMAND_MAP_[command.getName()];
+  var handler = safaridriver.inject.TOP_COMMAND_MAP_[command.getName()];
   if (handler) {
+    if (safaridriver.inject.state.IS_TOP) {
+      executeCommand(handler);
+    }
+  } else if (safaridriver.inject.state.isActive()) {
+    handler = safaridriver.inject.COMMAND_MAP_[command.getName()];
+    if (handler) {
+      executeCommand(handler);
+    } else {
+      sendError(Error('Unknown command: ' + message));
+    }
+  }
+
+  function executeCommand(handler) {
     try {
       // Don't schedule through webdriver.promise.Application; just execute the
       // command immediately. We're assuming the global page is scheduling
@@ -342,8 +326,6 @@ safaridriver.inject.onCommand_ = function(message) {
     } catch (ex) {
       sendError(ex);
     }
-  } else {
-    sendError(Error('Unknown command: ' + message));
   }
 
   function sendError(error) {
@@ -391,25 +373,46 @@ safaridriver.inject.sendCommandToPage = function(command) {
 
 
 /**
+ * Map of command names that should always be handled by the topmost frame,
+ * regardless of whether it is currently active.
+ * @type {!Object.<(
+ *     function(!safaridriver.Command, function(!safaridriver.Command))|
+ *     function(!safaridriver.Command)|
+ *     function())>}
+ * @const
+ * @private
+ */
+safaridriver.inject.TOP_COMMAND_MAP_ = {};
+
+
+/**
  * Maps command names to the function that handles it.
  * @type {!Object.<(
  *     function(!safaridriver.Command, function(!safaridriver.Command))|
  *     function(!safaridriver.Command)|
  *     function())>}
+ * @const
  * @private
  */
 safaridriver.inject.COMMAND_MAP_ = {};
+
+
 goog.scope(function() {
   var CommandName = webdriver.CommandName;
+  var topMap = safaridriver.inject.TOP_COMMAND_MAP_;
   var map = safaridriver.inject.COMMAND_MAP_;
   var commands = safaridriver.inject.commands;
 
-  map[CommandName.GET] = commands.loadUrl;
-  map[CommandName.REFRESH] = commands.reloadPage;
-  map[CommandName.GO_BACK] = commands.unsupportedHistoryNavigation;
-  map[CommandName.GO_FORWARD] = commands.unsupportedHistoryNavigation;
+  topMap[CommandName.GET] = commands.loadUrl;
+  topMap[CommandName.REFRESH] = commands.reloadPage;
+  topMap[CommandName.GO_BACK] = commands.unsupportedHistoryNavigation;
+  topMap[CommandName.GO_FORWARD] = commands.unsupportedHistoryNavigation;
+  topMap[CommandName.GET_TITLE] = commands.getTitle;
+  // The extension handles window switches. It sends the command to this
+  // injected script only as a means of retrieving the window name.
+  topMap[CommandName.SWITCH_TO_WINDOW] = commands.getWindowName;
 
-  map[CommandName.GET_TITLE] = commands.getTitle;
+  map[CommandName.GET_CURRENT_URL] = commands.getCurrentUrl;
   map[CommandName.GET_PAGE_SOURCE] = commands.getPageSource;
 
   map[CommandName.ADD_COOKIE] = commands.addCookie;

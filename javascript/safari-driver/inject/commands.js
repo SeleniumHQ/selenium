@@ -49,6 +49,18 @@ safaridriver.inject.commands.LOG_ = goog.debug.Logger.getLogger(
     'safaridriver.inject.commands');
 
 
+/** @return {string} The name of the current window. */
+safaridriver.inject.commands.getWindowName = function() {
+  return window.name;
+};
+
+
+/** @return {string} The current URL. */
+safaridriver.inject.commands.getCurrentUrl = function() {
+  return window.location.href;
+};
+
+
 /**
  * Loads a new URL in the current page.
  * @param {!safaridriver.Command} command The command object.

@@ -90,7 +90,7 @@ goog.scope(function() {
   map[CommandName.CLOSE] = commands.closeTab;
   map[CommandName.GET_CURRENT_WINDOW_HANDLE] = commands.getWindowHandle;
   map[CommandName.GET_WINDOW_HANDLES] = commands.getWindowHandles;
-  map[CommandName.GET_CURRENT_URL] = commands.getCurrentUrl;
+  map[CommandName.GET_CURRENT_URL] = commands.sendCommand;
   map[CommandName.GET_TITLE] = commands.sendCommand;
   map[CommandName.GET_PAGE_SOURCE] = commands.sendCommand;
 

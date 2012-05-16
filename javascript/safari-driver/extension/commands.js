@@ -76,20 +76,6 @@ safaridriver.extension.commands.getWindowHandles = function(session) {
 
 /**
  * @param {!safaridriver.extension.Session} session The session object.
- * @return {!webdriver.promise.Promise} A promise that will resolve to the
- *     current tab's URL.
- */
-safaridriver.extension.commands.getCurrentUrl = function(session) {
-  var response = new webdriver.promise.Deferred();
-  session.getCommandTab().whenReady(function(tab) {
-    response.resolve(tab.url);
-  });
-  return response.promise;
-};
-
-
-/**
- * @param {!safaridriver.extension.Session} session The session object.
  * @return {!webdriver.promise.Promise} A promise that will resolve to a
  *     screenshot of the focused tab as a base64 encoded PNG.
  */
