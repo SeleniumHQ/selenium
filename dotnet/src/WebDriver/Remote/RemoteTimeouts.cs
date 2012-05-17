@@ -59,24 +59,53 @@ namespace OpenQA.Selenium.Remote
         /// </remarks>
         public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("ms", timeToWait.TotalMilliseconds);
-            this.driver.InternalExecute(DriverCommand.ImplicitlyWait, parameters);
+            //Dictionary<string, object> parameters = new Dictionary<string, object>();
+            //parameters.Add("ms", timeToWait.TotalMilliseconds);
+            //this.driver.InternalExecute(DriverCommand.ImplicitlyWait, parameters);
+            this.ExecuteSetTimeout("implicit", timeToWait);
             return this;
         }
 
         /// <summary>
         /// Specifies the amount of time the driver should wait when executing JavaScript asynchronously.
         /// </summary>
-        /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
+        /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.
+        /// Setting this parameter to <see cref="TimeSpan.MinValue"/> will allow the script to run indefinitely.</param>
         /// <returns>A self reference</returns>
         public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("ms", timeToWait.TotalMilliseconds);
-            this.driver.InternalExecute(DriverCommand.SetAsyncScriptTimeout, parameters);
+            //Dictionary<string, object> parameters = new Dictionary<string, object>();
+            //parameters.Add("ms", timeToWait.TotalMilliseconds);
+            //this.driver.InternalExecute(DriverCommand.SetAsyncScriptTimeout, parameters);
+            this.ExecuteSetTimeout("script", timeToWait);
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies the amount of time the driver should wait for a page to load when setting the <see cref="IWebDriver.Url"/> property.
+        /// </summary>
+        /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.
+        /// Setting this parameter to <see cref="TimeSpan.MinValue"/> will allow the page to load indefinitely.</param>
+        /// <returns>A self reference</returns>
+        public ITimeouts SetPageLoadTimeout(TimeSpan timeToWait)
+        {
+            this.ExecuteSetTimeout("page load", timeToWait);
             return this;
         }
         #endregion
+
+        private void ExecuteSetTimeout(string timeoutType, TimeSpan timeToWait)
+        {
+            double milliseconds = timeToWait.TotalMilliseconds;
+            if (timeToWait == TimeSpan.MinValue)
+            {
+                milliseconds = -1;
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("type", timeoutType);
+            parameters.Add("ms", milliseconds);
+            this.driver.InternalExecute(DriverCommand.SetTimeout, parameters);
+        }
     }
 }

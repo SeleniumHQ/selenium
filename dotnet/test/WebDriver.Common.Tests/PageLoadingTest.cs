@@ -105,7 +105,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("imageButton")).Submit();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBeEqualTo("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
@@ -119,7 +119,7 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
 
             driver.FindElement(By.Name("sameWindow")).Click();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBeEqualTo("This page has iframes"));
             Assert.AreEqual(driver.Title, "This page has iframes");
 
             driver.Navigate().Back();
@@ -133,7 +133,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("imageButton")).Submit();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBeEqualTo("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
@@ -168,7 +168,7 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(driver.Title, "XHTML Test Page");
         }
-        
+
         /// <summary>
         /// see <a href="http://code.google.com/p/selenium/issues/detail?id=208">Issue 208</a>
         /// </summary>
@@ -182,6 +182,39 @@ namespace OpenQA.Selenium
 
             // If this command succeeds, then all is well.
             driver.FindElement(By.XPath("//body"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.IPhone, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
+        public void ShouldTimeoutIfAPageTakesTooLongToLoad()
+        {
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(2));
+
+            try
+            {
+                // Get the sleeping servlet with a pause of 5 seconds
+                string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
+
+                driver.Url = slowPage;
+
+                Assert.Fail("I should have timed out");
+            }
+            catch (TimeoutException)
+            {
+            }
+            finally
+            {
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.MinValue);
+            }
+        }
+
+        private Func<bool> TitleToBeEqualTo(string expectedTitle)
+        {
+            return () => { return driver.Title == expectedTitle; };
         }
     }
 }

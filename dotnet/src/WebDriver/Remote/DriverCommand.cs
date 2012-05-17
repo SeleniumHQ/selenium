@@ -319,6 +319,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SetAsyncScriptTimeout = "setAsyncScriptTimeout";
 
         /// <summary>
+        /// Represents the SetTimeout command
+        /// </summary>
+        public static readonly string SetTimeout = "setTimeout";
+
+        /// <summary>
         /// Represents the MouseClick command.
         /// </summary>
         public static readonly string MouseClick = "mouseClick";

@@ -68,6 +68,7 @@ enum CommandType {
   Screenshot, 
   ImplicitlyWait,
   SetAsyncScriptTimeout,
+  SetTimeout,
   GetOrientation,
   SetOrientation,
 

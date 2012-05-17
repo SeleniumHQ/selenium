@@ -1126,6 +1126,16 @@ namespace OpenQA.Selenium.Support.Events
                 return this.wrappedTimeouts.SetScriptTimeout(timeToWait);
             }
 
+            /// <summary>
+            /// Specifies the amount of time the driver should wait for a page to load when setting the <see cref="IWebDriver.Url"/> property.
+            /// </summary>
+            /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
+            /// <returns>A self reference</returns>
+            public ITimeouts SetPageLoadTimeout(TimeSpan timeToWait)
+            {
+                this.wrappedTimeouts.SetPageLoadTimeout(timeToWait);
+                return this;
+            }
             #endregion
         }
 

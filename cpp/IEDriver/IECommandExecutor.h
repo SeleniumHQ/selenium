@@ -16,6 +16,7 @@
 
 #include <Objbase.h>
 #include <algorithm>
+#include <ctime>
 #include <map>
 #include <string>
 #include <vector>
@@ -125,22 +126,22 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->implicit_wait_timeout_ = timeout; 
   }
 
-  int async_script_timeout(void) const {
-    return this->async_script_timeout_;
-  }
+  int async_script_timeout(void) const { return this->async_script_timeout_;  }
   void set_async_script_timeout(const int timeout) {
     this->async_script_timeout_ = timeout;
   }
 
-  long last_known_mouse_x(void) const { 
-    return this->last_known_mouse_x_; }
+  int page_load_timeout(void) const { return this->page_load_timeout_;  }
+  void set_page_load_timeout(const int timeout) {
+    this->page_load_timeout_ = timeout;
+  }
+
+  long last_known_mouse_x(void) const { return this->last_known_mouse_x_;  }
   void set_last_known_mouse_x(const long x_coordinate) {
     this->last_known_mouse_x_ = x_coordinate; 
   }
 
-  long last_known_mouse_y(void) const {
-    return this->last_known_mouse_y_; 
-  }
+  long last_known_mouse_y(void) const { return this->last_known_mouse_y_; }
   void set_last_known_mouse_y(const long y_coordinate) {
     this->last_known_mouse_y_ = y_coordinate;
   }
@@ -209,6 +210,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   int speed_;
   int implicit_wait_timeout_;
   int async_script_timeout_;
+  int page_load_timeout_;
+  clock_t wait_timeout_;
 
   std::string session_id_;
   int port_;

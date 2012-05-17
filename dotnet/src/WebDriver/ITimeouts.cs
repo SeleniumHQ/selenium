@@ -50,8 +50,17 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Specifies the amount of time the driver should wait when executing JavaScript asynchronously.
         /// </summary>
-        /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
+        /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.
+        /// Setting this parameter to <see cref="TimeSpan.MinValue"/> will allow the script to run indefinitely.</param>
         /// <returns>A self reference</returns>
         ITimeouts SetScriptTimeout(TimeSpan timeToWait);
+
+        /// <summary>
+        /// Specifies the amount of time the driver should wait for a page to load when setting the <see cref="IWebDriver.Url"/> property.
+        /// </summary>
+        /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.
+        /// Setting this parameter to <see cref="TimeSpan.MinValue"/> will allow the page to load indefinitely.</param>
+        /// <returns>A self reference</returns>
+        ITimeouts SetPageLoadTimeout(TimeSpan timeToWait);
     }
 }
