@@ -87,6 +87,7 @@ public class DefaultCapabilityMatcherTest {
     DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
     Platform p = Platform.WINDOWS;
 
+    Assert.assertTrue(matcher.extractPlatform("WINDOWS") == p);
     Assert.assertTrue(matcher.extractPlatform("xp").is(p));
     Assert.assertTrue(matcher.extractPlatform("windows VISTA").is(p));
     Assert.assertTrue(matcher.extractPlatform("windows 7").is(p));

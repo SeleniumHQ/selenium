@@ -90,6 +90,11 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
       return (Platform) o;
     } else if (o instanceof String) {
       String name = o.toString();
+      try {
+        return Platform.valueOf(name);
+      } catch (IllegalArgumentException e) {
+        // no exact match, continue to look for a partial match
+      }
       for (Platform os : Platform.values()) {
         for (String matcher : os.getPartOfOsName()) {
           if ("".equals(matcher))
