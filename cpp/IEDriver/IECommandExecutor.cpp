@@ -66,6 +66,7 @@
 #include "CommandHandlers/SendKeysToAlertCommandHandler.h"
 #include "CommandHandlers/SetAsyncScriptTimeoutCommandHandler.h"
 #include "CommandHandlers/SetImplicitWaitTimeoutCommandHandler.h"
+#include "CommandHandlers/SetTimeoutCommandHandler.h"
 #include "CommandHandlers/SetWindowPositionCommandHandler.h"
 #include "CommandHandlers/SetWindowSizeCommandHandler.h"
 #include "CommandHandlers/SubmitElementCommandHandler.h"
@@ -116,6 +117,8 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->enable_native_events_ = true;
   this->speed_ = 0;
   this->implicit_wait_timeout_ = 0;
+  this->async_script_timeout_ = -1;
+  this->page_load_timeout_ = -1;
   this->last_known_mouse_x_ = 0;
   this->last_known_mouse_y_ = 0;
 
@@ -195,22 +198,30 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
   BrowserHandle browser;
   int status_code = this->GetCurrentBrowser(&browser);
   if (status_code == SUCCESS && !browser->is_closing()) {
-    this->is_waiting_ = !(browser->Wait());
-    if (this->is_waiting_) {
-      // If we are still waiting, we need to wait a bit then post a message to
-      // ourselves to run the wait again. However, we can't wait using Sleep()
-      // on this thread. This call happens in a message loop, and we would be 
-      // unable to process the COM events in the browser if we put this thread
-      // to sleep.
-      unsigned int thread_id = 0;
-      HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
-                                                      0,
-                                                      &IECommandExecutor::WaitThreadProc,
-                                                      (void *)this->m_hWnd,
-                                                      0,
-                                                      &thread_id));
-      if (thread_handle != NULL) {
-        ::CloseHandle(thread_handle);
+    if (this->page_load_timeout_ >= 0 && this->wait_timeout_ < clock()) {
+      Response timeout_response;
+      timeout_response.SetErrorResponse(ETIMEOUT, "Timed out waiting for page to load.");
+      this->serialized_response_ = timeout_response.Serialize();
+      this->is_waiting_ = false;
+      browser->set_wait_required(false);
+    } else {
+      this->is_waiting_ = !(browser->Wait());
+      if (this->is_waiting_) {
+        // If we are still waiting, we need to wait a bit then post a message to
+        // ourselves to run the wait again. However, we can't wait using Sleep()
+        // on this thread. This call happens in a message loop, and we would be 
+        // unable to process the COM events in the browser if we put this thread
+        // to sleep.
+        unsigned int thread_id = 0;
+        HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                        0,
+                                                        &IECommandExecutor::WaitThreadProc,
+                                                        (void *)this->m_hWnd,
+                                                        0,
+                                                        &thread_id));
+        if (thread_handle != NULL) {
+          ::CloseHandle(thread_handle);
+        }
       }
     }
   } else {
@@ -365,6 +376,9 @@ void IECommandExecutor::DispatchCommand() {
     if (status_code == SUCCESS) {
       this->is_waiting_ = browser->wait_required();
       if (this->is_waiting_) {
+        if (this->page_load_timeout_ >= 0) {
+          this->wait_timeout_ = clock() + (this->page_load_timeout_ / 1000 * CLOCKS_PER_SEC);
+        }
         ::PostMessage(this->m_hWnd, WD_WAIT, NULL, NULL);
       }
     }
@@ -563,6 +577,7 @@ void IECommandExecutor::PopulateCommandHandlers() {
   this->command_handlers_[Refresh] = CommandHandlerHandle(new RefreshCommandHandler);
   this->command_handlers_[ImplicitlyWait] = CommandHandlerHandle(new SetImplicitWaitTimeoutCommandHandler);
   this->command_handlers_[SetAsyncScriptTimeout] = CommandHandlerHandle(new SetAsyncScriptTimeoutCommandHandler);
+  this->command_handlers_[SetTimeout] = CommandHandlerHandle(new SetTimeoutCommandHandler);
   this->command_handlers_[NewSession] = CommandHandlerHandle(new NewSessionCommandHandler);
   this->command_handlers_[GetSessionCapabilities] = CommandHandlerHandle(new GetSessionCapabilitiesCommandHandler);
   this->command_handlers_[Close] = CommandHandlerHandle(new CloseWindowCommandHandler);
