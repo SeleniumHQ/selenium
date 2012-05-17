@@ -203,11 +203,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     driver.findElement(By.name("windowThree")).click();
 
-
     driver.switchTo().window("result");
-    System.out.println("currentHandle = " + currentHandle);
-    System.out
-        .println("driver.getWindowHandle() = " + driver.getWindowHandle());
 
     try {
       waitFor(elementToExist(driver, "close"));
