@@ -23,12 +23,14 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
@@ -50,10 +52,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
+    int currentWindowHandles = driver.getWindowHandles().size();
 
     driver.findElement(By.linkText("Open new window")).click();
 
-    sleepBecauseWindowsTakeTimeToOpen();
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
 
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
 
@@ -90,10 +93,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
+    int currentWindowHandles = driver.getWindowHandles().size();
 
     driver.findElement(By.linkText("Open new window")).click();
 
-    sleepBecauseWindowsTakeTimeToOpen();
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
 
     driver.switchTo().window("result");
     driver.close();
@@ -113,10 +117,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
+    int currentWindowHandles = driver.getWindowHandles().size();
 
     driver.findElement(By.linkText("Open new window")).click();
 
-    sleepBecauseWindowsTakeTimeToOpen();
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
 
     driver.switchTo().window("result");
     driver.close();
@@ -145,10 +150,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
+    int currentWindowHandles = driver.getWindowHandles().size();
 
     driver.findElement(By.linkText("Open new window")).click();
 
-    sleepBecauseWindowsTakeTimeToOpen();
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
 
     driver.switchTo().window("result");
     WebElement body = driver.findElement(By.tagName("body"));
@@ -192,10 +198,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
-
     String currentHandle = driver.getWindowHandle();
 
     driver.findElement(By.name("windowThree")).click();
+
 
     driver.switchTo().window("result");
     System.out.println("currentHandle = " + currentHandle);
@@ -270,9 +276,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
+    int currentWindowHandles = driver.getWindowHandles().size();
+
     driver.findElement(By.name("windowOne")).click();
 
-    sleepBecauseWindowsTakeTimeToOpen();
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
 
     Set<String> allWindowHandles = driver.getWindowHandles();
 
@@ -291,9 +299,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testCanCloseWindowAndSwitchBackToMainWindow() {
     driver.get(pages.xhtmlTestPage);
+    int currentWindowHandles = driver.getWindowHandles().size();
+
     driver.findElement(By.name("windowOne")).click();
 
-    sleepBecauseWindowsTakeTimeToOpen();
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
 
     Set<String> allWindowHandles = driver.getWindowHandles();
 
@@ -309,14 +319,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertEquals(mainHandle, newHandle);
   }
 
-  private void sleepBecauseWindowsTakeTimeToOpen() {
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      fail("Interrupted");
-    }
-  }
-
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Ignore({SELENESE})
@@ -324,5 +326,23 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();
+  }
+
+  private boolean waitUntilNewWindowIsOpened(final WebDriver driver, final int originalCount) {
+    boolean result = waitFor(new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return driver.getWindowHandles().size() > originalCount;
+      }
+    });
+    sleepBecauseOfIssue2764();
+    return result;
+  }
+
+  private void sleepBecauseOfIssue2764() {
+    try {
+      Thread.sleep(200);
+    } catch (InterruptedException e) {
+      fail("Interrupted");
+    }
   }
 }
