@@ -69,6 +69,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().frame("iframe1");
     assertThat(driver.getWindowHandle(), equalTo(handle));
 
+    driver.close();
     driver.switchTo().window(current);
   }
 
