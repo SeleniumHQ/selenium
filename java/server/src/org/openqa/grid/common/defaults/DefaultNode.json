@@ -12,6 +12,7 @@
           "seleniumProtocol": "Selenium"
         },
         {
+          "platform": "WINDOWS",
           "browserName": "*iexplore",
           "maxInstances": 1,
           "seleniumProtocol": "Selenium"
@@ -27,6 +28,7 @@
           "seleniumProtocol": "WebDriver"
         },
         {
+          "platform": "WINDOWS",
           "browserName": "internet explorer",
           "maxInstances": 1,
           "seleniumProtocol": "WebDriver"

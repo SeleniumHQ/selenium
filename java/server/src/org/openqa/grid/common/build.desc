@@ -5,7 +5,8 @@ java_library(name = "common",
     "defaults/",
   ],
   deps = [
-  	"//java/server/src/org/openqa/selenium/server",
+    "defaults/*.*",
+    "//java/server/src/org/openqa/selenium/server",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])
