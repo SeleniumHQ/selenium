@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -193,21 +194,28 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertEquals(3, allWindowHandles.size());
   }
 
-  @Ignore(value = {IE, SELENESE, OPERA},
-          reason = "IE: can show a dialog 'The web page you are viewing is trying to close the window'")
+  @Ignore(value = {SELENESE, OPERA})
   @JavascriptEnabled
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     String currentHandle = driver.getWindowHandle();
+    int currentWindowHandles = driver.getWindowHandles().size();
 
     driver.findElement(By.name("windowThree")).click();
+
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
 
     driver.switchTo().window("result");
 
     try {
       waitFor(elementToExist(driver, "close"));
       driver.findElement(By.id("close")).click();
+
+      if (TestUtilities.isInternetExplorer(driver)) {
+        driver.switchTo().alert().accept();
+      }
+
       // If we make it this far, we're all good.
     } finally {
       driver.switchTo().window(currentHandle);
