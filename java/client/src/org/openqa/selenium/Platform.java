@@ -155,7 +155,7 @@ public enum Platform {
         if ("".equals(matcher)) {
           continue;
         }
-
+        matcher = matcher.toLowerCase();
         if (os.isExactMatch(osName, matcher)) {
           return os;
         }

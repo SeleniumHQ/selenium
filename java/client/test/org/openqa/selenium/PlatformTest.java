@@ -30,6 +30,11 @@ public class PlatformTest {
   }
 
   @Test
+  public void testShouldIdentifyVistaVariants() {
+    assertAllAre(Platform.VISTA, "Windows Vista", "windows server 2008", "Windows 7", "win7");
+  }
+
+  @Test
   public void testShouldIdentifyMacVariants() {
     assertAllAre(Platform.MAC, "Darwin", "Mac OS X");
   }
