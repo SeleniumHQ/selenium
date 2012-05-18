@@ -43,6 +43,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TestWaiter;
+import org.openqa.selenium.WaitingConditions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -371,13 +374,21 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", "1");
     profile.setPreference("browser.startup.homepage", pages.javascriptPage);
 
-    WebDriver driver2 = newFirefoxDriver(profile);
+    final WebDriver driver2 = newFirefoxDriver(profile);
 
     try {
-      assertEquals(pages.javascriptPage, driver2.getCurrentUrl());
+      TestWaiter.waitFor(urlToBe(driver2, pages.javascriptPage));
     } finally {
       driver2.quit();
     }
+  }
+
+  private Callable<Boolean> urlToBe(final WebDriver driver2, final String expectedUrl) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return expectedUrl.equals(driver2.getCurrentUrl());
+      }
+    };
   }
 
   @Ignore(value = FIREFOX,
