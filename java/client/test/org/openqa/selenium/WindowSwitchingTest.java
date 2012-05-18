@@ -223,7 +223,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE, SELENESE, OPERA})
+  @Ignore({SELENESE, OPERA})
   @JavascriptEnabled
   @Test
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
@@ -234,11 +234,18 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     driver.findElement(By.name("windowThree")).click();
 
+    assertTrue(waitUntilNewWindowIsOpened(driver, originalSize));
+
     driver.switchTo().window("result");
     int currentWindowHandles = driver.getWindowHandles().size();
 
     try {
       waitFor(elementToExist(driver, "close")).click();
+      
+      if (TestUtilities.isInternetExplorer(driver)) {
+        driver.switchTo().alert().accept();
+      }
+
       Set<String> allHandles = waitFor(windowHandleCountToBe(driver, currentWindowHandles - 1));
 
       assertEquals(originalSize, allHandles.size());
