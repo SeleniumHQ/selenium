@@ -77,3 +77,9 @@ safaridriver.Command.prototype.toJSON = function() {
     'parameters': this.getParameters()
   };
 };
+
+
+/** @override */
+safaridriver.Command.prototype.toString = function() {
+  return JSON.stringify(this);
+};

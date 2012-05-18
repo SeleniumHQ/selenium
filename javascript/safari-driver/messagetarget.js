@@ -98,5 +98,6 @@ safaridriver.message.MessageTarget.prototype.onMessage_ = function(e) {
     return;
   }
 
+  this.log('Received ' + message);
   this.emit(message.getType(), message, e);
 };

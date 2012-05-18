@@ -149,7 +149,7 @@ safaridriver.inject.onActivate_ = function(message, e) {
   safaridriver.inject.state.setActive(true);
 
   // Notify the extension that a new frame has been activated.
-  message.send(safari.self.tab);
+  message.sendSync(safari.self.tab);
 
   if (!safaridriver.inject.state.IS_TOP) {
     message = new safaridriver.message.Message(
@@ -187,7 +187,7 @@ safaridriver.inject.onConnect_ = function(message, e) {
   safaridriver.inject.LOG.info(
       'Content page has requested a WebDriver client connection to ' +
           message.getUrl());
-  message.send(safari.self.tab);
+  message.sendSync(safari.self.tab);
 };
 
 
@@ -208,7 +208,7 @@ safaridriver.inject.onLoad_ = function(message, e) {
       // commands again. This message is async.
       message = new safaridriver.message.Message(
           safaridriver.message.Type.LOAD);
-      message.send(safari.self.tab);
+      message.sendSync(safari.self.tab);
 
       // Step 2: The frame reloaded and will have forgotten to activate itself.
       // Reactivate it - synchronously.
@@ -301,6 +301,12 @@ safaridriver.inject.onResponse_ = function(message, e) {
 safaridriver.inject.onCommand_ = function(message) {
   var command = message.getCommand();
 
+  // If we detect an unload event and send a response, and then the command
+  // handler _also_ detects the unload and attempts to send a response, avoid
+  // sending the response a second time. Hopefully, we'll be smart and not do
+  // this, but something could slip through the cracks.
+  var sent = false;
+
   var handler = safaridriver.inject.TOP_COMMAND_MAP_[command.getName()];
   if (handler) {
     if (safaridriver.inject.state.IS_TOP) {
@@ -317,6 +323,10 @@ safaridriver.inject.onCommand_ = function(message) {
 
   function executeCommand(handler) {
     try {
+      safaridriver.inject.LOG.info('Executing ' + command);
+
+      window.addEventListener('unload', onUnload, true);
+
       // Don't schedule through webdriver.promise.Application; just execute the
       // command immediately. We're assuming the global page is scheduling
       // commands and only dispatching one at a time.
@@ -325,6 +335,18 @@ safaridriver.inject.onCommand_ = function(message) {
           sendSuccess, sendError);
     } catch (ex) {
       sendError(ex);
+    }
+  }
+
+  function onUnload() {
+    if (command.getName() === webdriver.CommandName.EXECUTE_ASYNC_SCRIPT ||
+        command.getName() === webdriver.CommandName.EXECUTE_SCRIPT) {
+      var error = new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+          'Detected a page unload event; script execution does not work ' +
+              'across page loads.');
+      sendError(error);
+    } else {
+      sendSuccess(null);
     }
   }
 
@@ -338,12 +360,17 @@ safaridriver.inject.onCommand_ = function(message) {
   }
 
   function sendResponse(response) {
-    safaridriver.inject.LOG.info('Sending response' +
-        '\ncommand:  ' + message +
-        '\nresponse: ' + JSON.stringify(response));
+    window.removeEventListener('unload', onUnload, true);
+    if (!sent) {
+      sent = true;
 
-    response = new safaridriver.message.ResponseMessage(command.id, response);
-    response.send(safari.self.tab);
+      safaridriver.inject.LOG.info('Sending response' +
+          '\ncommand:  ' + message +
+          '\nresponse: ' + JSON.stringify(response));
+
+      response = new safaridriver.message.ResponseMessage(command.id, response);
+      response.sendSync(safari.self.tab);
+    }
   }
 };
 
@@ -373,12 +400,16 @@ safaridriver.inject.sendCommandToPage = function(command) {
 
 
 /**
+ * @typedef {(function(!safaridriver.Command, function(!safaridriver.Command))|
+ *            function(!safaridriver.Command)|
+ *            function())}
+ */
+safaridriver.inject.CommandHandler;
+
+/**
  * Map of command names that should always be handled by the topmost frame,
  * regardless of whether it is currently active.
- * @type {!Object.<(
- *     function(!safaridriver.Command, function(!safaridriver.Command))|
- *     function(!safaridriver.Command)|
- *     function())>}
+ * @type {!Object.<webdriver.CommandName, safaridriver.inject.CommandHandler>}
  * @const
  * @private
  */
@@ -387,10 +418,7 @@ safaridriver.inject.TOP_COMMAND_MAP_ = {};
 
 /**
  * Maps command names to the function that handles it.
- * @type {!Object.<(
- *     function(!safaridriver.Command, function(!safaridriver.Command))|
- *     function(!safaridriver.Command)|
- *     function())>}
+ * @type {!Object.<webdriver.CommandName, safaridriver.inject.CommandHandler>}
  * @const
  * @private
  */

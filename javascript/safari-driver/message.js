@@ -38,6 +38,13 @@ safaridriver.message.ORIGIN = 'webdriver';
 
 
 /**
+ * @define {boolean} Whether to force messages to be sent synchronously when
+ *     sending to a SafariContentBrowserTabProxy.
+ */
+safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND = false;
+
+
+/**
  * Message types used by the SafariDriver extension.
  * @enum {string}
  */
@@ -227,6 +234,12 @@ safaridriver.message.Message.prototype.send = function(target) {
   if (target.postMessage) {
     (/** @type {!Window} */target).postMessage(this.data_, '*');
   } else {
+    if (safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND &&
+        target.canLoad) {
+      return this.sendSync(
+          (/** @type {!SafariContentBrowserTabProxy} */target));
+    }
+
     (/** @type {!(SafariContentBrowserTabProxy|SafariWebPageProxy)} */
         target).dispatchMessage(this.getType(), this.data_);
   }

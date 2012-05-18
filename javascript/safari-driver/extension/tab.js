@@ -194,76 +194,101 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   var message = new safaridriver.message.CommandMessage(command);
 
   var self = this;
-  self.log('Preparing command: ' + JSON.stringify(command));
-  this.whenReady(function(tab) {
-    self.log('Sending command: ' + JSON.stringify(command));
+  var timeoutKey;
+  self.log('Preparing message: ' + message);
+  this.whenReady(onReady);
+  return response.promise;
 
-    var removeListeners = function() {
+  /**
+   * @param {boolean=} opt_leaveResponseListener Whether to leave the response
+   *     listener attached to the tab.
+   */
+  function cleanUp(opt_leaveResponseListener) {
+    if (!opt_leaveResponseListener) {
       self.removeListener(safaridriver.message.Type.RESPONSE, onResponse);
-      tab.removeEventListener('close', onClose, true);
-    };
+    }
+    self.removeListener(safaridriver.message.Type.UNLOAD, onUnload);
+    self.browserTab_.removeEventListener('close', onClose, true);
+    clearTimeout(timeoutKey);
+  }
+
+  function onReady() {
+    self.log('Sending message: ' + message);
 
     if (opt_timeout > 0) {
       var start = goog.now();
-      var timeoutKey = setTimeout(function() {
-        removeListeners();
+      timeoutKey = setTimeout(function() {
+        cleanUp();
         if (response.isPending()) {
           response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
               'Timed out awaiting response to command "' + command.getName() +
-              '" after ' + (goog.now() - start) + ' ms'));
+                  '" after ' + (goog.now() - start) + ' ms'));
         }
       }, opt_timeout);
     }
 
-    message.send(tab.page);
     self.addListener(safaridriver.message.Type.RESPONSE, onResponse);
-    tab.addEventListener('close', onClose, true);
+    self.addListener(safaridriver.message.Type.UNLOAD, onUnload);
+    self.browserTab_.addEventListener('close', onClose, true);
+    message.send(self.browserTab_.page);
+  }
 
-    function onResponse(message) {
-      if (!response.isPending()) {
-        // Whoops! We shouldn't be listening for responses anymore.
-        removeListeners();
-        return;
-      }
-
-      if (message.getId() !== command.getId()) {
-        self.log(
-            'Ignoring response to another command: ' + message +
-                ' (' + command.getId() + ')',
-            goog.debug.Logger.Level.FINE);
-        return;
-      }
-
-      if (!response.isPending()) {
-        self.log(
-            'Received command response after promise has been ' +
-                'resolved; perhaps it previously timed-out? ' + message,
-            goog.debug.Logger.Level.WARNING);
-        return;
-      }
-
-      removeListeners();
-      clearTimeout(timeoutKey);
-      try {
-        response.resolve(bot.response.checkResponse(message.getResponse()));
-      } catch (ex) {
-        response.reject(ex);
-      }
+  function onResponse(message) {
+    if (!response.isPending()) {
+      // Whoops! We shouldn't be listening for responses anymore.
+      cleanUp();
+      return;
     }
 
-    function onClose() {
-      removeListeners();
+    if (message.getId() !== command.getId()) {
+      self.log(
+          'Ignoring response to another command: ' + message +
+              ' (' + command.getId() + ')',
+          goog.debug.Logger.Level.FINE);
+      return;
+    }
+
+    if (!response.isPending()) {
+      self.log(
+          'Received command response after promise has been ' +
+              'resolved; perhaps it previously timed-out? ' + message,
+          goog.debug.Logger.Level.WARNING);
+      return;
+    }
+
+    cleanUp();
+    try {
+      response.resolve(bot.response.checkResponse(message.getResponse()));
+    } catch (ex) {
+      response.reject(ex);
+    }
+  }
+
+  // If an unload event is received before a command response, it indicates
+  // that the tab was already in the process of unloading before we sent the
+  // command and the command was never received. Wait for the currently
+  // selected frame to finish loading, then retry the command.
+  function onUnload() {
+    cleanUp(/*leaveResponseListener=*/true);
+    self.log('Tab has unloaded before we received a response; waiting for the' +
+        ' page to reload before we try again');
+    self.whenReady(function() {
       if (response.isPending()) {
-        self.log(
-            'The window closed before a response was received.' +
-                'returning a null-success response.',
-            goog.debug.Logger.Level.WARNING);
-        // TODO(jleyba): Is a null success response always the correct action
-        // when the window closes before a response is received?
-        response.resolve(bot.response.createResponse(null));
+        onReady();
       }
-    }
-  });
+    });
+  }
 
-  return response.promise;
+  function onClose() {
+    cleanUp();
+    if (response.isPending()) {
+      self.log(
+          'The window closed before a response was received.' +
+              'returning a null-success response.',
+          goog.debug.Logger.Level.WARNING);
+      // TODO(jleyba): Is a null success response always the correct action
+      // when the window closes before a response is received?
+      response.resolve(bot.response.createResponse(null));
+    }
+  }
 };

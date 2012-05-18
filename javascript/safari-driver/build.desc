@@ -74,7 +74,8 @@ js_binary(name = "injected",
   defines = [
     "goog.userAgent.ASSUME_WEBKIT=true",
     "goog.userAgent.product.ASSUME_SAFARI=true",
-    "safaridriver.message.ORIGIN=1"
+    "safaridriver.message.ORIGIN=1",
+    "safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND=true"
   ],
   externs = [
     "externs/common.js",
