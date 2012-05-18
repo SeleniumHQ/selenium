@@ -199,6 +199,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
+	Boolean isIEDriver = TestUtilities.isInternetExplorer(driver);
     String currentHandle = driver.getWindowHandle();
     int currentWindowHandles = driver.getWindowHandles().size();
 
@@ -212,8 +213,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
       waitFor(elementToExist(driver, "close"));
       driver.findElement(By.id("close")).click();
 
-      if (TestUtilities.isInternetExplorer(driver)) {
-        driver.switchTo().alert().accept();
+      if (isIEDriver) {
+        Alert alert = waitFor(alertToBePresent(driver));
+		alert.accept();
       }
 
       // If we make it this far, we're all good.
@@ -229,6 +231,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     driver.get(pages.xhtmlTestPage);
 
+	Boolean isIEDriver = TestUtilities.isInternetExplorer(driver);
     String currentHandle = driver.getWindowHandle();
     int originalSize = driver.getWindowHandles().size();
 
@@ -242,8 +245,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     try {
       waitFor(elementToExist(driver, "close")).click();
       
-      if (TestUtilities.isInternetExplorer(driver)) {
-        driver.switchTo().alert().accept();
+      if (isIEDriver) {
+        Alert alert = waitFor(alertToBePresent(driver));
+		alert.accept();
       }
 
       Set<String> allHandles = waitFor(windowHandleCountToBe(driver, currentWindowHandles - 1));
@@ -338,6 +342,18 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();
+  }
+
+  private Callable<Alert> alertToBePresent(final WebDriver driver) {
+    return new Callable<Alert>() {
+      public Alert call() throws Exception {
+        try {
+          return driver.switchTo().alert();
+        } catch (NoAlertPresentException e) {
+          return null;
+        }
+      }
+    };
   }
 
   private boolean waitUntilNewWindowIsOpened(final WebDriver driver, final int originalCount) {
