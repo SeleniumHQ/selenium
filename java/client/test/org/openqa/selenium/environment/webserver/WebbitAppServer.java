@@ -18,10 +18,12 @@ limitations under the License.
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.openqa.selenium.TimeoutException;
@@ -144,7 +146,7 @@ public class WebbitAppServer implements AppServer {
   }
   
   private WebServer configureServer(int port) {
-    WebServer server = WebServers.createWebServer(port);
+    WebServer server = WebServers.createWebServer(newFixedThreadPool(5), port);
     
     // Note: Does first matching prefix matching, so /common/foo must be set up before /common
     // Delegating to a PathMatchHandler can be used to limit this
