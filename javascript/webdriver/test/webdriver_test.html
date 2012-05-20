@@ -1177,7 +1177,7 @@ limitations under the License.
     testHelper.execute();
   }
 
-  function testWebElementResolvesWhenTheUnderlyingIdResolves() {
+  function runWebElementResolutionTest(resolvedId) {
     var id = new webdriver.promise.Deferred();
 
     var callback, idCallback;
@@ -1186,9 +1186,10 @@ limitations under the License.
     webdriver.promise.when(element,
         callback = callbackHelper(function(resolvedElement) {
           assertEquals(element, resolvedElement);
+          assertFalse(element.toWireValue().isPending());
         }));
 
-    webdriver.promise.when(element.id_,
+    webdriver.promise.when(element.toWireValue(),
         idCallback = callbackHelper(function(id) {
           assertEquals('object', goog.typeOf(id));
           assertEquals('foo', id[webdriver.WebElement.ELEMENT_KEY]);
@@ -1197,15 +1198,51 @@ limitations under the License.
     callback.assertNotCalled();
     idCallback.assertNotCalled();
 
-    id.resolve('foo');
+    id.resolve(resolvedId);
 
     callback.assertCalled();
     idCallback.assertCalled();
     verifyAll();  // Make tearDown happy.
   }
 
+  function testWebElement_resolvesWhenTheUnderlyingIdResolves() {
+    runWebElementResolutionTest('foo');
+  }
 
-  function testWebElementIsRejectedIfUnderlyingIdIsRejected() {
+  function testWebElement_resolvesWhenIdResolvesToElementJsonObject() {
+    runWebElementResolutionTest({'ELEMENT': 'foo'});
+  }
+
+  function testWebElement_resolvesWhenIdResolvesToAnotherElement() {
+    runWebElementResolutionTest(
+        new webdriver.WebElement({}, {'ELEMENT': 'foo'}));
+  }
+
+  function testWebElement_elementResolvesBeforeCallbacksOnWireValueTrigger() {
+    var id = new webdriver.promise.Deferred();
+
+    var callback, idCallback;
+    var element = new webdriver.WebElement({}, id.promise);
+    var messages = [];
+
+    webdriver.promise.when(element, function() {
+      messages.push('element resolved');
+    });
+
+    webdriver.promise.when(element.toWireValue(), function() {
+      messages.push('wire value resolved');
+    });
+
+    assertArrayEquals([], messages);
+    id.resolve('foo');
+    assertArrayEquals([
+      'element resolved',
+      'wire value resolved'
+    ], messages);
+    verifyAll();  // Make tearDown happy.
+  }
+
+  function testWebElement_isRejectedIfUnderlyingIdIsRejected() {
     var id = new webdriver.promise.Deferred();
 
     var callback, errback;
@@ -1468,6 +1505,22 @@ limitations under the License.
     var driver = testHelper.createDriver();
     var element = driver.findElement(By.id('foo'));
     element.click();
+    testHelper.execute();
+  }
+
+
+  function testFindElement_canUseElementInCallback() {
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+            andReturnSuccess({'ELEMENT':'bar'}).
+        expect(CName.CLICK_ELEMENT, {'id':{'ELEMENT':'bar'}}).
+            andReturnSuccess().
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    driver.findElement(By.id('foo')).then(function(element) {
+      element.click();
+    });
     testHelper.execute();
   }
 

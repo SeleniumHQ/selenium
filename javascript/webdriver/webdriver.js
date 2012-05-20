@@ -1342,8 +1342,7 @@ webdriver.WebElement = function(driver, id) {
 
   // This class is responsible for resolving itself; delete the resolve and
   // reject methods so they may not be accessed by consumers of this class.
-  var self = this;
-  var resolve = this.resolve;
+  var resolve = goog.partial(this.resolve, this);
   var reject = this.reject;
   delete this.promise;
   delete this.resolve;
@@ -1357,8 +1356,6 @@ webdriver.WebElement = function(driver, id) {
    * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
    */
   this.id_ = webdriver.promise.when(id, function(id) {
-    resolve(self);
-
     if (id instanceof webdriver.WebElement) {
       return id.id_;
     } else if (goog.isDef(id[webdriver.WebElement.ELEMENT_KEY])) {
@@ -1368,7 +1365,11 @@ webdriver.WebElement = function(driver, id) {
     var json = {};
     json[webdriver.WebElement.ELEMENT_KEY] = id;
     return json;
-  }, reject);
+  });
+
+  // This WebElement should not be resolved until its ID has been
+  // fully resolved.
+  this.id_.then(resolve, reject);
 };
 goog.inherits(webdriver.WebElement, webdriver.promise.Deferred);
 
