@@ -311,7 +311,8 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
     // IE 9+ creates events with pageX and pageY set to 0.
     // Trying to modify the properties throws an error,
     // so we define getters to return the correct values.
-    if ( event.pageX === 0 && event.pageY === 0 && Object.defineProperty ) {
+    if (goog.userAgent.IE &&
+        event.pageX === 0 && event.pageY === 0 && Object.defineProperty) {
       var doc = bot.getDocument().documentElement;
       var body = bot.getDocument().body;
 
