@@ -40,7 +40,7 @@ goog.require('webdriver.promise');
  * @const
  */
 safaridriver.inject.LOG = goog.debug.Logger.getLogger(
-    'safaridriver.inject');
+    'safaridriver.inject.' + safaridriver.inject.state.FRAME_ID);
 
 
 /**
@@ -48,7 +48,8 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger(
  * @private
  */
 safaridriver.inject.MessageType_ = {
-  ACTIVATE_FRAME: 'activate-frame'
+  ACTIVATE_FRAME: 'activate-frame',
+  REACTIVATE_FRAME: 'reactivate-frame'
 };
 
 
@@ -84,6 +85,8 @@ safaridriver.inject.init = function() {
       on(safaridriver.message.Type.ACTIVATE, safaridriver.inject.onActivate_).
       on(safaridriver.inject.MessageType_.ACTIVATE_FRAME,
          safaridriver.inject.onActivateFrame_).
+      on(safaridriver.inject.MessageType_.REACTIVATE_FRAME,
+         safaridriver.inject.onReactivateFrame_).
       on(safaridriver.message.Type.CONNECT, safaridriver.inject.onConnect_).
       on(safaridriver.message.Type.ENCODE, safaridriver.inject.onEncode_).
       on(safaridriver.message.Type.LOAD, safaridriver.inject.onLoad_).
@@ -148,13 +151,13 @@ safaridriver.inject.onActivate_ = function(message, e) {
       'Activating frame for future command handling.');
   safaridriver.inject.state.setActive(true);
 
-  // Notify the extension that a new frame has been activated.
-  message.sendSync(safari.self.tab);
-
-  if (!safaridriver.inject.state.IS_TOP) {
+  if (safaridriver.inject.state.IS_TOP) {
+    message.sendSync(safari.self.tab);
+  } else {
     message = new safaridriver.message.Message(
         safaridriver.inject.MessageType_.ACTIVATE_FRAME);
-    message.sendSync(window.top);
+    message.send(window.top);
+    // Let top notify the extension that a new frame has been activated.
   }
 };
 
@@ -169,6 +172,28 @@ safaridriver.inject.onActivateFrame_ = function(message, e) {
       safaridriver.inject.message.isFromFrame(e)) {
     safaridriver.inject.LOG.info('Sub-frame has been activated');
     safaridriver.inject.state.setActiveFrame(e.source);
+
+    message = new safaridriver.message.Message(
+        safaridriver.message.Type.ACTIVATE);
+    message.sendSync(safari.self.tab);
+  }
+};
+
+
+/**
+ * @param {!safaridriver.message.Message} message The activate message.
+ * @param {!MessageEvent} e The original message event.
+ * @private
+ */
+safaridriver.inject.onReactivateFrame_ = function(message, e) {
+  if (!safaridriver.inject.state.IS_TOP &&
+      safaridriver.inject.message.isFromTop(e)) {
+    safaridriver.inject.LOG.fine('Sub-frame has been re-activated');
+
+    safaridriver.inject.state.setActive(true);
+
+    message = new safaridriver.message.Message(safaridriver.message.Type.LOAD);
+    message.sendSync(safari.self.tab);
   }
 };
 
@@ -204,17 +229,11 @@ safaridriver.inject.onLoad_ = function(message, e) {
         e.source === safaridriver.inject.state.getActiveFrame()) {
       safaridriver.inject.LOG.info('Active frame has reloaded');
 
-      // Step 1: Tell the extension that the page has loaded and is ready for
-      // commands again. This message is async.
+      // Tell the frame that has just finished loading that it was our last
+      // activate frame and should reactivate itself.
       message = new safaridriver.message.Message(
-          safaridriver.message.Type.LOAD);
-      message.sendSync(safari.self.tab);
-
-      // Step 2: The frame reloaded and will have forgotten to activate itself.
-      // Reactivate it - synchronously.
-      message = new safaridriver.message.Message(
-          safaridriver.message.Type.ACTIVATE);
-      message.sendSync((/** @type {!Window} */e.source));
+          safaridriver.inject.MessageType_.REACTIVATE_FRAME);
+      message.send((/** @type {!Window} */e.source));
     }
   } else if (safaridriver.inject.message.isFromSelf(e) &&
       safaridriver.inject.installedPageScript_ &&
@@ -479,4 +498,3 @@ goog.scope(function() {
 
   map[CommandName.SWITCH_TO_FRAME] = commands.switchToFrame;
 });
-

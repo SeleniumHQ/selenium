@@ -41,3 +41,13 @@ safaridriver.inject.message.isFromSelf = function(e) {
 safaridriver.inject.message.isFromFrame = function(e) {
   return !!e.source && e.source.top === window.top;
 };
+
+
+/**
+ * Checks whether the given message event was sent by the top most window.
+ * @param {!MessageEvent} e The message event to check.
+ * @return {boolean} Whether the message came from the topmost frame.
+ */
+safaridriver.inject.message.isFromTop = function(e) {
+  return !!e.source && e.source === window.top;
+};

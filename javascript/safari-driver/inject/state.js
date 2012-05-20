@@ -8,6 +8,7 @@ goog.provide('safaridriver.inject.state');
 
 // DO NOT ADD DEPENDENCIES ON ANYTHING FROM safaridriver.inject !!!
 goog.require('goog.asserts');
+goog.require('goog.string');
 
 
 /**
@@ -16,6 +17,15 @@ goog.require('goog.asserts');
  * @const
  */
 safaridriver.inject.state.IS_TOP = window === window.top;
+
+
+/**
+ * A unique ID for the frame using this script.
+ * @type {string}
+ * @const
+ */
+safaridriver.inject.state.FRAME_ID =
+    safaridriver.inject.state.IS_TOP ? 'TOP' : goog.string.getRandomString();
 
 
 /**
