@@ -37,25 +37,30 @@ if ui_elements_enabled is false then
 		activate
 		set current pane to pane id "com.apple.preference.universalaccess"
 		display dialog "Please \"Enable access for assistive devices\" " & ¬
-		    "and try again..."
+			"and try again..."
 		error number -128
 	end tell
 end if
-
 
 tell application "Safari" to activate
 
 tell application "System Events"
 	tell process "Safari"
 		tell menu bar 1
-			tell menu "Develop"
-				click menu item "Show Extension Builder"
-				delay 1
+			-- tell menu "Develop"
+			tell menu bar item 8
+				tell menu 1
+					-- click menu item "Show Extension Builder"
+					click menu item 7
+				end tell
 			end tell
 		end tell
 		
+		delay 0.2
+		
 		-- https://discussions.apple.com/thread/2726674?start=0&tstart=0
-		tell UI element 1 of scroll area 1 of window "Extension Builder"
+		-- tell UI element 1 of scroll area 1 of window "Extension Builder"
+		tell UI element 1 of scroll area 1 of window 1
 			set found_extension to false
 			set tc to (count (groups whose its images is not {}))
 			repeat with i from 1 to tc
@@ -63,7 +68,8 @@ tell application "System Events"
 					set t_name to name of static text 1 of group i
 					if t_name is EXTENSION then
 						set found_extension to true
-						click button "Reload" of UI element ("ReloadUninstall" & t_name)
+						-- click button "Reload" of UI element ("ReloadUninstall" & t_name)
+						click button 1 of UI element 4
 						exit repeat
 					end if
 				end if
@@ -73,8 +79,8 @@ tell application "System Events"
 			
 			if found_extension is false then
 				display dialog "Was unable to locate the extension \"" & EXTENSION ¬
-				    & "\"" & return & return ¬
-				    & "It must be manually installed before this script may be used."
+					& "\"" & return & return ¬
+					& "It must be manually installed before this script may be used."
 				error number -128
 			end if
 		end tell
