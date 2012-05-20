@@ -161,11 +161,11 @@ safaridriver.extension.Tab.prototype.onUnload_ = function() {
 safaridriver.extension.Tab.prototype.onLoad_ = function() {
   this.log('Frame has loaded a new page; waiting for idle state');
   var self = this;
-  self.isReady_ = true;
 
   // Wait if we stay ready for a short time before notifying our listeners.
   if (!self.idleStateWaitKey_) {
     self.idleStateWaitKey_ = setTimeout(function() {
+      self.isReady_ = true;
       self.idleStateWaitKey_ = null;
       self.log('Tab looks ready; notifying listeners');
       while (self.readyListeners_.length) {
