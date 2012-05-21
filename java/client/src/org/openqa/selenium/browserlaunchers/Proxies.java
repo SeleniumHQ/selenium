@@ -68,6 +68,11 @@ public class Proxies {
       pac.defaults().toProxy(proxy.getHttpProxy());
     }
 
+    // Since the browser communicates with either the local proxy server (RC) or the local IEDriverServer (WD),
+    // the browser should not proxy any traffic to localhost.
+    pac.mapHost("localhost").toNoProxy();
+    pac.mapHost("127.0.0.1").toNoProxy();
+
     try {
       File pacFile = new File(parentDir, "proxy.pac");
       Writer out = new FileWriter(pacFile);
