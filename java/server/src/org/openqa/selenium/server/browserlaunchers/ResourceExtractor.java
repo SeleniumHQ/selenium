@@ -23,6 +23,7 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.io.FileHandler;
 
@@ -102,6 +103,7 @@ public class ResourceExtractor {
   }
 
   private static File getJarFileFromUrl(URL url) {
+    System.out.println(url);
     if (!"jar".equalsIgnoreCase(url.getProtocol()))
       throw new IllegalArgumentException("This is not a Jar URL:"
           + url.toString());
@@ -112,6 +114,10 @@ public class ResourceExtractor {
           + " does not have a '!'");
     }
     String jarFileURI = resourceFilePath.substring(0, index).replace(" ", "%20");
+    if (Platform.getCurrent().is(Platform.WINDOWS) && jarFileURI.startsWith("file://")) {
+      // Java uses non-standard representation of UNC paths  
+      jarFileURI = jarFileURI.replaceFirst("file://", "file:////");
+    }
     try {
       File jarFile = new File(new URI(jarFileURI));
       return jarFile;
