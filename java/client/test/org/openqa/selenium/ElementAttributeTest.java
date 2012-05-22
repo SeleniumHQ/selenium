@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -233,6 +234,8 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.name("readonly"));
     String readonly = element.getAttribute("readonly");
 
+    assertNotNull(readonly);
+
     WebElement textInput = driver.findElement(By.name("x"));
     String notReadonly = textInput.getAttribute("readonly");
 
@@ -321,8 +324,8 @@ public class ElementAttributeTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("email"));
     assertEquals("", element.getAttribute("value"));
-    element.sendKeys("hello world");
-    assertEquals("hello world", element.getAttribute("value"));
+    element.sendKeys("hello@example.com");
+    assertEquals("hello@example.com", element.getAttribute("value"));
   }
 
   @Ignore(ANDROID)
