@@ -1,3 +1,6 @@
+Selenium 2.22
+* Moving IEDriver to be able to use IEDriverServer
+
 Selenium 2.21.3
 * Fix for File Upload to remote servers
 * Better handling of typing in input=file. Bug 3831, 3736
