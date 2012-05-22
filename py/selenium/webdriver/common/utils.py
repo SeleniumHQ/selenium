@@ -33,3 +33,13 @@ def is_connectable(port):
         except socket.error:
             return False
 
+def is_url_connectable(port):
+    import urllib2
+    try:
+        res = urllib2.urlopen("http://localhost:%s/status" % port)
+        if res.getcode() == 200:
+            return True
+        else:
+            return False
+    except:
+        return False

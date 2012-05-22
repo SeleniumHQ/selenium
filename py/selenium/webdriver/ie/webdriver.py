@@ -24,33 +24,44 @@ from ctypes import *
 import time
 import os
 import base64
+from service import Service
+import warnings
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
 
 class WebDriver(RemoteWebDriver):
 
-    def __init__(self, port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT):
+    def __init__(self, executable_path='IEDriverServer.exe', 
+                    port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT):
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
 
-        # Create IE Driver instance of the unmanaged code
         try:
-            self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"win32", "IEDriver.dll"))
-        except WindowsError:
+            self.iedriver = Service(executable_path, port=self.port)
+            self.iedriver.start()
+        except:
+            # Create IE Driver instance of the unmanaged code
             try:
-                self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"x64", "IEDriver.dll"))
+                warnings.warn("You need to download the IEDriverServer. \
+                            Using the deprecated approach", DeprecationWarning)
+                self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"win32", "IEDriver.dll"))
             except WindowsError:
-                raise WebDriverException("Unable to load the IEDriver.dll component")
-        self.ptr = self.iedriver.StartServer(self.port)
+                try:
+                    self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"x64", "IEDriver.dll"))
+                except WindowsError:
+                    raise WebDriverException("Unable to load the IEDriver.dll component")
+            self.ptr = self.iedriver.StartServer(self.port)
 
-        seconds = 0
-        while not utils.is_connectable(self.port):
-            seconds += 1
-            if seconds > DEFAULT_TIMEOUT:
-                raise RuntimeError("Unable to connect to IE")
-            time.sleep(1)
+            seconds = 0
+            while not utils.is_url_connectable(self.port):
+                seconds += 1
+                if seconds > DEFAULT_TIMEOUT:
+                    # Clean up after ourselves
+                    self.quit()
+                    raise RuntimeError("Unable to connect to IE")
+                time.sleep(1)
 
         RemoteWebDriver.__init__(
             self,
@@ -59,9 +70,12 @@ class WebDriver(RemoteWebDriver):
 
     def quit(self):
         RemoteWebDriver.quit(self)
-        self.iedriver.StopServer(self.ptr)
-        del self.iedriver
-        del self.ptr
+        try:
+            self.iedriver.stop()
+        except:
+            self.iedriver.StopServer(self.ptr)
+            del self.iedriver
+            del self.ptr
 
     def save_screenshot(self, filename):
         """
