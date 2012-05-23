@@ -33,12 +33,12 @@ class RenderedWebElementTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="green-parent")
         backgroundColour = element.value_of_css_property("background-color")
 
-        self.assertEqual("#008000", backgroundColour)
+        self.assertEqual("rgb(0, 128, 0)", backgroundColour)
 
         element = self.driver.find_element(by=By.ID, value="red-item")
         backgroundColour = element.value_of_css_property("background-color")
 
-        self.assertEqual("#ff0000", backgroundColour)
+        self.assertEqual("rgb(255, 0, 0)", backgroundColour)
 
     @pytest.mark.ignore_chrome
     def testShouldAllowInheritedStylesToBeUsed(self):
