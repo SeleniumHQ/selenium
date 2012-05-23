@@ -22,6 +22,8 @@ import tempfile
 import time
 import shutil
 import unittest
+import pytest
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 
@@ -34,7 +36,24 @@ class ElementAttributeTests(unittest.TestCase):
         attribute = head.get_attribute("cheese")
         self.assertTrue(attribute is None)
         
+    def testShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag(self):
+        self._loadSimplePage()
+        img =  self.driver.find_element_by_id("invalidImgTag")
+        img_attr = img.get_attribute("src")
+        self.assertTrue(img_attr is None)
+
+    def testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag(self):
+        self._loadSimplePage()
+        img = self.driver.find_element_by_id("validImgTag")
+        img_attr = img.get_attribute("src")
+        self.assertTrue("icon.gif" in img_attr)
  
+    def testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag(self):
+        self._loadSimplePage()
+        img = self.driver.find_element_by_id("validAnchorTag")
+        img_attr = img.get_attribute("href")
+        self.assertTrue("icon.gif" in img_attr)
+
     def testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty(self):
         self._loadSimplePage()
         body = self.driver.find_element_by_xpath("//body")
@@ -43,12 +62,12 @@ class ElementAttributeTests(unittest.TestCase):
     def testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet(self):    
         self._loadPage("formPage")
         inputElement = self.driver.find_element_by_xpath("//input[@id='working']")
-        self.assertEqual("false", inputElement.get_attribute("disabled"))
+        self.assertEqual(None, inputElement.get_attribute("disabled"))
         self.assertTrue(inputElement.is_enabled())
 
         pElement = self.driver.find_element_by_id("peas")
-        self.assertEqual("false", inputElement.get_attribute("disabled"))
-        self.assertTrue(inputElement.is_enabled())
+        self.assertEqual(None, pElement.get_attribute("disabled"))
+        self.assertTrue(pElement.is_enabled())
         
     def testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing(self):
         self._loadPage("formPage")
@@ -182,6 +201,61 @@ class ElementAttributeTests(unittest.TestCase):
         self._loadPage("javascriptPage")
         style = self.driver.find_element_by_id("red-item").get_attribute("style")
         self.assertTrue("background-color" in style.lower())
+
+    def testShouldCorrectlyReportValueOfColspan(self):
+        self._loadPage("tables")
+
+        th1 = self.driver.find_element_by_id("th1")
+        td2 = self.driver.find_element_by_id("td2")
+
+        self.assertEqual("th1", th1.get_attribute("id"))
+        self.assertEqual("3", th1.get_attribute("colspan"))
+
+        self.assertEqual("td2", td2.get_attribute("id"));
+        self.assertEquals("2", td2.get_attribute("colspan"));
+
+    def testCanRetrieveTheCurrentValueOfATextFormField_textInput(self):
+        self._loadPage("formPage")
+        element = self.driver.find_element_by_id("working")
+        self.assertEqual("", element.get_attribute("value"))
+        element.send_keys("hello world")
+        self.assertEqual("hello world", element.get_attribute("value"))
+
+    def testCanRetrieveTheCurrentValueOfATextFormField_emailInput(self):
+        self._loadPage("formPage")
+        element = self.driver.find_element_by_id("email")
+        self.assertEqual("", element.get_attribute("value"))
+        element.send_keys("hello@example.com")
+        self.assertEqual("hello@example.com", element.get_attribute("value"))
+    def testCanRetrieveTheCurrentValueOfATextFormField_textArea(self):
+        self._loadPage("formPage")
+        element = self.driver.find_element_by_id("emptyTextArea")
+        self.assertEqual("", element.get_attribute("value"))
+        element.send_keys("hello world")
+        self.assertEqual("hello world", element.get_attribute("value"))
+    
+    @pytest.mark.ignore_chrome
+    @pytest.mark.ignore_opera
+    def testShouldReturnNullForNonPresentBooleanAttributes(self):
+        self._loadPage("booleanAttributes")
+        element1 = self.driver.find_element_by_id("working")
+        self.assertEqual(None, element1.get_attribute("required"))
+        element2 = self.driver.find_element_by_id("wallace")
+        self.assertEqual(None, element2.get_attribute("nowrap"))
+
+    @pytest.mark.ignore_ie
+    def testShouldReturnTrueForPresentBooleanAttributes(self):
+        self._loadPage("booleanAttributes")
+        element1 = self.driver.find_element_by_id("emailRequired")
+        self.assertEqual("true", element1.get_attribute("required"))
+        element2 = self.driver.find_element_by_id("emptyTextAreaRequired")
+        self.assertEqual("true", element2.get_attribute("required"))
+        element3 = self.driver.find_element_by_id("inputRequired")
+        self.assertEqual("true", element3.get_attribute("required"))
+        element4 = self.driver.find_element_by_id("textAreaRequired")
+        self.assertEqual("true", element4.get_attribute("required"))
+        element5 = self.driver.find_element_by_id("unwrappable")
+        self.assertEqual("true", element5.get_attribute("nowrap"))
 
     def tesShouldGetUnicodeCharsFromAttribute(self):
         self._loadPage("formPage")
