@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -486,6 +487,7 @@ public class RegistrationRequest {
       }
     }
 
+    addPlatformInfoToCapabilities();
   }
 
   private DesiredCapabilities addCapabilityFromString(String capability) {
@@ -511,6 +513,15 @@ public class RegistrationRequest {
     }
     return res;
 
+  }
+
+  private void addPlatformInfoToCapabilities() {
+    Platform current = Platform.getCurrent();
+    for (DesiredCapabilities cap : capabilities) {
+      if (cap.getPlatform() == null) {
+        cap.setPlatform(current);
+      }
+    }
   }
 
   public JSONObject getRegistrationRequest() {
@@ -551,6 +562,7 @@ public class RegistrationRequest {
           }
           capabilities.add(c);
         }
+        addPlatformInfoToCapabilities();
       }
 
       JSONObject o = base.getJSONObject("configuration");
