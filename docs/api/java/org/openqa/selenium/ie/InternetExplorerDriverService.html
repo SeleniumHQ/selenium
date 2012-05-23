@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-ChromeDriverService
+InternetExplorerDriverService
 </TITLE>
 
 
@@ -13,7 +13,7 @@ ChromeDriverService
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ChromeDriverService";
+        parent.document.title="InternetExplorerDriverService";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverServer.html" title="class in org.openqa.selenium.ie"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/chrome/ChromeDriverService.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="ChromeDriverService.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/ie/InternetExplorerDriverService.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="InternetExplorerDriverService.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -85,21 +85,21 @@ DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.chrome</FONT>
+org.openqa.selenium.ie</FONT>
 <BR>
-Class ChromeDriverService</H2>
+Class InternetExplorerDriverService</H2>
 <PRE>
 java.lang.Object
   <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">org.openqa.selenium.remote.service.DriverService</A>
-      <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.chrome.ChromeDriverService</B>
+      <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.ie.InternetExplorerDriverService</B>
 </PRE>
 <HR>
 <DL>
-<DT><PRE>public class <B>ChromeDriverService</B><DT>extends <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</A></DL>
+<DT><PRE>public class <B>InternetExplorerDriverService</B><DT>extends <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</A></DL>
 </PRE>
 
 <P>
-Manages the life and death of a chromedriver server.
+Manages the life and death of an IEDriverServer.
 <P>
 
 <P>
@@ -117,10 +117,10 @@ Manages the life and death of a chromedriver server.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><CODE>ChromeDriverService</CODE></A> instances.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Builder used to configure new <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><CODE>InternetExplorerDriverService</CODE></A> instances.</TD>
 </TR>
 </TABLE>
 &nbsp;<!-- =========== FIELD SUMMARY =========== -->
@@ -134,11 +134,11 @@ Manages the life and death of a chromedriver server.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_EXE_PROPERTY">CHROME_DRIVER_EXE_PROPERTY</A></B></CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html#IE_DRIVER_EXE_PROPERTY">IE_DRIVER_EXE_PROPERTY</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System property that defines the location of the chromedriver executable that will be used by
- the <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><CODE>default service</CODE></A>.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System property that defines the location of the IEDriverServer executable that will be used by
+ the <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html#createDefaultService()"><CODE>default service</CODE></A>.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -152,11 +152,11 @@ Manages the life and death of a chromedriver server.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()">createDefaultService</A></B>()</CODE>
+<CODE>static&nbsp;<A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html#createDefaultService()">createDefaultService</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configures and returns a new <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><CODE>ChromeDriverService</CODE></A> using the default configuration.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configures and returns a new <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><CODE>InternetExplorerDriverService</CODE></A> using the default configuration.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_org.openqa.selenium.remote.service.DriverService"><!-- --></A>
@@ -190,16 +190,16 @@ Manages the life and death of a chromedriver server.
 </TR>
 </TABLE>
 
-<A NAME="CHROME_DRIVER_EXE_PROPERTY"><!-- --></A><H3>
-CHROME_DRIVER_EXE_PROPERTY</H3>
+<A NAME="IE_DRIVER_EXE_PROPERTY"><!-- --></A><H3>
+IE_DRIVER_EXE_PROPERTY</H3>
 <PRE>
-public static final java.lang.String <B>CHROME_DRIVER_EXE_PROPERTY</B></PRE>
+public static final java.lang.String <B>IE_DRIVER_EXE_PROPERTY</B></PRE>
 <DL>
-<DD>System property that defines the location of the chromedriver executable that will be used by
- the <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><CODE>default service</CODE></A>.
+<DD>System property that defines the location of the IEDriverServer executable that will be used by
+ the <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html#createDefaultService()"><CODE>default service</CODE></A>.
 <P>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY">Constant Field Values</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY">Constant Field Values</A></DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -215,16 +215,16 @@ public static final java.lang.String <B>CHROME_DRIVER_EXE_PROPERTY</B></PRE>
 <A NAME="createDefaultService()"><!-- --></A><H3>
 createDefaultService</H3>
 <PRE>
-public static <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</A> <B>createDefaultService</B>()</PRE>
+public static <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</A> <B>createDefaultService</B>()</PRE>
 <DL>
-<DD>Configures and returns a new <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><CODE>ChromeDriverService</CODE></A> using the default configuration. In
- this configuration, the service will use the chromedriver executable identified by the
- <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_EXE_PROPERTY"><CODE>CHROME_DRIVER_EXE_PROPERTY</CODE></A> system property. Each service created by this method will
+<DD>Configures and returns a new <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><CODE>InternetExplorerDriverService</CODE></A> using the default configuration. In
+ this configuration, the service will use the IEDriverServer executable identified by the
+ <A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html#IE_DRIVER_EXE_PROPERTY"><CODE>IE_DRIVER_EXE_PROPERTY</CODE></A> system property. Each service created by this method will
  be configured to use a free port on the current system.
 <P>
 <DD><DL>
 
-<DT><B>Returns:</B><DD>A new ChromeDriverService using the default configuration.</DL>
+<DT><B>Returns:</B><DD>A new InternetExplorerDriverService using the default configuration.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -257,11 +257,11 @@ public static <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverServic
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverServer.html" title="class in org.openqa.selenium.ie"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/chrome/ChromeDriverService.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="ChromeDriverService.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/ie/InternetExplorerDriverService.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="InternetExplorerDriverService.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

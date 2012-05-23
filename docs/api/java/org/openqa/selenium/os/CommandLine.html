@@ -168,10 +168,10 @@ java.lang.Object
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#findExecutable(java.lang.String)">findExecutable</A></B>(java.lang.String&nbsp;named)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#find(java.lang.String)">find</A></B>(java.lang.String&nbsp;executable)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find the executable by scanning the file system and the PATH.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>Use the commandline itself to execute your command.</I></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -234,6 +234,14 @@ java.lang.Object
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#setInput(java.lang.String)">setInput</A></B>(java.lang.String&nbsp;allInput)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/CommandLine.html#setWorkingDirectory(java.lang.String)">setWorkingDirectory</A></B>(java.lang.String&nbsp;workingDirectory)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -357,17 +365,16 @@ public static java.lang.String <B>getLibraryPathPropertyName</B>()</PRE>
 </DL>
 <HR>
 
-<A NAME="findExecutable(java.lang.String)"><!-- --></A><H3>
-findExecutable</H3>
+<A NAME="find(java.lang.String)"><!-- --></A><H3>
+find</H3>
 <PRE>
-public static java.lang.String <B>findExecutable</B>(java.lang.String&nbsp;named)</PRE>
+<FONT SIZE="-1">@Deprecated
+</FONT>public static java.lang.String <B>find</B>(java.lang.String&nbsp;executable)</PRE>
 <DL>
-<DD>Find the executable by scanning the file system and the PATH. In the case of Windows this
- method allows common executable endings (".com", ".bat" and ".exe") to be omitted.
+<DD><B>Deprecated.</B>&nbsp;<I>Use the commandline itself to execute your command.</I>
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>named</CODE> - The name of the executable to find
-<DT><B>Returns:</B><DD>The absolute path to the executable, or null if no match is made.</DL>
+</DL>
 </DD>
 </DL>
 <HR>
@@ -456,6 +463,17 @@ public int <B>destroy</B>()</PRE>
 setInput</H3>
 <PRE>
 public void <B>setInput</B>(java.lang.String&nbsp;allInput)</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setWorkingDirectory(java.lang.String)"><!-- --></A><H3>
+setWorkingDirectory</H3>
+<PRE>
+public void <B>setWorkingDirectory</B>(java.lang.String&nbsp;workingDirectory)</PRE>
 <DL>
 <DD><DL>
 </DL>

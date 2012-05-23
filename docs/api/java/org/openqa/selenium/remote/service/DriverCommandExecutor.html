@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-AjaxElementLocatorFactory
+DriverCommandExecutor
 </TITLE>
 
 
@@ -13,7 +13,7 @@ AjaxElementLocatorFactory
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="AjaxElementLocatorFactory";
+        parent.document.title="DriverCommandExecutor";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html" title="class in org.openqa.selenium.support.pagefactory"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/support/pagefactory/Annotations.html" title="class in org.openqa.selenium.support.pagefactory"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/support/pagefactory/AjaxElementLocatorFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AjaxElementLocatorFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/remote/service/DriverCommandExecutor.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DriverCommandExecutor.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -85,20 +85,27 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.support.pagefactory</FONT>
+org.openqa.selenium.remote.service</FONT>
 <BR>
-Class AjaxElementLocatorFactory</H2>
+Class DriverCommandExecutor</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory</B>
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.HttpCommandExecutor</A>
+      <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.service.DriverCommandExecutor</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocatorFactory.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocatorFactory</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>AjaxElementLocatorFactory</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocatorFactory.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocatorFactory</A></DL>
+<DT><PRE>public class <B>DriverCommandExecutor</B><DT>extends <A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</A></DL>
 </PRE>
+
+<P>
+A specialized <A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><CODE>HttpCommandExecutor</CODE></A> that will use a <A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><CODE>DriverService</CODE></A> that lives
+ and dies with a single WebDriver session. The service will be restarted upon each new session
+ request and shutdown after each quit command.
+<P>
 
 <P>
 <HR>
@@ -114,11 +121,11 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocatorFactory.html#AjaxElementLocatorFactory(org.openqa.selenium.WebDriver, int)">AjaxElementLocatorFactory</A></B>(<A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>&nbsp;driver,
-                          int&nbsp;timeOutInSeconds)</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html#DriverCommandExecutor(org.openqa.selenium.remote.service.DriverService)">DriverCommandExecutor</A></B>(<A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</A>&nbsp;service)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new DriverCommandExecutor which will communicate with the driver as configured
+ by the given <code>service</code>.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -132,12 +139,20 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocator</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocatorFactory.html#createLocator(java.lang.reflect.Field)">createLocator</A></B>(java.lang.reflect.Field&nbsp;field)</CODE>
+<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</A></B>(<A HREF="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</A>&nbsp;command)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When a field on a class needs to be decorated with an <A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory"><CODE>ElementLocator</CODE></A> this method will
- be called.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sends the <code>command</code> to the driver server for execution.</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_org.openqa.selenium.remote.HttpCommandExecutor"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class org.openqa.selenium.remote.<A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</A></B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#getAddressOfRemoteServer()">getAddressOfRemoteServer</A>, <A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#getSessionId(java.lang.String)">getSessionId</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -162,12 +177,16 @@ java.lang.Object
 </TR>
 </TABLE>
 
-<A NAME="AjaxElementLocatorFactory(org.openqa.selenium.WebDriver, int)"><!-- --></A><H3>
-AjaxElementLocatorFactory</H3>
+<A NAME="DriverCommandExecutor(org.openqa.selenium.remote.service.DriverService)"><!-- --></A><H3>
+DriverCommandExecutor</H3>
 <PRE>
-public <B>AjaxElementLocatorFactory</B>(<A HREF="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</A>&nbsp;driver,
-                                 int&nbsp;timeOutInSeconds)</PRE>
+public <B>DriverCommandExecutor</B>(<A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</A>&nbsp;service)</PRE>
 <DL>
+<DD>Creates a new DriverCommandExecutor which will communicate with the driver as configured
+ by the given <code>service</code>.
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>service</CODE> - The DriverService to send commands to.</DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->
@@ -180,21 +199,24 @@ public <B>AjaxElementLocatorFactory</B>(<A HREF="../../../../../org/openqa/selen
 </TR>
 </TABLE>
 
-<A NAME="createLocator(java.lang.reflect.Field)"><!-- --></A><H3>
-createLocator</H3>
+<A NAME="execute(org.openqa.selenium.remote.Command)"><!-- --></A><H3>
+execute</H3>
 <PRE>
-public <A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocator</A> <B>createLocator</B>(java.lang.reflect.Field&nbsp;field)</PRE>
+public <A HREF="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</A> <B>execute</B>(<A HREF="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</A>&nbsp;command)
+                 throws java.io.IOException</PRE>
 <DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocatorFactory.html#createLocator(java.lang.reflect.Field)">ElementLocatorFactory</A></CODE></B></DD>
-<DD>When a field on a class needs to be decorated with an <A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory"><CODE>ElementLocator</CODE></A> this method will
- be called.
+<DD>Sends the <code>command</code> to the driver server for execution. The server will be started
+ if requesting a new session. Likewise, if terminating a session, the server will be shutdown
+ once a response is received.
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocatorFactory.html#createLocator(java.lang.reflect.Field)">createLocator</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLocatorFactory.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocatorFactory</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/remote/CommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</A></CODE> in class <CODE><A HREF="../../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</A></CODE></DL>
 </DD>
 <DD><DL>
-
-<DT><B>Returns:</B><DD>An ElementLocator object.</DL>
+<DT><B>Parameters:</B><DD><CODE>command</CODE> - The command to execute.
+<DT><B>Returns:</B><DD>The command response.
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE> - If an I/O error occurs while sending the command.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -227,11 +249,11 @@ public <A HREF="../../../../../org/openqa/selenium/support/pagefactory/ElementLo
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html" title="class in org.openqa.selenium.support.pagefactory"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/support/pagefactory/Annotations.html" title="class in org.openqa.selenium.support.pagefactory"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/support/pagefactory/AjaxElementLocatorFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AjaxElementLocatorFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/remote/service/DriverCommandExecutor.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DriverCommandExecutor.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

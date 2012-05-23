@@ -73,7 +73,7 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#fields_inherited_from_class_org.openqa.selenium.remote.service.DriverService.Builder">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
@@ -90,14 +90,15 @@ org.openqa.selenium.chrome</FONT>
 Class ChromeDriverService.Builder</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.chrome.ChromeDriverService.Builder</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">org.openqa.selenium.remote.service.DriverService.Builder</A>
+      <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.chrome.ChromeDriverService.Builder</B>
 </PRE>
 <DL>
 <DT><B>Enclosing class:</B><DD><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public static class <B>ChromeDriverService.Builder</B><DT>extends java.lang.Object</DL>
+<DT><PRE>public static class <B>ChromeDriverService.Builder</B><DT>extends <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></DL>
 </PRE>
 
 <P>
@@ -108,7 +109,25 @@ Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/Ch
 <HR>
 
 <P>
+<!-- =========== FIELD SUMMARY =========== -->
 
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Field Summary</B></FONT></TH>
+</TR>
+</TABLE>
+&nbsp;<A NAME="fields_inherited_from_class_org.openqa.selenium.remote.service.DriverService.Builder"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Fields inherited from class org.openqa.selenium.remote.service.<A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#environment">environment</A>, <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#exe">exe</A>, <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#logFile">logFile</A>, <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#port">port</A></CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 
 <A NAME="constructor_summary"><!-- --></A>
@@ -139,7 +158,16 @@ Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/Ch
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#build()">build</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new binary to manage the chromedriver server.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new service to manage the driver server.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;<A HREF="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#buildDriverService()">buildDriverService</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Used by a template method <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#build()"><CODE>DriverService.Builder.build()</CODE></A> to perform the driver specific checks
+ and instantiate the specific service object.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -147,7 +175,7 @@ Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/Ch
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingAnyFreePort()">usingAnyFreePort</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configures the chromedriver server to start on any available port.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configures the driver server to start on any available port.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -155,7 +183,15 @@ Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/Ch
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingChromeDriverExecutable(java.io.File)">usingChromeDriverExecutable</A></B>(java.io.File&nbsp;file)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets which chromedriver executable the builder will use.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>Use <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingDriverExecutable(java.io.File)"><CODE>usingDriverExecutable(File)</CODE></A> instead</I></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingDriverExecutable(java.io.File)">usingDriverExecutable</A></B>(java.io.File&nbsp;file)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets which driver executable the builder will use.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -163,7 +199,7 @@ Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/Ch
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingPort(int)">usingPort</A></B>(int&nbsp;port)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets which port the chromedriver server should be started on.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets which port the driver server should be started on.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -171,7 +207,7 @@ Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/Ch
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withEnvironment(java.util.Map)">withEnvironment</A></B>(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;environment)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defines the environment for the launched chromedriver server.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defines the environment for the launched driver server.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -179,7 +215,7 @@ Builder used to configure new <A HREF="../../../../org/openqa/selenium/chrome/Ch
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogFile(java.io.File)">withLogFile</A></B>(java.io.File&nbsp;logFile)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Configures the driver server to write log to the given file.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -226,8 +262,28 @@ usingChromeDriverExecutable</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A> <B>usingChromeDriverExecutable</B>(java.io.File&nbsp;file)</PRE>
 <DL>
-<DD>Sets which chromedriver executable the builder will use.
+<DD><B>Deprecated.</B>&nbsp;<I>Use <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingDriverExecutable(java.io.File)"><CODE>usingDriverExecutable(File)</CODE></A> instead</I>
 <P>
+<DD>A synonym for <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingDriverExecutable(java.io.File)"><CODE>usingDriverExecutable(File)</CODE></A>.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>file</CODE> - The executable to use.
+<DT><B>Returns:</B><DD>A self reference.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="usingDriverExecutable(java.io.File)"><!-- --></A><H3>
+usingDriverExecutable</H3>
+<PRE>
+public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A> <B>usingDriverExecutable</B>(java.io.File&nbsp;file)</PRE>
+<DL>
+<DD><B>Description copied from class: <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#usingDriverExecutable(java.io.File)">DriverService.Builder</A></CODE></B></DD>
+<DD>Sets which driver executable the builder will use.
+<P>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#usingDriverExecutable(java.io.File)">usingDriverExecutable</A></CODE> in class <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></CODE></DL>
+</DD>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>file</CODE> - The executable to use.
 <DT><B>Returns:</B><DD>A self reference.</DL>
@@ -240,9 +296,13 @@ usingPort</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A> <B>usingPort</B>(int&nbsp;port)</PRE>
 <DL>
-<DD>Sets which port the chromedriver server should be started on. A value of 0 indicates that any
+<DD><B>Description copied from class: <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#usingPort(int)">DriverService.Builder</A></CODE></B></DD>
+<DD>Sets which port the driver server should be started on. A value of 0 indicates that any
  free port may be used.
 <P>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#usingPort(int)">usingPort</A></CODE> in class <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></CODE></DL>
+</DD>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>port</CODE> - The port to use; must be non-negative.
 <DT><B>Returns:</B><DD>A self reference.</DL>
@@ -255,8 +315,12 @@ usingAnyFreePort</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A> <B>usingAnyFreePort</B>()</PRE>
 <DL>
-<DD>Configures the chromedriver server to start on any available port.
+<DD><B>Description copied from class: <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#usingAnyFreePort()">DriverService.Builder</A></CODE></B></DD>
+<DD>Configures the driver server to start on any available port.
 <P>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#usingAnyFreePort()">usingAnyFreePort</A></CODE> in class <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></CODE></DL>
+</DD>
 <DD><DL>
 
 <DT><B>Returns:</B><DD>A self reference.</DL>
@@ -270,10 +334,14 @@ withEnvironment</H3>
 <FONT SIZE="-1"><A HREF="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</A>
 </FONT>public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A> <B>withEnvironment</B>(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;environment)</PRE>
 <DL>
-<DD>Defines the environment for the launched chromedriver server. These
+<DD><B>Description copied from class: <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#withEnvironment(java.util.Map)">DriverService.Builder</A></CODE></B></DD>
+<DD>Defines the environment for the launched driver server. These
  settings will be inherited by every browser session launched by the
  server.
 <P>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#withEnvironment(java.util.Map)">withEnvironment</A></CODE> in class <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></CODE></DL>
+</DD>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>environment</CODE> - A map of the environment variables to launch the
      server with.
@@ -287,8 +355,15 @@ withLogFile</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</A> <B>withLogFile</B>(java.io.File&nbsp;logFile)</PRE>
 <DL>
+<DD><B>Description copied from class: <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#withLogFile(java.io.File)">DriverService.Builder</A></CODE></B></DD>
+<DD>Configures the driver server to write log to the given file.
+<P>
 <DD><DL>
-</DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#withLogFile(java.io.File)">withLogFile</A></CODE> in class <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>logFile</CODE> - A file to write log to.
+<DT><B>Returns:</B><DD>A self reference.</DL>
 </DD>
 </DL>
 <HR>
@@ -298,14 +373,38 @@ build</H3>
 <PRE>
 public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</A> <B>build</B>()</PRE>
 <DL>
-<DD>Creates a new binary to manage the chromedriver server. Before creating a new binary, the
- builder will check that either the user defined the location of the chromedriver executable
- through <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingChromeDriverExecutable(java.io.File)"><CODE>the API</CODE></A> or with the
- <code>webdriver.chrome.driver</code> system property.
+<DD><B>Description copied from class: <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#build()">DriverService.Builder</A></CODE></B></DD>
+<DD>Creates a new service to manage the driver server. Before creating a new service, the
+ builder will find a port for the server to listen to.
 <P>
 <DD><DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#build()">build</A></CODE> in class <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></CODE></DL>
+</DD>
+<DD><DL>
 
-<DT><B>Returns:</B><DD>The new binary.</DL>
+<DT><B>Returns:</B><DD>The new service object.<DT><B>See Also:</B><DD><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#buildDriverService()"><CODE>DriverService.Builder.buildDriverService()</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="buildDriverService()"><!-- --></A><H3>
+buildDriverService</H3>
+<PRE>
+protected <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</A> <B>buildDriverService</B>()
+                                    throws java.io.IOException</PRE>
+<DL>
+<DD><B>Description copied from class: <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#buildDriverService()">DriverService.Builder</A></CODE></B></DD>
+<DD>Used by a template method <A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#build()"><CODE>DriverService.Builder.build()</CODE></A> to perform the driver specific checks
+ and instantiate the specific service object.
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#buildDriverService()">buildDriverService</A></CODE> in class <CODE><A HREF="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>The new service object.
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE> - If an I/O error occurs.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -359,7 +458,7 @@ public <A HREF="../../../../org/openqa/selenium/chrome/ChromeDriverService.html"
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#fields_inherited_from_class_org.openqa.selenium.remote.service.DriverService.Builder">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
