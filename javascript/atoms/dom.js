@@ -372,7 +372,7 @@ bot.dom.getAttribute = function(element, attributeName) {
   // IE does consistently yield 'true' or 'false' strings for boolean attribute
   // values, and so we know 'false' attribute values were not user-specified.
   if (bot.dom.isBooleanAttribute(attributeName)) {
-    return bot.userAgent.IE_DOC_PRE9 && attr.value == 'false' ? null : 'true';
+    return bot.userAgent.IE_DOC_PRE9 && !attr.specified && attr.value == 'false' ? null : 'true';
   }
 
   // For non-boolean attributes, we compensate for IE's extra attributes by
