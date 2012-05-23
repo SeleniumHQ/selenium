@@ -19,12 +19,19 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class GetMultipleAttributeTest extends JUnit4TestBase {
 
+  @Ignore({CHROME, OPERA, IPHONE, ANDROID, SELENESE})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);

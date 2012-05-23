@@ -82,6 +82,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
+  @Ignore({CHROME, OPERA, IPHONE, ANDROID, SELENESE})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
