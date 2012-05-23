@@ -46,6 +46,20 @@ class AlertsTest(unittest.TestCase):
         #  If we can perform any action, we're good to go
         self.assertEqual("Testing Alerts", self.driver.title)
 
+    def testShouldGetTextOfAlertOpenedInSetTimeout(self):
+        self._loadPage("alerts")
+        self.driver.find_element_by_id("slow-alert").click()
+
+        # DO NOT WAIT OR SLEEP HERE
+        # This is a regression test for a bug where only the first switchTo call would throw,
+        # and only if it happens before the alert actually loads.
+
+        alert = self.driver.switch_to_alert()
+        try:
+            self.assertEqual("Slow", alert.text)
+        finally:
+            alert.accept()
+
     @pytest.mark.ignore_chrome
     def testShouldAllowUsersToDismissAnAlertManually(self):
         self._loadPage("alerts")
@@ -83,7 +97,6 @@ class AlertsTest(unittest.TestCase):
         result = self.driver.find_element(by=By.ID, value="text").text
         self.assertEqual("cheese", result)
 
-    @pytest.mark.ignore_chrome
     def testSettingTheValueOfAnAlertThrows(self):
         self._loadPage("alerts")
         self.driver.find_element(By.ID,"alert").click();
@@ -97,7 +110,6 @@ class AlertsTest(unittest.TestCase):
         finally:
             alert.accept()
 
-    @pytest.mark.ignore_chrome
     def testAlertShouldNotAllowAdditionalCommandsIfDimissed(self):
         self._loadPage("alerts");
         self.driver.find_element(By.ID, "alert").click()
@@ -110,7 +122,33 @@ class AlertsTest(unittest.TestCase):
             self.fail("Expected NoAlertPresentException")
         except NoAlertPresentException:
             pass
-            
+
+    def testShouldAllowUsersToAcceptAnAlertInAFrame(self):
+        self._loadPage("alerts")
+        self.driver.switch_to_frame("iframeWithAlert")
+        self.driver.find_element_by_id("alertInFrame").click()
+
+        alert = self.driver.switch_to_alert()
+        alert.accept()
+
+        self.assertEqual("Testing Alerts", self.driver.title)
+
+    def testShouldAllowUsersToAcceptAnAlertInANestedFrame(self):
+        self._loadPage("alerts")
+        self.driver.switch_to_frame("iframeWithIframe")
+        self.driver.switch_to_frame("iframeWithAlert")
+
+        self.driver.find_element_by_id("alertInFrame").click()
+
+        alert = self.driver.switch_to_alert()
+        alert.accept()
+
+        self.assertEqual("Testing Alerts", self.driver.title)
+
+    def testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert(self):
+        pass
+        # //TODO(David) Complete this test
+
     def testPromptShouldUseDefaultValueIfNoKeysSent(self):
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "prompt-with-default").click()
@@ -120,6 +158,14 @@ class AlertsTest(unittest.TestCase):
 
         txt = self.driver.find_element(By.ID, "text").text
         self.assertEqual("This is a default value", txt)
+
+    def testPromptShouldHaveNullValueIfDismissed(self):
+        self._loadPage("alerts")
+        self.driver.find_element(By.ID, "prompt-with-default").click()
+        alert = self.driver.switch_to_alert()
+        alert.dismiss()
+
+        self.assertEqual("null", self.driver.find_element(By.ID, "text").text)
 
     def testHandlesTwoAlertsFromOneInteraction(self):
         self._loadPage("alerts")
@@ -136,6 +182,14 @@ class AlertsTest(unittest.TestCase):
 
         self.assertEqual(self.driver.find_element(By.ID, "text1").text, "brie")
         self.assertEqual(self.driver.find_element(By.ID, "text2").text, "cheddar")
+    def testShouldHandleAlertOnPageLoad(self):
+        self._loadPage("alerts")
+        self.driver.find_element(By.ID, "open-page-with-onload-alert").click()
+        alert = self.driver.switch_to_alert()
+        value = alert.text
+        alert.accept()
+
+        self.assertEquals("onload", value)
 
     def testShouldAllowTheUserToGetTheTextOfAnAlert(self):
         self._loadPage("alerts")
