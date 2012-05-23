@@ -227,13 +227,14 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.Name("readonly"));
             string readOnlyAttribute = element.GetAttribute("readonly");
+            
+            Assert.IsNotNull(readOnlyAttribute);
 
             IWebElement textInput = driver.FindElement(By.Name("x"));
             string notReadOnly = textInput.GetAttribute("readonly");
 
-            // NUnit's equality assertion doesn't handle null strings.
-            // Assert.AreNotEqual(readOnlyAttribute, notReadOnly);
             Assert.IsNull(notReadOnly);
+            Assert.IsFalse(readOnlyAttribute.Equals(notReadOnly));
         }
 
         [Test]
