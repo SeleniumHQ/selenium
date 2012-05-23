@@ -37,8 +37,8 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriverService class.
         /// </summary>
-        /// <param name="executable">The full path to the InternetExplorerDriver executable.</param>
-        /// <param name="port">The port on which the InternetExplorerDriver executable should listen.</param>
+        /// <param name="executable">The full path to the IEDriverServer executable.</param>
+        /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
         private InternetExplorerDriverService(string executable, int port)
             : base(executable, port)
         {
@@ -75,7 +75,7 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Creates a default instance of the InternetExplorerDriverService using a specified path to the ChromeDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the InternetExplorerDriver executable.</param>
+        /// <param name="driverPath">The directory containing the IEDriverServer executable.</param>
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
         public static InternetExplorerDriverService CreateDefaultService(string driverPath)
         {

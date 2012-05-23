@@ -55,7 +55,7 @@ namespace OpenQA.Selenium.IE
 
         // This value should be flipped to false to make using the standalone server the default.
         // It should be removed entirely when the standalone server is in widespread use.
-        private bool useInternalServer = true;
+        private bool useInternalServer = false;
         private bool ignoreProtectedModeSettings;
         private bool enableNativeEvents = true;
         private string initialBrowserUrl = string.Empty;

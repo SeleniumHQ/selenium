@@ -83,6 +83,7 @@ namespace OpenQA.Selenium.IE
         /// Initializes a new instance of the InternetExplorerDriver class for the specified port.
         /// </summary>
         /// <param name="port">The port to use to communicate with the IE server.</param>
+        [Obsolete("Use the IEDriverServer executable along with RemoteWebDriver to specify a port to listen on.")]
         public InternetExplorerDriver(int port)
             : this(port, new InternetExplorerOptions())
         {
@@ -102,6 +103,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="port">The port to use to communicate with the IE server.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        [Obsolete("Use the IEDriverServer executable along with RemoteWebDriver to specify a port to listen on.")]
         public InternetExplorerDriver(int port, InternetExplorerOptions options)
             : this(port, options, TimeSpan.FromSeconds(60))
         {
@@ -113,38 +115,39 @@ namespace OpenQA.Selenium.IE
         /// <param name="port">The port to use to communicate with the IE server.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        [Obsolete("Use the IEDriverServer executable along with RemoteWebDriver to specify a port to listen on.")]
         public InternetExplorerDriver(int port, InternetExplorerOptions options, TimeSpan commandTimeout)
             : base(GetCommandExecutor(port, options.ToCapabilities(), commandTimeout), options.ToCapabilities())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing InternetExplorerDriver.exe.
+        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing IEDriverServer.exe.
         /// </summary>
-        /// <param name="internetExplorerDriverDirectory">The full path to the directory containing InternetExplorerDriver.exe.</param>
-        public InternetExplorerDriver(string internetExplorerDriverDirectory)
-            : this(internetExplorerDriverDirectory, new InternetExplorerOptions())
+        /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
+        public InternetExplorerDriver(string internetExplorerDriverServerDirectory)
+            : this(internetExplorerDriverServerDirectory, new InternetExplorerOptions())
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing InternetExplorerDriver.exe and command timeout.
+        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
         /// </summary>
-        /// <param name="internetExplorerDriverDirectory">The full path to the directory containing InternetExplorerDriver.exe.</param>
+        /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
-        public InternetExplorerDriver(string internetExplorerDriverDirectory, InternetExplorerOptions options)
-            : this(internetExplorerDriverDirectory, options, TimeSpan.FromSeconds(60))
+        public InternetExplorerDriver(string internetExplorerDriverServerDirectory, InternetExplorerOptions options)
+            : this(internetExplorerDriverServerDirectory, options, TimeSpan.FromSeconds(60))
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing InternetExplorerDriver.exe and command timeout.
+        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
         /// </summary>
-        /// <param name="internetExplorerDriverDirectory">The full path to the directory containing InternetExplorerDriver.exe.</param>
+        /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public InternetExplorerDriver(string internetExplorerDriverDirectory, InternetExplorerOptions options, TimeSpan commandTimeout)
-            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverDirectory), options, commandTimeout)
+        public InternetExplorerDriver(string internetExplorerDriverServerDirectory, InternetExplorerOptions options, TimeSpan commandTimeout)
+            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverServerDirectory), options, commandTimeout)
         {
         }
 
@@ -229,7 +232,7 @@ namespace OpenQA.Selenium.IE
                 }
                 catch (DriverServiceNotFoundException ex)
                 {
-                    throw new WebDriverException("You will need to use add InternetExplorerDriver.UseLegacyInternalServer to the desired capabilities to use the internal native code server library. This functionality will be deprecated in favor of the standalone InternetExplorerDriver.exe server.", ex);
+                    throw new WebDriverException("You will need to use add InternetExplorerDriver.UseLegacyInternalServer to the desired capabilities to use the internal native code server library. This functionality will be deprecated in favor of the standalone IEDriverServer.exe server.", ex);
                 }
             }
 
