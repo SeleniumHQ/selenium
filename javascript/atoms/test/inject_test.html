@@ -495,7 +495,7 @@ limitations under the License.
     function testCorrectlyUnwrapsFunctionArgsForInjectedScripts() {
       var result = bot.inject.executeScript(function() {
         return arguments[0]();
-      }, [function() {return 1;}], false);
+      }, [function() {return 1;}]);
       assertEquals(bot.ErrorCode.SUCCESS, result['status']);
       assertEquals(1, result['value']);
     }
@@ -576,8 +576,8 @@ limitations under the License.
         // TODO(user): Don't skip this.
         return;
       }
-      var json = bot.inject.executeScript(
-          bot.inject.executeScript, ['return 1 +2;'], true);
+      var json = bot.inject.executeScript(bot.inject.executeScript,
+          ['return 1 +2;'], true);
       var result = bot.json.parse(json);
 
       assertTrue(json, goog.object.containsKey(result, 'status'));

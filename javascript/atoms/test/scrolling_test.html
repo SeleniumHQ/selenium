@@ -177,12 +177,10 @@
       var outer = findElement({id: 'outer'});
       var inner = findElement({id: 'inner'});
       var coord = new goog.math.Coordinate(75, 2500);
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
-        'Android doesn\'t currently provide scrolling information');
-      expectedFailures.run(function() {
-        assertTrue(bot.action.scrollIntoView(inner, coord));
-        assertNotEquals(0, outer.scrollTop);
-      });
+
+      bot.action.scrollIntoView(inner, coord);
+
+      assertNotEquals(0, outer.scrollTop);
     }
   </script>
   <div style="position: absolute; left: 150px; top: 100px; border: 2px yellow solid;"><a id="onscreen">Onscreen</a></div>

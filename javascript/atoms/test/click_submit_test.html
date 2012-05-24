@@ -176,9 +176,13 @@
   </iframe>
   <script>
     asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-    // Set longer timeout due to android emulator slowness.
+    // Android needs a longer timeout due to emulator slowness.
+    // Opera 12 is sometimes slow to load new iframe pages.
     if (goog.userAgent.product.ANDROID) {
       asyncTestCase.stepTimeout = 5000;
+    } else if (goog.userAgent.product.OPERA &&
+               bot.userAgent.isEngineVersion(12)) {
+      asyncTestCase.stepTimeout = 2000;
     }
   </script>
 </body>

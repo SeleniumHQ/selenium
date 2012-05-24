@@ -17,11 +17,12 @@
   <script type="text/javascript">
     var asyncTestCase = null;
 
-    // In Opera 11.5+, synthetic keypresses currently exhibit flaky failures:
+    // In Opera 11.5, synthetic keypresses currently exhibit flaky failures:
     // http://code.google.com/p/selenium/issues/detail?id=3068
     // Most typing test methods below are skipped for these versions.
     var BROKEN_KEYPRESS = goog.userAgent.OPERA &&
-        bot.userAgent.isEngineVersion(11.5);
+        bot.userAgent.isEngineVersion(11.5) &&
+        !bot.userAgent.isEngineVersion(12);
 
     var INPUT_IDS = ['textbox', 'password', 'email', 'search', 'textarea'];
 

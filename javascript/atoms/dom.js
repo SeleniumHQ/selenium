@@ -20,6 +20,7 @@
 goog.provide('bot.dom');
 
 goog.require('bot');
+goog.require('bot.color');
 goog.require('bot.locators.xpath');
 goog.require('bot.userAgent');
 goog.require('bot.window');
@@ -273,14 +274,18 @@ bot.dom.BOOLEAN_ATTRIBUTES_ = [
 
 /**
  * Regex to split on semicolons, but not when enclosed in parens or quotes.
- * Helper for parseStyleAttribute_.
+ * Helper for {@link bot.dom.standardizeStyleAttribute_}.
  * If the style attribute ends with a semicolon this will include an empty
  * string at the end of the array
- * @type {RegExp}
+ * @type {!RegExp}
+ * @const
  * @private
  */
-bot.dom.splitStyleAttributeOnSemicolonsRe_ =
-    /[;]+(?=(?:(?:[^"]*"){2})*[^"]*$)(?=(?:(?:[^']*'){2})*[^']*$)(?=(?:[^()]*\([^()]*\))*[^()]*$)/;
+bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
+    new RegExp('[;]+' +
+               '(?=(?:(?:[^"]*"){2})*[^"]*$)' +
+               '(?=(?:(?:[^\']*\'){2})*[^\']*$)' +
+               '(?=(?:[^()]*\\([^()]*\\))*[^()]*$)');
 
 
 /**
@@ -294,16 +299,17 @@ bot.dom.isBooleanAttribute = function(attributeName) {
 
 /**
  * Standardize a style attribute value, which includes:
- // (1) converting all property names lowercase
- // (2) ensuring it ends in a trailing semi-colon
- // (3) removing empty style values (which only appear on Opera).
+ *  (1) converting all property names lowercase
+ *  (2) ensuring it ends in a trailing semi-colon
+ *  (3) removing empty style values (which only appear on Opera).
  * @param {string} value The style attribute value.
  * @return {string} The identical value, with the formatting rules described
- * above applied.
+ *     above applied.
  * @private
  */
 bot.dom.standardizeStyleAttribute_ = function(value) {
-  var styleArray = value.split(bot.dom.splitStyleAttributeOnSemicolonsRe_);
+  var styleArray = value.split(
+      bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_);
   var css = [];
   goog.array.forEach(styleArray, function(pair) {
     var i = pair.indexOf(':');
@@ -325,8 +331,8 @@ bot.dom.standardizeStyleAttribute_ = function(value) {
  * if no such value. This method endeavours to return consistent values between
  * browsers. For boolean attributes such as "selected" or "checked", it returns
  * the string "true" if it is present and null if it is not. For the style
- * attribute, it standardizes the value to a lower-case string with a trailing
- * semi-colon.
+ * attribute, it standardizes the value by lower-casing the property names
+ * and always including a trailing semi-colon.
  *
  * @param {!Element} element The element to use.
  * @param {string} attributeName The name of the attribute to return.
@@ -582,13 +588,17 @@ bot.dom.getInlineStyle = function(elem, styleName) {
  * http://code.google.com/p/doctype/wiki/ArticleComputedStyleVsCascadedStyle
  *
  * @param {!Element} elem Element to get the style value from.
- * @param {string} styleName Name of the style property in selector-case.
+ * @param {string} propertyName Name of the CSS property in selector-case.
  * @return {?string} The value of the style property, or null.
  */
-bot.dom.getEffectiveStyle = function(elem, styleName) {
-  styleName = goog.string.toCamelCase(styleName);
-  return goog.style.getComputedStyle(elem, styleName) ||
+bot.dom.getEffectiveStyle = function(elem, propertyName) {
+  var styleName = goog.string.toCamelCase(propertyName);
+  var style = goog.style.getComputedStyle(elem, styleName) ||
       bot.dom.getCascadedStyle_(elem, styleName);
+  if (style === null) {
+    return null;
+  }
+  return bot.color.standardizeColor(propertyName, style);
 };
 
 
@@ -638,9 +648,7 @@ bot.dom.getElementSize = function(element) {
   // If the element is the BODY, then get the visible size.
   if (bot.dom.isElement(element, goog.dom.TagName.BODY)) {
     var doc = goog.dom.getOwnerDocument(element);
-    // Type annotation is incorrect on goog.dom.getWindow. It will always
-    // return a non-null window.
-    var win = (/** @type {!Window} */goog.dom.getWindow(doc));
+    var win = goog.dom.getWindow(doc);
     if (bot.dom.getEffectiveStyle(element, 'overflow') == 'hidden') {
       return goog.dom.getViewportSize(win);
     }

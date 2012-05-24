@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>color_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script>
+    goog.require('goog.array');
+    goog.require('bot.color');
+    goog.require('goog.color.names');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+<script>
+function testStandardizeColorShouldNotConvertNonColorProperties() {
+  var nonColorProps = ['font-style', 'overflow', 'bottom'];
+  for (var i = 0; i < nonColorProps.length; i++) {
+    assertEquals('red', bot.color.standardizeColor(nonColorProps[i],'red'));
+  }
+}
+
+function testStandardizeColorShouldNotConvertInvalidColorProperties() {
+  // Invalid colors
+  var badColors = ['#xxxxxx', '8899000', 'not_color', 'rgb(2555,0,0)',
+      '(10%, 20%, 0004.01)','rgba(1,20,)', '(100%, 0%, 0.22222%, 1.1)',
+      'hsla(2555,0,0, 0)'];
+  for (var i = 0; i < badColors.length; i++) {
+    assertEquals(badColors[i],
+        bot.color.standardizeColor('color', badColors[i]));
+  }
+  // Valid CSS colors, but not valid for conversion
+  var badColors = ['(100%, 0%, 0.22222%)','rgb(0.989898%, 0%,0%)',
+      '(100%, 0%, 0.22222%, 1)','rgb(0.989898%, 0%,0%,0.222)',
+      'hsl(25,100%,97%)','hsla(120, 0%, 0%, 1)', 'hsla(360,20%,0%,1)',
+      'hsla(0,0%,50%,0.5)', 'HSLA(0, 55%, 0%, 0.6)',
+      'hsla(0, 85%, 0%, 0.123456789)'];
+  for (var i = 0; i < badColors.length; i++) {
+    assertEquals(badColors[i],
+        bot.color.standardizeColor('color', badColors[i]));
+  }
+}
+
+function testStandardizeColorShouldReturnRGBAStringUnchanged() {
+  assertEquals('rgba(1,2,3,1)',
+      bot.color.standardizeColor('color','rgba(1,2,3,1)'));
+}
+
+function testStandardizeColorShouldReturnRGBStringAsRGBAString() {
+  assertEquals('rgba(1,2,3,1)',
+      bot.color.standardizeColor('color','rgb(1,2,3)'));
+}
+
+function testStandardizeColorShouldReturnNamedColorStringAsRGBAString() {
+  assertEquals('rgba(0,128,0,1)',
+      bot.color.standardizeColor('color','green'));
+}
+
+function testStandardizeColorShouldReturnHexColorStringAsRGBAString() {
+  assertEquals('rgba(0,128,0,1)',
+      bot.color.standardizeColor('color','#008000'));
+  assertEquals('rgba(0,128,0,1)',
+      bot.color.standardizeColor('color','008000'));
+}
+
+function testIsColorProperty() {
+  var goodProps = ['background-color', 'border-top-color', 'color',
+      'outline-color'];
+  var badProps = ['font-style', 'overflow', 'bottom'];
+  for (var i = 0; i < goodProps.length; i++) {
+    assertTrue(goodProps[i], bot.color.isColorProperty(goodProps[i]));
+  }
+  for (var i = 0; i < badProps.length; i++) {
+    assertFalse(badProps[i], bot.color.isColorProperty(badProps[i]));
+  }
+}
+
+function testAddAlphaIfNecessary() {
+  assertObjectEquals([1,2,3,1], bot.color.addAlphaIfNecessary_([1,2,3]));
+  assertObjectEquals([1,2,3,0.5], bot.color.addAlphaIfNecessary_([1,2,3,0.5]));
+}
+
+function testIsConvertibleColor() {
+  var goodColors = ['#ffffff', '#ff7812', '#012345', '#Ff003D', '#3CA',
+      '(255, 26, 75)', 'RGB(2, 3, 4)', '(0,0,0)', 'white','blue',
+      'rgba(255, 0, 0, 1)', 'rgba(255,127,0,1)',
+      'rgba(0,0,255,0.5)', '(255, 26, 75, 0.2)',
+      'RGBA(0, 55, 0, 0.6)', 'rgba(0, 200, 0, 0.123456789)'
+  ];
+  var badColors = ['#xxxxxx', '8899000', 'not_color', '#1234567', 'fffffg',
+      '(2555,0,0)', '(1,2,3,4)', 'rgb(1,20,)', 'RGB(20,20,20,)',
+      'omgwtfbbq','(10%,20%,)','RGB(10%,20%,30%,)','(10%, 20%, 0004.01)',
+      '#xxxxxxxx', '#123456789', 'fffffgfg',
+      '(2555,0,0, 0)', '(1,2,3,4,5)',
+      'rgba(1,20,)', 'RGBA(20,20,20,)', 'RGBA',
+      'rgba(255, 0, 0, 1.1)',
+      '(100%, 0%, 0.22222%, 1.1)','rgb(0.989898%, 0%,0%,-0.222)',
+      'hsla(2555,0,0, 0)', 'hsla(1,2,3,4,5)',
+      'hsla(1,20,)', 'HSLA(20,20,20,)',
+      'hsla(255, 0, 0, 1.1)', 'HSLA',
+      '(100%, 0%, 0.22222%)','rgb(0.989898%, 0%,0%)',
+      '(100%, 0%, 0.22222%, 1)','rgb(0.989898%, 0%,0%,0.222)',
+      'hsl(25,100%,97%)','hsla(120, 0%, 0%, 1)', 'hsla(360,20%,0%,1)',
+      'hsla(0,0%,50%,0.5)', 'HSLA(0, 55%, 0%, 0.6)',
+      'hsla(0, 85%, 0%, 0.123456789)'];
+  for (var i = 0; i < goodColors.length; i++) {
+    assertTrue(goodColors[i], bot.color.isConvertibleColor(goodColors[i]));
+  }
+  for (var i = 0; i < badColors.length; i++) {
+    assertFalse(badColors[i], bot.color.isConvertibleColor(badColors[i]));
+  }
+}
+
+function testIsValidHexColor() {
+  var goodHexColors = ['#ffffff', '#ff7812', '#012345', '#Ff003D', '#3CA'];
+  var badHexColors = ['#xxxxxx', '889900', 'not_color', '#1234567', 'fffffg'];
+  for (var i = 0; i < goodHexColors.length; i++) {
+    assertTrue(goodHexColors[i], bot.color.isValidHexColor_(goodHexColors[i]));
+  }
+  for (var i = 0; i < badHexColors.length; i++) {
+    assertFalse(badHexColors[i], bot.color.isValidHexColor_(badHexColors[i]));
+  }
+}
+
+function testParseRgbColor() {
+  var goodRgbColors = ['(255, 26, 75)', 'RGB(2, 3, 4)', '(0,0,0)',
+      'rgb(255,255,255)'];
+  var badRgbColors = ['(2555,0,0)', '(1,2,3,4)', 'rgb(1,20,)',
+      'RGB(20,20,20,)', '(10%, 20%, 0004.01)'];
+  for (var i = 0; i < goodRgbColors.length; i++) {
+    assertEquals(goodRgbColors[i],
+        bot.color.parseRgbColor_(goodRgbColors[i]).length, 3);
+  }
+  for (var i = 0; i < badRgbColors.length; i++) {
+    assertEquals(badRgbColors[i],
+        bot.color.parseRgbColor_(badRgbColors[i]).length, 0);
+  }
+}
+
+function testHexToRgb() {
+  var testColors = [
+      ['#B0FF2D', [176, 255, 45]],
+      ['#b26e5f', [178, 110, 95]],
+      ['#66f', [102, 102, 255]]
+  ];
+
+  for (var i = 0; i < testColors.length; i++) {
+    var r = bot.color.hexToRgb(testColors[i][0]);
+    var t = testColors[i][1];
+
+    assertEquals('Red channel should match.', t[0], r[0]);
+    assertEquals('Green channel should match.', t[1], r[1]);
+    assertEquals('Blue channel should match.', t[2], r[2]);
+  }
+
+  var badColors = ['', '#g00', 'some words'];
+  for (var i = 0; i < badColors.length; i++) {
+    var e = assertThrows(goog.partial(bot.color.hexToRgb, badColors[i]));
+    assertEquals("'" + badColors[i] + "' is not a valid hex color", e.message);
+  }
+}
+</script>
+</body>
+</html>

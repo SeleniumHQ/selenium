@@ -57,6 +57,180 @@
         assertEquals('visible', bot.dom.getEffectiveStyle(e, 'visibility'));
       }
 
+      function testGetEffectiveStyleReturnsNamedColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'namedColor'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsRgbStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgb'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsRgbPercentStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgbpct'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsHexStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'hex'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsHslStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'hsl'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle hsl, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(1,rgba[3]);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
+      function testGetEffectiveStyleReturnsRgbaStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgba'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle rgba, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
+      function testGetEffectiveStyleReturnsRgbaPercentStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgbapct'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle rgba, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
+      function testGetEffectiveStyleReturnsHslaStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'hsla'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle rgba, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
+      function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
+        var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
+        assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
+      }
+
+
+      function testGetEffectiveStyleReturnsNamedColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'namedColor'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsRgbStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgb'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsRgbPercentStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgbpct'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsHexStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'hex'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        var rgba = bot.color.parseRgbaColor(rgbaStyle);
+        assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+        assertEquals(1,rgba[3]);
+      }
+
+      function testGetEffectiveStyleReturnsHslStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'hsl'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle hsl, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(1,rgba[3]);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
+      function testGetEffectiveStyleReturnsRgbaStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgba'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle rgba, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
+      function testGetEffectiveStyleReturnsRgbaPercentStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'rgbapct'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle rgba, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
+      function testGetEffectiveStyleReturnsHslaStyleColorStandardizedToRgbaFormat() {
+        var e = bot.locators.findElement({id: 'hsla'});
+        var rgbaStyle = bot.dom.getEffectiveStyle(e, 'background-color');
+        // IE < 9 does not handle rgba, and returns 'transparent' instead
+        if (!goog.userAgent.IE || bot.userAgent.isProductVersion(9)) {
+          var rgba = bot.color.parseRgbaColor(rgbaStyle);
+          assertColorFuzzyEquals('Color was off', [0,128,0], rgba, 1);
+          assertEquals(0.5, Math.round(rgba[3] * 10) / 10);
+        } else {
+          assertEquals('transparent', rgbaStyle.toLowerCase());
+        }
+      }
+
       function testEffectiveStyleDoesNotReturnUnquotedShortMsFilterAsFilter() {
         var e = bot.locators.findElement({id: 'msFilterUnquotedFilterShort'});
         assertEquals('', bot.dom.getInlineStyle(e, 'filter'));
@@ -92,10 +266,7 @@
         var green = goog.dom.$('green');
         var color = bot.dom.getEffectiveStyle(green, 'background-color');
 
-        // Depending on the browser, we get different values back.
-        // TODO(user): Make the return value of colors consistent.
-        var expected = ['green', 'rgb(0, 128, 0)', '#008000'];
-        assert(goog.array.contains(expected, color));
+        assertEquals('rgba(0,128,0,1)', color);
       }
 
       function testGetAttributeShouldReturnStyleAttributeWithCaseOfValueMaintained() {
@@ -112,6 +283,22 @@
         var style = bot.dom.getAttribute(e, 'style');
         assertContains('left: 0px;', style);
         assertContains('text-align: center;', style);
+      }
+
+      /**
+       * Checks equivalence between two colors' respective values.  Accepts +- delta
+       * for each pair of values
+       * @param {string} Str
+       * @param {Array.<number>} expected
+       * @param {Array.<number>} actual
+       * @param {number} delta Margin of error for each element in color array
+       */
+      function assertColorFuzzyEquals(str, expected, actual, delta) {
+        assertTrue(str + ' Expected: ' + expected + '  and got: ' + actual +
+            ' w/ delta: ' + delta,
+            (Math.abs(expected[0] - actual[0]) <= delta) &&
+                (Math.abs(expected[1] - actual[1]) <= delta) &&
+                (Math.abs(expected[2] - actual[2]) <= delta));
       }
 
     </script>
@@ -138,5 +325,13 @@
     </div>
     <div id="mixedCaseValues" style="left: 0px; text-align: center; background-image: url(http://www.google.ca/Test.gif;?a=b&amp;c=d);">
     </div>
+    <div id="namedColor" style="background-color: green;">namedColor</div>
+    <div id="rgb" style="background-color: rgb(0,128,0);">rgb</div>
+    <div id="rgbpct" style="background-color: rgb(0%,50%,0%);">rgbpct</div>
+    <div id="hex" style="background-color: #008000;">hex</div>
+    <div id="hsl" style="background-color: hsl(120,100%,25%);">hsl</div>
+    <div id="rgba" style="background-color: rgba(0,128,0, 0.5);">rgba</div>
+    <div id="rgbapct" style="background-color: rgba(0%,50%,0%, 0.5);">rgba</div>
+    <div id="hsla" style="background-color: hsla(120,100%,25%,0.5);">hsla</div>
   </body>
 </html>

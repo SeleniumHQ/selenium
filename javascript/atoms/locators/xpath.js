@@ -88,7 +88,14 @@ bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
  */
 bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   var doc = goog.dom.getOwnerDocument(node);
-  if (!doc.implementation.hasFeature('XPath', '3.0')) {
+  try {
+    if (!doc.implementation ||
+        !doc.implementation.hasFeature('XPath', '3.0')) {
+      return null;
+    }
+  } catch (ex) {
+    // If the document isn't ready yet, Firefox may throw NS_ERROR_UNEXPECTED on
+    // accessing doc.implementation
     return null;
   }
   try {

@@ -71,7 +71,7 @@
     assertNotNull(redSwatch);
 
     var color = bot.dom.getEffectiveStyle(redSwatch, 'background-color');
-    assertEquals('#ff0000', goog.color.parse(color).hex);
+    assertEquals('rgba(255,0,0,1)', color);
     return redSwatch;
   }
   </script>
