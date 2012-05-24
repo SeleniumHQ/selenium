@@ -244,7 +244,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>New instance of DesiredCapabilities for use with Android</returns>
         public static DesiredCapabilities Android()
         {
-            return new DesiredCapabilities("android", string.Empty, new Platform(PlatformType.Linux));
+            return new DesiredCapabilities("android", string.Empty, new Platform(PlatformType.Android));
         }
 
         /// <summary>
