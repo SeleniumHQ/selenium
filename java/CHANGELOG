@@ -1,3 +1,48 @@
+v2.22.0
+=======
+
+Project:
+  * Code grant from Google acknowledged in our copyright
+    headers. Thanks, Google!
+
+WebDriver:
+  * JRE dependency upped to Java 6.
+  * IE driver now uses the IEDriverServer. You may need to download
+    this.
+  * Standardized colour values returned from getCssValue are
+    normalized to RGBA.
+  * IE can use synthesized events if the capability
+    "enableNativeEvents" is set to false. This is experimental and not
+    expected to work properly.
+  * Native events added for Firefox 12. 
+  * Native events retained for Firefox 10, 11, and 3.x
+  * Selenium-backed WebDriver can now return WebElements from
+    executeScript.
+  * With WebElement.getAttribute() a boolean attribute will return
+    "null" if not present on an element.
+  * A NoSuchWindowException will be thrown if the currently selected
+    window is closed and another command is sent.
+  * SafariDriver improved: frame switching, snapshot taking and JS
+    executing added.
+  * FIXED: 185: Appending screenshots to remote exceptions is now
+    optional. Controlled via the "webdriver.remote.quietExceptions"
+    capability.
+  * FIXED: 1089: Style attributes are no longer lower-cased by default.
+  * FIXED: 1934: Firefox cleans up temporary directories more effectively.
+  * FIXED: 3647: WebElement.sendKeys now works in Firefox on XHTML pages.
+  * FIXED: 3758: Maximize windows from inside a frame works as expected.
+  * FIXED: 3825: Alerts from a nested iframe are now handled properly.
+
+Grid:
+
+  * Fixing Firefox profile extraction if a grid node started from a
+    network location (UNC path)
+
+Atoms:
+  * bot.actions.type now works as expected in Firefox 12.
+  * Introduced better mouse and keyboard abstractions
+  
+
 v2.21.0
 =======
 
