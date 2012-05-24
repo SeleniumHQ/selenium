@@ -653,7 +653,7 @@ bot.dom.getElementSize = function(element) {
   // If the element is the BODY, then get the visible size.
   if (bot.dom.isElement(element, goog.dom.TagName.BODY)) {
     var doc = goog.dom.getOwnerDocument(element);
-    var win = goog.dom.getWindow(doc);
+    var win = goog.dom.getWindow(doc) || undefined;
     if (bot.dom.getEffectiveStyle(element, 'overflow') == 'hidden') {
       return goog.dom.getViewportSize(win);
     }
