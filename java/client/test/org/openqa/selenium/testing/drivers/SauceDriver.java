@@ -51,6 +51,7 @@ public class SauceDriver extends RemoteWebDriver {
         getSeleniumVersion(),
         getDesiredBrowserVersion(),
         getEffectivePlatform()));
+    System.out.println("Started new SauceDriver; see job at https://saucelabs.com/jobs/" + this.getSessionId());
   }
 
   private static String getDesiredBrowserVersion() {
