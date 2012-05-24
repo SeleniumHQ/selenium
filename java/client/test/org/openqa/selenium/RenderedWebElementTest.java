@@ -54,7 +54,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour, anyOf(
         equalTo("#008000"),
-        equalTo("rgb(0, 128, 0)")));
+        equalTo("rgba(0,128,0,1)")));
 
     element = driver.findElement(By.id("red-item"));
     backgroundColour = element.getCssValue("background-color");
@@ -62,7 +62,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour, anyOf(
         equalTo("#ff0000"),
-        equalTo("rgb(255, 0, 0)")));
+        equalTo("rgba(255,0,0,1)")));
   }
 
   // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
@@ -100,7 +100,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour, anyOf(
         equalTo("transparent"),
-        equalTo("rgba(0, 0, 0, 0)")));
+        equalTo("rgba(0,0,0,0)")));
   }
 
   @JavascriptEnabled
