@@ -21,9 +21,12 @@ import org.openqa.selenium.NeedsDriver;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 import org.openqa.selenium.environment.webserver.WebbitAppServer;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+import org.seleniumhq.jetty7.servlet.ServletHolder;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
@@ -41,30 +44,45 @@ import java.util.concurrent.TimeUnit;
 
 public class WebDriverJsTestSuite {
 
+  private static final boolean USE_WEBBIT = false;
+
   public static Test suite() {
-    final TestEventHandler testEventHandler = new TestEventHandler();
-    final AppServer appServer = createAppServer(testEventHandler);
+    final AppServerAndTestEventSupplier appServerAndTestEventSupplier = createAppServer();
 
     Test test = new JsTestSuiteBuilder()
         .withDriverSupplier(createDriverSupplier())
         .withTestFactory(new Function<String, Test>() {
           public Test apply(String testPath) {
-            return new WebDriverJsTestCase(testPath, appServer,
-                testEventHandler);
+            return new WebDriverJsTestCase(testPath, appServerAndTestEventSupplier.appServer,
+                appServerAndTestEventSupplier.testEventSupplier);
           }
         })
         .build();
 
     test = new DriverQuitter(test);
-    test = new WebDriverServerStarter(test, appServer);
+    test = new WebDriverServerStarter(test, appServerAndTestEventSupplier.appServer);
     test = new WebDriverServerStarter(test, RemoteServer.INSTANCE);
     return test;
   }
 
-  private static AppServer createAppServer(TestEventHandler resultsHandler) {
-    WebbitAppServer appServer = new WebbitAppServer();
-    appServer.addHandler("/testevent", resultsHandler);
-    return appServer;
+  private static AppServerAndTestEventSupplier createAppServer() {
+    // Both codepaths ensure neither compile will break while we sort out webbit problems
+    if (USE_WEBBIT) {
+      TestEventHandler resultsHandler = new TestEventHandler();
+      WebbitAppServer appServer = new WebbitAppServer();
+      appServer.addHandler("/testevent", resultsHandler);
+      return new AppServerAndTestEventSupplier(appServer, resultsHandler);
+    } else {
+      TestEventServlet resultsServlet = new TestEventServlet();
+      ServletContextHandler context = new ServletContextHandler(
+      ServletContextHandler.SESSIONS|ServletContextHandler.SECURITY);
+      context.setContextPath("/");
+      context.addServlet(new ServletHolder(resultsServlet), "/testevent");
+
+      Jetty7AppServer appServer = new Jetty7AppServer();
+      appServer.addHandler(context);
+      return new AppServerAndTestEventSupplier(appServer, resultsServlet);
+    }
   }
   
   private static Supplier<WebDriver> createDriverSupplier() {
@@ -212,6 +230,17 @@ public class WebDriverJsTestSuite {
       System.out.println("Stopping " + appServer.whereIs("/"));
       appServer.stop();
       super.tearDown();
+    }
+  }
+
+  private static class AppServerAndTestEventSupplier {
+    public final AppServer appServer;
+    public final TestEventSupplier testEventSupplier;
+
+    public AppServerAndTestEventSupplier(AppServer appServer, TestEventSupplier testEventSupplier) {
+      this.appServer = appServer;
+      this.testEventSupplier = testEventSupplier;
+      
     }
   }
 }

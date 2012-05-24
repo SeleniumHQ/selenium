@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TestEventServlet extends HttpServlet {
+public class TestEventServlet extends HttpServlet implements TestEventSupplier {
 
   private final BlockingQueue<TestEvent> pendingResults =
       new LinkedBlockingQueue<TestEvent>();

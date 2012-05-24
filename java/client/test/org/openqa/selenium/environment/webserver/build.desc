@@ -2,6 +2,19 @@ java_library(
   name = "webserver",
   srcs = [ 
     "AppServer.java",
+
+    "Jetty7AppServer.java",
+    "BasicAuth.java",
+    "EncodingServlet.java",
+    "Jetty7AppServer.java",
+    "KillSwitchServlet.java",
+    "ManifestServlet.java",
+    "NullLogger.java",
+    "PageServlet.java",
+    "RedirectServlet.java",
+    "SleepingServlet.java",
+    "UploadServlet.java",
+
     "BasicAuthHandler.java",
     "ImprovedStaticFileHandler.java",
     "LastPathSegmentHandler.java",
@@ -13,13 +26,18 @@ java_library(
     "UploadFileHandler.java",
     "WebbitAppServer.java",
   ],
-  main = "org.openqa.selenium.environment.webserver.WebbitAppServer",
   deps = [
     "//javascript:calcdeps",
+    "//java/client/src/org/openqa/selenium/net",
     "//java/client/test/org/openqa/selenium/testing:util",
+    "//java/client/test/org/openqa/selenium/testing/drivers:browser",
+    "//third_party/java/jetty",
+    "//third_party/java/servlet-api",
+
     "//third_party/java/commons-fileupload",
     "//third_party/java/webbit",
-  ])
+  ],
+  main = "org.openqa.selenium.environment.webserver.Jetty7AppServer")
 
 java_test(name = "webserver_test",
   srcs = [
