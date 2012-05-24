@@ -1,3 +1,39 @@
+v2.22.0
+=======
+ * The .NET IE driver implementation now looks for the IE standalone server. 
+   Please note that if you do not set the option in InternetExplorerOptions
+   to use the legacy server, the constructor *will* throw an exception. There 
+   is no automatic fallback to using the embedded .dll, because there's no 
+   standard way in the .NET framework to alert the user to a condition that 
+   needs attention at runtime, and guarantee it will be seen.
+ * Implemented ability to set page load timeout in the .NET bindings.
+ * Added tests to .NET bindings to align more closely with Java.
+ * Added ByChained support to the WebDriver.Support assembly. Also created 
+   additions to the .NET PageFactory to allow decorating members with multiple
+   instances of FindsByAttribute, including ordering of the attributes (issue
+   #3870, code supplied by KellySummerlin).
+ * Updated .NET bindings InternetExplorerOptions to allow the user to disable
+   native events for IE. Note that actually doing this is not recommended as of
+   this release.
+ * Added .NET version of LoadableComponent and SlowLoadableComponent to the
+   WebDriver.Support assembly (code supplied by KellySummerlin).
+ * Trivially refactored the constructors of "service-based" drivers for .NET
+   bindings.
+ * Made .NET unit tests more friendly to non-Windows operating systems (using
+   Mono).
+ * Updated .NET Safari driver to conform to the new message format in r16716.
+ * Implemented an InitialBrowserUrl property in InternetExplorerOptions to
+   allow the user to customize the page loaded when IE launches. This can be 
+   used in conjunction with IntroduceInstabilityByIgnoringProtectedModeSettings
+   property to set the initial Protected Mode zone of the browser. However,
+   this is still by far a second-best choice, and the first choice should 
+   *always* be to actually set the Protected Mode settings of each zone. If a 
+   user is using this property, only a "best effort" at support will be given.
+ * Added Android to Platform enumeration (issue #3242).
+ * Allow user-defined installation path for Safari in the SafariDriver.
+ * Changed .NET DesiredCapabilities.Android() to correctly assign a platform 
+   value of Android.
+
 v2.21.0
 =======
  * Updated NoSuchFrameException, NoSuchWindowException, and
