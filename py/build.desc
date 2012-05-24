@@ -41,7 +41,7 @@ py_test(
 py_test(
   name = "remote_firefox_test",
   remote_firefox_specific_tests = [ "test/selenium/webdriver/remote/*_tests.py" ],
-  deps = [ ":test_remote" ],
+  deps = [ ":test_remote_firefox" ],
   browsers = [ "remote_firefox" ])
 
 py_env(
