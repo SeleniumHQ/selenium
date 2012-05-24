@@ -351,6 +351,23 @@
     var testTapShouldBeAbleToClickOnElementsWithOpacityZero = goog.partial(
           shouldBeAbleToClickOnElementsWithOpacityZero, bot.action.tap);
 
+
+    function shouldNotBeAbleToClickOnElementWithPointerEventsNone(action) {
+      if (!checkActionCompatibility(action) || goog.userAgent.IE || goog.userAgent.OPERA || 
+           (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6))) {
+        return;
+      }
+      var el = findElement({id: 'pointerEvents'});
+      action(el);
+      assertEquals('Pass', bot.dom.getVisibleText(el));
+    }
+
+    var testClickShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
+          shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.click);
+
+    var testTapShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
+          shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.tap);
+
     function testClickShouldNotScrollWhenElementInView() {
       if (bot.userAgent.MOBILE) {
         return;
@@ -418,6 +435,7 @@
           });
     </script>
   </div>
+  <p id="pointerEvents" onclick="this.textContent='Error';" style="pointer-events: none;">Pass</p>
   <iframe id="iframe" src="testdata/click_iframe.html">
   </iframe>
   <div id="targetInView" style="position: absolute; top: 10px; left: 10px">target in view</div>

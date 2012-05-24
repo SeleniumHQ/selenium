@@ -73,7 +73,12 @@ bot.dom.isElement = function(node, opt_tagName) {
  */
 bot.dom.isInteractable = function(element) {
   return bot.dom.isShown(element, /*ignoreOpacity=*/true) &&
-         bot.dom.isEnabled(element);
+         bot.dom.isEnabled(element) &&
+         // check pointer-style isn't 'none'
+         // Although IE, Opera, FF < 3.6 don't care about this property.
+         (goog.userAgent.IE || goog.userAgent.OPERA || 
+           (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6)) ||
+           bot.dom.getEffectiveStyle(element, 'pointer-events') != 'none');
 };
 
 
