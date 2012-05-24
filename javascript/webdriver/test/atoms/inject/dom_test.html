@@ -82,7 +82,7 @@ limitations under the License.
                       getValueFromJSONObject(e), "background-color"));
 
       // Depending on the browser, we get different values back.
-      var expected = ['green', 'rgb(0, 128, 0)', '#008000'];
+      var expected = ['green', 'rgba(0,128,0,1)', '#008000'];
       assertTrue(
           'Expected to be one of [' + expected.join(', ') + '], but was: ' +
               prop,
