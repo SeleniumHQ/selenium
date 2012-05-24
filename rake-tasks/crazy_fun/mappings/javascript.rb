@@ -11,7 +11,7 @@ class JavascriptMappings
     fun.add_mapping("js_deps", Javascript::AddDependencies.new)
     fun.add_mapping("js_deps", Javascript::WriteOutput.new)
     fun.add_mapping("js_deps", Javascript::CreateHeader.new)
-    
+
     fun.add_mapping("js_library", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_library", Javascript::CreateLibrary.new)
 
@@ -155,7 +155,7 @@ module Javascript
       all_deps = build_deps_from_files(all_js)
 
       search_hash = build_deps_hash(all_deps)
-      
+
       result_list = ["third_party/closure/goog/base.js"]
       seen_list = []
       src_files.each do |input_file|
@@ -192,7 +192,7 @@ module Javascript
         result_list.push(dep[:filename])
       end
     end
-    
+
     def build_deps_from_files(files)
       result = []
       filenames = []
@@ -225,7 +225,7 @@ module Javascript
 
       result
     end
-    
+
     def build_deps_hash(deps)
       dep_hash = {}
       deps.each do |dep|
@@ -326,7 +326,7 @@ module Javascript
       end
     end
   end
-  
+
   class CreateLibrary < BaseJs
     def manifest_name(dir, name)
       name = task_name(dir, name)
@@ -340,10 +340,10 @@ module Javascript
     def handle(fun, dir, args)
       manifest = manifest_name(dir, args[:name])
       task_name = task_name(dir, args[:name])
-      
+
       file manifest
       task task_name => manifest
-      
+
       task = Rake::Task[task_name]
       task.out = manifest
 
@@ -371,13 +371,13 @@ module Javascript
         t = Rake::Task[task_name(dir, args[:name])]
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
-        
+
         all_srcs = args[:srcs].nil? ? js_files : args[:srcs].collect{|src| Dir[File.join(dir, src)]}
         all_srcs = all_srcs.flatten.collect{|src| File.expand_path(src)}
         all_deps = calc_deps(all_srcs.flatten, js_files)
 
         flags = args[:flags] || []
-        
+
         declared = args[:defines] || [];
         flags += declared.collect {|d| "--define=#{d}"}
 
@@ -386,7 +386,7 @@ module Javascript
 
         flags.push('--third_party=true') unless !flags.index('--third_party=false').nil?
         flags.push("--js_output_file=#{output}")
-        
+
         cmd = "" <<
            flags.join(" ") <<
            " --js='" <<
@@ -407,7 +407,7 @@ module Javascript
           arg :line => cmd
         end
       end
-    end    
+    end
   end
 
   class BaseCompileFragment < BaseJs
