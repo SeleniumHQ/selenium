@@ -715,7 +715,7 @@ module Javascript
         implementation = $1.capitalize
         output_dir = File.dirname(output)
         mkdir_p output_dir unless File.exists?(output_dir)
-        class_name = implementation + "Atoms"
+        class_name = implementation + "Atom"
         output = output_dir + "/" + class_name + ".java"
 
         puts "Preparing #{task_name} as #{output}"
@@ -752,20 +752,8 @@ module Javascript
           out << "    return getValue();\n"
           out << "  }\n"
           out << "\n"
-          out << "  private #{class_name}(String value) {\n"
+          out << "  #{class_name}(String value) {\n"
           out << "    this.value = value;\n"
-          out << "  }\n"
-          out << "\n"
-          out << "  private static final Map<String, String> lookup = new HashMap<String, String>();\n"
-          out << "\n"
-          out << "  static {\n"
-          out << "    for (#{class_name} key : EnumSet.allOf(#{class_name}.class)) {\n"
-          out << "      lookup.put(key.name(), key.value);\n"
-          out << "    }\n"
-          out << "  }\n"
-          out << "\n"
-          out << "  public static String get(String key) {\n"
-          out << "    return lookup.get(key);\n"
           out << "  }\n"
           out << "\n"
           out << "}"
