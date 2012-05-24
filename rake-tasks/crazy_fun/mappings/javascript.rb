@@ -732,7 +732,7 @@ module Javascript
           out << "/**\n"
           out << " * The WebDriver atoms are used to ensure consistent behaviour cross-browser.\n"
           out << " */\n"
-          out << "public enum #{implementation}Atoms {\n"
+          out << "public enum #{class_name} {\n"
           out << "\n"
           out << "  // AUTO GENERATED - DO NOT EDIT BY HAND\n"
 
