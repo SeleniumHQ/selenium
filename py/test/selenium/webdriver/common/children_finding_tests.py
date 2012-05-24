@@ -33,7 +33,7 @@ class ChildrenFindingTests(unittest.TestCase):
         element = self.driver.find_element_by_name("form2")
         child = element.find_element_by_xpath("select")
         self.assertEqual(child.get_attribute("id"), "2")
-    
+
     def testShouldNotFindElementByXPath(self):
         self._loadPage("nestedElements")
         element = self.driver.find_element_by_name("form2")
@@ -44,6 +44,13 @@ class ChildrenFindingTests(unittest.TestCase):
             pass
         except Exception, e:
             self.fail("Expected NoSuchElementException to have been thrown but got " + str(e))
+
+    def testFindingDotSlashElementsOnElementByXPathShouldFindNotTopLevelElements(self):
+        self._loadSimplePage()
+        parent = self.driver.find_element_by_id("multiline")
+        children = parent.find_elements_by_xpath("./p")
+        self.assertEqual(1, len(children))
+        self.assertEqual("A div containing", children[0].text)
 
     def testShouldFindElementsByXpath(self): 
         self._loadPage("nestedElements")
@@ -59,7 +66,7 @@ class ChildrenFindingTests(unittest.TestCase):
         children = element.find_elements_by_xpath("select/x")
         self.assertEqual(len(children), 0)
 
-    def FindingElementsOnElementByXPathShouldFindTopLevelElements(self):
+    def testFindingElementsOnElementByXPathShouldFindTopLevelElements(self):
         self._loadSimplePage()
         parent = self.driver.find_element_by_id("multiline")
         allParaElements = self.driver.find_elements_by_xpath("//p")
@@ -113,11 +120,13 @@ class ChildrenFindingTests(unittest.TestCase):
         child = element.find_element_by_link_text("hello world")
         self.assertEqual(child.get_attribute("name"), "link1")
     
-    def testShouldFindElementByLinkText(self):
+    def testShouldFindElementsByLinkText(self):
         self._loadPage("nestedElements")
         element = self.driver.find_element_by_name("div1")
         children = element.find_elements_by_link_text("hello world")
         self.assertEqual(len(children), 2)
+        self.assertEqual("link1", children[0].get_attribute("name"))
+        self.assertEqual("link2", children[1].get_attribute("name"))
 
     def testShouldFindElementByClassName(self):
         self._loadPage("nestedElements")
