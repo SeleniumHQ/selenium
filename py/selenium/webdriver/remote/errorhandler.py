@@ -93,7 +93,7 @@ class ErrorHandler(object):
         elif status == ErrorCode.ELEMENT_NOT_VISIBLE:
             exception_class = ElementNotVisibleException
         elif status == ErrorCode.INVALID_ELEMENT_STATE:
-            exception_class = WebDriverException
+            exception_class = InvalidElementStateException
         elif status == ErrorCode.INVALID_SELECTOR \
                 or status == ErrorCode.INVALID_XPATH_SELECTOR \
                 or status == ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:
