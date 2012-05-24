@@ -54,9 +54,14 @@ class GetElementLocationCommandHandler : public IECommandHandler {
         // function: "function() {...}"; Wrap it in another function so
         // we can invoke it with our arguments without polluting the
         // current namespace.
-        std::wstring script_source = L"(function() { return (";
-        script_source += atoms::asString(atoms::GET_LOCATION);
-        script_source += L")})();";
+        // Furthermore, we need to invoke the function that is the atom and
+        // get the result, but we need to wrap the execution in another function
+        // so that it can be invoked without polluting the current namespace.
+				std::wstring script_source = L"(function() { return function() { var result = ";
+        script_source += L"(function() { return (";
+				script_source += atoms::asString(atoms::GET_LOCATION);
+        script_source += L")})().apply(null, arguments);";
+        script_source += L"return [result.x, result.y]; };})();";
 
         CComPtr<IHTMLDocument2> doc;
         browser_wrapper->GetDocument(&doc);
@@ -66,15 +71,7 @@ class GetElementLocationCommandHandler : public IECommandHandler {
         script_wrapper.AddArgument(element_wrapper);
         status_code = script_wrapper.Execute();
 
-        // TODO (JimEvans): Find a way to collapse this and the atom
-        // call into a single JS function.
-        std::wstring location_script = L"(function() { return function(){ return [arguments[0].x, arguments[0].y];};})();";
-        Script location_script_wrapper(doc, location_script, 1);
-        location_script_wrapper.AddArgument(script_wrapper.result());
-        status_code = location_script_wrapper.Execute();
-
-        location_script_wrapper.ConvertResultToJsonValue(executor,
-                                                         &location_array);
+        script_wrapper.ConvertResultToJsonValue(executor, &location_array);
 
         Json::UInt index = 0;
         Json::Value response_value;
