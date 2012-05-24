@@ -8,7 +8,8 @@ Project:
 WebDriver:
   * JRE dependency upped to Java 6.
   * IE driver now uses the IEDriverServer. You may need to download
-    this.
+    this. Set the "useLegacyInternalServer" to boolean true if you
+    need the old behaviour.
   * Standardized colour values returned from getCssValue are
     normalized to RGBA.
   * IE can use synthesized events if the capability
