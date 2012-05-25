@@ -851,7 +851,7 @@ module Javascript
         desc "Run the tests for #{browser_task_name}"
         task "#{browser_task_name}:run" => deps do
           puts "Testing: #{browser_task_name} " +
-              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/\/+/, '-') : '')
+              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/[\/:]+/, '-') : '')
 
           cp = CrazyFunJava::ClassPath.new("#{browser_task_name}:run")
           mkdir_p 'build/test_logs'
@@ -895,7 +895,7 @@ module Javascript
             ant.formatter(:type => 'xml')
 
             ant.test(:name => "org.openqa.selenium.javascript.ClosureTestSuite",
-                     :outfile => "TEST-" + browser_task_name.gsub(/\/+/, "-"),
+                     :outfile => "TEST-" + browser_task_name.gsub(/[\/:]+/, "-"),
                      :todir => 'build/test_logs')
           end
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
@@ -920,7 +920,7 @@ module Javascript
         desc "Run the tests for #{browser_task_name}"
         task "#{browser_task_name}:run" => [task_name] do
           puts "Testing: #{browser_task_name} " +
-              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/\/+/, '-') : '')
+              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/[\/:]+/, '-') : '')
 
           cp = CrazyFunJava::ClassPath.new(task_name)
           mkdir_p 'build/test_logs'
@@ -951,7 +951,7 @@ module Javascript
             ant.formatter(:type => 'xml')
 
             ant.test(:name => "org.openqa.selenium.javascript.WebDriverJsTestSuite",
-                     :outfile => "TEST-" + task_name.gsub(/\/+/, "-"),
+                     :outfile => "TEST-" + task_name.gsub(/[\/:]+/, "-"),
                      :todir => 'build/test_logs')
           end
           CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
