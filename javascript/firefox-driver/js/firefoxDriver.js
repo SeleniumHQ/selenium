@@ -376,8 +376,15 @@ FirefoxDriver.prototype.getTitle = function(respond) {
 FirefoxDriver.prototype.getPageSource = function(respond) {
   var win = respond.session.getWindow();
 
-  // Don't pollute the response with annotations we place on the DOM.
   var docElement = win.document.documentElement;
+  if (!docElement) {
+    // empty string means no DOM element available (the page is probably rebuilding at the moment)
+    respond.value = "";
+    respond.send();
+    return;
+  }
+
+  // Don't pollute the response with annotations we place on the DOM.
   docElement.removeAttribute('webdriver');
   docElement.removeAttribute('command');
   docElement.removeAttribute('response');
