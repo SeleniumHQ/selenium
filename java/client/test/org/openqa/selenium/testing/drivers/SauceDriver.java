@@ -32,6 +32,7 @@ import com.google.common.base.Throwables;
 public class SauceDriver extends RemoteWebDriver {
   private static final String SAUCE_JOB_NAME_ENV_NAME = "SAUCE_JOB_NAME";
   private static final String SELENIUM_VERSION_ENV_NAME = "SAUCE_SELENIUM_VERSION";
+  private static final String SELENIUM_IEDRIVER_ENV_NAME = "SAUCE_IEDRIVER_VERSION";
   private static final String SAUCE_APIKEY_ENV_NAME = "SAUCE_APIKEY";
   private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
   private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
@@ -102,7 +103,13 @@ public class SauceDriver extends RemoteWebDriver {
     if (jobName != null) {
       mungedCapabilities.setCapability("name", jobName);
     }
-    
+
+    if (DesiredCapabilities.internetExplorer().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+      String ieDriverVersion = System.getenv(SELENIUM_IEDRIVER_ENV_NAME);
+      if (ieDriverVersion != null) {
+        mungedCapabilities.setCapability("iedriver-version", System.getenv(SELENIUM_IEDRIVER_ENV_NAME));
+      }
+    }
     mungedCapabilities.setCapability("public", true);
     return mungedCapabilities;
   }
