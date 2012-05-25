@@ -68,26 +68,10 @@ class SetWindowSizeCommandHandler : public IECommandHandler {
         ::ShowWindow(window_handle, SW_RESTORE);
       }
 
-      CComPtr<IHTMLDocument2> doc;
-      browser_wrapper->GetDocument(&doc);
-      std::wstring position_script = L"(function() { return function(){ return {'width':arguments[0], 'height':arguments[1]};};})();";
-      Script position_script_wrapper(doc, position_script, 2);
-      position_script_wrapper.AddArgument(width);
-      position_script_wrapper.AddArgument(height);
-      status_code = position_script_wrapper.Execute();
-
-      // The atom is just the definition of an anonymous
-      // function: "function() {...}"; Wrap it in another function so we can
-      // invoke it with our arguments without polluting the current namespace.
-      std::wstring script_source = L"(function() { return (";
-      script_source += atoms::asString(atoms::SET_WINDOW_SIZE);
-      script_source += L")})();";
-      Script script_wrapper(doc, script_source, 1);
-      script_wrapper.AddArgument(position_script_wrapper.result());
-      status_code = script_wrapper.Execute();
-      if (status_code != SUCCESS) {
-        response->SetErrorResponse(EUNEXPECTEDJSERROR,
-                                   "Unexpected JavaScript error getting window size");
+      BOOL set_window_pos_result = ::SetWindowPos(window_handle, NULL, 0, 0, width, height, SWP_NOMOVE);
+      if (!set_window_pos_result) {
+        response->SetErrorResponse(EUNHANDLEDERROR,
+                                   "Unexpected error setting window size (SetWindowPos API failed)");
         return;
       }
 
