@@ -247,17 +247,23 @@ bool Element::IsHiddenByOverflow() {
   // Use JavaScript for this rather than COM calls to avoid dependency
   // on the IHTMLWindow7 interface, which is IE9-specific.
   std::wstring script_source = L"(function() { return function(){";
-  script_source += L"var e = arguments[0];\n";
-  script_source += L"var p = e.parentNode;\n";
+  script_source += L"var e = arguments[0];";
+  script_source += L"var p = e.parentNode;";
   //Note: This logic duplicates Element::GetClickPoint
-  script_source += L"var x = e.offsetLeft + (e.clientWidth / 2);\n";
-  script_source += L"var y = e.offsetTop + (e.clientHeight / 2);\n";
-  script_source += L"var s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
+  script_source += L"var x = e.offsetLeft + (e.clientWidth / 2);";
+  script_source += L"var y = e.offsetTop + (e.clientHeight / 2);";
+  script_source += L"var s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;";
   //Note: In the case that the parent has overflow=hidden, and the element is out of sight,
   //this will force the IEDriver to scroll the element in to view.  This is a bug.
-  script_source += L"while (p != null && s != null && s.overflow && s.overflow != 'auto' && s.overflow != 'scroll' && s.overflow != 'hidden') {\n";
-  script_source += L"  p = p.parentNode;\n";
-  script_source += L"  s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;\n";
+  //Note: If we reach the document while walking up the DOM tree, we know we've not
+  //encountered an element with the style that would indicate the element is hidden by overflow.
+  script_source += L"while (p != null && s != null && s.overflow && s.overflow != 'auto' && s.overflow != 'scroll' && s.overflow != 'hidden') {";
+  script_source += L"  p = p.parentNode;";
+  script_source += L"  if (p === document) {";
+  script_source += L"    return false;";
+  script_source += L"  } else {";
+  script_source += L"    s = window.getComputedStyle ? window.getComputedStyle(p, null) : p.currentStyle;";
+  script_source += L"  }";
   script_source += L"}";
   script_source += L"var containerTop = p.scrollTop;";
   script_source += L"var containerLeft = p.scrollLeft;";
