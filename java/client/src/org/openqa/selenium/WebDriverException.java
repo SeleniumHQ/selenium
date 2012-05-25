@@ -20,6 +20,8 @@ import org.openqa.selenium.internal.BuildInfo;
 
 public class WebDriverException extends RuntimeException {
 
+  private String sessionId;
+
   public WebDriverException() {
     super();
   }
@@ -70,7 +72,15 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getDriverInformation() {
-    return "driver.version: " + getDriverName(getStackTrace());
+    String driverInformation = "driver.version: " + getDriverName(getStackTrace());
+    if (sessionId != null) {
+      driverInformation += "\nSession ID: " + sessionId;
+    }
+    return driverInformation;
+  }
+
+  public void setSessionId(String sessionId) {
+    this.sessionId = sessionId;
   }
 
   public static String getDriverName(StackTraceElement[] stackTraceElements) {

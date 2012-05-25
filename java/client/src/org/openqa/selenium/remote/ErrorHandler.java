@@ -78,7 +78,7 @@ public class ErrorHandler {
     this.includeServerErrors = includeServerErrors;
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("unchecked")
   public Response throwIfResponseFailed(Response response, long duration) throws RuntimeException {
     if (response.getStatus() == SUCCESS) {
       return response;
@@ -104,7 +104,6 @@ public class ErrorHandler {
         message = String.valueOf(e);
       }
 
-      @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
       Throwable serverError = rebuildServerError(rawErrorData);
 
       // If serverError is null, then the server did not provide a className (only expected if
@@ -135,13 +134,13 @@ public class ErrorHandler {
       message = message + duration1;
     }
 
-    Throwable toThrow = null;
-    
+    WebDriverException toThrow = null;
+
     if (outerErrorType.equals(UnhandledAlertException.class)
         && value instanceof Map) {
       toThrow = createUnhandledAlertException(value);
     }
-    
+
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,
           new Class<?>[] {String.class, Throwable.class},
@@ -155,18 +154,15 @@ public class ErrorHandler {
     }
 
     if (toThrow == null) {
-      throw new WebDriverException(message, cause);
+      toThrow = new WebDriverException(message, cause);
     }
 
-    if (toThrow instanceof RuntimeException) {
-      throw (RuntimeException) toThrow;
-    } else {
-      throw new WebDriverException(toThrow);
-    }
+    toThrow.setSessionId(response.getSessionId());
+    throw toThrow;
   }
 
   @SuppressWarnings("unchecked")
-  private Throwable createUnhandledAlertException(Object value) {
+  private UnhandledAlertException createUnhandledAlertException(Object value) {
     Map<String, Object> rawErrorData = (Map<String, Object>) value;
     if (rawErrorData.containsKey("alert")) {
       Map<String, Object> alert = (Map<String, Object>) rawErrorData.get("alert");
@@ -185,7 +181,6 @@ public class ErrorHandler {
     return prefix + (new BigDecimal(duration).divide(new BigDecimal(1000)).setScale(2, RoundingMode.HALF_UP)) + " seconds";
   }
 
-    @SuppressWarnings({"ErrorNotRethrown"})
   private <T extends Throwable> T createThrowable(
       Class<T> clazz, Class<?>[] parameterTypes, Object[] parameters) {
     try {
