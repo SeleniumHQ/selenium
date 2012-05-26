@@ -642,6 +642,20 @@ class WebDriver(object):
         self.execute(Command.SET_SCRIPT_TIMEOUT,
             {'ms': float(time_to_wait) * 1000})
 
+    def set_page_load_timeout(self, time_to_wait):
+        """
+        Set the amount of time to wait for a page load to complete 
+           before throwing an error.
+
+        :Args:
+         - time_to_wait: The amount of time to wait
+
+        :Usage:
+            driver.set_page_load_timeout(30)
+        """
+        self.execute(Command.SET_TIMEOUTS,
+            {'ms': float(time_to_wait) * 1000, 'type':'page load'})
+
     def find_element(self, by=By.ID, value=None):
         """
         'Private' method used by the find_element_by_* methods.
