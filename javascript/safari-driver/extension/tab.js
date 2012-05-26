@@ -16,9 +16,8 @@ goog.provide('safaridriver.extension.Tab');
 
 goog.require('bot.response');
 goog.require('goog.Uri');
-goog.require('goog.debug.Logger');
-goog.require('goog.string');
-goog.require('safaridriver.message.MessageTarget');
+goog.require('safaridriver.Tab');
+goog.require('safaridriver.message');
 
 
 /**
@@ -32,10 +31,10 @@ goog.require('safaridriver.message.MessageTarget');
  *
  * @param {!SafariBrowserTab} browserTab The tab to track.
  * @constructor
- * @extends {safaridriver.message.MessageTarget}
+ * @extends {safaridriver.Tab}
  */
 safaridriver.extension.Tab = function(browserTab) {
-  goog.base(this, browserTab);
+  goog.base(this, browserTab, 'safaridriver.extension.Tab');
 
   /**
    * @type {!SafariBrowserTab}
@@ -43,80 +42,17 @@ safaridriver.extension.Tab = function(browserTab) {
    */
   this.browserTab_ = browserTab;
 
-  /**
-   * @type {string}
-   * @private
-   */
-  this.id_ = goog.string.getRandomString();
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.isReady_ = true;
-
-  /**
-   * @type {!Array.<function(!SafariBrowserTab)>}
-   * @private
-   */
-  this.readyListeners_ = [];
-
-  var dispose = goog.bind(this.dispose, this);
   browserTab.addEventListener('close', goog.bind(this.dispose, this), false);
-  this.on(safaridriver.message.Type.LOAD, goog.bind(this.onLoad_, this));
-  this.on(safaridriver.message.Type.UNLOAD, goog.bind(this.onUnload_, this));
+  this.on(safaridriver.message.Type.LOAD, goog.bind(this.notifyReady, this));
+  this.on(safaridriver.message.Type.UNLOAD,
+      goog.bind(this.notifyUnready, this));
 };
-goog.inherits(safaridriver.extension.Tab, safaridriver.message.MessageTarget);
-
-
-/**
- * @type {!goog.debug.Logger}
- * @private
- * @const
- */
-safaridriver.extension.Tab.LOG_ = goog.debug.Logger.getLogger(
-    'safaridriver.extension.Tab');
-
-
-/**
- * @type {?number}
- * @private
- */
-safaridriver.extension.Tab.prototype.idleStateWaitKey_ = null;
+goog.inherits(safaridriver.extension.Tab, safaridriver.Tab);
 
 
 /** @return {!SafariBrowserTab} The tab associated with this window. */
 safaridriver.extension.Tab.prototype.getBrowserTab = function() {
   return this.browserTab_
-};
-
-
-/** @return {string} This window's ID. */
-safaridriver.extension.Tab.prototype.getId = function() {
-  return this.id_;
-};
-
-
-/** @override */
-safaridriver.extension.Tab.prototype.log = function(msg, opt_level, opt_error) {
-  goog.base(this, 'log', '[' + this.id_ + '] ' + msg, opt_level, opt_error);
-};
-
-
-/**
- * Schedules a command for execution when this tab is no longer between page
- * navigation events.
- * @param {function(!SafariBrowserTab)} callback The function to invoke when
- *     this tab is ready.
- */
-safaridriver.extension.Tab.prototype.whenReady = function(callback) {
-  if (this.isReady_) {
-    callback(this.browserTab_);
-    return;
-  }
-
-  this.log('Tab is not ready for commands; registering callback');
-  this.readyListeners_.push(callback);
 };
 
 
@@ -139,44 +75,6 @@ safaridriver.extension.Tab.prototype.loadsNewPage = function(url) {
   }
   return from.toString() === to.toString() ||
       from.setFragment('').toString() !== to.setFragment('').toString();
-};
-
-
-/**
- * @private
- */
-safaridriver.extension.Tab.prototype.onUnload_ = function() {
-  this.log('Tab frame has been unloaded');
-  this.isReady_ = false;
-  if (this.idleStateWaitKey_) {
-    clearTimeout(this.idleStateWaitKey_);
-    this.idleStateWaitKey_ = null;
-  }
-};
-
-
-/**
- * @private
- */
-safaridriver.extension.Tab.prototype.onLoad_ = function() {
-  this.log('Frame has loaded a new page; waiting for idle state');
-  var self = this;
-
-  // Wait if we stay ready for a short time before notifying our listeners.
-  if (!self.idleStateWaitKey_) {
-    self.idleStateWaitKey_ = setTimeout(function() {
-      self.isReady_ = true;
-      self.idleStateWaitKey_ = null;
-      self.log('Tab looks ready; notifying listeners');
-      while (self.readyListeners_.length) {
-        if (!self.isReady_) {
-          self.log('Tab is loading another page');
-          return;
-        }
-        self.readyListeners_.shift()(self.browserTab_);
-      }
-    }, 100);
-  }
 };
 
 
@@ -291,4 +189,16 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
       response.resolve(bot.response.createResponse(null));
     }
   }
+};
+
+
+/**
+ * Retrieves the visible contents of this tab as a base64 PNG data URL.
+ * @param {function(string)} fn The function to call when the data is ready.
+ */
+safaridriver.extension.Tab.prototype.visibleContentsAsDataURL = function(fn) {
+  var browserTab = this.browserTab_;
+  this.whenReady(function() {
+    browserTab.visibleContentsAsDataURL(fn);
+  });
 };

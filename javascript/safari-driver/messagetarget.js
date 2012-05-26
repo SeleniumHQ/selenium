@@ -25,10 +25,12 @@ goog.require('webdriver.EventEmitter');
  * and original event that delivered the message will be included as arguments.
  * @param {!(SafariEventTarget|EventTarget)} source The object that should be
  *     used as the source of messages.
+ * @param {string=} opt_loggerName The name of the logger to use. Defaults to
+ *     the name of this class.
  * @constructor
  * @extends {webdriver.EventEmitter}
  */
-safaridriver.message.MessageTarget = function(source) {
+safaridriver.message.MessageTarget = function(source, opt_loggerName) {
   goog.base(this);
 
   /**
@@ -36,6 +38,13 @@ safaridriver.message.MessageTarget = function(source) {
    * @private
    */
   this.source_ = source;
+
+  /**
+   * @type {!goog.debug.Logger}
+   * @private
+   */
+  this.log_ = goog.debug.Logger.getLogger(
+      opt_loggerName || 'safaridriver.message.MessageTarget');
 
   /**
    * @type {function(this: safaridriver.message.MessageTarget,
@@ -47,15 +56,6 @@ safaridriver.message.MessageTarget = function(source) {
   this.source_.addEventListener('message', this.boundOnMessage_, true);
 };
 goog.inherits(safaridriver.message.MessageTarget, webdriver.EventEmitter);
-
-
-/**
- * @type {!goog.debug.Logger}
- * @private
- * @const
- */
-safaridriver.message.MessageTarget.LOG_ = goog.debug.Logger.getLogger(
-    'safaridriver.message.MessageTarget');
 
 
 /**
@@ -78,7 +78,7 @@ safaridriver.message.MessageTarget.prototype.dispose = function() {
 safaridriver.message.MessageTarget.prototype.log = function(msg, opt_level,
     opt_error) {
   var level = opt_level || goog.debug.Logger.Level.INFO;
-  safaridriver.message.MessageTarget.LOG_.log(level, msg, opt_error);
+  this.log_.log(level, msg, opt_error);
 };
 
 

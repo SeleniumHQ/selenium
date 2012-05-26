@@ -81,10 +81,8 @@ safaridriver.extension.commands.getWindowHandles = function(session) {
  */
 safaridriver.extension.commands.takeScreenshot = function(session) {
   var response = new webdriver.promise.Deferred();
-  session.getCommandTab().whenReady(function(tab) {
-    tab.visibleContentsAsDataURL(function(dataUrl) {
-      response.resolve(dataUrl.substring('data:image/png;base64,'.length));
-    });
+  session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
+    response.resolve(dataUrl.substring('data:image/png;base64,'.length));
   });
   return response.promise;
 };
@@ -320,13 +318,18 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
   return result.promise;
 
   function switchToTab(tab) {
-    // Tell the currently active tab to deactivate before activating the new
-    // tab. There is no need to wait for a response here.
+    // Switch back to the default content for the current tab before switching
+    // to the new tab.
     try {
-      session.getCommandTab().whenReady(function(currentTab) {
-        var message = new safaridriver.message.Message(
-            safaridriver.message.Type.DEACTIVATE);
-        message.send(currentTab.page);
+      var currentTab = session.getCommandTab();
+      currentTab.whenReady(function() {
+        var switchToNullContent = new safaridriver.Command(
+            goog.string.getRandomString(),
+            webdriver.CommandName.SWITCH_TO_FRAME, {
+              'id': null
+            });
+        currentTab.send(switchToNullContent);
+
         session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
         result.resolve();
       });

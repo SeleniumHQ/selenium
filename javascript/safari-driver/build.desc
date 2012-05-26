@@ -4,6 +4,7 @@ js_library(name = "common_lib",
     "console.js",
     "message.js",
     "messagetarget.js",
+    "tab.js",
   ],
   deps = [
     "//javascript/webdriver:base_lib",
