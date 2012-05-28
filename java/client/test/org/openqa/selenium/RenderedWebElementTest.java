@@ -43,7 +43,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({SELENESE, OPERA, ANDROID})
+  @Ignore({ANDROID, CHROME, OPERA, SELENESE})
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -51,18 +51,12 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("green-parent"));
     String backgroundColour = element.getCssValue("background-color");
 
-    // TODO: How should this be standardized? Should it be standardized?
-    assertThat(backgroundColour, anyOf(
-        equalTo("#008000"),
-        equalTo("rgba(0,128,0,1)")));
+    assertEquals("rgba(0,128,0,1)", backgroundColour);
 
     element = driver.findElement(By.id("red-item"));
     backgroundColour = element.getCssValue("background-color");
 
-    // TODO: How should this be standardized? Should it be standardized?
-    assertThat(backgroundColour, anyOf(
-        equalTo("#ff0000"),
-        equalTo("rgba(255,0,0,1)")));
+    assertEquals("rgba(255,0,0,1)", backgroundColour);
   }
 
   // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
@@ -89,7 +83,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE, OPERA, ANDROID})
+  @Ignore({ANDROID, CHROME, IPHONE, OPERA, SELENESE})
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
