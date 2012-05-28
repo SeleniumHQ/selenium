@@ -20,6 +20,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.io.Files;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +29,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.Proxies;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class MakeProxyPacUnitTest {
 
@@ -56,20 +57,13 @@ public class MakeProxyPacUnitTest {
     Capabilities options = BrowserOptions.newBrowserOptions();
     options = Proxies.setOnlyProxySeleniumTraffic(options, proxySeleniumTrafficOnly);
     options = Proxies.setAvoidProxy(options, avoidProxy);
-    Proxies
-        .makeProxyPAC(parentDir, 4444, httpProxyHost, httpProxyPort, httpNonProxyHosts, options);
+    Proxies.makeProxyPAC(parentDir, 4444, httpProxyHost, httpProxyPort,
+        httpNonProxyHosts, options);
     return readEntirePacFile();
   }
 
   private String readEntirePacFile() throws IOException {
-    FileReader fileReader = new FileReader(pacFile);
-    BufferedReader reader = new BufferedReader(fileReader);
-    StringBuffer sb = new StringBuffer();
-    String line;
-    while ((line = reader.readLine()) != null) {
-      sb.append(line).append('\n');
-    }
-    String pac = sb.toString();
+    String pac = Files.toString(pacFile, Charset.defaultCharset());
     return pac.replaceAll("\\s+", " ").trim();
   }
 
