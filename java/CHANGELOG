@@ -25,6 +25,8 @@ WebDriver:
     window is closed and another command is sent.
   * SafariDriver improved: frame switching, snapshot taking and JS
     executing added.
+  * SafariDriver: changed message protocol. The 2.22.0 SafariDriver will
+    not be backwards compatible with Selenium 2.21.
   * FIXED: 185: Appending screenshots to remote exceptions is now
     optional. Controlled via the "webdriver.remote.quietExceptions"
     capability.
