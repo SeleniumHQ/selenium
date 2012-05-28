@@ -43,7 +43,7 @@ public class SqlDatabaseTest extends JUnit4TestBase {
     // Note: Current HTML5 API of Webdriver only requires the databaseName.
     // The version, displayName and initial quota size is assigned default value.
     // Default value of version is empty string, which is fine since in this case,
-    // there is no expected version â€” any version is fine.
+    // there is no expected version - any version is fine.
     // See: http://www.w3.org/TR/webdatabase/#dom-opendatabase
     // Default value of the initial quota is 5MB.
     String databaseName = "HTML5";
