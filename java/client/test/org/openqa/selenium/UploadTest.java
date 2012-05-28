@@ -24,6 +24,9 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -80,14 +83,7 @@ public class UploadTest extends JUnit4TestBase {
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
-
-    OutputStream out = new FileOutputStream(f);
-    PrintWriter pw = new PrintWriter(out);
-    pw.write(content);
-    pw.flush();
-    pw.close();
-    out.close();
-
+    Files.write(content, f, Charsets.UTF_8);
     return f;
   }
 }
