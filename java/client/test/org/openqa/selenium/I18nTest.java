@@ -55,7 +55,7 @@ public class I18nTest extends JUnit4TestBase {
   /**
    * Japanese for "Tokyo"
    */
-  private static final String tokyo = "東京";
+  private static final String tokyo = "\u6771\u4EAC";
 
   @Ignore({IE, FIREFOX, IPHONE})
   @Test
