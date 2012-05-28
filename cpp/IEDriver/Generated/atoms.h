@@ -2885,13 +2885,13 @@ const wchar_t* const GET_ATTRIBUTE[] = {
     L"Element is not selectable\"));var d=\"selected\",e=a.type&&a.type.toLo",
     L"werCase();if(\"checkbox\"==e||\"radio\"==e)d=\"checked\";return Nb(a,d",
     L")?\"true\":k}c=O(a,\"A\");if(O(a,\"IMG\")&&\"src\"==d||c&&\"href\"==d)",
-    L"return(c=Rb(a,d))&&(c=Nb(a,d)),c;if(0<=B(Ob,b))return Rb(a,b);try{e=Nb",
-    L"(a,b)}catch(f){}c=e==k||da(e)?Rb(a,b):e;return c!=k?c.toString():k}\nv",
-    L"ar zd=[\"_\"],$=s;!(zd[0]in $)&&$.execScript&&$.execScript(\"var \"+zd",
-    L"[0]);for(var Bd;zd.length&&(Bd=zd.shift());)!zd.length&&t(yd)?$[Bd]=yd",
-    L":$=$[Bd]?$[Bd]:$[Bd]={};; return this._.apply(null,arguments);}.apply(",
-    L"{navigator:typeof window!=undefined?window.navigator:null}, arguments)",
-    L";}",
+    L"return(c=Rb(a,d))&&(c=Nb(a,d)),c;if(0<=B(Ob,b.toLowerCase()))return Rb",
+    L"(a,b);try{e=Nb(a,b)}catch(f){}c=e==k||da(e)?Rb(a,b):e;return c!=k?c.to",
+    L"String():\nk}var zd=[\"_\"],$=s;!(zd[0]in $)&&$.execScript&&$.execScri",
+    L"pt(\"var \"+zd[0]);for(var Bd;zd.length&&(Bd=zd.shift());)!zd.length&&",
+    L"t(yd)?$[Bd]=yd:$=$[Bd]?$[Bd]:$[Bd]={};; return this._.apply(null,argum",
+    L"ents);}.apply({navigator:typeof window!=undefined?window.navigator:nul",
+    L"l}, arguments);}",
     NULL
 };
 

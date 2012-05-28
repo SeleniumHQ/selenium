@@ -92,7 +92,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
     return (/** @type {?string} */value);
   }
 
-  if (bot.dom.isBooleanAttribute(attribute)) {
+  if (bot.dom.isBooleanAttribute(attribute.toLowerCase())) {
     return bot.dom.getAttribute(element, attribute);
   }
 
