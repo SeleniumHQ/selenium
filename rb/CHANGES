@@ -1,7 +1,23 @@
-2.22.0 (???)
+2.22.0
 ============
 
 * Fix conflict with ActiveSupport's Object#load (#3819)
+* IE:
+  * standalone server executable, falls back to bundled DLLs.
+* Firefox:
+  * Native events for Firefox 12.
+  * Native events retained for Firefox 3.x, 10 and 11.
+  * Fix for typing in Firefox 12
+  * Fix for typing on XHTML pages (#3647)
+  * Fix for maximizing windows when switched to a frame (#3758)
+  * Handle alerts from nested iframes (#3825)
+* Element#attribute returns nil if a boolean attribute is not present.
+* NoSuchWindowError will be thrown if the currently selected
+    window is closed and another command is sent
+* Safari:
+  * support for frame switching, snapshot taking, execute script
+  * message protocol changed, not backwards compatible with 2.21.
+* Style attributes are no longer lower-cased by default (#1089).
 
 2.21.2 (2012-04-18)
 ===================
