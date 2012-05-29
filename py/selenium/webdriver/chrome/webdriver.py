@@ -75,7 +75,8 @@ class WebDriver(RemoteWebDriver):
         """
         try:
             RemoteWebDriver.quit(self)
-        except httplib.BadStatusLine:
+        except:
+            # We don't care about the message because something probably has gone wrong
             pass
         finally:
             self.service.stop()
