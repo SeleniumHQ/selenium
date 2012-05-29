@@ -168,6 +168,11 @@ limitations under the License.
       var el = document.getElementById('disabled');
       assertNull(webdriver.atoms.element.getAttribute(el, 'required'));
     }
+
+    function testShouldReturnTrueForBooleanProperty() {
+      var el = document.getElementById('image');
+      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'complete'));
+    }
   </script>
 </head>
 <body id="body" style="" name="body">

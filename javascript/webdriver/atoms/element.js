@@ -93,7 +93,8 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
   }
 
   if (bot.dom.isBooleanAttribute(attribute.toLowerCase())) {
-    return bot.dom.getAttribute(element, attribute);
+    value = bot.dom.getAttribute(element, attribute) || bot.dom.getProperty(element, attribute);
+    return value ? 'true' : null;
   }
 
   var property;
