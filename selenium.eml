@@ -154,10 +154,10 @@
 	<lib name="xalan-2.7.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/xml/xalan-2.7.1.jar!/"/>
 	</lib>
-	<lib name="operadriver-0.13.jar" scope="COMPILE">
-		<srcroot url="jar://$MODULE_DIR$/third_party/java/opera-driver/operadriver-0.13-source.jar!/"/>
-		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-0.13-source.jar!/"/>
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-0.13.jar!/"/>
+	<lib name="operadriver-0.14.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/opera-driver/operadriver-0.14-source.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-0.14-source.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-0.14.jar!/"/>
 	</lib>
 	<lib name="jmock-junit4-2.5.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-junit4-2.5.1.jar!/"/>

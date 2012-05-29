@@ -35,8 +35,8 @@
 	<lib name="servlet-api-2.5-6.1.9.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/servlet-api/servlet-api-2.5-6.1.9-sources.jar"/>
 	</lib>
-	<lib name="operadriver-v0.11.jar" scope="COMPILE">
-		<srcroot url="file:///third-party/java/opera-driver/operadriver-v0.11-source.jar"/>
+	<lib name="operadriver-v0.14.jar" scope="COMPILE">
+		<srcroot url="file:///third-party/java/opera-driver/operadriver-v0.14-source.jar"/>
 	</lib>
 	<lib name="httpclient-4.1.3.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/apache-httpclient/httpclient-4.1.3-sources.jar"/>
