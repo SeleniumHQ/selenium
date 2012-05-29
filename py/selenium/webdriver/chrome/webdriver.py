@@ -66,7 +66,7 @@ class WebDriver(RemoteWebDriver):
                 desired_capabilities=desired_capabilities)
         except:
             self.quit()
-            raise WebDriverException("The Driver was not able to start.")
+            raise 
 
     def quit(self):
         """
