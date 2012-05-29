@@ -62,7 +62,7 @@ module CrazyFunJava
 
       ant.taskdef :name      => 'jarjar',
       :classname => 'com.tonicsystems.jarjar.JarJarTask',
-      :classpath => 'third_party/java/jarjar/jarjar-1.0.jar'
+      :classpath => 'third_party/java/jarjar/jarjar-1.3.jar'
       ant.taskdef :resource  => 'testngtasks' do |t|
         t.classpath do |cp|
           cp.pathelement :location => 'third_party/java/testng/testng-6.0.1-nobsh-noguice.jar'
