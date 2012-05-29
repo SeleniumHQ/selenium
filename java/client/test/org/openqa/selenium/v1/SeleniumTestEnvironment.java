@@ -150,14 +150,19 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       } catch (MalformedURLException e) {
         throw Throwables.propagate(e);
       }
+
+      BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+      if (Boolean.getBoolean("singlewindow")) {
+        options.setSingleWindow();
+      }
+
       selenium = new DefaultSelenium("localhost", port, browser, baseUrl);
       if (Boolean.getBoolean("webdriver.debug")) {
-        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
         options.set("browserSideLog", "true");
         selenium.start(options);
         selenium.setBrowserLogLevel("debug");
       } else {
-        selenium.start();
+        selenium.start(options);
       }
     }
 
