@@ -312,8 +312,8 @@ module CrazyFunJava
             :optimize             => true,
             :debug                => true,
             :nowarn               => true,
-            :source               => '1.5',
-            :target               => '1.5'
+            :source               => '1.6',
+            :target               => '1.6'
           ) { |ant|
             ant.classpath(:refid => "#{args[:name]}.path")
 
