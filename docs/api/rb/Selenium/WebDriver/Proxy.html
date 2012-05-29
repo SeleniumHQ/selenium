@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Proxy
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (P)</a> &raquo; 
+    <a href="../../_index.html">Index (P)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">Proxy</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::Proxy
   
   
@@ -112,6 +119,8 @@
   
 
 
+
+
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -125,6 +134,7 @@
   </span>
   
   
+  
     
     
   
@@ -134,9 +144,8 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute auto_detect.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute auto_detect.</p>
 </div></span>
   
 </li>
@@ -152,6 +161,7 @@ Returns the value of attribute auto_detect.
   </span>
   
   
+  
     
     
   
@@ -161,9 +171,8 @@ Returns the value of attribute auto_detect.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute ftp.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute ftp.</p>
 </div></span>
   
 </li>
@@ -179,6 +188,7 @@ Returns the value of attribute ftp.
   </span>
   
   
+  
     
     
   
@@ -188,9 +198,8 @@ Returns the value of attribute ftp.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute http.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute http.</p>
 </div></span>
   
 </li>
@@ -206,6 +215,7 @@ Returns the value of attribute http.
   </span>
   
   
+  
     
     
   
@@ -215,9 +225,8 @@ Returns the value of attribute http.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute no_proxy.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute no_proxy.</p>
 </div></span>
   
 </li>
@@ -233,6 +242,7 @@ Returns the value of attribute no_proxy.
   </span>
   
   
+  
     
     
   
@@ -242,9 +252,8 @@ Returns the value of attribute no_proxy.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute pac.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute pac.</p>
 </div></span>
   
 </li>
@@ -260,6 +269,7 @@ Returns the value of attribute pac.
   </span>
   
   
+  
     
     
   
@@ -269,9 +279,8 @@ Returns the value of attribute pac.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute ssl.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute ssl.</p>
 </div></span>
   
 </li>
@@ -287,6 +296,7 @@ Returns the value of attribute ssl.
   </span>
   
   
+  
     
     
   
@@ -296,9 +306,8 @@ Returns the value of attribute ssl.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute type.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute type.</p>
 </div></span>
   
 </li>
@@ -325,6 +334,7 @@ Returns the value of attribute type.
 
     
   </span>
+  
   
   
   
@@ -363,6 +373,7 @@ Returns the value of attribute type.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -378,6 +389,7 @@ Returns the value of attribute type.
 
     
   </span>
+  
   
   
   
@@ -400,6 +412,7 @@ Returns the value of attribute type.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
@@ -409,9 +422,8 @@ Returns the value of attribute type.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Proxy.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Proxy.</p>
 </div></span>
   
 </li>
@@ -425,6 +437,7 @@ A new instance of Proxy.
 
     
   </span>
+  
   
   
   
@@ -445,17 +458,18 @@ A new instance of Proxy.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Proxy (class)">Proxy</a></span></tt>) <strong>initialize</strong>(opts = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of Proxy
-</p>
+    
+<p>A new instance of Proxy</p>
 
 
   </div>
@@ -517,17 +531,18 @@ A new instance of Proxy
       <span id="auto_detect=-instance_method"></span>
       <span id="auto_detect-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="auto_detect-instance_method">
+  <h3 class="signature first" id="auto_detect-instance_method">
   
     - (<tt>Object</tt>) <strong>auto_detect</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute auto_detect
-</p>
+    
+<p>Returns the value of attribute auto_detect</p>
 
 
   </div>
@@ -560,17 +575,18 @@ Returns the value of attribute auto_detect
       <span id="ftp=-instance_method"></span>
       <span id="ftp-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="ftp-instance_method">
+  <h3 class="signature " id="ftp-instance_method">
   
     - (<tt>Object</tt>) <strong>ftp</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute ftp
-</p>
+    
+<p>Returns the value of attribute ftp</p>
 
 
   </div>
@@ -603,17 +619,18 @@ Returns the value of attribute ftp
       <span id="http=-instance_method"></span>
       <span id="http-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="http-instance_method">
+  <h3 class="signature " id="http-instance_method">
   
     - (<tt>Object</tt>) <strong>http</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute http
-</p>
+    
+<p>Returns the value of attribute http</p>
 
 
   </div>
@@ -646,17 +663,18 @@ Returns the value of attribute http
       <span id="no_proxy=-instance_method"></span>
       <span id="no_proxy-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="no_proxy-instance_method">
+  <h3 class="signature " id="no_proxy-instance_method">
   
     - (<tt>Object</tt>) <strong>no_proxy</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute no_proxy
-</p>
+    
+<p>Returns the value of attribute no_proxy</p>
 
 
   </div>
@@ -689,17 +707,18 @@ Returns the value of attribute no_proxy
       <span id="pac=-instance_method"></span>
       <span id="pac-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="pac-instance_method">
+  <h3 class="signature " id="pac-instance_method">
   
     - (<tt>Object</tt>) <strong>pac</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute pac
-</p>
+    
+<p>Returns the value of attribute pac</p>
 
 
   </div>
@@ -732,17 +751,18 @@ Returns the value of attribute pac
       <span id="ssl=-instance_method"></span>
       <span id="ssl-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="ssl-instance_method">
+  <h3 class="signature " id="ssl-instance_method">
   
     - (<tt>Object</tt>) <strong>ssl</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute ssl
-</p>
+    
+<p>Returns the value of attribute ssl</p>
 
 
   </div>
@@ -775,17 +795,18 @@ Returns the value of attribute ssl
       <span id="type=-instance_method"></span>
       <span id="type-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="type-instance_method">
+  <h3 class="signature " id="type-instance_method">
   
     - (<tt>Object</tt>) <strong>type</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute type
-</p>
+    
+<p>Returns the value of attribute type</p>
 
 
   </div>
@@ -819,16 +840,18 @@ Returns the value of attribute type
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="json_create-class_method">
+  <h3 class="signature first" id="json_create-class_method">
   
     + (<tt>Object</tt>) <strong>json_create</strong>(data) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -873,10 +896,10 @@ Returns the value of attribute type
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="==-instance_method">
+  <h3 class="signature first" id="==-instance_method">
   
     - (<tt>Object</tt>) <strong>==</strong>(other) 
   
@@ -886,7 +909,9 @@ Returns the value of attribute type
     <span class="names"><span id='eql?-instance_method'>eql?</span></span>
     </span>
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -908,13 +933,15 @@ Returns the value of attribute type
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="as_json-instance_method">
+  <h3 class="signature " id="as_json-instance_method">
   
     - (<tt>Object</tt>) <strong>as_json</strong>(opts = nil) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -958,13 +985,15 @@ Returns the value of attribute type
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="to_json-instance_method">
+  <h3 class="signature " id="to_json-instance_method">
   
     - (<tt>Object</tt>) <strong>to_json</strong>(*args) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -978,7 +1007,7 @@ Returns the value of attribute type
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='const'>MultiJson</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span> <span class='id identifier rubyid_as_json'>as_json</span>
+  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_dump'>json_dump</span> <span class='id identifier rubyid_as_json'>as_json</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -988,11 +1017,11 @@ Returns the value of attribute type
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:47 2012 by 
+  Generated on Wed May 30 00:27:59 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::TouchScreen
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (T)</a> &raquo; 
+    <a href="../../_index.html">Index (T)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">TouchScreen</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::TouchScreen
   
   
@@ -109,6 +116,8 @@
 
 
 
+
+
   
     <h2>
       Instance Method Summary
@@ -125,6 +134,7 @@
 
     
   </span>
+  
   
   
   
@@ -152,6 +162,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -167,6 +178,7 @@
 
     
   </span>
+  
   
   
   
@@ -189,18 +201,18 @@
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of TouchScreen.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of TouchScreen.</p>
 </div></span>
   
 </li>
@@ -214,6 +226,7 @@ A new instance of TouchScreen.
 
     
   </span>
+  
   
   
   
@@ -241,6 +254,7 @@ A new instance of TouchScreen.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -256,6 +270,7 @@ A new instance of TouchScreen.
 
     
   </span>
+  
   
   
   
@@ -283,6 +298,7 @@ A new instance of TouchScreen.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -304,6 +320,7 @@ A new instance of TouchScreen.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -318,21 +335,22 @@ A new instance of TouchScreen.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::TouchScreen (class)">TouchScreen</a></span></tt>) <strong>initialize</strong>(bridge) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-A new instance of TouchScreen
-</p>
+
+<p>A new instance of TouchScreen</p>
 
 
   </div>
@@ -366,16 +384,18 @@ A new instance of TouchScreen
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="double_tap-instance_method">
+  <h3 class="signature first" id="double_tap-instance_method">
   
     - (<tt>Object</tt>) <strong>double_tap</strong>(element) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -399,13 +419,15 @@ A new instance of TouchScreen
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="down-instance_method">
+  <h3 class="signature " id="down-instance_method">
   
     - (<tt>Object</tt>) <strong>down</strong>(x, y = nil) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -429,13 +451,15 @@ A new instance of TouchScreen
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="flick-instance_method">
+  <h3 class="signature " id="flick-instance_method">
   
     - (<tt>Object</tt>) <strong>flick</strong>(*args) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -493,13 +517,15 @@ A new instance of TouchScreen
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="long_press-instance_method">
+  <h3 class="signature " id="long_press-instance_method">
   
     - (<tt>Object</tt>) <strong>long_press</strong>(element) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -523,13 +549,15 @@ A new instance of TouchScreen
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="move-instance_method">
+  <h3 class="signature " id="move-instance_method">
   
     - (<tt>Object</tt>) <strong>move</strong>(x, y = nil) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -553,13 +581,15 @@ A new instance of TouchScreen
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="scroll-instance_method">
+  <h3 class="signature " id="scroll-instance_method">
   
     - (<tt>Object</tt>) <strong>scroll</strong>(*args) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -601,13 +631,15 @@ A new instance of TouchScreen
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="single_tap-instance_method">
+  <h3 class="signature " id="single_tap-instance_method">
   
     - (<tt>Object</tt>) <strong>single_tap</strong>(element) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -631,13 +663,15 @@ A new instance of TouchScreen
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="up-instance_method">
+  <h3 class="signature " id="up-instance_method">
   
     - (<tt>Object</tt>) <strong>up</strong>(x, y = nil) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -663,11 +697,11 @@ A new instance of TouchScreen
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:54 2012 by 
+  Generated on Wed May 30 00:28:03 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

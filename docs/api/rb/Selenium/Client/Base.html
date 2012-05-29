@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::Client::Base
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (B)</a> &raquo; 
+    <a href="../../_index.html">Index (B)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Client.html" title="Selenium::Client (module)">Client</a></span></span>
      &raquo; 
     <span class="title">Base</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Module: Selenium::Client::Base
   
   
@@ -87,9 +94,8 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-Driver constructor and session management commands
-</p>
+    
+<p>Driver constructor and session management commands</p>
 
 
   </div>
@@ -99,22 +105,8 @@ Driver constructor and session management commands
 
 </div>
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -128,7 +120,10 @@ Driver constructor and session management commands
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -137,9 +132,8 @@ Driver constructor and session management commands
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute browser_string.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute browser_string.</p>
 </div></span>
   
 </li>
@@ -155,7 +149,10 @@ Returns the value of attribute browser_string.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -164,9 +161,8 @@ Returns the value of attribute browser_string.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute browser_url.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute browser_url.</p>
 </div></span>
   
 </li>
@@ -182,7 +178,10 @@ Returns the value of attribute browser_url.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -191,9 +190,8 @@ Returns the value of attribute browser_url.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute default_javascript_framework.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute default_javascript_framework.</p>
 </div></span>
   
 </li>
@@ -209,7 +207,10 @@ Returns the value of attribute default_javascript_framework.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -218,9 +219,8 @@ Returns the value of attribute default_javascript_framework.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute default_timeout_in_seconds.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute default_timeout_in_seconds.</p>
 </div></span>
   
 </li>
@@ -236,7 +236,10 @@ Returns the value of attribute default_timeout_in_seconds.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -245,9 +248,8 @@ Returns the value of attribute default_timeout_in_seconds.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute highlight_located_element_by_default.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute highlight_located_element_by_default.</p>
 </div></span>
   
 </li>
@@ -263,7 +265,10 @@ Returns the value of attribute highlight_located_element_by_default.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -272,9 +277,8 @@ Returns the value of attribute highlight_located_element_by_default.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute host.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute host.</p>
 </div></span>
   
 </li>
@@ -290,7 +294,10 @@ Returns the value of attribute host.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -299,9 +306,8 @@ Returns the value of attribute host.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute port.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute port.</p>
 </div></span>
   
 </li>
@@ -313,20 +319,8 @@ Returns the value of attribute port.
 
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   <h3 class="inherited">Attributes included from <span class='object_link'><a href="Protocol.html" title="Selenium::Client::Protocol (module)">Protocol</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Protocol.html#session_id-instance_method" title="Selenium::Client::Protocol#session_id (method)">session_id</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Protocol.html#session_id-instance_method" title="Selenium::Client::Protocol#session_id (method)">#session_id</a></span></p>
 
 
   
@@ -345,6 +339,7 @@ Returns the value of attribute port.
 
     
   </span>
+  
   
   
   
@@ -372,6 +367,7 @@ Returns the value of attribute port.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -393,11 +389,11 @@ Returns the value of attribute port.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Create a new client driver.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Create a new client driver.</p>
 </div></span>
   
 </li>
@@ -413,6 +409,7 @@ Create a new client driver.
       (also: #set_extension_js)
     
   </span>
+  
   
   
   
@@ -440,6 +437,7 @@ Create a new client driver.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -455,6 +453,7 @@ Create a new client driver.
 
     
   </span>
+  
   
   
   
@@ -482,12 +481,12 @@ Create a new client driver.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Starts a new browser session (launching a new browser matching
-configuration provided at driver creation time).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Starts a new browser session (launching a new browser matching
+configuration provided at driver creation time).</p>
 </div></span>
   
 </li>
@@ -501,6 +500,7 @@ configuration provided at driver creation time).
 
     
   </span>
+  
   
   
   
@@ -525,9 +525,11 @@ configuration provided at driver creation time).
   
   
   
+  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="Idiomatic.html" title="Selenium::Client::Idiomatic (module)">Idiomatic</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="Idiomatic.html#actual_timeout_in_milliseconds-instance_method" title="Selenium::Client::Idiomatic#actual_timeout_in_milliseconds (method)">#actual_timeout_in_milliseconds</a></span>, <span class='object_link'><a href="Idiomatic.html#alert-instance_method" title="Selenium::Client::Idiomatic#alert (method)">#alert</a></span>, <span class='object_link'><a href="Idiomatic.html#alert%3F-instance_method" title="Selenium::Client::Idiomatic#alert? (method)">#alert?</a></span>, <span class='object_link'><a href="Idiomatic.html#all_window_ids-instance_method" title="Selenium::Client::Idiomatic#all_window_ids (method)">#all_window_ids</a></span>, <span class='object_link'><a href="Idiomatic.html#all_window_names-instance_method" title="Selenium::Client::Idiomatic#all_window_names (method)">#all_window_names</a></span>, <span class='object_link'><a href="Idiomatic.html#all_window_titles-instance_method" title="Selenium::Client::Idiomatic#all_window_titles (method)">#all_window_titles</a></span>, <span class='object_link'><a href="Idiomatic.html#body_text-instance_method" title="Selenium::Client::Idiomatic#body_text (method)">#body_text</a></span>, <span class='object_link'><a href="Idiomatic.html#browser_network_traffic-instance_method" title="Selenium::Client::Idiomatic#browser_network_traffic (method)">#browser_network_traffic</a></span>, <span class='object_link'><a href="Idiomatic.html#browser_xpath_library%3D-instance_method" title="Selenium::Client::Idiomatic#browser_xpath_library= (method)">#browser_xpath_library=</a></span>, <span class='object_link'><a href="Idiomatic.html#checked%3F-instance_method" title="Selenium::Client::Idiomatic#checked? (method)">#checked?</a></span>, <span class='object_link'><a href="Idiomatic.html#click-instance_method" title="Selenium::Client::Idiomatic#click (method)">#click</a></span>, <span class='object_link'><a href="Idiomatic.html#confirmation-instance_method" title="Selenium::Client::Idiomatic#confirmation (method)">#confirmation</a></span>, <span class='object_link'><a href="Idiomatic.html#confirmation%3F-instance_method" title="Selenium::Client::Idiomatic#confirmation? (method)">#confirmation?</a></span>, <span class='object_link'><a href="Idiomatic.html#cookie-instance_method" title="Selenium::Client::Idiomatic#cookie (method)">#cookie</a></span>, <span class='object_link'><a href="Idiomatic.html#cookie%3F-instance_method" title="Selenium::Client::Idiomatic#cookie? (method)">#cookie?</a></span>, <span class='object_link'><a href="Idiomatic.html#cookies-instance_method" title="Selenium::Client::Idiomatic#cookies (method)">#cookies</a></span>, <span class='object_link'><a href="Idiomatic.html#create_cookie-instance_method" title="Selenium::Client::Idiomatic#create_cookie (method)">#create_cookie</a></span>, <span class='object_link'><a href="Idiomatic.html#delete_cookie-instance_method" title="Selenium::Client::Idiomatic#delete_cookie (method)">#delete_cookie</a></span>, <span class='object_link'><a href="Idiomatic.html#element%3F-instance_method" title="Selenium::Client::Idiomatic#element? (method)">#element?</a></span>, <span class='object_link'><a href="Idiomatic.html#execution_delay-instance_method" title="Selenium::Client::Idiomatic#execution_delay (method)">#execution_delay</a></span>, <span class='object_link'><a href="Idiomatic.html#execution_delay%3D-instance_method" title="Selenium::Client::Idiomatic#execution_delay= (method)">#execution_delay=</a></span>, <span class='object_link'><a href="Idiomatic.html#field-instance_method" title="Selenium::Client::Idiomatic#field (method)">#field</a></span>, <span class='object_link'><a href="Idiomatic.html#go_back-instance_method" title="Selenium::Client::Idiomatic#go_back (method)">#go_back</a></span>, <span class='object_link'><a href="Idiomatic.html#highlight_located_element%3D-instance_method" title="Selenium::Client::Idiomatic#highlight_located_element= (method)">#highlight_located_element=</a></span>, <span class='object_link'><a href="Idiomatic.html#js_eval-instance_method" title="Selenium::Client::Idiomatic#js_eval (method)">#js_eval</a></span>, <span class='object_link'><a href="Idiomatic.html#location-instance_method" title="Selenium::Client::Idiomatic#location (method)">#location</a></span>, <span class='object_link'><a href="Idiomatic.html#prompt-instance_method" title="Selenium::Client::Idiomatic#prompt (method)">#prompt</a></span>, <span class='object_link'><a href="Idiomatic.html#prompt%3F-instance_method" title="Selenium::Client::Idiomatic#prompt? (method)">#prompt?</a></span>, <span class='object_link'><a href="Idiomatic.html#remote_control_timeout_in_seconds%3D-instance_method" title="Selenium::Client::Idiomatic#remote_control_timeout_in_seconds= (method)">#remote_control_timeout_in_seconds=</a></span>, <span class='object_link'><a href="Idiomatic.html#table_cell_text-instance_method" title="Selenium::Client::Idiomatic#table_cell_text (method)">#table_cell_text</a></span>, <span class='object_link'><a href="Idiomatic.html#text-instance_method" title="Selenium::Client::Idiomatic#text (method)">#text</a></span>, <span class='object_link'><a href="Idiomatic.html#text%3F-instance_method" title="Selenium::Client::Idiomatic#text? (method)">#text?</a></span>, <span class='object_link'><a href="Idiomatic.html#title-instance_method" title="Selenium::Client::Idiomatic#title (method)">#title</a></span>, <span class='object_link'><a href="Idiomatic.html#value-instance_method" title="Selenium::Client::Idiomatic#value (method)">#value</a></span>, <span class='object_link'><a href="Idiomatic.html#visible%3F-instance_method" title="Selenium::Client::Idiomatic#visible? (method)">#visible?</a></span>, <span class='object_link'><a href="Idiomatic.html#wait_for-instance_method" title="Selenium::Client::Idiomatic#wait_for (method)">#wait_for</a></span>, <span class='object_link'><a href="Idiomatic.html#wait_for_condition-instance_method" title="Selenium::Client::Idiomatic#wait_for_condition (method)">#wait_for_condition</a></span>, <span class='object_link'><a href="Idiomatic.html#wait_for_page-instance_method" title="Selenium::Client::Idiomatic#wait_for_page (method)">#wait_for_page</a></span>, <span class='object_link'><a href="Idiomatic.html#wait_for_popup-instance_method" title="Selenium::Client::Idiomatic#wait_for_popup (method)">#wait_for_popup</a></span></p>
 
+  
   
   
   
@@ -545,9 +547,11 @@ configuration provided at driver creation time).
   
   
   
+  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="GeneratedDriver.html" title="Selenium::Client::GeneratedDriver (module)">GeneratedDriver</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="GeneratedDriver.html#add_location_strategy-instance_method" title="Selenium::Client::GeneratedDriver#add_location_strategy (method)">#add_location_strategy</a></span>, <span class='object_link'><a href="GeneratedDriver.html#add_script-instance_method" title="Selenium::Client::GeneratedDriver#add_script (method)">#add_script</a></span>, <span class='object_link'><a href="GeneratedDriver.html#add_selection-instance_method" title="Selenium::Client::GeneratedDriver#add_selection (method)">#add_selection</a></span>, <span class='object_link'><a href="GeneratedDriver.html#allow_native_xpath-instance_method" title="Selenium::Client::GeneratedDriver#allow_native_xpath (method)">#allow_native_xpath</a></span>, <span class='object_link'><a href="GeneratedDriver.html#alt_key_down-instance_method" title="Selenium::Client::GeneratedDriver#alt_key_down (method)">#alt_key_down</a></span>, <span class='object_link'><a href="GeneratedDriver.html#alt_key_up-instance_method" title="Selenium::Client::GeneratedDriver#alt_key_up (method)">#alt_key_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#answer_on_next_prompt-instance_method" title="Selenium::Client::GeneratedDriver#answer_on_next_prompt (method)">#answer_on_next_prompt</a></span>, <span class='object_link'><a href="GeneratedDriver.html#assign_id-instance_method" title="Selenium::Client::GeneratedDriver#assign_id (method)">#assign_id</a></span>, <span class='object_link'><a href="GeneratedDriver.html#attach_file-instance_method" title="Selenium::Client::GeneratedDriver#attach_file (method)">#attach_file</a></span>, <span class='object_link'><a href="GeneratedDriver.html#capture_entire_page_screenshot-instance_method" title="Selenium::Client::GeneratedDriver#capture_entire_page_screenshot (method)">#capture_entire_page_screenshot</a></span>, <span class='object_link'><a href="GeneratedDriver.html#capture_entire_page_screenshot_to_string-instance_method" title="Selenium::Client::GeneratedDriver#capture_entire_page_screenshot_to_string (method)">#capture_entire_page_screenshot_to_string</a></span>, <span class='object_link'><a href="GeneratedDriver.html#capture_screenshot-instance_method" title="Selenium::Client::GeneratedDriver#capture_screenshot (method)">#capture_screenshot</a></span>, <span class='object_link'><a href="GeneratedDriver.html#capture_screenshot_to_string-instance_method" title="Selenium::Client::GeneratedDriver#capture_screenshot_to_string (method)">#capture_screenshot_to_string</a></span>, <span class='object_link'><a href="GeneratedDriver.html#check-instance_method" title="Selenium::Client::GeneratedDriver#check (method)">#check</a></span>, <span class='object_link'><a href="GeneratedDriver.html#choose_cancel_on_next_confirmation-instance_method" title="Selenium::Client::GeneratedDriver#choose_cancel_on_next_confirmation (method)">#choose_cancel_on_next_confirmation</a></span>, <span class='object_link'><a href="GeneratedDriver.html#choose_ok_on_next_confirmation-instance_method" title="Selenium::Client::GeneratedDriver#choose_ok_on_next_confirmation (method)">#choose_ok_on_next_confirmation</a></span>, <span class='object_link'><a href="GeneratedDriver.html#click-instance_method" title="Selenium::Client::GeneratedDriver#click (method)">#click</a></span>, <span class='object_link'><a href="GeneratedDriver.html#click_at-instance_method" title="Selenium::Client::GeneratedDriver#click_at (method)">#click_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#close-instance_method" title="Selenium::Client::GeneratedDriver#close (method)">#close</a></span>, <span class='object_link'><a href="GeneratedDriver.html#context_menu-instance_method" title="Selenium::Client::GeneratedDriver#context_menu (method)">#context_menu</a></span>, <span class='object_link'><a href="GeneratedDriver.html#context_menu_at-instance_method" title="Selenium::Client::GeneratedDriver#context_menu_at (method)">#context_menu_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#control_key_down-instance_method" title="Selenium::Client::GeneratedDriver#control_key_down (method)">#control_key_down</a></span>, <span class='object_link'><a href="GeneratedDriver.html#control_key_up-instance_method" title="Selenium::Client::GeneratedDriver#control_key_up (method)">#control_key_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#create_cookie-instance_method" title="Selenium::Client::GeneratedDriver#create_cookie (method)">#create_cookie</a></span>, <span class='object_link'><a href="GeneratedDriver.html#delete_all_visible_cookies-instance_method" title="Selenium::Client::GeneratedDriver#delete_all_visible_cookies (method)">#delete_all_visible_cookies</a></span>, <span class='object_link'><a href="GeneratedDriver.html#delete_cookie-instance_method" title="Selenium::Client::GeneratedDriver#delete_cookie (method)">#delete_cookie</a></span>, <span class='object_link'><a href="GeneratedDriver.html#deselect_pop_up-instance_method" title="Selenium::Client::GeneratedDriver#deselect_pop_up (method)">#deselect_pop_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#double_click-instance_method" title="Selenium::Client::GeneratedDriver#double_click (method)">#double_click</a></span>, <span class='object_link'><a href="GeneratedDriver.html#double_click_at-instance_method" title="Selenium::Client::GeneratedDriver#double_click_at (method)">#double_click_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#drag_and_drop-instance_method" title="Selenium::Client::GeneratedDriver#drag_and_drop (method)">#drag_and_drop</a></span>, <span class='object_link'><a href="GeneratedDriver.html#drag_and_drop_to_object-instance_method" title="Selenium::Client::GeneratedDriver#drag_and_drop_to_object (method)">#drag_and_drop_to_object</a></span>, <span class='object_link'><a href="GeneratedDriver.html#dragdrop-instance_method" title="Selenium::Client::GeneratedDriver#dragdrop (method)">#dragdrop</a></span>, <span class='object_link'><a href="GeneratedDriver.html#fire_event-instance_method" title="Selenium::Client::GeneratedDriver#fire_event (method)">#fire_event</a></span>, <span class='object_link'><a href="GeneratedDriver.html#focus-instance_method" title="Selenium::Client::GeneratedDriver#focus (method)">#focus</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_alert-instance_method" title="Selenium::Client::GeneratedDriver#get_alert (method)">#get_alert</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_all_buttons-instance_method" title="Selenium::Client::GeneratedDriver#get_all_buttons (method)">#get_all_buttons</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_all_fields-instance_method" title="Selenium::Client::GeneratedDriver#get_all_fields (method)">#get_all_fields</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_all_links-instance_method" title="Selenium::Client::GeneratedDriver#get_all_links (method)">#get_all_links</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_all_window_ids-instance_method" title="Selenium::Client::GeneratedDriver#get_all_window_ids (method)">#get_all_window_ids</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_all_window_names-instance_method" title="Selenium::Client::GeneratedDriver#get_all_window_names (method)">#get_all_window_names</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_all_window_titles-instance_method" title="Selenium::Client::GeneratedDriver#get_all_window_titles (method)">#get_all_window_titles</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_attribute-instance_method" title="Selenium::Client::GeneratedDriver#get_attribute (method)">#get_attribute</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_attribute_from_all_windows-instance_method" title="Selenium::Client::GeneratedDriver#get_attribute_from_all_windows (method)">#get_attribute_from_all_windows</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_body_text-instance_method" title="Selenium::Client::GeneratedDriver#get_body_text (method)">#get_body_text</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_confirmation-instance_method" title="Selenium::Client::GeneratedDriver#get_confirmation (method)">#get_confirmation</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_cookie-instance_method" title="Selenium::Client::GeneratedDriver#get_cookie (method)">#get_cookie</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_cookie_by_name-instance_method" title="Selenium::Client::GeneratedDriver#get_cookie_by_name (method)">#get_cookie_by_name</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_css_count-instance_method" title="Selenium::Client::GeneratedDriver#get_css_count (method)">#get_css_count</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_cursor_position-instance_method" title="Selenium::Client::GeneratedDriver#get_cursor_position (method)">#get_cursor_position</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_element_height-instance_method" title="Selenium::Client::GeneratedDriver#get_element_height (method)">#get_element_height</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_element_index-instance_method" title="Selenium::Client::GeneratedDriver#get_element_index (method)">#get_element_index</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_element_position_left-instance_method" title="Selenium::Client::GeneratedDriver#get_element_position_left (method)">#get_element_position_left</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_element_position_top-instance_method" title="Selenium::Client::GeneratedDriver#get_element_position_top (method)">#get_element_position_top</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_element_width-instance_method" title="Selenium::Client::GeneratedDriver#get_element_width (method)">#get_element_width</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_eval-instance_method" title="Selenium::Client::GeneratedDriver#get_eval (method)">#get_eval</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_expression-instance_method" title="Selenium::Client::GeneratedDriver#get_expression (method)">#get_expression</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_html_source-instance_method" title="Selenium::Client::GeneratedDriver#get_html_source (method)">#get_html_source</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_location-instance_method" title="Selenium::Client::GeneratedDriver#get_location (method)">#get_location</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_mouse_speed-instance_method" title="Selenium::Client::GeneratedDriver#get_mouse_speed (method)">#get_mouse_speed</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_prompt-instance_method" title="Selenium::Client::GeneratedDriver#get_prompt (method)">#get_prompt</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_select_options-instance_method" title="Selenium::Client::GeneratedDriver#get_select_options (method)">#get_select_options</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_id-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_id (method)">#get_selected_id</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_ids-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_ids (method)">#get_selected_ids</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_index-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_index (method)">#get_selected_index</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_indexes-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_indexes (method)">#get_selected_indexes</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_label-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_label (method)">#get_selected_label</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_labels-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_labels (method)">#get_selected_labels</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_value-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_value (method)">#get_selected_value</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_selected_values-instance_method" title="Selenium::Client::GeneratedDriver#get_selected_values (method)">#get_selected_values</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_speed-instance_method" title="Selenium::Client::GeneratedDriver#get_speed (method)">#get_speed</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_table-instance_method" title="Selenium::Client::GeneratedDriver#get_table (method)">#get_table</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_text-instance_method" title="Selenium::Client::GeneratedDriver#get_text (method)">#get_text</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_title-instance_method" title="Selenium::Client::GeneratedDriver#get_title (method)">#get_title</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_value-instance_method" title="Selenium::Client::GeneratedDriver#get_value (method)">#get_value</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_whether_this_frame_match_frame_expression-instance_method" title="Selenium::Client::GeneratedDriver#get_whether_this_frame_match_frame_expression (method)">#get_whether_this_frame_match_frame_expression</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_whether_this_window_match_window_expression-instance_method" title="Selenium::Client::GeneratedDriver#get_whether_this_window_match_window_expression (method)">#get_whether_this_window_match_window_expression</a></span>, <span class='object_link'><a href="GeneratedDriver.html#get_xpath_count-instance_method" title="Selenium::Client::GeneratedDriver#get_xpath_count (method)">#get_xpath_count</a></span>, <span class='object_link'><a href="GeneratedDriver.html#go_back-instance_method" title="Selenium::Client::GeneratedDriver#go_back (method)">#go_back</a></span>, <span class='object_link'><a href="GeneratedDriver.html#highlight-instance_method" title="Selenium::Client::GeneratedDriver#highlight (method)">#highlight</a></span>, <span class='object_link'><a href="GeneratedDriver.html#ignore_attributes_without_value-instance_method" title="Selenium::Client::GeneratedDriver#ignore_attributes_without_value (method)">#ignore_attributes_without_value</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_alert_present-instance_method" title="Selenium::Client::GeneratedDriver#is_alert_present (method)">#is_alert_present</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_checked-instance_method" title="Selenium::Client::GeneratedDriver#is_checked (method)">#is_checked</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_confirmation_present-instance_method" title="Selenium::Client::GeneratedDriver#is_confirmation_present (method)">#is_confirmation_present</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_cookie_present-instance_method" title="Selenium::Client::GeneratedDriver#is_cookie_present (method)">#is_cookie_present</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_editable-instance_method" title="Selenium::Client::GeneratedDriver#is_editable (method)">#is_editable</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_element_present-instance_method" title="Selenium::Client::GeneratedDriver#is_element_present (method)">#is_element_present</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_ordered-instance_method" title="Selenium::Client::GeneratedDriver#is_ordered (method)">#is_ordered</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_prompt_present-instance_method" title="Selenium::Client::GeneratedDriver#is_prompt_present (method)">#is_prompt_present</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_something_selected-instance_method" title="Selenium::Client::GeneratedDriver#is_something_selected (method)">#is_something_selected</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_text_present-instance_method" title="Selenium::Client::GeneratedDriver#is_text_present (method)">#is_text_present</a></span>, <span class='object_link'><a href="GeneratedDriver.html#is_visible-instance_method" title="Selenium::Client::GeneratedDriver#is_visible (method)">#is_visible</a></span>, <span class='object_link'><a href="GeneratedDriver.html#key_down-instance_method" title="Selenium::Client::GeneratedDriver#key_down (method)">#key_down</a></span>, <span class='object_link'><a href="GeneratedDriver.html#key_down_native-instance_method" title="Selenium::Client::GeneratedDriver#key_down_native (method)">#key_down_native</a></span>, <span class='object_link'><a href="GeneratedDriver.html#key_press-instance_method" title="Selenium::Client::GeneratedDriver#key_press (method)">#key_press</a></span>, <span class='object_link'><a href="GeneratedDriver.html#key_press_native-instance_method" title="Selenium::Client::GeneratedDriver#key_press_native (method)">#key_press_native</a></span>, <span class='object_link'><a href="GeneratedDriver.html#key_up-instance_method" title="Selenium::Client::GeneratedDriver#key_up (method)">#key_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#key_up_native-instance_method" title="Selenium::Client::GeneratedDriver#key_up_native (method)">#key_up_native</a></span>, <span class='object_link'><a href="GeneratedDriver.html#meta_key_down-instance_method" title="Selenium::Client::GeneratedDriver#meta_key_down (method)">#meta_key_down</a></span>, <span class='object_link'><a href="GeneratedDriver.html#meta_key_up-instance_method" title="Selenium::Client::GeneratedDriver#meta_key_up (method)">#meta_key_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_down-instance_method" title="Selenium::Client::GeneratedDriver#mouse_down (method)">#mouse_down</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_down_at-instance_method" title="Selenium::Client::GeneratedDriver#mouse_down_at (method)">#mouse_down_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_down_right-instance_method" title="Selenium::Client::GeneratedDriver#mouse_down_right (method)">#mouse_down_right</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_down_right_at-instance_method" title="Selenium::Client::GeneratedDriver#mouse_down_right_at (method)">#mouse_down_right_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_move-instance_method" title="Selenium::Client::GeneratedDriver#mouse_move (method)">#mouse_move</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_move_at-instance_method" title="Selenium::Client::GeneratedDriver#mouse_move_at (method)">#mouse_move_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_out-instance_method" title="Selenium::Client::GeneratedDriver#mouse_out (method)">#mouse_out</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_over-instance_method" title="Selenium::Client::GeneratedDriver#mouse_over (method)">#mouse_over</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_up-instance_method" title="Selenium::Client::GeneratedDriver#mouse_up (method)">#mouse_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_up_at-instance_method" title="Selenium::Client::GeneratedDriver#mouse_up_at (method)">#mouse_up_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_up_right-instance_method" title="Selenium::Client::GeneratedDriver#mouse_up_right (method)">#mouse_up_right</a></span>, <span class='object_link'><a href="GeneratedDriver.html#mouse_up_right_at-instance_method" title="Selenium::Client::GeneratedDriver#mouse_up_right_at (method)">#mouse_up_right_at</a></span>, <span class='object_link'><a href="GeneratedDriver.html#open-instance_method" title="Selenium::Client::GeneratedDriver#open (method)">#open</a></span>, <span class='object_link'><a href="GeneratedDriver.html#open_window-instance_method" title="Selenium::Client::GeneratedDriver#open_window (method)">#open_window</a></span>, <span class='object_link'><a href="GeneratedDriver.html#refresh-instance_method" title="Selenium::Client::GeneratedDriver#refresh (method)">#refresh</a></span>, <span class='object_link'><a href="GeneratedDriver.html#remove_all_selections-instance_method" title="Selenium::Client::GeneratedDriver#remove_all_selections (method)">#remove_all_selections</a></span>, <span class='object_link'><a href="GeneratedDriver.html#remove_script-instance_method" title="Selenium::Client::GeneratedDriver#remove_script (method)">#remove_script</a></span>, <span class='object_link'><a href="GeneratedDriver.html#remove_selection-instance_method" title="Selenium::Client::GeneratedDriver#remove_selection (method)">#remove_selection</a></span>, <span class='object_link'><a href="GeneratedDriver.html#retrieve_last_remote_control_logs-instance_method" title="Selenium::Client::GeneratedDriver#retrieve_last_remote_control_logs (method)">#retrieve_last_remote_control_logs</a></span>, <span class='object_link'><a href="GeneratedDriver.html#rollup-instance_method" title="Selenium::Client::GeneratedDriver#rollup (method)">#rollup</a></span>, <span class='object_link'><a href="GeneratedDriver.html#run_script-instance_method" title="Selenium::Client::GeneratedDriver#run_script (method)">#run_script</a></span>, <span class='object_link'><a href="GeneratedDriver.html#select-instance_method" title="Selenium::Client::GeneratedDriver#select (method)">#select</a></span>, <span class='object_link'><a href="GeneratedDriver.html#select_frame-instance_method" title="Selenium::Client::GeneratedDriver#select_frame (method)">#select_frame</a></span>, <span class='object_link'><a href="GeneratedDriver.html#select_pop_up-instance_method" title="Selenium::Client::GeneratedDriver#select_pop_up (method)">#select_pop_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#select_window-instance_method" title="Selenium::Client::GeneratedDriver#select_window (method)">#select_window</a></span>, <span class='object_link'><a href="GeneratedDriver.html#set_browser_log_level-instance_method" title="Selenium::Client::GeneratedDriver#set_browser_log_level (method)">#set_browser_log_level</a></span>, <span class='object_link'><a href="GeneratedDriver.html#set_context-instance_method" title="Selenium::Client::GeneratedDriver#set_context (method)">#set_context</a></span>, <span class='object_link'><a href="GeneratedDriver.html#set_cursor_position-instance_method" title="Selenium::Client::GeneratedDriver#set_cursor_position (method)">#set_cursor_position</a></span>, <span class='object_link'><a href="GeneratedDriver.html#set_mouse_speed-instance_method" title="Selenium::Client::GeneratedDriver#set_mouse_speed (method)">#set_mouse_speed</a></span>, <span class='object_link'><a href="GeneratedDriver.html#set_speed-instance_method" title="Selenium::Client::GeneratedDriver#set_speed (method)">#set_speed</a></span>, <span class='object_link'><a href="GeneratedDriver.html#set_timeout-instance_method" title="Selenium::Client::GeneratedDriver#set_timeout (method)">#set_timeout</a></span>, <span class='object_link'><a href="GeneratedDriver.html#shift_key_down-instance_method" title="Selenium::Client::GeneratedDriver#shift_key_down (method)">#shift_key_down</a></span>, <span class='object_link'><a href="GeneratedDriver.html#shift_key_up-instance_method" title="Selenium::Client::GeneratedDriver#shift_key_up (method)">#shift_key_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#shut_down_selenium_server-instance_method" title="Selenium::Client::GeneratedDriver#shut_down_selenium_server (method)">#shut_down_selenium_server</a></span>, <span class='object_link'><a href="GeneratedDriver.html#submit-instance_method" title="Selenium::Client::GeneratedDriver#submit (method)">#submit</a></span>, <span class='object_link'><a href="GeneratedDriver.html#type-instance_method" title="Selenium::Client::GeneratedDriver#type (method)">#type</a></span>, <span class='object_link'><a href="GeneratedDriver.html#type_keys-instance_method" title="Selenium::Client::GeneratedDriver#type_keys (method)">#type_keys</a></span>, <span class='object_link'><a href="GeneratedDriver.html#uncheck-instance_method" title="Selenium::Client::GeneratedDriver#uncheck (method)">#uncheck</a></span>, <span class='object_link'><a href="GeneratedDriver.html#use_xpath_library-instance_method" title="Selenium::Client::GeneratedDriver#use_xpath_library (method)">#use_xpath_library</a></span>, <span class='object_link'><a href="GeneratedDriver.html#wait_for_condition-instance_method" title="Selenium::Client::GeneratedDriver#wait_for_condition (method)">#wait_for_condition</a></span>, <span class='object_link'><a href="GeneratedDriver.html#wait_for_frame_to_load-instance_method" title="Selenium::Client::GeneratedDriver#wait_for_frame_to_load (method)">#wait_for_frame_to_load</a></span>, <span class='object_link'><a href="GeneratedDriver.html#wait_for_page_to_load-instance_method" title="Selenium::Client::GeneratedDriver#wait_for_page_to_load (method)">#wait_for_page_to_load</a></span>, <span class='object_link'><a href="GeneratedDriver.html#wait_for_pop_up-instance_method" title="Selenium::Client::GeneratedDriver#wait_for_pop_up (method)">#wait_for_pop_up</a></span>, <span class='object_link'><a href="GeneratedDriver.html#window_focus-instance_method" title="Selenium::Client::GeneratedDriver#window_focus (method)">#window_focus</a></span>, <span class='object_link'><a href="GeneratedDriver.html#window_maximize-instance_method" title="Selenium::Client::GeneratedDriver#window_maximize (method)">#window_maximize</a></span></p>
 
+  
   
   
   
@@ -565,17 +569,18 @@ configuration provided at driver creation time).
       <span id=""></span>
       <span id="browser_string-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="browser_string-instance_method">
+  <h3 class="signature first" id="browser_string-instance_method">
   
     - (<tt>Object</tt>) <strong>browser_string</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute browser_string
-</p>
+    
+<p>Returns the value of attribute browser_string</p>
 
 
   </div>
@@ -608,17 +613,18 @@ Returns the value of attribute browser_string
       <span id=""></span>
       <span id="browser_url-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="browser_url-instance_method">
+  <h3 class="signature " id="browser_url-instance_method">
   
     - (<tt>Object</tt>) <strong>browser_url</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute browser_url
-</p>
+    
+<p>Returns the value of attribute browser_url</p>
 
 
   </div>
@@ -651,17 +657,18 @@ Returns the value of attribute browser_url
       <span id=""></span>
       <span id="default_javascript_framework-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="default_javascript_framework-instance_method">
+  <h3 class="signature " id="default_javascript_framework-instance_method">
   
     - (<tt>Object</tt>) <strong>default_javascript_framework</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute default_javascript_framework
-</p>
+    
+<p>Returns the value of attribute default_javascript_framework</p>
 
 
   </div>
@@ -694,17 +701,18 @@ Returns the value of attribute default_javascript_framework
       <span id=""></span>
       <span id="default_timeout_in_seconds-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="default_timeout_in_seconds-instance_method">
+  <h3 class="signature " id="default_timeout_in_seconds-instance_method">
   
     - (<tt>Object</tt>) <strong>default_timeout_in_seconds</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute default_timeout_in_seconds
-</p>
+    
+<p>Returns the value of attribute default_timeout_in_seconds</p>
 
 
   </div>
@@ -737,17 +745,18 @@ Returns the value of attribute default_timeout_in_seconds
       <span id=""></span>
       <span id="highlight_located_element_by_default-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="highlight_located_element_by_default-instance_method">
+  <h3 class="signature " id="highlight_located_element_by_default-instance_method">
   
     - (<tt>Object</tt>) <strong>highlight_located_element_by_default</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute highlight_located_element_by_default
-</p>
+    
+<p>Returns the value of attribute highlight_located_element_by_default</p>
 
 
   </div>
@@ -780,17 +789,18 @@ Returns the value of attribute highlight_located_element_by_default
       <span id=""></span>
       <span id="host-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="host-instance_method">
+  <h3 class="signature " id="host-instance_method">
   
     - (<tt>Object</tt>) <strong>host</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute host
-</p>
+    
+<p>Returns the value of attribute host</p>
 
 
   </div>
@@ -823,17 +833,18 @@ Returns the value of attribute host
       <span id=""></span>
       <span id="port-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="port-instance_method">
+  <h3 class="signature " id="port-instance_method">
   
     - (<tt>Object</tt>) <strong>port</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute port
-</p>
+    
+<p>Returns the value of attribute port</p>
 
 
   </div>
@@ -867,16 +878,18 @@ Returns the value of attribute port
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="chrome_backend?-instance_method">
+  <h3 class="signature first" id="chrome_backend?-instance_method">
   
     - (<tt>Boolean</tt>) <strong>chrome_backend?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
 
@@ -884,7 +897,7 @@ Returns the value of attribute port
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -920,13 +933,15 @@ Returns the value of attribute port
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="close_current_browser_session-instance_method">
+  <h3 class="signature " id="close_current_browser_session-instance_method">
   
     - (<tt>Object</tt>) <strong>close_current_browser_session</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -950,57 +965,50 @@ Returns the value of attribute port
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="initialize-instance_method">
+  <h3 class="signature " id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::Client::Base (module)">Base</a></span></tt>) <strong>initialize</strong>(*args) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Create a new client driver
-</p>
-<p>
-Example:
-</p>
-<p>
-Selenium::Client::Driver.new \
-</p>
-<pre class="code">
-    :host =&gt; &quot;localhost&quot;,
-    :port =&gt; 4444,
-    :browser =&gt; &quot;*firefox&quot;,
-    :timeout_in_seconds =&gt; 10,
-    :url =&gt; &quot;http://localhost:3000&quot;,
-</pre>
-<p>
-You can also set the default javascript framework used for :wait_for AJAX
-and effects semantics (:prototype is the default value):
-</p>
-<p>
-Selenium::Client::Driver.new \
-</p>
-<pre class="code">
-    :host =&gt; &quot;localhost&quot;,
-    :port =&gt; 4444,
-    :browser =&gt; &quot;*firefox&quot;,
-    :timeout_in_seconds =&gt; 10,
-    :url =&gt; &quot;http://localhost:3000&quot;,
-    :javascript_framework =&gt; :jquery
-</pre>
-<p>
-You can also enables automatic highlighting of located elements by passing
-the highlight_located_element option, e.g.
-</p>
-<p>
-Selenium::Client::Driver.new \
-</p>
-<pre class="code">
-    :host =&gt; &quot;localhost&quot;,
-    :port =&gt; 4444,
-    :browser =&gt; &quot;*firefox&quot;,
-    :highlight_located_element =&gt; true</pre>
+    
+<p>Create a new client driver</p>
+
+<p>Example:</p>
+
+<p>Selenium::Client::Driver.new \</p>
+
+<pre class="code ruby"><code>:host =&gt; &quot;localhost&quot;,
+:port =&gt; 4444,
+:browser =&gt; &quot;*firefox&quot;,
+:timeout_in_seconds =&gt; 10,
+:url =&gt; &quot;http://localhost:3000&quot;,</code></pre>
+
+<p>You can also set the default javascript framework used for :wait_for AJAX
+and effects semantics (:prototype is the default value):</p>
+
+<p>Selenium::Client::Driver.new \</p>
+
+<pre class="code ruby"><code>:host =&gt; &quot;localhost&quot;,
+:port =&gt; 4444,
+:browser =&gt; &quot;*firefox&quot;,
+:timeout_in_seconds =&gt; 10,
+:url =&gt; &quot;http://localhost:3000&quot;,
+:javascript_framework =&gt; :jquery</code></pre>
+
+<p>You can also enables automatic highlighting of located elements by passing
+the highlight_located_element option, e.g.</p>
+
+<p>Selenium::Client::Driver.new \</p>
+
+<pre class="code ruby"><code>:host =&gt; &quot;localhost&quot;,
+:port =&gt; 4444,
+:browser =&gt; &quot;*firefox&quot;,
+:highlight_located_element =&gt; true</code></pre>
 
 
   </div>
@@ -1070,7 +1078,7 @@ Selenium::Client::Driver.new \
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="javascript_extension=-instance_method">
+  <h3 class="signature " id="javascript_extension=-instance_method">
   
     - (<tt>Object</tt>) <strong>javascript_extension=</strong>(new_javascript_extension) 
   
@@ -1080,7 +1088,9 @@ Selenium::Client::Driver.new \
     <span class="names"><span id='set_extension_js-instance_method'>set_extension_js</span></span>
     </span>
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1102,13 +1112,15 @@ Selenium::Client::Driver.new \
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="session_started?-instance_method">
+  <h3 class="signature " id="session_started?-instance_method">
   
     - (<tt>Boolean</tt>) <strong>session_started?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
 
@@ -1116,7 +1128,7 @@ Selenium::Client::Driver.new \
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1152,13 +1164,15 @@ Selenium::Client::Driver.new \
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="start-instance_method">
+  <h3 class="signature " id="start-instance_method">
   
     - (<tt>Object</tt>) <strong>start</strong>(opts = {}) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1180,23 +1194,23 @@ Selenium::Client::Driver.new \
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="start_new_browser_session-instance_method">
+  <h3 class="signature " id="start_new_browser_session-instance_method">
   
     - (<tt>Object</tt>) <strong>start_new_browser_session</strong>(options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Starts a new browser session (launching a new browser matching
-configuration provided at driver creation time).
-</p>
-<p>
-Browser session specific option can also be provided. e.g.
-</p>
-<pre class="code">
-   <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_start_new_browser_session'>start_new_browser_session</span><span class='lparen'>(</span><span class='symbol'>:captureNetworkTraffic</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span></pre>
+    
+<p>Starts a new browser session (launching a new browser matching
+configuration provided at driver creation time).</p>
+
+<p>Browser session specific option can also be provided. e.g.</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_start_new_browser_session'>start_new_browser_session</span><span class='lparen'>(</span><span class='symbol'>:captureNetworkTraffic</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span></code></pre>
 
 
   </div>
@@ -1266,13 +1280,15 @@ Browser session specific option can also be provided. e.g.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="stop-instance_method">
+  <h3 class="signature " id="stop-instance_method">
   
     - (<tt>Object</tt>) <strong>stop</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1296,11 +1312,11 @@ Browser session specific option can also be provided. e.g.
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:44 2012 by 
+  Generated on Wed May 30 00:27:54 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::Client::Protocol
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (P)</a> &raquo; 
+    <a href="../../_index.html">Index (P)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Client.html" title="Selenium::Client (module)">Client</a></span></span>
      &raquo; 
     <span class="title">Protocol</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Module: Selenium::Client::Protocol
   
   
@@ -83,9 +90,8 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-Module in charge of handling Selenium over-the-wire HTTP protocol
-</p>
+    
+<p>Module in charge of handling Selenium over-the-wire HTTP protocol</p>
 
 
   </div>
@@ -94,6 +100,8 @@ Module in charge of handling Selenium over-the-wire HTTP protocol
   
 
 </div>
+
+
 
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
@@ -108,7 +116,10 @@ Module in charge of handling Selenium over-the-wire HTTP protocol
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -117,9 +128,8 @@ Module in charge of handling Selenium over-the-wire HTTP protocol
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute session_id.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute session_id.</p>
 </div></span>
   
 </li>
@@ -152,6 +162,7 @@ Returns the value of attribute session_id.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -167,6 +178,7 @@ Returns the value of attribute session_id.
 
     
   </span>
+  
   
   
   
@@ -194,6 +206,7 @@ Returns the value of attribute session_id.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -209,6 +222,7 @@ Returns the value of attribute session_id.
 
     
   </span>
+  
   
   
   
@@ -236,6 +250,7 @@ Returns the value of attribute session_id.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -251,6 +266,7 @@ Returns the value of attribute session_id.
 
     
   </span>
+  
   
   
   
@@ -278,6 +294,7 @@ Returns the value of attribute session_id.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -296,17 +313,18 @@ Returns the value of attribute session_id.
       <span id=""></span>
       <span id="session_id-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="session_id-instance_method">
+  <h3 class="signature first" id="session_id-instance_method">
   
     - (<tt>Object</tt>) <strong>session_id</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute session_id
-</p>
+    
+<p>Returns the value of attribute session_id</p>
 
 
   </div>
@@ -340,16 +358,18 @@ Returns the value of attribute session_id
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="boolean_array_command-instance_method">
+  <h3 class="signature first" id="boolean_array_command-instance_method">
   
     - (<tt>Object</tt>) <strong>boolean_array_command</strong>(verb, args) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -371,13 +391,15 @@ Returns the value of attribute session_id
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="boolean_command-instance_method">
+  <h3 class="signature " id="boolean_command-instance_method">
   
     - (<tt>Object</tt>) <strong>boolean_command</strong>(verb, args = []) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -399,13 +421,15 @@ Returns the value of attribute session_id
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="number_array_command-instance_method">
+  <h3 class="signature " id="number_array_command-instance_method">
   
     - (<tt>Object</tt>) <strong>number_array_command</strong>(verb, args) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -427,13 +451,15 @@ Returns the value of attribute session_id
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="number_command-instance_method">
+  <h3 class="signature " id="number_command-instance_method">
   
     - (<tt>Object</tt>) <strong>number_command</strong>(verb, args) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -455,13 +481,15 @@ Returns the value of attribute session_id
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="remote_control_command-instance_method">
+  <h3 class="signature " id="remote_control_command-instance_method">
   
     - (<tt>Object</tt>) <strong>remote_control_command</strong>(verb, args = []) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -491,13 +519,15 @@ Returns the value of attribute session_id
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="string_array_command-instance_method">
+  <h3 class="signature " id="string_array_command-instance_method">
   
     - (<tt>Object</tt>) <strong>string_array_command</strong>(verb, args = []) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -561,13 +591,15 @@ Returns the value of attribute session_id
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="string_command-instance_method">
+  <h3 class="signature " id="string_command-instance_method">
   
     - (<tt>Object</tt>) <strong>string_command</strong>(verb, args = []) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -591,11 +623,11 @@ Returns the value of attribute session_id
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:44 2012 by 
+  Generated on Wed May 30 00:27:54 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

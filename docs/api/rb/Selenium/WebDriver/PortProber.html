@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::PortProber
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (P)</a> &raquo; 
+    <a href="../../_index.html">Index (P)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">PortProber</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::PortProber
   
   
@@ -97,6 +104,8 @@
 
 
 
+
+
   
     <h2>
       Class Method Summary
@@ -113,6 +122,7 @@
 
     
   </span>
+  
   
   
   
@@ -140,6 +150,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -161,6 +172,7 @@
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -175,16 +187,18 @@
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="above-class_method">
+  <h3 class="signature first" id="above-class_method">
   
     + (<tt>Object</tt>) <strong>above</strong>(port) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -208,13 +222,15 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="free?-class_method">
+  <h3 class="signature " id="free?-class_method">
   
     + (<tt>Boolean</tt>) <strong>free?</strong>(port) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
 
@@ -222,7 +238,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -242,18 +258,24 @@
       <pre class="lines">
 
 
-17
-18
-19
-20
-21
-22</pre>
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/port_prober.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/port_prober.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_free?'>free?</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
-  <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
+  <span class='id identifier rubyid_interfaces'>interfaces</span> <span class='op'>=</span> <span class='const'>Socket</span><span class='period'>.</span><span class='id identifier rubyid_getaddrinfo'>getaddrinfo</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>localhost</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_interfaces'>interfaces</span> <span class='op'>+=</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>0.0.0.0</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_ip'>ip</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_interfaces'>interfaces</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_address'>address</span><span class='op'>|</span> <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_address'>address</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span> <span class='rbrace'>}</span>
+
   <span class='kw'>true</span>
 <span class='kw'>rescue</span> <span class='const'>SocketError</span><span class='comma'>,</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EADDRINUSE</span>
   <span class='kw'>false</span>
@@ -264,13 +286,15 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="random-class_method">
+  <h3 class="signature " id="random-class_method">
   
     + (<tt>Object</tt>) <strong>random</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -282,16 +306,26 @@
 12
 13
 14
-15</pre>
+15
+16
+17
+18
+19
+20</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/port_prober.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_random'>random</span>
-  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='comment'># TODO: Avoid this
+</span>  <span class='comment'>#
+</span>  <span class='comment'># (a) should pick a port that's guaranteed to be free on all interfaces
+</span>  <span class='comment'># (b) should pick a random port outside the ephemeral port range
+</span>  <span class='comment'>#
+</span>  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_port'>port</span>   <span class='op'>=</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_addr'>addr</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
-  
+
   <span class='id identifier rubyid_port'>port</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -302,11 +336,11 @@
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:54 2012 by 
+  Generated on Wed May 30 00:28:03 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

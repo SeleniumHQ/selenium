@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::TargetLocator
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (T)</a> &raquo; 
+    <a href="../../_index.html">Index (T)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">TargetLocator</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::TargetLocator
   
   
@@ -97,6 +104,8 @@
 
 
 
+
+
   
     <h2>
       Instance Method Summary
@@ -119,11 +128,11 @@
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-get the active element.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>get the active element.</p>
 </div></span>
   
 </li>
@@ -143,12 +152,12 @@ get the active element.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-switches to the currently active modal dialog for this particular driver
-instance.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>switches to the currently active modal dialog for this particular driver
+instance.</p>
 </div></span>
   
 </li>
@@ -168,12 +177,12 @@ instance.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-selects either the first frame on the page, or the main document when a
-page contains iframes.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>selects either the first frame on the page, or the main document when a
+page contains iframes.</p>
 </div></span>
   
 </li>
@@ -193,11 +202,11 @@ page contains iframes.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-switch to the frame with the given id.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>switch to the frame with the given id.</p>
 </div></span>
   
 </li>
@@ -212,18 +221,18 @@ switch to the frame with the given id.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of TargetLocator.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of TargetLocator.</p>
 </div></span>
   
 </li>
@@ -243,11 +252,11 @@ A new instance of TargetLocator.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-switch to the given window handle.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>switch to the given window handle.</p>
 </div></span>
   
 </li>
@@ -260,21 +269,22 @@ switch to the given window handle.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></tt>) <strong>initialize</strong>(bridge) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-A new instance of TargetLocator
-</p>
+
+<p>A new instance of TargetLocator</p>
 
 
   </div>
@@ -308,27 +318,28 @@ A new instance of TargetLocator
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="active_element-instance_method">
+  <h3 class="signature first" id="active_element-instance_method">
   
     - (<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>) <strong>active_element</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-get the active element
-</p>
+    
+<p>get the active element</p>
 
 
   </div>
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -364,18 +375,19 @@ get the active element
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="alert-instance_method">
+  <h3 class="signature " id="alert-instance_method">
   
     - (<tt>Object</tt>) <strong>alert</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-switches to the currently active modal dialog for this particular driver
-instance
-</p>
+    
+<p>switches to the currently active modal dialog for this particular driver
+instance</p>
 
 
   </div>
@@ -405,18 +417,19 @@ instance
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="default_content-instance_method">
+  <h3 class="signature " id="default_content-instance_method">
   
     - (<tt>Object</tt>) <strong>default_content</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-selects either the first frame on the page, or the main document when a
-page contains iframes.
-</p>
+    
+<p>selects either the first frame on the page, or the main document when a
+page contains iframes.</p>
 
 
   </div>
@@ -446,17 +459,18 @@ page contains iframes.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="frame-instance_method">
+  <h3 class="signature " id="frame-instance_method">
   
     - (<tt>Object</tt>) <strong>frame</strong>(id) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-switch to the frame with the given id
-</p>
+    
+<p>switch to the frame with the given id</p>
 
 
   </div>
@@ -486,27 +500,27 @@ switch to the frame with the given id
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="window-instance_method">
+  <h3 class="signature " id="window-instance_method">
   
     - (<tt>Object</tt>) <strong>window</strong>(id) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-switch to the given window handle
-</p>
-<p>
-If given a block, this method will switch back to the original window after
-block execution.
-</p>
+    
+<p>switch to the given window handle</p>
+
+<p>If given a block, this method will switch back to the original window after
+block execution.</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -519,9 +533,8 @@ block execution.
       
       
         &mdash;
-        <div class='inline'><p>
-A window handle, obtained through Driver#window_handles
-</p>
+        <div class='inline'>
+<p>A window handle, obtained through Driver#window_handles</p>
 </div>
       
     </li>
@@ -589,11 +602,11 @@ A window handle, obtained through Driver#window_handles
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:56 2012 by 
+  Generated on Wed May 30 00:28:04 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

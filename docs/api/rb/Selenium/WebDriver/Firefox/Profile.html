@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Profile
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../../_index.html">Index (P)</a> &raquo; 
+    <a href="../../../_index.html">Index (P)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span>
      &raquo; 
     <span class="title">Profile</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Profile
   
   
@@ -126,10 +133,8 @@
   
 
 
-  
-  
-  
-  
+
+
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -143,8 +148,11 @@
   </span>
   
   
+  
     
-    <span class="note title writeonly">writeonly</span>
+    
+      <span class="note title writeonly">writeonly</span>
+    
   
   
   
@@ -152,9 +160,8 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Sets the attribute load_no_focus_lib.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Sets the attribute load_no_focus_lib.</p>
 </div></span>
   
 </li>
@@ -170,6 +177,7 @@ Sets the attribute load_no_focus_lib.
   </span>
   
   
+  
     
     
   
@@ -179,9 +187,8 @@ Sets the attribute load_no_focus_lib.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute log_file.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute log_file.</p>
 </div></span>
   
 </li>
@@ -197,7 +204,10 @@ Returns the value of attribute log_file.
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
@@ -206,9 +216,8 @@ Returns the value of attribute log_file.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute name.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute name.</p>
 </div></span>
   
 </li>
@@ -224,8 +233,11 @@ Returns the value of attribute name.
   </span>
   
   
+  
     
-    <span class="note title writeonly">writeonly</span>
+    
+      <span class="note title writeonly">writeonly</span>
+    
   
   
   
@@ -233,9 +245,8 @@ Returns the value of attribute name.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Sets the attribute native_events.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Sets the attribute native_events.</p>
 </div></span>
   
 </li>
@@ -251,8 +262,11 @@ Sets the attribute native_events.
   </span>
   
   
+  
     
-    <span class="note title writeonly">writeonly</span>
+    
+      <span class="note title writeonly">writeonly</span>
+    
   
   
   
@@ -260,9 +274,8 @@ Sets the attribute native_events.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Sets the attribute secure_ssl.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Sets the attribute secure_ssl.</p>
 </div></span>
   
 </li>
@@ -272,9 +285,6 @@ Sets the attribute secure_ssl.
 
 
 
-  
-  
-  
 
   
     <h2>
@@ -292,6 +302,7 @@ Sets the attribute secure_ssl.
 
     
   </span>
+  
   
   
   
@@ -319,6 +330,7 @@ Sets the attribute secure_ssl.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -334,6 +346,7 @@ Sets the attribute secure_ssl.
 
     
   </span>
+  
   
   
   
@@ -370,11 +383,11 @@ Sets the attribute secure_ssl.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Set a preference for this particular profile.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Set a preference for this particular profile.</p>
 </div></span>
   
 </li>
@@ -394,12 +407,12 @@ Set a preference for this particular profile.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Add the extension (directory, .zip or .xpi) at the given path to the
-profile.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Add the extension (directory, .zip or .xpi) at the given path to the
+profile.</p>
 </div></span>
   
 </li>
@@ -413,6 +426,7 @@ profile.
 
     
   </span>
+  
   
   
   
@@ -440,6 +454,7 @@ profile.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -455,6 +470,7 @@ profile.
 
     
   </span>
+  
   
   
   
@@ -477,6 +493,7 @@ profile.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
@@ -486,9 +503,8 @@ profile.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Create a new Profile instance.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Create a new Profile instance.</p>
 </div></span>
   
 </li>
@@ -502,6 +518,7 @@ Create a new Profile instance.
 
     
   </span>
+  
   
   
   
@@ -529,6 +546,7 @@ Create a new Profile instance.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -544,6 +562,7 @@ Create a new Profile instance.
 
     
   </span>
+  
   
   
   
@@ -571,6 +590,7 @@ Create a new Profile instance.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -586,6 +606,7 @@ Create a new Profile instance.
 
     
   </span>
+  
   
   
   
@@ -613,6 +634,7 @@ Create a new Profile instance.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -631,23 +653,25 @@ Create a new Profile instance.
   
   
   
+  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../ProfileHelper.html#as_json-instance_method" title="Selenium::WebDriver::ProfileHelper#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../ProfileHelper.html#included-class_method" title="Selenium::WebDriver::ProfileHelper.included (method)">included</a></span>, <span class='object_link'><a href="../ProfileHelper.html#to_json-instance_method" title="Selenium::WebDriver::ProfileHelper#to_json (method)">#to_json</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></tt>) <strong>initialize</strong>(model = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Create a new Profile instance
-</p>
+    
+<p>Create a new Profile instance</p>
 
 
   </div>
@@ -655,12 +679,13 @@ Create a new Profile instance
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-User configured profile
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>User configured profile</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Firefox</span><span class='op'>::</span><span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 <span class='id identifier rubyid_profile'>profile</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>network.proxy.http</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>localhost</span><span class='tstring_end'>'</span></span>
@@ -741,23 +766,24 @@ User configured profile
       <span id="load_no_focus_lib=-instance_method"></span>
       <span id=""></span>
       <div class="method_details first">
-  <p class="signature first" id="load_no_focus_lib=-instance_method">
+  <h3 class="signature first" id="load_no_focus_lib=-instance_method">
   
     - (<tt>Object</tt>) <strong>load_no_focus_lib=</strong>(value)  <span class="extras">(writeonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Sets the attribute load_no_focus_lib
-</p>
+    
+<p>Sets the attribute load_no_focus_lib</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -770,9 +796,8 @@ Sets the attribute load_no_focus_lib
       
       
         &mdash;
-        <div class='inline'><p>
-the value to set the attribute load_no_focus_lib to.
-</p>
+        <div class='inline'>
+<p>the value to set the attribute load_no_focus_lib to.</p>
 </div>
       
     </li>
@@ -805,17 +830,18 @@ the value to set the attribute load_no_focus_lib to.
       <span id="log_file=-instance_method"></span>
       <span id="log_file-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="log_file-instance_method">
+  <h3 class="signature " id="log_file-instance_method">
   
     - (<tt>Object</tt>) <strong>log_file</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute log_file
-</p>
+    
+<p>Returns the value of attribute log_file</p>
 
 
   </div>
@@ -848,17 +874,18 @@ Returns the value of attribute log_file
       <span id=""></span>
       <span id="name-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="name-instance_method">
+  <h3 class="signature " id="name-instance_method">
   
     - (<tt>Object</tt>) <strong>name</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Returns the value of attribute name
-</p>
+    
+<p>Returns the value of attribute name</p>
 
 
   </div>
@@ -891,23 +918,24 @@ Returns the value of attribute name
       <span id="native_events=-instance_method"></span>
       <span id=""></span>
       <div class="method_details ">
-  <p class="signature " id="native_events=-instance_method">
+  <h3 class="signature " id="native_events=-instance_method">
   
     - (<tt>Object</tt>) <strong>native_events=</strong>(value)  <span class="extras">(writeonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Sets the attribute native_events
-</p>
+    
+<p>Sets the attribute native_events</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -920,9 +948,8 @@ Sets the attribute native_events
       
       
         &mdash;
-        <div class='inline'><p>
-the value to set the attribute native_events to.
-</p>
+        <div class='inline'>
+<p>the value to set the attribute native_events to.</p>
 </div>
       
     </li>
@@ -955,23 +982,24 @@ the value to set the attribute native_events to.
       <span id="secure_ssl=-instance_method"></span>
       <span id=""></span>
       <div class="method_details ">
-  <p class="signature " id="secure_ssl=-instance_method">
+  <h3 class="signature " id="secure_ssl=-instance_method">
   
     - (<tt>Object</tt>) <strong>secure_ssl=</strong>(value)  <span class="extras">(writeonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Sets the attribute secure_ssl
-</p>
+    
+<p>Sets the attribute secure_ssl</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -984,9 +1012,8 @@ Sets the attribute secure_ssl
       
       
         &mdash;
-        <div class='inline'><p>
-the value to set the attribute secure_ssl to.
-</p>
+        <div class='inline'>
+<p>the value to set the attribute secure_ssl to.</p>
 </div>
       
     </li>
@@ -1020,16 +1047,18 @@ the value to set the attribute secure_ssl to.
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="default_preferences-class_method">
+  <h3 class="signature first" id="default_preferences-class_method">
   
     + (<tt>Object</tt>) <strong>default_preferences</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1045,7 +1074,7 @@ the value to set the attribute secure_ssl to.
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/profile.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_preferences'>default_preferences</span>
-  <span class='ivar'>@default_preferences</span> <span class='op'>||=</span> <span class='const'>MultiJson</span><span class='period'>.</span><span class='id identifier rubyid_decode'>decode</span><span class='lparen'>(</span>
+  <span class='ivar'>@default_preferences</span> <span class='op'>||=</span> <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_load'>json_load</span><span class='lparen'>(</span>
     <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='rbrace'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/prefs.json</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
 <span class='kw'>end</span></pre>
@@ -1055,13 +1084,15 @@ the value to set the attribute secure_ssl to.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="from_name-class_method">
+  <h3 class="signature " id="from_name-class_method">
   
     + (<tt>Object</tt>) <strong>from_name</strong>(name) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1083,13 +1114,15 @@ the value to set the attribute secure_ssl to.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="ini-class_method">
+  <h3 class="signature " id="ini-class_method">
   
     + (<tt>Object</tt>) <strong>ini</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1114,20 +1147,21 @@ the value to set the attribute secure_ssl to.
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="[]=-instance_method">
+  <h3 class="signature first" id="[]=-instance_method">
   
     - (<tt>Object</tt>) <strong>[]=</strong>(key, value) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Set a preference for this particular profile.
-</p>
+    
+<p>Set a preference for this particular profile.</p>
 
 
   </div>
@@ -1135,7 +1169,7 @@ Set a preference for this particular profile.
 <div class="tags">
   
 
-  <h3>See Also:</h3>
+  <p class="tag_title">See Also:</p>
   <ul class="see">
     
       <li><a href="http://kb.mozillazine.org/About:config_entries" target="_parent" title="http://kb.mozillazine.org/About:config_entries">http://kb.mozillazine.org/About:config_entries</a></li>
@@ -1182,18 +1216,19 @@ Set a preference for this particular profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="add_extension-instance_method">
+  <h3 class="signature " id="add_extension-instance_method">
   
     - (<tt>Object</tt>) <strong>add_extension</strong>(path, name = extension_name_for(path)) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Add the extension (directory, .zip or .xpi) at the given path to the
-profile.
-</p>
+    
+<p>Add the extension (directory, .zip or .xpi) at the given path to the
+profile.</p>
 
 
   </div>
@@ -1223,13 +1258,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="add_webdriver_extension-instance_method">
+  <h3 class="signature " id="add_webdriver_extension-instance_method">
   
     - (<tt>Object</tt>) <strong>add_webdriver_extension</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1255,13 +1292,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="assume_untrusted_certificate_issuer=-instance_method">
+  <h3 class="signature " id="assume_untrusted_certificate_issuer=-instance_method">
   
     - (<tt>Object</tt>) <strong>assume_untrusted_certificate_issuer=</strong>(bool) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1283,13 +1322,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="assume_untrusted_certificate_issuer?-instance_method">
+  <h3 class="signature " id="assume_untrusted_certificate_issuer?-instance_method">
   
     - (<tt>Boolean</tt>) <strong>assume_untrusted_certificate_issuer?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
 
@@ -1297,7 +1338,7 @@ profile.
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1333,13 +1374,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="layout_on_disk-instance_method">
+  <h3 class="signature " id="layout_on_disk-instance_method">
   
     - (<tt>Object</tt>) <strong>layout_on_disk</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1377,13 +1420,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="load_no_focus_lib?-instance_method">
+  <h3 class="signature " id="load_no_focus_lib?-instance_method">
   
     - (<tt>Boolean</tt>) <strong>load_no_focus_lib?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
 
@@ -1391,7 +1436,7 @@ profile.
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1427,13 +1472,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="native_events?-instance_method">
+  <h3 class="signature " id="native_events?-instance_method">
   
     - (<tt>Boolean</tt>) <strong>native_events?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
 
@@ -1441,7 +1488,7 @@ profile.
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1477,13 +1524,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="port=-instance_method">
+  <h3 class="signature " id="port=-instance_method">
   
     - (<tt>Object</tt>) <strong>port=</strong>(port) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1505,13 +1554,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="proxy=-instance_method">
+  <h3 class="signature " id="proxy=-instance_method">
   
     - (<tt>Object</tt>) <strong>proxy=</strong>(proxy) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1585,13 +1636,15 @@ profile.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="secure_ssl?-instance_method">
+  <h3 class="signature " id="secure_ssl?-instance_method">
   
     - (<tt>Boolean</tt>) <strong>secure_ssl?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     
 
@@ -1599,7 +1652,7 @@ profile.
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1637,11 +1690,11 @@ profile.
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:54 2012 by 
+  Generated on Wed May 30 00:28:03 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

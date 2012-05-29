@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../';
+  framesUrl = "../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../_index.html">Index (W)</a> &raquo; 
+    <a href="../_index.html">Index (W)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span></span>
      &raquo; 
     <span class="title">WebDriver</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Module: Selenium::WebDriver
   
   
@@ -66,14 +73,18 @@
   
   
     
+      <dt class="r1">Extended by:</dt>
+      <dd class="r1"><span class='object_link'><a href="WebDriver/JsonHelper.html" title="Selenium::WebDriver::JsonHelper (module)">JsonHelper</a></span></dd>
+      
+    
   
     
   
   
   
-    <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">rb/lib/selenium/webdriver.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/ie.rb,<br /> rb/lib/selenium/webdriver/opera.rb,<br /> rb/lib/selenium/webdriver/safari.rb,<br /> rb/lib/selenium/webdriver/remote.rb,<br /> rb/lib/selenium/webdriver/iphone.rb,<br /> rb/lib/selenium/webdriver/chrome.rb,<br /> rb/lib/selenium/webdriver/android.rb,<br /> rb/lib/selenium/webdriver/firefox.rb,<br /> rb/lib/selenium/webdriver/ie/server.rb,<br /> rb/lib/selenium/webdriver/ie/bridge.rb,<br /> rb/lib/selenium/webdriver/common/keys.rb,<br /> rb/lib/selenium/webdriver/common/wait.rb,<br /> rb/lib/selenium/webdriver/common/proxy.rb,<br /> rb/lib/selenium/webdriver/common/mouse.rb,<br /> rb/lib/selenium/webdriver/common/alert.rb,<br /> rb/lib/selenium/webdriver/firefox/util.rb,<br /> rb/lib/selenium/webdriver/common/error.rb,<br /> rb/lib/selenium/webdriver/opera/bridge.rb,<br /> rb/lib/selenium/webdriver/chrome/bridge.rb,<br /> rb/lib/selenium/webdriver/iphone/bridge.rb,<br /> rb/lib/selenium/webdriver/safari/server.rb,<br /> rb/lib/selenium/webdriver/remote/bridge.rb,<br /> rb/lib/selenium/webdriver/common/driver.rb,<br /> rb/lib/selenium/webdriver/opera/service.rb,<br /> rb/lib/selenium/webdriver/common/zipper.rb,<br /> rb/lib/selenium/webdriver/common/window.rb,<br /> rb/lib/selenium/webdriver/safari/bridge.rb,<br /> rb/lib/selenium/webdriver/android/bridge.rb,<br /> rb/lib/selenium/webdriver/safari/browser.rb,<br /> rb/lib/selenium/webdriver/support/select.rb,<br /> rb/lib/selenium/webdriver/common/options.rb,<br /> rb/lib/selenium/webdriver/chrome/service.rb,<br /> rb/lib/selenium/webdriver/firefox/binary.rb,<br /> rb/lib/selenium/webdriver/chrome/profile.rb,<br /> rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> rb/lib/selenium/webdriver/common/element.rb,<br /> rb/lib/selenium/webdriver/common/keyboard.rb,<br /> rb/lib/selenium/webdriver/remote/response.rb,<br /> rb/lib/selenium/webdriver/common/timeouts.rb,<br /> rb/lib/selenium/webdriver/common/platform.rb,<br /> rb/lib/selenium/webdriver/firefox/profile.rb,<br /> rb/lib/selenium/webdriver/remote/http/curb.rb,<br /> rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> rb/lib/selenium/webdriver/firefox/extension.rb,<br /> rb/lib/selenium/webdriver/common/navigation.rb,<br /> rb/lib/selenium/webdriver/remote/http/common.rb,<br /> rb/lib/selenium/webdriver/common/file_reaper.rb,<br /> rb/lib/selenium/webdriver/common/port_prober.rb,<br /> rb/lib/selenium/webdriver/common/touch_screen.rb,<br /> rb/lib/selenium/webdriver/remote/http/default.rb,<br /> rb/lib/selenium/webdriver/firefox/socket_lock.rb,<br /> rb/lib/selenium/webdriver/remote/server_error.rb,<br /> rb/lib/selenium/webdriver/remote/capabilities.rb,<br /> rb/lib/selenium/webdriver/common/socket_poller.rb,<br /> rb/lib/selenium/webdriver/firefox/profiles_ini.rb,<br /> rb/lib/selenium/webdriver/common/bridge_helper.rb,<br /> rb/lib/selenium/webdriver/common/profile_helper.rb,<br /> rb/lib/selenium/webdriver/common/search_context.rb,<br /> rb/lib/selenium/webdriver/common/action_builder.rb,<br /> rb/lib/selenium/webdriver/common/target_locator.rb,<br /> rb/lib/selenium/webdriver/remote/http/persistent.rb,<br /> rb/lib/selenium/webdriver/common/html5/local_storage.rb,<br /> rb/lib/selenium/webdriver/support/event_firing_bridge.rb,<br /> rb/lib/selenium/webdriver/common/touch_action_builder.rb,<br /> rb/lib/selenium/webdriver/support/block_event_listener.rb,<br /> rb/lib/selenium/webdriver/common/html5/session_storage.rb,<br /> rb/lib/selenium/webdriver/common/html5/shared_web_storage.rb,<br /> rb/lib/selenium/webdriver/support/abstract_event_listener.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/rotatable.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/uploads_files.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_web_storage.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_touch_screen.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_browser_connection.rb</span>
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">rb/lib/selenium/webdriver.rb<span class="defines">,<br />
+  rb/lib/selenium/webdriver/ie.rb,<br /> rb/lib/selenium/webdriver/opera.rb,<br /> rb/lib/selenium/webdriver/safari.rb,<br /> rb/lib/selenium/webdriver/remote.rb,<br /> rb/lib/selenium/webdriver/iphone.rb,<br /> rb/lib/selenium/webdriver/chrome.rb,<br /> rb/lib/selenium/webdriver/firefox.rb,<br /> rb/lib/selenium/webdriver/android.rb,<br /> rb/lib/selenium/webdriver/ie/server.rb,<br /> rb/lib/selenium/webdriver/ie/bridge.rb,<br /> rb/lib/selenium/webdriver/common/keys.rb,<br /> rb/lib/selenium/webdriver/common/wait.rb,<br /> rb/lib/selenium/webdriver/opera/bridge.rb,<br /> rb/lib/selenium/webdriver/common/mouse.rb,<br /> rb/lib/selenium/webdriver/firefox/util.rb,<br /> rb/lib/selenium/webdriver/common/alert.rb,<br /> rb/lib/selenium/webdriver/common/error.rb,<br /> rb/lib/selenium/webdriver/common/proxy.rb,<br /> rb/lib/selenium/webdriver/chrome/bridge.rb,<br /> rb/lib/selenium/webdriver/iphone/bridge.rb,<br /> rb/lib/selenium/webdriver/remote/bridge.rb,<br /> rb/lib/selenium/webdriver/safari/bridge.rb,<br /> rb/lib/selenium/webdriver/common/driver.rb,<br /> rb/lib/selenium/webdriver/opera/service.rb,<br /> rb/lib/selenium/webdriver/common/zipper.rb,<br /> rb/lib/selenium/webdriver/common/window.rb,<br /> rb/lib/selenium/webdriver/safari/server.rb,<br /> rb/lib/selenium/webdriver/support/select.rb,<br /> rb/lib/selenium/webdriver/firefox/binary.rb,<br /> rb/lib/selenium/webdriver/safari/browser.rb,<br /> rb/lib/selenium/webdriver/chrome/service.rb,<br /> rb/lib/selenium/webdriver/common/options.rb,<br /> rb/lib/selenium/webdriver/firefox/bridge.rb,<br /> rb/lib/selenium/webdriver/chrome/profile.rb,<br /> rb/lib/selenium/webdriver/common/element.rb,<br /> rb/lib/selenium/webdriver/android/bridge.rb,<br /> rb/lib/selenium/webdriver/common/keyboard.rb,<br /> rb/lib/selenium/webdriver/common/platform.rb,<br /> rb/lib/selenium/webdriver/common/timeouts.rb,<br /> rb/lib/selenium/webdriver/firefox/profile.rb,<br /> rb/lib/selenium/webdriver/remote/response.rb,<br /> rb/lib/selenium/webdriver/remote/http/curb.rb,<br /> rb/lib/selenium/webdriver/firefox/launcher.rb,<br /> rb/lib/selenium/webdriver/common/navigation.rb,<br /> rb/lib/selenium/webdriver/firefox/extension.rb,<br /> rb/lib/selenium/webdriver/remote/http/common.rb,<br /> rb/lib/selenium/webdriver/common/file_reaper.rb,<br /> rb/lib/selenium/webdriver/common/json_helper.rb,<br /> rb/lib/selenium/webdriver/common/port_prober.rb,<br /> rb/lib/selenium/webdriver/common/touch_screen.rb,<br /> rb/lib/selenium/webdriver/remote/http/default.rb,<br /> rb/lib/selenium/webdriver/firefox/socket_lock.rb,<br /> rb/lib/selenium/webdriver/remote/server_error.rb,<br /> rb/lib/selenium/webdriver/remote/capabilities.rb,<br /> rb/lib/selenium/webdriver/ie/in_process_server.rb,<br /> rb/lib/selenium/webdriver/common/bridge_helper.rb,<br /> rb/lib/selenium/webdriver/common/socket_poller.rb,<br /> rb/lib/selenium/webdriver/firefox/profiles_ini.rb,<br /> rb/lib/selenium/webdriver/common/search_context.rb,<br /> rb/lib/selenium/webdriver/common/action_builder.rb,<br /> rb/lib/selenium/webdriver/common/profile_helper.rb,<br /> rb/lib/selenium/webdriver/common/target_locator.rb,<br /> rb/lib/selenium/webdriver/remote/http/persistent.rb,<br /> rb/lib/selenium/webdriver/common/html5/local_storage.rb,<br /> rb/lib/selenium/webdriver/support/event_firing_bridge.rb,<br /> rb/lib/selenium/webdriver/common/touch_action_builder.rb,<br /> rb/lib/selenium/webdriver/support/block_event_listener.rb,<br /> rb/lib/selenium/webdriver/common/html5/session_storage.rb,<br /> rb/lib/selenium/webdriver/common/html5/shared_web_storage.rb,<br /> rb/lib/selenium/webdriver/support/abstract_event_listener.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/rotatable.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/uploads_files.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_web_storage.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_touch_screen.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/takes_screenshot.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_input_devices.rb,<br /> rb/lib/selenium/webdriver/common/driver_extensions/has_browser_connection.rb</span>
 </dd>
   
 </dl>
@@ -81,16 +92,18 @@
 
 <h2>Defined Under Namespace</h2>
 <p class="children">
-   
+  
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="WebDriver/Android.html" title="Selenium::WebDriver::Android (module)">Android</a></span>, <span class='object_link'><a href="WebDriver/BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a></span>, <span class='object_link'><a href="WebDriver/Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span>, <span class='object_link'><a href="WebDriver/DriverExtensions.html" title="Selenium::WebDriver::DriverExtensions (module)">DriverExtensions</a></span>, <span class='object_link'><a href="WebDriver/Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span>, <span class='object_link'><a href="WebDriver/FileReaper.html" title="Selenium::WebDriver::FileReaper (module)">FileReaper</a></span>, <span class='object_link'><a href="WebDriver/Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span>, <span class='object_link'><a href="WebDriver/HTML5.html" title="Selenium::WebDriver::HTML5 (module)">HTML5</a></span>, <span class='object_link'><a href="WebDriver/IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span>, <span class='object_link'><a href="WebDriver/IPhone.html" title="Selenium::WebDriver::IPhone (module)">IPhone</a></span>, <span class='object_link'><a href="WebDriver/Keys.html" title="Selenium::WebDriver::Keys (module)">Keys</a></span>, <span class='object_link'><a href="WebDriver/Opera.html" title="Selenium::WebDriver::Opera (module)">Opera</a></span>, <span class='object_link'><a href="WebDriver/Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span>, <span class='object_link'><a href="WebDriver/ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span>, <span class='object_link'><a href="WebDriver/Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span>, <span class='object_link'><a href="WebDriver/Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span>, <span class='object_link'><a href="WebDriver/SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span>, <span class='object_link'><a href="WebDriver/Support.html" title="Selenium::WebDriver::Support (module)">Support</a></span>, <span class='object_link'><a href="WebDriver/Zipper.html" title="Selenium::WebDriver::Zipper (module)">Zipper</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="WebDriver/Android.html" title="Selenium::WebDriver::Android (module)">Android</a></span>, <span class='object_link'><a href="WebDriver/BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a></span>, <span class='object_link'><a href="WebDriver/Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span>, <span class='object_link'><a href="WebDriver/DriverExtensions.html" title="Selenium::WebDriver::DriverExtensions (module)">DriverExtensions</a></span>, <span class='object_link'><a href="WebDriver/Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span>, <span class='object_link'><a href="WebDriver/FileReaper.html" title="Selenium::WebDriver::FileReaper (module)">FileReaper</a></span>, <span class='object_link'><a href="WebDriver/Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span>, <span class='object_link'><a href="WebDriver/HTML5.html" title="Selenium::WebDriver::HTML5 (module)">HTML5</a></span>, <span class='object_link'><a href="WebDriver/IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span>, <span class='object_link'><a href="WebDriver/IPhone.html" title="Selenium::WebDriver::IPhone (module)">IPhone</a></span>, <span class='object_link'><a href="WebDriver/JsonHelper.html" title="Selenium::WebDriver::JsonHelper (module)">JsonHelper</a></span>, <span class='object_link'><a href="WebDriver/Keys.html" title="Selenium::WebDriver::Keys (module)">Keys</a></span>, <span class='object_link'><a href="WebDriver/Opera.html" title="Selenium::WebDriver::Opera (module)">Opera</a></span>, <span class='object_link'><a href="WebDriver/Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span>, <span class='object_link'><a href="WebDriver/ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span>, <span class='object_link'><a href="WebDriver/Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span>, <span class='object_link'><a href="WebDriver/Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span>, <span class='object_link'><a href="WebDriver/SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span>, <span class='object_link'><a href="WebDriver/Support.html" title="Selenium::WebDriver::Support (module)">Support</a></span>, <span class='object_link'><a href="WebDriver/Zipper.html" title="Selenium::WebDriver::Zipper (module)">Zipper</a></span>
     
-   
+  
     
       <strong class="classes">Classes:</strong> <span class='object_link'><a href="WebDriver/ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span>, <span class='object_link'><a href="WebDriver/Alert.html" title="Selenium::WebDriver::Alert (class)">Alert</a></span>, <span class='object_link'><a href="WebDriver/Dimension.html" title="Selenium::WebDriver::Dimension (class)">Dimension</a></span>, <span class='object_link'><a href="WebDriver/Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span>, <span class='object_link'><a href="WebDriver/Element.html" title="Selenium::WebDriver::Element (class)">Element</a></span>, <span class='object_link'><a href="WebDriver/Keyboard.html" title="Selenium::WebDriver::Keyboard (class)">Keyboard</a></span>, <span class='object_link'><a href="WebDriver/Location.html" title="Selenium::WebDriver::Location (class)">Location</a></span>, <span class='object_link'><a href="WebDriver/Mouse.html" title="Selenium::WebDriver::Mouse (class)">Mouse</a></span>, <span class='object_link'><a href="WebDriver/Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span>, <span class='object_link'><a href="WebDriver/Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span>, <span class='object_link'><a href="WebDriver/Point.html" title="Selenium::WebDriver::Point (class)">Point</a></span>, <span class='object_link'><a href="WebDriver/PortProber.html" title="Selenium::WebDriver::PortProber (class)">PortProber</a></span>, <span class='object_link'><a href="WebDriver/Proxy.html" title="Selenium::WebDriver::Proxy (class)">Proxy</a></span>, <span class='object_link'><a href="WebDriver/SocketPoller.html" title="Selenium::WebDriver::SocketPoller (class)">SocketPoller</a></span>, <span class='object_link'><a href="WebDriver/TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span>, <span class='object_link'><a href="WebDriver/Timeouts.html" title="Selenium::WebDriver::Timeouts (class)">Timeouts</a></span>, <span class='object_link'><a href="WebDriver/TouchActionBuilder.html" title="Selenium::WebDriver::TouchActionBuilder (class)">TouchActionBuilder</a></span>, <span class='object_link'><a href="WebDriver/TouchScreen.html" title="Selenium::WebDriver::TouchScreen (class)">TouchScreen</a></span>, <span class='object_link'><a href="WebDriver/Wait.html" title="Selenium::WebDriver::Wait (class)">Wait</a></span>, <span class='object_link'><a href="WebDriver/Window.html" title="Selenium::WebDriver::Window (class)">Window</a></span>
     
   
 </p>
+
+
 
 
 
@@ -118,11 +131,11 @@
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Create a new Driver instance with the correct bridge for the given browser.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Create a new Driver instance with the correct bridge for the given browser.</p>
 </div></span>
   
 </li>
@@ -141,7 +154,8 @@ Create a new Driver instance with the correct bridge for the given browser.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -153,29 +167,40 @@ Create a new Driver instance with the correct bridge for the given browser.
   
 
 
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="WebDriver/JsonHelper.html" title="Selenium::WebDriver::JsonHelper (module)">JsonHelper</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="WebDriver/JsonHelper.html#json_dump-instance_method" title="Selenium::WebDriver::JsonHelper#json_dump (method)">json_dump</a></span>, <span class='object_link'><a href="WebDriver/JsonHelper.html#json_load-instance_method" title="Selenium::WebDriver::JsonHelper#json_load (method)">json_load</a></span></p>
+
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="for-class_method">
+  <h3 class="signature first" id="for-class_method">
   
     + (<tt><span class='object_link'><a href="WebDriver/Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>) <strong>for</strong>(*args) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Create a new Driver instance with the correct bridge for the given browser
-</p>
-<p>
-One special argument is not passed on to the bridges, :listener. You can
+    
+<p>Create a new Driver instance with the correct bridge for the given browser</p>
+
+<p>One special argument is not passed on to the bridges, :listener. You can
 pass a listener for this option to get notified of WebDriver events. The
 passed object must respond to #call or implement the methods from
-AbstractEventListener.
-</p>
+AbstractEventListener.</p>
 
 
   </div>
@@ -183,16 +208,16 @@ AbstractEventListener.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'></div></h4>
+      
       <pre class="example code">
 <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_for'>for</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:profile</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some-profile</span><span class='tstring_end'>&quot;</span></span>
 <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_for'>for</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:profile</span> <span class='op'>=&gt;</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_for'>for</span> <span class='symbol'>:remote</span><span class='comma'>,</span>  <span class='symbol'>:url</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://localhost:4444/wd/hub</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:desired_capabilities</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_caps'>caps</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -205,9 +230,8 @@ AbstractEventListener.
       
       
         &mdash;
-        <div class='inline'><p>
-the driver type to use
-</p>
+        <div class='inline'>
+<p>the driver type to use</p>
 </div>
       
     </li>
@@ -222,16 +246,15 @@ the driver type to use
       
       
         &mdash;
-        <div class='inline'><p>
-arguments passed to Bridge.new
-</p>
+        <div class='inline'>
+<p>arguments passed to Bridge.new</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -245,7 +268,7 @@ arguments passed to Bridge.new
   
 </ul>
 
-  <h3>See Also:</h3>
+  <p class="tag_title">See Also:</p>
   <ul class="see">
     
       <li><span class='object_link'><a href="WebDriver/Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Selenium::WebDriver::Remote::Bridge</a></span></li>
@@ -274,12 +297,12 @@ arguments passed to Bridge.new
       <pre class="lines">
 
 
-62
-63
-64</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='kw'>for</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_for'>for</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -290,16 +313,18 @@ arguments passed to Bridge.new
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="root-class_method">
+  <h3 class="signature " id="root-class_method">
   
     + (<tt>Object</tt>) <strong>root</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -315,12 +340,12 @@ arguments passed to Bridge.new
       <pre class="lines">
 
 
-27
-28
-29</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span>
   <span class='ivar'>@root</span> <span class='op'>||=</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>../..</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='rparen'>)</span>
@@ -333,11 +358,11 @@ arguments passed to Bridge.new
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:43 2012 by 
+  Generated on Wed May 30 00:27:54 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

@@ -1,6 +1,6 @@
-body { 
+body {
   margin: 0;
-  font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif; 
+  font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
   font-size: 13px;
   height: 101%;
   overflow-x: hidden;
@@ -37,6 +37,8 @@ li.collapsed.clicked a.toggle { background-position: top right; }
 #nav { margin-left: 10px; font-size: 0.9em; display: none; color: #aaa; }
 #nav a:link, #nav a:visited { color: #358; }
 #nav a:hover { background: transparent; color: #5af; }
+.frames #nav span:after { content: ' | '; }
+.frames #nav span:last-child:after { content: ''; }
 
 .frames #content h1 { margin-top: 0; }
 .frames li { white-space: nowrap; cursor: normal; }

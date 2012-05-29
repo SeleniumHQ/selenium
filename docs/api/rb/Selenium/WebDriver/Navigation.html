@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Navigation
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (N)</a> &raquo; 
+    <a href="../../_index.html">Index (N)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">Navigation</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::Navigation
   
   
@@ -97,6 +104,8 @@
 
 
 
+
+
   
     <h2>
       Instance Method Summary
@@ -119,11 +128,11 @@
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Move back a single entry in the browser&#8217;s history.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Move back a single entry in the browser's history.</p>
 </div></span>
   
 </li>
@@ -143,11 +152,11 @@ Move back a single entry in the browser&#8217;s history.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Move forward a single entry in the browser&#8217;s history.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Move forward a single entry in the browser's history.</p>
 </div></span>
   
 </li>
@@ -162,6 +171,7 @@ Move forward a single entry in the browser&#8217;s history.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
@@ -171,9 +181,8 @@ Move forward a single entry in the browser&#8217;s history.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Navigation.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Navigation.</p>
 </div></span>
   
 </li>
@@ -193,11 +202,11 @@ A new instance of Navigation.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Refresh the current page.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Refresh the current page.</p>
 </div></span>
   
 </li>
@@ -217,11 +226,11 @@ Refresh the current page.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Navigate to the given URL.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Navigate to the given URL.</p>
 </div></span>
   
 </li>
@@ -234,17 +243,18 @@ Navigate to the given URL.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></tt>) <strong>initialize</strong>(bridge) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of Navigation
-</p>
+    
+<p>A new instance of Navigation</p>
 
 
   </div>
@@ -278,20 +288,21 @@ A new instance of Navigation
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="back-instance_method">
+  <h3 class="signature first" id="back-instance_method">
   
     - (<tt>Object</tt>) <strong>back</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Move back a single entry in the browser&#8217;s history.
-</p>
+    
+<p>Move back a single entry in the browser's history.</p>
 
 
   </div>
@@ -321,17 +332,18 @@ Move back a single entry in the browser&#8217;s history.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="forward-instance_method">
+  <h3 class="signature " id="forward-instance_method">
   
     - (<tt>Object</tt>) <strong>forward</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Move forward a single entry in the browser&#8217;s history.
-</p>
+    
+<p>Move forward a single entry in the browser's history.</p>
 
 
   </div>
@@ -361,17 +373,18 @@ Move forward a single entry in the browser&#8217;s history.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="refresh-instance_method">
+  <h3 class="signature " id="refresh-instance_method">
   
     - (<tt>Object</tt>) <strong>refresh</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Refresh the current page.
-</p>
+    
+<p>Refresh the current page.</p>
 
 
   </div>
@@ -401,17 +414,18 @@ Refresh the current page.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="to-instance_method">
+  <h3 class="signature " id="to-instance_method">
   
     - (<tt>Object</tt>) <strong>to</strong>(url) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Navigate to the given URL
-</p>
+    
+<p>Navigate to the given URL</p>
 
 
   </div>
@@ -443,11 +457,11 @@ Navigate to the given URL
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:54 2012 by 
+  Generated on Wed May 30 00:28:03 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

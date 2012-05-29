@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Bridge
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../../_index.html">Index (B)</a> &raquo; 
+    <a href="../../../_index.html">Index (B)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span>
      &raquo; 
     <span class="title">Bridge</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::Remote::Bridge
   
   
@@ -101,7 +108,7 @@
 <div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This class is part of a private API.</strong> 
+  <strong>This class is part of a private API.</strong>
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -124,7 +131,7 @@
           <div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This constant is part of a private API.</strong> 
+  <strong>This constant is part of a private API.</strong>
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -142,10 +149,8 @@
   
 
 
-  
-  
-  
-  
+
+
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -159,19 +164,19 @@
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute capabilities.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -186,19 +191,17 @@ Returns the value of attribute capabilities.
   </span>
   
   
+  
     
     
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute context.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -213,19 +216,17 @@ Returns the value of attribute context.
   </span>
   
   
+  
     
     
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute file_detector.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -240,19 +241,17 @@ Returns the value of attribute file_detector.
   </span>
   
   
+  
     
     
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute http.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -261,9 +260,6 @@ Returns the value of attribute http.
 
 
 
-  
-  
-  
 
   
     <h2>
@@ -286,12 +282,12 @@ Returns the value of attribute http.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Defines a wrapper method for a command, which ultimately calls #execute.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Defines a wrapper method for a command, which ultimately calls #execute.</p>
 </div></span>
   
 </li>
@@ -319,7 +315,8 @@ Defines a wrapper method for a command, which ultimately calls #execute.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -340,12 +337,12 @@ Defines a wrapper method for a command, which ultimately calls #execute.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-cookies.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>cookies.</p>
 </div></span>
   
 </li>
@@ -364,7 +361,8 @@ cookies.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -385,7 +383,8 @@ cookies.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -406,7 +405,8 @@ cookies.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -427,7 +427,8 @@ cookies.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -448,7 +449,8 @@ cookies.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -469,12 +471,12 @@ cookies.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-actions.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>actions.</p>
 </div></span>
   
 </li>
@@ -493,7 +495,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -514,7 +517,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -535,7 +539,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -556,7 +561,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -577,7 +583,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -598,7 +605,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -619,7 +627,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -640,7 +649,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -661,7 +671,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -682,7 +693,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -703,7 +715,8 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -724,12 +737,12 @@ actions.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-javascript execution.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>javascript execution.</p>
 </div></span>
   
 </li>
@@ -748,7 +761,8 @@ javascript execution.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -769,7 +783,8 @@ javascript execution.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -790,7 +805,8 @@ javascript execution.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -813,12 +829,12 @@ javascript execution.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-finding elements.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>finding elements.</p>
 </div></span>
   
 </li>
@@ -837,12 +853,12 @@ finding elements.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-alerts.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>alerts.</p>
 </div></span>
   
 </li>
@@ -861,7 +877,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -882,7 +899,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -903,7 +921,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -924,7 +943,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -945,7 +965,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -966,7 +987,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -987,7 +1009,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1008,7 +1031,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1029,7 +1053,8 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1050,12 +1075,12 @@ alerts.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-element properties.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>element properties.</p>
 </div></span>
   
 </li>
@@ -1074,7 +1099,8 @@ element properties.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1095,7 +1121,8 @@ element properties.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1116,7 +1143,8 @@ element properties.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1137,12 +1165,12 @@ element properties.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-HTML 5.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>HTML 5.</p>
 </div></span>
   
 </li>
@@ -1161,7 +1189,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1182,7 +1211,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1203,7 +1233,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1224,7 +1255,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1245,7 +1277,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1266,7 +1299,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1287,7 +1321,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1308,7 +1343,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1329,7 +1365,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1350,7 +1387,8 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1371,12 +1409,12 @@ HTML 5.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-window handling.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>window handling.</p>
 </div></span>
   
 </li>
@@ -1395,7 +1433,8 @@ window handling.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1416,7 +1455,8 @@ window handling.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1437,12 +1477,12 @@ window handling.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-navigation.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>navigation.</p>
 </div></span>
   
 </li>
@@ -1461,7 +1501,8 @@ navigation.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1478,18 +1519,18 @@ navigation.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Initializes the bridge with the given server URL.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Initializes the bridge with the given server URL.</p>
 </div></span>
   
 </li>
@@ -1508,7 +1549,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1529,7 +1571,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1550,7 +1593,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1571,7 +1615,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1592,7 +1637,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1613,7 +1659,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1634,7 +1681,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1655,7 +1703,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1676,7 +1725,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1697,7 +1747,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1718,7 +1769,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1739,7 +1791,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1760,7 +1813,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1781,7 +1835,8 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1802,12 +1857,12 @@ Initializes the bridge with the given server URL.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the current session ID.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the current session ID.</p>
 </div></span>
   
 </li>
@@ -1826,7 +1881,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1847,7 +1903,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1868,7 +1925,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1889,7 +1947,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1910,7 +1969,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1931,7 +1991,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1952,7 +2013,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1973,7 +2035,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -1994,7 +2057,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2015,7 +2079,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2036,7 +2101,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2057,7 +2123,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2078,7 +2145,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2099,7 +2167,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2120,7 +2189,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2141,7 +2211,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2162,7 +2233,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2183,7 +2255,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2204,7 +2277,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2225,7 +2299,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2246,7 +2321,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2267,7 +2343,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2288,7 +2365,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2309,7 +2387,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2330,7 +2409,8 @@ Returns the current session ID.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -2349,33 +2429,35 @@ Returns the current session ID.
   
   
   
+  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper (module)">BridgeHelper</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../BridgeHelper.html#element_id_from-instance_method" title="Selenium::WebDriver::BridgeHelper#element_id_from (method)">#element_id_from</a></span>, <span class='object_link'><a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="Selenium::WebDriver::BridgeHelper#parse_cookie_string (method)">#parse_cookie_string</a></span>, <span class='object_link'><a href="../BridgeHelper.html#unwrap_script_result-instance_method" title="Selenium::WebDriver::BridgeHelper#unwrap_script_result (method)">#unwrap_script_result</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></tt>) <strong>initialize</strong>(opts = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-Initializes the bridge with the given server URL.
-</p>
+
+<p>Initializes the bridge with the given server URL.</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -2388,9 +2470,8 @@ Initializes the bridge with the given server URL.
       
       
         &mdash;
-        <div class='inline'><p>
-url for the remote server
-</p>
+        <div class='inline'>
+<p>url for the remote server</p>
 </div>
       
     </li>
@@ -2405,9 +2486,8 @@ url for the remote server
       
       
         &mdash;
-        <div class='inline'><p>
-an HTTP client instance that implements the same protocol as Http::Default
-</p>
+        <div class='inline'>
+<p>an HTTP client instance that implements the same protocol as Http::Default</p>
 </div>
       
     </li>
@@ -2422,9 +2502,8 @@ an HTTP client instance that implements the same protocol as Http::Default
       
       
         &mdash;
-        <div class='inline'><p>
-an instance of Remote::Capabilities describing the capabilities you want
-</p>
+        <div class='inline'>
+<p>an instance of Remote::Capabilities describing the capabilities you want</p>
 </div>
       
     </li>
@@ -2510,20 +2589,19 @@ an instance of Remote::Capabilities describing the capabilities you want
       <span id=""></span>
       <span id="capabilities-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="capabilities-instance_method">
+  <h3 class="signature first" id="capabilities-instance_method">
   
     - (<tt>Object</tt>) <strong>capabilities</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
-Returns the value of attribute capabilities
 </p>
 
 
@@ -2557,20 +2635,19 @@ Returns the value of attribute capabilities
       <span id="context=-instance_method"></span>
       <span id="context-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="context-instance_method">
+  <h3 class="signature " id="context-instance_method">
   
     - (<tt>Object</tt>) <strong>context</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
-Returns the value of attribute context
 </p>
 
 
@@ -2604,20 +2681,19 @@ Returns the value of attribute context
       <span id="file_detector=-instance_method"></span>
       <span id="file_detector-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="file_detector-instance_method">
+  <h3 class="signature " id="file_detector-instance_method">
   
     - (<tt>Object</tt>) <strong>file_detector</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
-Returns the value of attribute file_detector
 </p>
 
 
@@ -2651,20 +2727,19 @@ Returns the value of attribute file_detector
       <span id="http=-instance_method"></span>
       <span id="http-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="http-instance_method">
+  <h3 class="signature " id="http-instance_method">
   
     - (<tt>Object</tt>) <strong>http</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
-Returns the value of attribute http
 </p>
 
 
@@ -2699,30 +2774,31 @@ Returns the value of attribute http
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="command-class_method">
+  <h3 class="signature first" id="command-class_method">
   
     + (<tt>Object</tt>) <strong>command</strong>(name, verb, url) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-Defines a wrapper method for a command, which ultimately calls #execute.
-</p>
+
+<p>Defines a wrapper method for a command, which ultimately calls #execute.</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -2735,9 +2811,8 @@ Defines a wrapper method for a command, which ultimately calls #execute.
       
       
         &mdash;
-        <div class='inline'><p>
-name of the resulting method
-</p>
+        <div class='inline'>
+<p>name of the resulting method</p>
 </div>
       
     </li>
@@ -2752,11 +2827,10 @@ name of the resulting method
       
       
         &mdash;
-        <div class='inline'><p>
-a URL template, which can include some arguments, much like the definitions
+        <div class='inline'>
+<p>a URL template, which can include some arguments, much like the definitions
 on the server. the :session_id parameter is implicitly handled, but the
-remainder will become required method arguments.
-</p>
+remainder will become required method arguments.</p>
 </div>
       
     </li>
@@ -2771,9 +2845,8 @@ remainder will become required method arguments.
       
       
         &mdash;
-        <div class='inline'><p>
-the appropriate http verb, such as :get, :post, or :delete
-</p>
+        <div class='inline'>
+<p>the appropriate http verb, such as :get, :post, or :delete</p>
 </div>
       
     </li>
@@ -2806,19 +2879,21 @@ the appropriate http verb, such as :get, :post, or :delete
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="acceptAlert-instance_method">
+  <h3 class="signature first" id="acceptAlert-instance_method">
   
     - (<tt>Object</tt>) <strong>acceptAlert</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -2850,21 +2925,22 @@ the appropriate http verb, such as :get, :post, or :delete
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="addCookie-instance_method">
+  <h3 class="signature " id="addCookie-instance_method">
   
     - (<tt>Object</tt>) <strong>addCookie</strong>(cookie) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-cookies
-</p>
+
+<p>cookies</p>
 
 
   </div>
@@ -2894,16 +2970,18 @@ cookies
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="browser-instance_method">
+  <h3 class="signature " id="browser-instance_method">
   
     - (<tt>Object</tt>) <strong>browser</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -2935,16 +3013,18 @@ cookies
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="clearElement-instance_method">
+  <h3 class="signature " id="clearElement-instance_method">
   
     - (<tt>Object</tt>) <strong>clearElement</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -2976,16 +3056,18 @@ cookies
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="clearLocalStorage-instance_method">
+  <h3 class="signature " id="clearLocalStorage-instance_method">
   
     - (<tt>Object</tt>) <strong>clearLocalStorage</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3017,16 +3099,18 @@ cookies
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="clearSessionStorage-instance_method">
+  <h3 class="signature " id="clearSessionStorage-instance_method">
   
     - (<tt>Object</tt>) <strong>clearSessionStorage</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3058,16 +3142,18 @@ cookies
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="click-instance_method">
+  <h3 class="signature " id="click-instance_method">
   
     - (<tt>Object</tt>) <strong>click</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3099,21 +3185,22 @@ cookies
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="clickElement-instance_method">
+  <h3 class="signature " id="clickElement-instance_method">
   
     - (<tt>Object</tt>) <strong>clickElement</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-actions
-</p>
+
+<p>actions</p>
 
 
   </div>
@@ -3143,16 +3230,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="close-instance_method">
+  <h3 class="signature " id="close-instance_method">
   
     - (<tt>Object</tt>) <strong>close</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3184,16 +3273,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="contextClick-instance_method">
+  <h3 class="signature " id="contextClick-instance_method">
   
     - (<tt>Object</tt>) <strong>contextClick</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3225,16 +3316,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="create_session-instance_method">
+  <h3 class="signature " id="create_session-instance_method">
   
     - (<tt>Object</tt>) <strong>create_session</strong>(desired_capabilities) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3272,16 +3365,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="deleteAllCookies-instance_method">
+  <h3 class="signature " id="deleteAllCookies-instance_method">
   
     - (<tt>Object</tt>) <strong>deleteAllCookies</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3313,16 +3408,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="deleteCookie-instance_method">
+  <h3 class="signature " id="deleteCookie-instance_method">
   
     - (<tt>Object</tt>) <strong>deleteCookie</strong>(name) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3354,16 +3451,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="dismissAlert-instance_method">
+  <h3 class="signature " id="dismissAlert-instance_method">
   
     - (<tt>Object</tt>) <strong>dismissAlert</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3395,16 +3494,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="doubleClick-instance_method">
+  <h3 class="signature " id="doubleClick-instance_method">
   
     - (<tt>Object</tt>) <strong>doubleClick</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3436,16 +3537,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="dragElement-instance_method">
+  <h3 class="signature " id="dragElement-instance_method">
   
     - (<tt>Object</tt>) <strong>dragElement</strong>(element, right_by, down_by) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3477,16 +3580,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="driver_extensions-instance_method">
+  <h3 class="signature " id="driver_extensions-instance_method">
   
     - (<tt>Object</tt>) <strong>driver_extensions</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3526,16 +3631,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="elementEquals-instance_method">
+  <h3 class="signature " id="elementEquals-instance_method">
   
     - (<tt>Object</tt>) <strong>elementEquals</strong>(element, other) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3575,16 +3682,18 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="executeAsyncScript-instance_method">
+  <h3 class="signature " id="executeAsyncScript-instance_method">
   
     - (<tt>Object</tt>) <strong>executeAsyncScript</strong>(script, *args) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3622,21 +3731,22 @@ actions
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="executeScript-instance_method">
+  <h3 class="signature " id="executeScript-instance_method">
   
     - (<tt>Object</tt>) <strong>executeScript</strong>(script, *args) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-javascript execution
-</p>
+
+<p>javascript execution</p>
 
 
   </div>
@@ -3672,16 +3782,18 @@ javascript execution
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="find_element_by-instance_method">
+  <h3 class="signature " id="find_element_by-instance_method">
   
     - (<tt>Object</tt>) <strong>find_element_by</strong>(how, what, parent = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3725,16 +3837,18 @@ javascript execution
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="find_elements_by-instance_method">
+  <h3 class="signature " id="find_elements_by-instance_method">
   
     - (<tt>Object</tt>) <strong>find_elements_by</strong>(how, what, parent = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3778,16 +3892,18 @@ javascript execution
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="get-instance_method">
+  <h3 class="signature " id="get-instance_method">
   
     - (<tt>Object</tt>) <strong>get</strong>(url) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3819,7 +3935,7 @@ javascript execution
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getActiveElement-instance_method">
+  <h3 class="signature " id="getActiveElement-instance_method">
   
     - (<tt>Object</tt>) <strong>getActiveElement</strong> 
   
@@ -3829,15 +3945,16 @@ javascript execution
     <span class="names"><span id='switchToActiveElement-instance_method'>switchToActiveElement</span></span>
     </span>
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-finding elements
-</p>
+
+<p>finding elements</p>
 
 
   </div>
@@ -3867,21 +3984,22 @@ finding elements
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getAlert-instance_method">
+  <h3 class="signature " id="getAlert-instance_method">
   
     - (<tt>Object</tt>) <strong>getAlert</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-alerts
-</p>
+
+<p>alerts</p>
 
 
   </div>
@@ -3911,16 +4029,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getAlertText-instance_method">
+  <h3 class="signature " id="getAlertText-instance_method">
   
     - (<tt>Object</tt>) <strong>getAlertText</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3952,16 +4072,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getAllCookies-instance_method">
+  <h3 class="signature " id="getAllCookies-instance_method">
   
     - (<tt>Object</tt>) <strong>getAllCookies</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -3993,16 +4115,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getCapabilities-instance_method">
+  <h3 class="signature " id="getCapabilities-instance_method">
   
     - (<tt>Object</tt>) <strong>getCapabilities</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4034,16 +4158,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getCurrentUrl-instance_method">
+  <h3 class="signature " id="getCurrentUrl-instance_method">
   
     - (<tt>Object</tt>) <strong>getCurrentUrl</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4075,16 +4201,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getCurrentWindowHandle-instance_method">
+  <h3 class="signature " id="getCurrentWindowHandle-instance_method">
   
     - (<tt>Object</tt>) <strong>getCurrentWindowHandle</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4116,16 +4244,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementAttribute-instance_method">
+  <h3 class="signature " id="getElementAttribute-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementAttribute</strong>(element, name) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4157,16 +4287,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementLocation-instance_method">
+  <h3 class="signature " id="getElementLocation-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementLocation</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4202,16 +4334,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementLocationOnceScrolledIntoView-instance_method">
+  <h3 class="signature " id="getElementLocationOnceScrolledIntoView-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementLocationOnceScrolledIntoView</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4247,16 +4381,18 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementSize-instance_method">
+  <h3 class="signature " id="getElementSize-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementSize</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4292,21 +4428,22 @@ alerts
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementTagName-instance_method">
+  <h3 class="signature " id="getElementTagName-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementTagName</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-element properties
-</p>
+
+<p>element properties</p>
 
 
   </div>
@@ -4336,16 +4473,18 @@ element properties
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementText-instance_method">
+  <h3 class="signature " id="getElementText-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementText</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4377,16 +4516,18 @@ element properties
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementValue-instance_method">
+  <h3 class="signature " id="getElementValue-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementValue</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4418,16 +4559,18 @@ element properties
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getElementValueOfCssProperty-instance_method">
+  <h3 class="signature " id="getElementValueOfCssProperty-instance_method">
   
     - (<tt>Object</tt>) <strong>getElementValueOfCssProperty</strong>(element, prop) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4459,21 +4602,22 @@ element properties
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getLocalStorageItem-instance_method">
+  <h3 class="signature " id="getLocalStorageItem-instance_method">
   
     - (<tt>Object</tt>) <strong>getLocalStorageItem</strong>(key) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-HTML 5
-</p>
+
+<p>HTML 5</p>
 
 
   </div>
@@ -4503,16 +4647,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getLocalStorageKeys-instance_method">
+  <h3 class="signature " id="getLocalStorageKeys-instance_method">
   
     - (<tt>Object</tt>) <strong>getLocalStorageKeys</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4544,16 +4690,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getLocalStorageSize-instance_method">
+  <h3 class="signature " id="getLocalStorageSize-instance_method">
   
     - (<tt>Object</tt>) <strong>getLocalStorageSize</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4585,16 +4733,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getLocation-instance_method">
+  <h3 class="signature " id="getLocation-instance_method">
   
     - (<tt>Object</tt>) <strong>getLocation</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4628,16 +4778,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getPageSource-instance_method">
+  <h3 class="signature " id="getPageSource-instance_method">
   
     - (<tt>Object</tt>) <strong>getPageSource</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4669,16 +4821,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getScreenshot-instance_method">
+  <h3 class="signature " id="getScreenshot-instance_method">
   
     - (<tt>Object</tt>) <strong>getScreenshot</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4710,16 +4864,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getSessionStorageItem-instance_method">
+  <h3 class="signature " id="getSessionStorageItem-instance_method">
   
     - (<tt>Object</tt>) <strong>getSessionStorageItem</strong>(key) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4751,16 +4907,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getSessionStorageKeys-instance_method">
+  <h3 class="signature " id="getSessionStorageKeys-instance_method">
   
     - (<tt>Object</tt>) <strong>getSessionStorageKeys</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4792,16 +4950,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getSessionStorageSize-instance_method">
+  <h3 class="signature " id="getSessionStorageSize-instance_method">
   
     - (<tt>Object</tt>) <strong>getSessionStorageSize</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4833,16 +4993,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getTitle-instance_method">
+  <h3 class="signature " id="getTitle-instance_method">
   
     - (<tt>Object</tt>) <strong>getTitle</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4874,16 +5036,18 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getVisible-instance_method">
+  <h3 class="signature " id="getVisible-instance_method">
   
     - (<tt>Object</tt>) <strong>getVisible</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -4915,21 +5079,22 @@ HTML 5
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getWindowHandles-instance_method">
+  <h3 class="signature " id="getWindowHandles-instance_method">
   
     - (<tt>Object</tt>) <strong>getWindowHandles</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-window handling
-</p>
+
+<p>window handling</p>
 
 
   </div>
@@ -4959,16 +5124,18 @@ window handling
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getWindowPosition-instance_method">
+  <h3 class="signature " id="getWindowPosition-instance_method">
   
     - (<tt>Object</tt>) <strong>getWindowPosition</strong>(handle = :current) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5004,16 +5171,18 @@ window handling
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="getWindowSize-instance_method">
+  <h3 class="signature " id="getWindowSize-instance_method">
   
     - (<tt>Object</tt>) <strong>getWindowSize</strong>(handle = :current) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5049,21 +5218,22 @@ window handling
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="goBack-instance_method">
+  <h3 class="signature " id="goBack-instance_method">
   
     - (<tt>Object</tt>) <strong>goBack</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-navigation
-</p>
+
+<p>navigation</p>
 
 
   </div>
@@ -5093,16 +5263,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="goForward-instance_method">
+  <h3 class="signature " id="goForward-instance_method">
   
     - (<tt>Object</tt>) <strong>goForward</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5134,16 +5306,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="isBrowserOnline-instance_method">
+  <h3 class="signature " id="isBrowserOnline-instance_method">
   
     - (<tt>Object</tt>) <strong>isBrowserOnline</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5175,16 +5349,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="isElementDisplayed-instance_method">
+  <h3 class="signature " id="isElementDisplayed-instance_method">
   
     - (<tt>Object</tt>) <strong>isElementDisplayed</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5216,16 +5392,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="isElementEnabled-instance_method">
+  <h3 class="signature " id="isElementEnabled-instance_method">
   
     - (<tt>Object</tt>) <strong>isElementEnabled</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5257,16 +5435,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="isElementSelected-instance_method">
+  <h3 class="signature " id="isElementSelected-instance_method">
   
     - (<tt>Object</tt>) <strong>isElementSelected</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5298,16 +5478,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="maximizeWindow-instance_method">
+  <h3 class="signature " id="maximizeWindow-instance_method">
   
     - (<tt>Object</tt>) <strong>maximizeWindow</strong>(handle = :current) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5339,16 +5521,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="mouseDown-instance_method">
+  <h3 class="signature " id="mouseDown-instance_method">
   
     - (<tt>Object</tt>) <strong>mouseDown</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5380,16 +5564,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="mouseMoveTo-instance_method">
+  <h3 class="signature " id="mouseMoveTo-instance_method">
   
     - (<tt>Object</tt>) <strong>mouseMoveTo</strong>(element, x = nil, y = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5433,16 +5619,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="mouseUp-instance_method">
+  <h3 class="signature " id="mouseUp-instance_method">
   
     - (<tt>Object</tt>) <strong>mouseUp</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5474,16 +5662,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="quit-instance_method">
+  <h3 class="signature " id="quit-instance_method">
   
     - (<tt>Object</tt>) <strong>quit</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5519,16 +5709,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="refresh-instance_method">
+  <h3 class="signature " id="refresh-instance_method">
   
     - (<tt>Object</tt>) <strong>refresh</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5560,16 +5752,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="removeLocalStorageItem-instance_method">
+  <h3 class="signature " id="removeLocalStorageItem-instance_method">
   
     - (<tt>Object</tt>) <strong>removeLocalStorageItem</strong>(key) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5601,16 +5795,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="removeSessionStorageItem-instance_method">
+  <h3 class="signature " id="removeSessionStorageItem-instance_method">
   
     - (<tt>Object</tt>) <strong>removeSessionStorageItem</strong>(key) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5642,16 +5838,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="sendKeysToActiveElement-instance_method">
+  <h3 class="signature " id="sendKeysToActiveElement-instance_method">
   
     - (<tt>Object</tt>) <strong>sendKeysToActiveElement</strong>(key) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5683,16 +5881,18 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="sendKeysToElement-instance_method">
+  <h3 class="signature " id="sendKeysToElement-instance_method">
   
     - (<tt>Object</tt>) <strong>sendKeysToElement</strong>(element, keys) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5732,21 +5932,22 @@ navigation
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="session_id-instance_method">
+  <h3 class="signature " id="session_id-instance_method">
   
     - (<tt>Object</tt>) <strong>session_id</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-Returns the current session ID.
-</p>
+
+<p>Returns the current session ID.</p>
 
 
   </div>
@@ -5776,16 +5977,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setAlertValue-instance_method">
+  <h3 class="signature " id="setAlertValue-instance_method">
   
     - (<tt>Object</tt>) <strong>setAlertValue</strong>(keys) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5817,16 +6020,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setBrowserOnline-instance_method">
+  <h3 class="signature " id="setBrowserOnline-instance_method">
   
     - (<tt>Object</tt>) <strong>setBrowserOnline</strong>(bool) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5858,16 +6063,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setImplicitWaitTimeout-instance_method">
+  <h3 class="signature " id="setImplicitWaitTimeout-instance_method">
   
     - (<tt>Object</tt>) <strong>setImplicitWaitTimeout</strong>(milliseconds) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5899,16 +6106,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setLocalStorageItem-instance_method">
+  <h3 class="signature " id="setLocalStorageItem-instance_method">
   
     - (<tt>Object</tt>) <strong>setLocalStorageItem</strong>(key, value) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5940,16 +6149,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setLocation-instance_method">
+  <h3 class="signature " id="setLocation-instance_method">
   
     - (<tt>Object</tt>) <strong>setLocation</strong>(lat, lon, alt) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -5983,16 +6194,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setScriptTimeout-instance_method">
+  <h3 class="signature " id="setScriptTimeout-instance_method">
   
     - (<tt>Object</tt>) <strong>setScriptTimeout</strong>(milliseconds) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6024,16 +6237,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setSessionStorageItem-instance_method">
+  <h3 class="signature " id="setSessionStorageItem-instance_method">
   
     - (<tt>Object</tt>) <strong>setSessionStorageItem</strong>(key, value) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6065,16 +6280,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setTimeout-instance_method">
+  <h3 class="signature " id="setTimeout-instance_method">
   
     - (<tt>Object</tt>) <strong>setTimeout</strong>(type, milliseconds) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6106,16 +6323,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setVisible-instance_method">
+  <h3 class="signature " id="setVisible-instance_method">
   
     - (<tt>Object</tt>) <strong>setVisible</strong>(bool) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6147,16 +6366,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setWindowPosition-instance_method">
+  <h3 class="signature " id="setWindowPosition-instance_method">
   
     - (<tt>Object</tt>) <strong>setWindowPosition</strong>(x, y, handle = :current) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6190,16 +6411,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="setWindowSize-instance_method">
+  <h3 class="signature " id="setWindowSize-instance_method">
   
     - (<tt>Object</tt>) <strong>setWindowSize</strong>(width, height, handle = :current) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6235,16 +6458,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="submitElement-instance_method">
+  <h3 class="signature " id="submitElement-instance_method">
   
     - (<tt>Object</tt>) <strong>submitElement</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6276,16 +6501,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="switchToDefaultContent-instance_method">
+  <h3 class="signature " id="switchToDefaultContent-instance_method">
   
     - (<tt>Object</tt>) <strong>switchToDefaultContent</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6317,16 +6544,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="switchToFrame-instance_method">
+  <h3 class="signature " id="switchToFrame-instance_method">
   
     - (<tt>Object</tt>) <strong>switchToFrame</strong>(id) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6358,16 +6587,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="switchToWindow-instance_method">
+  <h3 class="signature " id="switchToWindow-instance_method">
   
     - (<tt>Object</tt>) <strong>switchToWindow</strong>(name) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6399,16 +6630,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchDoubleTap-instance_method">
+  <h3 class="signature " id="touchDoubleTap-instance_method">
   
     - (<tt>Object</tt>) <strong>touchDoubleTap</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6440,16 +6673,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchDown-instance_method">
+  <h3 class="signature " id="touchDown-instance_method">
   
     - (<tt>Object</tt>) <strong>touchDown</strong>(x, y) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6481,16 +6716,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchElementFlick-instance_method">
+  <h3 class="signature " id="touchElementFlick-instance_method">
   
     - (<tt>Object</tt>) <strong>touchElementFlick</strong>(element, right_by, down_by, speed) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6530,16 +6767,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchFlick-instance_method">
+  <h3 class="signature " id="touchFlick-instance_method">
   
     - (<tt>Object</tt>) <strong>touchFlick</strong>(xspeed, yspeed) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6571,16 +6810,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchLongPress-instance_method">
+  <h3 class="signature " id="touchLongPress-instance_method">
   
     - (<tt>Object</tt>) <strong>touchLongPress</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6612,16 +6853,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchMove-instance_method">
+  <h3 class="signature " id="touchMove-instance_method">
   
     - (<tt>Object</tt>) <strong>touchMove</strong>(x, y) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6653,16 +6896,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchScroll-instance_method">
+  <h3 class="signature " id="touchScroll-instance_method">
   
     - (<tt>Object</tt>) <strong>touchScroll</strong>(element, x, y) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6706,16 +6951,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchSingleTap-instance_method">
+  <h3 class="signature " id="touchSingleTap-instance_method">
   
     - (<tt>Object</tt>) <strong>touchSingleTap</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6747,16 +6994,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="touchUp-instance_method">
+  <h3 class="signature " id="touchUp-instance_method">
   
     - (<tt>Object</tt>) <strong>touchUp</strong>(x, y) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6788,16 +7037,18 @@ Returns the current session ID.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="upload-instance_method">
+  <h3 class="signature " id="upload-instance_method">
   
     - (<tt>Object</tt>) <strong>upload</strong>(local_file) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -6839,11 +7090,11 @@ Returns the current session ID.
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:51 2012 by 
+  Generated on Wed May 30 00:28:01 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

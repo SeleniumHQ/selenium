@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Platform
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (P)</a> &raquo; 
+    <a href="../../_index.html">Index (P)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">Platform</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Module: Selenium::WebDriver::Platform
   
   
@@ -80,7 +87,7 @@
 <div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This module is part of a private API.</strong> 
+  <strong>This module is part of a private API.</strong>
   You should avoid using this module if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -95,9 +102,11 @@
 
 
 
+
+
   
     <h2>
-      Instance Method Summary
+      Class Method Summary
       <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
     </h2>
 
@@ -106,7 +115,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#assert_executable-instance_method" title="#assert_executable (instance method)">- (Object) <strong>assert_executable</strong>(path) </a>
+      <a href="#assert_executable-class_method" title="assert_executable (class method)">+ (Object) <strong>assert_executable</strong>(path) </a>
     
 
     
@@ -116,7 +125,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -127,7 +137,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#assert_file-instance_method" title="#assert_file (instance method)">- (Object) <strong>assert_file</strong>(path) </a>
+      <a href="#assert_file-class_method" title="assert_file (class method)">+ (Object) <strong>assert_file</strong>(path) </a>
     
 
     
@@ -137,7 +147,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -148,7 +159,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#bitsize-instance_method" title="#bitsize (instance method)">- (Object) <strong>bitsize</strong> </a>
+      <a href="#bitsize-class_method" title="bitsize (class method)">+ (Object) <strong>bitsize</strong> </a>
     
 
     
@@ -158,7 +169,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -169,7 +181,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#cygwin%3F-instance_method" title="#cygwin? (instance method)">- (Boolean) <strong>cygwin?</strong> </a>
+      <a href="#cygwin%3F-class_method" title="cygwin? (class method)">+ (Boolean) <strong>cygwin?</strong> </a>
     
 
     
@@ -179,7 +191,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -190,7 +203,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#cygwin_path-instance_method" title="#cygwin_path (instance method)">- (Object) <strong>cygwin_path</strong>(path, opts = {}) </a>
+      <a href="#cygwin_path-class_method" title="cygwin_path (class method)">+ (Object) <strong>cygwin_path</strong>(path, opts = {}) </a>
     
 
     
@@ -200,7 +213,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -211,7 +225,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#engine-instance_method" title="#engine (instance method)">- (Object) <strong>engine</strong> </a>
+      <a href="#engine-class_method" title="engine (class method)">+ (Object) <strong>engine</strong> </a>
     
 
     
@@ -221,7 +235,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -232,7 +247,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#exit_hook-instance_method" title="#exit_hook (instance method)">- (Object) <strong>exit_hook</strong>(&amp;blk) </a>
+      <a href="#exit_hook-class_method" title="exit_hook (class method)">+ (Object) <strong>exit_hook</strong>(&amp;blk) </a>
     
 
     
@@ -242,7 +257,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -253,7 +269,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#find_binary-instance_method" title="#find_binary (instance method)">- (Object) <strong>find_binary</strong>(*binary_names) </a>
+      <a href="#find_binary-class_method" title="find_binary (class method)">+ (Object) <strong>find_binary</strong>(*binary_names) </a>
     
 
     
@@ -263,7 +279,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -274,7 +291,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#home-instance_method" title="#home (instance method)">- (Object) <strong>home</strong> </a>
+      <a href="#home-class_method" title="home (class method)">+ (Object) <strong>home</strong> </a>
     
 
     
@@ -284,7 +301,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -295,7 +313,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ip-instance_method" title="#ip (instance method)">- (Object) <strong>ip</strong> </a>
+      <a href="#ip-class_method" title="ip (class method)">+ (Object) <strong>ip</strong> </a>
     
 
     
@@ -305,7 +323,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -316,7 +335,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ironruby%3F-instance_method" title="#ironruby? (instance method)">- (Boolean) <strong>ironruby?</strong> </a>
+      <a href="#ironruby%3F-class_method" title="ironruby? (class method)">+ (Boolean) <strong>ironruby?</strong> </a>
     
 
     
@@ -326,7 +345,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -337,7 +357,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#jruby%3F-instance_method" title="#jruby? (instance method)">- (Boolean) <strong>jruby?</strong> </a>
+      <a href="#jruby%3F-class_method" title="jruby? (class method)">+ (Boolean) <strong>jruby?</strong> </a>
     
 
     
@@ -347,7 +367,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -358,7 +379,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#linux%3F-instance_method" title="#linux? (instance method)">- (Boolean) <strong>linux?</strong> </a>
+      <a href="#linux%3F-class_method" title="linux? (class method)">+ (Boolean) <strong>linux?</strong> </a>
     
 
     
@@ -368,7 +389,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -379,7 +401,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#localhost-instance_method" title="#localhost (instance method)">- (Object) <strong>localhost</strong> </a>
+      <a href="#localhost-class_method" title="localhost (class method)">+ (Object) <strong>localhost</strong> </a>
     
 
     
@@ -389,7 +411,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -400,7 +423,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#mac%3F-instance_method" title="#mac? (instance method)">- (Boolean) <strong>mac?</strong> </a>
+      <a href="#mac%3F-class_method" title="mac? (class method)">+ (Boolean) <strong>mac?</strong> </a>
     
 
     
@@ -410,7 +433,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -421,7 +445,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#make_writable-instance_method" title="#make_writable (instance method)">- (Object) <strong>make_writable</strong>(file) </a>
+      <a href="#make_writable-class_method" title="make_writable (class method)">+ (Object) <strong>make_writable</strong>(file) </a>
     
 
     
@@ -431,7 +455,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -442,7 +467,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#os-instance_method" title="#os (instance method)">- (Object) <strong>os</strong> </a>
+      <a href="#os-class_method" title="os (class method)">+ (Object) <strong>os</strong> </a>
     
 
     
@@ -452,7 +477,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -463,7 +489,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ruby187%3F-instance_method" title="#ruby187? (instance method)">- (Boolean) <strong>ruby187?</strong> </a>
+      <a href="#ruby187%3F-class_method" title="ruby187? (class method)">+ (Boolean) <strong>ruby187?</strong> </a>
     
 
     
@@ -473,7 +499,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -484,7 +511,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ruby19%3F-instance_method" title="#ruby19? (instance method)">- (Boolean) <strong>ruby19?</strong> </a>
+      <a href="#ruby19%3F-class_method" title="ruby19? (class method)">+ (Boolean) <strong>ruby19?</strong> </a>
     
 
     
@@ -494,7 +521,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -505,7 +533,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#windows%3F-instance_method" title="#windows? (instance method)">- (Boolean) <strong>windows?</strong> </a>
+      <a href="#windows%3F-class_method" title="windows? (class method)">+ (Boolean) <strong>windows?</strong> </a>
     
 
     
@@ -515,7 +543,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -526,7 +555,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#wrap_in_quotes_if_necessary-instance_method" title="#wrap_in_quotes_if_necessary (instance method)">- (Object) <strong>wrap_in_quotes_if_necessary</strong>(str) </a>
+      <a href="#wrap_in_quotes_if_necessary-class_method" title="wrap_in_quotes_if_necessary (class method)">+ (Object) <strong>wrap_in_quotes_if_necessary</strong>(str) </a>
     
 
     
@@ -536,7 +565,8 @@
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -549,21 +579,23 @@
 
 
 
-  <div id="instance_method_details" class="method_details_list">
-    <h2>Instance Method Details</h2>
-    
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
     
       <div class="method_details first">
-  <p class="signature first" id="assert_executable-instance_method">
+  <h3 class="signature first" id="assert_executable-class_method">
   
-    - (<tt>Object</tt>) <strong>assert_executable</strong>(path) 
+    + (<tt>Object</tt>) <strong>assert_executable</strong>(path) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -603,16 +635,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="assert_file-instance_method">
+  <h3 class="signature " id="assert_file-class_method">
   
-    - (<tt>Object</tt>) <strong>assert_file</strong>(path) 
+    + (<tt>Object</tt>) <strong>assert_file</strong>(path) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -648,16 +682,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="bitsize-instance_method">
+  <h3 class="signature " id="bitsize-class_method">
   
-    - (<tt>Object</tt>) <strong>bitsize</strong> 
+    + (<tt>Object</tt>) <strong>bitsize</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -709,16 +745,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="cygwin?-instance_method">
+  <h3 class="signature " id="cygwin?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>cygwin?</strong> 
+    + (<tt>Boolean</tt>) <strong>cygwin?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -727,7 +765,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -763,16 +801,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="cygwin_path-instance_method">
+  <h3 class="signature " id="cygwin_path-class_method">
   
-    - (<tt>Object</tt>) <strong>cygwin_path</strong>(path, opts = {}) 
+    + (<tt>Object</tt>) <strong>cygwin_path</strong>(path, opts = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -810,16 +850,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="engine-instance_method">
+  <h3 class="signature " id="engine-class_method">
   
-    - (<tt>Object</tt>) <strong>engine</strong> 
+    + (<tt>Object</tt>) <strong>engine</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -863,16 +905,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="exit_hook-instance_method">
+  <h3 class="signature " id="exit_hook-class_method">
   
-    - (<tt>Object</tt>) <strong>exit_hook</strong>(&amp;blk) 
+    + (<tt>Object</tt>) <strong>exit_hook</strong>(&amp;blk) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -912,16 +956,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="find_binary-instance_method">
+  <h3 class="signature " id="find_binary-class_method">
   
-    - (<tt>Object</tt>) <strong>find_binary</strong>(*binary_names) 
+    + (<tt>Object</tt>) <strong>find_binary</strong>(*binary_names) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -973,16 +1019,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="home-instance_method">
+  <h3 class="signature " id="home-class_method">
   
-    - (<tt>Object</tt>) <strong>home</strong> 
+    + (<tt>Object</tt>) <strong>home</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1016,16 +1064,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="ip-instance_method">
+  <h3 class="signature " id="ip-class_method">
   
-    - (<tt>Object</tt>) <strong>ip</strong> 
+    + (<tt>Object</tt>) <strong>ip</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1057,16 +1107,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="ironruby?-instance_method">
+  <h3 class="signature " id="ironruby?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>ironruby?</strong> 
+    + (<tt>Boolean</tt>) <strong>ironruby?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1075,7 +1127,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1111,16 +1163,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="jruby?-instance_method">
+  <h3 class="signature " id="jruby?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>jruby?</strong> 
+    + (<tt>Boolean</tt>) <strong>jruby?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1129,7 +1183,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1165,16 +1219,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="linux?-instance_method">
+  <h3 class="signature " id="linux?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>linux?</strong> 
+    + (<tt>Boolean</tt>) <strong>linux?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1183,7 +1239,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1219,16 +1275,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="localhost-instance_method">
+  <h3 class="signature " id="localhost-class_method">
   
-    - (<tt>Object</tt>) <strong>localhost</strong> 
+    + (<tt>Object</tt>) <strong>localhost</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1272,16 +1330,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="mac?-instance_method">
+  <h3 class="signature " id="mac?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>mac?</strong> 
+    + (<tt>Boolean</tt>) <strong>mac?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1290,7 +1350,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1326,16 +1386,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="make_writable-instance_method">
+  <h3 class="signature " id="make_writable-class_method">
   
-    - (<tt>Object</tt>) <strong>make_writable</strong>(file) 
+    + (<tt>Object</tt>) <strong>make_writable</strong>(file) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1367,16 +1429,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="os-instance_method">
+  <h3 class="signature " id="os-class_method">
   
-    - (<tt>Object</tt>) <strong>os</strong> 
+    + (<tt>Object</tt>) <strong>os</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1436,16 +1500,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="ruby187?-instance_method">
+  <h3 class="signature " id="ruby187?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>ruby187?</strong> 
+    + (<tt>Boolean</tt>) <strong>ruby187?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1454,7 +1520,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1490,16 +1556,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="ruby19?-instance_method">
+  <h3 class="signature " id="ruby19?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>ruby19?</strong> 
+    + (<tt>Boolean</tt>) <strong>ruby19?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1508,7 +1576,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1544,16 +1612,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="windows?-instance_method">
+  <h3 class="signature " id="windows?-class_method">
   
-    - (<tt>Boolean</tt>) <strong>windows?</strong> 
+    + (<tt>Boolean</tt>) <strong>windows?</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1562,7 +1632,7 @@
 </div>
 <div class="tags">
   
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1598,16 +1668,18 @@
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wrap_in_quotes_if_necessary-instance_method">
+  <h3 class="signature " id="wrap_in_quotes_if_necessary-class_method">
   
-    - (<tt>Object</tt>) <strong>wrap_in_quotes_if_necessary</strong>(str) 
+    + (<tt>Object</tt>) <strong>wrap_in_quotes_if_necessary</strong>(str) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -1641,11 +1713,11 @@
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:54 2012 by 
+  Generated on Wed May 30 00:27:57 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

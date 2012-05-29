@@ -44,21 +44,14 @@ function createFullTreeLinks() {
 
 function fixBoxInfoHeights() {
     $('dl.box dd.r1, dl.box dd.r2').each(function() {
-       $(this).prev().height($(this).height()); 
+       $(this).prev().height($(this).height());
     });
 }
 
 function searchFrameLinks() {
-  $('#method_list_link').click(function() {
-    toggleSearchFrame(this, relpath + 'method_list.html');
-  });
-
-  $('#class_list_link').click(function() {
-    toggleSearchFrame(this, relpath + 'class_list.html');
-  });
-
-  $('#file_list_link').click(function() {
-    toggleSearchFrame(this, relpath + 'file_list.html');
+  $('.full_list_link').click(function() {
+    toggleSearchFrame(this, $(this).attr('href'));
+    return false;
   });
 }
 
@@ -82,10 +75,13 @@ function linkSummaries() {
 }
 
 function framesInit() {
-  if (window.top.frames.main) {
+  if (hasFrames) {
     document.body.className = 'frames';
     $('#menu .noframes a').attr('href', document.location);
-    $('html head title', window.parent.document).text($('html head title').text());
+    window.top.document.title = $('html head title').text();
+  }
+  else {
+    $('#menu .noframes a').text('frames').attr('href', framesUrl);
   }
 }
 
@@ -113,7 +109,7 @@ function summaryToggle() {
     if (next.hasClass('compact')) {
       next.toggle();
       next.nextAll('ul.summary').first().toggle();
-    } 
+    }
     else if (next.hasClass('summary')) {
       var list = $('<ul class="summary compact" />');
       list.html(next.html());
@@ -151,30 +147,37 @@ function generateTOC() {
   for (i = 0; i < tags.length; i++) { tags[i] = '#filecontents ' + tags[i]; }
   var lastTag = parseInt(tags[0][1], 10);
   $(tags.join(', ')).each(function() {
+    if ($(this).parents('.method_details .docstring').length != 0) return;
     if (this.id == "filecontents") return;
     show = true;
     var thisTag = parseInt(this.tagName[1], 10);
     if (this.id.length === 0) {
-      var proposedId = $(this).text().replace(/[^a-z0-9-]/ig, '_');
-      if ($('#' + proposedId).length > 0) { proposedId += counter; counter++; }
-      this.id = proposedId;
+      var proposedId = $(this).attr('toc-id');
+      if (typeof(proposedId) != "undefined") this.id = proposedId;
+      else {
+        var proposedId = $(this).text().replace(/[^a-z0-9-]/ig, '_');
+        if ($('#' + proposedId).length > 0) { proposedId += counter; counter++; }
+        this.id = proposedId;
+      }
     }
-    if (thisTag > lastTag) { 
-      for (i = 0; i < thisTag - lastTag; i++) { 
-        var tmp = $('<ol/>'); toc.append(tmp); toc = tmp; 
-      } 
+    if (thisTag > lastTag) {
+      for (i = 0; i < thisTag - lastTag; i++) {
+        var tmp = $('<ol/>'); toc.append(tmp); toc = tmp;
+      }
     }
-    if (thisTag < lastTag) { 
-      for (i = 0; i < lastTag - thisTag; i++) toc = toc.parent(); 
+    if (thisTag < lastTag) {
+      for (i = 0; i < lastTag - thisTag; i++) toc = toc.parent();
     }
-    toc.append('<li><a href="#' + this.id + '">' + $(this).text() + '</a></li>');
+    var title = $(this).attr('toc-title');
+    if (typeof(title) == "undefined") title = $(this).text();
+    toc.append('<li><a href="#' + this.id + '">' + title + '</a></li>');
     lastTag = thisTag;
   });
   if (!show) return;
   html = '<div id="toc"><p class="title"><a class="hide_toc" href="#"><strong>Table of Contents</strong></a> <small>(<a href="#" class="float_toc">left</a>)</small></p></div>';
   $('#content').prepend(html);
   $('#toc').append(_toc);
-  $('#toc .hide_toc').toggle(function() { 
+  $('#toc .hide_toc').toggle(function() {
     $('#toc .top').slideUp('fast');
     $('#toc').toggleClass('hidden');
     $('#toc .title small').toggle();
@@ -183,7 +186,7 @@ function generateTOC() {
     $('#toc').toggleClass('hidden');
     $('#toc .title small').toggle();
   });
-  $('#toc .float_toc').toggle(function() { 
+  $('#toc .float_toc').toggle(function() {
     $(this).text('float');
     $('#toc').toggleClass('nofloat');
   }, function() {

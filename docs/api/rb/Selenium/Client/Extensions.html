@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::Client::Extensions
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (E)</a> &raquo; 
+    <a href="../../_index.html">Index (E)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Client.html" title="Selenium::Client (module)">Client</a></span></span>
      &raquo; 
     <span class="title">Extensions</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Module: Selenium::Client::Extensions
   
   
@@ -83,9 +90,8 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-Convenience methods not explicitely part of the protocol
-</p>
+    
+<p>Convenience methods not explicitely part of the protocol</p>
 
 
   </div>
@@ -94,6 +100,8 @@ Convenience methods not explicitely part of the protocol
   
 
 </div>
+
+
 
 
 
@@ -114,6 +122,7 @@ Convenience methods not explicitely part of the protocol
 
     
   </span>
+  
   
   
   
@@ -141,12 +150,12 @@ Convenience methods not explicitely part of the protocol
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-These for all Ajax request to finish (Only works if you are using
-prototype, the wait happens in the browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>These for all Ajax request to finish (Only works if you are using
+prototype, the wait happens in the browser).</p>
 </div></span>
   
 </li>
@@ -166,12 +175,12 @@ prototype, the wait happens in the browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for all Prototype effects to be processed (the wait happens in the
-browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for all Prototype effects to be processed (the wait happens in the
+browser).</p>
 </div></span>
   
 </li>
@@ -191,11 +200,11 @@ browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for an element to be present (the wait happens in the browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for an element to be present (the wait happens in the browser).</p>
 </div></span>
   
 </li>
@@ -215,11 +224,11 @@ Wait for an element to be present (the wait happens in the browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for a field to get a specific value (the wait happens in the browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for a field to get a specific value (the wait happens in the browser).</p>
 </div></span>
   
 </li>
@@ -239,11 +248,11 @@ Wait for a field to get a specific value (the wait happens in the browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for an element to NOT be present (the wait happens in the browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for an element to NOT be present (the wait happens in the browser).</p>
 </div></span>
   
 </li>
@@ -263,12 +272,12 @@ Wait for an element to NOT be present (the wait happens in the browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for a field to not have a specific value (the wait happens in the
-browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for a field to not have a specific value (the wait happens in the
+browser).</p>
 </div></span>
   
 </li>
@@ -288,11 +297,11 @@ browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for some text to NOT be present (the wait happens in the browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for some text to NOT be present (the wait happens in the browser).</p>
 </div></span>
   
 </li>
@@ -312,11 +321,11 @@ Wait for some text to NOT be present (the wait happens in the browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for something to not be visible (the wait happens in the browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for something to not be visible (the wait happens in the browser).</p>
 </div></span>
   
 </li>
@@ -336,12 +345,12 @@ Wait for something to not be visible (the wait happens in the browser).
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-wait_for_text will search for the given argument within the innerHTML of
-the current DOM.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>wait_for_text will search for the given argument within the innerHTML of
+the current DOM.</p>
 </div></span>
   
 </li>
@@ -361,11 +370,11 @@ the current DOM.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Wait for something to be visible (the wait happens in the browser).
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Wait for something to be visible (the wait happens in the browser).</p>
 </div></span>
   
 </li>
@@ -378,16 +387,18 @@ Wait for something to be visible (the wait happens in the browser).
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="active_javascript_framework-instance_method">
+  <h3 class="signature first" id="active_javascript_framework-instance_method">
   
     - (<tt>Object</tt>) <strong>active_javascript_framework</strong>(options) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -409,23 +420,23 @@ Wait for something to be visible (the wait happens in the browser).
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_ajax-instance_method">
+  <h3 class="signature " id="wait_for_ajax-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_ajax</strong>(options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-These for all Ajax request to finish (Only works if you are using
-prototype, the wait happens in the browser)
-</p>
-<p>
-See <a
+    
+<p>These for all Ajax request to finish (Only works if you are using
+prototype, the wait happens in the browser)</p>
+
+<p>See <a
 href="http://davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax">davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax</a>
-for more background.
-</p>
+for more background.</p>
 
 
   </div>
@@ -459,22 +470,22 @@ for more background.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_effects-instance_method">
+  <h3 class="signature " id="wait_for_effects-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_effects</strong>(options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for all Prototype effects to be processed (the wait happens in the
-browser).
-</p>
-<p>
-Credits to <a
-href="http://github.com/brynary/webrat/tree/master">github.com/brynary/webrat/tree/master</a>
-</p>
+    
+<p>Wait for all Prototype effects to be processed (the wait happens in the
+browser).</p>
+
+<p>Credits to <a
+href="http://github.com/brynary/webrat/tree/master">github.com/brynary/webrat/tree/master</a></p>
 
 
   </div>
@@ -508,17 +519,18 @@ href="http://github.com/brynary/webrat/tree/master">github.com/brynary/webrat/tr
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_element-instance_method">
+  <h3 class="signature " id="wait_for_element-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_element</strong>(locator, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for an element to be present (the wait happens in the browser).
-</p>
+    
+<p>Wait for an element to be present (the wait happens in the browser).</p>
 
 
   </div>
@@ -552,17 +564,18 @@ Wait for an element to be present (the wait happens in the browser).
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_field_value-instance_method">
+  <h3 class="signature " id="wait_for_field_value-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_field_value</strong>(locator, expected_value, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for a field to get a specific value (the wait happens in the browser).
-</p>
+    
+<p>Wait for a field to get a specific value (the wait happens in the browser).</p>
 
 
   </div>
@@ -596,17 +609,18 @@ Wait for a field to get a specific value (the wait happens in the browser).
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_no_element-instance_method">
+  <h3 class="signature " id="wait_for_no_element-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_no_element</strong>(locator, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for an element to NOT be present (the wait happens in the browser).
-</p>
+    
+<p>Wait for an element to NOT be present (the wait happens in the browser).</p>
 
 
   </div>
@@ -640,18 +654,19 @@ Wait for an element to NOT be present (the wait happens in the browser).
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_no_field_value-instance_method">
+  <h3 class="signature " id="wait_for_no_field_value-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_no_field_value</strong>(locator, expected_value, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for a field to not have a specific value (the wait happens in the
-browser).
-</p>
+    
+<p>Wait for a field to not have a specific value (the wait happens in the
+browser).</p>
 
 
   </div>
@@ -685,20 +700,20 @@ browser).
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_no_text-instance_method">
+  <h3 class="signature " id="wait_for_no_text-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_no_text</strong>(pattern, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for some text to NOT be present (the wait happens in the browser).
-</p>
-<p>
-See wait_for_text for usage details.
-</p>
+    
+<p>Wait for some text to NOT be present (the wait happens in the browser).</p>
+
+<p>See wait_for_text for usage details.</p>
 
 
   </div>
@@ -732,17 +747,18 @@ See wait_for_text for usage details.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_not_visible-instance_method">
+  <h3 class="signature " id="wait_for_not_visible-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_not_visible</strong>(locator, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for something to not be visible (the wait happens in the browser).
-</p>
+    
+<p>Wait for something to not be visible (the wait happens in the browser).</p>
 
 
   </div>
@@ -774,62 +790,53 @@ Wait for something to not be visible (the wait happens in the browser).
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_text-instance_method">
+  <h3 class="signature " id="wait_for_text-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_text</strong>(pattern, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-wait_for_text will search for the given argument within the innerHTML of
+    
+<p>wait_for_text will search for the given argument within the innerHTML of
 the current DOM. Note that this method treats a single string as a special
-case.
-</p>
+case.</p>
+
 <h4>Parameters</h4>
-<p>
-wait_for_text accepts an optional hash of parameters:
-</p>
-<ul>
-<li><p>
-<tt>:element</tt> - a selenium locator for an element limiting the search
-scope.
-</p>
-</li>
-<li><p>
-<tt>:timeout_in_seconds</tt> - duration in seconds after  which we time out
-if text cannot be found.
-</p>
-</li>
-</ul>
+
+<p>wait_for_text accepts an optional hash of parameters:</p>
+<ul><li>
+<p><tt>:element</tt> - a selenium locator for an element limiting the search
+scope.</p>
+</li><li>
+<p><tt>:timeout_in_seconds</tt> - duration in seconds after  which we time out
+if text cannot be found.</p>
+</li></ul>
+
 <h4>Regular Expressions</h4>
-<p>
-In addition to plain strings, wait_for_text accepts regular expressions as
-the pattern specification.
-</p>
+
+<p>In addition to plain strings, wait_for_text accepts regular expressions as
+the pattern specification.</p>
+
 <h4>Examples</h4>
-<p>
-The following are equivalent, and will match &#8220;some text&#8221;
-anywhere within the document:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span>
-</pre>
-<p>
-This will match &#8220;some text&#8221; anywhere within the specified
-element:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span>
-</pre>
-<p>
-This will match &#8220;some text&#8221; only if it exactly matches the
-complete innerHTML of the specified element:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span></pre>
+
+<p>The following are equivalent, and will match "some text" anywhere within
+the document:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span></code></pre>
+
+<p>This will match "some text" anywhere within the specified element:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span></code></pre>
+
+<p>This will match "some text" only if it exactly matches the complete
+innerHTML of the specified element:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span></code></pre>
 
 
   </div>
@@ -863,17 +870,18 @@ complete innerHTML of the specified element:
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="wait_for_visible-instance_method">
+  <h3 class="signature " id="wait_for_visible-instance_method">
   
     - (<tt>Object</tt>) <strong>wait_for_visible</strong>(locator, options = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Wait for something to be visible (the wait happens in the browser).
-</p>
+    
+<p>Wait for something to be visible (the wait happens in the browser).</p>
 
 
   </div>
@@ -907,11 +915,11 @@ Wait for something to be visible (the wait happens in the browser).
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:45 2012 by 
+  Generated on Wed May 30 00:27:55 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

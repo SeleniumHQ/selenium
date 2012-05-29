@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ActionBuilder
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (A)</a> &raquo; 
+    <a href="../../_index.html">Index (A)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">ActionBuilder</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::ActionBuilder
   
   
@@ -94,15 +101,13 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-The ActionBuilder provides the user a way to set up and perform complex
-user interactions.
-</p>
-<p>
-This class should not be instantiated directly, but is created by
+    
+<p>The ActionBuilder provides the user a way to set up and perform complex
+user interactions.</p>
+
+<p>This class should not be instantiated directly, but is created by
 Selenium::WebDriver::DriverExtensions::HasInputDevices#action, which is
-available on Driver instances that support the user interaction API.
-</p>
+available on Driver instances that support the user interaction API.</p>
 
 
   </div>
@@ -110,9 +115,9 @@ available on Driver instances that support the user interaction API.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'></div></h4>
+      
       <pre class="example code">
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span>
               <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span>
@@ -128,6 +133,8 @@ available on Driver instances that support the user interaction API.
   <h2>Direct Known Subclasses</h2>
   <p class="children"><span class='object_link'><a href="TouchActionBuilder.html" title="Selenium::WebDriver::TouchActionBuilder (class)">TouchActionBuilder</a></span></p>
 </div>
+
+
 
 
 
@@ -155,11 +162,11 @@ available on Driver instances that support the user interaction API.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Clicks in the middle of the given element.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Clicks in the middle of the given element.</p>
 </div></span>
   
 </li>
@@ -179,11 +186,11 @@ Clicks in the middle of the given element.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Clicks (without releasing) in the middle of the given element.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Clicks (without releasing) in the middle of the given element.</p>
 </div></span>
   
 </li>
@@ -203,11 +210,11 @@ Clicks (without releasing) in the middle of the given element.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Performs a context-click at middle of the given element.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Performs a context-click at middle of the given element.</p>
 </div></span>
   
 </li>
@@ -227,11 +234,11 @@ Performs a context-click at middle of the given element.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Performs a double-click at middle of the given element.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Performs a double-click at middle of the given element.</p>
 </div></span>
   
 </li>
@@ -251,13 +258,13 @@ Performs a double-click at middle of the given element.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A convenience method that performs click-and-hold at the location of the
+    <span class="summary_desc"><div class='inline'>
+<p>A convenience method that performs click-and-hold at the location of the
 source element, moves to the location of the target element, then releases
-the mouse.
-</p>
+the mouse.</p>
 </div></span>
   
 </li>
@@ -277,12 +284,12 @@ the mouse.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A convenience method that performs click-and-hold at the location of the
-source element, moves by a given offset, then releases the mouse.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A convenience method that performs click-and-hold at the location of the
+source element, moves by a given offset, then releases the mouse.</p>
 </div></span>
   
 </li>
@@ -297,18 +304,18 @@ source element, moves by a given offset, then releases the mouse.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of ActionBuilder.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of ActionBuilder.</p>
 </div></span>
   
 </li>
@@ -328,11 +335,11 @@ A new instance of ActionBuilder.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Performs a modifier key press.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Performs a modifier key press.</p>
 </div></span>
   
 </li>
@@ -352,11 +359,11 @@ Performs a modifier key press.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Performs a modifier key release.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Performs a modifier key release.</p>
 </div></span>
   
 </li>
@@ -376,11 +383,11 @@ Performs a modifier key release.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Moves the mouse from its current position (or 0,0) by the given offset.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Moves the mouse from its current position (or 0,0) by the given offset.</p>
 </div></span>
   
 </li>
@@ -400,11 +407,11 @@ Moves the mouse from its current position (or 0,0) by the given offset.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Moves the mouse to the middle of the given element.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Moves the mouse to the middle of the given element.</p>
 </div></span>
   
 </li>
@@ -424,11 +431,11 @@ Moves the mouse to the middle of the given element.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Executes the actions added to the builder.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Executes the actions added to the builder.</p>
 </div></span>
   
 </li>
@@ -448,11 +455,11 @@ Executes the actions added to the builder.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Releases the depressed left mouse button at the current mouse location.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Releases the depressed left mouse button at the current mouse location.</p>
 </div></span>
   
 </li>
@@ -472,11 +479,11 @@ Releases the depressed left mouse button at the current mouse location.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Sends keys to the active element.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Sends keys to the active element.</p>
 </div></span>
   
 </li>
@@ -489,21 +496,22 @@ Sends keys to the active element.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>initialize</strong>(mouse, keyboard) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-A new instance of ActionBuilder
-</p>
+
+<p>A new instance of ActionBuilder</p>
 
 
   </div>
@@ -547,26 +555,25 @@ A new instance of ActionBuilder
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="click-instance_method">
+  <h3 class="signature first" id="click-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>click</strong>(element = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Clicks in the middle of the given element. Equivalent to:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span>
-</pre>
-<p>
-When no element is passed, the current mouse position will be clicked.
-</p>
+    
+<p>Clicks in the middle of the given element. Equivalent to:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span></code></pre>
+
+<p>When no element is passed, the current mouse position will be clicked.</p>
 
 
   </div>
@@ -574,25 +581,27 @@ When no element is passed, the current mouse position will be clicked.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Clicking on an element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Clicking on an element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
-      <h4><div class='inline'><p>
-Clicking at the current mouse position
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Clicking at the current mouse position</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -607,16 +616,15 @@ Clicking at the current mouse position
       
       
         &mdash;
-        <div class='inline'><p>
-An optional element to click.
-</p>
+        <div class='inline'>
+<p>An optional element to click.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -627,9 +635,8 @@ An optional element to click.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -660,20 +667,21 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="click_and_hold-instance_method">
+  <h3 class="signature " id="click_and_hold-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>click_and_hold</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Clicks (without releasing) in the middle of the given element. This is
-equivalent to:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span></pre>
+    
+<p>Clicks (without releasing) in the middle of the given element. This is
+equivalent to:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span></code></pre>
 
 
   </div>
@@ -681,18 +689,19 @@ equivalent to:
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Clicking and holding on some element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Clicking and holding on some element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -705,16 +714,15 @@ Clicking and holding on some element
       
       
         &mdash;
-        <div class='inline'><p>
-the element to move to and click.
-</p>
+        <div class='inline'>
+<p>the element to move to and click.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -725,9 +733,8 @@ the element to move to and click.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -758,18 +765,19 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="context_click-instance_method">
+  <h3 class="signature " id="context_click-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>context_click</strong>(element) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Performs a context-click at middle of the given element. First performs a
-move_to to the location of the element.
-</p>
+    
+<p>Performs a context-click at middle of the given element. First performs a
+move_to to the location of the element.</p>
 
 
   </div>
@@ -777,18 +785,19 @@ move_to to the location of the element.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Context-click at middle of given element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Context-click at middle of given element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -801,16 +810,15 @@ Context-click at middle of given element
       
       
         &mdash;
-        <div class='inline'><p>
-An element to context click.
-</p>
+        <div class='inline'>
+<p>An element to context click.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -821,9 +829,8 @@ An element to context click.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -854,19 +861,20 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="double_click-instance_method">
+  <h3 class="signature " id="double_click-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>double_click</strong>(element = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Performs a double-click at middle of the given element. Equivalent to:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span></pre>
+    
+<p>Performs a double-click at middle of the given element. Equivalent to:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span></code></pre>
 
 
   </div>
@@ -874,18 +882,19 @@ Performs a double-click at middle of the given element. Equivalent to:
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Double click an element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Double click an element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -900,16 +909,15 @@ Double click an element
       
       
         &mdash;
-        <div class='inline'><p>
-An optional element to move to.
-</p>
+        <div class='inline'>
+<p>An optional element to move to.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -920,9 +928,8 @@ An optional element to move to.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -953,19 +960,20 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="drag_and_drop-instance_method">
+  <h3 class="signature " id="drag_and_drop-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>drag_and_drop</strong>(source, target) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-A convenience method that performs click-and-hold at the location of the
+    
+<p>A convenience method that performs click-and-hold at the location of the
 source element, moves to the location of the target element, then releases
-the mouse.
-</p>
+the mouse.</p>
 
 
   </div>
@@ -973,19 +981,20 @@ the mouse.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Drag and drop one element onto another
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Drag and drop one element onto another</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el1'>el1</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id1</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_el2'>el2</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id2</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id identifier rubyid_el1'>el1</span><span class='comma'>,</span> <span class='id identifier rubyid_el2'>el2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -998,9 +1007,8 @@ Drag and drop one element onto another
       
       
         &mdash;
-        <div class='inline'><p>
-element to emulate button down at.
-</p>
+        <div class='inline'>
+<p>element to emulate button down at.</p>
 </div>
       
     </li>
@@ -1015,16 +1023,15 @@ element to emulate button down at.
       
       
         &mdash;
-        <div class='inline'><p>
-element to move to and release the mouse at.
-</p>
+        <div class='inline'>
+<p>element to move to and release the mouse at.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1035,9 +1042,8 @@ element to move to and release the mouse at.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -1074,18 +1080,19 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="drag_and_drop_by-instance_method">
+  <h3 class="signature " id="drag_and_drop_by-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>drag_and_drop_by</strong>(source, right_by, down_by) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-A convenience method that performs click-and-hold at the location of the
-source element, moves by a given offset, then releases the mouse.
-</p>
+    
+<p>A convenience method that performs click-and-hold at the location of the
+source element, moves by a given offset, then releases the mouse.</p>
 
 
   </div>
@@ -1093,18 +1100,19 @@ source element, moves by a given offset, then releases the mouse.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Drag and drop an element by offset
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Drag and drop an element by offset</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id1</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -1117,9 +1125,8 @@ Drag and drop an element by offset
       
       
         &mdash;
-        <div class='inline'><p>
-Element to emulate button down at.
-</p>
+        <div class='inline'>
+<p>Element to emulate button down at.</p>
 </div>
       
     </li>
@@ -1134,9 +1141,8 @@ Element to emulate button down at.
       
       
         &mdash;
-        <div class='inline'><p>
-horizontal move offset.
-</p>
+        <div class='inline'>
+<p>horizontal move offset.</p>
 </div>
       
     </li>
@@ -1151,9 +1157,8 @@ horizontal move offset.
       
       
         &mdash;
-        <div class='inline'><p>
-vertical move offset.
-</p>
+        <div class='inline'>
+<p>vertical move offset.</p>
 </div>
       
     </li>
@@ -1168,16 +1173,15 @@ vertical move offset.
       
       
         &mdash;
-        <div class='inline'><p>
-Element to move to and release the mouse at.
-</p>
+        <div class='inline'>
+<p>Element to move to and release the mouse at.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1188,9 +1192,8 @@ Element to move to and release the mouse at.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -1227,27 +1230,27 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="key_down-instance_method">
+  <h3 class="signature " id="key_down-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>key_down</strong>(*args) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Performs a modifier key press. Does not release the modifier key -
-subsequent interactions may assume it&#8217;s kept pressed. Note that the
+    
+<p>Performs a modifier key press. Does not release the modifier key -
+subsequent interactions may assume it's kept pressed. Note that the
 modifier key is never released implicitly - either #key_up(key) or
-#send_keys(:null) must be called to release the modifier.
-</p>
-<p>
-Equivalent to:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
-  <span class='comment'># or
-</span>  <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span></pre>
+#send_keys(:null) must be called to release the modifier.</p>
+
+<p>Equivalent to:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+<span class='comment'># or
+</span><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span></code></pre>
 
 
   </div>
@@ -1255,25 +1258,27 @@ Equivalent to:
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Press a key
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Press a key</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='symbol'>:control</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
-      <h4><div class='inline'><p>
-Press a key on an element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Press a key on an element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -1286,9 +1291,8 @@ Press a key on an element
       
       
         &mdash;
-        <div class='inline'><p>
-key to press.
-</p>
+        <div class='inline'>
+<p>key to press.</p>
 </div>
       
     </li>
@@ -1303,16 +1307,15 @@ key to press.
       
       
         &mdash;
-        <div class='inline'><p>
-An optional element
-</p>
+        <div class='inline'>
+<p>An optional element</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1323,15 +1326,14 @@ An optional element
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
   
 </ul>
-<h3>Raises:</h3>
+<p class="tag_title">Raises:</p>
 <ul class="raise">
   
     <li>
@@ -1342,9 +1344,8 @@ A self reference.
       
       
         &mdash;
-        <div class='inline'><p>
-if the given key is not a modifier
-</p>
+        <div class='inline'>
+<p>if the given key is not a modifier</p>
 </div>
       
     </li>
@@ -1383,18 +1384,19 @@ if the given key is not a modifier
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="key_up-instance_method">
+  <h3 class="signature " id="key_up-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>key_up</strong>(*args) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Performs a modifier key release. Releasing a non-depressed modifier key
-will yield undefined behaviour.
-</p>
+    
+<p>Performs a modifier key release. Releasing a non-depressed modifier key
+will yield undefined behaviour.</p>
 
 
   </div>
@@ -1402,25 +1404,27 @@ will yield undefined behaviour.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Release a key
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Release a key</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
-      <h4><div class='inline'><p>
-Release a key from an element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Release a key from an element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='symbol'>:alt</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -1433,9 +1437,8 @@ Release a key from an element
       
       
         &mdash;
-        <div class='inline'><p>
-modifier key to release.
-</p>
+        <div class='inline'>
+<p>modifier key to release.</p>
 </div>
       
     </li>
@@ -1450,16 +1453,15 @@ modifier key to release.
       
       
         &mdash;
-        <div class='inline'><p>
-An optional element
-</p>
+        <div class='inline'>
+<p>An optional element</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1470,15 +1472,14 @@ An optional element
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
   
 </ul>
-<h3>Raises:</h3>
+<p class="tag_title">Raises:</p>
 <ul class="raise">
   
     <li>
@@ -1489,9 +1490,8 @@ A self reference.
       
       
         &mdash;
-        <div class='inline'><p>
-if the given key is not a modifier key
-</p>
+        <div class='inline'>
+<p>if the given key is not a modifier key</p>
 </div>
       
     </li>
@@ -1530,19 +1530,20 @@ if the given key is not a modifier key
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="move_by-instance_method">
+  <h3 class="signature " id="move_by-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>move_by</strong>(right_by, down_by) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Moves the mouse from its current position (or 0,0) by the given offset. If
+    
+<p>Moves the mouse from its current position (or 0,0) by the given offset. If
 the coordinates provided are outside the viewport (the mouse will end up
-outside the browser window) then the viewport is scrolled to match.
-</p>
+outside the browser window) then the viewport is scrolled to match.</p>
 
 
   </div>
@@ -1550,17 +1551,18 @@ outside the browser window) then the viewport is scrolled to match.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Move the mouse to a certain offset from its current position
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Move the mouse to a certain offset from its current position</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -1573,9 +1575,8 @@ Move the mouse to a certain offset from its current position
       
       
         &mdash;
-        <div class='inline'><p>
-horizontal offset. A negative value means moving the mouse left.
-</p>
+        <div class='inline'>
+<p>horizontal offset. A negative value means moving the mouse left.</p>
 </div>
       
     </li>
@@ -1590,16 +1591,15 @@ horizontal offset. A negative value means moving the mouse left.
       
       
         &mdash;
-        <div class='inline'><p>
-vertical offset. A negative value means moving the mouse up.
-</p>
+        <div class='inline'>
+<p>vertical offset. A negative value means moving the mouse up.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1610,15 +1610,14 @@ vertical offset. A negative value means moving the mouse up.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
   
 </ul>
-<h3>Raises:</h3>
+<p class="tag_title">Raises:</p>
 <ul class="raise">
   
     <li>
@@ -1629,9 +1628,8 @@ A self reference.
       
       
         &mdash;
-        <div class='inline'><p>
-if the provided offset is outside the document&#8217;s boundaries.
-</p>
+        <div class='inline'>
+<p>if the provided offset is outside the document's boundaries.</p>
 </div>
       
     </li>
@@ -1662,22 +1660,22 @@ if the provided offset is outside the document&#8217;s boundaries.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="move_to-instance_method">
+  <h3 class="signature " id="move_to-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>move_to</strong>(element, right_by = nil, down_by = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Moves the mouse to the middle of the given element. The element is scrolled
+    
+<p>Moves the mouse to the middle of the given element. The element is scrolled
 into view and its location is calculated using getBoundingClientRect.  Then
-the mouse is moved to optional offset coordinates from the element.
-</p>
-<p>
-Note that when using offsets, both coordinates need to be passed.
-</p>
+the mouse is moved to optional offset coordinates from the element.</p>
+
+<p>Note that when using offsets, both coordinates need to be passed.</p>
 
 
   </div>
@@ -1685,23 +1683,24 @@ Note that when using offsets, both coordinates need to be passed.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Scroll element into view and move the mouse to it
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Scroll element into view and move the mouse to it</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
-      <h4><div class='inline'></div></h4>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -1714,9 +1713,8 @@ Scroll element into view and move the mouse to it
       
       
         &mdash;
-        <div class='inline'><p>
-to move to.
-</p>
+        <div class='inline'>
+<p>to move to.</p>
 </div>
       
     </li>
@@ -1733,10 +1731,9 @@ to move to.
       
       
         &mdash;
-        <div class='inline'><p>
-Optional offset from the top-left corner. A negative value means
-coordinates right from the element.
-</p>
+        <div class='inline'>
+<p>Optional offset from the top-left corner. A negative value means
+coordinates right from the element.</p>
 </div>
       
     </li>
@@ -1753,17 +1750,16 @@ coordinates right from the element.
       
       
         &mdash;
-        <div class='inline'><p>
-Optional offset from the top-left corner. A negative value means
-coordinates above the element.
-</p>
+        <div class='inline'>
+<p>Optional offset from the top-left corner. A negative value means
+coordinates above the element.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1774,9 +1770,8 @@ coordinates above the element.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -1817,17 +1812,18 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="perform-instance_method">
+  <h3 class="signature " id="perform-instance_method">
   
     - (<tt>Object</tt>) <strong>perform</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Executes the actions added to the builder.
-</p>
+    
+<p>Executes the actions added to the builder.</p>
 
 
   </div>
@@ -1865,17 +1861,18 @@ Executes the actions added to the builder.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="release-instance_method">
+  <h3 class="signature " id="release-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>release</strong>(element = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Releases the depressed left mouse button at the current mouse location.
-</p>
+    
+<p>Releases the depressed left mouse button at the current mouse location.</p>
 
 
   </div>
@@ -1883,19 +1880,20 @@ Releases the depressed left mouse button at the current mouse location.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Releasing an element after clicking and holding it
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Releasing an element after clicking and holding it</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_release'>release</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -1906,9 +1904,8 @@ Releasing an element after clicking and holding it
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -1939,29 +1936,25 @@ A self reference.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="send_keys-instance_method">
+  <h3 class="signature " id="send_keys-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>send_keys</strong>(*args) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Sends keys to the active element. This differs from calling
-Element#send_keys(keys) on the active element in two ways:
-</p>
-<ul>
-<li><p>
-The modifier keys included in this call are not released.
-</p>
-</li>
-<li><p>
-There is no attempt to re-focus the element - so send_keys(:tab) for
-switching elements should work.
-</p>
-</li>
-</ul>
+    
+<p>Sends keys to the active element. This differs from calling
+Element#send_keys(keys) on the active element in two ways:</p>
+<ul><li>
+<p>The modifier keys included in this call are not released.</p>
+</li><li>
+<p>There is no attempt to re-focus the element - so send_keys(:tab) for
+switching elements should work.</p>
+</li></ul>
 
 
   </div>
@@ -1969,25 +1962,27 @@ switching elements should work.
 <div class="tags">
   
   <div class="examples">
-    <h3>Examples:</h3>
+    <p class="tag_title">Examples:</p>
     
-      <h4><div class='inline'><p>
-Send the text &#8220;help&#8221; to an element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Send the text "help" to an element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>help</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
-      <h4><div class='inline'><p>
-Send the text &#8220;help&#8221; to the currently focused element
-</p>
-</div></h4>
+      
+        <p class="example_title"><div class='inline'>
+<p>Send the text "help" to the currently focused element</p>
+</div></p>
+      
       <pre class="example code">
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>help</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
     
   </div>
-<h3>Parameters:</h3>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -2000,9 +1995,8 @@ Send the text &#8220;help&#8221; to the currently focused element
       
       
         &mdash;
-        <div class='inline'><p>
-An optional element
-</p>
+        <div class='inline'>
+<p>An optional element</p>
 </div>
       
     </li>
@@ -2017,16 +2011,15 @@ An optional element
       
       
         &mdash;
-        <div class='inline'><p>
-The keys to be sent.
-</p>
+        <div class='inline'>
+<p>The keys to be sent.</p>
 </div>
       
     </li>
   
 </ul>
 
-<h3>Returns:</h3>
+<p class="tag_title">Returns:</p>
 <ul class="return">
   
     <li>
@@ -2037,9 +2030,8 @@ The keys to be sent.
       
       
         &mdash;
-        <div class='inline'><p>
-A self reference.
-</p>
+        <div class='inline'>
+<p>A self reference.</p>
 </div>
       
     </li>
@@ -2080,11 +2072,11 @@ A self reference.
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:55 2012 by 
+  Generated on Wed May 30 00:28:04 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

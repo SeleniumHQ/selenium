@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::Server
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../';
+  framesUrl = "../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../_index.html">Index (S)</a> &raquo; 
+    <a href="../_index.html">Index (S)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../Selenium.html" title="Selenium (module)">Selenium</a></span></span>
      &raquo; 
     <span class="title">Server</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::Server
   
   
@@ -94,44 +101,34 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-Wraps the remote server jar
-</p>
-<p>
-Usage:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-</pre>
-<p>
-Automatically download the given version:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>'</span></span>
-  <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-</pre>
-<p>
-or the latest version:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='symbol'>:latest</span>
-  <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-</pre>
-<p>
-Run the server in the background:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='comma'>,</span> <span class='symbol'>:background</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-</pre>
-<p>
-Add additional arguments:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_server'>server</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--additional</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>args</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></pre>
+    
+<p>Wraps the remote server jar</p>
+
+<p>Usage:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
+
+<p>Automatically download the given version:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>'</span></span>
+<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
+
+<p>or the latest version:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='symbol'>:latest</span>
+<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
+
+<p>Run the server in the background:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='comma'>,</span> <span class='symbol'>:background</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
+
+<p>Add additional arguments:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_server'>server</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--additional</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>args</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
 
 
   </div>
@@ -141,9 +138,9 @@ Add additional arguments:
 
 </div><h2>Defined Under Namespace</h2>
 <p class="children">
-   
+  
     
-   
+  
     
       <strong class="classes">Classes:</strong> <span class='object_link'><a href="Server/Error.html" title="Selenium::Server::Error (class)">Error</a></span>
     
@@ -163,6 +160,8 @@ Add additional arguments:
   
 
 
+
+
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -176,6 +175,7 @@ Add additional arguments:
   </span>
   
   
+  
     
     
   
@@ -185,9 +185,8 @@ Add additional arguments:
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Whether to launch the server in the background.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Whether to launch the server in the background.</p>
 </div></span>
   
 </li>
@@ -203,6 +202,7 @@ Whether to launch the server in the background.
   </span>
   
   
+  
     
     
   
@@ -212,9 +212,8 @@ Whether to launch the server in the background.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Path to log file, or &#8216;true&#8217; for stdout.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Path to log file, or 'true' for stdout.</p>
 </div></span>
   
 </li>
@@ -230,6 +229,7 @@ Path to log file, or &#8216;true&#8217; for stdout.
   </span>
   
   
+  
     
     
   
@@ -239,9 +239,8 @@ Path to log file, or &#8216;true&#8217; for stdout.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-The server port.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>The server port.</p>
 </div></span>
   
 </li>
@@ -257,6 +256,7 @@ The server port.
   </span>
   
   
+  
     
     
   
@@ -266,9 +266,8 @@ The server port.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-The server timeout.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>The server timeout.</p>
 </div></span>
   
 </li>
@@ -301,11 +300,11 @@ The server timeout.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Download the given version of the selenium-server-standalone jar.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Download the given version of the selenium-server-standalone jar.</p>
 </div></span>
   
 </li>
@@ -319,6 +318,7 @@ Download the given version of the selenium-server-standalone jar.
 
     
   </span>
+  
   
   
   
@@ -346,11 +346,11 @@ Download the given version of the selenium-server-standalone jar.
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Ask Google Code what the latest selenium-server-standalone version is.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Ask Google Code what the latest selenium-server-standalone version is.</p>
 </div></span>
   
 </li>
@@ -379,6 +379,7 @@ Ask Google Code what the latest selenium-server-standalone version is.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -395,6 +396,7 @@ Ask Google Code what the latest selenium-server-standalone version is.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
@@ -404,9 +406,8 @@ Ask Google Code what the latest selenium-server-standalone version is.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Server.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Server.</p>
 </div></span>
   
 </li>
@@ -420,6 +421,7 @@ A new instance of Server.
 
     
   </span>
+  
   
   
   
@@ -447,6 +449,7 @@ A new instance of Server.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -468,6 +471,7 @@ A new instance of Server.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -482,23 +486,24 @@ A new instance of Server.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::Server (class)">Server</a></span></tt>) <strong>initialize</strong>(jar, opts = {}) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of Server
-</p>
+    
+<p>A new instance of Server</p>
 
 
   </div>
 </div>
 <div class="tags">
-  <h3>Parameters:</h3>
+  <p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -511,9 +516,8 @@ A new instance of Server
       
       
         &mdash;
-        <div class='inline'><p>
-Path to the server jar.
-</p>
+        <div class='inline'>
+<p>Path to the server jar.</p>
 </div>
       
     </li>
@@ -530,9 +534,8 @@ Path to the server jar.
       
       
         &mdash;
-        <div class='inline'><p>
-the options to create the server process with
-</p>
+        <div class='inline'>
+<p>the options to create the server process with</p>
 </div>
       
     </li>
@@ -544,7 +547,7 @@ the options to create the server process with
     
     
     
-    <h3>Options Hash (<tt>opts</tt>):</h3>
+    <p class="tag_title">Options Hash (<tt>opts</tt>):</p>
     <ul class="option">
       
         <li>
@@ -553,10 +556,11 @@ the options to create the server process with
           <span class="default">
             
           </span>
-          &mdash; <div class='inline'><p>
-Port the server should listen on (default: 4444).
-</p>
+          
+            &mdash; <div class='inline'>
+<p>Port the server should listen on (default: 4444).</p>
 </div>
+          
         </li>
       
         <li>
@@ -565,10 +569,11 @@ Port the server should listen on (default: 4444).
           <span class="default">
             
           </span>
-          &mdash; <div class='inline'><p>
-Seconds to wait for server launch/shutdown (default: 30)
-</p>
+          
+            &mdash; <div class='inline'>
+<p>Seconds to wait for server launch/shutdown (default: 30)</p>
 </div>
+          
         </li>
       
         <li>
@@ -577,10 +582,11 @@ Seconds to wait for server launch/shutdown (default: 30)
           <span class="default">
             
           </span>
-          &mdash; <div class='inline'><p>
-Run the server in the background (default: false)
-</p>
+          
+            &mdash; <div class='inline'>
+<p>Run the server in the background (default: false)</p>
 </div>
+          
         </li>
       
         <li>
@@ -589,16 +595,17 @@ Run the server in the background (default: false)
           <span class="default">
             
           </span>
-          &mdash; <div class='inline'><p>
-Either a path to a log file, or true to pass server log to stdout.
-</p>
+          
+            &mdash; <div class='inline'>
+<p>Either a path to a log file, or true to pass server log to stdout.</p>
 </div>
+          
         </li>
       
     </ul>
   
 
-<h3>Raises:</h3>
+<p class="tag_title">Raises:</p>
 <ul class="raise">
   
     <li>
@@ -609,9 +616,8 @@ Either a path to a log file, or true to pass server log to stdout.
       
       
         &mdash;
-        <div class='inline'><p>
-if the jar file does not exist
-</p>
+        <div class='inline'>
+<p>if the jar file does not exist</p>
 </div>
       
     </li>
@@ -666,17 +672,18 @@ if the jar file does not exist
       <span id="background=-instance_method"></span>
       <span id="background-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="background-instance_method">
+  <h3 class="signature first" id="background-instance_method">
   
     - (<tt>Object</tt>) <strong>background</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Whether to launch the server in the background
-</p>
+    
+<p>Whether to launch the server in the background</p>
 
 
   </div>
@@ -709,17 +716,18 @@ Whether to launch the server in the background
       <span id="log=-instance_method"></span>
       <span id="log-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="log-instance_method">
+  <h3 class="signature " id="log-instance_method">
   
     - (<tt>Object</tt>) <strong>log</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Path to log file, or &#8216;true&#8217; for stdout.
-</p>
+    
+<p>Path to log file, or 'true' for stdout.</p>
 
 
   </div>
@@ -752,17 +760,18 @@ Path to log file, or &#8216;true&#8217; for stdout.
       <span id="port=-instance_method"></span>
       <span id="port-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="port-instance_method">
+  <h3 class="signature " id="port-instance_method">
   
     - (<tt>Object</tt>) <strong>port</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-The server port
-</p>
+    
+<p>The server port</p>
 
 
   </div>
@@ -795,17 +804,18 @@ The server port
       <span id="timeout=-instance_method"></span>
       <span id="timeout-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="timeout-instance_method">
+  <h3 class="signature " id="timeout-instance_method">
   
     - (<tt>Object</tt>) <strong>timeout</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-The server timeout
-</p>
+    
+<p>The server timeout</p>
 
 
   </div>
@@ -839,20 +849,21 @@ The server timeout
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="download-class_method">
+  <h3 class="signature first" id="download-class_method">
   
     + (<tt>Object</tt>) <strong>download</strong>(required_version) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Download the given version of the selenium-server-standalone jar.
-</p>
+    
+<p>Download the given version of the selenium-server-standalone jar.</p>
 
 
   </div>
@@ -960,13 +971,15 @@ Download the given version of the selenium-server-standalone jar.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="get-class_method">
+  <h3 class="signature " id="get-class_method">
   
     + (<tt>Object</tt>) <strong>get</strong>(required_version, opts = {}) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -988,17 +1001,18 @@ Download the given version of the selenium-server-standalone jar.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="latest-class_method">
+  <h3 class="signature " id="latest-class_method">
   
     + (<tt>Object</tt>) <strong>latest</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Ask Google Code what the latest selenium-server-standalone version is.
-</p>
+    
+<p>Ask Google Code what the latest selenium-server-standalone version is.</p>
 
 
   </div>
@@ -1037,16 +1051,18 @@ Ask Google Code what the latest selenium-server-standalone version is.
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="<<-instance_method">
+  <h3 class="signature first" id="<<-instance_method">
   
     - (<tt>Object</tt>) <strong>&lt;&lt;</strong>(arg) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1076,13 +1092,15 @@ Ask Google Code what the latest selenium-server-standalone version is.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="start-instance_method">
+  <h3 class="signature " id="start-instance_method">
   
     - (<tt>Object</tt>) <strong>start</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1110,13 +1128,15 @@ Ask Google Code what the latest selenium-server-standalone version is.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="stop-instance_method">
+  <h3 class="signature " id="stop-instance_method">
   
     - (<tt>Object</tt>) <strong>stop</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1154,13 +1174,15 @@ Ask Google Code what the latest selenium-server-standalone version is.
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="webdriver_url-instance_method">
+  <h3 class="signature " id="webdriver_url-instance_method">
   
     - (<tt>Object</tt>) <strong>webdriver_url</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1184,11 +1206,11 @@ Ask Google Code what the latest selenium-server-standalone version is.
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:43 2012 by 
+  Generated on Wed May 30 00:27:57 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

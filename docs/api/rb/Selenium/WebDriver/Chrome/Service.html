@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Chrome::Service
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../../_index.html">Index (S)</a> &raquo; 
+    <a href="../../../_index.html">Index (S)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span>
      &raquo; 
     <span class="title">Service</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::Chrome::Service
   
   
@@ -95,7 +102,7 @@
 <div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This class is part of a private API.</strong> 
+  <strong>This class is part of a private API.</strong>
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -114,7 +121,7 @@
           <div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This constant is part of a private API.</strong> 
+  <strong>This constant is part of a private API.</strong>
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -132,7 +139,7 @@
           <div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This constant is part of a private API.</strong> 
+  <strong>This constant is part of a private API.</strong>
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -146,11 +153,29 @@
         </dt>
         <dd><pre class="code"><span class='int'>5</span></pre></dd>
       
+        <dt id="DEFAULT_PORT-constant" class="">DEFAULT_PORT =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='int'>9515</span></pre></dd>
+      
         <dt id="MISSING_TEXT-constant" class="">MISSING_TEXT =
           <div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This constant is part of a private API.</strong> 
+  <strong>This constant is part of a private API.</strong>
   You should avoid using this constant if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -168,6 +193,8 @@
   
 
 
+
+
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -181,19 +208,19 @@
   </span>
   
   
-    <span class="note title readonly">readonly</span>
+  
+    
+      <span class="note title readonly">readonly</span>
+    
     
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Returns the value of attribute uri.
-</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -224,7 +251,8 @@ Returns the value of attribute uri.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -245,7 +273,8 @@ Returns the value of attribute uri.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -266,7 +295,8 @@ Returns the value of attribute uri.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -292,18 +322,18 @@ Returns the value of attribute uri.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
   
   
   
-  <span class="private note title">Private</span>
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Service.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Service.</p>
 </div></span>
   
 </li>
@@ -322,7 +352,8 @@ A new instance of Service.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -343,7 +374,8 @@ A new instance of Service.
   
   
   
-  <span class="private note title">Private</span>
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -358,21 +390,22 @@ A new instance of Service.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span></tt>) <strong>initialize</strong>(executable_path, port) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-<p>
-A new instance of Service
-</p>
+
+<p>A new instance of Service</p>
 
 
   </div>
@@ -386,7 +419,6 @@ A new instance of Service
       <pre class="lines">
 
 
-35
 36
 37
 38
@@ -394,10 +426,11 @@ A new instance of Service
 40
 41
 42
-43</pre>
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_executable_path'>executable_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
   <span class='ivar'>@uri</span>           <span class='op'>=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_port'>port</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -422,20 +455,19 @@ A new instance of Service
       <span id=""></span>
       <span id="uri-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="uri-instance_method">
+  <h3 class="signature first" id="uri-instance_method">
   
     - (<tt>Object</tt>) <strong>uri</strong>  <span class="extras">(readonly)</span>
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-<p>
-Returns the value of attribute uri
 </p>
 
 
@@ -450,12 +482,12 @@ Returns the value of attribute uri
       <pre class="lines">
 
 
-14
 15
-16</pre>
+16
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
   <span class='ivar'>@uri</span>
@@ -470,19 +502,21 @@ Returns the value of attribute uri
 
   <div id="class_method_details" class="method_details_list">
     <h2>Class Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="default_service-class_method">
+  <h3 class="signature first" id="default_service-class_method">
   
     + (<tt>Object</tt>) <strong>default_service</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -498,15 +532,15 @@ Returns the value of attribute uri
       <pre class="lines">
 
 
-31
 32
-33</pre>
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_default_service'>default_service</span>
-  <span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_executable_path'>executable_path</span><span class='comma'>,</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id identifier rubyid_random'>random</span>
+  <span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_executable_path'>executable_path</span><span class='comma'>,</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id identifier rubyid_above'>above</span><span class='lparen'>(</span><span class='const'>DEFAULT_PORT</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -514,16 +548,18 @@ Returns the value of attribute uri
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="executable_path-class_method">
+  <h3 class="signature " id="executable_path-class_method">
   
     + (<tt>Object</tt>) <strong>executable_path</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -539,7 +575,6 @@ Returns the value of attribute uri
       <pre class="lines">
 
 
-16
 17
 18
 19
@@ -547,10 +582,11 @@ Returns the value of attribute uri
 21
 22
 23
-24</pre>
+24
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_executable_path'>executable_path</span>
   <span class='ivar'>@executable_path</span> <span class='op'>||=</span> <span class='lparen'>(</span>
@@ -567,16 +603,18 @@ Returns the value of attribute uri
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="executable_path=-class_method">
+  <h3 class="signature " id="executable_path=-class_method">
   
     + (<tt>Object</tt>) <strong>executable_path=</strong>(path) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -592,13 +630,13 @@ Returns the value of attribute uri
       <pre class="lines">
 
 
-26
 27
 28
-29</pre>
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_executable_path='>executable_path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
@@ -613,19 +651,21 @@ Returns the value of attribute uri
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="start-instance_method">
+  <h3 class="signature first" id="start-instance_method">
   
     - (<tt>Object</tt>) <strong>start</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -641,7 +681,6 @@ Returns the value of attribute uri
       <pre class="lines">
 
 
-45
 46
 47
 48
@@ -649,10 +688,11 @@ Returns the value of attribute uri
 50
 51
 52
-53</pre>
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
@@ -669,16 +709,18 @@ Returns the value of attribute uri
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="stop-instance_method">
+  <h3 class="signature " id="stop-instance_method">
   
     - (<tt>Object</tt>) <strong>stop</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
     <p class="note private">
-  <strong>This method is part of a private API.</strong> 
+  <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
@@ -694,7 +736,6 @@ Returns the value of attribute uri
       <pre class="lines">
 
 
-55
 56
 57
 58
@@ -708,10 +749,11 @@ Returns the value of attribute uri
 66
 67
 68
-69</pre>
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/service.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_exited?'>exited?</span>
@@ -736,11 +778,11 @@ Returns the value of attribute uri
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:53 2012 by 
+  Generated on Wed May 30 00:28:02 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

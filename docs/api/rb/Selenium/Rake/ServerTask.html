@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::Rake::ServerTask
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../_index.html">Index (S)</a> &raquo; 
+    <a href="../../_index.html">Index (S)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Rake.html" title="Selenium::Rake (module)">Rake</a></span></span>
      &raquo; 
     <span class="title">ServerTask</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::Rake::ServerTask
   
   
@@ -98,46 +105,38 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>
-Defines rake tasks for starting, stopping and restarting the Selenium
-server.
-</p>
-<p>
-Usage:
-</p>
-<pre class="code">
-  <span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>selenium/rake/server_task</span><span class='tstring_end'>'</span></span>
+    
+<p>Defines rake tasks for starting, stopping and restarting the Selenium
+server.</p>
 
-  <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
-    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_jar'>jar</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='int'>4444</span>
-    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>-some</span><span class='words_sep'> </span><span class='tstring_content'>options</span><span class='words_sep'>]</span>
-  <span class='kw'>end</span>
-</pre>
-<p>
-Alternatively, you can have the task download a specific version of the
-server:
-</p>
-<pre class="code">
-  <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
-    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>'</span></span>
-  <span class='kw'>end</span>
-</pre>
-<p>
-or the latest version
-</p>
-<pre class="code">
-  <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
-    <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='symbol'>:latest</span>
-  <span class='kw'>end</span>
-</pre>
-<p>
-Tasks defined:
-</p>
-<pre class="code">
-  rake selenium:server:start
-  rake selenium:server:stop
-  rake selenium:server:restart</pre>
+<p>Usage:</p>
+
+<pre class="code ruby"><code><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>selenium/rake/server_task</span><span class='tstring_end'>'</span></span>
+
+<span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_jar'>jar</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='int'>4444</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>-some</span><span class='words_sep'> </span><span class='tstring_content'>options</span><span class='words_sep'>]</span>
+<span class='kw'>end</span></code></pre>
+
+<p>Alternatively, you can have the task download a specific version of the
+server:</p>
+
+<pre class="code ruby"><code><span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></code></pre>
+
+<p>or the latest version</p>
+
+<pre class="code ruby"><code><span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Rake</span><span class='op'>::</span><span class='const'>ServerTask</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:server</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span> <span class='op'>=</span> <span class='symbol'>:latest</span>
+<span class='kw'>end</span></code></pre>
+
+<p>Tasks defined:</p>
+
+<pre class="code ruby"><code>rake selenium:server:start
+rake selenium:server:stop
+rake selenium:server:restart</code></pre>
 
 
   </div>
@@ -147,7 +146,8 @@ Tasks defined:
 
 </div>
 
-  
+
+
   <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
   <ul class="summary">
     
@@ -163,6 +163,7 @@ Tasks defined:
   </span>
   
   
+  
     
     
   
@@ -172,9 +173,8 @@ Tasks defined:
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Whether we should detach from the server process.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Whether we should detach from the server process.</p>
 </div></span>
   
 </li>
@@ -190,6 +190,7 @@ Whether we should detach from the server process.
   </span>
   
   
+  
     
     
   
@@ -199,9 +200,8 @@ Whether we should detach from the server process.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Path to the selenium server jar.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Path to the selenium server jar.</p>
 </div></span>
   
 </li>
@@ -217,6 +217,7 @@ Path to the selenium server jar.
   </span>
   
   
+  
     
     
   
@@ -226,9 +227,8 @@ Path to the selenium server jar.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Configure logging.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Configure logging.</p>
 </div></span>
   
 </li>
@@ -244,6 +244,7 @@ Configure logging.
   </span>
   
   
+  
     
     
   
@@ -253,9 +254,8 @@ Configure logging.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Add additional options passed to the server jar.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Add additional options passed to the server jar.</p>
 </div></span>
   
 </li>
@@ -271,6 +271,7 @@ Add additional options passed to the server jar.
   </span>
   
   
+  
     
     
   
@@ -280,9 +281,8 @@ Add additional options passed to the server jar.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Port to use for the server.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Port to use for the server.</p>
 </div></span>
   
 </li>
@@ -298,6 +298,7 @@ Port to use for the server.
   </span>
   
   
+  
     
     
   
@@ -307,9 +308,8 @@ Port to use for the server.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Timeout in seconds for the server to start/stop.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Timeout in seconds for the server to start/stop.</p>
 </div></span>
   
 </li>
@@ -325,6 +325,7 @@ Timeout in seconds for the server to start/stop.
   </span>
   
   
+  
     
     
   
@@ -334,9 +335,8 @@ Timeout in seconds for the server to start/stop.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Specify the version of the server jar to download.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Specify the version of the server jar to download.</p>
 </div></span>
   
 </li>
@@ -346,7 +346,6 @@ Specify the version of the server jar to download.
 
 
 
-  
 
   
     <h2>
@@ -365,6 +364,7 @@ Specify the version of the server jar to download.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
@@ -374,9 +374,8 @@ Specify the version of the server jar to download.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of ServerTask.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of ServerTask.</p>
 </div></span>
   
 </li>
@@ -390,24 +389,25 @@ A new instance of ServerTask.
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::Rake::ServerTask (class)">ServerTask</a></span></tt>) <strong>initialize</strong>(prefix = &quot;selenium:server&quot;) {|_self| ... }
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of ServerTask
-</p>
+    
+<p>A new instance of ServerTask</p>
 
 
   </div>
 </div>
 <div class="tags">
   
-<h3>Yields:</h3>
+<p class="tag_title">Yields:</p>
 <ul class="yield">
   
     <li>
@@ -420,7 +420,7 @@ A new instance of ServerTask
     </li>
   
 </ul>
-<h3>Yield Parameters:</h3>
+<p class="tag_title">Yield Parameters:</p>
 <ul class="yieldparam">
   
     <li>
@@ -433,9 +433,8 @@ A new instance of ServerTask
       
       
         &mdash;
-        <div class='inline'><p>
-the object that the method was called on
-</p>
+        <div class='inline'>
+<p>the object that the method was called on</p>
 </div>
       
     </li>
@@ -528,7 +527,7 @@ the object that the method was called on
       <span id="background=-instance_method"></span>
       <span id="background-instance_method"></span>
       <div class="method_details first">
-  <p class="signature first" id="background-instance_method">
+  <h3 class="signature first" id="background-instance_method">
   
     - (<tt>Object</tt>) <strong>background</strong> 
   
@@ -538,11 +537,12 @@ the object that the method was called on
     <span class="names"><span id='background?-instance_method'>background?</span></span>
     </span>
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Whether we should detach from the server process. Default: true
-</p>
+    
+<p>Whether we should detach from the server process. Default: true</p>
 
 
   </div>
@@ -575,17 +575,18 @@ Whether we should detach from the server process. Default: true
       <span id="jar=-instance_method"></span>
       <span id="jar-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="jar-instance_method">
+  <h3 class="signature " id="jar-instance_method">
   
     - (<tt>Object</tt>) <strong>jar</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Path to the selenium server jar
-</p>
+    
+<p>Path to the selenium server jar</p>
 
 
   </div>
@@ -618,21 +619,21 @@ Path to the selenium server jar
       <span id="log=-instance_method"></span>
       <span id="log-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="log-instance_method">
+  <h3 class="signature " id="log-instance_method">
   
     - (<tt>Object</tt>) <strong>log</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Configure logging. Pass a log file path or a boolean. Default: true
-</p>
-<p>
-true  - log to stdout/stderr false - no logging String - log to the
-specified file
-</p>
+    
+<p>Configure logging. Pass a log file path or a boolean. Default: true</p>
+
+<p>true  - log to stdout/stderr false - no logging String - log to the
+specified file</p>
 
 
   </div>
@@ -665,17 +666,18 @@ specified file
       <span id="opts=-instance_method"></span>
       <span id="opts-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="opts-instance_method">
+  <h3 class="signature " id="opts-instance_method">
   
     - (<tt>Object</tt>) <strong>opts</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Add additional options passed to the server jar.
-</p>
+    
+<p>Add additional options passed to the server jar.</p>
 
 
   </div>
@@ -708,17 +710,18 @@ Add additional options passed to the server jar.
       <span id="port=-instance_method"></span>
       <span id="port-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="port-instance_method">
+  <h3 class="signature " id="port-instance_method">
   
     - (<tt>Object</tt>) <strong>port</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Port to use for the server. Default: 4444
-</p>
+    
+<p>Port to use for the server. Default: 4444</p>
 
 
   </div>
@@ -751,17 +754,18 @@ Port to use for the server. Default: 4444
       <span id="timeout=-instance_method"></span>
       <span id="timeout-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="timeout-instance_method">
+  <h3 class="signature " id="timeout-instance_method">
   
     - (<tt>Object</tt>) <strong>timeout</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Timeout in seconds for the server to start/stop. Default: 30
-</p>
+    
+<p>Timeout in seconds for the server to start/stop. Default: 30</p>
 
 
   </div>
@@ -794,17 +798,18 @@ Timeout in seconds for the server to start/stop. Default: 30
       <span id="version=-instance_method"></span>
       <span id="version-instance_method"></span>
       <div class="method_details ">
-  <p class="signature " id="version-instance_method">
+  <h3 class="signature " id="version-instance_method">
   
     - (<tt>Object</tt>) <strong>version</strong> 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Specify the version of the server jar to download
-</p>
+    
+<p>Specify the version of the server jar to download</p>
 
 
   </div>
@@ -837,11 +842,11 @@ Specify the version of the server jar to download
 
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:45 2012 by 
+  Generated on Wed May 30 00:27:58 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>

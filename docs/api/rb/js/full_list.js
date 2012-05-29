@@ -4,6 +4,9 @@ var searchCache = [];
 var searchString = '';
 var regexSearchString = '';
 var caseSensitiveMatch = false;
+var ignoreKeyCodeMin = 8;
+var ignoreKeyCodeMax = 46;
+var commandKey = 91;
 
 RegExp.escape = function(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -17,13 +20,16 @@ function fullListSearch() {
     var fullName = link.attr('title').split(' ')[0];
     searchCache.push({name:link.text(), fullName:fullName, node:$(this), link:link});
   });
-  
-  $('#search input').keyup(function() {
+
+  $('#search input').keyup(function(event) {
+    if ((event.keyCode > ignoreKeyCodeMin && event.keyCode < ignoreKeyCodeMax)
+         || event.keyCode == commandKey)
+      return;
     searchString = this.value;
     caseSensitiveMatch = searchString.match(/[A-Z]/) != null;
     regexSearchString = RegExp.escape(searchString);
     if (caseSensitiveMatch) {
-      regexSearchString += "|" + 
+      regexSearchString += "|" +
         $.map(searchString.split(''), function(e) { return RegExp.escape(e); }).
         join('.+?');
     }
@@ -33,9 +39,9 @@ function fullListSearch() {
       $('ul .search_uncollapsed').removeClass('search_uncollapsed');
       $('#full_list, #content').removeClass('insearch');
       $('#full_list li').removeClass('found').each(function() {
-        
+
         var link = $(this).find('.object_link a');
-        link.text(link.text()); 
+        link.text(link.text());
       });
       if (clicked) {
         clicked.parents('ul').each(function() {
@@ -53,7 +59,7 @@ function fullListSearch() {
       searchItem();
     }
   });
-  
+
   $('#search input').focus();
   $('#full_list').after("<div id='noresults'></div>");
 }
@@ -127,10 +133,10 @@ function linkList() {
 
 function collapse() {
   if (!$('#full_list').hasClass('class')) return;
-  $('#full_list.class a.toggle').click(function() { 
+  $('#full_list.class a.toggle').click(function() {
     $(this).parent().toggleClass('collapsed').next().toggleClass('collapsed');
     highlight();
-    return false; 
+    return false;
   });
   $('#full_list.class ul').each(function() {
     $(this).addClass('collapsed').prev().addClass('collapsed');

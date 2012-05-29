@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Chrome::Profile
   
-    &mdash; Documentation by YARD 0.7.4
+    &mdash; Documentation by YARD 0.8.1
   
 </title>
 
@@ -15,9 +15,11 @@
   <link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  relpath = '../../..';
-  if (relpath != '') relpath += '/';
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!" + escape(window.location.href);
 </script>
+
 
   <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
 
@@ -26,36 +28,41 @@
 
   </head>
   <body>
-    <script type="text/javascript" charset="utf-8">
-      if (window.top.frames.main) document.body.className = 'frames';
-    </script>
-    
     <div id="header">
       <div id="menu">
   
-    <a href="../../../_index.html">Index (P)</a> &raquo; 
+    <a href="../../../_index.html">Index (P)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span>
      &raquo; 
     <span class="title">Profile</span>
   
-  
+
   <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
   
-    <a id="class_list_link" href="#">Class List</a>
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
   
-    <a id="method_list_link" href="#">Method List</a>
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
   
-    <a id="file_list_link" href="#">File List</a>
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
   
 </div>
       <div class="clear"></div>
     </div>
-    
+
     <iframe id="search_frame"></iframe>
-    
+
     <div id="content"><h1>Class: Selenium::WebDriver::Chrome::Profile
   
   
@@ -98,15 +105,10 @@
 
 
 
-  
-  
-  
-  
 
 
-  
-  
-  
+
+
 
   
     <h2>
@@ -124,6 +126,7 @@
 
     
   </span>
+  
   
   
   
@@ -151,11 +154,11 @@
   
   
   
+  
 
   
-    <span class="summary_desc"><div class='inline'><p>
-Set a preference in the profile.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>Set a preference in the profile.</p>
 </div></span>
   
 </li>
@@ -169,6 +172,7 @@ Set a preference in the profile.
 
     
   </span>
+  
   
   
   
@@ -196,6 +200,7 @@ Set a preference in the profile.
   
   
   
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -212,6 +217,7 @@ Set a preference in the profile.
     
   </span>
   
+  
     <span class="note title constructor">constructor</span>
   
   
@@ -221,9 +227,8 @@ Set a preference in the profile.
   
 
   
-    <span class="summary_desc"><div class='inline'><p>
-A new instance of Profile.
-</p>
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Profile.</p>
 </div></span>
   
 </li>
@@ -237,6 +242,7 @@ A new instance of Profile.
 
     
   </span>
+  
   
   
   
@@ -261,23 +267,25 @@ A new instance of Profile.
   
   
   
+  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../ProfileHelper.html#included-class_method" title="Selenium::WebDriver::ProfileHelper.included (method)">included</a></span>, <span class='object_link'><a href="../ProfileHelper.html#to_json-instance_method" title="Selenium::WebDriver::ProfileHelper#to_json (method)">#to_json</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
-  <p class="signature first" id="initialize-instance_method">
+  <h3 class="signature first" id="initialize-instance_method">
   
     - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Chrome::Profile (class)">Profile</a></span></tt>) <strong>initialize</strong>(model = nil) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-A new instance of Profile
-</p>
+    
+<p>A new instance of Profile</p>
 
 
   </div>
@@ -313,16 +321,18 @@ A new instance of Profile
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
-    
+
     
       <div class="method_details first">
-  <p class="signature first" id="[]-instance_method">
+  <h3 class="signature first" id="[]-instance_method">
   
     - (<tt>Object</tt>) <strong>[]</strong>(key) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -346,21 +356,21 @@ A new instance of Profile
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="[]=-instance_method">
+  <h3 class="signature " id="[]=-instance_method">
   
     - (<tt>Object</tt>) <strong>[]=</strong>(key, value) 
   
 
   
-</p><div class="docstring">
+
+  
+</h3><div class="docstring">
   <div class="discussion">
-    <p>
-Set a preference in the profile.
-</p>
-<p>
-See <a
-href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref_names.cc&exact_package=chromium">codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref_names.cc&exact_package=chromium</a>
-</p>
+    
+<p>Set a preference in the profile.</p>
+
+<p>See <a
+href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref_names.cc&exact_package=chromium">codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref_names.cc&exact_package=chromium</a></p>
 
 
   </div>
@@ -392,13 +402,15 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="add_extension-instance_method">
+  <h3 class="signature " id="add_extension-instance_method">
   
     - (<tt>Object</tt>) <strong>add_extension</strong>(path) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -428,13 +440,15 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="as_json-instance_method">
+  <h3 class="signature " id="as_json-instance_method">
   
     - (<tt>Object</tt>) <strong>as_json</strong>(opts = nil) 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -464,13 +478,15 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
 </div>
     
       <div class="method_details ">
-  <p class="signature " id="layout_on_disk-instance_method">
+  <h3 class="signature " id="layout_on_disk-instance_method">
   
     - (<tt>Object</tt>) <strong>layout_on_disk</strong> 
   
 
   
-</p><table class="source_code">
+
+  
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -504,11 +520,11 @@ href="http://codesearch.google.com/codesearch#OAMlx_jo-ck/src/chrome/common/pref
   </div>
 
 </div>
-    
+
     <div id="footer">
-  Generated on Wed Apr 11 22:54:53 2012 by 
+  Generated on Wed May 30 00:28:02 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.7.4 (ruby-1.9.2).
+  0.8.1 (ruby-1.9.3).
 </div>
 
   </body>
