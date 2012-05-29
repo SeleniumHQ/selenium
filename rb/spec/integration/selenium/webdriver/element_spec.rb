@@ -142,7 +142,8 @@ describe "Element" do
       style1 = element.css_value("background-color")
       style2 = element.style("background-color") # backwards compatibility
 
-      ["rgb(0, 128, 0)", "#008000"].should include(style1, style2)
+      acceptable = ["rgb(0, 128, 0)", "#008000", 'rgba(0,128,0,1)']
+      acceptable.should include(style1, style2)
     end
   end
 
