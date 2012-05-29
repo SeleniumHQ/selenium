@@ -11,7 +11,7 @@ module Selenium
             new(binary)
           else
             # TODO: deprecation warning
-            require 'selenium/webdrier/ie/in_process_server'
+            require 'selenium/webdriver/ie/in_process_server'
             InProcessServer.new
           end
         end
