@@ -48,7 +48,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Ignore({SELENESE})
+  @Ignore({SELENESE, OPERA})
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(pages.xhtmlTestPage);
