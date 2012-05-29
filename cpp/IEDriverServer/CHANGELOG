@@ -1,3 +1,8 @@
+v2.22.1
+=======
+ * Re-enabling native code driver to understand "nativeEvents" capability.
+   This was disabled due to CI-build restrictions which have now been resolved.
+
 v2.22.0
 =======
-Initial release required by client language bindings.
+ * Initial release required by client language bindings.
