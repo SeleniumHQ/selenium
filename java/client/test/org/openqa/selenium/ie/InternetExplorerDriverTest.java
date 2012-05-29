@@ -16,21 +16,33 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import static junit.framework.Assert.assertEquals;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.WebDriver;
 
-@RunWith(SeleniumTestRunner.class)
-public class InternetExplorerDriverTest {
+@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
+public class InternetExplorerDriverTest extends JUnit4TestBase {
 
   @Test
-  @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
   public void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
       WebDriver driver = new InternetExplorerDriver();
       driver.quit();
     }
+  }
+  
+  @Test
+  public void canStartMultipleIeDriverInstances() {
+    WebDriver firstDriver = new InternetExplorerDriver();
+    WebDriver secondDriver = new InternetExplorerDriver();
+    firstDriver.get(pages.xhtmlTestPage);
+    secondDriver.get(pages.formPage);
+    assertEquals("XHTML Test Page", driver.getTitle());
+    assertEquals("We Leave From Here", secondDriver.getTitle());
+    firstDriver.quit();
+    secondDriver.quit();
   }
 }

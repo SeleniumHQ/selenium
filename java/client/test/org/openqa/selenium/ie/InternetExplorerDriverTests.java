@@ -16,8 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import junit.framework.TestSuite;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
@@ -27,5 +25,5 @@ import org.openqa.selenium.StandardSeleniumTests;
     StandardSeleniumTests.class,
     InternetExplorerDriverTest.class
 })
-public class InternetExplorerDriverTests extends TestSuite {
+public class InternetExplorerDriverTests {
 }
