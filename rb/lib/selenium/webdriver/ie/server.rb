@@ -4,13 +4,14 @@ module Selenium
       class Server
 
         STOP_TIMEOUT = 5
+        DEPRECATION_WARNING = %{warning: the IE driver is moving the a standalone executable. Please download the IEDriverServer from http://code.google.com/p/selenium/downloads/list and place the executable on your PATH.\nFalling back to bundled DLLs for now..}
 
         def self.get
           binary = Platform.find_binary("IEDriverServer")
           if binary
             new(binary)
           else
-            # TODO: deprecation warning
+            warn DEPRECATION_WARNING
             require 'selenium/webdriver/ie/in_process_server'
             InProcessServer.new
           end
