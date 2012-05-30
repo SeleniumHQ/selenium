@@ -235,6 +235,9 @@ safaridriver.inject.commands.getElementAttribute =
 safaridriver.inject.commands.getElementLocation =
     safaridriver.inject.commands.elementCommand_(goog.style.getPageOffset);
 
+safaridriver.inject.commands.getLocationInView =
+    safaridriver.inject.commands.elementCommand_(bot.dom.getLocationInView);
+
 safaridriver.inject.commands.getElementSize =
     safaridriver.inject.commands.elementCommand_(goog.style.getSize);
 

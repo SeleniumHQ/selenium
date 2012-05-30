@@ -479,6 +479,7 @@ goog.scope(function() {
   map[CommandName.SUBMIT_ELEMENT] = commands.submitElement;
   map[CommandName.GET_ELEMENT_ATTRIBUTE] = commands.getElementAttribute;
   map[CommandName.GET_ELEMENT_LOCATION] = commands.getElementLocation;
+  map[CommandName.GET_ELEMENT_LOCATION_IN_VIEW] = commands.getLocationInView;
   map[CommandName.GET_ELEMENT_SIZE] = commands.getElementSize;
   map[CommandName.GET_ELEMENT_TEXT] = commands.getElementText;
   map[CommandName.GET_ELEMENT_TAG_NAME] = commands.getElementTagName;

@@ -122,6 +122,7 @@ goog.scope(function() {
   map[CommandName.IS_ELEMENT_ENABLED] = commands.sendCommand;
   map[CommandName.IS_ELEMENT_DISPLAYED] = commands.sendCommand;
   map[CommandName.GET_ELEMENT_LOCATION] = commands.sendCommand;
+  map[CommandName.GET_ELEMENT_LOCATION_IN_VIEW] = commands.sendCommand;
   map[CommandName.GET_ELEMENT_SIZE] = commands.sendCommand;
   map[CommandName.GET_ELEMENT_ATTRIBUTE] = commands.sendCommand;
   map[CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY] = commands.sendCommand;
