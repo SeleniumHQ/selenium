@@ -144,8 +144,9 @@ safaridriver.inject.commands.findElements =
  * @return {!bot.response.ResponseObject} The response object.
  */
 safaridriver.inject.commands.getActiveElement = function() {
+  var getActiveElement = goog.partial(bot.dom.getActiveElement, document);
   return (/** @type {!bot.response.ResponseObject} */bot.inject.executeScript(
-      bot.dom.getActiveElement, [bot.getWindow()]));
+      getActiveElement, []));
 };
 
 /**
