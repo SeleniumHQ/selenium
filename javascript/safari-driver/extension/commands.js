@@ -214,11 +214,21 @@ safaridriver.extension.commands.findElement = function(session, command) {
   }
 
   function checkResponse(response) {
+    var status = response['status'];
+    if (status !== bot.ErrorCode.SUCCESS) {
+      // The command failed from an irrecoverable error.
+      result.resolve(response);
+      return;
+    }
+
     var value = response['value'];
-    if ((!value || !value.length) &&
+    var foundElement = goog.isDefAndNotNull(value) &&
+        (!goog.isArray(value) || !!value.length);
+
+    if (!foundElement &&
         session.getImplicitWait() > 0 &&
         goog.now() - started < session.getImplicitWait()) {
-      findElement();
+      setTimeout(findElement, 100);
     } else if (!value) {
       var error = new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
           'Could not find element: ' + JSON.stringify(command.getParameters()));

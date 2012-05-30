@@ -157,6 +157,8 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     }
 
     cleanUp();
+
+    self.log('Received response: ' + message);
     try {
       response.resolve(bot.response.checkResponse(message.getResponse()));
     } catch (ex) {
