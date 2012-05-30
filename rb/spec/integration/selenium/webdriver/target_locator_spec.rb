@@ -3,11 +3,9 @@ require File.expand_path("../spec_helper", __FILE__)
 describe "Selenium::WebDriver::TargetLocator" do
   let(:wait) { Selenium::WebDriver::Wait.new }
 
-  not_compliant_on :browser => :safari do # 'maximum call stack size exceeded'
-    it "should find the active element" do
-      driver.navigate.to url_for("xhtmlTest.html")
-      driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
-    end
+  it "should find the active element" do
+    driver.navigate.to url_for("xhtmlTest.html")
+    driver.switch_to.active_element.should be_an_instance_of(WebDriver::Element)
   end
 
   not_compliant_on :browser => [:iphone] do
