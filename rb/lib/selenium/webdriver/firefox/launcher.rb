@@ -54,7 +54,9 @@ module Selenium
 
           @profile.add_webdriver_extension
           @profile.port = @port
+
           @profile_dir = @profile.layout_on_disk
+          FileReaper << @profile_dir
         end
 
         def start
