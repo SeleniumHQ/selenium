@@ -37,6 +37,7 @@ public @interface Ignore {
     IPHONE,
     OPERA,
     REMOTE,
+    SAFARI,
     SELENESE,
   }
   
