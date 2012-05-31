@@ -332,10 +332,10 @@ namespace OpenQA.Selenium.Firefox
 
         private static string ExtractAndCheck(FirefoxProfile profile, string noFocusSoName, string libraryPath32Bit, string libraryPath64Bit)
         {
-            // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
-            // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
-            // 3. Create a new LD_LIB_PATH string to contain:
-            //    profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
+            //// 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
+            //// 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
+            //// 3. Create a new LD_LIB_PATH string to contain:
+            ////    profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
             List<string> pathsSet = new List<string>();
             pathsSet.Add(libraryPath32Bit);
             pathsSet.Add(libraryPath64Bit);

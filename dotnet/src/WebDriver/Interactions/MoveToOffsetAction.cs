@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         public void Perform()
         {
-            this.Mouse.MouseMove(ActionLocation, this.offsetX, this.offsetY);
+            this.Mouse.MouseMove(this.ActionLocation, this.offsetX, this.offsetY);
         }
 
         #endregion

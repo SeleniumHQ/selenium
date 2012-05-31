@@ -59,9 +59,6 @@ namespace OpenQA.Selenium.Remote
         /// </remarks>
         public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
         {
-            //Dictionary<string, object> parameters = new Dictionary<string, object>();
-            //parameters.Add("ms", timeToWait.TotalMilliseconds);
-            //this.driver.InternalExecute(DriverCommand.ImplicitlyWait, parameters);
             this.ExecuteSetTimeout("implicit", timeToWait);
             return this;
         }
@@ -74,9 +71,6 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A self reference</returns>
         public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
         {
-            //Dictionary<string, object> parameters = new Dictionary<string, object>();
-            //parameters.Add("ms", timeToWait.TotalMilliseconds);
-            //this.driver.InternalExecute(DriverCommand.SetAsyncScriptTimeout, parameters);
             this.ExecuteSetTimeout("script", timeToWait);
             return this;
         }

@@ -33,8 +33,6 @@ namespace OpenQA.Selenium.Support.UI
     /// </example>
     public class WebDriverWait : DefaultWait<IWebDriver>
     {
-        private static readonly TimeSpan DefaultSleepTimeout = TimeSpan.FromMilliseconds(500);
-
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverWait"/> class.
         /// </summary>
@@ -58,6 +56,11 @@ namespace OpenQA.Selenium.Support.UI
             this.Timeout = timeout;
             this.PollingInterval = sleepInterval;
             this.IgnoreExceptionTypes(typeof(NotFoundException));
+        }
+
+        private static TimeSpan DefaultSleepTimeout
+        {
+            get { return TimeSpan.FromMilliseconds(500); }
         }
     }
 }

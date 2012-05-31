@@ -110,14 +110,14 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
         /// </summary>
         protected override void ProcessReceivedData()
         {
-            while (Data.Count > 0)
+            while (this.Data.Count > 0)
             {
-                if (Data[0] != Start)
+                if (this.Data[0] != Start)
                 {
                     throw new WebSocketException(WebSocketStatusCodes.InvalidFramePayloadData);
                 }
 
-                var endIndex = Data.IndexOf(End);
+                var endIndex = this.Data.IndexOf(End);
                 if (endIndex < 0)
                 {
                     return;
@@ -128,9 +128,9 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
                     throw new WebSocketException(WebSocketStatusCodes.MessageTooBig);
                 }
 
-                var bytesArray = Data.Skip(1).Take(endIndex - 1).ToArray();
+                var bytesArray = this.Data.Skip(1).Take(endIndex - 1).ToArray();
 
-                Data.RemoveRange(0, endIndex + 1);
+                this.Data.RemoveRange(0, endIndex + 1);
 
                 var message = Encoding.UTF8.GetString(bytesArray);
 

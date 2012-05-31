@@ -31,8 +31,6 @@ namespace OpenQA.Selenium.Support.UI
     /// <typeparam name="T">The type of object on which the wait it to be applied.</typeparam>
     public class DefaultWait<T> : IWait<T>
     {
-        private static readonly TimeSpan DefaultSleepTimeout = TimeSpan.FromMilliseconds(500);
-
         private T input;
         private IClock clock;
 
@@ -97,6 +95,11 @@ namespace OpenQA.Selenium.Support.UI
         {
             get { return this.message; }
             set { this.message = value; }
+        }
+
+        private static TimeSpan DefaultSleepTimeout
+        {
+            get { return TimeSpan.FromMilliseconds(500); }
         }
 
         /// <summary>

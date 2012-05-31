@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.Firefox
                 return false;
             }
 
-            return Id == otherAsElement.Id;
+            return this.Id == otherAsElement.Id;
         }
 
         /// <summary>

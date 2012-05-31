@@ -12,9 +12,9 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class CreateCookie : SeleneseCommand
     {
-        private readonly Regex NameValuePairRegex = new Regex("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
-        private readonly Regex MaxAgeRegex = new Regex("max_age=(\\d+)");
-        private readonly Regex PathRegex = new Regex("path=([^\\s,]+)[,]?");
+        private readonly Regex nameValuePairRegex = new Regex("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
+        private readonly Regex maxAgeRegex = new Regex("max_age=(\\d+)");
+        private readonly Regex pathRegex = new Regex("path=([^\\s,]+)[,]?");
 
         /// <summary>
         /// Handles the command.
@@ -25,26 +25,26 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
-            if (!this.NameValuePairRegex.IsMatch(locator))
+            if (!this.nameValuePairRegex.IsMatch(locator))
             {
                 throw new SeleniumException("Invalid parameter: " + locator);
             }
 
-            Match nameValueMatch = this.NameValuePairRegex.Match(locator);
+            Match nameValueMatch = this.nameValuePairRegex.Match(locator);
             string cookieName = nameValueMatch.Groups[1].Value;
             string cookieValue = nameValueMatch.Groups[2].Value;
 
             DateTime? maxAge = null;
-            if (this.MaxAgeRegex.IsMatch(value))
+            if (this.maxAgeRegex.IsMatch(value))
             {
-                Match maxAgeMatch = this.MaxAgeRegex.Match(value);
+                Match maxAgeMatch = this.maxAgeRegex.Match(value);
                 maxAge = DateTime.Now.AddSeconds(int.Parse(maxAgeMatch.Groups[1].Value, CultureInfo.InvariantCulture));
             }
 
             string path = string.Empty;
-            if (this.PathRegex.IsMatch(value))
+            if (this.pathRegex.IsMatch(value))
             {
-                Match pathMatch = this.PathRegex.Match(value);
+                Match pathMatch = this.pathRegex.Match(value);
                 path = pathMatch.Groups[1].Value;
                 try
                 {

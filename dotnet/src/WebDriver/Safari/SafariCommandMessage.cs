@@ -30,8 +30,8 @@ namespace OpenQA.Selenium.Safari
     [JsonObject(MemberSerialization.OptIn)]
     public class SafariCommandMessage
     {
-        private const string OriginValue = "webdriver";
-        private const string TypeValue = "command";
+        private string originValue = "webdriver";
+        private string typeValue = "command";
 
         private SafariCommand wrappedCommand;
 
@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Safari
         [JsonProperty("origin")]
         public string MessageOrigin
         {
-            get { return OriginValue; }
+            get { return this.originValue; }
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Safari
         [JsonProperty("type")]
         public string MessageType
         {
-            get { return TypeValue; }
+            get { return this.typeValue; }
         }
 
         /// <summary>

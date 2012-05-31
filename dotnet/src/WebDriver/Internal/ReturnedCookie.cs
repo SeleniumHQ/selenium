@@ -82,10 +82,10 @@ namespace OpenQA.Selenium.Internal
         /// <returns>A string representation of the current cookie.</returns>
         public override string ToString()
         {
-            return Name + "=" + Value
-                + (Expiry == null ? string.Empty : "; expires=" + Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture))
-                    + (string.IsNullOrEmpty(Path) ? string.Empty : "; path=" + Path)
-                    + (string.IsNullOrEmpty(Domain) ? string.Empty : "; domain=" + Domain)
+            return this.Name + "=" + this.Value
+                + (this.Expiry == null ? string.Empty : "; expires=" + this.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture))
+                    + (string.IsNullOrEmpty(this.Path) ? string.Empty : "; path=" + this.Path)
+                    + (string.IsNullOrEmpty(this.Domain) ? string.Empty : "; domain=" + this.Domain)
                     + (this.isSecure ? ";secure;" : string.Empty);
         }
     }

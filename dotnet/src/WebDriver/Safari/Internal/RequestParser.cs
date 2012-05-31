@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.Safari.Internal
         /// <returns>The parsed <see cref="WebSocketHttpRequest"/>.</returns>
         public WebSocketHttpRequest Parse(byte[] requestData)
         {
-            return Parse(requestData, "ws");
+            return this.Parse(requestData, "ws");
         }
 
         /// <summary>

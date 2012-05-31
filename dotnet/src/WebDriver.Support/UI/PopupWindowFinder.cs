@@ -39,9 +39,6 @@ namespace OpenQA.Selenium.Support.UI
     /// </example>
     public class PopupWindowFinder
     {
-        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
-        private static readonly TimeSpan DefaultSleepInterval = TimeSpan.FromMilliseconds(250);
-
         private readonly IWebDriver driver;
         private readonly TimeSpan timeout;
         private readonly TimeSpan sleepInterval;
@@ -89,6 +86,16 @@ namespace OpenQA.Selenium.Support.UI
             this.driver = driver;
             this.timeout = timeout;
             this.sleepInterval = sleepInterval;
+        }
+
+        private static TimeSpan DefaultTimeout
+        {
+            get { return TimeSpan.FromSeconds(5); }
+        }
+
+        private static TimeSpan DefaultSleepInterval
+        {
+            get { return TimeSpan.FromMilliseconds(250); }
         }
 
         /// <summary>

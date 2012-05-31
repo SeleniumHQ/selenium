@@ -196,7 +196,7 @@ namespace OpenQA.Selenium.Safari.Internal.Handlers
         private static byte[] ConstructFrame(byte[] payload, FrameType frameType)
         {
             var memoryStream = new MemoryStream();
-            byte op = Convert.ToByte((Convert.ToByte(frameType, CultureInfo.InvariantCulture) + 128), CultureInfo.InvariantCulture);
+            byte op = Convert.ToByte(Convert.ToByte(frameType, CultureInfo.InvariantCulture) + 128, CultureInfo.InvariantCulture);
 
             memoryStream.WriteByte(op);
 

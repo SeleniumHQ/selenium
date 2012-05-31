@@ -12,7 +12,6 @@ namespace Selenium.Internal.SeleniumEmulation
     /// </summary>
     internal class GetTable : SeleneseCommand
     {
-        private static readonly Regex TableParts = new Regex("(.*)\\.(\\d+)\\.(\\d+)");
         private ElementFinder finder;
 
         /// <summary>
@@ -22,6 +21,11 @@ namespace Selenium.Internal.SeleniumEmulation
         public GetTable(ElementFinder elementFinder)
         {
             this.finder = elementFinder;
+        }
+
+        private static Regex TableParts
+        {
+            get { return new Regex("(.*)\\.(\\d+)\\.(\\d+)"); }
         }
 
         /// <summary>
