@@ -46,6 +46,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.regex.Pattern;
 
@@ -248,8 +249,13 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
+  @Ignore({HTMLUNIT, SELENESE})
   @Test
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
+    if (TestUtilities.isOldIe(driver)) {
+      System.err.println("IE version < 9 doesn't support application/xhtml+xml mime type");
+      return;
+    }
     driver.get(pages.xhtmlFormPage);
 
     String text = driver.findElement(By.id("self-closed")).getText();
