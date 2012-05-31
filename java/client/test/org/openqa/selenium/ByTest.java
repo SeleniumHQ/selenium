@@ -19,7 +19,6 @@ package org.openqa.selenium;
 import java.util.List;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;

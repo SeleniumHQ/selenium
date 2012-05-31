@@ -18,19 +18,12 @@ package org.openqa.selenium.testing;
 
 import static org.junit.Assume.assumeTrue;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
-
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
 
 public class TestUtilities {
   public static boolean isNativeEventsEnabled(WebDriver driver) {

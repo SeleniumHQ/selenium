@@ -28,7 +28,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 
 /**
  * Customized RemoteWebDriver that will communicate with a service that lives and dies with the
