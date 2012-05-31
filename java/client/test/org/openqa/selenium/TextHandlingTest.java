@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -249,10 +248,9 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore(ALL)
   @Test
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
-    driver.get(pages.xhtmlTestPage);
+    driver.get(pages.xhtmlFormPage);
 
     String text = driver.findElement(By.id("self-closed")).getText();
     assertThat(text, equalTo(""));
