@@ -20,7 +20,7 @@ module Selenium
       end
 
       def self.free?(port)
-        interfaces = Socket.getaddrinfo("localhost", port).map { |e| e[2] }
+        interfaces = Socket.getaddrinfo("localhost", port).map { |e| e[3] }
         interfaces += ["0.0.0.0", Platform.ip]
         interfaces.each { |address| TCPServer.new(address, port).close }
 
