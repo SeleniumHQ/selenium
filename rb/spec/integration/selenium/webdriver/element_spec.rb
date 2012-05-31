@@ -101,7 +101,7 @@ describe "Element" do
     loc.y.should >= 1
   end
 
-  not_compliant_on :browser => [:iphone, :safari] do
+  not_compliant_on :browser => [:iphone] do
     it "should get location once scrolled into view" do
       driver.navigate.to url_for("javascriptPage.html")
       loc = driver.find_element(:id, 'keyUp').location_once_scrolled_into_view
