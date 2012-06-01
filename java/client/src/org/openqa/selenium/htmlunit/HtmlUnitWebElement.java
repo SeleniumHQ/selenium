@@ -310,13 +310,17 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     boolean jsEnabled = parent.isJavascriptEnabled();
     boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
-    boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
-    if (jsEnabled &&
-        !oldActiveEqualsCurrent &&
-        !isBody) {
-      oldActiveElement.element.blur();
-      element.focus();
+    try {
+      boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
+      if (jsEnabled &&
+          !oldActiveEqualsCurrent &&
+          !isBody) {
+        oldActiveElement.element.blur();
+      }
+    } catch (StaleElementReferenceException ex) {
+      // old element has gone, do nothing
     }
+    element.focus();
   }
 
   public void sendKeyDownEvent(Keys modifierKey) {
