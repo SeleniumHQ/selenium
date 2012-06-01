@@ -507,9 +507,26 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testShouldBeAbleToFindAnElementsByCssSelector() {
+  public void testShouldBeAbleToFindElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.cssSelector("p"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToFindAnElementByCompoundCssSelector() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.cssSelector("div.extraDiv, div.content"));
+    assertEquals("content", element.getAttribute("class"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToFindElementsByCompoundCssSelector() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.cssSelector("div.extraDiv, div.content"));
+    assertEquals("content", elements.get(0).getAttribute("class"));
+    assertEquals("extraDiv", elements.get(1).getAttribute("class"));
   }
 
   @Test

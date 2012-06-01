@@ -133,9 +133,17 @@ limitations under the License.
       assertNull(bot.locators.findElement({css: '#uglyfish'}));
     }
 
-    function testWillRejectShouldRejectMultipleSelectors() {
-      assertThrows(goog.bind(bot.locators.findElement, null,
-          {css: '.one, #two'}));
+    function testShouldFindElementByMultipleSelectors() {
+      var found = bot.locators.findElement({css: '.dogs, #x'});
+      assertNotNull(found);
+      assertEquals('x', found.id);
+    }
+
+    function testShouldFindElementsByMultipleSelectors() {
+      var found = bot.locators.findElements({css: '.dogs, #x'});
+      assertEquals(2, found.length);
+      assertEquals('x', found[0].id);
+      assertEquals('dogs', found[1].getAttribute('class'));
     }
 
     function testShouldFindElementWithCommaInAttribute() {
