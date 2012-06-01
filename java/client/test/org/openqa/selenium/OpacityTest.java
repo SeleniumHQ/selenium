@@ -26,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -57,7 +56,7 @@ public class OpacityTest extends JUnit4TestBase {
    *      http://code.google.com/p/selenium/issues/detail?id=1941</a>
    */
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IE, SELENESE})
+  @Ignore({ANDROID, IE, SELENESE})
   @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);

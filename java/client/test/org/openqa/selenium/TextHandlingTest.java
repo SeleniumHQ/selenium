@@ -188,7 +188,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "         "));
   }
 
-  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, HTMLUNIT, OPERA})
+  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
@@ -262,7 +262,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore({SELENESE})
   @Test
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
