@@ -1,5 +1,5 @@
-2.22.1 (???)
-============
+2.22.1 (2012-06-01)
+===================
 
 * Fix for 1.8.7 behaviour of Socket.getaddrinfo.
 * Automatically reap Firefox profile on exit, not just in #quit.
