@@ -28,7 +28,6 @@ import static org.junit.Assume.assumeTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -255,7 +254,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(value, is("Example text. Some text"));
   }
 
-  @Ignore(value = {HTMLUNIT, SELENESE, IPHONE, ANDROID},
+  @Ignore(value = {SELENESE, IPHONE, ANDROID},
       reason = "Not implemented going to the end of the line first;\n"
           + "  iPhone: sendKeys not implemented correctly")
   @Test

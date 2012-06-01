@@ -62,6 +62,11 @@ public class HtmlUnitKeyboard implements Keyboard {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
 
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
+      if (element instanceof HtmlTextArea) {
+        String text = ((HtmlTextArea) element).getText();
+        ((HtmlTextArea) element).setSelectionStart(text.length());
+        ((HtmlTextArea) element).setSelectionEnd(text.length());
+      }
       try {
         element.type(keysToSend.toString());
       } catch (IOException e) {
