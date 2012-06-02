@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -166,7 +165,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
+  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA},
       reason = "Does not yet support file uploads")
   @Test
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
@@ -183,7 +182,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {ANDROID, CHROME, IPHONE, OPERA, SELENESE},
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE},
           reason = "Does not yet support file uploads")
   @Test
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument() throws IOException {
@@ -204,7 +203,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA},
+  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA},
           reason = "Does not yet support file uploads")
   @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
