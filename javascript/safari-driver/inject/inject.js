@@ -50,16 +50,6 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger(
 
 
 /**
- * @enum {string}
- * @private
- */
-safaridriver.inject.MessageType_ = {
-  ACTIVATE_FRAME: 'activate-frame',
-  REACTIVATE_FRAME: 'reactivate-frame'
-};
-
-
-/**
  * @type {!Object.<!webdriver.promise.Deferred>}
  * @private
  */
@@ -90,9 +80,9 @@ safaridriver.inject.init = function() {
   new safaridriver.message.MessageTarget(window).
       on(safaridriver.message.ActivateMessage.TYPE,
          safaridriver.inject.onActivate_).
-      on(safaridriver.inject.MessageType_.ACTIVATE_FRAME,
+      on(safaridriver.inject.message.Type.ACTIVATE_FRAME,
          safaridriver.inject.onActivateFrame_).
-      on(safaridriver.inject.MessageType_.REACTIVATE_FRAME,
+      on(safaridriver.inject.message.Type.REACTIVATE_FRAME,
          safaridriver.inject.onReactivateFrame_).
       on(safaridriver.message.ConnectMessage.TYPE,
          safaridriver.inject.onConnect_).
@@ -165,7 +155,7 @@ safaridriver.inject.onActivate_ = function(message, e) {
     message.sendSync(safari.self.tab);
   } else {
     message = new safaridriver.message.Message(
-        safaridriver.inject.MessageType_.ACTIVATE_FRAME);
+        safaridriver.inject.message.Type.ACTIVATE_FRAME);
     message.send(window.top);
     // Let top notify the extension that a new frame has been activated.
   }
@@ -241,7 +231,7 @@ safaridriver.inject.onLoad_ = function(message, e) {
       // Tell the frame that has just finished loading that it was our last
       // activate frame and should reactivate itself.
       message = new safaridriver.message.Message(
-          safaridriver.inject.MessageType_.REACTIVATE_FRAME);
+          safaridriver.inject.message.Type.REACTIVATE_FRAME);
       message.send((/** @type {!Window} */e.source));
     }
   } else if (safaridriver.inject.message.isFromSelf(e) &&
