@@ -324,6 +324,19 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Test
+  public void testShouldHandleAlertOnPageLoadUsingGet() {
+    driver.get(appServer.whereIs("pageWithOnLoad.html"));
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    String value = alert.getText();
+    alert.accept();
+
+    assertEquals("onload", value);
+    waitFor(elementTextToEqual(driver, By.tagName("p"), "Page with onload event handler"));
+  }
+
+  @JavascriptEnabled
   @Ignore(value = {FIREFOX, IE}, reason = "FF waits too long, may be hangs out." +
       "Android currently does not store the source of the alert. IE8: Not confirmed working.")
   @Test
