@@ -90,7 +90,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   }
 
   public FirefoxDriver(Capabilities capabilities) {
-    this(getBinary(capabilities), extractProfile(capabilities));
+    this(getBinary(capabilities), extractProfile(capabilities), capabilities);
   }
 
   private static FirefoxProfile extractProfile(Capabilities capabilities) {
@@ -144,7 +144,11 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
-    super(new LazyCommandExecutor(binary, profile), DesiredCapabilities.firefox());
+    this(binary, profile, DesiredCapabilities.firefox());
+  }
+
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
+    super(new LazyCommandExecutor(binary, profile), capabilities);
     this.binary = binary;
     setElementConverter(new JsonToWebElementConverter(this) {
       @Override
