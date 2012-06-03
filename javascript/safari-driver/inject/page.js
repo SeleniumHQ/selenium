@@ -33,8 +33,11 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.dom.classes');
 goog.require('safaridriver.console');
+goog.require('safaridriver.inject.EncodeMessage');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.CommandMessage');
 goog.require('safaridriver.message.MessageTarget');
+goog.require('safaridriver.message.ResponseMessage');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
 
@@ -87,9 +90,9 @@ safaridriver.inject.page.init = function() {
     safaridriver.inject.page.LOG_.info('Initializing for page');
 
     new safaridriver.message.MessageTarget(window)
-        .on(safaridriver.message.Type.COMMAND,
+        .on(safaridriver.message.CommandMessage.TYPE,
             safaridriver.inject.page.onCommand_)
-        .on(safaridriver.message.Type.RESPONSE,
+        .on(safaridriver.message.ResponseMessage.TYPE,
             safaridriver.inject.page.onResponse_);
 
     var message = new safaridriver.message.Message(
@@ -320,7 +323,7 @@ safaridriver.inject.page.encodeElement_ = function(element) {
   var webElement = new webdriver.promise.Deferred();
   var id = goog.string.getRandomString();
   var xpath = safaridriver.inject.page.getElementXPath_(element);
-  var message = new safaridriver.message.EncodeMessage(id, xpath);
+  var message = new safaridriver.inject.EncodeMessage(id, xpath);
   var doc = goog.dom.getOwnerDocument(element);
   var win = (/** @type {!Window} */goog.dom.getWindow(doc));
   message.send(win);

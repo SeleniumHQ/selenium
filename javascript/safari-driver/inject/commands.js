@@ -38,6 +38,7 @@ goog.require('goog.math.Size');
 goog.require('goog.net.cookies');
 goog.require('goog.style');
 goog.require('safaridriver.inject.state');
+goog.require('safaridriver.message.ActivateMessage');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.promise.Deferred');
 
@@ -359,7 +360,6 @@ safaridriver.inject.commands.switchToFrame = function(command) {
   // we are re-activated.
   safaridriver.inject.state.setActive(false);
 
-  var message = new safaridriver.message.Message(
-      safaridriver.message.Type.ACTIVATE);
+  var message = new safaridriver.message.ActivateMessage();
   message.send(frameWindow);
 };

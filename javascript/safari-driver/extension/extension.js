@@ -22,11 +22,12 @@ goog.provide('safaridriver.extension');
 
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
-goog.require('safaridriver.message');
+goog.require('safaridriver.console');
 goog.require('safaridriver.extension.Server');
 goog.require('safaridriver.extension.Session');
 goog.require('safaridriver.extension.TabManager');
-goog.require('safaridriver.console');
+goog.require('safaridriver.message');
+goog.require('safaridriver.message.ConnectMessage');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 
@@ -88,7 +89,7 @@ safaridriver.extension.driver;
  */
 safaridriver.extension.onMessage_ = function(e) {
   var message = safaridriver.message.fromEvent(e);
-  if (message.isType(safaridriver.message.Type.CONNECT)) {
+  if (message.isType(safaridriver.message.ConnectMessage.TYPE)) {
     var url = (/** @type {!safaridriver.message.ConnectMessage} */ message).
         getUrl();
     safaridriver.extension.createSessionServer_().connect(url).

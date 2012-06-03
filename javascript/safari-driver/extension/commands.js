@@ -26,6 +26,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('safaridriver.extension.Tab');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.ActivateMessage');
 goog.require('webdriver.promise');
 
 
@@ -370,7 +371,8 @@ safaridriver.extension.commands.switchToFrame = function(session, command) {
   safaridriver.extension.commands.sendCommand(tab, command).
       addCallback(bot.response.checkResponse).
       addErrback(function(e) {
-        tab.removeListener(safaridriver.message.Type.ACTIVATE, onActivate);
+        tab.removeListener(
+            safaridriver.message.ActivateMessage.TYPE, onActivate);
         if (result.isPending()) {
           safaridriver.extension.commands.LOG_.warning(
               'Frame switch failed: ' + e);
@@ -380,7 +382,7 @@ safaridriver.extension.commands.switchToFrame = function(session, command) {
 
   safaridriver.extension.commands.LOG_.info('Waiting for tab to activate a ' +
       'new frame');
-  tab.once(safaridriver.message.Type.ACTIVATE, onActivate);
+  tab.once(safaridriver.message.ActivateMessage.TYPE, onActivate);
 
   return result.promise;
 

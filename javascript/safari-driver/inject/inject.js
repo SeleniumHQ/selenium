@@ -24,13 +24,18 @@ goog.require('bot.locators.xpath');
 goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.Command');
-goog.require('safaridriver.message');
-goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.console');
+goog.require('safaridriver.inject.EncodeMessage');
 goog.require('safaridriver.inject.commands');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.page');
 goog.require('safaridriver.inject.state');
+goog.require('safaridriver.message');
+goog.require('safaridriver.message.ActivateMessage');
+goog.require('safaridriver.message.CommandMessage');
+goog.require('safaridriver.message.ConnectMessage');
+goog.require('safaridriver.message.MessageTarget');
+goog.require('safaridriver.message.ResponseMessage');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
@@ -79,19 +84,23 @@ safaridriver.inject.init = function() {
       'active)');
 
   new safaridriver.message.MessageTarget(safari.self).
-      on(safaridriver.message.Type.COMMAND, safaridriver.inject.onCommand_).
-      on(safaridriver.message.Type.DEACTIVATE, safaridriver.inject.onDeactive_);
+      on(safaridriver.message.CommandMessage.TYPE,
+         safaridriver.inject.onCommand_);
 
   new safaridriver.message.MessageTarget(window).
-      on(safaridriver.message.Type.ACTIVATE, safaridriver.inject.onActivate_).
+      on(safaridriver.message.ActivateMessage.TYPE,
+         safaridriver.inject.onActivate_).
       on(safaridriver.inject.MessageType_.ACTIVATE_FRAME,
          safaridriver.inject.onActivateFrame_).
       on(safaridriver.inject.MessageType_.REACTIVATE_FRAME,
          safaridriver.inject.onReactivateFrame_).
-      on(safaridriver.message.Type.CONNECT, safaridriver.inject.onConnect_).
-      on(safaridriver.message.Type.ENCODE, safaridriver.inject.onEncode_).
+      on(safaridriver.message.ConnectMessage.TYPE,
+         safaridriver.inject.onConnect_).
+      on(safaridriver.inject.EncodeMessage.TYPE,
+         safaridriver.inject.onEncode_).
       on(safaridriver.message.Type.LOAD, safaridriver.inject.onLoad_).
-      on(safaridriver.message.Type.RESPONSE, safaridriver.inject.onResponse_);
+      on(safaridriver.message.ResponseMessage.TYPE,
+         safaridriver.inject.onResponse_);
 
   window.addEventListener('load', function() {
     var message = new safaridriver.message.Message(
@@ -174,8 +183,7 @@ safaridriver.inject.onActivateFrame_ = function(message, e) {
     safaridriver.inject.LOG.info('Sub-frame has been activated');
     safaridriver.inject.state.setActiveFrame(e.source);
 
-    message = new safaridriver.message.Message(
-        safaridriver.message.Type.ACTIVATE);
+    message = new safaridriver.message.ActivateMessage();
     message.sendSync(safari.self.tab);
   }
 };
@@ -245,7 +253,7 @@ safaridriver.inject.onLoad_ = function(message, e) {
 
 
 /**
- * @param {!safaridriver.message.EncodeMessage} message The message.
+ * @param {!safaridriver.inject.EncodeMessage} message The message.
  * @param {!MessageEvent} e The original message event.
  * @private
  */
@@ -264,22 +272,6 @@ safaridriver.inject.onEncode_ = function(message, e) {
   var response = new safaridriver.message.ResponseMessage(
       message.getId(), (/** @type {!bot.response.ResponseObject} */result));
   response.send(e.source);
-};
-
-
-/**
- * Responds to deactivation messages from the extension. These messages are
- * broadcast to all frames as a signal that the extension is about to switch
- * focus to another window.
- * @private
- */
-safaridriver.inject.onDeactive_ = function() {
-  // Since the top-frame always activates itself on load and it will be
-  // re-activated when this window is refocused by the extension, we cheat
-  // and simply activate it here. This saves the extension from having to
-  // send a switchToFrame(null) message the next time it re-selects this
-  // window.
-  safaridriver.inject.state.setActive(safaridriver.inject.state.IS_TOP);
 };
 
 

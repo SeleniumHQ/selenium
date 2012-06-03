@@ -23,6 +23,8 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.extension.commands');
+goog.require('safaridriver.message.CommandMessage');
+goog.require('safaridriver.message.ResponseMessage');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
 
@@ -327,7 +329,7 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
 
   try {
     var message = safaridriver.message.fromEvent(event);
-    if (!message.isType(safaridriver.message.Type.COMMAND)) {
+    if (!message.isType(safaridriver.message.CommandMessage.TYPE)) {
       throw Error('Not a command message: ' + message);
     }
   } catch (ex) {
