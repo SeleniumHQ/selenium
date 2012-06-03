@@ -669,7 +669,7 @@ nsCommandProcessor.prototype.getStatus = function(response) {
  * Locates the most recently used FirefoxDriver window.
  * @param {Response} response The object to send the command response in.
  */
-nsCommandProcessor.prototype.newSession = function(response) {
+nsCommandProcessor.prototype.newSession = function(response, parameters) {
   var win = this.wm.getMostRecentWindow("navigator:browser");
   var driver = win.fxdriver;
   if (!driver) {

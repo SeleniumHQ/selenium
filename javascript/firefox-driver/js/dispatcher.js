@@ -106,6 +106,10 @@ Dispatcher.translateNewSession = function() {
   }
 
   return function(request, response) {
+    var requestObject = {
+      'name': 'newSession',
+      'parameters': JSON.parse(request.getBody())
+    };
     var callback = function(jsonResponseString) {
       var jsonResponse = JSON.parse(jsonResponseString);
       // Going to need more granularity here I think.
@@ -125,7 +129,7 @@ Dispatcher.translateNewSession = function() {
     // Dispatch the command.
     Components.classes['@googlecode.com/webdriver/command-processor;1'].
         getService(Components.interfaces.nsICommandProcessor).
-        execute('{"name":"newSession"}', callback);
+        execute(JSON.stringify(requestObject), callback);
   };
 };
 
