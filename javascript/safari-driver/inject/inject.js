@@ -34,10 +34,10 @@ goog.require('safaridriver.inject.message.ReactivateFrame');
 goog.require('safaridriver.inject.page');
 goog.require('safaridriver.inject.state');
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.CommandMessage');
-goog.require('safaridriver.message.ConnectMessage');
+goog.require('safaridriver.message.Command');
+goog.require('safaridriver.message.Connect');
 goog.require('safaridriver.message.MessageTarget');
-goog.require('safaridriver.message.ResponseMessage');
+goog.require('safaridriver.message.Response');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
@@ -76,7 +76,7 @@ safaridriver.inject.init = function() {
       'active)');
 
   new safaridriver.message.MessageTarget(safari.self).
-      on(safaridriver.message.CommandMessage.TYPE,
+      on(safaridriver.message.Command.TYPE,
          safaridriver.inject.onCommand_);
 
   new safaridriver.message.MessageTarget(window).
@@ -86,12 +86,12 @@ safaridriver.inject.init = function() {
          safaridriver.inject.onActivateFrame_).
       on(safaridriver.inject.message.ReactivateFrame.TYPE,
          safaridriver.inject.onReactivateFrame_).
-      on(safaridriver.message.ConnectMessage.TYPE,
+      on(safaridriver.message.Connect.TYPE,
          safaridriver.inject.onConnect_).
       on(safaridriver.inject.message.Encode.TYPE,
          safaridriver.inject.onEncode_).
       on(safaridriver.message.Type.LOAD, safaridriver.inject.onLoad_).
-      on(safaridriver.message.ResponseMessage.TYPE,
+      on(safaridriver.message.Response.TYPE,
          safaridriver.inject.onResponse_);
 
   window.addEventListener('load', function() {
@@ -262,7 +262,7 @@ safaridriver.inject.onEncode_ = function(message, e) {
     return bot.locators.xpath.single(xpath, document);
   }, []);
 
-  var response = new safaridriver.message.ResponseMessage(
+  var response = new safaridriver.message.Response(
       message.getId(), (/** @type {!bot.response.ResponseObject} */result));
   response.send(e.source);
 };
@@ -270,7 +270,7 @@ safaridriver.inject.onEncode_ = function(message, e) {
 
 /**
  * Handles response messages from the page.
- * @param {!safaridriver.message.ResponseMessage} message The message.
+ * @param {!safaridriver.message.Response} message The message.
  * @param {!MessageEvent} e The original message.
  * @private
  */
@@ -300,7 +300,7 @@ safaridriver.inject.onResponse_ = function(message, e) {
 
 /**
  * Command message handler.
- * @param {!safaridriver.message.CommandMessage} message The command message.
+ * @param {!safaridriver.message.Command} message The command message.
  * @private
  */
 safaridriver.inject.onCommand_ = function(message) {
@@ -391,7 +391,7 @@ safaridriver.inject.sendResponse_ = function(command, response) {
       '\ncommand:  ' + command +
       '\nresponse: ' + JSON.stringify(response));
 
-  var message = new safaridriver.message.ResponseMessage(command.id, response);
+  var message = new safaridriver.message.Response(command.id, response);
   message.sendSync(safari.self.tab);
 };
 
@@ -409,7 +409,7 @@ safaridriver.inject.sendCommandToPage = function(command) {
         safaridriver.inject.page.encodeValue(parameters));
     command.setParameters(parameters);
 
-    var message = new safaridriver.message.CommandMessage(command);
+    var message = new safaridriver.message.Command(command);
     safaridriver.inject.LOG.info('Sending message: ' + message);
 
     var commandResponse = new webdriver.promise.Deferred();

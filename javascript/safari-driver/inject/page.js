@@ -35,9 +35,9 @@ goog.require('goog.dom.classes');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.message.Encode');
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.CommandMessage');
+goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.MessageTarget');
-goog.require('safaridriver.message.ResponseMessage');
+goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
 
@@ -90,9 +90,9 @@ safaridriver.inject.page.init = function() {
     safaridriver.inject.page.LOG_.info('Initializing for page');
 
     new safaridriver.message.MessageTarget(window)
-        .on(safaridriver.message.CommandMessage.TYPE,
+        .on(safaridriver.message.Command.TYPE,
             safaridriver.inject.page.onCommand_)
-        .on(safaridriver.message.ResponseMessage.TYPE,
+        .on(safaridriver.message.Response.TYPE,
             safaridriver.inject.page.onResponse_);
 
     var message = new safaridriver.message.Message(
@@ -125,7 +125,7 @@ safaridriver.inject.page.pendingResponses_ = {};
 
 /**
  * Handles command messages from the injected script.
- * @param {!safaridriver.message.CommandMessage} message The command message.
+ * @param {!safaridriver.message.Command} message The command message.
  * @throws {Error} If the command is not supported by this script.
  * @private
  */
@@ -150,7 +150,7 @@ safaridriver.inject.page.onCommand_ = function(message) {
       }).
       then(bot.response.createResponse, bot.response.createErrorResponse).
       then(function(response) {
-        var responseMessage = new safaridriver.message.ResponseMessage(
+        var responseMessage = new safaridriver.message.Response(
             command.getId(), response);
         safaridriver.inject.page.LOG_.info(
             'Sending ' + command.getName() + ' response: ' + responseMessage);
@@ -178,7 +178,7 @@ safaridriver.inject.page.onCommand_ = function(message) {
 
 /**
  * Handles response messages.
- * @param {!safaridriver.message.ResponseMessage} message The message.
+ * @param {!safaridriver.message.Response} message The message.
  * @private
  */
 safaridriver.inject.page.onResponse_ = function(message) {

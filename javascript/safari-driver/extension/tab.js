@@ -20,7 +20,7 @@ goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('safaridriver.Tab');
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.ResponseMessage');
+goog.require('safaridriver.message.Response');
 
 
 /**
@@ -92,7 +92,7 @@ safaridriver.extension.Tab.prototype.loadsNewPage = function(url) {
  */
 safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   var response = new webdriver.promise.Deferred();
-  var message = new safaridriver.message.CommandMessage(command);
+  var message = new safaridriver.message.Command(command);
 
   var self = this;
   var timeoutKey;
@@ -106,7 +106,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
    */
   function cleanUp(opt_leaveResponseListener) {
     if (!opt_leaveResponseListener) {
-      self.removeListener(safaridriver.message.ResponseMessage.TYPE,
+      self.removeListener(safaridriver.message.Response.TYPE,
           onResponse);
     }
     self.removeListener(safaridriver.message.Type.UNLOAD, onUnload);
@@ -129,7 +129,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
       }, opt_timeout);
     }
 
-    self.addListener(safaridriver.message.ResponseMessage.TYPE, onResponse);
+    self.addListener(safaridriver.message.Response.TYPE, onResponse);
     self.addListener(safaridriver.message.Type.UNLOAD, onUnload);
     self.browserTab_.addEventListener('close', onClose, true);
     message.send(self.browserTab_.page);

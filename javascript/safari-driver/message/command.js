@@ -17,8 +17,8 @@
  * @fileoverview Defines messages for (command, response) pairs.
  */
 
-goog.provide('safaridriver.message.CommandMessage');
-goog.provide('safaridriver.message.ResponseMessage');
+goog.provide('safaridriver.message.Command');
+goog.provide('safaridriver.message.Response');
 
 goog.require('safaridriver.Command');
 goog.require('safaridriver.message');
@@ -33,8 +33,8 @@ goog.require('safaridriver.message.Type');
  * @constructor
  * @extends {safaridriver.message.Message}
  */
-safaridriver.message.CommandMessage = function(command) {
-  goog.base(this, safaridriver.message.CommandMessage.TYPE);
+safaridriver.message.Command = function(command) {
+  goog.base(this, safaridriver.message.Command.TYPE);
 
   /**
    * @type {!safaridriver.Command}
@@ -42,7 +42,7 @@ safaridriver.message.CommandMessage = function(command) {
    */
   this.command_ = command;
 };
-goog.inherits(safaridriver.message.CommandMessage,
+goog.inherits(safaridriver.message.Command,
     safaridriver.message.Message);
 
 
@@ -50,7 +50,7 @@ goog.inherits(safaridriver.message.CommandMessage,
  * @type {string}
  * @const
  */
-safaridriver.message.CommandMessage.TYPE = 'command';
+safaridriver.message.Command.TYPE = 'command';
 
 
 /**
@@ -58,18 +58,18 @@ safaridriver.message.CommandMessage.TYPE = 'command';
  * @const
  * @private
  */
-safaridriver.message.CommandMessage.COMMAND_FIELD_ = 'command';
+safaridriver.message.Command.COMMAND_FIELD_ = 'command';
 
 
 /**
  * Creates a command message from a raw data boject.
  * @param {!Object.<*>} data The data object to convert.
- * @return {!safaridriver.message.CommandMessage} The new message.
+ * @return {!safaridriver.message.Command} The new message.
  * @throws {Error} If the data object does not define a valid message.
  * @protected
  */
-safaridriver.message.CommandMessage.fromData = function(data) {
-  var command = data[safaridriver.message.CommandMessage.COMMAND_FIELD_];
+safaridriver.message.Command.fromData = function(data) {
+  var command = data[safaridriver.message.Command.COMMAND_FIELD_];
   if (!goog.isObject(command)) {
     throw Error('Invalid command message: ' + JSON.stringify(data));
   }
@@ -77,30 +77,30 @@ safaridriver.message.CommandMessage.fromData = function(data) {
   if (!command) {
     throw Error('Invalid command message: ' + JSON.stringify(data));
   }
-  return new safaridriver.message.CommandMessage(command);
+  return new safaridriver.message.Command(command);
 };
 
 
 /** @return {!safaridriver.Command} The command for this message. */
-safaridriver.message.CommandMessage.prototype.getCommand = function() {
+safaridriver.message.Command.prototype.getCommand = function() {
   return this.command_;
 };
 
 
 /** @override */
-safaridriver.message.CommandMessage.prototype.toJSON = function() {
-  this.setField(safaridriver.message.CommandMessage.COMMAND_FIELD_,
+safaridriver.message.Command.prototype.toJSON = function() {
+  this.setField(safaridriver.message.Command.COMMAND_FIELD_,
       this.command_.toJSON());
   return goog.base(this, 'toJSON');
 };
 
 
 /** @override */
-safaridriver.message.CommandMessage.prototype.send = function(opt_proxy) {
+safaridriver.message.Command.prototype.send = function(opt_proxy) {
   // When sending a message, Safari does not serialize all data fields
   // like normal JSON (e.g., it ignores our toJSON() method). So we must
   // manually set the command field right before sending the message.
-  this.setField(safaridriver.message.CommandMessage.COMMAND_FIELD_,
+  this.setField(safaridriver.message.Command.COMMAND_FIELD_,
       this.command_.toJSON());
   goog.base(this, 'send', opt_proxy);
 };
@@ -114,14 +114,14 @@ safaridriver.message.CommandMessage.prototype.send = function(opt_proxy) {
  * @constructor
  * @extends {safaridriver.message.Message}
  */
-safaridriver.message.ResponseMessage = function(id, responseObj) {
-  goog.base(this, safaridriver.message.ResponseMessage.TYPE);
+safaridriver.message.Response = function(id, responseObj) {
+  goog.base(this, safaridriver.message.Response.TYPE);
 
-  this.setField(safaridriver.message.ResponseMessage.Field_.ID, id);
-  this.setField(safaridriver.message.ResponseMessage.Field_.RESPONSE,
+  this.setField(safaridriver.message.Response.Field_.ID, id);
+  this.setField(safaridriver.message.Response.Field_.RESPONSE,
       responseObj);
 };
-goog.inherits(safaridriver.message.ResponseMessage,
+goog.inherits(safaridriver.message.Response,
     safaridriver.message.Message);
 
 
@@ -129,7 +129,7 @@ goog.inherits(safaridriver.message.ResponseMessage,
  * @type {string}
  * @const
  */
-safaridriver.message.ResponseMessage.TYPE = 'response';
+safaridriver.message.Response.TYPE = 'response';
 
 
 /**
@@ -137,7 +137,7 @@ safaridriver.message.ResponseMessage.TYPE = 'response';
  * @enum {string}
  * @private
  */
-safaridriver.message.ResponseMessage.Field_ = {
+safaridriver.message.Response.Field_ = {
   ID: 'id',
   RESPONSE: 'response'
 };
@@ -146,26 +146,26 @@ safaridriver.message.ResponseMessage.Field_ = {
 /**
  * Creates a response message from a raw data object.
  * @param {!Object.<*>} data The data object to convert.
- * @return {!safaridriver.message.ResponseMessage} The new message.
+ * @return {!safaridriver.message.Response} The new message.
  * @throws {Error} If the data object does not define a valid message.
  * @private
  */
-safaridriver.message.ResponseMessage.fromData_ = function(data) {
-  var id = data[safaridriver.message.ResponseMessage.Field_.ID];
-  var response = data[safaridriver.message.ResponseMessage.Field_.RESPONSE];
+safaridriver.message.Response.fromData_ = function(data) {
+  var id = data[safaridriver.message.Response.Field_.ID];
+  var response = data[safaridriver.message.Response.Field_.RESPONSE];
   if (!goog.isString(id) || !goog.isObject(response)) {
     throw Error('Invalid response message: ' + JSON.stringify(data));
   }
-  return new safaridriver.message.ResponseMessage(id, response);
+  return new safaridriver.message.Response(id, response);
 };
 
 
 /**
  * @return {string} This response's ID.
  */
-safaridriver.message.ResponseMessage.prototype.getId = function() {
+safaridriver.message.Response.prototype.getId = function() {
   return (/** @type {string} */this.getField(
-      safaridriver.message.ResponseMessage.Field_.ID));
+      safaridriver.message.Response.Field_.ID));
 };
 
 
@@ -173,16 +173,16 @@ safaridriver.message.ResponseMessage.prototype.getId = function() {
  * @return {!bot.response.ResponseObject} The raw response encoded in this
  *     message.
  */
-safaridriver.message.ResponseMessage.prototype.getResponse = function() {
+safaridriver.message.Response.prototype.getResponse = function() {
   return (/** @type {!bot.response.ResponseObject} */this.getField(
-      safaridriver.message.ResponseMessage.Field_.RESPONSE));
+      safaridriver.message.Response.Field_.RESPONSE));
 };
 
 
 safaridriver.message.registerMessageType(
-    safaridriver.message.CommandMessage.TYPE,
-    safaridriver.message.CommandMessage.fromData);
+    safaridriver.message.Command.TYPE,
+    safaridriver.message.Command.fromData);
 
 safaridriver.message.registerMessageType(
-    safaridriver.message.ResponseMessage.TYPE,
-    safaridriver.message.ResponseMessage.fromData_);
+    safaridriver.message.Response.TYPE,
+    safaridriver.message.Response.fromData_);

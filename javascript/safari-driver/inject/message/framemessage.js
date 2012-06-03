@@ -22,7 +22,7 @@ goog.provide('safaridriver.inject.message.ActivateFrame');
 goog.provide('safaridriver.inject.message.ReactivateFrame');
 
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.CommandMessage');
+goog.require('safaridriver.message.Command');
 
 
 /**
@@ -31,7 +31,7 @@ goog.require('safaridriver.message.CommandMessage');
  * @param {!safaridriver.Command} command The command associated with this
  *     message.
  * @constructor
- * @extends {safaridriver.message.CommandMessage}
+ * @extends {safaridriver.message.Command}
  */
 safaridriver.inject.message.Activate = function(command) {
   goog.base(this, command);
@@ -39,7 +39,7 @@ safaridriver.inject.message.Activate = function(command) {
   this.setType(safaridriver.inject.message.Activate.TYPE);
 };
 goog.inherits(safaridriver.inject.message.Activate,
-    safaridriver.message.CommandMessage);
+    safaridriver.message.Command);
 
 
 /**
@@ -55,7 +55,7 @@ safaridriver.inject.message.Activate.TYPE = 'activate';
  * @private
  */
 safaridriver.inject.message.Activate.fromData_ = function(data) {
-  var commandMessage = safaridriver.message.CommandMessage.fromData(data);
+  var commandMessage = safaridriver.message.Command.fromData(data);
   return new safaridriver.inject.message.Activate(
       commandMessage.getCommand());
 };
@@ -67,7 +67,7 @@ safaridriver.inject.message.Activate.fromData_ = function(data) {
  * @param {!safaridriver.Command} command The command associated with this
  *     message.
  * @constructor
- * @extends {safaridriver.message.CommandMessage}
+ * @extends {safaridriver.message.Command}
  */
 safaridriver.inject.message.ActivateFrame = function(command) {
   goog.base(this, command);
@@ -75,7 +75,7 @@ safaridriver.inject.message.ActivateFrame = function(command) {
   this.setType(safaridriver.inject.message.ActivateFrame.TYPE);
 };
 goog.inherits(safaridriver.inject.message.ActivateFrame,
-    safaridriver.message.CommandMessage);
+    safaridriver.message.Command);
 
 
 /**
@@ -91,7 +91,7 @@ safaridriver.inject.message.ActivateFrame.TYPE = 'activate-frame';
  * @private
  */
 safaridriver.inject.message.ActivateFrame.fromData_ = function(data) {
-  var commandMessage = safaridriver.message.CommandMessage.fromData(data);
+  var commandMessage = safaridriver.message.Command.fromData(data);
   return new safaridriver.inject.message.ActivateFrame(
       commandMessage.getCommand());
 };

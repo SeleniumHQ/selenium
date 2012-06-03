@@ -23,8 +23,8 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.extension.commands');
-goog.require('safaridriver.message.CommandMessage');
-goog.require('safaridriver.message.ResponseMessage');
+goog.require('safaridriver.message.Command');
+goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
 
@@ -329,7 +329,7 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
 
   try {
     var message = safaridriver.message.fromEvent(event);
-    if (!message.isType(safaridriver.message.CommandMessage.TYPE)) {
+    if (!message.isType(safaridriver.message.Command.TYPE)) {
       throw Error('Not a command message: ' + message);
     }
   } catch (ex) {
@@ -356,7 +356,7 @@ safaridriver.extension.Server.prototype.onMessage_ = function(event) {
  */
 safaridriver.extension.Server.prototype.send_ = function(command, response) {
   var id = command ? command.id : '';
-  var message = new safaridriver.message.ResponseMessage(id, response);
+  var message = new safaridriver.message.Response(id, response);
 
   var str = message.toString();
 

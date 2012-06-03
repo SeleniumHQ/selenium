@@ -17,7 +17,7 @@
  * @fileoverview Defines the "connect" message.
  */
 
-goog.provide('safaridriver.message.ConnectMessage');
+goog.provide('safaridriver.message.Connect');
 
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Message');
@@ -31,11 +31,11 @@ goog.require('safaridriver.message.Message');
  * @constructor
  * @extends {safaridriver.message.Message}
  */
-safaridriver.message.ConnectMessage = function(url) {
-  goog.base(this, safaridriver.message.ConnectMessage.TYPE);
-  this.setField(safaridriver.message.ConnectMessage.URL_FIELD_, url);
+safaridriver.message.Connect = function(url) {
+  goog.base(this, safaridriver.message.Connect.TYPE);
+  this.setField(safaridriver.message.Connect.URL_FIELD_, url);
 };
-goog.inherits(safaridriver.message.ConnectMessage,
+goog.inherits(safaridriver.message.Connect,
     safaridriver.message.Message);
 
 
@@ -43,7 +43,7 @@ goog.inherits(safaridriver.message.ConnectMessage,
  * @type {string}
  * @const
  */
-safaridriver.message.ConnectMessage.TYPE = 'connect';
+safaridriver.message.Connect.TYPE = 'connect';
 
 
 /**
@@ -51,32 +51,32 @@ safaridriver.message.ConnectMessage.TYPE = 'connect';
  * @const
  * @private
  */
-safaridriver.message.ConnectMessage.URL_FIELD_ = 'url';
+safaridriver.message.Connect.URL_FIELD_ = 'url';
 
 
 /**
  * Creates a connect message from a raw data object.
  * @param {!Object.<*>} data The data object to convert.
- * @return {!safaridriver.message.ConnectMessage} The new message.
+ * @return {!safaridriver.message.Connect} The new message.
  * @throws {Error} If the data object does not define a valid message.
  * @private
  */
-safaridriver.message.ConnectMessage.fromData_ = function(data) {
-  var url = data[safaridriver.message.ConnectMessage.URL_FIELD_];
+safaridriver.message.Connect.fromData_ = function(data) {
+  var url = data[safaridriver.message.Connect.URL_FIELD_];
   if (!goog.isString(url)) {
     throw Error('Invalid connect message: ' + JSON.stringify(data));
   }
-  return new safaridriver.message.ConnectMessage(url);
+  return new safaridriver.message.Connect(url);
 };
 
 
 /** @return {string} The URL for the WebSocket server to connect to. */
-safaridriver.message.ConnectMessage.prototype.getUrl = function() {
+safaridriver.message.Connect.prototype.getUrl = function() {
   return (/** @type {string} */ this.getField(
-      safaridriver.message.ConnectMessage.URL_FIELD_));
+      safaridriver.message.Connect.URL_FIELD_));
 };
 
 
 safaridriver.message.registerMessageType(
-    safaridriver.message.ConnectMessage.TYPE,
-    safaridriver.message.ConnectMessage.fromData_);
+    safaridriver.message.Connect.TYPE,
+    safaridriver.message.Connect.fromData_);
