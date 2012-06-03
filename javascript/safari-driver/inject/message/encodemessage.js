@@ -17,7 +17,7 @@
  * @fileoverview Defines the encode message type.
  */
 
-goog.provide('safaridriver.inject.EncodeMessage');
+goog.provide('safaridriver.inject.message.Encode');
 
 goog.require('safaridriver.message');
 
@@ -29,13 +29,13 @@ goog.require('safaridriver.message');
  * @constructor
  * @extends {safaridriver.message.Message}
  */
-safaridriver.inject.EncodeMessage = function(id, xpath) {
-  goog.base(this, safaridriver.inject.EncodeMessage.TYPE);
+safaridriver.inject.message.Encode = function(id, xpath) {
+  goog.base(this, safaridriver.inject.message.Encode.TYPE);
 
-  this.setField(safaridriver.inject.EncodeMessage.Field_.ID, id);
-  this.setField(safaridriver.inject.EncodeMessage.Field_.XPATH, xpath);
+  this.setField(safaridriver.inject.message.Encode.Field_.ID, id);
+  this.setField(safaridriver.inject.message.Encode.Field_.XPATH, xpath);
 };
-goog.inherits(safaridriver.inject.EncodeMessage,
+goog.inherits(safaridriver.inject.message.Encode,
     safaridriver.message.Message);
 
 
@@ -43,14 +43,14 @@ goog.inherits(safaridriver.inject.EncodeMessage,
  * @type {string}
  * @const
  */
-safaridriver.inject.EncodeMessage.TYPE = 'encode';
+safaridriver.inject.message.Encode.TYPE = 'encode';
 
 
 /**
  * @enum {string}
  * @private
  */
-safaridriver.inject.EncodeMessage.Field_ = {
+safaridriver.inject.message.Encode.Field_ = {
   ID: 'id',
   XPATH: 'xpath'
 };
@@ -58,34 +58,34 @@ safaridriver.inject.EncodeMessage.Field_ = {
 
 /**
  * @param {!Object.<*>} data The data object to convert.
- * @return {!safaridriver.inject.EncodeMessage} The new message.
+ * @return {!safaridriver.inject.message.Encode} The new message.
  * @throws {Error} If the data object does not define a valid message.
  * @private
  */
-safaridriver.inject.EncodeMessage.fromData_ = function(data) {
-  var id = data[safaridriver.inject.EncodeMessage.Field_.ID];
-  var xpath = data[safaridriver.inject.EncodeMessage.Field_.XPATH];
+safaridriver.inject.message.Encode.fromData_ = function(data) {
+  var id = data[safaridriver.inject.message.Encode.Field_.ID];
+  var xpath = data[safaridriver.inject.message.Encode.Field_.XPATH];
   if (!goog.isString(id) || !goog.isString(xpath)) {
     throw Error('Invalid message: ' + JSON.stringify(data));
   }
-  return new safaridriver.inject.EncodeMessage(id, xpath);
+  return new safaridriver.inject.message.Encode(id, xpath);
 };
 
 
 /** @return {string} This response's ID. */
-safaridriver.inject.EncodeMessage.prototype.getId = function() {
+safaridriver.inject.message.Encode.prototype.getId = function() {
   return (/** @type {string} */this.getField(
-      safaridriver.inject.EncodeMessage.Field_.ID));
+      safaridriver.inject.message.Encode.Field_.ID));
 };
 
 
 /** @return {string} The XPath locator of the element to encode. */
-safaridriver.inject.EncodeMessage.prototype.getXPath = function() {
+safaridriver.inject.message.Encode.prototype.getXPath = function() {
   return (/** @type {string} */this.getField(
-      safaridriver.inject.EncodeMessage.Field_.XPATH));
+      safaridriver.inject.message.Encode.Field_.XPATH));
 };
 
 
 safaridriver.message.registerMessageType(
-    safaridriver.inject.EncodeMessage.TYPE,
-    safaridriver.inject.EncodeMessage.fromData_);
+    safaridriver.inject.message.Encode.TYPE,
+    safaridriver.inject.message.Encode.fromData_);

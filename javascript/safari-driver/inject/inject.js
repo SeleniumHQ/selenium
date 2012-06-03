@@ -25,13 +25,15 @@ goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.console');
-goog.require('safaridriver.inject.EncodeMessage');
 goog.require('safaridriver.inject.commands');
 goog.require('safaridriver.inject.message');
+goog.require('safaridriver.inject.message.Activate');
+goog.require('safaridriver.inject.message.ActivateFrame');
+goog.require('safaridriver.inject.message.Encode');
+goog.require('safaridriver.inject.message.ReactivateFrame');
 goog.require('safaridriver.inject.page');
 goog.require('safaridriver.inject.state');
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.ActivateMessage');
 goog.require('safaridriver.message.CommandMessage');
 goog.require('safaridriver.message.ConnectMessage');
 goog.require('safaridriver.message.MessageTarget');
@@ -78,15 +80,15 @@ safaridriver.inject.init = function() {
          safaridriver.inject.onCommand_);
 
   new safaridriver.message.MessageTarget(window).
-      on(safaridriver.message.ActivateMessage.TYPE,
+      on(safaridriver.inject.message.Activate.TYPE,
          safaridriver.inject.onActivate_).
-      on(safaridriver.inject.message.Type.ACTIVATE_FRAME,
+      on(safaridriver.inject.message.ActivateFrame.TYPE,
          safaridriver.inject.onActivateFrame_).
-      on(safaridriver.inject.message.Type.REACTIVATE_FRAME,
+      on(safaridriver.inject.message.ReactivateFrame.TYPE,
          safaridriver.inject.onReactivateFrame_).
       on(safaridriver.message.ConnectMessage.TYPE,
          safaridriver.inject.onConnect_).
-      on(safaridriver.inject.EncodeMessage.TYPE,
+      on(safaridriver.inject.message.Encode.TYPE,
          safaridriver.inject.onEncode_).
       on(safaridriver.message.Type.LOAD, safaridriver.inject.onLoad_).
       on(safaridriver.message.ResponseMessage.TYPE,
@@ -135,7 +137,7 @@ safaridriver.inject.installPageScript_ = function() {
 
 /**
  * Responds to an activate message sent from another frame in this window.
- * @param {!safaridriver.message.Message} message The activate message.
+ * @param {!safaridriver.inject.message.Activate} message The activate message.
  * @param {!MessageEvent} e The original message event.
  * @private
  */
@@ -152,18 +154,20 @@ safaridriver.inject.onActivate_ = function(message, e) {
   safaridriver.inject.state.setActive(true);
 
   if (safaridriver.inject.state.IS_TOP) {
-    message.sendSync(safari.self.tab);
+    var response = bot.response.createResponse(null);
+    safaridriver.inject.sendResponse_(message.getCommand(), response);
   } else {
-    message = new safaridriver.message.Message(
-        safaridriver.inject.message.Type.ACTIVATE_FRAME);
-    message.send(window.top);
+    var activateFrame = new safaridriver.inject.message.ActivateFrame(
+        message.getCommand());
+    activateFrame.send(window.top);
     // Let top notify the extension that a new frame has been activated.
   }
 };
 
 
 /**
- * @param {!safaridriver.message.Message} message The activate message.
+ * @param {!safaridriver.inject.message.ActivateFrame} message The activate
+ *     message.
  * @param {!MessageEvent} e The original message event.
  * @private
  */
@@ -173,8 +177,8 @@ safaridriver.inject.onActivateFrame_ = function(message, e) {
     safaridriver.inject.LOG.info('Sub-frame has been activated');
     safaridriver.inject.state.setActiveFrame(e.source);
 
-    message = new safaridriver.message.ActivateMessage();
-    message.sendSync(safari.self.tab);
+    var response = bot.response.createResponse(null);
+    safaridriver.inject.sendResponse_(message.getCommand(), response);
   }
 };
 
@@ -230,9 +234,8 @@ safaridriver.inject.onLoad_ = function(message, e) {
 
       // Tell the frame that has just finished loading that it was our last
       // activate frame and should reactivate itself.
-      message = new safaridriver.message.Message(
-          safaridriver.inject.message.Type.REACTIVATE_FRAME);
-      message.send((/** @type {!Window} */e.source));
+      var reactivate = new safaridriver.inject.message.ReactivateFrame();
+      reactivate.send((/** @type {!Window} */e.source));
     }
   } else if (safaridriver.inject.message.isFromSelf(e) &&
       safaridriver.inject.installedPageScript_ &&
@@ -243,7 +246,7 @@ safaridriver.inject.onLoad_ = function(message, e) {
 
 
 /**
- * @param {!safaridriver.inject.EncodeMessage} message The message.
+ * @param {!safaridriver.inject.message.Encode} message The message.
  * @param {!MessageEvent} e The original message event.
  * @private
  */
@@ -366,14 +369,30 @@ safaridriver.inject.onCommand_ = function(message) {
     if (!sent) {
       sent = true;
 
-      safaridriver.inject.LOG.info('Sending response' +
-          '\ncommand:  ' + message +
-          '\nresponse: ' + JSON.stringify(response));
-
-      response = new safaridriver.message.ResponseMessage(command.id, response);
-      response.sendSync(safari.self.tab);
+      // The new frame is always the frame responsible for sending the response
+      // to a switchToFrame command - unless the response is an error.
+      if (command.getName() != webdriver.CommandName.SWITCH_TO_FRAME ||
+          response['status'] != bot.ErrorCode.SUCCESS) {
+        safaridriver.inject.sendResponse_(command, response);
+      }
     }
   }
+};
+
+
+/**
+ * Sends a command response to the extension.
+ * @param {!safaridriver.Command} command The command this is a response to.
+ * @param {!bot.response.ResponseObject} response The response to send.
+ * @private
+ */
+safaridriver.inject.sendResponse_ = function(command, response) {
+  safaridriver.inject.LOG.info('Sending response' +
+      '\ncommand:  ' + command +
+      '\nresponse: ' + JSON.stringify(response));
+
+  var message = new safaridriver.message.ResponseMessage(command.id, response);
+  message.sendSync(safari.self.tab);
 };
 
 

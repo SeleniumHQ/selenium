@@ -33,7 +33,7 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.dom.classes');
 goog.require('safaridriver.console');
-goog.require('safaridriver.inject.EncodeMessage');
+goog.require('safaridriver.inject.message.Encode');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.CommandMessage');
 goog.require('safaridriver.message.MessageTarget');
@@ -323,7 +323,7 @@ safaridriver.inject.page.encodeElement_ = function(element) {
   var webElement = new webdriver.promise.Deferred();
   var id = goog.string.getRandomString();
   var xpath = safaridriver.inject.page.getElementXPath_(element);
-  var message = new safaridriver.inject.EncodeMessage(id, xpath);
+  var message = new safaridriver.inject.message.Encode(id, xpath);
   var doc = goog.dom.getOwnerDocument(element);
   var win = (/** @type {!Window} */goog.dom.getWindow(doc));
   message.send(win);

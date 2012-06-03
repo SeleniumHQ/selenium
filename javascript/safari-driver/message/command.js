@@ -66,9 +66,9 @@ safaridriver.message.CommandMessage.COMMAND_FIELD_ = 'command';
  * @param {!Object.<*>} data The data object to convert.
  * @return {!safaridriver.message.CommandMessage} The new message.
  * @throws {Error} If the data object does not define a valid message.
- * @private
+ * @protected
  */
-safaridriver.message.CommandMessage.fromData_ = function(data) {
+safaridriver.message.CommandMessage.fromData = function(data) {
   var command = data[safaridriver.message.CommandMessage.COMMAND_FIELD_];
   if (!goog.isObject(command)) {
     throw Error('Invalid command message: ' + JSON.stringify(data));
@@ -181,7 +181,7 @@ safaridriver.message.ResponseMessage.prototype.getResponse = function() {
 
 safaridriver.message.registerMessageType(
     safaridriver.message.CommandMessage.TYPE,
-    safaridriver.message.CommandMessage.fromData_);
+    safaridriver.message.CommandMessage.fromData);
 
 safaridriver.message.registerMessageType(
     safaridriver.message.ResponseMessage.TYPE,

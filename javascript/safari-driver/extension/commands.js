@@ -26,7 +26,6 @@ goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('safaridriver.extension.Tab');
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.ActivateMessage');
 goog.require('webdriver.promise');
 
 
@@ -354,42 +353,6 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
       }
 
       session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
-      result.resolve();
-    }
-  }
-};
-
-
-/**
- * Changes focus to another frame in the current window.
- * @param {!safaridriver.extension.Session} session The session object.
- * @param {!safaridriver.Command} command The command object.
- */
-safaridriver.extension.commands.switchToFrame = function(session, command) {
-  var tab = session.getCommandTab();
-  var result = new webdriver.promise.Deferred();
-  safaridriver.extension.commands.sendCommand(tab, command).
-      addCallback(bot.response.checkResponse).
-      addErrback(function(e) {
-        tab.removeListener(
-            safaridriver.message.ActivateMessage.TYPE, onActivate);
-        if (result.isPending()) {
-          safaridriver.extension.commands.LOG_.warning(
-              'Frame switch failed: ' + e);
-          result.reject(e);
-        }
-      });
-
-  safaridriver.extension.commands.LOG_.info('Waiting for tab to activate a ' +
-      'new frame');
-  tab.once(safaridriver.message.ActivateMessage.TYPE, onActivate);
-
-  return result.promise;
-
-  function onActivate() {
-    safaridriver.extension.commands.LOG_.info('Tab has activated a new ' +
-        'frame; completing command');
-    if (result.isPending()) {
       result.resolve();
     }
   }

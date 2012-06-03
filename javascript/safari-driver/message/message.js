@@ -172,9 +172,6 @@ safaridriver.message.Message.fromData_ = function(data) {
  * @param {*} value The field value; should be a JSON compatible value.
  */
 safaridriver.message.Message.prototype.setField = function(name, value) {
-  if (name === safaridriver.message.Message.Field.TYPE) {
-    throw Error('The specified field may not be overridden: ' + name);
-  }
   this.data_[name] = value;
 };
 
@@ -222,6 +219,14 @@ safaridriver.message.Message.prototype.isSameOrigin = function() {
 safaridriver.message.Message.prototype.getType = function() {
   return (/** @type {string} */this.getField(
       safaridriver.message.Message.Field.TYPE));
+};
+
+
+/**
+ * @param {string} type The new message type.
+ */
+safaridriver.message.Message.prototype.setType = function(type) {
+  this.setField(safaridriver.message.Message.Field.TYPE, type);
 };
 
 

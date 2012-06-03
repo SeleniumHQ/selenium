@@ -138,7 +138,7 @@ goog.scope(function() {
   map[CommandName.MOVE_TO] = commands.sendCommand;
   map[CommandName.SEND_KEYS_TO_SESSION] = commands.sendCommand;
 
-  map[CommandName.SWITCH_TO_FRAME] = commands.switchToFrame;
+  map[CommandName.SWITCH_TO_FRAME] = commands.sendCommand;
   map[CommandName.SWITCH_TO_WINDOW] = commands.switchToWindow;
   map[CommandName.SET_WINDOW_SIZE] = commands.sendWindowCommand;
   map[CommandName.SET_WINDOW_POSITION] = commands.sendWindowCommand;

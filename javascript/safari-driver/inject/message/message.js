@@ -21,15 +21,6 @@ goog.provide('safaridriver.inject.message');
 
 
 /**
- * @enum {string}
- */
-safaridriver.inject.message.Type = {
-  ACTIVATE_FRAME: 'activate-frame',
-  REACTIVATE_FRAME: 'reactivate-frame'
-};
-
-
-/**
  * Checks whether the given message event originated from the DOMWindow running
  * this script. These messages are exchanged between the injected script and its
  * corresponding content page.
