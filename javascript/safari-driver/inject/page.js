@@ -129,8 +129,8 @@ safaridriver.inject.page.pendingResponses_ = {};
  * @throws {Error} If the command is not supported by this script.
  * @private
  */
-safaridriver.inject.page.onCommand_ = function(message) {
-  if (message.isSameOrigin()) {
+safaridriver.inject.page.onCommand_ = function(message, e) {
+  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
     return;
   }
 
