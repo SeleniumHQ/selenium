@@ -45,7 +45,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-@Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE})
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
@@ -85,6 +85,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
+  @Ignore(CHROME)
   @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
@@ -150,6 +151,7 @@ public class AlertsTest extends JUnit4TestBase {
     waitFor(elementTextToEqual(driver, By.id("text"), "cheese"));
   }
 
+  @Ignore(CHROME)
   @JavascriptEnabled
   @Test
   public void testSettingTheValueOfAnAlertThrows() {
@@ -337,7 +339,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, IE}, reason = "FF waits too long, may be hangs out." +
+  @Ignore(value = {FIREFOX, IE, CHROME}, reason = "FF waits too long, may be hangs out." +
       "Android currently does not store the source of the alert. IE8: Not confirmed working.")
   @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
@@ -367,7 +369,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE}, reason = "IE crashes")
+  @Ignore(value = {IE, CHROME}, reason = "IE crashes")
   @Test
   public void testShouldHandleAlertOnPageUnload() {
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
@@ -382,7 +384,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, ANDROID}, reason = "IE crashes. On Android, alerts do not pop up" +
+  @Ignore(value = {IE, ANDROID, CHROME}, reason = "IE crashes. On Android, alerts do not pop up" +
       " when a window is closed.")
   @Test
   public void testShouldHandleAlertOnWindowClose() {
