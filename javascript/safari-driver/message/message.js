@@ -20,7 +20,6 @@
 
 goog.provide('safaridriver.message');
 goog.provide('safaridriver.message.Message');
-goog.provide('safaridriver.message.Type');
 
 goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
@@ -50,16 +49,6 @@ safaridriver.message.LOG_ = goog.debug.Logger.getLogger(
  *     sending to a SafariContentBrowserTabProxy.
  */
 safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND = false;
-
-
-/**
- * Message types used by the SafariDriver extension.
- * @enum {string}
- */
-safaridriver.message.Type = {
-  LOAD: 'load',
-  UNLOAD: 'unload'
-};
 
 
 /**
@@ -160,7 +149,7 @@ safaridriver.message.Message.Field = {
  * @private
  */
 safaridriver.message.Message.fromData_ = function(data) {
-  var type = (/** @type {safaridriver.message.Type} */ data[
+  var type = (/** @type {string} */ data[
       safaridriver.message.Message.Field.TYPE]);
   return new safaridriver.message.Message(type);
 };
@@ -172,6 +161,8 @@ safaridriver.message.Message.fromData_ = function(data) {
  * @param {*} value The field value; should be a JSON compatible value.
  */
 safaridriver.message.Message.prototype.setField = function(name, value) {
+  goog.asserts.assert(name !== safaridriver.message.Message.Field.TYPE,
+      'The specified field may not be overridden: ' + name);
   this.data_[name] = value;
 };
 
@@ -219,14 +210,6 @@ safaridriver.message.Message.prototype.isSameOrigin = function() {
 safaridriver.message.Message.prototype.getType = function() {
   return (/** @type {string} */this.getField(
       safaridriver.message.Message.Field.TYPE));
-};
-
-
-/**
- * @param {string} type The new message type.
- */
-safaridriver.message.Message.prototype.setType = function(type) {
-  this.setField(safaridriver.message.Message.Field.TYPE, type);
 };
 
 

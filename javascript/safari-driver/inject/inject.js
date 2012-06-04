@@ -36,8 +36,10 @@ goog.require('safaridriver.inject.state');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Connect');
+goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.Response');
+goog.require('safaridriver.message.Unload');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
@@ -90,13 +92,13 @@ safaridriver.inject.init = function() {
          safaridriver.inject.onConnect_).
       on(safaridriver.inject.message.Encode.TYPE,
          safaridriver.inject.onEncode_).
-      on(safaridriver.message.Type.LOAD, safaridriver.inject.onLoad_).
+      on(safaridriver.message.Load.TYPE, safaridriver.inject.onLoad_).
       on(safaridriver.message.Response.TYPE,
          safaridriver.inject.onResponse_);
 
   window.addEventListener('load', function() {
-    var message = new safaridriver.message.Message(
-        safaridriver.message.Type.LOAD);
+    var message = new safaridriver.message.Load(
+        safaridriver.inject.state.IS_TOP);
 
     var target = safaridriver.inject.state.IS_TOP
         ? safari.self.tab : window.top;
@@ -106,8 +108,8 @@ safaridriver.inject.init = function() {
   window.addEventListener('unload', function() {
     if (safaridriver.inject.state.IS_TOP ||
         safaridriver.inject.state.isActive()) {
-      var message = new safaridriver.message.Message(
-          safaridriver.message.Type.UNLOAD);
+      var message = new safaridriver.message.Unload(
+          safaridriver.inject.state.IS_TOP);
       // If we send this message asynchronously, which is the norm, then the
       // page will complete its unload before the message is sent. Use sendSync
       // to ensure the extension gets our message.
@@ -195,7 +197,7 @@ safaridriver.inject.onReactivateFrame_ = function(message, e) {
 
     safaridriver.inject.state.setActive(true);
 
-    message = new safaridriver.message.Message(safaridriver.message.Type.LOAD);
+    message = new safaridriver.message.Load(false);
     message.sendSync(safari.self.tab);
   }
 };

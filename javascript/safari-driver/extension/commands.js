@@ -25,7 +25,7 @@ goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('safaridriver.extension.Tab');
-goog.require('safaridriver.message');
+goog.require('safaridriver.message.Load');
 goog.require('webdriver.promise');
 
 
@@ -113,7 +113,7 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
   tab.whenReady(function() {
     var expectLoad = tab.loadsNewPage(uri);
     if (expectLoad) {
-      tab.once(safaridriver.message.Type.LOAD, onLoad);
+      tab.once(safaridriver.message.Load.TYPE, onLoad);
     }
     safaridriver.extension.commands.sendCommand(session, command).
         then(onSuccess, onFailure);
@@ -138,7 +138,7 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
       if (response.isPending()) {
         safaridriver.extension.commands.LOG_.severe(
             'Error while loading page; failing', e);
-        tab.removeListener(safaridriver.message.Type.LOAD, onLoad);
+        tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
         response.reject(e);
       }
     }
@@ -157,12 +157,12 @@ safaridriver.extension.commands.refresh = function(session, command) {
   var response = new webdriver.promise.Deferred();
   var tab = session.getCommandTab();
   tab.whenReady(function() {
-    tab.once(safaridriver.message.Type.LOAD, onLoad);
+    tab.once(safaridriver.message.Load.TYPE, onLoad);
 
     safaridriver.extension.commands.sendCommand(session, command).
         addErrback(function(e) {
           if (response.isPending()) {
-            tab.removeListener(safaridriver.message.Type.LOAD, onLoad);
+            tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
             response.reject(e);
           }
         });

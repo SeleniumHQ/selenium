@@ -19,18 +19,19 @@ goog.provide('safaridriver.extension.Tab');
 goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('safaridriver.Tab');
-goog.require('safaridriver.message');
+goog.require('safaridriver.message.Command');
+goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.Response');
+goog.require('safaridriver.message.Unload');
 
 
 /**
  * Tracks a single SafariBrowserTab.
  *
  * <p>Upon receiving a message from the managed SafariBrowserTab, each
- * instance will emit an event whose type matches the original message's
- * {@link safaridriver.message.Type}. The parsed
- * {@link safaridriver.message.Message} will be included as the event's data
- * payload.
+ * instance will emit an event whose type matches the original message's type.
+ * The parsed {@link safaridriver.message.Message} will be included as the
+ * event's data payload.
  *
  * @param {!SafariBrowserTab} browserTab The tab to track.
  * @constructor
@@ -46,8 +47,8 @@ safaridriver.extension.Tab = function(browserTab) {
   this.browserTab_ = browserTab;
 
   browserTab.addEventListener('close', goog.bind(this.dispose, this), false);
-  this.on(safaridriver.message.Type.LOAD, goog.bind(this.notifyReady, this));
-  this.on(safaridriver.message.Type.UNLOAD,
+  this.on(safaridriver.message.Load.TYPE, goog.bind(this.notifyReady, this));
+  this.on(safaridriver.message.Unload.TYPE,
       goog.bind(this.notifyUnready, this));
 };
 goog.inherits(safaridriver.extension.Tab, safaridriver.Tab);
@@ -109,7 +110,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
       self.removeListener(safaridriver.message.Response.TYPE,
           onResponse);
     }
-    self.removeListener(safaridriver.message.Type.UNLOAD, onUnload);
+    self.removeListener(safaridriver.message.Unload.TYPE, onUnload);
     self.browserTab_.removeEventListener('close', onClose, true);
     clearTimeout(timeoutKey);
   }
@@ -130,7 +131,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     }
 
     self.addListener(safaridriver.message.Response.TYPE, onResponse);
-    self.addListener(safaridriver.message.Type.UNLOAD, onUnload);
+    self.addListener(safaridriver.message.Unload.TYPE, onUnload);
     self.browserTab_.addEventListener('close', onClose, true);
     message.send(self.browserTab_.page);
   }

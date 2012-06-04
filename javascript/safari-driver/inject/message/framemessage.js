@@ -22,7 +22,7 @@ goog.provide('safaridriver.inject.message.ActivateFrame');
 goog.provide('safaridriver.inject.message.ReactivateFrame');
 
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.Command');
+goog.require('safaridriver.message.BaseCommandMessage');
 
 
 /**
@@ -31,34 +31,11 @@ goog.require('safaridriver.message.Command');
  * @param {!safaridriver.Command} command The command associated with this
  *     message.
  * @constructor
- * @extends {safaridriver.message.Command}
+ * @extends {safaridriver.message.BaseCommandMessage}
  */
-safaridriver.inject.message.Activate = function(command) {
-  goog.base(this, command);
-
-  this.setType(safaridriver.inject.message.Activate.TYPE);
-};
-goog.inherits(safaridriver.inject.message.Activate,
-    safaridriver.message.Command);
-
-
-/**
- * @type {string}
- * @const
- */
-safaridriver.inject.message.Activate.TYPE = 'activate';
-
-
-/**
- * @param {!Object.<*>} data The JSON record object to create the message from.
- * @return {!safaridriver.inject.message.Activate} The new message.
- * @private
- */
-safaridriver.inject.message.Activate.fromData_ = function(data) {
-  var commandMessage = safaridriver.message.Command.fromData(data);
-  return new safaridriver.inject.message.Activate(
-      commandMessage.getCommand());
-};
+safaridriver.inject.message.Activate =
+    safaridriver.message.BaseCommandMessage.defineCommandMessageType(
+        'activate');
 
 
 /**
@@ -67,34 +44,11 @@ safaridriver.inject.message.Activate.fromData_ = function(data) {
  * @param {!safaridriver.Command} command The command associated with this
  *     message.
  * @constructor
- * @extends {safaridriver.message.Command}
+ * @extends {safaridriver.message.BaseCommandMessage}
  */
-safaridriver.inject.message.ActivateFrame = function(command) {
-  goog.base(this, command);
-
-  this.setType(safaridriver.inject.message.ActivateFrame.TYPE);
-};
-goog.inherits(safaridriver.inject.message.ActivateFrame,
-    safaridriver.message.Command);
-
-
-/**
- * @type {string}
- * @const
- */
-safaridriver.inject.message.ActivateFrame.TYPE = 'activate-frame';
-
-
-/**
- * @param {!Object.<*>} data The JSON record object to create the message from.
- * @return {!safaridriver.inject.message.ActivateFrame} The new message.
- * @private
- */
-safaridriver.inject.message.ActivateFrame.fromData_ = function(data) {
-  var commandMessage = safaridriver.message.Command.fromData(data);
-  return new safaridriver.inject.message.ActivateFrame(
-      commandMessage.getCommand());
-};
+safaridriver.inject.message.ActivateFrame =
+    safaridriver.message.BaseCommandMessage.defineCommandMessageType(
+        'activate-frame');
 
 
 /**
@@ -129,12 +83,6 @@ safaridriver.inject.message.ReactivateFrame.fromData_ = function(data) {
 };
 
 
-safaridriver.message.registerMessageType(
-    safaridriver.inject.message.Activate.TYPE,
-    safaridriver.inject.message.Activate.fromData_);
-safaridriver.message.registerMessageType(
-    safaridriver.inject.message.ActivateFrame.TYPE,
-    safaridriver.inject.message.ActivateFrame.fromData_);
 safaridriver.message.registerMessageType(
     safaridriver.inject.message.ReactivateFrame.TYPE,
     safaridriver.inject.message.ReactivateFrame.fromData_);

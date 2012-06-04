@@ -36,6 +36,7 @@ goog.require('safaridriver.console');
 goog.require('safaridriver.inject.message.Encode');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Command');
+goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
@@ -95,8 +96,7 @@ safaridriver.inject.page.init = function() {
         .on(safaridriver.message.Response.TYPE,
             safaridriver.inject.page.onResponse_);
 
-    var message = new safaridriver.message.Message(
-        safaridriver.message.Type.LOAD);
+    var message = new safaridriver.message.Load();
     safaridriver.inject.page.LOG_.info('Sending ' + message);
     message.send(window);
 
