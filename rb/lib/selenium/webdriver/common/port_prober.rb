@@ -20,7 +20,14 @@ module Selenium
       end
 
       def self.free?(port)
-        Platform.interfaces.each { |host| TCPServer.new(host, port).close }
+        Platform.interfaces.each do |host|
+          begin
+            TCPServer.new(host, port).close
+          rescue Errno::EADDRNOTAVAIL
+            $stderr.puts "could not bind to #{host}:#{port}" if $DEBUG
+            # ignored - some machines appear unable to bind to e.g. their local IP
+          end
+        end
 
         true
       rescue SocketError, Errno::EADDRINUSE

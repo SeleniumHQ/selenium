@@ -150,7 +150,17 @@ module Selenium
       end
 
       def ip
-        IPSocket.getaddress(Socket.gethostname)
+        orig = Socket.do_not_reverse_lookup
+        Socket.do_not_reverse_lookup = true
+
+        begin
+          UDPSocket.open do |s|
+            s.connect '8.8.8.8', 53
+            return s.addr.last
+          end
+        ensure
+          Socket.do_not_reverse_lookup = orig
+        end
       end
 
       def interfaces
