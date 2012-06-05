@@ -1,8 +1,23 @@
-v2.22.1
-=======
+Version number notation guide: 
+The version number of the IEDriverServer.exe is in the pattern as follows:
+
+  major.minor.build.revision
+
+The "major" and "minor" fields are synchronized to releases of the Selenium
+project. Changes in the "build" field indicate interim releases made publicly
+available via the project downloads page. Changes in "revision" field indicate
+private releases checked into the prebuilts directory of the source tree, but
+not made generally available on the downloads page.
+
+v2.22.1.1
+=========
+ * Updates to JavaScript automation atoms.
+
+v2.22.1.0
+=========
  * Re-enabling native code driver to understand "nativeEvents" capability.
    This was disabled due to CI-build restrictions which have now been resolved.
 
-v2.22.0
-=======
+v2.22.0.0
+=========
  * Initial release required by client language bindings.
