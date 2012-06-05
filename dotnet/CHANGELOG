@@ -1,3 +1,9 @@
+v2.22.1
+=======
+ * Not all browser driver implementations understand the generic set timeouts
+   HTTP endpoint of the JSON wire protocol, instead responding to the
+   deprecated specific endpoints for each timeout. Fixes issue #4015. 
+
 v2.22.0
 =======
  * The .NET IE driver implementation now looks for the IE standalone server. 
