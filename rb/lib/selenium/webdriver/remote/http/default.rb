@@ -11,10 +11,6 @@ module Selenium
 
           private
 
-          def initialize
-            super
-          end
-
           def http
             @http ||= (
               http = new_http_client
