@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
@@ -31,6 +32,7 @@ import java.io.IOException;
  * A WebDriver implementation that controls Safari using a browser extension
  * (consequently, only Safari 5+ is supported).
  */
+@Beta
 public class SafariDriver extends RemoteWebDriver
     implements TakesScreenshot {
   
