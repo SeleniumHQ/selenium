@@ -22,7 +22,10 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -49,6 +52,7 @@ import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -148,7 +152,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
-    super(new LazyCommandExecutor(binary, profile), capabilities);
+    super(new LazyCommandExecutor(binary, profile),
+      dropCapabilities(capabilities, BINARY, PROFILE));
     this.binary = binary;
     setElementConverter(new JsonToWebElementConverter(this) {
       @Override
@@ -250,6 +255,22 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   @Override
   protected void stopClient() {
     ((LazyCommandExecutor) this.getCommandExecutor()).quit();
+  }
+
+  /**
+   * Drops capabilities that we shouldn't send over the wire.
+   * 
+   * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
+   * launcher.
+   */
+  private static Capabilities dropCapabilities(Capabilities capabilities, String... keysToRemove) {
+    final Set<String> toRemove = Sets.newHashSet(keysToRemove);
+    return new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
+      @Override
+      public boolean apply(String key) {
+        return !toRemove.contains(key);
+      }
+    }));
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
