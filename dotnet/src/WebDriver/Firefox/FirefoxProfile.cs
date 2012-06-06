@@ -135,26 +135,6 @@ namespace OpenQA.Selenium.Firefox
             get { return this.acceptUntrustedCerts; }
             set { this.acceptUntrustedCerts = value; }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether Firefox is currently running with this profile loaded.
-        /// </summary>
-        public bool IsRunning
-        {
-            get
-            {
-                bool running = false;
-                if (!string.IsNullOrEmpty(this.profileDir))
-                {
-                    string macAndLinuxLockFile = Path.Combine(this.profileDir, ".parentlock");
-                    string windowsLockFile = Path.Combine(this.profileDir, "parent.lock");
-
-                    running = File.Exists(macAndLinuxLockFile) || File.Exists(windowsLockFile);
-                }
-
-                return running;
-            }
-        } 
         #endregion
 
         #region Public methods

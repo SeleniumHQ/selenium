@@ -128,7 +128,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">The <see cref="FirefoxProfile"/> to use with this instance of Firefox.</param>
         /// <param name="commandLineArguments">The command-line arguments to use in starting Firefox.</param>
         [SecurityPermission(SecurityAction.Demand)]
-        public void StartProfile(FirefoxProfile profile, string[] commandLineArguments)
+        public void StartProfile(FirefoxProfile profile, params string[] commandLineArguments)
         {
             if (profile == null)
             {
@@ -238,7 +238,7 @@ namespace OpenQA.Selenium.Firefox
                 throw new ArgumentNullException("profile", "profile cannot be null");
             }
 
-            this.StartProfile(profile, new string[] { "-silent" });
+            this.StartProfile(profile, "-silent");
             try
             {
                 this.WaitForProcessExit();
@@ -246,23 +246,6 @@ namespace OpenQA.Selenium.Firefox
             catch (ThreadInterruptedException e)
             {
                 throw new WebDriverException("Thread was interrupted", e);
-            }
-
-            if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
-            {
-                while (profile.IsRunning)
-                {
-                    Sleep(500);
-                }
-
-                do
-                {
-                    // Always sleep at least a half-second. This will allow
-                    // the lazy cleanup of the profile parent.lock file to 
-                    // be completed.
-                    Sleep(500);
-                }
-                while (profile.IsRunning);
             }
         }
 
