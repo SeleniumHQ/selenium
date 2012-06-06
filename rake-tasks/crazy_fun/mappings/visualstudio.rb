@@ -44,6 +44,9 @@ class VisualStudioMappings
   def add_all(fun)
     fun.add_mapping("visualc_library", CrazyFunVisualC::VisualCLibrary.new)
 
+    fun.add_mapping("visualc_release", CrazyFunVisualC::VisualCRelease.new)
+    fun.add_mapping("visualc_release", CrazyFunVisualStudio::VisualStudioPush.new)
+
     fun.add_mapping("dotnet_library", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateShortTaskName.new)
 
@@ -58,6 +61,38 @@ class VisualStudioMappings
     fun.add_mapping("dotnet_test", CrazyFunDotNet::RunDotNetTests.new)
 
     fun.add_mapping("dotnet_release", CrazyFunDotNet::DotNetRelease.new)
+    fun.add_mapping("dotnet_release", CrazyFunVisualStudio::VisualStudioPush.new)
+  end
+end
+
+module CrazyFunVisualStudio
+  class VisualStudioPush < Tasks
+    def handle(fun, dir, args)
+      name = task_name(dir, args[:name])
+      task name do
+        file_name = Rake::Task[name].out
+        py = "java -jar third_party/py/jython.jar"
+        if (python?)
+          py = "python"
+        end
+
+        puts "Preparing to upload file #{file_name}..."
+        if ENV["googlecodeusername"].nil?
+          print "Enter your googlecode username:"
+          googlecode_username = STDIN.gets.chomp
+        else
+          googlecode_username = ENV["googlecodeusername"]
+        end
+        if ENV["googlecodepassword"].nil?
+          print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
+          googlecode_password = STDIN.gets.chomp
+        else
+          googlecode_password = ENV["googlecodepassword"]
+        end
+        puts "Uploading file #{file_name}..."
+        sh "#{py} third_party/py/googlecode/googlecode_upload.py -s '#{args[:desc]}' -p selenium #{file_name} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
+      end
+    end
   end
 end
 
@@ -366,7 +401,7 @@ module CrazyFunDotNet
             package_id = dep.keys[0]
             package_version = version
             package_dependency_task = task_name(dir, package_id)
-		    if Rake::Task.task_defined? package_dependency_task
+            if Rake::Task.task_defined? package_dependency_task
               package_id = Rake::Task[package_dependency_task].out
             else
               # For package dependencies, specify the *exact* version of
@@ -455,6 +490,7 @@ module CrazyFunDotNet
       end
       
       add_dependencies(target, dir, args[:deps])
+      target.out = output_file
     end
   end
 end
@@ -497,6 +533,47 @@ module CrazyFunVisualC
 
       add_dependencies(target_task, dir, args[:deps])
       target_task.enhance [ args[:file_deps] ] if args[:file_deps]
+    end
+  end
+
+  class VisualCRelease < Tasks
+    def handle(fun, dir, args)
+      output_dir = 'build/cpp'
+      file_name = args[:out].chomp(File.extname(args[:out])) + "_" + args[:platform] + "_" + version + File.extname(args[:out])
+      output_file = File.join(output_dir, file_name)
+
+      full_path = output_file.gsub("/", Platform.dir_separator)
+      desc "Prepares release file #{full_path}"
+      task_name = task_name(dir, args[:name])
+      
+      target = file task_name do
+        puts "Preparing release file: #{full_path}"
+        if File.exists? output_file
+          File.delete output_file
+        end
+        dependency_task_name = task_name(dir, args[:src])
+        if Rake::Task.task_defined? dependency_task_name
+          dependency_output_file = Rake::Task[dependency_task_name].out
+          do_zip(dependency_output_file, output_file)
+        end
+      end
+      
+      add_dependencies(target, dir, [args[:src]])
+      target.out = output_file
+    end
+
+    def do_zip(src, dest)
+      # Need our own zip implementation as zip in common.rb only
+      # handles directories, not individual files.
+      src_dir = File.dirname(Platform.path_for(File.expand_path(src)))
+      src_file = File.basename(Platform.path_for(File.expand_path(src)))
+      out = Platform.path_for(File.expand_path(dest))
+      Dir.chdir(src_dir) {
+        # TODO(jari): something very weird going on here on windows
+        # the 2>&1 is needed for some reason
+        ok = system(%{jar cMf "#{out}" "#{src_file}" 2>&1})
+        ok or raise "could not zip #{src} => #{dest}"
+      }
     end
   end
 end
