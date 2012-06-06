@@ -513,6 +513,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(CHROME)
   @Test
   public void testShouldBeAbleToFindAnElementByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -521,6 +522,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(CHROME)
   @Test
   public void testShouldBeAbleToFindElementsByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
