@@ -222,37 +222,11 @@ public class FirefoxBinary {
   }
 
   public void clean(FirefoxProfile profile, File profileDir) throws IOException {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      // -silent flag is broken in windows xp FF13
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=761908
-      // (lukeis) I haven't tested Win7 but am assuming it's broken too.
-      // I don't know of a good way to distinguish other versions of FF
-      // at this point... so I'm disabling the flag for all versions
-      startProfile(profile, profileDir);
-    } else {
-      startProfile(profile, profileDir, "-silent");
-    }
+    startProfile(profile, profileDir, "-silent");
     try {
       waitFor();
     } catch (InterruptedException e) {
       throw new WebDriverException(e);
-    }
-
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      long waitUntil = System.currentTimeMillis() + timeout;
-      while (profile.isRunning(profileDir)) {
-        sleep(500);
-        if (waitUntil < System.currentTimeMillis()) {
-          throw new TimeoutException("Timed out waiting for firefox profile lock to disappear.");
-        }
-      }
-
-      do {
-        sleep(500);
-        if (waitUntil < System.currentTimeMillis()) {
-          throw new TimeoutException("Timed out waiting for firefox profile lock to disappear(2).");
-        }
-      } while (profile.isRunning(profileDir));
     }
   }
 
