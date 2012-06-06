@@ -1,3 +1,10 @@
+v2.23.0
+=======
+ * Removed the embedded IE server from the .NET bindings. From now on, you 
+   *must* use the IE standalone server with .NET.
+ * Removed unneeded polling for parent.lock file on anonymous Firefox profile
+   in temp directory.
+
 v2.22.1
 =======
  * Not all browser driver implementations understand the generic set timeouts
