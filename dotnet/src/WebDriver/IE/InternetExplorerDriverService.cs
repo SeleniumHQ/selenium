@@ -73,7 +73,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Creates a default instance of the InternetExplorerDriverService using a specified path to the ChromeDriver executable.
+        /// Creates a default instance of the InternetExplorerDriverService using a specified path to the IEDriverServer executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the IEDriverServer executable.</param>
         /// <returns>A InternetExplorerDriverService using a random port.</returns>

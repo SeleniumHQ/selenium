@@ -67,25 +67,11 @@ namespace OpenQA.Selenium.IE
     /// </example>
     public class InternetExplorerDriver : RemoteWebDriver, ITakesScreenshot
     {
-        private static int serverPort;
-        private static bool useLegacyServer;
-        private InternetExplorerDriverServer server;
-
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriver class.
         /// </summary>
         public InternetExplorerDriver()
-            : this(0)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class for the specified port.
-        /// </summary>
-        /// <param name="port">The port to use to communicate with the IE server.</param>
-        [Obsolete("Use the IEDriverServer executable along with RemoteWebDriver to specify a port to listen on.")]
-        public InternetExplorerDriver(int port)
-            : this(port, new InternetExplorerOptions())
+            : this(new InternetExplorerOptions())
         {
         }
 
@@ -94,30 +80,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(InternetExplorerOptions options)
-            : this(0, options)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class for the specified port and desired capabilities.
-        /// </summary>
-        /// <param name="port">The port to use to communicate with the IE server.</param>
-        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
-        [Obsolete("Use the IEDriverServer executable along with RemoteWebDriver to specify a port to listen on.")]
-        public InternetExplorerDriver(int port, InternetExplorerOptions options)
-            : this(port, options, TimeSpan.FromSeconds(60))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class for the specified port, options, and command timeout.
-        /// </summary>
-        /// <param name="port">The port to use to communicate with the IE server.</param>
-        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        [Obsolete("Use the IEDriverServer executable along with RemoteWebDriver to specify a port to listen on.")]
-        public InternetExplorerDriver(int port, InternetExplorerOptions options, TimeSpan commandTimeout)
-            : base(GetCommandExecutor(port, options.ToCapabilities(), commandTimeout), options.ToCapabilities())
+            : this(InternetExplorerDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60))
         {
         }
 
@@ -177,81 +140,5 @@ namespace OpenQA.Selenium.IE
             return new Screenshot(base64);
         }
         #endregion
-
-        /// <summary>
-        /// Starts the command executor, enabling communication with the browser.
-        /// </summary>
-        protected override void StartClient()
-        {
-            if (useLegacyServer)
-            {
-                if (this.server == null)
-                {
-                    this.server = new InternetExplorerDriverServer();
-                }
-
-                if (this.server != null)
-                {
-                    if (!InternetExplorerDriverServer.IsRunning)
-                    {
-                        this.server.Start(serverPort);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Stops the command executor, ending further communication with the browser.
-        /// </summary>
-        protected override void StopClient()
-        {
-            if (this.server != null)
-            {
-                // StopClient is called by RemoteWebDriver.Dispose, so we should be
-                // okay calling lib.Dispose() here.
-                this.server.Dispose();
-            }
-        }
-
-        private static ICommandExecutor GetCommandExecutor(int port, ICapabilities capabilities, TimeSpan commandTimeout)
-        {
-            // This method should be completely removed when the standalone server
-            // is in widespread use.
-            ICommandExecutor executor = null;
-            if (capabilities.HasCapability("useLegacyInternalServer"))
-            {
-                useLegacyServer = (bool)capabilities.GetCapability("useLegacyInternalServer");
-                executor = new HttpCommandExecutor(CreateServerUri(port), commandTimeout);
-            }
-            else
-            {
-                useLegacyServer = false;
-                try
-                {
-                    executor = new DriverServiceCommandExecutor(InternetExplorerDriverService.CreateDefaultService(), commandTimeout);
-                }
-                catch (DriverServiceNotFoundException ex)
-                {
-                    throw new WebDriverException("You will need to use add InternetExplorerDriver.UseLegacyInternalServer to the desired capabilities to use the internal native code server library. This functionality will be deprecated in favor of the standalone IEDriverServer.exe server.", ex);
-                }
-            }
-
-            return executor;
-        }
-
-        private static Uri CreateServerUri(int port)
-        {
-            if (serverPort == 0)
-            {
-                if (port == 0)
-                {
-                    port = PortUtilities.FindFreePort();
-                }
-
-                serverPort = port;
-            }
-
-            return new Uri("http://localhost:" + serverPort.ToString(CultureInfo.InvariantCulture));
-        }
     }
 }

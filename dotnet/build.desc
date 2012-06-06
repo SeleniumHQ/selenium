@@ -10,8 +10,6 @@ dotnet_library(name = "dotnet",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
-    {"//cpp:ie_win32_dll" : "WebDriver.InternetExplorerDriver.x86.dll"},
-    {"//cpp:ie_x64_dll" : "WebDriver.InternetExplorerDriver.x64.dll"},
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
     {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
@@ -32,8 +30,6 @@ dotnet_library(name = "dotnet4",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
-    {"//cpp:ie_win32_dll" : "WebDriver.InternetExplorerDriver.x86.dll"},
-    {"//cpp:ie_x64_dll" : "WebDriver.InternetExplorerDriver.x64.dll"},
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
     {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}

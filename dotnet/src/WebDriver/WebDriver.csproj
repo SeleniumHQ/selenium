@@ -84,6 +84,9 @@
     <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
     <Compile Include="IE\InternetExplorerOptions.cs" />
+    <Compile Include="Internal\NativeMethods.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Internal\PortUtilities.cs" />
     <Compile Include="Remote\DriverServiceCommandExecutor.cs" />
     <Compile Include="DriverServiceNotFoundException.cs" />
@@ -114,11 +117,7 @@
     <Compile Include="ICapabilities.cs" />
     <Compile Include="ICookieJar.cs" />
     <Compile Include="IE\InternetExplorerDriver.cs" />
-    <Compile Include="IE\InternetExplorerDriverServer.cs" />
     <Compile Include="IE\InternetExplorerWebElement.cs" />
-    <Compile Include="Internal\NativeLibrary.cs" />
-    <Compile Include="Internal\NativeLibrarySafeHandle.cs" />
-    <Compile Include="Internal\NativeMethods.cs" />
     <Compile Include="IHasCapabilities.cs" />
     <Compile Include="IHasInputDevices.cs" />
     <Compile Include="IJavascriptExecutor.cs" />
@@ -289,24 +288,24 @@
     <PostBuildEvent>if %25PROCESSOR_ARCHITECTURE%25 == x86 (
   if not defined PROCESSOR_ARCHITEW6432 (
     echo Detected 32-bit platform
-    if exist "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll" (
-      echo Found IE 32-bit native binary, copying from Win32 build target $(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll
-      copy /y "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)" &gt; NUL
+    if exist "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" (
+      echo Found IE 32-bit native binary, copying from Win32 build target $(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe
+      copy /y "$(SolutionDir)build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
     ) else (
-      echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(SolutionDir)cpp\prebuilt\Win32\Release\IEDriver.dll
-      copy /y "$(SolutionDir)cpp\prebuilt\Win32\Release\IEDriver.dll" "$(TargetDir)" &gt; NUL
+      echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(SolutionDir)cpp\prebuilt\Win32\Release\IEDriverServer.exe
+      copy /y "$(SolutionDir)cpp\prebuilt\Win32\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
     )
     goto end
   )
 )
 
 echo Detected 64-bit platform
-if exist "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll" (
-  echo Found IE 64-bit native binary, copying from x64 build target $(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll
-  copy /y "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriver.dll" "$(TargetDir)" &gt; NUL
+if exist "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" (
+  echo Found IE 64-bit native binary, copying from x64 build target $(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe
+  copy /y "$(SolutionDir)build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
 ) else (
-  echo Missing IE 64-bit native binary, copying from x64 prebuilt location $(SolutionDir)cpp\prebuilt\x64\Release\IEDriver.dll
-  copy /y "$(SolutionDir)cpp\prebuilt\x64\Release\IEDriver.dll" "$(TargetDir)" &gt; NUL
+  echo Missing IE 64-bit native binary, copying from x64 prebuilt location $(SolutionDir)cpp\prebuilt\x64\Release\IEDriverServer.exe
+  copy /y "$(SolutionDir)cpp\prebuilt\x64\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
 )
 
 :end

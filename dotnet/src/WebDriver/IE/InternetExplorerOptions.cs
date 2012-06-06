@@ -46,16 +46,10 @@ namespace OpenQA.Selenium.IE
     /// </example>
     public class InternetExplorerOptions
     {
-        // This capability should be removed when the standalone server is in
-        // widespread use.
-        private const string UseLegacyInternalServerCapability = "useLegacyInternalServer";
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
         private const string EnableNativeEventsCapability = "nativeEvents";
 
-        // This value should be flipped to false to make using the standalone server the default.
-        // It should be removed entirely when the standalone server is in widespread use.
-        private bool useInternalServer = false;
         private bool ignoreProtectedModeSettings;
         private bool enableNativeEvents = true;
         private string initialBrowserUrl = string.Empty;
@@ -95,21 +89,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use the internal remote InternetExplorerDriverServer class.
-        /// </summary>
-        /// <remarks>
-        /// This property is only transitional. It is designed to allow people to migrate to the downloadable
-        /// standalone IE driver server executable. Once that method is in widespread use, this property will
-        /// be removed.
-        /// </remarks>
-        [Obsolete("Using the 'internal server' is temporary, and this property will be removed in a future release")]
-        public bool UseInternalServer
-        {
-            get { return this.useInternalServer; }
-            set { this.useInternalServer = value; }
-        }
-
-        /// <summary>
         /// Returns DesiredCapabiliites for IE with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
@@ -122,13 +101,6 @@ namespace OpenQA.Selenium.IE
             if (this.ignoreProtectedModeSettings)
             {
                 capabilities.SetCapability(IgnoreProtectedModeSettingsCapability, true);
-            }
-
-            // This branch should be removed when the standalone server is in
-            // widespread use.
-            if (this.useInternalServer)
-            {
-                capabilities.SetCapability(UseLegacyInternalServerCapability, true);
             }
 
             if (!string.IsNullOrEmpty(this.initialBrowserUrl))
