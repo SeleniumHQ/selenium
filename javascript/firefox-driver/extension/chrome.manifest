@@ -43,18 +43,18 @@ contract @googlecode.com/webdriver/wdsessionstoreservice;1 {b54195d3-841e-47df-b
 component {E8F9FEFE-C513-4097-98BE-BE00A41D3645} components/synthetic_mouse.js
 contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
 
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=12
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll ABI=WINNT_x86-msvc appversion>=11a1 appversion<12
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=13
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll ABI=WINNT_x86-msvc appversion>=12 appversion<13
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-10.dll ABI=WINNT_x86-msvc appversion>=10a1 appversion<11
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc appversion<4
 
 binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc
 
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-10.so ABI=Linux_x86_64-gcc3 appversion>=10a1 appversion<11
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86_64-gcc3 appversion>=12
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86_64-gcc3 appversion>=11a1 appversion<12
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86_64-gcc3 appversion>=13
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86_64-gcc3 appversion>=12 appversion<13
 
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-10.so ABI=Linux_x86-gcc3 appversion>=10a1 appversion<11
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86-gcc3 appversion>=12
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86-gcc3 appversion>=11a1 appversion<12
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86-gcc3 appversion>=13
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86-gcc3 appversion>=12 appversion<13
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff3.so ABI=Linux_x86-gcc3 appversion<4
