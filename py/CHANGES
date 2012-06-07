@@ -1,3 +1,6 @@
+Selenium 2.23
+* Support for FF13 native events
+
 Selenium 2.22
 * Moving IEDriver to be able to use IEDriverServer
 
