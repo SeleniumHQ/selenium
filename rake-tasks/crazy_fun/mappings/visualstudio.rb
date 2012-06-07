@@ -76,7 +76,6 @@ module CrazyFunVisualStudio
           py = "python"
         end
 
-        puts "Preparing to upload file #{file_name}..."
         if ENV["googlecodeusername"].nil?
           print "Enter your googlecode username:"
           googlecode_username = STDIN.gets.chomp
@@ -90,7 +89,10 @@ module CrazyFunVisualStudio
           googlecode_password = ENV["googlecodepassword"]
         end
         puts "Uploading file #{file_name}..."
-        sh "#{py} third_party/py/googlecode/googlecode_upload.py -s '#{args[:desc]}' -p selenium #{file_name} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
+		platform_file_name = file_name.gsub("/", Platform.dir_separator)
+		command_line = "#{py} third_party/py/googlecode/googlecode_upload.py -s \"#{args[:desc]}\" -p selenium #{platform_file_name} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
+		puts command_line
+        sh command_line
       end
     end
   end
