@@ -1,3 +1,9 @@
+v2.23.1
+=======
+
+Selenium RC:
+  * Support for Firefox 13 on windows with RC api
+
 v2.23.0
 =======
 
