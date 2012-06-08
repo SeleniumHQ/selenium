@@ -20,13 +20,13 @@ package org.openqa.selenium.android.server;
 import android.os.Binder;
 
 public class WebDriverBinder extends Binder {
-  private JettyService jettyService;
+  private HttpdService httpdService;
   
-  public WebDriverBinder(JettyService service) {
-    jettyService = service;
+  public WebDriverBinder(HttpdService service) {
+    httpdService = service;
   }
   
-  public JettyService getService() {
-    return jettyService;
+  public HttpdService getService() {
+    return httpdService;
   }
 }

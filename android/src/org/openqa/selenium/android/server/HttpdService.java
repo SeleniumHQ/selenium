@@ -37,8 +37,8 @@ import android.widget.Toast;
 
 import java.util.logging.Level;
 
-public class JettyService extends Service {
-  private static final String LOG_TAG = JettyService.class.getName();
+public class HttpdService extends Service {
+  private static final String LOG_TAG = HttpdService.class.getName();
   private NotificationManager notificationManager;
   private Server server;
   private int port = 8080;
@@ -85,16 +85,16 @@ public class JettyService extends Service {
       if (server != null) {
         stopJetty();
         // Cancel the persistent notification.
-        notificationManager.cancel(R.string.jetty_started);
+        notificationManager.cancel(R.string.httpd_started);
         // Tell the user we stopped.
-        Toast.makeText(this, getText(R.string.jetty_stopped), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getText(R.string.httpd_stopped), Toast.LENGTH_SHORT).show();
         Logger.log(Level.INFO, LOG_TAG, "onDestroy", "Jetty stopped");
       } else {
-        Toast.makeText(JettyService.this, R.string.jetty_not_running, Toast.LENGTH_SHORT).show();
+        Toast.makeText(HttpdService.this, R.string.httpd_not_running, Toast.LENGTH_SHORT).show();
       }
     } catch (Exception e) {
       Logger.log(Level.INFO, LOG_TAG, "onDestroy", "Error stopping jetty" + e.getMessage());
-      Toast.makeText(this, getText(R.string.jetty_not_stopped), Toast.LENGTH_SHORT).show();
+      Toast.makeText(this, getText(R.string.httpd_not_stopped), Toast.LENGTH_SHORT).show();
     }
   }
 
@@ -149,7 +149,7 @@ public class JettyService extends Service {
 
   public void startServer() {
     if (server != null && server.isRunning()) {
-      Toast.makeText(JettyService.this, R.string.jetty_already_started, Toast.LENGTH_SHORT).show();
+      Toast.makeText(HttpdService.this, R.string.httpd_already_started, Toast.LENGTH_SHORT).show();
       return;
     }
 
@@ -172,12 +172,12 @@ public class JettyService extends Service {
       HttpGenerator.setServerVersion("WebDriver jetty");
 
       notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-      Toast.makeText(JettyService.this, R.string.jetty_started, Toast.LENGTH_SHORT).show();
+      Toast.makeText(HttpdService.this, R.string.httpd_started, Toast.LENGTH_SHORT).show();
 
       Logger.log(Level.INFO, LOG_TAG, "startServer", "Jetty started");
     } catch (Exception e) {
       Logger.log(Level.WARNING, LOG_TAG, "startServer", "Error starting jetty" + e);
-      Toast.makeText(this, getText(R.string.jetty_not_started), Toast.LENGTH_SHORT).show();
+      Toast.makeText(this, getText(R.string.httpd_not_started), Toast.LENGTH_SHORT).show();
       throw new RuntimeException("Jetty failed to start!");
     }
   }

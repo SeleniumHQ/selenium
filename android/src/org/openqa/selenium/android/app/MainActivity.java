@@ -29,7 +29,7 @@ import android.os.IBinder;
 
 import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.android.library.Logger;
-import org.openqa.selenium.android.server.JettyService;
+import org.openqa.selenium.android.server.HttpdService;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.CapabilityType;
@@ -41,8 +41,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 public class MainActivity extends Activity {
 
   private boolean bound;
-  private JettyService jettyService;
-  private Intent jettyIntent;
+  private HttpdService httpdService;
+  private Intent httpdIntent;
   public static final String DEBUG_MODE_ARG = "debug";
   private static Activity thisActivity;
   private static DesiredCapabilities caps;
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
   private ServiceConnection mConnection = new ServiceConnection() {
     public void onServiceConnected(ComponentName className, IBinder service) {
       bound = true;
-      jettyService = ((org.openqa.selenium.android.server.WebDriverBinder) service).getService();
+      httpdService = ((org.openqa.selenium.android.server.WebDriverBinder) service).getService();
     }
 
     public void onServiceDisconnected(ComponentName arg0) {
@@ -70,8 +70,8 @@ public class MainActivity extends Activity {
 
     new Thread(new Runnable() {
       public void run() {
-        jettyIntent = new Intent(MainActivity.this, JettyService.class);
-        bindService(jettyIntent, mConnection, Context.BIND_AUTO_CREATE);
+        httpdIntent = new Intent(MainActivity.this, HttpdService.class);
+        bindService(httpdIntent, mConnection, Context.BIND_AUTO_CREATE);
       }
     }).start();
     thisActivity = this;
@@ -83,10 +83,10 @@ public class MainActivity extends Activity {
       unbindService(mConnection);
       bound = false;
     }
-    if (jettyService != null) {
-      jettyService.stopService(jettyIntent);
+    if (httpdService != null) {
+      httpdService.stopService(httpdIntent);
     }
-    stopService(jettyIntent);
+    stopService(httpdIntent);
     this.getWindow().closeAllPanels();
     super.onDestroy();
   }
