@@ -29,6 +29,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.object');
+goog.require('webdriver.ActionSequence');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Key');
@@ -315,6 +316,24 @@ webdriver.WebDriver.prototype.quit = function() {
 
 
 /**
+ * Creates a new action sequence using this driver. The sequence will not be
+ * scheduled for execution until {@link webdriver.ActionSequence#perform} is
+ * called. Example:
+ * <pre><code>
+ *   driver.actions().
+ *       mouseDown(element1).
+ *       mouseMove(element2).
+ *       mouseUp().
+ *       perform();
+ * </code></pre>
+ * @return {!webdriver.ActionSequence} A new action sequence for this instance.
+ */
+webdriver.WebDriver.prototype.actions = function() {
+  return new webdriver.ActionSequence(this);
+};
+
+
+/**
  * Schedules a command to execute JavaScript in the context of the currently
  * selected frame or window. The script fragment will be executed as the body
  * of an anonymous function. If the script is provided as a function object,
@@ -351,7 +370,7 @@ webdriver.WebDriver.prototype.quit = function() {
  * @return {!webdriver.promise.Promise} A promise that will resolve to the
  *    scripts return value.
  */
- webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
+webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
   if (goog.isFunction(script)) {
     script = 'return (' + script + ').apply(null, arguments);';
   }

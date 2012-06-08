@@ -263,6 +263,16 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           post('/session/:sessionId/timeouts/async_script')).
       put(webdriver.CommandName.IMPLICITLY_WAIT,
           post('/session/:sessionId/timeouts/implicit_wait')).
+      put(webdriver.CommandName.MOVE_TO, post('/session/:sessionId/moveto')).
+      put(webdriver.CommandName.CLICK, post('/session/:sessionId/click')).
+      put(webdriver.CommandName.DOUBLE_CLICK,
+          post('/session/:sessionId/doubleclick')).
+      put(webdriver.CommandName.MOUSE_DOWN,
+          post('/session/:sessionId/buttondown')).
+      put(webdriver.CommandName.MOUSE_UP, post('/session/:sessionId/buttonup')).
+      put(webdriver.CommandName.MOVE_TO, post('/session/:sessionId/moveto')).
+      put(webdriver.CommandName.SEND_KEYS_TO_ACTIVE_ELEMENT,
+          post('/session/:sessionId/keys')).
       build();
 
   /** @constructor */
