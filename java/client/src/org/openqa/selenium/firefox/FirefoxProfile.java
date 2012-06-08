@@ -399,13 +399,6 @@ public class FirefoxProfile {
     this.untrustedCertIssuer = untrustedIssuer;
   }
 
-  public boolean isRunning(File profileDir) {
-    File macAndLinuxLockFile = new File(profileDir, ".parentlock");
-    File windowsLockFile = new File(profileDir, "parent.lock");
-
-    return macAndLinuxLockFile.exists() || windowsLockFile.exists();
-  }
-
   public void clean(File profileDir) {
     TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(profileDir);
   }
