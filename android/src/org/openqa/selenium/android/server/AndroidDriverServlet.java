@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.android.server;
 
-import javax.servlet.ServletException;
-
 import org.openqa.selenium.android.server.handler.DragElement;
 import org.openqa.selenium.android.server.handler.GetCapabilities;
 import org.openqa.selenium.android.server.handler.GetCssProperty;
@@ -27,42 +25,60 @@ import org.openqa.selenium.android.server.handler.GetElementLocation;
 import org.openqa.selenium.android.server.handler.GetElementSize;
 import org.openqa.selenium.android.server.handler.HoverOverElement;
 import org.openqa.selenium.android.server.handler.NewSession;
-import org.openqa.selenium.remote.server.DriverServlet;
+import org.openqa.selenium.remote.server.DefaultDriverSessions;
+import org.openqa.selenium.remote.server.JsonHttpRemoteConfig;
+import org.openqa.selenium.remote.server.WebbitHttpRequest;
+import org.openqa.selenium.remote.server.WebbitHttpResponse;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
-import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
 import org.openqa.selenium.remote.server.rest.ResultType;
+import org.webbitserver.HttpControl;
+import org.webbitserver.HttpHandler;
+import org.webbitserver.HttpRequest;
+import org.webbitserver.HttpResponse;
 
-public class AndroidDriverServlet extends DriverServlet {
-  @Override
-  public void init() throws ServletException {
-    super.init();
-    try {
-      final EmptyResult emptyResult = new EmptyResult();
-      final JsonResult jsonResult = new JsonResult(":response");
+import java.util.logging.Logger;
 
-      addNewGetMapping("/session/:sessionId/element/:id/displayed", GetElementDisplayed.class)
-          .on(ResultType.SUCCESS, jsonResult);
-      addNewGetMapping("/session/:sessionId/element/:id/location", GetElementLocation.class)
-          .on(ResultType.SUCCESS, jsonResult);
-      addNewGetMapping("/session/:sessionId/element/:id/size", GetElementSize.class)
-          .on(ResultType.SUCCESS, jsonResult);
-      addNewGetMapping("/session/:sessionId/element/:id/css/:propertyName", GetCssProperty.class)
-          .on(ResultType.SUCCESS, jsonResult);
+public class AndroidDriverServlet implements HttpHandler {
+  private final JsonHttpRemoteConfig config;
+  private final String basePath;
 
-      addNewPostMapping("/session/:sessionId/element/:id/hover", HoverOverElement.class)
-          .on(ResultType.SUCCESS, emptyResult);
-      addNewPostMapping("/session/:sessionId/element/:id/drag", DragElement.class)
-          .on(ResultType.SUCCESS, emptyResult);
-      addNewPostMapping("/session", NewSession.class)
-          .on(ResultType.SUCCESS, new RedirectResult("/session/:sessionId"));
+  public AndroidDriverServlet(Logger log, String basePath) {
+    this.basePath = basePath;
+    config = new JsonHttpRemoteConfig(new DefaultDriverSessions(), log);
 
-      addNewGetMapping("/session/:sessionId", GetCapabilities.class)
-        .on(ResultType.SUCCESS, new ForwardResult("/WEB-INF/views/sessionCapabilities.jsp"))
+    amend(config);
+  }
+
+  private void amend(JsonHttpRemoteConfig config) {
+    final EmptyResult emptyResult = new EmptyResult();
+    final JsonResult jsonResult = new JsonResult(":response");
+
+    config.addNewGetMapping("/session/:sessionId/element/:id/displayed", GetElementDisplayed.class)
+        .on(ResultType.SUCCESS, jsonResult);
+    config.addNewGetMapping("/session/:sessionId/element/:id/location", GetElementLocation.class)
+        .on(ResultType.SUCCESS, jsonResult);
+    config.addNewGetMapping("/session/:sessionId/element/:id/size", GetElementSize.class)
+        .on(ResultType.SUCCESS, jsonResult);
+    config.addNewGetMapping("/session/:sessionId/element/:id/css/:propertyName", GetCssProperty.class)
+        .on(ResultType.SUCCESS, jsonResult);
+
+    config.addNewPostMapping("/session/:sessionId/element/:id/hover", HoverOverElement.class)
+        .on(ResultType.SUCCESS, emptyResult);
+    config.addNewPostMapping("/session/:sessionId/element/:id/drag", DragElement.class)
+        .on(ResultType.SUCCESS, emptyResult);
+    config.addNewPostMapping("/session", NewSession.class)
+        .on(ResultType.SUCCESS, new RedirectResult("/session/:sessionId"));
+
+    config.addNewGetMapping("/session/:sessionId", GetCapabilities.class)
         .on(ResultType.SUCCESS, jsonResult, "application/json");
-    } catch (Exception e) {
-      throw new ServletException(e);
-    }
+  }
+
+  @Override
+  public void handleHttpRequest(HttpRequest httpRequest, HttpResponse httpResponse,
+                                HttpControl httpControl) throws Exception {
+
+    config.handleRequest(new WebbitHttpRequest(basePath, httpRequest), new WebbitHttpResponse(httpResponse));
   }
 }

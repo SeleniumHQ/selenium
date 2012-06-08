@@ -2,6 +2,7 @@
   <library name="webbit">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/webbit/webbit-0.4.8-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/netty/netty-3.2.7.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

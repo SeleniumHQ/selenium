@@ -21,6 +21,8 @@ public interface HttpStatusCodes {
   int OK = 200;
   int NO_CONTENT = 204;
 
+  int SEE_OTHER = 303;
+
   int NOT_FOUND = 404;
 
   int INTERNAL_SERVER_ERROR = 500;

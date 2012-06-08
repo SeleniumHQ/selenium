@@ -39,10 +39,9 @@
     <orderEntry type="jdk" jdkName="Android 4.0.3 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="server" />
-    <orderEntry type="library" name="jetty-android" level="project" />
-    <orderEntry type="library" name="servlet-api" level="project" />
-    <orderEntry type="library" name="android" level="project" />
-    <orderEntry type="library" name="junit" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="android" level="project" />
+    <orderEntry type="library" name="webbit" level="project" />
+    <orderEntry type="library" scope="TEST" name="junit" level="project" />
   </component>
 </module>
 

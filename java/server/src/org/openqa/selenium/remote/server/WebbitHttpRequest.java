@@ -22,26 +22,30 @@ import com.google.common.collect.Maps;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class WebbitHttpRequest implements HttpRequest {
 
+  private final static Logger log = Logger.getLogger(WebbitHttpRequest.class.getName());
+  private final String basePath;
   private final org.webbitserver.HttpRequest request;
   private final Map<String, Object> attributes = Maps.newHashMap();
 
-  public WebbitHttpRequest(org.webbitserver.HttpRequest request) {
+  public WebbitHttpRequest(String basePath, org.webbitserver.HttpRequest request) {
+    this.basePath = basePath;
     this.request = request;
   }
 
   public String getAppUri() {
-    throw new UnsupportedOperationException("getAppUri");
+    return basePath;
   }
 
   public String getUri() {
-    throw new UnsupportedOperationException("getUri");
+    return request.uri();
   }
 
   public String getPath() {
-    throw new UnsupportedOperationException("getPath");
+    return request.uri().substring(basePath.length());
   }
 
   public String getMethod() {

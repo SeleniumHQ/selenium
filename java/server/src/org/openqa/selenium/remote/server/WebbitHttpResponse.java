@@ -48,7 +48,9 @@ public class WebbitHttpResponse implements HttpResponse {
   }
 
   public void sendRedirect(String to) {
-    throw new UnsupportedOperationException("sendRedirect");
+    response.status(HttpStatusCodes.SEE_OTHER);
+    response.header("Location", to);
+    response.end();
   }
 
   public void end() {
