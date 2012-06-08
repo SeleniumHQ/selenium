@@ -130,8 +130,7 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot, We
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
-    byte[] base64Png = (byte[]) execute(DriverCommand.SCREENSHOT).getValue();
-    String png = new String(base64Png);
+    String png = (String) execute(DriverCommand.SCREENSHOT).getValue();
     // ... and convert it.
     return target.convertFromBase64Png(png);
   }
