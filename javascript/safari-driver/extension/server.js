@@ -136,7 +136,7 @@ goog.scope(function() {
   map[CommandName.MOUSE_DOWN] = commands.sendCommand;
   map[CommandName.MOUSE_UP] = commands.sendCommand;
   map[CommandName.MOVE_TO] = commands.sendCommand;
-  map[CommandName.SEND_KEYS_TO_SESSION] = commands.sendCommand;
+  map[CommandName.SEND_KEYS_TO_ACTIVE_ELEMENT] = commands.sendCommand;
 
   map[CommandName.SWITCH_TO_FRAME] = commands.sendCommand;
   map[CommandName.SWITCH_TO_WINDOW] = commands.switchToWindow;
