@@ -295,13 +295,13 @@ safaridriver.inject.commands.setWindowSize = function(command) {
  * Sends a command to the page to have it execute a user-supplied bit of
  * JavaScript.
  * @param {!safaridriver.Command} command The command to execute.
- * @param {function(!safaridriver.Command)} pageExecutor Function to use to
- *     execute the script command in the context of the page under test.
+ * @param {!safaridriver.inject.PageScript} pageScript Object to use to execute
+ *     the script command in the context of the page under test.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     {@link bot.response.ResponseObject} from the page.
  * @throws {Error} If there is an error while sending the command to the page.
  */
-safaridriver.inject.commands.executeScript = function(command, pageExecutor) {
+safaridriver.inject.commands.executeScript = function(command, pageScript) {
   // Decode the command arguments from WebDriver's wire protocol.
   var sendResult = bot.inject.executeScript(function(args) {
     command.setParameter('args', args);
@@ -313,7 +313,7 @@ safaridriver.inject.commands.executeScript = function(command, pageExecutor) {
 
   // Execute the command in the context of the page, then encode the response
   // for WebDriver's wire protocol.
-  pageExecutor(command).then(function(result) {
+  pageScript.execute(command).then(function(result) {
     if (response.isPending()) {
       response.resolve(bot.inject.wrapValue(result));
     }

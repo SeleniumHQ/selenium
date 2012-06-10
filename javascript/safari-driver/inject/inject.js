@@ -292,7 +292,7 @@ safaridriver.inject.onCommand_ = function(message) {
       // command immediately. We're assuming the global page is scheduling
       // commands and only dispatching one at a time.
       webdriver.promise.when(
-          handler(command, safaridriver.inject.sendCommandToPage),
+          handler(command, safaridriver.inject.pageScript_),
           sendSuccess, sendError);
     } catch (ex) {
       sendError(ex);
@@ -353,27 +353,24 @@ safaridriver.inject.sendResponse_ = function(command, response) {
 
 
 /**
- * Sends a command message to the page.
- * @param {!safaridriver.Command} command The command to send.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
- *     a response message has been received.
- */
-safaridriver.inject.sendCommandToPage = function(command) {
-  return safaridriver.inject.pageScript_.execute(command);
-};
-
-
-/**
- * @typedef {(function(!safaridriver.Command, function(!safaridriver.Command))|
+ * @typedef {(function(!safaridriver.Command, !safaridriver.inject.PageScript)|
  *            function(!safaridriver.Command)|
  *            function())}
  */
 safaridriver.inject.CommandHandler;
 
+
+/**
+ * @typedef {!Object.<webdriver.CommandName,
+ *                    safaridriver.inject.CommandHandler>}
+ */
+safaridriver.inject.CommandMap;
+
+
 /**
  * Map of command names that should always be handled by the topmost frame,
  * regardless of whether it is currently active.
- * @type {!Object.<webdriver.CommandName, safaridriver.inject.CommandHandler>}
+ * @type {safaridriver.inject.CommandMap}
  * @const
  * @private
  */
@@ -382,7 +379,7 @@ safaridriver.inject.TOP_COMMAND_MAP_ = {};
 
 /**
  * Maps command names to the function that handles it.
- * @type {!Object.<webdriver.CommandName, safaridriver.inject.CommandHandler>}
+ * @type {safaridriver.inject.CommandMap}
  * @const
  * @private
  */
