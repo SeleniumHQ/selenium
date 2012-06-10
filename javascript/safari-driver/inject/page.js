@@ -44,76 +44,56 @@ goog.require('webdriver.promise');
 
 
 /**
- * @define {boolean} Whether this script is being used by the extension or has
- *     been injected into the web page.
- */
-safaridriver.inject.page.EXTENSION = true;
-
-
-/**
- * Class name assigned to the SCRIPT element used to insert the compiled form of
- * this script into the web page.
- * @type {string}
- * @const
- * @private
- */
-safaridriver.inject.page.SCRIPT_CLASS_NAME_ = 'safari-driver';
-
-
-/**
  * @type {!goog.debug.Logger}
  * @const
  * @private
  */
 safaridriver.inject.page.LOG_ = goog.debug.Logger.getLogger(
-    'safaridriver.inject.page.' +
-        (safaridriver.inject.page.EXTENSION ? 'extension' : 'webpage'));
+    'safaridriver.inject.page');
 
 
 /**
- * Initializes this script. When included in the SafariDriver extension, this
- * appends a SCRIPT element to the DOM that loads the page script. When
- * included as the page script, this sends a LOADED message to the injected
- * script, informing it that the page script has been successfully loaded.
+ * CSS selector used to locate the script tag added to the DOM to load this
+ * script. Matches on the expected prefix and suffix for the resource URL.
+ * The full URL is randomly generated each time Safari loads the WebDriver
+ * extension.
+ * @type {string}
+ * @const
+ * @private
+ */
+safaridriver.inject.page.SCRIPT_SELECTOR_ =
+    'script[src^="safari-extension://org.openqa.selenium"][src$="/page.js"]';
+
+
+/**
+ * Initializes this script. Removes the script DOM element used to inject it
+ * into the page and sends a "load" message to the injected script.
  */
 safaridriver.inject.page.init = function() {
-  var script;
-  if (safaridriver.inject.page.EXTENSION) {
-    safaridriver.inject.page.LOG_.info('Initializing for extension');
+  safaridriver.console.init();
+  safaridriver.inject.page.LOG_.info('Initializing');
 
-    script = document.createElement('script');
-    script.className = safaridriver.inject.page.SCRIPT_CLASS_NAME_;
-    script.type = 'text/javascript';
-    script.src = safari.extension.baseURI + 'page.js';
-    document.documentElement.appendChild(script);
+  new safaridriver.message.MessageTarget(window).
+      on(safaridriver.message.Command.TYPE,
+          safaridriver.inject.page.onCommand_).
+      on(safaridriver.message.Response.TYPE,
+          safaridriver.inject.page.onResponse_);
+
+  var message = new safaridriver.message.Load();
+  safaridriver.inject.page.LOG_.info('Sending ' + message);
+  message.send(window);
+
+  var script = document.querySelector(
+      safaridriver.inject.page.SCRIPT_SELECTOR_);
+  // If we find the script running this script, remove it.
+  if (script) {
+    goog.dom.removeNode(script);
   } else {
-    safaridriver.console.init();
-    safaridriver.inject.page.LOG_.info('Initializing for page');
-
-    new safaridriver.message.MessageTarget(window)
-        .on(safaridriver.message.Command.TYPE,
-            safaridriver.inject.page.onCommand_)
-        .on(safaridriver.message.Response.TYPE,
-            safaridriver.inject.page.onResponse_);
-
-    var message = new safaridriver.message.Load();
-    safaridriver.inject.page.LOG_.info('Sending ' + message);
-    message.send(window);
-
-    script = document.querySelector(
-        'script.' + safaridriver.inject.page.SCRIPT_CLASS_NAME_ +
-            ':last-child');
-    // If we find the script running this script, remove it.
-    if (script) {
-      goog.dom.removeNode(script);
-    }
+    safaridriver.inject.page.LOG_.warning(
+        'Unable to locate SafariDriver script element');
   }
 };
-
-
-if (!safaridriver.inject.page.EXTENSION) {
-  goog.exportSymbol('init', safaridriver.inject.page.init);
-}
+goog.exportSymbol('init', safaridriver.inject.page.init);
 
 
 /**

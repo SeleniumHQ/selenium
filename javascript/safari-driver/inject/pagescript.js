@@ -1,0 +1,162 @@
+// Copyright 2012 Selenium committers
+// Copyright 2012 Software Freedom Conservancy
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+goog.provide('safaridriver.inject.PageScript');
+
+goog.require('bot.response');
+goog.require('goog.debug.Logger');
+goog.require('safaridriver.inject.message');
+goog.require('safaridriver.inject.page');
+goog.require('safaridriver.message.Load');
+goog.require('safaridriver.message.Command');
+goog.require('safaridriver.message.MessageTarget');
+goog.require('safaridriver.message.Response');
+goog.require('webdriver.CommandName');
+goog.require('webdriver.promise');
+
+
+/**
+ * Injects the page script handler into the page. This handler is used to
+ * ensure user scripts from {@link webdriver.CommandName.EXECUTE_SCRIPT} and
+ * {@link webdriver.CommandName.EXECUTE_ASYNC_SCRIPT} run in the context of the
+ * page under test and not the injected script.
+ * @constructor
+ */
+safaridriver.inject.PageScript = function() {
+
+  /**
+   * @type {!goog.debug.Logger}
+   * @private
+   */
+  this.log_ = goog.debug.Logger.getLogger(
+      'safaridriver.inject.PageScript');
+
+  /**
+   * @type {!safaridriver.message.MessageTarget}
+   * @private
+   */
+  this.messageTarget_ = new safaridriver.message.MessageTarget(window);
+
+  /**
+   * @type {!Object.<!webdriver.promise.Deferred>}
+   * @private
+   */
+  this.pendingResponses_ = {};
+};
+
+
+/**
+ * A promise that is resolved once the SafariDriver page script has been
+ * loaded by the current page.
+ * @type {webdriver.promise.Deferred}
+ * @private
+ */
+safaridriver.inject.PageScript.prototype.installedPageScript_ = null;
+
+
+/**
+ * Installs a script in the web page that facilitates communication between this
+ * sandboxed environment and the web page.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when the
+ *     page has been fully initialized.
+ * @private
+ */
+safaridriver.inject.PageScript.prototype.installPageScript_ = function() {
+  if (!this.installedPageScript_) {
+    this.log_.info('Installing page script');
+    this.installedPageScript_ = new webdriver.promise.Deferred();
+
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = safari.extension.baseURI + 'page.js';
+    document.documentElement.appendChild(script);
+
+    var installedPageScript = this.installedPageScript_;
+
+    /**
+     * @param {!safaridriver.message.Message} message The message.
+     * @param {!MessageEvent} e The original message event.
+     */
+    var onLoad = function(message, e) {
+      if (!message.isSameOrigin() &&
+          safaridriver.inject.message.isFromSelf(e)) {
+        installedPageScript.resolve();
+      }
+    };
+
+    this.messageTarget_.
+        on(safaridriver.message.Load.TYPE, onLoad).
+        on(safaridriver.message.Response.TYPE,
+            goog.bind(this.onResponse_, this));
+  }
+  return this.installedPageScript_.promise;
+};
+
+
+/**
+ * Sends a command to the page for execution.
+ * @param {!safaridriver.Command} command The command to execute.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     a response message has been received.
+ */
+safaridriver.inject.PageScript.prototype.execute = function(command) {
+  if (command.getName() !== webdriver.CommandName.EXECUTE_SCRIPT &&
+      command.getName() !== webdriver.CommandName.EXECUTE_ASYNC_SCRIPT) {
+    throw Error('Only script-based commands may be sent to the page script ' +
+        'for execution: ' + command);
+  }
+
+  return this.installPageScript_().addCallback(function() {
+    var parameters = command.getParameters();
+    parameters = (/** @type {!Object.<*>} */
+        safaridriver.inject.page.encodeValue(parameters));
+    command.setParameters(parameters);
+
+    var message = new safaridriver.message.Command(command);
+    this.log_.info('Sending message: ' + message);
+
+    var commandResponse = new webdriver.promise.Deferred();
+    this.pendingResponses_[command.getId()] = commandResponse;
+    message.send(window);
+    return commandResponse.promise;
+  }, this);
+};
+
+
+/**
+ * @param {!safaridriver.message.Response} message The message.
+ * @param {!MessageEvent} e The original message.
+ * @private
+ */
+safaridriver.inject.PageScript.prototype.onResponse_ = function(message, e) {
+  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
+    return;
+  }
+
+  var promise = this.pendingResponses_[message.getId()];
+  if (!promise) {
+    this.log_.warning('Received response to an unknown command: ' + message);
+    return;
+  }
+  delete this.pendingResponses_[message.getId()];
+
+  var response = message.getResponse();
+  try {
+    response['value'] = safaridriver.inject.page.decodeValue(response['value']);
+    promise.resolve(response);
+  } catch (ex) {
+    promise.reject(bot.response.createErrorResponse(ex));
+  }
+};

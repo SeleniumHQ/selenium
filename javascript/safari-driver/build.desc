@@ -75,6 +75,7 @@ js_binary(name = "injected",
     "inject/message/framemessage.js",
     "inject/message/message.js",
     "inject/page.js",
+    "inject/pagescript.js",
     "inject/state.js",
     "message/connect.js",
   ],
@@ -134,7 +135,6 @@ js_binary(name = "page",
   defines = [
     "goog.userAgent.ASSUME_WEBKIT=true",
     "goog.userAgent.product.ASSUME_SAFARI=true",
-    "safaridriver.inject.page.EXTENSION=false",
     "safaridriver.message.ORIGIN=2"
   ],
   externs = [

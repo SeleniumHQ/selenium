@@ -25,13 +25,13 @@ goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.console');
+goog.require('safaridriver.inject.PageScript');
 goog.require('safaridriver.inject.commands');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.message.Activate');
 goog.require('safaridriver.inject.message.ActivateFrame');
 goog.require('safaridriver.inject.message.Encode');
 goog.require('safaridriver.inject.message.ReactivateFrame');
-goog.require('safaridriver.inject.page');
 goog.require('safaridriver.inject.state');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Command');
@@ -54,19 +54,10 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger(
 
 
 /**
- * @type {!Object.<!webdriver.promise.Deferred>}
+ * @type {!safaridriver.inject.PageScript}
  * @private
  */
-safaridriver.inject.pendingCommands_ = {};
-
-
-/**
- * A promise that is resolved once the SafariDriver page script has been
- * loaded by the current page.
- * @type {webdriver.promise.Deferred}
- * @private
- */
-safaridriver.inject.installedPageScript_ = null;
+safaridriver.inject.pageScript_ = new safaridriver.inject.PageScript();
 
 
 /** Initializes this injected script. */
@@ -92,9 +83,7 @@ safaridriver.inject.init = function() {
          safaridriver.inject.onConnect_).
       on(safaridriver.inject.message.Encode.TYPE,
          safaridriver.inject.onEncode_).
-      on(safaridriver.message.Load.TYPE, safaridriver.inject.onLoad_).
-      on(safaridriver.message.Response.TYPE,
-         safaridriver.inject.onResponse_);
+      on(safaridriver.message.Load.TYPE, safaridriver.inject.onLoad_);
 
   window.addEventListener('load', function() {
     var message = new safaridriver.message.Load(
@@ -116,24 +105,6 @@ safaridriver.inject.init = function() {
       message.sendSync(safari.self.tab);
     }
   }, true);
-};
-
-
-/**
- * Installs a script in the web page that facilitates communication between this
- * sandboxed environment and the web page.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     page has been fully initialized.
- * @private
- */
-safaridriver.inject.installPageScript_ = function() {
-  if (!safaridriver.inject.installedPageScript_) {
-    safaridriver.inject.LOG.info('Installing page script');
-    safaridriver.inject.installedPageScript_ =
-        new webdriver.promise.Deferred();
-    safaridriver.inject.page.init();
-  }
-  return safaridriver.inject.installedPageScript_.promise;
 };
 
 
@@ -239,10 +210,6 @@ safaridriver.inject.onLoad_ = function(message, e) {
       var reactivate = new safaridriver.inject.message.ReactivateFrame();
       reactivate.send((/** @type {!Window} */e.source));
     }
-  } else if (safaridriver.inject.message.isFromSelf(e) &&
-      safaridriver.inject.installedPageScript_ &&
-      safaridriver.inject.installedPageScript_.isPending()) {
-    safaridriver.inject.installedPageScript_.resolve();
   }
 };
 
@@ -267,36 +234,6 @@ safaridriver.inject.onEncode_ = function(message, e) {
   var response = new safaridriver.message.Response(
       message.getId(), (/** @type {!bot.response.ResponseObject} */result));
   response.send(e.source);
-};
-
-
-/**
- * Handles response messages from the page.
- * @param {!safaridriver.message.Response} message The message.
- * @param {!MessageEvent} e The original message.
- * @private
- */
-safaridriver.inject.onResponse_ = function(message, e) {
-  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
-    return;
-  }
-
-  var promise = safaridriver.inject.pendingCommands_[message.getId()];
-  if (!promise) {
-    safaridriver.inject.LOG.warning(
-        'Received response to an unknown command: ' + message);
-    return;
-  }
-
-  delete safaridriver.inject.pendingCommands_[message.getId()];
-
-  var response = message.getResponse();
-  try {
-    response['value'] = safaridriver.inject.page.decodeValue(response['value']);
-    promise.resolve(response);
-  } catch (ex) {
-    promise.reject(bot.response.createErrorResponse(ex));
-  }
 };
 
 
@@ -405,20 +342,7 @@ safaridriver.inject.sendResponse_ = function(command, response) {
  *     a response message has been received.
  */
 safaridriver.inject.sendCommandToPage = function(command) {
-  return safaridriver.inject.installPageScript_().addCallback(function() {
-    var parameters = command.getParameters();
-    parameters = (/** @type {!Object.<*>} */
-        safaridriver.inject.page.encodeValue(parameters));
-    command.setParameters(parameters);
-
-    var message = new safaridriver.message.Command(command);
-    safaridriver.inject.LOG.info('Sending message: ' + message);
-
-    var commandResponse = new webdriver.promise.Deferred();
-    safaridriver.inject.pendingCommands_[command.getId()] = commandResponse;
-    message.send(window);
-    return commandResponse.promise;
-  });
+  return safaridriver.inject.pageScript_.execute(command);
 };
 
 
