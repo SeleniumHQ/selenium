@@ -258,15 +258,6 @@ safaridriver.inject.page.encodeValue = function(value) {
     case 'object':
       if (goog.dom.isElement(value)) {
         if (value.ownerDocument !== document) {
-          // When called from an extension, we should never try to encode an
-          // element belonging to another document. When called from page
-          // content, however, we can ask the element's parent window for its
-          // encoded representation.
-          if (safaridriver.inject.page.EXTENSION) {
-            throw Error('The element does not belong to this document: ' +
-                safaridriver.inject.page.getElementXPath_(
-                    (/** @type {!Element} */value)));
-          }
           return safaridriver.inject.page.encodeElement_(
               (/** @type {!Element} */value));
         }
