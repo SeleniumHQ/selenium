@@ -5,7 +5,7 @@ js_library(name = "common_lib",
     "message/command.js",
     "message/load.js",
     "message/message.js",
-    "messagetarget.js",
+    "message/messagetarget.js",
     "tab.js",
   ],
   deps = [
