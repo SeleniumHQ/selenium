@@ -17,8 +17,8 @@ goog.provide('safaridriver.inject.PageScript');
 
 goog.require('bot.response');
 goog.require('goog.debug.Logger');
+goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message');
-goog.require('safaridriver.inject.page');
 goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.MessageTarget');
@@ -48,6 +48,12 @@ safaridriver.inject.PageScript = function() {
    * @private
    */
   this.messageTarget_ = new safaridriver.message.MessageTarget(window);
+
+  /**
+   * @type {!safaridriver.inject.Encoder}
+   * @private
+   */
+  this.encoder_ = new safaridriver.inject.Encoder();
 
   /**
    * @type {!Object.<!webdriver.promise.Deferred>}
@@ -120,8 +126,7 @@ safaridriver.inject.PageScript.prototype.execute = function(command) {
 
   return this.installPageScript_().addCallback(function() {
     var parameters = command.getParameters();
-    parameters = (/** @type {!Object.<*>} */
-        safaridriver.inject.page.encodeValue(parameters));
+    parameters = (/** @type {!Object.<*>} */this.encoder_.encode(parameters));
     command.setParameters(parameters);
 
     var message = new safaridriver.message.Command(command);
@@ -154,7 +159,7 @@ safaridriver.inject.PageScript.prototype.onResponse_ = function(message, e) {
 
   var response = message.getResponse();
   try {
-    response['value'] = safaridriver.inject.page.decodeValue(response['value']);
+    response['value'] = this.encoder_.decode(response['value']);
     promise.resolve(response);
   } catch (ex) {
     promise.reject(bot.response.createErrorResponse(ex));

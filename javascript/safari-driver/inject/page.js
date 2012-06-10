@@ -22,17 +22,12 @@ goog.provide('safaridriver.inject.page');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('bot.dom');
 goog.require('bot.inject');
-goog.require('bot.locators.xpath');
 goog.require('bot.response');
-goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
-goog.require('goog.object');
-goog.require('goog.string');
-goog.require('goog.dom.classes');
 goog.require('safaridriver.console');
+goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message.Encode');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Command');
@@ -66,6 +61,13 @@ safaridriver.inject.page.SCRIPT_SELECTOR_ =
 
 
 /**
+ * @type {!safaridriver.inject.Encoder}
+ * @private
+ */
+safaridriver.inject.page.encoder_ = new safaridriver.inject.Encoder();
+
+
+/**
  * Initializes this script. Removes the script DOM element used to inject it
  * into the page and sends a "load" message to the injected script.
  */
@@ -75,9 +77,7 @@ safaridriver.inject.page.init = function() {
 
   new safaridriver.message.MessageTarget(window).
       on(safaridriver.message.Command.TYPE,
-          safaridriver.inject.page.onCommand_).
-      on(safaridriver.message.Response.TYPE,
-          safaridriver.inject.page.onResponse_);
+          safaridriver.inject.page.onCommand_);
 
   var message = new safaridriver.message.Load();
   safaridriver.inject.page.LOG_.info('Sending ' + message);
@@ -94,13 +94,6 @@ safaridriver.inject.page.init = function() {
   }
 };
 goog.exportSymbol('init', safaridriver.inject.page.init);
-
-
-/**
- * @type {!Object.<!webdriver.promise.Deferred>}
- * @private
- */
-safaridriver.inject.page.pendingResponses_ = {};
 
 
 /**
@@ -121,7 +114,7 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
   // send it back to the injected script. This does all that.
   response.
       then(function(value) {
-        var encodedValue = safaridriver.inject.page.encodeValue(value);
+        var encodedValue = safaridriver.inject.page.encoder_.encode(value);
         // If the command result contains any DOM elements from another
         // document, the encoded value will contain promises that will resolve
         // once the owner documents have encoded the elements. Therefore, we
@@ -157,202 +150,6 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
 
 
 /**
- * Handles response messages.
- * @param {!safaridriver.message.Response} message The message.
- * @private
- */
-safaridriver.inject.page.onResponse_ = function(message) {
-  if (message.isSameOrigin()) {
-    return;
-  }
-
-  var promise = safaridriver.inject.page.pendingResponses_[message.getId()];
-  if (!promise) {
-    safaridriver.inject.page.LOG_.warning(
-        'Received response to an unknown command: ' + message);
-    return;
-  }
-
-  var response = message.getResponse();
-  try {
-    bot.response.checkResponse(response);
-    var value = safaridriver.inject.page.decodeValue(response['value']);
-    promise.resolve(value);
-  } catch (ex) {
-    promise.reject(ex);
-  }
-};
-
-
-/**
- * Computes the canonical XPath locator for an element.
- * @param {!Element} element The element to compute an XPath expression for.
- * @return {string} The element's XPath locator.
- * @private
- */
-safaridriver.inject.page.getElementXPath_ = function(element) {
-  var path = '';
-  for (var current = element; current;
-       current = bot.dom.getParentElement(current)) {
-    var index = 1;
-    for (var sibling = current.previousSibling; sibling;
-        sibling = sibling.previousSibling) {
-      if (sibling.nodeType == goog.dom.NodeType.ELEMENT &&
-          sibling.tagName == current.tagName) {
-        index++;
-      }
-    }
-    var tmp = '/' + current.tagName;
-    if (index > 1) {
-      tmp += '[' + index + ']';
-    }
-    path = tmp + path;
-  }
-  return path;
-};
-
-
-/**
- * Key used in an object literal to indicate it is the encoded representation of
- * a DOM element. The corresponding property's value will be a CSS selector for
- * the encoded elmeent.
- *
- * <p>Note, this constant is very intentionally initialized to a value other
- * than the standard JSON wire protocol key for WebElements.
- *
- * @type {string}
- * @const
- * @private
- */
-safaridriver.inject.page.ENCODED_ELEMENT_KEY_ =
-    'ENCODED_' + bot.inject.ELEMENT_KEY;
-
-
-/**
- * Encodes a value so it may be included in a message exchanged between the
- * document and sandboxed injected script. Any DOM element references will
- * be replaced with an object literal whose sole key is t
- * @param {*} value The value to encode.
- * @return {*} The encoded value. Note, when called from the SafariDriver
- *     extension's injected script, this value will _never_ be a
- *     {@link webdriver.promise.Promise}.
- * @throws {Error} If the value is cannot be encoded (e.g. it is a function, or
- *     an array or object with a cyclical reference).
- */
-safaridriver.inject.page.encodeValue = function(value) {
-  var type = goog.typeOf(value);
-  switch (type) {
-    case 'boolean':
-    case 'number':
-    case 'string':
-      return value;
-
-    case 'null':
-    case 'undefined':
-      return null;
-
-    case 'array':
-      return goog.array.map((/** @type {!Array} */value),
-          safaridriver.inject.page.encodeValue);
-
-    case 'object':
-      if (goog.dom.isElement(value)) {
-        if (value.ownerDocument !== document) {
-          return safaridriver.inject.page.encodeElement_(
-              (/** @type {!Element} */value));
-        }
-
-        var encoded = {};
-        encoded[safaridriver.inject.page.ENCODED_ELEMENT_KEY_] =
-            safaridriver.inject.page.getElementXPath_(
-                (/** @type {!Element} */value));
-        return encoded;
-      }
-
-      // Check for a NodeList.
-      if (goog.isArrayLike(value)) {
-        return goog.array.map((/** @type {!goog.array.ArrayLike} */value),
-            safaridriver.inject.page.encodeValue);
-      }
-
-      return goog.object.map((/** @type {!Object} */value),
-          safaridriver.inject.page.encodeValue);
-
-    case 'function':
-    default:
-      throw Error('Invalid value type: ' + type + ' => ' + value);
-  }
-};
-
-
-/**
- * @param {!Element} element The element to encode.
- * @return {!webdriver.promise.Promise} A promise that will resolve to the
- *     JSON representation of a WebElement.
- */
-safaridriver.inject.page.encodeElement_ = function(element) {
-  var webElement = new webdriver.promise.Deferred();
-  var id = goog.string.getRandomString();
-  var xpath = safaridriver.inject.page.getElementXPath_(element);
-  var message = new safaridriver.inject.message.Encode(id, xpath);
-  var doc = goog.dom.getOwnerDocument(element);
-  var win = (/** @type {!Window} */goog.dom.getWindow(doc));
-  message.send(win);
-  safaridriver.inject.page.pendingResponses_[id] = webElement;
-  return webElement.promise;
-};
-
-
-/**
- * Decodes a value. Any object literals whose sole key is
- * {@link safaridriver.inject.page.ENCODED_ELEMENT_KEY_} will be considered an
- * encoded reference to a DOM element. The corresponding value for this key will
- * be used as a CSS selector to locate the element.
- * @param {*} value The value to decode.
- * @return {*} The decoded value.
- * @throws {bot.Error} If an encoded DOM element cannot be located on the page.
- * @throws {Error} If the value is an invalid type, or an array or object with
- *     cyclical references.
- */
-safaridriver.inject.page.decodeValue = function(value) {
-  var type = goog.typeOf(value);
-  switch (type) {
-    case 'boolean':
-    case 'number':
-    case 'string':
-      return value;
-
-    case 'null':
-    case 'undefined':
-      return null;
-
-    case 'array':
-      return goog.array.map((/** @type {!Array} */value),
-          safaridriver.inject.page.decodeValue);
-
-    case 'object':
-      var obj = (/** @type {!Object} */value);
-      var keys = Object.keys(obj);
-      if (keys.length == 1 &&
-          keys[0] === safaridriver.inject.page.ENCODED_ELEMENT_KEY_) {
-        var xpath = value[safaridriver.inject.page.ENCODED_ELEMENT_KEY_];
-        var element = bot.locators.xpath.single(xpath, document);
-        if (!element) {
-          throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
-              'Unable to locate encoded element: ' + xpath);
-        }
-        return element;
-      }
-      return goog.object.map(obj, safaridriver.inject.page.decodeValue);
-
-    case 'function':
-    default:
-      throw Error('Invalid value type: ' + type + ' => ' + value);
-  }
-};
-
-
-/**
  * Handles an executeScript command.
  * @param {!safaridriver.Command} command The command to execute.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
@@ -367,7 +164,8 @@ safaridriver.inject.page.executeScript_ = function(command) {
     var fn = new Function(command.getParameter('script'));
 
     var args = command.getParameter('args');
-    args = (/** @type {!Array} */safaridriver.inject.page.decodeValue(args));
+    args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(
+        args));
 
     var result = fn.apply(window, args);
     response.resolve(result);
@@ -394,7 +192,8 @@ safaridriver.inject.page.executeAsyncScript_ = function(command) {
     var scriptFn = new Function(script);
 
     var args = command.getParameter('args');
-    args = (/** @type {!Array} */safaridriver.inject.page.decodeValue(args));
+    args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(
+        args));
     // The last argument for an async script is the callback that triggers the
     // response.
     args.push(function(value) {
