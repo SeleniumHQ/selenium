@@ -37,11 +37,11 @@ goog.require('webdriver.promise');
 
 
 /**
+ * @param {!safaridriver.message.MessageTarget} messageTarget The message
+ *     target to use.
  * @constructor
- * @extends {safaridriver.message.MessageTarget}
  */
-safaridriver.inject.Encoder = function() {
-  goog.base(this, window, 'safaridriver.inject.Encoder');
+safaridriver.inject.Encoder = function(messageTarget) {
 
   /**
    * @type {!Object.<!webdriver.promise.Deferred>}
@@ -49,10 +49,9 @@ safaridriver.inject.Encoder = function() {
    */
   this.pendingResponses_ = {};
 
-  this.on(safaridriver.message.Response.TYPE,
+  messageTarget.on(safaridriver.message.Response.TYPE,
       goog.bind(this.onResponse_, this));
 };
-goog.inherits(safaridriver.inject.Encoder, safaridriver.message.MessageTarget);
 
 
 /**
@@ -176,9 +175,9 @@ safaridriver.inject.Encoder.prototype.encodeElement_ = function(element) {
 
 /**
  * Decodes a value. Any object literals whose sole key is
- * {@link safaridriver.inject.page.ENCODED_ELEMENT_KEY_} will be considered an
- * encoded reference to a DOM element. The corresponding value for this key will
- * be used as a CSS selector to locate the element.
+ * {@link safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_} will be considered
+ * an encoded reference to a DOM element. The corresponding value for this key
+ * will be used as an XPath selector to locate the element.
  * @param {*} value The value to decode.
  * @return {*} The decoded value.
  * @throws {bot.Error} If an encoded DOM element cannot be located on the page.

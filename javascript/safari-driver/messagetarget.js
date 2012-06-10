@@ -26,12 +26,10 @@ goog.require('webdriver.EventEmitter');
  * and original event that delivered the message will be included as arguments.
  * @param {!(SafariEventTarget|EventTarget)} source The object that should be
  *     used as the source of messages.
- * @param {string=} opt_loggerName The name of the logger to use. Defaults to
- *     the name of this class.
  * @constructor
  * @extends {webdriver.EventEmitter}
  */
-safaridriver.message.MessageTarget = function(source, opt_loggerName) {
+safaridriver.message.MessageTarget = function(source) {
   goog.base(this);
 
   /**
@@ -45,7 +43,7 @@ safaridriver.message.MessageTarget = function(source, opt_loggerName) {
    * @private
    */
   this.log_ = goog.debug.Logger.getLogger(
-      opt_loggerName || 'safaridriver.message.MessageTarget');
+      'safaridriver.message.MessageTarget');
 
   /**
    * @type {function(this: safaridriver.message.MessageTarget,
@@ -57,6 +55,18 @@ safaridriver.message.MessageTarget = function(source, opt_loggerName) {
   this.source_.addEventListener('message', this.boundOnMessage_, true);
 };
 goog.inherits(safaridriver.message.MessageTarget, webdriver.EventEmitter);
+
+
+/**
+ * @param {(string|!goog.debug.Logger)} nameOrLogger The logger to use, or its
+ *     name.
+ */
+safaridriver.message.MessageTarget.prototype.setLogger = function(
+    nameOrLogger) {
+  this.log_ = goog.isString(nameOrLogger) ?
+      goog.debug.Logger.getLogger((/** @type {string} */nameOrLogger)) :
+      (/** @type {!goog.debug.Logger} */nameOrLogger);
+};
 
 
 /**

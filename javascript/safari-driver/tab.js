@@ -21,12 +21,12 @@ goog.require('safaridriver.message.MessageTarget');
 /**
  * @param {!(SafariEventTarget|EventTarget)} source The object that should be
  *     used as the source of messages for this tab.
- * @param {string} loggerName The name of the logger to use.
  * @constructor
  * @extends {safaridriver.message.MessageTarget}
  */
-safaridriver.Tab = function(source, loggerName) {
-  goog.base(this, source, loggerName);
+safaridriver.Tab = function(source) {
+  goog.base(this, source);
+  this.setLogger('safaridriver.Tab');
 
   /**
    * @type {string}

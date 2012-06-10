@@ -21,7 +21,6 @@ goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.Command');
-goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
@@ -32,9 +31,11 @@ goog.require('webdriver.promise');
  * ensure user scripts from {@link webdriver.CommandName.EXECUTE_SCRIPT} and
  * {@link webdriver.CommandName.EXECUTE_ASYNC_SCRIPT} run in the context of the
  * page under test and not the injected script.
+ * @param {!safaridriver.message.MessageTarget} messageTarget The message target
+ *     to use for communicating with the page.
  * @constructor
  */
-safaridriver.inject.PageScript = function() {
+safaridriver.inject.PageScript = function(messageTarget) {
 
   /**
    * @type {!goog.debug.Logger}
@@ -47,13 +48,13 @@ safaridriver.inject.PageScript = function() {
    * @type {!safaridriver.message.MessageTarget}
    * @private
    */
-  this.messageTarget_ = new safaridriver.message.MessageTarget(window);
+  this.messageTarget_ = messageTarget;
 
   /**
    * @type {!safaridriver.inject.Encoder}
    * @private
    */
-  this.encoder_ = new safaridriver.inject.Encoder();
+  this.encoder_ = new safaridriver.inject.Encoder(messageTarget);
 
   /**
    * @type {!Object.<!webdriver.promise.Deferred>}

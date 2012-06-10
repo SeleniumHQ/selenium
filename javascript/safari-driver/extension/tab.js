@@ -38,7 +38,9 @@ goog.require('safaridriver.message.Unload');
  * @extends {safaridriver.Tab}
  */
 safaridriver.extension.Tab = function(browserTab) {
-  goog.base(this, browserTab, 'safaridriver.extension.Tab');
+  goog.base(this, browserTab);
+
+  this.setLogger('safaridriver.extension.Tab');
 
   /**
    * @type {!SafariBrowserTab}

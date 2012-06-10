@@ -64,7 +64,7 @@ safaridriver.inject.page.SCRIPT_SELECTOR_ =
  * @type {!safaridriver.inject.Encoder}
  * @private
  */
-safaridriver.inject.page.encoder_ = new safaridriver.inject.Encoder();
+safaridriver.inject.page.encoder_;
 
 
 /**
@@ -75,9 +75,13 @@ safaridriver.inject.page.init = function() {
   safaridriver.console.init();
   safaridriver.inject.page.LOG_.info('Initializing');
 
-  new safaridriver.message.MessageTarget(window).
-      on(safaridriver.message.Command.TYPE,
-          safaridriver.inject.page.onCommand_);
+  var messageTarget = new safaridriver.message.MessageTarget(window);
+  messageTarget.setLogger(safaridriver.inject.page.LOG_);
+  messageTarget.on(safaridriver.message.Command.TYPE,
+      safaridriver.inject.page.onCommand_);
+
+  safaridriver.inject.page.encoder_ =
+      new safaridriver.inject.Encoder(messageTarget);
 
   var message = new safaridriver.message.Load();
   safaridriver.inject.page.LOG_.info('Sending ' + message);

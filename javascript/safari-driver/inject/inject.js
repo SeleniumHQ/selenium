@@ -22,6 +22,7 @@ goog.provide('safaridriver.inject');
 goog.require('bot.ErrorCode');
 goog.require('bot.locators.xpath');
 goog.require('bot.response');
+goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.console');
@@ -54,10 +55,20 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger(
 
 
 /**
+ * @type {!safaridriver.message.MessageTarget}
+ * @private
+ */
+safaridriver.inject.messageTarget_ = new safaridriver.message.MessageTarget(
+    window);
+safaridriver.inject.messageTarget_.setLogger(safaridriver.inject.LOG);
+
+
+/**
  * @type {!safaridriver.inject.PageScript}
  * @private
  */
-safaridriver.inject.pageScript_ = new safaridriver.inject.PageScript();
+safaridriver.inject.pageScript_ = new safaridriver.inject.PageScript(
+    safaridriver.inject.messageTarget_);
 
 
 /** Initializes this injected script. */
@@ -72,22 +83,28 @@ safaridriver.inject.init = function() {
       on(safaridriver.message.Command.TYPE,
          safaridriver.inject.onCommand_);
 
-  new safaridriver.message.MessageTarget(window).
+  safaridriver.inject.messageTarget_.
       on(safaridriver.inject.message.Activate.TYPE,
          safaridriver.inject.onActivate_).
-      on(safaridriver.inject.message.ActivateFrame.TYPE,
-         safaridriver.inject.onActivateFrame_).
-      on(safaridriver.inject.message.ReactivateFrame.TYPE,
-         safaridriver.inject.onReactivateFrame_).
       on(safaridriver.message.Connect.TYPE,
          safaridriver.inject.onConnect_).
       on(safaridriver.inject.message.Encode.TYPE,
          safaridriver.inject.onEncode_).
       on(safaridriver.message.Load.TYPE, safaridriver.inject.onLoad_);
 
+  if (safaridriver.inject.state.IS_TOP) {
+    safaridriver.inject.messageTarget_.
+        on(safaridriver.inject.message.ActivateFrame.TYPE,
+            safaridriver.inject.onActivateFrame_);
+  } else {
+    safaridriver.inject.messageTarget_.
+        on(safaridriver.inject.message.ReactivateFrame.TYPE,
+            safaridriver.inject.onReactivateFrame_);
+  }
+
   window.addEventListener('load', function() {
     var message = new safaridriver.message.Load(
-        safaridriver.inject.state.IS_TOP);
+        !safaridriver.inject.state.IS_TOP);
 
     var target = safaridriver.inject.state.IS_TOP
         ? safari.self.tab : window.top;
@@ -98,7 +115,7 @@ safaridriver.inject.init = function() {
     if (safaridriver.inject.state.IS_TOP ||
         safaridriver.inject.state.isActive()) {
       var message = new safaridriver.message.Unload(
-          safaridriver.inject.state.IS_TOP);
+          !safaridriver.inject.state.IS_TOP);
       // If we send this message asynchronously, which is the norm, then the
       // page will complete its unload before the message is sent. Use sendSync
       // to ensure the extension gets our message.
@@ -145,8 +162,8 @@ safaridriver.inject.onActivate_ = function(message, e) {
  * @private
  */
 safaridriver.inject.onActivateFrame_ = function(message, e) {
-  if (safaridriver.inject.state.IS_TOP &&
-      safaridriver.inject.message.isFromFrame(e)) {
+  goog.asserts.assert(safaridriver.inject.state.IS_TOP);
+  if (safaridriver.inject.message.isFromFrame(e)) {
     safaridriver.inject.LOG.info('Sub-frame has been activated');
     safaridriver.inject.state.setActiveFrame(e.source);
 
@@ -162,13 +179,13 @@ safaridriver.inject.onActivateFrame_ = function(message, e) {
  * @private
  */
 safaridriver.inject.onReactivateFrame_ = function(message, e) {
-  if (!safaridriver.inject.state.IS_TOP &&
-      safaridriver.inject.message.isFromTop(e)) {
+  goog.asserts.assert(!safaridriver.inject.state.IS_TOP);
+  if (safaridriver.inject.message.isFromTop(e)) {
     safaridriver.inject.LOG.fine('Sub-frame has been re-activated');
 
     safaridriver.inject.state.setActive(true);
 
-    message = new safaridriver.message.Load(false);
+    message = new safaridriver.message.Load(true);
     message.sendSync(safari.self.tab);
   }
 };
