@@ -38,7 +38,6 @@ goog.require('goog.math.Size');
 goog.require('goog.net.cookies');
 goog.require('goog.style');
 goog.require('safaridriver.inject.message.Activate');
-goog.require('safaridriver.inject.state');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.promise.Deferred');
 
@@ -358,7 +357,7 @@ safaridriver.inject.commands.switchToFrame = function(command) {
 
   // De-activate ourselves. We should no longer respond to commands until
   // we are re-activated.
-  safaridriver.inject.state.setActive(false);
+  safaridriver.inject.Tab.getInstance().setActive(false);
 
   var message = new safaridriver.inject.message.Activate(command);
   message.send(frameWindow);

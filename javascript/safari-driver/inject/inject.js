@@ -19,175 +19,35 @@
 
 goog.provide('safaridriver.inject');
 
-goog.require('bot.ErrorCode');
-goog.require('bot.locators.xpath');
+goog.require('bot.inject');
 goog.require('bot.response');
-goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
-goog.require('safaridriver.Command');
 goog.require('safaridriver.console');
-goog.require('safaridriver.inject.PageScript');
-goog.require('safaridriver.inject.commands');
+goog.require('safaridriver.inject.Tab');
 goog.require('safaridriver.inject.message');
-goog.require('safaridriver.inject.message.Activate');
-goog.require('safaridriver.inject.message.ActivateFrame');
 goog.require('safaridriver.inject.message.Encode');
-goog.require('safaridriver.inject.message.ReactivateFrame');
-goog.require('safaridriver.inject.state');
 goog.require('safaridriver.message');
-goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Connect');
-goog.require('safaridriver.message.Load');
-goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.Response');
-goog.require('safaridriver.message.Unload');
-goog.require('webdriver.Command');
-goog.require('webdriver.CommandName');
-goog.require('webdriver.promise');
 
 
 /**
  * @type {!goog.debug.Logger}
  * @const
  */
-safaridriver.inject.LOG = goog.debug.Logger.getLogger(
-    'safaridriver.inject.' + safaridriver.inject.state.FRAME_ID);
-
-
-/**
- * @type {!safaridriver.message.MessageTarget}
- * @private
- */
-safaridriver.inject.messageTarget_ = new safaridriver.message.MessageTarget(
-    window);
-safaridriver.inject.messageTarget_.setLogger(safaridriver.inject.LOG);
-
-
-/**
- * @type {!safaridriver.inject.PageScript}
- * @private
- */
-safaridriver.inject.pageScript_ = new safaridriver.inject.PageScript(
-    safaridriver.inject.messageTarget_);
+safaridriver.inject.LOG = goog.debug.Logger.getLogger('safaridriver.inject');
 
 
 /** Initializes this injected script. */
 safaridriver.inject.init = function() {
   safaridriver.console.init();
-  safaridriver.inject.LOG.info(
-      'Loaded injected script for: ' + window.location.href +
-      ' (is ' + (safaridriver.inject.state.isActive() ? '' : 'not ') +
-      'active)');
 
-  new safaridriver.message.MessageTarget(safari.self).
-      on(safaridriver.message.Command.TYPE,
-         safaridriver.inject.onCommand_);
-
-  safaridriver.inject.messageTarget_.
-      on(safaridriver.inject.message.Activate.TYPE,
-         safaridriver.inject.onActivate_).
-      on(safaridriver.message.Connect.TYPE,
+  var tab = safaridriver.inject.Tab.getInstance();
+  tab.init();
+  tab.on(safaridriver.message.Connect.TYPE,
          safaridriver.inject.onConnect_).
       on(safaridriver.inject.message.Encode.TYPE,
-         safaridriver.inject.onEncode_).
-      on(safaridriver.message.Load.TYPE, safaridriver.inject.onLoad_);
-
-  if (safaridriver.inject.state.IS_TOP) {
-    safaridriver.inject.messageTarget_.
-        on(safaridriver.inject.message.ActivateFrame.TYPE,
-            safaridriver.inject.onActivateFrame_);
-  } else {
-    safaridriver.inject.messageTarget_.
-        on(safaridriver.inject.message.ReactivateFrame.TYPE,
-            safaridriver.inject.onReactivateFrame_);
-  }
-
-  window.addEventListener('load', function() {
-    var message = new safaridriver.message.Load(
-        !safaridriver.inject.state.IS_TOP);
-
-    var target = safaridriver.inject.state.IS_TOP
-        ? safari.self.tab : window.top;
-    message.send(target);
-  }, true);
-
-  window.addEventListener('unload', function() {
-    if (safaridriver.inject.state.IS_TOP ||
-        safaridriver.inject.state.isActive()) {
-      var message = new safaridriver.message.Unload(
-          !safaridriver.inject.state.IS_TOP);
-      // If we send this message asynchronously, which is the norm, then the
-      // page will complete its unload before the message is sent. Use sendSync
-      // to ensure the extension gets our message.
-      message.sendSync(safari.self.tab);
-    }
-  }, true);
-};
-
-
-/**
- * Responds to an activate message sent from another frame in this window.
- * @param {!safaridriver.inject.message.Activate} message The activate message.
- * @param {!MessageEvent} e The original message event.
- * @private
- */
-safaridriver.inject.onActivate_ = function(message, e) {
-  // Only respond to messages that came from another injected script in a frame
-  // belonging to this window.
-  if (!message.isSameOrigin() ||
-      !safaridriver.inject.message.isFromFrame(e)) {
-    return;
-  }
-
-  safaridriver.inject.LOG.info(
-      'Activating frame for future command handling.');
-  safaridriver.inject.state.setActive(true);
-
-  if (safaridriver.inject.state.IS_TOP) {
-    var response = bot.response.createResponse(null);
-    safaridriver.inject.sendResponse_(message.getCommand(), response);
-  } else {
-    var activateFrame = new safaridriver.inject.message.ActivateFrame(
-        message.getCommand());
-    activateFrame.send(window.top);
-    // Let top notify the extension that a new frame has been activated.
-  }
-};
-
-
-/**
- * @param {!safaridriver.inject.message.ActivateFrame} message The activate
- *     message.
- * @param {!MessageEvent} e The original message event.
- * @private
- */
-safaridriver.inject.onActivateFrame_ = function(message, e) {
-  goog.asserts.assert(safaridriver.inject.state.IS_TOP);
-  if (safaridriver.inject.message.isFromFrame(e)) {
-    safaridriver.inject.LOG.info('Sub-frame has been activated');
-    safaridriver.inject.state.setActiveFrame(e.source);
-
-    var response = bot.response.createResponse(null);
-    safaridriver.inject.sendResponse_(message.getCommand(), response);
-  }
-};
-
-
-/**
- * @param {!safaridriver.message.Message} message The activate message.
- * @param {!MessageEvent} e The original message event.
- * @private
- */
-safaridriver.inject.onReactivateFrame_ = function(message, e) {
-  goog.asserts.assert(!safaridriver.inject.state.IS_TOP);
-  if (safaridriver.inject.message.isFromTop(e)) {
-    safaridriver.inject.LOG.fine('Sub-frame has been re-activated');
-
-    safaridriver.inject.state.setActive(true);
-
-    message = new safaridriver.message.Load(true);
-    message.sendSync(safari.self.tab);
-  }
+         safaridriver.inject.onEncode_);
 };
 
 
@@ -210,28 +70,6 @@ safaridriver.inject.onConnect_ = function(message, e) {
 
 
 /**
- * Responds to load messages.
- * @param {!safaridriver.message.Message} message The message.
- * @param {!MessageEvent} e The original message event.
- * @private
- */
-safaridriver.inject.onLoad_ = function(message, e) {
-  if (message.isSameOrigin()) {
-    if (safaridriver.inject.message.isFromFrame(e) &&
-        e.source &&
-        e.source === safaridriver.inject.state.getActiveFrame()) {
-      safaridriver.inject.LOG.info('Active frame has reloaded');
-
-      // Tell the frame that has just finished loading that it was our last
-      // activate frame and should reactivate itself.
-      var reactivate = new safaridriver.inject.message.ReactivateFrame();
-      reactivate.send((/** @type {!Window} */e.source));
-    }
-  }
-};
-
-
-/**
  * @param {!safaridriver.inject.message.Encode} message The message.
  * @param {!MessageEvent} e The original message event.
  * @private
@@ -245,199 +83,13 @@ safaridriver.inject.onEncode_ = function(message, e) {
 
   var result = bot.inject.executeScript(function() {
     var xpath = message.getXPath();
-    return bot.locators.xpath.single(xpath, document);
+    var resolver = document.createNSResolver(document.documentElement);
+    var result = document.evaluate(xpath, document, resolver,
+        XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    return result.singleNodeValue;
   }, []);
 
   var response = new safaridriver.message.Response(
       message.getId(), (/** @type {!bot.response.ResponseObject} */result));
   response.send(e.source);
 };
-
-
-/**
- * Command message handler.
- * @param {!safaridriver.message.Command} message The command message.
- * @private
- */
-safaridriver.inject.onCommand_ = function(message) {
-  var command = message.getCommand();
-
-  // If we detect an unload event and send a response, and then the command
-  // handler _also_ detects the unload and attempts to send a response, avoid
-  // sending the response a second time. Hopefully, we'll be smart and not do
-  // this, but something could slip through the cracks.
-  var sent = false;
-
-  var handler = safaridriver.inject.TOP_COMMAND_MAP_[command.getName()];
-  if (handler) {
-    if (safaridriver.inject.state.IS_TOP) {
-      executeCommand(handler);
-    }
-  } else if (safaridriver.inject.state.isActive()) {
-    handler = safaridriver.inject.COMMAND_MAP_[command.getName()];
-    if (handler) {
-      executeCommand(handler);
-    } else {
-      sendError(Error('Unknown command: ' + message));
-    }
-  }
-
-  function executeCommand(handler) {
-    try {
-      safaridriver.inject.LOG.info('Executing ' + command);
-
-      window.addEventListener('unload', onUnload, true);
-
-      // Don't schedule through webdriver.promise.Application; just execute the
-      // command immediately. We're assuming the global page is scheduling
-      // commands and only dispatching one at a time.
-      webdriver.promise.when(
-          handler(command, safaridriver.inject.pageScript_),
-          sendSuccess, sendError);
-    } catch (ex) {
-      sendError(ex);
-    }
-  }
-
-  function onUnload() {
-    if (command.getName() === webdriver.CommandName.EXECUTE_ASYNC_SCRIPT ||
-        command.getName() === webdriver.CommandName.EXECUTE_SCRIPT) {
-      var error = new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-          'Detected a page unload event; script execution does not work ' +
-              'across page loads.');
-      sendError(error);
-    } else {
-      sendSuccess(null);
-    }
-  }
-
-  function sendError(error) {
-    sendResponse(bot.response.createErrorResponse(error));
-  }
-
-  function sendSuccess(value) {
-    var response = bot.response.createResponse(value);
-    sendResponse(response);
-  }
-
-  function sendResponse(response) {
-    window.removeEventListener('unload', onUnload, true);
-    if (!sent) {
-      sent = true;
-
-      // The new frame is always the frame responsible for sending the response
-      // to a switchToFrame command - unless the response is an error.
-      if (command.getName() != webdriver.CommandName.SWITCH_TO_FRAME ||
-          response['status'] != bot.ErrorCode.SUCCESS) {
-        safaridriver.inject.sendResponse_(command, response);
-      }
-    }
-  }
-};
-
-
-/**
- * Sends a command response to the extension.
- * @param {!safaridriver.Command} command The command this is a response to.
- * @param {!bot.response.ResponseObject} response The response to send.
- * @private
- */
-safaridriver.inject.sendResponse_ = function(command, response) {
-  safaridriver.inject.LOG.info('Sending response' +
-      '\ncommand:  ' + command +
-      '\nresponse: ' + JSON.stringify(response));
-
-  var message = new safaridriver.message.Response(command.id, response);
-  message.sendSync(safari.self.tab);
-};
-
-
-/**
- * @typedef {(function(!safaridriver.Command, !safaridriver.inject.PageScript)|
- *            function(!safaridriver.Command)|
- *            function())}
- */
-safaridriver.inject.CommandHandler;
-
-
-/**
- * @typedef {!Object.<webdriver.CommandName,
- *                    safaridriver.inject.CommandHandler>}
- */
-safaridriver.inject.CommandMap;
-
-
-/**
- * Map of command names that should always be handled by the topmost frame,
- * regardless of whether it is currently active.
- * @type {safaridriver.inject.CommandMap}
- * @const
- * @private
- */
-safaridriver.inject.TOP_COMMAND_MAP_ = {};
-
-
-/**
- * Maps command names to the function that handles it.
- * @type {safaridriver.inject.CommandMap}
- * @const
- * @private
- */
-safaridriver.inject.COMMAND_MAP_ = {};
-
-
-goog.scope(function() {
-  var CommandName = webdriver.CommandName;
-  var topMap = safaridriver.inject.TOP_COMMAND_MAP_;
-  var map = safaridriver.inject.COMMAND_MAP_;
-  var commands = safaridriver.inject.commands;
-
-  topMap[CommandName.GET] = commands.loadUrl;
-  topMap[CommandName.REFRESH] = commands.reloadPage;
-  topMap[CommandName.GO_BACK] = commands.unsupportedHistoryNavigation;
-  topMap[CommandName.GO_FORWARD] = commands.unsupportedHistoryNavigation;
-  topMap[CommandName.GET_TITLE] = commands.getTitle;
-  // The extension handles window switches. It sends the command to this
-  // injected script only as a means of retrieving the window name.
-  topMap[CommandName.SWITCH_TO_WINDOW] = commands.getWindowName;
-
-  map[CommandName.GET_CURRENT_URL] = commands.getCurrentUrl;
-  map[CommandName.GET_PAGE_SOURCE] = commands.getPageSource;
-
-  map[CommandName.ADD_COOKIE] = commands.addCookie;
-  map[CommandName.GET_ALL_COOKIES] = commands.getCookies;
-  map[CommandName.DELETE_ALL_COOKIES] = commands.deleteCookies;
-  map[CommandName.DELETE_COOKIE] = commands.deleteCookie;
-
-  map[CommandName.FIND_ELEMENT] = commands.findElement;
-  map[CommandName.FIND_CHILD_ELEMENT] = commands.findElement;
-  map[CommandName.FIND_ELEMENTS] = commands.findElements;
-  map[CommandName.FIND_CHILD_ELEMENTS] = commands.findElements;
-  map[CommandName.GET_ACTIVE_ELEMENT] = commands.getActiveElement;
-
-  map[CommandName.CLEAR_ELEMENT] = commands.clearElement;
-  map[CommandName.CLICK_ELEMENT] = commands.clickElement;
-  map[CommandName.SUBMIT_ELEMENT] = commands.submitElement;
-  map[CommandName.GET_ELEMENT_ATTRIBUTE] = commands.getElementAttribute;
-  map[CommandName.GET_ELEMENT_LOCATION] = commands.getElementLocation;
-  map[CommandName.GET_ELEMENT_LOCATION_IN_VIEW] = commands.getLocationInView;
-  map[CommandName.GET_ELEMENT_SIZE] = commands.getElementSize;
-  map[CommandName.GET_ELEMENT_TEXT] = commands.getElementText;
-  map[CommandName.GET_ELEMENT_TAG_NAME] = commands.getElementTagName;
-  map[CommandName.IS_ELEMENT_DISPLAYED] = commands.isElementDisplayed;
-  map[CommandName.IS_ELEMENT_ENABLED] = commands.isElementEnabled;
-  map[CommandName.IS_ELEMENT_SELECTED] = commands.isElementSelected;
-  map[CommandName.ELEMENT_EQUALS] = commands.elementEquals;
-  map[CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY] = commands.getCssValue;
-  map[CommandName.SEND_KEYS_TO_ELEMENT] = commands.sendKeysToElement;
-
-  map[CommandName.GET_WINDOW_POSITION] = commands.getWindowPosition;
-  map[CommandName.GET_WINDOW_SIZE] = commands.getWindowSize;
-  map[CommandName.SET_WINDOW_POSITION] = commands.setWindowPosition;
-  map[CommandName.SET_WINDOW_SIZE] = commands.setWindowSize;
-
-  map[CommandName.EXECUTE_SCRIPT] = commands.executeScript;
-  map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeScript;
-
-  map[CommandName.SWITCH_TO_FRAME] = commands.switchToFrame;
-});

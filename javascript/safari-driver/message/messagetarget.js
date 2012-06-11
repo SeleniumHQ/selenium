@@ -84,7 +84,6 @@ safaridriver.message.MessageTarget.prototype.dispose = function() {
  * @param {goog.debug.Logger.Level=} opt_level The message level. Defaults to
  *     {@link goog.debug.Logger.Level.INFO}.
  * @param {Error=} opt_error An error to log with the message.
- * @protected
  */
 safaridriver.message.MessageTarget.prototype.log = function(msg, opt_level,
     opt_error) {
@@ -101,9 +100,10 @@ safaridriver.message.MessageTarget.prototype.onMessage_ = function(e) {
   try {
     var message = safaridriver.message.fromEvent(e);
   } catch (ex) {
+    var name = e.name ? e.name + ': ' : '';
     this.log(
-        'Unable to parse message: ' + e.name + ': ' +
-            JSON.stringify(e.message),
+        'Unable to parse message: ' + name +
+            JSON.stringify(e.message || e.data),
         goog.debug.Logger.Level.SEVERE,
         ex);
     return;

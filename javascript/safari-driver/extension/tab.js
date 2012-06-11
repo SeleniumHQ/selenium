@@ -18,9 +18,11 @@ goog.provide('safaridriver.extension.Tab');
 
 goog.require('bot.response');
 goog.require('goog.Uri');
+goog.require('goog.asserts');
 goog.require('safaridriver.Tab');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');
+goog.require('safaridriver.message.PendingFrame');
 goog.require('safaridriver.message.Response');
 goog.require('safaridriver.message.Unload');
 
@@ -49,11 +51,59 @@ safaridriver.extension.Tab = function(browserTab) {
   this.browserTab_ = browserTab;
 
   browserTab.addEventListener('close', goog.bind(this.dispose, this), false);
-  this.on(safaridriver.message.Load.TYPE, goog.bind(this.notifyReady, this));
-  this.on(safaridriver.message.Unload.TYPE,
-      goog.bind(this.notifyUnready, this));
+  this.on(safaridriver.message.Load.TYPE, goog.bind(this.onLoad_, this));
+  this.on(safaridriver.message.Unload.TYPE, goog.bind(this.onUnload_, this));
+  this.on(safaridriver.message.PendingFrame.TYPE,
+      goog.bind(this.onPendingFrame_, this));
 };
 goog.inherits(safaridriver.extension.Tab, safaridriver.Tab);
+
+
+/**
+ * Whether the active frame in this tab is currently loading.
+ * @type {boolean}
+ * @private
+ */
+safaridriver.extension.Tab.prototype.frameIsLoading_ = false;
+
+
+/**
+ * @private
+ */
+safaridriver.extension.Tab.prototype.onLoad_ = function() {
+  this.frameIsLoading_ = false;
+  this.notifyReady();
+};
+
+
+/**
+ * @param {!safaridriver.message.PendingFrame} message The message.
+ * @param {!SafariExtensionMessageEvent} e The original message event.
+ * @private
+ */
+safaridriver.extension.Tab.prototype.onPendingFrame_ = function(message, e) {
+  goog.asserts.assert(e.name === 'canLoad',
+      'Received an async pending frame query');
+  this.log('onPendingFrame_(' + this.frameIsLoading_ + ')');
+  e.message = this.frameIsLoading_;
+  e.stopPropagation();
+};
+
+
+/**
+ * @param {!safaridriver.message.Unload} message The unload message.
+ * @private
+ */
+safaridriver.extension.Tab.prototype.onUnload_ = function(message) {
+  this.log('Received unload notification: ' + message);
+  this.log('Is frame currently ready? ' + this.isReady());
+  if (message.isFrame() && this.isReady()) {
+    this.frameIsLoading_ = true;
+  } else {
+    this.frameIsLoading_ = false;
+    this.notifyUnready();
+  }
+};
 
 
 /** @return {!SafariBrowserTab} The tab associated with this window. */

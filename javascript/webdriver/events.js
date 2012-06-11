@@ -28,7 +28,8 @@ goog.provide('webdriver.EventEmitter');
 webdriver.EventEmitter = function() {
   /**
    * Map of events to registered listeners.
-   * @type {!Object.<!Array.<{fn:!Function,oneshot:boolean}>>}
+   * @type {!Object.<!Array.<{fn: !Function, oneshot: boolean,
+   *                          scope: Object}>>}
    * @private
    */
   this.events_ = {};
@@ -48,7 +49,7 @@ webdriver.EventEmitter.prototype.emit = function(type, var_args) {
   }
   for (var i = 0; i < listeners.length;) {
     var listener = listeners[i];
-    listener.fn.apply(null, args);
+    listener.fn.apply(listener.scope, args);
     if (listeners[i] === listener) {
       if (listeners[i].oneshot) {
         listeners.splice(i, 1);
@@ -76,15 +77,16 @@ webdriver.EventEmitter.prototype.listeners = function(type) {
 
 
 /**
- * Registers a listener.
  * @param {string} type The type of event to listen for.
  * @param {!Function} listener The function to invoke when the event is fired.
+ * @param {Object=} opt_scope The object in whose scope to invoke the listener.
  * @param {boolean=} opt_oneshot Whether the listener should be removed after
  *    the first event is fired.
  * @return {!webdriver.EventEmitter} A self reference.
+ * @private
  */
-webdriver.EventEmitter.prototype.addListener = function(type, listener,
-                                                        opt_oneshot) {
+webdriver.EventEmitter.prototype.addListener_ = function(type, listener,
+    opt_scope, opt_oneshot) {
   var listeners = this.listeners(type);
   var n = listeners.length;
   for (var i = 0; i < n; ++i) {
@@ -95,9 +97,23 @@ webdriver.EventEmitter.prototype.addListener = function(type, listener,
 
   listeners.push({
     fn: listener,
+    scope: opt_scope,
     oneshot: !!opt_oneshot
   });
   return this;
+};
+
+
+/**
+ * Registers a listener.
+ * @param {string} type The type of event to listen for.
+ * @param {!Function} listener The function to invoke when the event is fired.
+ * @param {Object=} opt_scope The object in whose scope to invoke the listener.
+ * @return {!webdriver.EventEmitter} A self reference.
+ */
+webdriver.EventEmitter.prototype.addListener = function(type, listener,
+                                                        opt_scope) {
+  return this.addListener_(type, listener, opt_scope);
 };
 
 
@@ -106,10 +122,11 @@ webdriver.EventEmitter.prototype.addListener = function(type, listener,
  * event is emitted, after which it will be removed.
  * @param {string} type The type of event to listen for.
  * @param {!Function} listener The function to invoke when the event is fired.
+ * @param {Object=} opt_scope The object in whose scope to invoke the listener.
  * @return {!webdriver.EventEmitter} A self reference.
  */
-webdriver.EventEmitter.prototype.once = function(type, listener) {
-  return this.addListener(type, listener, true);
+webdriver.EventEmitter.prototype.once = function(type, listener, opt_scope) {
+  return this.addListener_(type, listener, opt_scope, true);
 };
 
 
@@ -117,6 +134,7 @@ webdriver.EventEmitter.prototype.once = function(type, listener) {
  * An alias for {@code #addListener()}.
  * @param {string} type The type of event to listen for.
  * @param {!Function} listener The function to invoke when the event is fired.
+ * @param {Object=} opt_scope The object in whose scope to invoke the listener.
  * @return {!webdriver.EventEmitter} A self reference.
  */
 webdriver.EventEmitter.prototype.on =

@@ -72,6 +72,24 @@ limitations under the License.
     assertEquals(3, count);
   }
 
+  function testAddingListenersWithCustomScope() {
+    var obj = {
+      count: 0,
+      inc: function() {
+        this.count++;
+      }
+    };
+    var emitter = new webdriver.EventEmitter();
+    emitter.addListener('foo', obj.inc, obj);
+    emitter.once('foo', obj.inc, obj);
+
+    emitter.emit('foo');
+    assertEquals(2, obj.count);
+
+    emitter.emit('foo');
+    assertEquals(3, obj.count);
+  }
+
   function testRemovingListeners() {
     var emitter = new webdriver.EventEmitter();
     var count = 0;

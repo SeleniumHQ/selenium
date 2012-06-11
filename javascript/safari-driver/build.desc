@@ -77,7 +77,7 @@ js_binary(name = "injected",
     "inject/message/message.js",
     "inject/page.js",
     "inject/pagescript.js",
-    "inject/state.js",
+    "inject/tab.js",
     "message/connect.js",
   ],
   defines = [

@@ -69,6 +69,15 @@ safaridriver.Tab.prototype.log = function(msg, opt_level, opt_error) {
 
 
 /**
+ * @return {boolean} Whether this tab is currently loading content and should
+ *     delay further action upon the page.
+ */
+safaridriver.Tab.prototype.isReady = function() {
+  return this.isReady_;
+};
+
+
+/**
  * Schedules a function to execute when this tab is no longer loading content.
  * @param {function()} callback The function to call
  */
@@ -84,10 +93,9 @@ safaridriver.Tab.prototype.whenReady = function(callback) {
 
 /**
  * Notifies the registered listeners that this tab is ready to continue.
- * @protected
  */
 safaridriver.Tab.prototype.notifyReady = function() {
-  this.log('Tab is may be ready; waiting for idle state');
+  this.log('Tab may be ready; waiting for idle state');
   var self = this;
   if (!self.idleStateWaitKey_) {
     self.idleStateWaitKey_ = setTimeout(function() {
@@ -111,7 +119,6 @@ safaridriver.Tab.prototype.notifyReady = function() {
  * Signals that this tab is not ready to process commands and should start
  * enqueing callbacks. The tab will not invoke the calblacks until
  * {@link #notifyReady} is called.
- * @protected
  */
 safaridriver.Tab.prototype.notifyUnready = function() {
   this.log('Tab is not ready');

@@ -97,7 +97,8 @@ safaridriver.message.fromEvent = function(event) {
   var factory = safaridriver.message.factoryRegistry_[type];
   if (!factory) {
     safaridriver.message.LOG_.fine(
-        'Unknown message type; falling back to the default factory');
+        'Unknown message type; falling back to the default factory: ' +
+        JSON.stringify(data));
     factory = safaridriver.message.Message.fromData_;
   }
 
@@ -249,6 +250,8 @@ safaridriver.message.Message.prototype.send = function(target) {
  * Sends this message synchronously to the proved tab proxy or window.
  * @param {!(SafariContentBrowserTabProxy|Window)} target The proxy to send
  *     this message to.
+ * @return {*} The message response. Will always be undefined if the target is
+ *     a DOMWindow.
  */
 safaridriver.message.Message.prototype.sendSync = function(target) {
   if (target.postMessage) {
@@ -261,8 +264,8 @@ safaridriver.message.Message.prototype.sendSync = function(target) {
     // Create a beforeload event, which is required by the canLoad function.
     var stubEvent = document.createEvent('Events');
     stubEvent.initEvent('beforeload', false, false);
-    target.canLoad(stubEvent, this.data_);
-    // TODO(jleyba): Handle the synchronous response.
+    return target.canLoad(stubEvent, this.data_);
+    // TODO(jleyba): Do something more intelligent with the response.
   }
 };
 

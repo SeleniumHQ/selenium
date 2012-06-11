@@ -18,6 +18,7 @@
  */
 
 goog.provide('safaridriver.message.BaseLoadMessage');
+goog.provide('safaridriver.message.PendingFrame');
 goog.provide('safaridriver.message.Load');
 goog.provide('safaridriver.message.Unload');
 
@@ -48,6 +49,14 @@ goog.inherits(safaridriver.message.BaseLoadMessage,
  * @private
  */
 safaridriver.message.BaseLoadMessage.IS_FRAME_FIELD_ = 'isFrame';
+
+
+/**
+ * @return {boolean} Whether this message is from a frame or the top window.
+ */
+safaridriver.message.BaseLoadMessage.prototype.isFrame = function() {
+  return !!this.getField(safaridriver.message.BaseLoadMessage.IS_FRAME_FIELD_);
+};
 
 
 /**
@@ -96,6 +105,24 @@ safaridriver.message.BaseLoadMessage.defineLoadMessageType = function(type) {
  */
 safaridriver.message.Load =
     safaridriver.message.BaseLoadMessage.defineLoadMessageType('load');
+
+
+/**
+ * Message used to query the extension if the sending tab has an active frame
+ * that is currently loading. This message may only be sent synchronously.
+ * @param {boolean=} opt_isFrame Whether this message is related to a frame
+ *     rather than the top window.
+ * @constructor
+ * @extends {safaridriver.message.BaseLoadMessage}
+ */
+safaridriver.message.PendingFrame =
+    safaridriver.message.BaseLoadMessage.defineLoadMessageType('pendingFrame');
+
+
+/** @override */
+safaridriver.message.PendingFrame.prototype.send = function() {
+  throw Error('This message may only be sent synchronously.');
+};
 
 
 /**
