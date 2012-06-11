@@ -26,7 +26,8 @@ public class Color {
   private final short green;
   private final short blue;
 
-  private static final Converter[] CONVERTERS = { new RgbConverter(), new HexConverter() };
+  private static final Converter[] CONVERTERS = {
+      new RgbaConverter(), new RgbConverter(), new HexConverter() };
 
   /*
    * Guesses what format the input color is in.
@@ -73,6 +74,20 @@ public class Color {
 
     protected abstract Pattern getPattern();
     protected abstract int getRadix();
+  }
+
+  private static class RgbaConverter extends Converter {
+    private static final Pattern RGB_PATTERN = Pattern.compile("^\\s*rgba\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)\\s*$");
+
+    @Override
+    protected Pattern getPattern() {
+      return RGB_PATTERN;
+    }
+
+    @Override
+    protected int getRadix() {
+      return 10;
+    }
   }
 
   private static class RgbConverter extends Converter {

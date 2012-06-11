@@ -55,4 +55,11 @@ public class ColorTest {
     String rgb = "rgb(1, 255, 3)";
     assertEquals(hex, Color.fromString(rgb).asHex());
   }
+
+  @Test
+  public void rgbaToRgba() {
+    Color color = Color.fromString("rgba(255,238,136,1)");
+
+    assertEquals("rgb(255, 238, 136)", color.asRgb());
+  }
 }
