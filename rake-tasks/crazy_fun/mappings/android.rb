@@ -234,7 +234,7 @@ module Android
         android_target = $properties["androidtarget"].to_s
         puts "Using Android target: " + android_target
         avdname = "debug_rake_#{android_target}"
-        sh "echo no | \"#{$android}\" create avd --name #{avdname} --target #{android_target} -c 100M --force"
+        sh "echo no | \"#{$android}\" create avd --name #{avdname} --target #{android_target} -c 100M --force --abi x86"
 
         emulator_image = "#{$platform}-userdata-qemu.img"
 
