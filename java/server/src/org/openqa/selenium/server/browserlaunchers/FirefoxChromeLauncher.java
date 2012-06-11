@@ -253,7 +253,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
       return;
     }
     if (process != null) {
-      killFirefoxProcess();
+      try {
+        killFirefoxProcess();
+      } catch (RuntimeException e) {
+        log.warning("Unable to kill firefox process.");
+      }
     }
     if (customProfileDir != null) {
       try {

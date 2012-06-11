@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
+import com.thoughtworks.selenium.SeleniumException;
+
 import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
@@ -239,10 +241,10 @@ public class FirefoxChromeLauncherUnitTest {
     }
 
     @Override
-    protected void killFirefoxProcess() throws FileLockRemainedException {
+    protected void killFirefoxProcess() {
       killFirefoxProcessCalled = true;
       if (!throwProcessKillException) {
-        throw new FileLockRemainedException("test exception");
+        throw new SeleniumException("test exception");
       }
     }
 
