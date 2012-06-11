@@ -20,6 +20,8 @@
 #include "ErrorCodes.h"
 #include "Script.h"
 
+#define EELEMENTCLICKPOINTNOTSCROLLED 100
+
 using namespace std;
 
 namespace webdriver {

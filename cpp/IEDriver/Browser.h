@@ -21,7 +21,6 @@
 #include <string>
 #include "json.h"
 #include "BrowserFactory.h"
-#include "ErrorCodes.h"
 #include "DocumentHost.h"
 #include "messages.h"
 

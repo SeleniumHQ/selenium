@@ -209,7 +209,7 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
     LOG(DEBUG) << "Will need to scroll element into view";
     hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
     if (FAILED(hr)) {
-        LOGHR(WARN, hr) << "Cannot scroll element into view";
+      LOGHR(WARN, hr) << "Cannot scroll element into view";
       return EOBSOLETEELEMENT;
     }
 
@@ -222,7 +222,7 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
                                       top,
                                       element_width,
                                       element_height)) {
-      status_code = EELEMENTNOTDISPLAYED;
+      status_code = EELEMENTCLICKPOINTNOTSCROLLED;
     }
   }
 

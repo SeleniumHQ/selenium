@@ -61,7 +61,13 @@ class ClickElementCommandHandler : public IECommandHandler {
             status_code = element_wrapper->Click();
             browser_wrapper->set_wait_required(true);
             if (status_code != SUCCESS) {
-              response->SetErrorResponse(status_code, "Cannot click on element");
+              if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {
+                // We hard-code the error code here to be "Element not visible"
+                // to maintain compatibility with previous behavior.
+                response->SetErrorResponse(EELEMENTNOTDISPLAYED, "The point at which the driver is attempting to click on the element was not scrolled into the viewport.");
+              } else {
+                response->SetErrorResponse(status_code, "Cannot click on element");
+              }
               return;
             }
           }
