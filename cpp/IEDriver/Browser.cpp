@@ -396,7 +396,7 @@ bool Browser::GetDocumentFromWindow(IHTMLWindow2* window,
     }
     CComQIPtr<IDispatch> document_dispatch;
     hr = window_browser->get_Document(&document_dispatch);
-    if (FAILED(hr)) {
+    if (FAILED(hr) || hr == S_FALSE) {
       return false;
     }
     hr = document_dispatch->QueryInterface(doc);
