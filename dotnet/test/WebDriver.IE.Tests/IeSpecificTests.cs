@@ -10,18 +10,6 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
-        public void CrashTest()
-        {
-            driver.Url = "http://www.google.com/intl/en/about/index.html";
-            IJavaScriptExecutor jsE = (IJavaScriptExecutor)driver;
-            jsE.ExecuteScript("document.getElementById('corp-crumb').onmousedown=function(){document.getElementById(\"corp-crumb\").style.visibility=\"hidden\";};");
-            IWebElement we = driver.FindElement(By.Id("corp-crumb"));
-            Actions a = new Actions(driver);
-            a.ClickAndHold(we).Perform();
-            a.Release(we).Perform();
-        }
-
-        [Test]
         public void ShouldBeAbleToBrowseTransformedXml()
         {
             driver.Url = xhtmlTestPage;
