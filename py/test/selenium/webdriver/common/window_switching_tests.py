@@ -17,6 +17,7 @@
 
 import unittest
 from selenium.common.exceptions import NoSuchWindowException
+from selenium.common.exceptions import WebDriverException
 
 
 class WindowSwitchingTests(unittest.TestCase):
@@ -90,6 +91,26 @@ class WindowSwitchingTests(unittest.TestCase):
         new_handle = self.driver.current_window_handle
 
         self.assertEqual(current, new_handle)
+
+    def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(self):
+        self._loadPage("xhtmlTest")
+
+        currentHandle = self.driver.current_window_handle
+
+        self.driver.find_element_by_name("windowThree").click()
+
+        self.driver.switch_to_window("result")
+
+        try:
+            self.driver.find_element_by_id("close").click()
+            all_handles = self.driver.window_handles
+            self.assertEqual(1, len(all_handles))
+            self.driver.find_element_by_id("close")
+            self.fail("Should complain that driver not available but MUST NOT HANG!")
+        except WebDriverException:
+            pass #this is expected
+        finally:
+            self.driver.switch_to_window(currentHandle)
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
