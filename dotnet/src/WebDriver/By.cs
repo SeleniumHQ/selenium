@@ -263,6 +263,40 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Determines if two <see cref="By"/> instances are equal.
+        /// </summary>
+        /// <param name="one">One instance to compare.</param>
+        /// <param name="two">The other instance to compare.</param>
+        /// <returns><see langword="true"/> if the two instances are equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator ==(By one, By two)
+        {
+            // If both are null, or both are same instance, return true.
+            if (object.ReferenceEquals(one, two))
+            {
+                return true;
+            }
+
+            // If one is null, but not both, return false.
+            if (((object)one == null) || ((object)two == null))
+            {
+                return false;
+            }
+
+            return one.Equals(two);
+        }
+
+        /// <summary>
+        /// Determines if two <see cref="By"/> instances are unequal.
+        /// </summary>s
+        /// <param name="one">One instance to compare.</param>
+        /// <param name="two">The other instance to compare.</param>
+        /// <returns><see langword="true"/> if the two instances are not equal; otherwise, <see langword="false"/>.</returns>
+        public static bool operator !=(By one, By two)
+        {
+            return !(one == two);
+        }
+
+        /// <summary>
         /// Finds the first element matching the criteria.
         /// </summary>
         /// <param name="context">An <see cref="ISearchContext"/> object to use to search for the elements.</param>

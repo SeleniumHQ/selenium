@@ -78,18 +78,30 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns><see langword="true"/> if the two instances are equal; otherwise, <see langword="false"/>.</returns>
         public static bool operator ==(FindsByAttribute one, FindsByAttribute two)
         {
+            // If both are null, or both are same instance, return true.
+            if (object.ReferenceEquals(one, two))
+            {
+                return true;
+            }
+
+            // If one is null, but not both, return false.
+            if (((object)one == null) || ((object)two == null))
+            {
+                return false;
+            }
+
             return one.Equals(two);
         }
 
         /// <summary>
         /// Determines if two <see cref="FindsByAttribute"/> instances are unequal.
-        /// </summary>
+        /// </summary>s
         /// <param name="one">One instance to compare.</param>
         /// <param name="two">The other instance to compare.</param>
         /// <returns><see langword="true"/> if the two instances are not equal; otherwise, <see langword="false"/>.</returns>
         public static bool operator !=(FindsByAttribute one, FindsByAttribute two)
         {
-            return !one.Equals(two);
+            return !(one == two);
         }
 
         /// <summary>

@@ -79,6 +79,7 @@
     <Compile Include="Events\EventFiringWebDriverTest.cs" />
     <Compile Include="PageObjects\ByChainedBrowserTests.cs" />
     <Compile Include="PageObjects\ByChainedTests.cs" />
+    <Compile Include="PageObjects\FindsByAttributeTests.cs" />
     <Compile Include="PageObjects\PageFactoryBrowserTest.cs" />
     <Compile Include="PageObjects\PageFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
