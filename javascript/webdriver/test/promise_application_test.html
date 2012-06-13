@@ -1321,42 +1321,39 @@ limitations under the License.
     assertAppHistory('counting to 3');
 
     turnEventLoop();  // Runs scheduled task.
-    assertAppHistory(
-        'counting to 3',
-        '..increment count');
     turnEventLoop();
     assertAppHistory(
         'counting to 3',
-        '..increment count');
+        '..[[[wait loop; 1 iteration]]]',
+        '....increment count');
     assertEquals(1, count);
 
     clock.tick(100);  // Advance clock for next polling pass.
     assertEquals(1, count);
     turnEventLoop();
     assertEquals(2, count);
+    turnEventLoop();
     assertAppHistory(
         'counting to 3',
-        '..increment count',
-        '..increment count');
-    turnEventLoop();
+        '..[[[wait loop; 2 iterations]]]',
+        '....increment count');
 
     clock.tick(100);  // Advance clock for next polling pass.
     assertEquals(2, count);
     turnEventLoop();
     assertEquals(3, count);
+    turnEventLoop();
     assertAppHistory(
         'counting to 3',
-        '..increment count',
-        '..increment count',
-        '..increment count');
+        '..[[[wait loop; 3 iterations]]]',
+        '....increment count');
 
     runApplication();
     assertEquals(3, count);
     assertAppHistory(
         'counting to 3',
-        '..increment count',
-        '..increment count',
-        '..increment count',
+        '..[[[wait loop; 3 iterations]]]',
+        '....increment count',
         'post wait');
   }
 
@@ -1373,9 +1370,8 @@ limitations under the License.
     assertEquals(3, count);
     assertAppHistory(
         'counting to 3',
-        '..sub task',
-        '..sub task',
-        '..sub task',
+        '..[[[wait loop; 3 iterations]]]',
+        '....sub task',
         'post wait');
   }
 
@@ -1392,7 +1388,8 @@ limitations under the License.
     runApplication();
     assertAppHistory(
         'waiting to go boom',
-        '..boom',
+        '..[[[wait loop; 1 iteration]]]',
+        '....boom',
         'post wait');
   }
 
@@ -1445,8 +1442,8 @@ limitations under the License.
     assertEquals(2, count);
     assertAppHistory(
         'waiting',
-        '..maybe throw',
-        '..maybe throw',
+        '..[[[wait loop; 2 iterations]]]',
+        '....maybe throw',
         'post wait');
   }
 
@@ -1478,10 +1475,8 @@ limitations under the License.
     assertEquals(4, count);
     assertAppHistory(
         'counting to 3',
-        '..increment count',
-        '..increment count',
-        '..increment count',
-        '..increment count',
+        '..[[[wait loop; 4 iterations]]]',
+        '....increment count',
         'post wait');
   }
 
@@ -1696,110 +1691,6 @@ limitations under the License.
     runApplication();
     assertAppHistory('a', 'sub-tasks', 'b');
     callbacks.assertErrback();
-  }
-
-
-  function testScheduleAndWaitForIdle_appGoesIdleImmediately() {
-    var callbacks = callbackPair();
-    appTester.scheduleAndWaitForIdle('', goog.nullFunction).
-        then(callbacks.callback, callbacks.errback);
-    runApplication();
-    clock.tick();
-    callbacks.assertCallback();
-  }
-
-
-  function testScheduleAndWaitForIdle_appAborts() {
-    var callbacks = callbackPair(null, assertIsStubError);
-
-    appTester.scheduleAndWaitForIdle('', throwStubError).
-        then(callbacks.callback, callbacks.errback);
-    runApplication(null, assertIsStubError);
-    webdriver.test.testutil.consumeTimeouts();
-    callbacks.assertErrback();
-  }
-
-
-  function testScheduleAndWaitForIdle_newTaskScheduledAfterIdleButBeforeResolution() {
-    var fn1 = callbackHelper(), fn2 = callbackHelper();
-    var wait = callbackPair();
-
-    appTester.scheduleAndWaitForIdle('fn1', fn1).
-        then(wait.callback, wait.errback);
-
-    turnEventLoop();
-    fn1.assertCalled('Should have called our function');
-    wait.assertNeither('Wait should not have resolved yet');
-
-    appTester.schedule('fn2', fn2);
-    turnEventLoop();
-    fn2.assertCalled('Should have called our function');
-    wait.assertNeither('Wait should still not have resolved');
-
-    runApplication();
-    webdriver.test.testutil.consumeTimeouts();
-    wait.assertCallback('Wait should have resolved');
-  }
-
-
-  function testScheduleAndWaitForIdle_appAbortsAfterIdleButBeforeResolution() {
-    var fn1 = callbackHelper(), fn2 = callbackHelper();
-    var wait = callbackPair(null, assertIsStubError);
-
-    appTester.scheduleAndWaitForIdle('fn1', fn1).
-        then(wait.callback, wait.errback);
-
-    turnEventLoop();
-    fn1.assertCalled('Should have called our function');
-    wait.assertNeither('Wait should not have resolved yet');
-
-    // Tick 3 more times for the same sequence above.
-    appTester.schedule('fn2', throwStubError);
-    runApplication(null, assertIsStubError);
-    webdriver.test.testutil.consumeTimeouts();
-    wait.assertErrback();
-  }
-
-
-  function testScheduleAndWaitForIdle_abortionsDoNotEffectSubsequentTasks_1() {
-    var error = new Error('boom');
-    var wait1 = callbackPair();
-    appTester.scheduleAndWaitForIdle('a', throwStubError).
-        then(wait1.callback, wait1.errback);
-    runApplication(null, assertIsStubError);
-    webdriver.test.testutil.consumeTimeouts();
-    wait1.assertErrback('Wait1 should have been rejected');
-
-    var wait2 = callbackPair();
-    appTester.scheduleAndWaitForIdle('b', goog.nullFunction).
-        then(wait2.callback, wait2.errback);
-    runApplication();
-    webdriver.test.testutil.consumeTimeouts();
-    wait2.assertCallback('Wait2 should have been resolved');
-  }
-
-
-  function testScheduleAndWaitForIdle_abortionsDoNotEffectSubsequentTasks_2() {
-    var wait1 = callbackPair(null, assertIsStubError),
-        wait2 = callbackPair();
-    var schedule2 = callbackHelper(function() {
-      return appTester.scheduleAndWaitForIdle('wait2', goog.nullFunction);
-    });
-
-    appTester.scheduleAndWaitForIdle('wait1', throwStubError).
-        then(wait1.callback, wait1.errback).
-        then(schedule2).
-        then(wait2.callback, wait2.errback);
-
-    turnEventLoop();
-    webdriver.test.testutil.consumeTimeouts();
-    wait1.assertErrback('wait 1 should have been rejected');
-    schedule2.assertCalled('never scheduled wait 2');
-    wait2.assertNeither('wait 2 should not have been called yet');
-
-    runApplication();
-    webdriver.test.testutil.consumeTimeouts();
-    wait2.assertCallback('wait 2 should have been resolved');
   }
 
 

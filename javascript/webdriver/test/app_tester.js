@@ -230,10 +230,6 @@ webdriver.test.AppTester.prototype.scheduleWait =
     webdriver.test.AppTester.proxyAppCall(
         webdriver.promise.Application.prototype.scheduleWait);
 
-webdriver.test.AppTester.prototype.scheduleAndWaitForIdle =
-    webdriver.test.AppTester.proxyAppCall(
-        webdriver.promise.Application.prototype.scheduleAndWaitForIdle);
-
 webdriver.test.AppTester.prototype.getHistory =
     webdriver.test.AppTester.proxyAppCall(
         webdriver.promise.Application.prototype.getHistory);

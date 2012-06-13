@@ -945,93 +945,6 @@ webdriver.promise.Application.prototype.schedule = function(description, fn) {
 
 
 /**
- * Schedules a task for execution.  Unlike {@code #schedule()}, which returns
- * a promise tied to the scheduled task, this function will return a promise
- * that will be resolved once this application has gone idle. The returned
- * promise will be rejected if the application aborts due to an uncaught
- * exception.
- *
- * Note: there may only ever be one (1) task scheduled to wait for idle with an
- * application at any time. This constraint is required to drastically reduce
- * implementation complexity.
- *
- * @param {string} description A description of the task.
- * @param {!Function} fn The function to call to start the task.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when the
- *     application is idle for one turn of the event loop, or rejected if the
- *     application aborts with an uncaught exception.
- */
-webdriver.promise.Application.prototype.scheduleAndWaitForIdle =
-    function(description, fn) {
-  if (this.waitingForIdle_) {
-    throw new Error('Whoops! It looks like another task is already waiting ' +
-                    'this application to go idle: ' + this.waitingForIdle_);
-  }
-  this.waitingForIdle_ = description;
-
-  var self = this;
-  var idleTimeoutId;
-  var deferred = new webdriver.promise.Deferred(function() {
-    self.waitingForIdle_ = null;
-    clearTimeout(idleTimeoutId);
-    self.removeListener(webdriver.promise.Application.EventType.IDLE, onIdle);
-    self.removeListener(webdriver.promise.Application.EventType.SCHEDULE_TASK,
-        onScheduled);
-    self.removeListener(
-        webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, onError);
-  });
-
-  self.schedule(description, fn);
-  self.once(webdriver.promise.Application.EventType.IDLE, onIdle);
-  self.once(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
-      onError);
-
-  return deferred.promise;
-
-  function onIdle() {
-    // A task may be scheduled later in this event loop after the app has gone
-    // idle. Delay resolving the promise for one turn of the event loop.
-    idleTimeoutId = setTimeout(function() {
-      self.removeListener(
-          webdriver.promise.Application.EventType.SCHEDULE_TASK, onScheduled);
-      self.removeListener(
-          webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, onError);
-      self.waitingForIdle_ = null;
-      deferred.resolve();
-    }, 0);
-    self.once(
-        webdriver.promise.Application.EventType.SCHEDULE_TASK, onScheduled);
-  }
-
-  function onScheduled() {
-    clearTimeout(idleTimeoutId);
-    // It is safe to re-apply the onIdle listener here because onScheduled is
-    // only ever attached by onIdle. Only one of the listeners will ever be
-    // active.
-    self.once(webdriver.promise.Application.EventType.IDLE, onIdle);
-  }
-
-  function onError(e) {
-    clearTimeout(idleTimeoutId);
-    self.removeListener(webdriver.promise.Application.EventType.IDLE, onIdle);
-    self.removeListener(webdriver.promise.Application.EventType.SCHEDULE_TASK,
-        onScheduled);
-
-    // Delay rejecting the deferred until the next turn of the event loop. This
-    // is required because if the deferred has a callback that does another
-    // scheduleAndWaitForIdle(), that new task will be caught in this turn of
-    // UNCAUGHT_EXCEPTION events and will immediately fail. This is not a
-    // problem for resolving the deferred onIdle because we always wait one
-    // extra turn of the event loop anyway to catch new tasks being scheduled.
-    setTimeout(function() {
-      self.waitingForIdle_ = null;
-      deferred.reject(e);
-    }, 0);
-  }
-};
-
-
-/**
  * Inserts a {@code setTimeout} into the command queue. This is equivalent to
  * a thread sleep in a synchronous programming language.
  *
@@ -1081,6 +994,21 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
   var self = this;
 
   return this.schedule(description, function() {
+    var lastCommand = goog.array.peek(self.history_);
+    var prefix = lastCommand.match(/^(\.\.)+/);
+    prefix = prefix ? prefix[0] : '';
+
+    // Describes a sequence of commands executed in each iteration of a wait
+    // loop. Tracks where the sequence begins the application's history, its
+    // value (as a single string), and the number of loop iterations have
+    // executed this sequence of commands. This is used to remove clutter from
+    // the task history in optimizeWaitHistory below.
+    var sequence = {
+      start: self.history_.length,
+      value: '',
+      count: 0
+    };
+
     var startTime = goog.now();
     var waitResult = new webdriver.promise.Deferred();
     var waitFrame = self.activeFrame_;
@@ -1091,17 +1019,57 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
     function pollCondition() {
       var result = self.runInNewFrame_(condition);
       return webdriver.promise.when(result, function(value) {
-        var ellapsed = goog.now() - startTime;
+        optimizeWaitHistory();
+
+        var elapsed = goog.now() - startTime;
         if (!!value) {
           waitFrame.isWaiting = false;
           waitResult.resolve(value);
-        } else if (ellapsed >= timeout) {
+        } else if (elapsed >= timeout) {
           waitResult.reject(new Error((opt_message ? opt_message + '\n' : '') +
-              'Wait timed out after ' + ellapsed + 'ms'));
+              'Wait timed out after ' + elapsed + 'ms'));
         } else {
           setTimeout(pollCondition, sleep);
         }
-      }, waitResult.reject);
+      }, function(error) {
+        optimizeWaitHistory();
+        waitResult.reject(error);
+      });
+    }
+
+    // Called after each iteration of polling the condition function to remove
+    // repeated sequences of commands from the task history. Each repeated
+    // sequence of commands is replaced with annotated version that indicates
+    // how many of iterations of the loop executed that sequence.
+    function optimizeWaitHistory() {
+      if (self.history_.length == sequence.start) {
+        return;  // No tasks executed in the wait loop.
+      }
+
+      // Remove all of the tasks recorded during the last iteration of the
+      // wait loop so we can check if this is an exact repeat of the last
+      // iteration.
+      var loopHistory = goog.array.splice(self.history_, sequence.start,
+          self.history_.length - sequence.start);
+
+      var loopHistoryStr = loopHistory.join('\n');
+      if (!sequence.count || loopHistoryStr != sequence.value) {
+        // We've started a new sequence of commands. Update the history with
+        // the annotated version of our sequence and advance the start
+        // index forward so we don't count the annotation on the next pass.
+        self.history_.push(prefix + '..[[[wait loop; 1 iteration]]]');
+        self.history_.push('..' + loopHistory.join('\n..'));
+        sequence.start += 2;
+        sequence.value = loopHistoryStr;
+        sequence.count = 1;
+
+      } else {
+        // Repeat of the previous sequence entry. Update the annotated header
+        // for the sequence.
+        sequence.count++;
+        goog.array.splice(self.history_, sequence.start - 2, 1,
+            prefix + '..[[[wait loop; ' + sequence.count + ' iterations]]]');
+      }
     }
   });
 };

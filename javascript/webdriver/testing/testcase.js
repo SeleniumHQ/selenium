@@ -149,17 +149,17 @@ webdriver.testing.TestCase.prototype.runSingleTest_ = function(
   webdriver.testing.asserts.on(webdriver.testing.asserts.EXPECTATION_FAILURE,
       recordExpectationFailure);
 
-  return scheduleAndWait(test.name + '.setUp', this.setUp)().
-      addCallback(scheduleAndWait(test.name, test.ref)).
+  return schedule(test.name + '.setUp', this.setUp)().
+      addCallback(schedule(test.name, test.ref)).
       addErrback(onError).
-      addCallback(scheduleAndWait(test.name + '.tearDown', this.tearDown)).
+      addCallback(schedule(test.name + '.tearDown', this.tearDown)).
       addErrback(onError).
       addBoth(removeRecordExpectationFailure);
 
-  function scheduleAndWait(description, fn) {
+  function schedule(description, fn) {
     var tmp = goog.partial(handleExpectationFailures, description);
     return function() {
-      return app.scheduleAndWaitForIdle(description, goog.bind(fn, test.scope)).
+      return app.schedule(description, goog.bind(fn, test.scope)).
           then(tmp, function(e) {
             tmp();
             throw e;
