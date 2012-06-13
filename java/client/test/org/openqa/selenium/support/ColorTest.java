@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class ColorTest {
+
   @Test
   public void rgbToRgb() {
     String rgb = "rgb(1, 2, 3)";
@@ -50,6 +51,18 @@ public class ColorTest {
   }
 
   @Test
+  public void hexToRgba() {
+    String hex = "#01Ff03";
+    String rgba = "rgba(1, 255, 3, 1)";
+    assertEquals(rgba, Color.fromString(hex).asRgba());
+    // same test data as hex3 below
+    hex = "#00ff33";
+    rgba = "rgba(0, 255, 51, 1)";
+    assertEquals(rgba, Color.fromString(hex).asRgba());
+  }
+
+
+  @Test
   public void rgbToHex() {
     String hex = "#01ff03";
     String rgb = "rgb(1, 255, 3)";
@@ -58,8 +71,53 @@ public class ColorTest {
 
   @Test
   public void rgbaToRgba() {
-    Color color = Color.fromString("rgba(255,238,136,1)");
-
-    assertEquals("rgb(255, 238, 136)", color.asRgb());
+    Color color = Color.fromString("rgba(255,238,136,0.5)");
+    assertEquals("rgba(255, 238, 136, 0.5)", color.asRgba());
   }
+
+  @Test
+  public void rgbToRgba() {
+    String rgb = "rgb(1, 2, 3)";
+    assertEquals("rgba(1, 2, 3, 1)", Color.fromString(rgb).asRgba());
+  }
+
+  @Test
+  public void rgbPctToRgba() {
+    String rgba = "rgb(10%, 20%, 30%)";
+    assertEquals("rgba(25, 51, 76, 1)", Color.fromString(rgba).asRgba());
+  }
+
+  @Test
+  public void rgbaPctToRgba() {
+    String rgba = "rgba(10%, 20%, 30%, 0.5)";
+    assertEquals("rgba(25, 51, 76, 0.5)", Color.fromString(rgba).asRgba());
+  }
+
+  @Test
+  public void hex3ToRgba() {
+    String hex = "#0f3";
+    String rgba = "rgba(0, 255, 51, 1)";
+    assertEquals(rgba, Color.fromString(hex).asRgba());
+  }
+
+  @Test
+  public void hslToRgba() {
+    String hsl = "hsl(120, 100%, 25%)";
+    String rgba = "rgba(0, 128, 0, 1)";
+    assertEquals(rgba, Color.fromString(hsl).asRgba());
+    hsl = "hsl(100, 0%, 50%)";
+    rgba = "rgba(128, 128, 128, 1)";
+    assertEquals(rgba, Color.fromString(hsl).asRgba());
+  }
+
+  @Test
+  public void hslaToRgba() {
+    String hsla = "hsla(120, 100%, 25%, 1)";
+    String rgba = "rgba(0, 128, 0, 1)";
+    assertEquals(rgba, Color.fromString(hsla).asRgba());
+    hsla = "hsla(100, 0%, 50%, 0.5)";
+    rgba = "rgba(128, 128, 128, 0.5)";
+    assertEquals(rgba, Color.fromString(hsla).asRgba());
+  }
+
 }
