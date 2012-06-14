@@ -65,6 +65,7 @@
                                         <include name="org/openqa/selenium/io/**/*.java" />
                                         <include name="org/openqa/selenium/os/**/*.java" />
                                         <include name="org/openqa/selenium/net/**/*.java" />
+                                        <include name="org/openqa/selenium/profiler/**/*.java" />
                                         <include name="org/openqa/selenium/remote/**/*.java" />
                                         <not><present targetdir="../api/src/main/java" /></not>
                                     </fileset>

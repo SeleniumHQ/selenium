@@ -16,6 +16,10 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -43,7 +47,7 @@
                                         <exclude name="org/openqa/selenium/SuppliesWebDriver.java" />
                                         <exclude name="org/openqa/selenium/WebDriverBackedSelenium.java" />
                                         <exclude name="org/openqa/selenium/WebDriverCommandProcessor.java" />
-                                        <include name="org/openqa/selenium/logging/*.java" />
+					<include name="org/openqa/selenium/logging/**/*.java" />
                                         <include name="org/openqa/selenium/browserlaunchers/CapabilityType.java" />
                                         <include name="org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.java" />
                                         <include name="org/openqa/selenium/browserlaunchers/Proxies.java" />
