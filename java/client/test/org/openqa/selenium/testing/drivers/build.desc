@@ -5,6 +5,7 @@ java_library(name = "browser",
 java_library(name = "drivers",
   srcs = [
     "BackedBy.java",
+    "BrowserToCapabilities.java",
     "Firebug.java",
     "SauceDriver.java",
     "SynthesizedFirefoxDriver.java",

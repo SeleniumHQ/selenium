@@ -1,0 +1,14 @@
+
+java_library(name = "little_proxy",
+  main = "org.littleshoot.proxy.Launcher",
+  deps = [
+    "littleproxy-0.5-SNAPSHOT.jar",
+    "//third_party/java/commons_cli",
+    "//third_party/java/commons-codec",
+    "//third_party/java/commons-lang",
+    "//third_party/java/commons-io",
+    "//third_party/java/dnsjava",
+    "//third_party/java/dnssec4j",
+    "//third_party/java/ehcache",
+    "//third_party/java/netty",
+  ])

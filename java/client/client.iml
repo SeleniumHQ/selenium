@@ -27,7 +27,6 @@
     <orderEntry type="library" name="jna" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="android" level="project" />
-    <orderEntry type="library" scope="TEST" name="jetty" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-logging" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-codec" level="project" />
@@ -35,12 +34,17 @@
     <orderEntry type="library" scope="RUNTIME" name="cssparser" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="nekohtml" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="sac" level="project" />
-    <orderEntry type="library" name="webbit" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="xml-apis" level="project" />
+    <orderEntry type="library" name="webbit" level="project" />
     <orderEntry type="library" name="netty" level="project" />
     <orderEntry type="library" name="commons-fileupload" level="project" />
     <orderEntry type="library" name="google-protobuffers" level="project" />
     <orderEntry type="library" name="commons-jxpath" level="project" />
+    <orderEntry type="library" scope="TEST" name="dnsjava" level="project" />
+    <orderEntry type="library" scope="TEST" name="dnssec4j" level="project" />
+    <orderEntry type="library" scope="TEST" name="jetty" level="project" />
+    <orderEntry type="library" scope="TEST" name="little_proxy" level="project" />
+    <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
   </component>
 </module>
 
