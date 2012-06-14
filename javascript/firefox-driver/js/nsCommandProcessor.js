@@ -683,7 +683,7 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
     var desiredCapabilities = parameters['desiredCapabilities'];
     var isProfilingEnabled =
-        desiredCapabilities['webdriver.logging.profiler.enabled'];
+        !!desiredCapabilities['webdriver.logging.profiler.enabled'];
     var session =
         sessionStore.wrappedJSObject.createSession(isProfilingEnabled);
     session = session.wrappedJSObject;  // XPConnect...
