@@ -126,7 +126,8 @@ fxdriver.files.File.prototype.read = function() {
   var bytesToRead = Math.min(istream.available(), 10485760);
   // TODO(dawagner): Use NetUtil.jsm#readInputStreamToString when we drop
   // support for FF<4
-  var toReturn = scriptableStream.readBytes(bytesToRead);
+  // Note: This will not be happy with NULL characters being read
+  var toReturn = scriptableStream.read(bytesToRead);
 
   scriptableStream.close();
   istream.close();
