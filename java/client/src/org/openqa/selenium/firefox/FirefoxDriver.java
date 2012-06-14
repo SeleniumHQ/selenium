@@ -42,7 +42,6 @@ import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
