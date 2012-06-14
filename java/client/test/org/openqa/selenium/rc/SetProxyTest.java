@@ -109,9 +109,6 @@ public class SetProxyTest {
     Files.write(pac, pacFile, Charset.defaultCharset());
 
     String autoConfUrl = pacFile.toURI().toString();
-//    if (!autoConfUrl.startsWith("file://")) {
-//      autoConfUrl = autoConfUrl.replace("file:/", "file://");
-//    }
 
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl(autoConfUrl);
