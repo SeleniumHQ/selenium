@@ -83,9 +83,10 @@ wdSessionStoreService.prototype.QueryInterface = function(aIID) {
 
 
 /**
+ * @param {boolean} enableProfiling Whether to enable profiling.
  * @return {wdSession} A new WebDriver session.
  */
-wdSessionStoreService.prototype.createSession = function() {
+wdSessionStoreService.prototype.createSession = function(enableProfiling) {
   var id = Components.classes['@mozilla.org/uuid-generator;1'].
       getService(Components.interfaces.nsIUUIDGenerator).
       generateUUID().
@@ -96,7 +97,12 @@ wdSessionStoreService.prototype.createSession = function() {
       createInstance(Components.interfaces.nsISupports);
 
   // Ah, xpconnect...
-  session.wrappedJSObject.setId(id);
+  var wrappedSession = session.wrappedJSObject;
+  wrappedSession.setId(id);
+  if (!enableProfiling) {
+    wrappedSession.getLoggers().ignoreLogType(
+        fxdriver.logging.LogType.PROFILER);
+  }
   this.sessions_[id] = session;
   return session;
 };

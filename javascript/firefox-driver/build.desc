@@ -156,6 +156,7 @@ js_binary(name = "session",
     "js/externs.js",
   ],
   deps = [
+    ":logging",
     ":moz",
   ])
 
@@ -251,11 +252,18 @@ js_library(name = "error",
 js_library(name = "events",
   srcs = [ "js/events.js", ])
 
+js_library(name = "files",
+  srcs = [
+    "js/files.js",
+  ])
+
 js_library(name = "logging",
   srcs = [
+    "js/logger.js",
     "js/logging.js",
   ],
   deps = [
+    ":files",
     ":moz",
     "//javascript/atoms:deps",
   ])

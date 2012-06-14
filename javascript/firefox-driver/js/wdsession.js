@@ -18,6 +18,7 @@
 
 goog.provide('wdSession');
 
+goog.require('fxdriver.logging.Loggers');
 goog.require('fxdriver.moz');
 
 
@@ -134,6 +135,12 @@ wdSession.prototype.mousePosition_ = {
  * @private
  */
 wdSession.prototype.scriptTimeout_ = 0;
+
+
+/**
+ * @type {!fxdriver.logging.Loggers}
+ */
+wdSession.prototype.log_ = new fxdriver.logging.Loggers();
 
 
 /** @see nsISupports.QueryInterface */
@@ -350,6 +357,37 @@ wdSession.prototype.setMouseViewportOffset = function(x, y) {
   this.mousePosition_.viewPortXOffset = x;
   this.mousePosition_.viewPortYOffset = y;
 }
+
+/**
+ * Get logs of a specific log type.
+ *
+ * @param {string} logType
+ * @return {!fxdriver.logging.Logger}
+ */
+wdSession.prototype.getLog = function(logType) {
+  return this.log_.getLog(logType);
+};
+
+/**
+ * Gets all loggers associated with this session.
+ *
+ * @return {!fxdriver.logging.Loggers}
+ */
+wdSession.prototype.getLoggers = function() {
+  return this.log_;
+};
+
+/**
+ * Log message.
+ *
+ * @param {*} message
+ * @param {!fxdriver.logging.LogLevel} level
+ * @param {string} logType
+ */
+wdSession.prototype.log = function(message, level, logType) {
+  this.log_.log(message, level, logType);
+};
+
 
 ///////////////////////////////////////////////////////////////////
 //

@@ -43,16 +43,15 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
     super(createTemporaryProfile());
   }
 
-  public SynthesizedFirefoxDriver(FirefoxProfile profile) throws Exception {
+  public SynthesizedFirefoxDriver(FirefoxProfile profile) throws IOException {
     super(copyExtensionTo(profile));
   }
 
-  public SynthesizedFirefoxDriver(Capabilities capabilities) throws Exception {
+  public SynthesizedFirefoxDriver(Capabilities capabilities) {
     super(tweakCapabilities(capabilities));
   }
 
-  private static Capabilities tweakCapabilities(Capabilities caps)
-      throws Exception {
+  private static Capabilities tweakCapabilities(Capabilities caps) {
     DesiredCapabilities tweaked = new DesiredCapabilities(caps.asMap());
     if (tweaked.getCapability(PROFILE) == null) {
       tweaked.setCapability(PROFILE, createTemporaryProfile());
@@ -131,8 +130,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
     return null;
   }
 
-  private static FirefoxProfile copyExtensionTo(FirefoxProfile profile)
-      throws Exception {
+  private static FirefoxProfile copyExtensionTo(FirefoxProfile profile) throws IOException {
     File topDir = locate("Rakefile").getParentFile();
     File ext = new File(topDir,
         "build/javascript/firefox-driver/webdriver.xpi");

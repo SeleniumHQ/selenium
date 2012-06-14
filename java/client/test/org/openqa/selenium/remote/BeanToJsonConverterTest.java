@@ -375,8 +375,8 @@ public class BeanToJsonConverterTest {
   @Test
   public void testConvertLogEntriesToJson() throws JSONException {
     long timestamp = new Date().getTime();
-    final LogEntry entry1 = new LogEntry(Level.OFF.intValue(), timestamp, "entry1");
-    final LogEntry entry2 = new LogEntry(Level.WARNING.intValue(), timestamp, "entry2");
+    final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
+    final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
     LogEntries entries = new LogEntries(Lists.<LogEntry>newArrayList(entry1, entry2));
 
     JSONArray json = new JSONArray(new BeanToJsonConverter().convert(entries));

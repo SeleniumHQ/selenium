@@ -39,7 +39,10 @@ import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.logging.LocalLogs;
+import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -280,10 +283,11 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     return target.convertFromBase64Png(base64);
   }
 
-  private static class LazyCommandExecutor implements CommandExecutor {
+  private static class LazyCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     private ExtensionConnection connection;
     private final FirefoxBinary binary;
     private final FirefoxProfile profile;
+    private LocalLogs logs = LocalLogs.NULL_LOGGER;
 
     private LazyCommandExecutor(FirefoxBinary binary, FirefoxProfile profile) {
       this.binary = binary;
@@ -292,6 +296,9 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
 
     public void setConnection(ExtensionConnection connection) {
       this.connection = connection;
+      if (this.logs != LocalLogs.NULL_LOGGER) {
+        connection.setLocalLogs(logs);
+      }
     }
 
     public void quit() {
@@ -312,6 +319,14 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
         throw new WebDriverException("The FirefoxDriver cannot be used after quit() was called.");
       }
       return connection.execute(command);
+    }
+
+    @Override
+    public void setLocalLogs(LocalLogs logs) {
+      this.logs = logs;
+      if (connection != null) {
+        connection.setLocalLogs(logs);
+      }
     }
   }
 }

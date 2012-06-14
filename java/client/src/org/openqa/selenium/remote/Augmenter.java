@@ -261,7 +261,7 @@ public class Augmenter {
         return methodProxy.invokeSuper(self, args);
       }
 
-      return handler.invoke(new ExecuteMethod(driver), self, method, args);
+      return handler.invoke(new RemoteExecuteMethod(driver), self, method, args);
     }
   }
 }

@@ -31,6 +31,8 @@ goog.require('bot.ErrorCode');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging.Logger');
+goog.require('fxdriver.logging.LogLevel');
 goog.require('fxdriver.Timer');
 goog.require('fxdriver.error');
 goog.require('fxdriver.moz');
@@ -179,11 +181,23 @@ var DelayedCommand = function(driver, command, response, opt_sleepDelay) {
 DelayedCommand.DEFAULT_SLEEP_DELAY = 100;
 
 
+DelayedCommand.prototype.log = function(message, level, logType) {
+  this.response_.session.log(message, level, logType);
+};
+
+
 /**
  * Executes the command after the specified delay.
  * @param {Number} ms The delay in milliseconds.
  */
 DelayedCommand.prototype.execute = function(ms) {
+  if ('unstable' != loadStrategy_ && !this.yieldedForBackgroundExecution_) {
+    this.yieldedForBackgroundExecution_ = true;
+    this.log(
+	{'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'start'},
+	fxdriver.logging.LogLevel.INFO,
+	fxdriver.logging.LogType.PROFILER);
+  }
   var self = this;
   this.driver_.window.setTimeout(function() {
     self.executeInternal_();
@@ -236,6 +250,10 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
       return true;
     }
   }
+  this.log(
+      {'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'end'},
+      fxdriver.logging.LogLevel.INFO,
+      fxdriver.logging.LogType.PROFILER);
   return false;
 };
 
@@ -403,8 +421,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   if (command.name == 'newSession' ||
       command.name == 'quit' ||
       command.name == 'getStatus' ||
-      command.name == 'getWindowHandles' ||
-      command.name == 'getLogs') {
+      command.name == 'getWindowHandles') {
     try {
       this[command.name](response, command.parameters);
     } catch (ex) {
@@ -436,7 +453,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
 
   if (command.name == 'deleteSession' ||
       command.name == 'getSessionCapabilities' ||
-      command.name == 'switchToWindow') {
+      command.name == 'switchToWindow' ||
+      command.name == 'getLogs') {
     return this[command.name](response, command.parameters);
   }
 
@@ -587,25 +605,8 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
  * @param {!Object.<string, *>} parameters The parameters for the call.
  */
 nsCommandProcessor.prototype.getLogs = function(response, parameters) {
-  fxdriver.Logger.dumpn("parameters: " + parameters.type);
-  Components.utils['import']("resource://gre/modules/NetUtil.jsm");
-  NetUtil.asyncFetch(fxdriver.debug.driver_logs_file, function(inputStream, status) {
-    if (!Components.isSuccessCode(status)) {
-      fxdriver.debug.dumpn("Failed to read driver logs file!");
-      return;
-    }
-
-    var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
-            .createInstance(Components.interfaces.nsIScriptableInputStream);
-    scriptableStream.init(inputStream);
-
-    // We read at most 10MB at a time. For now 10MB is enough. If this becomes
-    // a limitation, we should add a HTTP Range header to allow downloading the file
-    // in multiple parts.
-    var bytesToRead = Math.min(inputStream.available(), 10485760);
-    response.value = scriptableStream.readBytes(bytesToRead);
-    response.send();
-  });
+  response.value = response.session.getLog(parameters.type);
+  response.send();
 }
 
 
@@ -680,7 +681,11 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
         classes['@googlecode.com/webdriver/wdsessionstoreservice;1'].
         getService(Components.interfaces.nsISupports);
 
-    var session = sessionStore.wrappedJSObject.createSession();
+    var desiredCapabilities = parameters['desiredCapabilities'];
+    var isProfilingEnabled =
+        desiredCapabilities['webdriver.logging.profiler.enabled'];
+    var session =
+        sessionStore.wrappedJSObject.createSession(isProfilingEnabled);
     session = session.wrappedJSObject;  // XPConnect...
     session.setChromeWindow(win);
 

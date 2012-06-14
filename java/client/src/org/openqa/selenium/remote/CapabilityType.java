@@ -40,6 +40,8 @@ public interface CapabilityType {
 
   String LOGGING_PREFS = "loggingPrefs";
 
+  String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
+
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";
     String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";

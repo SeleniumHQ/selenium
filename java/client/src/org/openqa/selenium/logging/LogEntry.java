@@ -18,27 +18,29 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
+import java.util.logging.Level;
+
 /**
  * Represents a single log statement.
  */
 public class LogEntry {
-  private final int level;
+  private final Level level;
   private final long timestamp;
   private final String message;
 
   /**
-   * @param level the integer value of the level.
+   * @param level the level of the log, e.g. INFO.
    * @param timestamp long value of the timestamp at which this log entry
    *     was created.
    * @param message String the log's message.
    */
-  public LogEntry(int level, long timestamp, String message) {
+  public LogEntry(Level level, long timestamp, String message) {
     this.level = level;
     this.timestamp = timestamp;
     this.message = message;
   }
 
-  public int getLevel() {
+  public Level getLevel() {
     return level;
   }
 
@@ -52,6 +54,6 @@ public class LogEntry {
 
   @Override
   public String toString() {
-    return String.format("[%d] %s %s ", level, timestamp, message);
+    return String.format("%d %s %s", timestamp, level, message);
   }
 }

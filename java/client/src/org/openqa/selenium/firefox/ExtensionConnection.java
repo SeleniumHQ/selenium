@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.CommandExecutor;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.io.IOException;
 /**
  * Represents a connection with the FirefoxDriver browser extension.
  */
-public interface ExtensionConnection extends CommandExecutor {
+public interface ExtensionConnection extends CommandExecutor, NeedsLocalLogs {
 
   /**
    * Establishes a connection to the extension.

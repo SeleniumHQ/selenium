@@ -1,7 +1,8 @@
 java_library(name = "logging",
-  srcs = ["*.java"],
+  srcs = ["**/*.java"],
   deps = [
     "//java/client/src/org/openqa/selenium:base",
     "//third_party/java/guava-libraries",
+    "//third_party/java/json",
   ])
 

@@ -21,13 +21,13 @@ package org.openqa.selenium.logging;
 import org.openqa.selenium.Beta;
 
 /**
- * Logs's interface.
+ * Interface which provides logs.
  */
 @Beta
 public interface Logs {
 
   /**
-   * Fetches the logs for the givem log type.
+   * Fetches the logs for the given log type.
    * 
    * For more info on enabling logging, look at {@link LoggingPreferences}.
    *

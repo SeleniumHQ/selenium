@@ -17,21 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.logging.LocalLogs;
+import org.openqa.selenium.logging.LogCombiner;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LoggingUtil;
 import org.openqa.selenium.logging.Logs;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Beta
 public class RemoteLogs implements Logs {
@@ -41,42 +40,34 @@ public class RemoteLogs implements Logs {
 
   protected ExecuteMethod executeMethod;
 
-  private static final String TYPE_KEY = "type";
+  @VisibleForTesting public static final String TYPE_KEY = "type";
+  private final LocalLogs localLogs;
 
-  public RemoteLogs(ExecuteMethod executeMethod) {
+  public RemoteLogs(ExecuteMethod executeMethod, LocalLogs localLogs) {
     this.executeMethod = executeMethod;
+    this.localLogs = localLogs;
   }
 
+  @Override
   public LogEntries get(String logType) {
-    Object raw = executeMethod.execute(DriverCommand.GET_LOGS,
-        ImmutableMap.of(TYPE_KEY, logType));
-    if (raw instanceof List) {
-      List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
-      List<LogEntry> entries = Lists.newArrayListWithCapacity(rawList.size());
+    return LogCombiner.combine(getRemoteEntries(logType), getLocalEntries(logType));
+  }
 
-      for (Map<String, Object> obj : rawList) {
-        entries.add(new LogEntry(((Long) obj.get(LEVEL)).intValue(),
-            (Long) obj.get(TIMESTAMP),
-            (String) obj.get(MESSAGE)));
-      }
-      return new LogEntries(entries);
-    } else if (raw instanceof String) {
-      Pattern pattern = Pattern.compile("\\{.*?\"\\}\n");
-      Matcher matcher = pattern.matcher((String) raw);
+  private LogEntries getRemoteEntries(String logType) {
+    Object raw = executeMethod.execute(DriverCommand.GET_LOGS, ImmutableMap.of(TYPE_KEY, logType));
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
+    List<LogEntry> remoteEntries = Lists.newArrayListWithCapacity(rawList.size());
 
-      List<LogEntry> entries = Lists.newArrayList();
-
-      while (matcher.find()) {
-        try {
-          JSONObject jsonObject = new JSONObject(matcher.group());
-          entries.add(new LogEntry((Integer) jsonObject.get("level"),
-              (Long) jsonObject.get("timestamp"), (String) jsonObject.get("message")));
-        } catch (JSONException e) {
-          throw new WebDriverException("Failed to parse logs. Raw result: " + raw, e);
-        }
-      }
-      return new LogEntries(entries);
+    for (Map<String, Object> obj : rawList) {
+      remoteEntries.add(new LogEntry(LoggingUtil.toLevel(((Long)obj.get(LEVEL)).intValue()),
+          (Long) obj.get(TIMESTAMP),
+          (String) obj.get(MESSAGE)));
     }
-    throw new WebDriverException("Don't know how to parse log results: " + raw.toString());
+    return new LogEntries(remoteEntries);
+  }
+
+  private LogEntries getLocalEntries(String logType) {
+    return localLogs.get(logType);
   }
 }

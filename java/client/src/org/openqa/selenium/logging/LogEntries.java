@@ -20,6 +20,8 @@ package org.openqa.selenium.logging;
 
 import org.openqa.selenium.Beta;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,8 +35,8 @@ import java.util.logging.Level;
 public class LogEntries implements Iterable<LogEntry> {
   private final List<LogEntry> entries;
 
-  public LogEntries(List<LogEntry> entries) {
-    this.entries = new ArrayList<LogEntry>(entries);
+  public LogEntries(Iterable<LogEntry> entries) {
+    this.entries = ImmutableList.copyOf(entries);
   }
 
   /**
@@ -51,7 +53,7 @@ public class LogEntries implements Iterable<LogEntry> {
   public List<LogEntry> filter(Level level) {
     List<LogEntry> toReturn = new ArrayList<LogEntry>();
     for (LogEntry entry : entries) {
-      if (entry.getLevel() >= level.intValue()) {
+      if (entry.getLevel().intValue() >= level.intValue()) {
         toReturn.add(entry);
       }
     }

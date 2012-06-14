@@ -42,6 +42,11 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.logging.LocalLogs;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
@@ -57,7 +62,7 @@ import java.util.Map;
 import static org.apache.http.protocol.ExecutionContext.HTTP_TARGET_HOST;
 import static org.openqa.selenium.remote.DriverCommand.*;
 
-public class HttpCommandExecutor implements CommandExecutor {
+public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private static final int MAX_REDIRECTS = 10;
 
@@ -67,6 +72,8 @@ public class HttpCommandExecutor implements CommandExecutor {
   private final HttpClient client;
 
   private static HttpClientFactory httpClientFactory;
+
+  private LocalLogs logs = LocalLogs.NULL_LOGGER;
 
   private enum HttpVerb {
     GET() {
@@ -254,6 +261,14 @@ public class HttpCommandExecutor implements CommandExecutor {
         .build();
   }
 
+  public void setLocalLogs(LocalLogs logs) {
+    this.logs = logs;
+  }
+
+  private void log(String logType, LogEntry entry) {
+    logs.addEntry(logType, entry);
+  }
+
   public URL getAddressOfRemoteServer() {
     return remoteServer;
   }
@@ -278,7 +293,9 @@ public class HttpCommandExecutor implements CommandExecutor {
         httpMethod.addHeader("Cache-Control", "no-cache");
       }
 
+      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       HttpResponse response = fallBackExecute(context, httpMethod);
+      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
       response = followRedirects(client, context, response, /* redirect count */0);
 

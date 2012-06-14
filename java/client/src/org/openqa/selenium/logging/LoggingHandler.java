@@ -29,9 +29,10 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * A custom handler used to records log entries.
+ * A custom handler used to record log entries.
  *
- * This handler queues up log records as they come, up to 10000 records.
+ * This handler queues up log records as they come, up to MAX_RECORDS
+ * (currently 1000) records.
  * If it reaches this capacity it will remove the older records
  * from the queue before adding the next one.
  */
@@ -61,7 +62,7 @@ public class LoggingHandler extends Handler {
       if (records.size() > MAX_RECORDS) {
         records.remove();
       }
-      records.add(new LogEntry(logRecord.getLevel().intValue(),
+      records.add(new LogEntry(logRecord.getLevel(),
           logRecord.getMillis(),
           logRecord.getLoggerName() + " "
               + logRecord.getSourceClassName() + "." + logRecord.getSourceMethodName()

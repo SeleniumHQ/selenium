@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -45,6 +46,9 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
@@ -57,16 +61,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
     HasInputDevices, HasCapabilities {
-
-  private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
-  private Level level = Level.FINE;
 
   private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -80,16 +79,24 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   private RemoteKeyboard keyboard;
   private RemoteMouse mouse;
-  private Logs logs;
+  private Logs remoteLogs;
+  private LocalLogs localLogs;
 
   // For cglib
   protected RemoteWebDriver() {
-    init();
+    init(false);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
-    init();
+
+    boolean isProfilingEnabled = desiredCapabilities != null &&
+        desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
+    init(isProfilingEnabled);
+
+    if (executor instanceof NeedsLocalLogs) {
+      ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
+    }
     startClient();
     startSession(desiredCapabilities);
   }
@@ -102,12 +109,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
   }
 
-  private void init() {
+  private void init(boolean isProfilingEnabled) {
     converter = new JsonToWebElementConverter(this);
-    executeMethod = new ExecuteMethod(this);
+    executeMethod = new RemoteExecuteMethod(this);
     keyboard = new RemoteKeyboard(executeMethod);
     mouse = new RemoteMouse(executeMethod);
-    logs = new RemoteLogs(executeMethod);
+    Set<String> logTypesToIgnore =
+        isProfilingEnabled ? ImmutableSet.<String>of() : ImmutableSet.of(LogType.PROFILER);
+    localLogs = new LocalLogs(logTypesToIgnore);
+    remoteLogs = new RemoteLogs(executeMethod, localLogs);
   }
 
   /**
@@ -407,15 +417,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return converter;
   }
 
-  /**
-   * Sets the RemoteWebDriver's client log level.
-   * 
-   * @param level The log level to use.
-   */
-  public void setLogLevel(Level level) {
-    this.level = level;
-  }
-
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
     Command command = new Command(sessionId, driverCommand, parameters);
     Response response;
@@ -425,13 +426,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Thread.currentThread().setName("Forwarding " + driverCommand + " on session " + sessionId +
                                    " to remote");
     try {
-      log(sessionId, command.getName(), command, When.BEFORE);
-
-
+      // TODO(dawagner): Re-add INFO logging of individual commands here
       response = executor.execute(command);
 
       if (response == null) {
-        log(sessionId, command.getName(), command, When.AFTER);
         return null;
       }
 
@@ -439,11 +437,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
-      log(sessionId, command.getName(), command, When.AFTER);
     } catch (SessionTerminatedException e){
       throw e;
     } catch (Exception e) {
-      log(sessionId, command.getName(), command, When.EXCEPTION);
       String errorMessage = "Error communicating with the remote browser. " +
           "It may have died.";
       if (driverCommand.equals(DriverCommand.NEW_SESSION)) {
@@ -474,30 +470,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return mouse;
   }
 
-  /**
-   * Override this to be notified at key points in the execution of a command.
-   *
-   * @param sessionId   the session id.
-   * @param commandName the command that is being executed.
-   * @param toLog       any data that might be interesting.
-   */
-  protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
-    switch(when) {
-      case BEFORE:
-        logger.log(level, "Executing: " + commandName + " " + toLog);
-        break;
-      case AFTER:
-        logger.log(level, "Executed: " + toLog);
-        break;
-      case EXCEPTION:
-        logger.log(level, "Exception: " + toLog);
-        break;
-      default:
-        logger.log(level, toLog.toString());
-        break;
-    }
-  }
-
   public FileDetector getFileDetector() {
     return fileDetector;
   }
@@ -506,7 +478,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     @Beta
     public Logs logs() {
-      return logs;
+      return remoteLogs;
     }
 
     public void addCookie(Cookie cookie) {
@@ -579,6 +551,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
 
+      @SuppressWarnings("unchecked")
       public List<String> getAvailableEngines() {
         Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
         return (List<String>) response.getValue();

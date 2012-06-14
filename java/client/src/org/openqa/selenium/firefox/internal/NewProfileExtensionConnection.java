@@ -23,6 +23,9 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.logging.LocalLogs;
+import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -39,7 +42,7 @@ import java.net.URL;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
-public class NewProfileExtensionConnection implements ExtensionConnection {
+public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
   private final static int BUFFER_SIZE = 4096;
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
@@ -52,6 +55,8 @@ public class NewProfileExtensionConnection implements ExtensionConnection {
 
 
   private HttpCommandExecutor delegate;
+
+  private LocalLogs logs = LocalLogs.NULL_LOGGER;
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile,
       String host) throws Exception {
@@ -75,6 +80,9 @@ public class NewProfileExtensionConnection implements ExtensionConnection {
       process.clean(profile, profileDir);
 
       delegate = new HttpCommandExecutor(buildUrl(host, port));
+      if (logs != LocalLogs.NULL_LOGGER) {
+        delegate.setLocalLogs(logs);
+      }
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
 
       if (firefoxLogFile !=  null) {
@@ -191,5 +199,13 @@ public class NewProfileExtensionConnection implements ExtensionConnection {
       // Cannot connect yet.
       return false;
     }
+  }
+
+  @Override
+  public void setLocalLogs(LocalLogs logs) {
+    if (delegate != null) {
+      delegate.setLocalLogs(logs);
+    }
+    this.logs = logs;
   }
 }

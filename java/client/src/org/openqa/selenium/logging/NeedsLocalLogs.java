@@ -1,7 +1,5 @@
 /*
-Copyright 2007-2011 Selenium committers
-
-Portions copyright 2011 Software Freedom Conservancy
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,25 +12,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.logging;
 
-/**
- * Supported log types.
- */
-public class LogType {
-
-  /**
-   * This log type pertains to logs from the driver. If the driver is a remote
-   * WebDriver, the logs from the remote driver will be included.
-   */
-  public static final String DRIVER = "driver";
-
-  /**
-   * This log type pertains to logs relating to performance timings.
-   */
-  public static final String PROFILER = "profiler";
-
-  private LogType() {}
+public interface NeedsLocalLogs {
+  void setLocalLogs(LocalLogs logs);
 }
