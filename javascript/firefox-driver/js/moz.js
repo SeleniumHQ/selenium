@@ -45,13 +45,13 @@ fxdriver.moz.load = function(module) {
  * @return {!object} The service.
  */
 fxdriver.moz.getService = function(className, serviceName) {
-  var clazz = Components.classes[className];
+  var clazz = CC[className];
   if (clazz == undefined) {
     // TODO(simon): Replace this with a proper error
     throw new Error('Cannot create component ' + className);
   }
 
-  return clazz.getService(Components.interfaces[serviceName]);
+  return clazz.getService(CI[serviceName]);
 };
 
 
