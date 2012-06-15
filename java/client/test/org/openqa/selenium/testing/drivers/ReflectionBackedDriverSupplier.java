@@ -74,7 +74,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
   private void copyFirefoxDriverDefaultsToOutputDir() throws IOException {
     File defaults = InProject.locate("javascript/firefox-driver/webdriver.json");
-    File out = InProject.locate("out/production/selenium/org/openqa/selenium/firefox/FirefoxProfile.class").getParentFile();
+    File out = InProject.locate("java/client/build/production/org/openqa/selenium/firefox/FirefoxProfile.class").getParentFile();
     out = new File(out, "webdriver.json");
     Files.copy(defaults, out);
   }
