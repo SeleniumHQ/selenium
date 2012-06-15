@@ -243,11 +243,7 @@ Utils.useNativeEvents = function() {
     prefs.prefHasUserValue("webdriver_enable_native_events") ?
     prefs.getBoolPref("webdriver_enable_native_events") : false;
 
-  if (enableNativeEvents && Utils.getNativeEvents()) {
-      return true;
-  }
-
-  return false;
+  return enableNativeEvents && Utils.getNativeEvents();
 };
 
 Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
