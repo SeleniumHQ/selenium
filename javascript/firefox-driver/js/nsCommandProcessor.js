@@ -682,10 +682,8 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
         getService(Components.interfaces.nsISupports);
 
     var desiredCapabilities = parameters['desiredCapabilities'];
-    var isProfilingEnabled =
-        !!desiredCapabilities['webdriver.logging.profiler.enabled'];
     var session =
-        sessionStore.wrappedJSObject.createSession(isProfilingEnabled);
+        sessionStore.wrappedJSObject.createSession(desiredCapabilities);
     session = session.wrappedJSObject;  // XPConnect...
     session.setChromeWindow(win);
 

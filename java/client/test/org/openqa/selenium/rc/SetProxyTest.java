@@ -86,6 +86,9 @@ public class SetProxyTest {
     Proxy proxy = instance.asProxy();
 
     DesiredCapabilities caps = BrowserToCapabilities.of(Browser.detect());
+    if (caps == null) {
+      caps = new DesiredCapabilities();
+    }
     caps.setCapability(PROXY, proxy);
 
     WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
@@ -114,6 +117,9 @@ public class SetProxyTest {
     proxy.setProxyAutoconfigUrl(autoConfUrl);
 
     DesiredCapabilities caps = BrowserToCapabilities.of(Browser.detect());
+    if (caps == null) {
+      caps = DesiredCapabilities.firefox();
+    }
     caps.setCapability(PROXY, proxy);
 
     WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();

@@ -173,6 +173,7 @@ js_binary(name = "session_store",
   deps = [
     ":logging",
     ":moz",
+    ":proxy",
     ":session",
   ])
 
@@ -290,6 +291,13 @@ js_library(name = "preconditions",
   deps = [
     ":utils",
     "//javascript/atoms:deps",
+  ])
+
+js_library(name = "proxy",
+  srcs = [ "js/proxy.js" ],
+  deps = [
+    ":logging",
+    ":moz",
   ])
 
 js_library(name = "request",

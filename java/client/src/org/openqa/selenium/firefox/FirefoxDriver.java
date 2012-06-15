@@ -42,6 +42,8 @@ import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -116,11 +118,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     }
 
     profile = getProfile(profile);
-
-    if (capabilities.getCapability(PROXY) != null) {
-      Proxy proxy = Proxies.extractProxy(capabilities);
-      profile.setProxyPreferences(proxy);
-    }
 
     if (capabilities.getCapability(ACCEPT_SSL_CERTS) != null) {
       Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
@@ -267,12 +264,20 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
    */
   private static Capabilities dropCapabilities(Capabilities capabilities, String... keysToRemove) {
     final Set<String> toRemove = Sets.newHashSet(keysToRemove);
-    return new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
+    DesiredCapabilities caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
       @Override
       public boolean apply(String key) {
         return !toRemove.contains(key);
       }
     }));
+
+    // Ensure that the proxy is in a state fit to be sent to the extension
+    Proxy proxy = Proxies.extractProxy(capabilities);
+    if (proxy != null) {
+      caps.setCapability(PROXY, new BeanToJsonConverter().convert(proxy));
+    }
+
+    return caps;
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {

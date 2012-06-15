@@ -44,6 +44,13 @@ XPCOMUtils.generateNSGetFactory;
 XPCOMUtils.generateNSGetModule;
 
 
+var nsIPrefBranch;
+nsIPrefBranch.prototype.getBoolPref;
+nsIPrefBranch.prototype.getCharPref;
+nsIPrefBranch.prototype.getIntPref;
+
+
+
 // Constants on constants
 Components.resources.NS_ERROR_NO_INTERFACE;
 Components.resources.NS_NOINTERFACE;

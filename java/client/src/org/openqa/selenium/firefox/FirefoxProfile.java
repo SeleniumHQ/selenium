@@ -239,7 +239,9 @@ public class FirefoxProfile {
    * 
    * @param proxy The proxy preferences.
    * @return The profile, for further settings.
+   * @deprecated This is now handled by the driver itself.
    */
+  @Deprecated
   public FirefoxProfile setProxyPreferences(Proxy proxy) {
     if (proxy.getProxyType() == ProxyType.UNSPECIFIED) {
       return this;

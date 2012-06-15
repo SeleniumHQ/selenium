@@ -20,6 +20,7 @@ goog.provide('wdSessionStoreService');
 
 goog.require('fxdriver.Logger');
 goog.require('fxdriver.moz');
+goog.require('fxdriver.proxy');
 goog.require('wdSession');
 
 /**
@@ -86,7 +87,7 @@ wdSessionStoreService.prototype.QueryInterface = function(aIID) {
  * @param {boolean} enableProfiling Whether to enable profiling.
  * @return {wdSession} A new WebDriver session.
  */
-wdSessionStoreService.prototype.createSession = function(enableProfiling) {
+wdSessionStoreService.prototype.createSession = function(capabilities) {
   var id = Components.classes['@mozilla.org/uuid-generator;1'].
       getService(Components.interfaces.nsIUUIDGenerator).
       generateUUID().
@@ -99,10 +100,13 @@ wdSessionStoreService.prototype.createSession = function(enableProfiling) {
   // Ah, xpconnect...
   var wrappedSession = session.wrappedJSObject;
   wrappedSession.setId(id);
-  if (!enableProfiling) {
+  if (!capabilities['webdriver.logging.profiler.enabled']) {
     wrappedSession.getLoggers().ignoreLogType(
         fxdriver.logging.LogType.PROFILER);
   }
+
+  fxdriver.proxy.configure(capabilities['proxy']);
+
   this.sessions_[id] = session;
   return session;
 };
