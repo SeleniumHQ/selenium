@@ -219,7 +219,19 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
     var numPending = 0;
     var requests = this.loadGroup_.requests;
     while (requests.hasMoreElements()) {
-      var request = requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
+      var request = null;
+      var rawRequest = requests.getNext();
+
+      try {
+        request = rawRequest.QueryInterface(Components.interfaces.nsIRequest)
+      } catch (e) {
+        // This may happen for pages that use WebSockets.
+        // See https://bugzilla.mozilla.org/show_bug.cgi?id=765618
+
+        fxdriver.Logger.dumpn('Ignoring non-nsIRequest: ' + rawRequest);
+        continue;
+      }
+
       var isPending = false;
       try {
         isPending = request.isPending();
