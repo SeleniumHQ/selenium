@@ -854,15 +854,22 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
   } else {
-    // TODO: properly handle display:run-in
     var isTD = bot.dom.isElement(elem, goog.dom.TagName.TD);
     var display = bot.dom.getEffectiveStyle(elem, 'display');
     // On some browsers, table cells incorrectly show up with block styles.
     var isBlock = !isTD &&
         !goog.array.contains(bot.dom.INLINE_DISPLAY_BOXES_, display);
 
-    // Add a newline before block elems when there is text on the current line.
-    if (isBlock && !goog.string.isEmpty(currLine())) {
+    // Add a newline before block elems when there is text on the current line,
+    // except when the previous sibling has a display: run-in.
+    // Also, do not run-in the previous sibling if this element is floated.
+
+    var prevDisplay = (elem.previousElementSibling) ?
+        bot.dom.getEffectiveStyle(elem.previousElementSibling, 'display') :
+        '';
+    var runIntoThis = prevDisplay == 'run-in' &&
+        bot.dom.getEffectiveStyle(elem, 'float') == 'none';
+    if (isBlock && !runIntoThis && !goog.string.isEmpty(currLine())) {
       lines.push('');
     }
 
@@ -902,8 +909,9 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
       lines[lines.length - 1] += ' ';
     }
 
-    // Add a newline after block elems when there is text on the current line.
-    if (isBlock && !goog.string.isEmpty(line)) {
+    // Add a newline after block elems when there is text on the current line,
+    // and the current element isn't marked as run-in.
+    if (isBlock && display != 'run-in' && !goog.string.isEmpty(line)) {
       lines.push('');
     }
   }
