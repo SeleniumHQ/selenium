@@ -61,11 +61,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
     HasInputDevices, HasCapabilities {
+
+  // TODO(dawagner): This static logger should be unified with the per-instance localLogs
+  private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
+  private Level level = Level.FINE;
 
   private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -417,6 +423,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return converter;
   }
 
+  /**
+   * Sets the RemoteWebDriver's client log level.
+   *
+   * @param level The log level to use.
+   */
+  public void setLogLevel(Level level) {
+    this.level = level;
+  }
+
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
     Command command = new Command(sessionId, driverCommand, parameters);
     Response response;
@@ -426,8 +441,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Thread.currentThread().setName("Forwarding " + driverCommand + " on session " + sessionId +
                                    " to remote");
     try {
-      // TODO(dawagner): Re-add INFO logging of individual commands here
+
+      log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
+      log(sessionId, command.getName(), command, When.AFTER);
 
       if (response == null) {
         return null;
@@ -440,6 +457,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     } catch (SessionTerminatedException e){
       throw e;
     } catch (Exception e) {
+      log(sessionId, command.getName(), command, When.EXCEPTION);
       String errorMessage = "Error communicating with the remote browser. " +
           "It may have died.";
       if (driverCommand.equals(DriverCommand.NEW_SESSION)) {
@@ -468,6 +486,30 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public Mouse getMouse() {
     return mouse;
+  }
+
+  /**
+   * Override this to be notified at key points in the execution of a command.
+   *
+   * @param sessionId   the session id.
+   * @param commandName the command that is being executed.
+   * @param toLog       any data that might be interesting.
+   */
+  protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
+    switch(when) {
+      case BEFORE:
+        logger.log(level, "Executing: " + commandName + " " + toLog);
+        break;
+      case AFTER:
+        logger.log(level, "Executed: " + toLog);
+        break;
+      case EXCEPTION:
+        logger.log(level, "Exception: " + toLog);
+        break;
+      default:
+        logger.log(level, toLog.toString());
+        break;
+    }
   }
 
   public FileDetector getFileDetector() {
