@@ -37,7 +37,8 @@ class MouseDoubleClickCommandHandler : public IECommandHandler {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get current browser");
+      response->SetErrorResponse(status_code, "Unable to get browser");
+      return;
     }
 
     if (executor.enable_native_events()) {

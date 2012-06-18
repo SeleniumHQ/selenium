@@ -34,7 +34,11 @@ class GetAlertTextCommandHandler : public IECommandHandler {
                        const ParametersMap& command_parameters,
                        Response* response) {
     BrowserHandle browser_wrapper;
-    executor.GetCurrentBrowser(&browser_wrapper);
+    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+    if (status_code != SUCCESS) {
+      response->SetErrorResponse(status_code, "Unable to get browser");
+      return;
+    }
     // This sleep is required to give IE time to draw the dialog.
     ::Sleep(100);
     HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();

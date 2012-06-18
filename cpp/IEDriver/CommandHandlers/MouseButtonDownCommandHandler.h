@@ -38,6 +38,7 @@ class MouseButtonDownCommandHandler : public IECommandHandler {
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get current browser");
+      return;
     }
 
     if (executor.enable_native_events()) {

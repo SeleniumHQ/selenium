@@ -46,7 +46,11 @@ class SendKeysToActiveElementCommandHandler : public IECommandHandler {
         keys.append(CA2W(key.c_str(), CP_UTF8));
       }
       BrowserHandle browser_wrapper;
-      executor.GetCurrentBrowser(&browser_wrapper);
+      int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+      if (status_code != SUCCESS) {
+        response->SetErrorResponse(status_code, "Unable to get browser");
+        return;
+      }
       if (executor.enable_native_events()) {
         HWND window_handle = browser_wrapper->GetWindowHandle();
         sendKeys(window_handle, keys.c_str(), executor.speed());

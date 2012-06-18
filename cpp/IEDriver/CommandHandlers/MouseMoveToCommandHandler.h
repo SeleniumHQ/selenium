@@ -51,7 +51,8 @@ class MouseMoveToCommandHandler : public IECommandHandler {
       status_code = executor.GetCurrentBrowser(&browser_wrapper);
       if (status_code != SUCCESS) {
         response->SetErrorResponse(status_code,
-                                    "Unable to get current browser");
+                                    "Unable to get browser");
+        return;
       }
 
       if (executor.enable_native_events()) {
