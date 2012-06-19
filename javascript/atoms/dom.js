@@ -864,10 +864,14 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     // except when the previous sibling has a display: run-in.
     // Also, do not run-in the previous sibling if this element is floated.
 
-    var prevDisplay = (elem.previousSibling) ?
-        bot.dom.getEffectiveStyle(elem.previousSibling, 'display') : '';
-    var runIntoThis = prevDisplay == 'run-in' &&
-        bot.dom.getEffectiveStyle(elem, 'float') == 'none';
+    var previousElementSibling = goog.dom.getPreviousElementSibling(elem);
+    var prevDisplay = (previousElementSibling) ?
+        bot.dom.getEffectiveStyle(previousElementSibling, 'display') : '';
+    // TODO(dawagner): getEffectiveStyle should mask this for us
+    var thisFloat = bot.dom.getEffectiveStyle(elem, 'float') ||
+        bot.dom.getEffectiveStyle(elem, 'cssFloat') ||
+        bot.dom.getEffectiveStyle(elem, 'styleFloat');
+    var runIntoThis = prevDisplay == 'run-in' && thisFloat == 'none';
     if (isBlock && !runIntoThis && !goog.string.isEmpty(currLine())) {
       lines.push('');
     }
