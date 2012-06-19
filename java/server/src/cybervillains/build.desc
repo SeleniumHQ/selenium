@@ -5,6 +5,7 @@ java_library(name = "cybervillains",
   ],
   deps = [
     "//java/server/src/org/openqa/jetty",
+    "//java/server/src/org/openqa/selenium/security",
     "//third_party/java/bouncycastle",
   ])
 

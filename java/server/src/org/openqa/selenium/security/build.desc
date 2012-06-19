@@ -1,0 +1,10 @@
+
+java_library(name = "security",
+  srcs = [
+    "CertificateGenerator.java",
+    "KeyAndCert.java",
+  ],
+  deps = [
+   "//third_party/java/bouncycastle",
+    "//third_party/java/guava-libraries",
+  ])

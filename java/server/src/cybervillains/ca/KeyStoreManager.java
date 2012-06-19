@@ -1,6 +1,8 @@
 package cybervillains.ca;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.openqa.selenium.security.CertificateGenerator;
+import org.openqa.selenium.security.KeyAndCert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -453,16 +455,11 @@ public class KeyStoreManager {
     String thumbprint = _subjectMap.get(subject);
 
     if (thumbprint == null) {
+      KeyAndCert keyAndCert = new CertificateGenerator(root).generateCertificate(
+          hostname, certificateRevocationList);
+      X509Certificate newCert = keyAndCert.getCertificate();
 
-      KeyPair kp = getRSAKeyPair();
-
-      X509Certificate newCert = CertificateCreator.generateStdSSLServerCertificate(kp.getPublic(),
-          getSigningCert(),
-          getSigningPrivateKey(),
-          subject,
-          certificateRevocationList);
-
-      addCertAndPrivateKey(hostname, newCert, kp.getPrivate());
+      addCertAndPrivateKey(hostname, newCert, keyAndCert.getPrivateKey());
 
       thumbprint = ThumbprintUtil.getThumbprint(newCert);
 
