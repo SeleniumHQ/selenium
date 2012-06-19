@@ -203,8 +203,6 @@ public class SeleniumServer implements SslCertificateGenerator {
   private Thread shutDownHook;
   private static final NetworkUtils networkUtils = new NetworkUtils();
 
-
-  private static ProxyHandler customProxyHandler;
   private ProxyHandler proxyHandler;
 
 
@@ -426,9 +424,6 @@ public class SeleniumServer implements SslCertificateGenerator {
     root = new HttpContext();
     root.setContextPath("/");
     proxyHandler = makeProxyHandler(configuration);
-
-    // see docs for the lock object for information on this and why it is IMPORTANT!
-    proxyHandler.setShutdownLock(shutdownLock);
     root.addHandler(proxyHandler);
     return root;
   }
@@ -442,16 +437,11 @@ public class SeleniumServer implements SslCertificateGenerator {
   }
 
   protected ProxyHandler makeProxyHandler(RemoteControlConfiguration configuration) {
-    ProxyHandler proxyHandler;
-    if (customProxyHandler == null) {
-      proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(),
-          configuration.getDontInjectRegex(), configuration.getDebugURL(),
-          configuration.getProxyInjectionModeArg(), false,
-          configuration.getPort());
-    } else {
-      proxyHandler = customProxyHandler;
-    }
-    return proxyHandler;
+    return new ProxyHandler(configuration.trustAllSSLCertificates(),
+        configuration.getDontInjectRegex(), configuration.getDebugURL(),
+        configuration.getProxyInjectionModeArg(), false,
+        configuration.getPort(),
+        shutdownLock);
   }
 
   private static boolean slowResourceProperty() {
@@ -491,14 +481,6 @@ public class SeleniumServer implements SslCertificateGenerator {
     Runtime.getRuntime().addShutdownHook(shutDownHook);
   }
 
-  /**
-   * Used for implementations that invoke SeleniumServer programmatically and require additional
-   * logic when proxying data.
-   */
-  public static void setCustomProxyHandler(ProxyHandler customProxyHandler) {
-    SeleniumServer.customProxyHandler = customProxyHandler;
-  }
-
   private class ShutDownHook implements Runnable {
     private final SeleniumServer selenium;
 
@@ -526,7 +508,7 @@ public class SeleniumServer implements SslCertificateGenerator {
       if (shutDownHook != null) {
         Runtime.getRuntime().removeShutdownHook(shutDownHook);
       }
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException ignored) {
     } // thrown if we're shutting down; that's OK
 
     // shut down the jetty server (try try again)
@@ -670,8 +652,8 @@ public class SeleniumServer implements SslCertificateGenerator {
         continue;
       }
 
-      final boolean newBrowserSession = userInput.indexOf("getNewBrowserSession") != -1;
-      if (userInput.indexOf("sessionId") == -1 && !newBrowserSession) {
+      final boolean newBrowserSession = userInput.contains("getNewBrowserSession");
+      if (!userInput.contains("sessionId") && !newBrowserSession) {
         userInput = userInput + "&sessionId=" + lastSessionId[0];
       }
 

@@ -91,7 +91,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   private boolean fakeCertsGenerated;
 
   // see docs for the lock object on SeleniumServer for information on this and why it is IMPORTANT!
-  private Object shutdownLock;
+  private final Object shutdownLock;
 
   /* ------------------------------------------------------------ */
   /**
@@ -158,7 +158,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL,
-      boolean proxyInjectionMode, boolean forceProxyChain, int port) {
+      boolean proxyInjectionMode, boolean forceProxyChain, int port, Object shutdownLock) {
     super();
     this.trustAllSSLCertificates = trustAllSSLCertificates;
     this.dontInjectRegex = dontInjectRegex;
@@ -166,6 +166,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     this.proxyInjectionMode = proxyInjectionMode;
     this.forceProxyChain = forceProxyChain;
     this.port = port;
+    this.shutdownLock = shutdownLock;
   }
 
   /* ------------------------------------------------------------ */
@@ -733,10 +734,6 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-
-  public void setShutdownLock(Object shutdownLock) {
-    this.shutdownLock = shutdownLock;
-  }
 
   public static class SslRelay extends SslListener {
     InetAddrPort _addr;
