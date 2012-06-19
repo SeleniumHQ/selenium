@@ -29,11 +29,10 @@ v2.23.0
 
 WebDriver:
   * Firefox 13 support
-  * CSS Selectors now allow compund selecotrs
-  * SafariDriver is (still) in Beta, annotated accrodingly in Java
+  * CSS Selectors now allow compound selectors
+  * SafariDriver is (still) in Beta, annotated accordingly in Java
   * FIXED: 3785: Implicit waits for Safari driver
-  * FIXED: 1225: Get text is handled appropriately for self-
-    closing tags.
+  * FIXED: 1225: Get text is handled appropriately for self-closing tags.
 
 v2.22.0
 =======
