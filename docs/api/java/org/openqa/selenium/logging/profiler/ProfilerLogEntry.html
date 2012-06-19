@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-AndroidLogs
+ProfilerLogEntry
 </TITLE>
 
 
@@ -13,7 +13,7 @@ AndroidLogs
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="AndroidLogs";
+        parent.document.title="ProfilerLogEntry";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidAtoms.html" title="enum in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/logging/profiler/HttpProfilerLogEntry.html" title="class in org.openqa.selenium.logging.profiler"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/AndroidLogs.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AndroidLogs.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/logging/profiler/ProfilerLogEntry.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ProfilerLogEntry.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.openqa.selenium.logging.LogEntry">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -85,19 +85,20 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&n
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.android.library</FONT>
+org.openqa.selenium.logging.profiler</FONT>
 <BR>
-Class AndroidLogs</H2>
+Class ProfilerLogEntry</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.android.library.AndroidLogs</B>
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">org.openqa.selenium.logging.LogEntry</A>
+      <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.profiler.ProfilerLogEntry</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></DD>
+<DT><B>Direct Known Subclasses:</B> <DD><A HREF="../../../../../org/openqa/selenium/logging/profiler/HttpProfilerLogEntry.html" title="class in org.openqa.selenium.logging.profiler">HttpProfilerLogEntry</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>AndroidLogs</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></DL>
+<DT><PRE>public class <B>ProfilerLogEntry</B><DT>extends <A HREF="../../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A></DL>
 </PRE>
 
 <P>
@@ -114,7 +115,8 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidLogs.html#AndroidLogs()">AndroidLogs</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/logging/profiler/ProfilerLogEntry.html#ProfilerLogEntry(org.openqa.selenium.logging.profiler.EventType, java.lang.String)">ProfilerLogEntry</A></B>(<A HREF="../../../../../org/openqa/selenium/logging/profiler/EventType.html" title="enum in org.openqa.selenium.logging.profiler">EventType</A>&nbsp;eventType,
+                 java.lang.String&nbsp;message)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -129,13 +131,14 @@ java.lang.Object
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Method Summary</B></FONT></TH>
 </TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_org.openqa.selenium.logging.LogEntry"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class org.openqa.selenium.logging.<A HREF="../../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A></B></TH>
+</TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/android/library/AndroidLogs.html#get(java.lang.String)">get</A></B>(java.lang.String&nbsp;logType)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetches the logs for the given log type.</TD>
+<TD><CODE><A HREF="../../../../../org/openqa/selenium/logging/LogEntry.html#getLevel()">getLevel</A>, <A HREF="../../../../../org/openqa/selenium/logging/LogEntry.html#getMessage()">getMessage</A>, <A HREF="../../../../../org/openqa/selenium/logging/LogEntry.html#getTimestamp()">getTimestamp</A>, <A HREF="../../../../../org/openqa/selenium/logging/LogEntry.html#toString()">toString</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -144,7 +147,7 @@ java.lang.Object
 <TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -160,41 +163,12 @@ java.lang.Object
 </TR>
 </TABLE>
 
-<A NAME="AndroidLogs()"><!-- --></A><H3>
-AndroidLogs</H3>
+<A NAME="ProfilerLogEntry(org.openqa.selenium.logging.profiler.EventType, java.lang.String)"><!-- --></A><H3>
+ProfilerLogEntry</H3>
 <PRE>
-public <B>AndroidLogs</B>()</PRE>
+public <B>ProfilerLogEntry</B>(<A HREF="../../../../../org/openqa/selenium/logging/profiler/EventType.html" title="enum in org.openqa.selenium.logging.profiler">EventType</A>&nbsp;eventType,
+                        java.lang.String&nbsp;message)</PRE>
 <DL>
-</DL>
-
-<!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="get(java.lang.String)"><!-- --></A><H3>
-get</H3>
-<PRE>
-public <A HREF="../../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A> <B>get</B>(java.lang.String&nbsp;logType)</PRE>
-<DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">Logs</A></CODE></B></DD>
-<DD>Fetches the logs for the given log type.
- 
- For more info on enabling logging, look at <A HREF="../../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><CODE>LoggingPreferences</CODE></A>.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">get</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>logType</CODE> - String. Can be any of the values in <A HREF="../../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A>.
-<DT><B>Returns:</B><DD>all log entries for the specified logtype if enabled. Returns null
-     if the log type is unknown by the dtiver.</DL>
-</DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
 <HR>
@@ -226,11 +200,11 @@ public <A HREF="../../../../../org/openqa/selenium/logging/LogEntries.html" titl
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidAtoms.html" title="enum in org.openqa.selenium.android.library"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../org/openqa/selenium/logging/profiler/HttpProfilerLogEntry.html" title="class in org.openqa.selenium.logging.profiler"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/openqa/selenium/android/library/AndroidLogs.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="AndroidLogs.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../../index.html?org/openqa/selenium/logging/profiler/ProfilerLogEntry.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ProfilerLogEntry.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -247,9 +221,9 @@ public <A HREF="../../../../../org/openqa/selenium/logging/LogEntries.html" titl
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.openqa.selenium.logging.LogEntry">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

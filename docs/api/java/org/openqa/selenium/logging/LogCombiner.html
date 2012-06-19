@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-InterfaceImplementation
+LogCombiner
 </TITLE>
 
 
@@ -13,7 +13,7 @@ InterfaceImplementation
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="InterfaceImplementation";
+        parent.document.title="LogCombiner";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/InterfaceImplementation.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="InterfaceImplementation.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LogCombiner.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LogCombiner.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -85,24 +85,39 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.remote</FONT>
+org.openqa.selenium.logging</FONT>
 <BR>
-Interface InterfaceImplementation</H2>
+Class LogCombiner</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LogCombiner</B>
+</PRE>
 <HR>
 <DL>
-<DT><PRE>public interface <B>InterfaceImplementation</B></DL>
+<DT><PRE>public class <B>LogCombiner</B><DT>extends java.lang.Object</DL>
 </PRE>
 
 <P>
-An implementation of a particular interface, used by the
- <A HREF="../../../../org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote"><CODE>Augmenter</CODE></A>.
-<P>
-
-<P>
 <HR>
 
 <P>
 
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogCombiner.html#LogCombiner()">LogCombiner</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;
 <!-- ========== METHOD SUMMARY =========== -->
 
 <A NAME="method_summary"><!-- --></A>
@@ -113,19 +128,41 @@ An implementation of a particular interface, used by the
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.Object</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/InterfaceImplementation.html#invoke(org.openqa.selenium.remote.ExecuteMethod, java.lang.Object, java.lang.reflect.Method, java.lang.Object...)">invoke</A></B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod,
-       java.lang.Object&nbsp;self,
-       java.lang.reflect.Method&nbsp;method,
-       java.lang.Object...&nbsp;args)</CODE>
+<CODE>static&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogCombiner.html#combine(org.openqa.selenium.logging.LogEntries...)">combine</A></B>(<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A>...&nbsp;entries)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Called when it has become apparent that this is the right interface to implement a particular
- method.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
 <P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="LogCombiner()"><!-- --></A><H3>
+LogCombiner</H3>
+<PRE>
+public <B>LogCombiner</B>()</PRE>
+<DL>
+</DL>
 
 <!-- ============ METHOD DETAIL ========== -->
 
@@ -137,20 +174,13 @@ An implementation of a particular interface, used by the
 </TR>
 </TABLE>
 
-<A NAME="invoke(org.openqa.selenium.remote.ExecuteMethod, java.lang.Object, java.lang.reflect.Method, java.lang.Object...)"><!-- --></A><H3>
-invoke</H3>
+<A NAME="combine(org.openqa.selenium.logging.LogEntries...)"><!-- --></A><H3>
+combine</H3>
 <PRE>
-java.lang.Object <B>invoke</B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod,
-                        java.lang.Object&nbsp;self,
-                        java.lang.reflect.Method&nbsp;method,
-                        java.lang.Object...&nbsp;args)</PRE>
+public static <A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A> <B>combine</B>(<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A>...&nbsp;entries)</PRE>
 <DL>
-<DD>Called when it has become apparent that this is the right interface to implement a particular
- method.
-<P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>executeMethod</CODE> - Call this to actually call the remote instance<DD><CODE>self</CODE> - <DD><CODE>method</CODE> - The method invoked by the user<DD><CODE>args</CODE> - The arguments to the method @return The return value, which will be passed to the
-        user directly.</DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -183,11 +213,11 @@ java.lang.Object <B>invoke</B>(<A HREF="../../../../org/openqa/selenium/remote/E
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/InterfaceImplementation.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="InterfaceImplementation.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LogCombiner.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LogCombiner.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -204,9 +234,9 @@ java.lang.Object <B>invoke</B>(<A HREF="../../../../org/openqa/selenium/remote/E
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

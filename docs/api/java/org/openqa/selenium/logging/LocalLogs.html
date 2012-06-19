@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-RemoteKeyboard
+LocalLogs
 </TITLE>
 
 
@@ -13,7 +13,7 @@ RemoteKeyboard
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="RemoteKeyboard";
+        parent.document.title="LocalLogs";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteExecuteMethod.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogCombiner.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteKeyboard.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="RemoteKeyboard.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LocalLogs.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LocalLogs.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -85,23 +85,23 @@ DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor
 <!-- ======== START OF CLASS DATA ======== -->
 <H2>
 <FONT SIZE="-1">
-org.openqa.selenium.remote</FONT>
+org.openqa.selenium.logging</FONT>
 <BR>
-Class RemoteKeyboard</H2>
+Class LocalLogs</H2>
 <PRE>
 java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.RemoteKeyboard</B>
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LocalLogs</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>RemoteKeyboard</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></DL>
+<DT><PRE>public class <B>LocalLogs</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></DL>
 </PRE>
 
 <P>
-An implementation of the keyboard for use with the remote webdriver.
+Stores and retrieves logs in-process (i.e. without any RPCs).
 <P>
 
 <P>
@@ -118,11 +118,11 @@ An implementation of the keyboard for use with the remote webdriver.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#executor">executor</A></B></CODE>
+<CODE>static&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html#NULL_LOGGER">NULL_LOGGER</A></B></CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logger which doesn't do anything.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -135,7 +135,13 @@ An implementation of the keyboard for use with the remote webdriver.
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#RemoteKeyboard(org.openqa.selenium.remote.ExecuteMethod)">RemoteKeyboard</A></B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executor)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html#LocalLogs()">LocalLogs</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html#LocalLogs(java.util.Set)">LocalLogs</A></B>(java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToIgnore)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -153,26 +159,19 @@ An implementation of the keyboard for use with the remote webdriver.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#pressKey(org.openqa.selenium.Keys)">pressKey</A></B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToPress)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html#addEntry(java.lang.String, org.openqa.selenium.logging.LogEntry)">addEntry</A></B>(java.lang.String&nbsp;logType,
+         <A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&nbsp;entry)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#releaseKey(org.openqa.selenium.Keys)">releaseKey</A></B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToRelease)</CODE>
+<CODE>&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html#get(java.lang.String)">get</A></B>(java.lang.String&nbsp;logType)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</A></B>(java.lang.CharSequence...&nbsp;keysToSend)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetches the logs for the given log type.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -197,11 +196,13 @@ An implementation of the keyboard for use with the remote webdriver.
 </TR>
 </TABLE>
 
-<A NAME="executor"><!-- --></A><H3>
-executor</H3>
+<A NAME="NULL_LOGGER"><!-- --></A><H3>
+NULL_LOGGER</H3>
 <PRE>
-protected final <A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A> <B>executor</B></PRE>
+public static final <A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A> <B>NULL_LOGGER</B></PRE>
 <DL>
+<DD>Logger which doesn't do anything.
+<P>
 <DL>
 </DL>
 </DL>
@@ -216,10 +217,18 @@ protected final <A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.ht
 </TR>
 </TABLE>
 
-<A NAME="RemoteKeyboard(org.openqa.selenium.remote.ExecuteMethod)"><!-- --></A><H3>
-RemoteKeyboard</H3>
+<A NAME="LocalLogs()"><!-- --></A><H3>
+LocalLogs</H3>
 <PRE>
-public <B>RemoteKeyboard</B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executor)</PRE>
+public <B>LocalLogs</B>()</PRE>
+<DL>
+</DL>
+<HR>
+
+<A NAME="LocalLogs(java.util.Set)"><!-- --></A><H3>
+LocalLogs</H3>
+<PRE>
+public <B>LocalLogs</B>(java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToIgnore)</PRE>
 <DL>
 </DL>
 
@@ -233,41 +242,35 @@ public <B>RemoteKeyboard</B>(<A HREF="../../../../org/openqa/selenium/remote/Exe
 </TR>
 </TABLE>
 
-<A NAME="sendKeys(java.lang.CharSequence...)"><!-- --></A><H3>
-sendKeys</H3>
+<A NAME="get(java.lang.String)"><!-- --></A><H3>
+get</H3>
 <PRE>
-public void <B>sendKeys</B>(java.lang.CharSequence...&nbsp;keysToSend)</PRE>
+public <A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A> <B>get</B>(java.lang.String&nbsp;logType)</PRE>
 <DL>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">Logs</A></CODE></B></DD>
+<DD>Fetches the logs for the given log type.
+ 
+ For more info on enabling logging, look at <A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><CODE>LoggingPreferences</CODE></A>.
+<P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">get</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</A></CODE></DL>
 </DD>
 <DD><DL>
-</DL>
+<DT><B>Parameters:</B><DD><CODE>logType</CODE> - String. Can be any of the values in <A HREF="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><CODE>LogType</CODE></A>.
+<DT><B>Returns:</B><DD>all log entries for the specified logtype if enabled. Returns null
+     if the log type is unknown by the dtiver.</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="pressKey(org.openqa.selenium.Keys)"><!-- --></A><H3>
-pressKey</H3>
+<A NAME="addEntry(java.lang.String, org.openqa.selenium.logging.LogEntry)"><!-- --></A><H3>
+addEntry</H3>
 <PRE>
-public void <B>pressKey</B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToPress)</PRE>
+public void <B>addEntry</B>(java.lang.String&nbsp;logType,
+                     <A HREF="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</A>&nbsp;entry)</PRE>
 <DL>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html#pressKey(org.openqa.selenium.Keys)">pressKey</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></CODE></DL>
-</DD>
-<DD><DL>
 </DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="releaseKey(org.openqa.selenium.Keys)"><!-- --></A><H3>
-releaseKey</H3>
-<PRE>
-public void <B>releaseKey</B>(<A HREF="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</A>&nbsp;keyToRelease)</PRE>
-<DL>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html#releaseKey(org.openqa.selenium.Keys)">releaseKey</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</A></CODE></DL>
 </DD>
 <DD><DL>
 </DL>
@@ -303,11 +306,11 @@ public void <B>releaseKey</B>(<A HREF="../../../../org/openqa/selenium/Keys.html
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteExecuteMethod.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/logging/LogCombiner.html" title="class in org.openqa.selenium.logging"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteKeyboard.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="RemoteKeyboard.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/logging/LocalLogs.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="LocalLogs.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {

@@ -115,8 +115,16 @@ java.lang.Object
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A></CODE></FONT></TD>
+<CODE>protected &nbsp;<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html#executeMethod">executeMethod</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html#TYPE_KEY">TYPE_KEY</A></B></CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -132,7 +140,8 @@ java.lang.Object
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html#RemoteLogs(org.openqa.selenium.remote.ExecuteMethod)">RemoteLogs</A></B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html#RemoteLogs(org.openqa.selenium.remote.ExecuteMethod, org.openqa.selenium.logging.LocalLogs)">RemoteLogs</A></B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod,
+           <A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A>&nbsp;localLogs)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -153,7 +162,7 @@ java.lang.Object
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteLogs.html#get(java.lang.String)">get</A></B>(java.lang.String&nbsp;logType)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetches the logs for the givem log type.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetches the logs for the given log type.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -181,10 +190,20 @@ java.lang.Object
 <A NAME="executeMethod"><!-- --></A><H3>
 executeMethod</H3>
 <PRE>
-protected <A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A> <B>executeMethod</B></PRE>
+protected <A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A> <B>executeMethod</B></PRE>
 <DL>
 <DL>
 </DL>
+</DL>
+<HR>
+
+<A NAME="TYPE_KEY"><!-- --></A><H3>
+TYPE_KEY</H3>
+<PRE>
+public static final java.lang.String <B>TYPE_KEY</B></PRE>
+<DL>
+<DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.remote.RemoteLogs.TYPE_KEY">Constant Field Values</A></DL>
 </DL>
 
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
@@ -197,10 +216,11 @@ protected <A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" ti
 </TR>
 </TABLE>
 
-<A NAME="RemoteLogs(org.openqa.selenium.remote.ExecuteMethod)"><!-- --></A><H3>
+<A NAME="RemoteLogs(org.openqa.selenium.remote.ExecuteMethod, org.openqa.selenium.logging.LocalLogs)"><!-- --></A><H3>
 RemoteLogs</H3>
 <PRE>
-public <B>RemoteLogs</B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="class in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod)</PRE>
+public <B>RemoteLogs</B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod,
+                  <A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A>&nbsp;localLogs)</PRE>
 <DL>
 </DL>
 
@@ -220,7 +240,7 @@ get</H3>
 public <A HREF="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</A> <B>get</B>(java.lang.String&nbsp;logType)</PRE>
 <DL>
 <DD><B>Description copied from interface: <CODE><A HREF="../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">Logs</A></CODE></B></DD>
-<DD>Fetches the logs for the givem log type.
+<DD>Fetches the logs for the given log type.
  
  For more info on enabling logging, look at <A HREF="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><CODE>LoggingPreferences</CODE></A>.
 <P>

@@ -92,6 +92,9 @@ Class LogEntry</H2>
 java.lang.Object
   <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.logging.LogEntry</B>
 </PRE>
+<DL>
+<DT><B>Direct Known Subclasses:</B> <DD><A HREF="../../../../org/openqa/selenium/logging/profiler/ProfilerLogEntry.html" title="class in org.openqa.selenium.logging.profiler">ProfilerLogEntry</A></DD>
+</DL>
 <HR>
 <DL>
 <DT><PRE>public class <B>LogEntry</B><DT>extends java.lang.Object</DL>
@@ -115,7 +118,7 @@ Represents a single log statement.
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#LogEntry(int, long, java.lang.String)">LogEntry</A></B>(int&nbsp;level,
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#LogEntry(java.util.logging.Level, long, java.lang.String)">LogEntry</A></B>(java.util.logging.Level&nbsp;level,
          long&nbsp;timestamp,
          java.lang.String&nbsp;message)</CODE>
 
@@ -134,7 +137,7 @@ Represents a single log statement.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;int</CODE></FONT></TD>
+<CODE>&nbsp;java.util.logging.Level</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/openqa/selenium/logging/LogEntry.html#getLevel()">getLevel</A></B>()</CODE>
 
 <BR>
@@ -187,15 +190,15 @@ Represents a single log statement.
 </TR>
 </TABLE>
 
-<A NAME="LogEntry(int, long, java.lang.String)"><!-- --></A><H3>
+<A NAME="LogEntry(java.util.logging.Level, long, java.lang.String)"><!-- --></A><H3>
 LogEntry</H3>
 <PRE>
-public <B>LogEntry</B>(int&nbsp;level,
+public <B>LogEntry</B>(java.util.logging.Level&nbsp;level,
                 long&nbsp;timestamp,
                 java.lang.String&nbsp;message)</PRE>
 <DL>
 <DL>
-<DT><B>Parameters:</B><DD><CODE>level</CODE> - the integer value of the level.<DD><CODE>timestamp</CODE> - long value of the timestamp at which this log entry
+<DT><B>Parameters:</B><DD><CODE>level</CODE> - the level of the log, e.g. INFO.<DD><CODE>timestamp</CODE> - long value of the timestamp at which this log entry
      was created.<DD><CODE>message</CODE> - String the log's message.</DL>
 </DL>
 
@@ -212,7 +215,7 @@ public <B>LogEntry</B>(int&nbsp;level,
 <A NAME="getLevel()"><!-- --></A><H3>
 getLevel</H3>
 <PRE>
-public int <B>getLevel</B>()</PRE>
+public java.util.logging.Level <B>getLevel</B>()</PRE>
 <DL>
 <DD><DL>
 </DL>

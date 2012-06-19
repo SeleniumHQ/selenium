@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-InterfaceImplementation
+RemoteExecuteMethod
 </TITLE>
 
 
@@ -13,7 +13,7 @@ InterfaceImplementation
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="InterfaceImplementation";
+        parent.document.title="RemoteExecuteMethod";
     }
 }
 </SCRIPT>
@@ -52,11 +52,11 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/PropertyMunger.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/InterfaceImplementation.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="InterfaceImplementation.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteExecuteMethod.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="RemoteExecuteMethod.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -73,9 +73,9 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_top"></A>
@@ -87,22 +87,40 @@ DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHO
 <FONT SIZE="-1">
 org.openqa.selenium.remote</FONT>
 <BR>
-Interface InterfaceImplementation</H2>
+Class RemoteExecuteMethod</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.RemoteExecuteMethod</B>
+</PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A></DD>
+</DL>
 <HR>
 <DL>
-<DT><PRE>public interface <B>InterfaceImplementation</B></DL>
+<DT><PRE>public class <B>RemoteExecuteMethod</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A></DL>
 </PRE>
 
 <P>
-An implementation of a particular interface, used by the
- <A HREF="../../../../org/openqa/selenium/remote/Augmenter.html" title="class in org.openqa.selenium.remote"><CODE>Augmenter</CODE></A>.
-<P>
-
-<P>
 <HR>
 
 <P>
 
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteExecuteMethod.html#RemoteExecuteMethod(org.openqa.selenium.remote.RemoteWebDriver)">RemoteExecuteMethod</A></B>(<A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</A>&nbsp;driver)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;
 <!-- ========== METHOD SUMMARY =========== -->
 
 <A NAME="method_summary"><!-- --></A>
@@ -114,18 +132,41 @@ An implementation of a particular interface, used by the
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;java.lang.Object</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/InterfaceImplementation.html#invoke(org.openqa.selenium.remote.ExecuteMethod, java.lang.Object, java.lang.reflect.Method, java.lang.Object...)">invoke</A></B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod,
-       java.lang.Object&nbsp;self,
-       java.lang.reflect.Method&nbsp;method,
-       java.lang.Object...&nbsp;args)</CODE>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/RemoteExecuteMethod.html#execute(java.lang.String, java.util.Map)">execute</A></B>(java.lang.String&nbsp;commandName,
+        java.util.Map&lt;java.lang.String,?&gt;&nbsp;parameters)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Called when it has become apparent that this is the right interface to implement a particular
- method.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execute the given command on the remote webdriver server.</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
 <P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="RemoteExecuteMethod(org.openqa.selenium.remote.RemoteWebDriver)"><!-- --></A><H3>
+RemoteExecuteMethod</H3>
+<PRE>
+public <B>RemoteExecuteMethod</B>(<A HREF="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</A>&nbsp;driver)</PRE>
+<DL>
+</DL>
 
 <!-- ============ METHOD DETAIL ========== -->
 
@@ -137,20 +178,22 @@ An implementation of a particular interface, used by the
 </TR>
 </TABLE>
 
-<A NAME="invoke(org.openqa.selenium.remote.ExecuteMethod, java.lang.Object, java.lang.reflect.Method, java.lang.Object...)"><!-- --></A><H3>
-invoke</H3>
+<A NAME="execute(java.lang.String, java.util.Map)"><!-- --></A><H3>
+execute</H3>
 <PRE>
-java.lang.Object <B>invoke</B>(<A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A>&nbsp;executeMethod,
-                        java.lang.Object&nbsp;self,
-                        java.lang.reflect.Method&nbsp;method,
-                        java.lang.Object...&nbsp;args)</PRE>
+public java.lang.Object <B>execute</B>(java.lang.String&nbsp;commandName,
+                                java.util.Map&lt;java.lang.String,?&gt;&nbsp;parameters)</PRE>
 <DL>
-<DD>Called when it has become apparent that this is the right interface to implement a particular
- method.
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html#execute(java.lang.String, java.util.Map)">ExecuteMethod</A></CODE></B></DD>
+<DD>Execute the given command on the remote webdriver server. Any exceptions will be thrown by the
+ underlying execute method.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>executeMethod</CODE> - Call this to actually call the remote instance<DD><CODE>self</CODE> - <DD><CODE>method</CODE> - The method invoked by the user<DD><CODE>args</CODE> - The arguments to the method @return The return value, which will be passed to the
-        user directly.</DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html#execute(java.lang.String, java.util.Map)">execute</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</A></CODE></DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>commandName</CODE> - The remote command to execute<DD><CODE>parameters</CODE> - The parameters to execute that command with
+<DT><B>Returns:</B><DD>The result of <A HREF="../../../../org/openqa/selenium/remote/Response.html#getValue()"><CODE>Response.getValue()</CODE></A>.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -183,11 +226,11 @@ java.lang.Object <B>invoke</B>(<A HREF="../../../../org/openqa/selenium/remote/E
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/PropertyMunger.html" title="class in org.openqa.selenium.remote"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/remote/RemoteKeyboard.html" title="class in org.openqa.selenium.remote"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/remote/InterfaceImplementation.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="InterfaceImplementation.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/remote/RemoteExecuteMethod.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="RemoteExecuteMethod.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
@@ -204,9 +247,9 @@ java.lang.Object <B>invoke</B>(<A HREF="../../../../org/openqa/selenium/remote/E
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
 </TABLE>
 <A NAME="skip-navbar_bottom"></A>

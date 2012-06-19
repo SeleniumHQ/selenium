@@ -93,11 +93,11 @@ java.lang.Object
   <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.firefox.internal.NewProfileExtensionConnection</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</A>, <A HREF="../../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</A>, <A HREF="../../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</A>, <A HREF="../../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>NewProfileExtensionConnection</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</A></DL>
+<DT><PRE>public class <B>NewProfileExtensionConnection</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</A>, <A HREF="../../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</A></DL>
 </PRE>
 
 <P>
@@ -163,6 +163,14 @@ java.lang.Object
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Terminates the connection.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/firefox/internal/NewProfileExtensionConnection.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</A></B>(<A HREF="../../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A>&nbsp;logs)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -299,6 +307,20 @@ public boolean <B>isConnected</B>()</PRE>
 <DD><DL>
 
 <DT><B>Returns:</B><DD>Whether the extension is reachable and accepting requests.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setLocalLogs(org.openqa.selenium.logging.LocalLogs)"><!-- --></A><H3>
+setLocalLogs</H3>
+<PRE>
+public void <B>setLocalLogs</B>(<A HREF="../../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A>&nbsp;logs)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/openqa/selenium/logging/NeedsLocalLogs.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</A></CODE> in interface <CODE><A HREF="../../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

@@ -93,14 +93,14 @@ java.lang.Object
   <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.remote.HttpCommandExecutor</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</A>, <A HREF="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A></DD>
 </DL>
 <DL>
 <DT><B>Direct Known Subclasses:</B> <DD><A HREF="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service">DriverCommandExecutor</A></DD>
 </DL>
 <HR>
 <DL>
-<DT><PRE>public class <B>HttpCommandExecutor</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A></DL>
+<DT><PRE>public class <B>HttpCommandExecutor</B><DT>extends java.lang.Object<DT>implements <A HREF="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</A>, <A HREF="../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</A></DL>
 </PRE>
 
 <P>
@@ -156,6 +156,14 @@ java.lang.Object
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/openqa/selenium/remote/HttpCommandExecutor.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</A></B>(<A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A>&nbsp;logs)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
@@ -195,6 +203,20 @@ public <B>HttpCommandExecutor</B>(java.net.URL&nbsp;addressOfRemoteServer)</PRE>
 <B>Method Detail</B></FONT></TH>
 </TR>
 </TABLE>
+
+<A NAME="setLocalLogs(org.openqa.selenium.logging.LocalLogs)"><!-- --></A><H3>
+setLocalLogs</H3>
+<PRE>
+public void <B>setLocalLogs</B>(<A HREF="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</A>&nbsp;logs)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/openqa/selenium/logging/NeedsLocalLogs.html#setLocalLogs(org.openqa.selenium.logging.LocalLogs)">setLocalLogs</A></CODE> in interface <CODE><A HREF="../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
 
 <A NAME="getAddressOfRemoteServer()"><!-- --></A><H3>
 getAddressOfRemoteServer</H3>
