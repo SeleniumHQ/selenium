@@ -39,6 +39,7 @@ import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
 import org.openqa.grid.web.servlet.HubStatusServlet;
+import org.openqa.grid.web.servlet.LifecycleServlet;
 import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
@@ -155,6 +156,7 @@ public class Hub {
       root.addServlet(ProxyStatusServlet.class.getName(), "/grid/api/proxy/*");
       root.addServlet(HubStatusServlet.class.getName(), "/grid/api/hub/*");
       root.addServlet(TestSessionStatusServlet.class.getName(), "/grid/api/testsession/*");
+      root.addServlet(LifecycleServlet.class.getName(), "/lifecycle-manager/*");
 
       // Selenium Grid 1.0 compatibility routes for older nodes trying to
       // work with the newer hub.
