@@ -1,3 +1,23 @@
+v2.24.1
+=======
+WebDriver:
+  * Work has started on a basic performance profiler.
+  * Java bindings: The Color class now supports more color conversions.
+  * Failure to click on an element in the IE Driver will yield a more meaningful
+    error.
+  * FIXED: 3268: setting a cookie without one of the optional values (secure)
+    null pointers through remote webdriver
+  * FIXED: 1584: bot.dom.getVisibleText does not properly handle display:run-in
+    or display:table.
+  * FIXED: 4071: IE: JVM/IEDriverServer Crash when the current window is closed
+    without switching to another window.
+  * FIXED: 3683: WebDriver (selenium server) does not use user specified proxy PAC file for IE.
+  * FIXED: 4070: Dot-net bindings: == oprerator fails if first argument is null.
+  * FIXED: 4064: Selenium2 crash on IE8 when S_FALSE is returned from get_Document.
+  * FIXED: 3945: The SafariDriver hangs if an iframe is deleted while it is selected.
+  * FIXED: 3892: WebdriverJS: Need support mouse events
+  * FIXED: 3198: Cannot take screenshot from IPhoneDriver in Java
+
 v2.23.1
 =======
 
