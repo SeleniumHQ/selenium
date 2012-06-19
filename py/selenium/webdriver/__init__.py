@@ -26,4 +26,4 @@ from common.desired_capabilities import DesiredCapabilities
 from common.action_chains import ActionChains
 from common.proxy import Proxy
 
-__version__ = '2.23.0'
+__version__ = '2.24.0'
