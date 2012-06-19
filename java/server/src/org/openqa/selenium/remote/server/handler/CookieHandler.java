@@ -53,6 +53,9 @@ public abstract class CookieHandler extends WebDriverHandler implements JsonPara
     String path = (String) rawCookie.get("path");
     String domain = (String) rawCookie.get("domain");
     Boolean secure = (Boolean) rawCookie.get("secure");
+    if (secure == null) {
+        secure = false;
+    }
 
     Number expiryNum = (Number) rawCookie.get("expiry");
     Date expiry = expiryNum == null ? null : new Date(
