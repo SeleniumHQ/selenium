@@ -37,7 +37,6 @@ import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
 import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -80,12 +79,10 @@ public class ProxyHandler extends AbstractHttpHandler {
   protected Set<String> _proxyHostsWhiteList;
   protected Set<String> _proxyHostsBlackList;
   protected int _tunnelTimeoutMs = 250;
-  private boolean _anonymous = false;
   private transient boolean _chained = false;
   private final Map<String, SslRelay> _sslMap = new LinkedHashMap<String, SslRelay>();
   @SuppressWarnings("unused")
   private String sslKeystorePath;
-  private boolean useCyberVillains = true;
   private boolean trustAllSSLCertificates = false;
   private final String dontInjectRegex;
   private final String debugURL;
@@ -297,8 +294,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     return seleniumServer == nextSlash;
   }
 
-  protected long proxyPlainTextRequest(URL url,
-      HttpRequest request, HttpResponse response) throws IOException {
+  protected long proxyPlainTextRequest(URL url, HttpRequest request, HttpResponse response)
+      throws IOException {
     CaptureNetworkTrafficCommand.Entry entry =
         new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
     entry.addRequestHeaders(request);
@@ -386,8 +383,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
 
     // Proxy headers
-    if (!_anonymous)
-      connection.setRequestProperty("Via", "1.1 (jetty)");
+    connection.setRequestProperty("Via", "1.1 (jetty)");
     if (!xForwardedFor)
       connection.addRequestProperty(HttpFields.__XForwardedFor, request.getRemoteAddr());
 
@@ -409,9 +405,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
       // Connect
       connection.connect();
-    } catch (Exception e) {
-      // TODO(simon): Whhhaaaat?
-      // LogSupport.ignore(log, e);
+    } catch (Exception ignored) {
     }
 
     InputStream proxy_in = null;
@@ -461,8 +455,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       hdr = connection.getHeaderFieldKey(h);
       val = connection.getHeaderField(h);
     }
-    if (!_anonymous)
-      response.setField("Via", "1.1 (jetty)");
+    response.setField("Via", "1.1 (jetty)");
 
     response.removeField(HttpFields.__ETag); // possible cksum? Stop caching...
     response.removeField(HttpFields.__LastModified); // Stop caching...
@@ -545,7 +538,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         addrPort = new InetAddrPort(uri.toString());
       }
 
-      if (isForbidden(HttpMessage.__SSL_SCHEME, addrPort.getHost(), addrPort.getPort(), false)) {
+      if (isForbidden(HttpMessage.__SSL_SCHEME, addrPort.getHost())) {
         sendForbid(response);
       } else {
         HttpConnection http_connection = request.getHttpConnection();
@@ -604,11 +597,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
         listener = new SslRelay(addrPort);
 
-        if (useCyberVillains) {
-          wireUpSslWithCyberVilliansCA(host, listener);
-        } else {
-          wireUpSslWithRemoteService(host, listener);
-        }
+        wireUpSslWithCyberVilliansCA(host, listener);
 
         listener.setPassword("password");
         listener.setKeyPassword("password");
@@ -631,34 +620,6 @@ public class ProxyHandler extends AbstractHttpHandler {
       }
     }
     return listener;
-  }
-
-  protected void wireUpSslWithRemoteService(String host, SslRelay listener) throws IOException {
-    // grab a keystore that has been signed by a CA cert that has already been imported in to the
-    // browser
-    // note: this logic assumes the tester is using *custom and has imported the CA cert in to
-    // IE/Firefox/etc
-    // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
-    File keystore = File.createTempFile("selenium-rc-" + host, "keystore");
-    String urlString =
-        "http://dangerous-certificate-authority.openqa.org/genkey.jsp?padding=" + _sslMap.size() +
-            "&domain=" + host;
-
-    URL url = new URL(urlString);
-    URLConnection conn = url.openConnection();
-    conn.connect();
-    InputStream is = conn.getInputStream();
-    byte[] buffer = new byte[1024];
-    int length;
-    FileOutputStream fos = new FileOutputStream(keystore);
-    while ((length = is.read(buffer)) != -1) {
-      fos.write(buffer, 0, length);
-    }
-    fos.close();
-    is.close();
-
-    listener.setKeystore(keystore.getAbsolutePath());
-    listener.setNukeDirOrFile(keystore);
   }
 
   protected void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) {
@@ -728,7 +689,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     String scheme = uri.getScheme();
     String host = uri.getHost();
     int port = uri.getPort();
-    return isForbidden(scheme, host, port, true);
+    return isForbidden(scheme, host);
   }
 
   /* ------------------------------------------------------------ */
@@ -738,11 +699,9 @@ public class ProxyHandler extends AbstractHttpHandler {
    * 
    * @param scheme A scheme that mast be in the proxySchemes StringMap.
    * @param host A host that must pass the white and black lists
-   * @param port A port that must in the allowedConnectPorts Set
-   * @param openNonPrivPorts If true ports greater than 1024 are allowed.
    * @return True if the request to the scheme,host and port is not forbidden.
    */
-  protected boolean isForbidden(String scheme, String host, int port, boolean openNonPrivPorts) {
+  protected boolean isForbidden(String scheme, String host) {
     // Must be a scheme that can be proxied.
     if (scheme == null || !_ProxySchemes.containsKey(scheme))
       return true;
@@ -753,7 +712,6 @@ public class ProxyHandler extends AbstractHttpHandler {
 
     // Must not be in any defined black list
     return _proxyHostsBlackList != null && _proxyHostsBlackList.contains(host);
-
   }
 
   /* ------------------------------------------------------------ */
@@ -777,7 +735,6 @@ public class ProxyHandler extends AbstractHttpHandler {
   /* ------------------------------------------------------------ */
 
   public void setShutdownLock(Object shutdownLock) {
-
     this.shutdownLock = shutdownLock;
   }
 
