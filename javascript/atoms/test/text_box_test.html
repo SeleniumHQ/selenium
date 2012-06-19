@@ -231,7 +231,8 @@ function testListItem() {
 
 function testRunIn_followedByBlock() {
   var expectedFailures = new goog.testing.ExpectedFailures();
-  expectedFailures.expectFailureFor(goog.userAgent.GECKO,
+  expectedFailures.expectFailureFor(goog.userAgent.GECKO ||
+      (goog.userAgent.IE && !bot.userAgent.isProductVersion(8)),
       'display:run-in not handled properly');
   expectedFailures.run(function() {
   new DisplayBoxTester('run-in').
