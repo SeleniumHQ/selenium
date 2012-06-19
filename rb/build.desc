@@ -19,7 +19,6 @@ rubygem(
     { "multi_json"   : "~> 1.0"   },
     { "rubyzip"      : ">= 0"     },
     { "childprocess" : ">= 0.2.5" },
-    { "ffi"          : "~> 1.0"   },
     { "libwebsocket" : "~> 0.1.3" }
   ],
   devdeps = [
@@ -140,10 +139,6 @@ ruby_library(name = "ie",
   srcs = [
     "lib/selenium/webdriver/ie/**/*.rb",
     "lib/selenium/webdriver/ie.rb"
-  ],
-  resources = [
-    {"../cpp/prebuilt/Win32/Release/IEDriver.dll" : "rb/lib/selenium/webdriver/ie/native/win32/IEDriver.dll"},
-    {"../cpp/prebuilt/x64/Release/IEDriver.dll" : "rb/lib/selenium/webdriver/ie/native/x64/IEDriver.dll"}
   ],
   deps = [
     ":common",
