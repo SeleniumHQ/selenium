@@ -16,29 +16,25 @@
 
 package org.openqa.selenium.server;
 
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
-import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
-import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
-
 import cybervillains.ca.KeyStoreManager;
+
 import org.openqa.jetty.http.HttpConnection;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.http.HttpException;
 import org.openqa.jetty.http.HttpFields;
 import org.openqa.jetty.http.HttpMessage;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.http.HttpServer;
 import org.openqa.jetty.http.HttpTunnel;
-import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.http.SslListener;
 import org.openqa.jetty.http.handler.AbstractHttpHandler;
-import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.InetAddrPort;
 import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
+import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
+import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
+import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -185,103 +181,14 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-
-  /**
-   * Get proxy host white list.
-   * 
-   * @return Array of hostnames and IPs that are proxied, or an empty array if all hosts are
-   *         proxied.
-   */
-  public String[] getProxyHostsWhiteList() {
-    if (_proxyHostsWhiteList == null || _proxyHostsWhiteList.size() == 0)
-      return new String[0];
-
-    String[] hosts = new String[_proxyHostsWhiteList.size()];
-    hosts = _proxyHostsWhiteList.toArray(hosts);
-    return hosts;
-  }
-
-  /* ------------------------------------------------------------ */
-
-  /**
-   * Set proxy host white list.
-   * 
-   * @param hosts Array of hostnames and IPs that are proxied, or null if all hosts are proxied.
-   */
-  public void setProxyHostsWhiteList(String[] hosts) {
-    if (hosts == null || hosts.length == 0)
-      _proxyHostsWhiteList = null;
-    else {
-      _proxyHostsWhiteList = new HashSet<String>();
-      for (int i = 0; i < hosts.length; i++) {
-        String host = hosts[i];
-        if (host != null && host.trim().length() > 0)
-          _proxyHostsWhiteList.add(host);
-      }
-    }
-  }
-
-  /* ------------------------------------------------------------ */
-
-  /**
-   * Get proxy host black list.
-   * 
-   * @return Array of hostnames and IPs that are NOT proxied.
-   */
-  public String[] getProxyHostsBlackList() {
-    if (_proxyHostsBlackList == null || _proxyHostsBlackList.size() == 0)
-      return new String[0];
-
-    String[] hosts = new String[_proxyHostsBlackList.size()];
-    hosts = _proxyHostsBlackList.toArray(hosts);
-    return hosts;
-  }
-
-  /* ------------------------------------------------------------ */
-
-  /**
-   * Set proxy host black list.
-   * 
-   * @param hosts Array of hostnames and IPs that are NOT proxied.
-   */
-  public void setProxyHostsBlackList(String[] hosts) {
-    if (hosts == null || hosts.length == 0)
-      _proxyHostsBlackList = null;
-    else {
-      _proxyHostsBlackList = new HashSet<String>();
-      for (int i = 0; i < hosts.length; i++) {
-        String host = hosts[i];
-        if (host != null && host.trim().length() > 0)
-          _proxyHostsBlackList.add(host);
-      }
-    }
-  }
-
-  /* ------------------------------------------------------------ */
-  public int getTunnelTimeoutMs() {
-    return _tunnelTimeoutMs;
-  }
-
-  /* ------------------------------------------------------------ */
-
-  /**
-   * Tunnel timeout. IE on win2000 has connections issues with normal timeout handling. This timeout
-   * should be set to a low value that will expire to allow IE to see the end of the tunnel
-   * connection.
-   */
-  public void setTunnelTimeoutMs(int ms) {
-    _tunnelTimeoutMs = ms;
-  }
-
-  /* ------------------------------------------------------------ */
   public void handle(String pathInContext, String pathParams, HttpRequest request,
-      HttpResponse response) throws HttpException, IOException {
+      HttpResponse response) throws IOException {
     URI uri = request.getURI();
 
     // Is this a CONNECT request?
     if (HttpRequest.__CONNECT.equalsIgnoreCase(request.getMethod())) {
       response.setField(HttpFields.__Connection, "close"); // TODO Needed for IE????
-      handleConnect(pathInContext, pathParams, request, response);
+      handleConnect(request, response);
       return;
     }
 
@@ -298,7 +205,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       URL url = isProxied(uri);
       if (url == null) {
         if (isForbidden(uri))
-          sendForbid(request, response, uri);
+          sendForbid(response);
         return;
       }
 
@@ -308,7 +215,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         return;
       }
 
-      proxyPlainTextRequest(url, pathInContext, pathParams, request, response);
+      proxyPlainTextRequest(url, request, response);
     } catch (UnknownHostException e) {
       log.info("Couldn't proxy to " + uri + " because host not found");
       response.setStatus(400);
@@ -390,7 +297,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     return seleniumServer == nextSlash;
   }
 
-  protected long proxyPlainTextRequest(URL url, String pathInContext, String pathParams,
+  protected long proxyPlainTextRequest(URL url,
       HttpRequest request, HttpResponse response) throws IOException {
     CaptureNetworkTrafficCommand.Entry entry =
         new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
@@ -447,7 +354,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
       if (_DontProxyHeaders.containsKey(hdr) || !_chained && _ProxyAuthHeaders.containsKey(hdr))
         continue;
-      if (connectionHdr != null && connectionHdr.indexOf(hdr) >= 0)
+      if (connectionHdr != null && connectionHdr.contains(hdr))
         continue;
 
       if (!isGet && HttpFields.__ContentType.equals(hdr))
@@ -458,7 +365,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         String val = (String) vals.nextElement();
         if (val != null) {
           // don't proxy Referer headers if the referer is Selenium!
-          if ("Referer".equals(hdr) && (-1 != val.indexOf("/selenium-server/"))) {
+          if ("Referer".equals(hdr) && (val.contains("/selenium-server/"))) {
             continue;
           }
           if (!isGet && HttpFields.__ContentLength.equals(hdr) && Integer.parseInt(val) > 0) {
@@ -487,11 +394,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     // a little bit of cache control
     String cache_control = request.getField(HttpFields.__CacheControl);
     if (cache_control != null &&
-        (cache_control.indexOf("no-cache") >= 0 || cache_control.indexOf("no-store") >= 0))
+        (cache_control.contains("no-cache") || cache_control.contains("no-store")))
       connection.setUseCaches(false);
-
-    // customize Connection
-    customizeConnection(pathInContext, pathParams, request, connection);
 
     try {
       connection.setDoInput(true);
@@ -593,10 +497,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
 
   public boolean shouldInject(String path) {
-    if (dontInjectRegex == null) {
-      return true;
-    }
-    return !path.matches(dontInjectRegex);
+    return dontInjectRegex == null || !path.matches(dontInjectRegex);
   }
 
   private void adjustRequestForProxyInjection(HttpRequest request, URLConnection connection) {
@@ -614,20 +515,6 @@ public class ProxyHandler extends AbstractHttpHandler {
     request.setState(HttpMessage.__MSG_RECEIVED);
   }
 
-  public static void main(String[] args) throws Exception {
-    Server server = new Server();
-    HttpContext httpContext = new HttpContext();
-    httpContext.setContextPath("/");
-    ProxyHandler proxy = new ProxyHandler(true, "", "", false, false, 4444);
-    proxy.useCyberVillains = false;
-    httpContext.addHandler(proxy);
-    server.addContext(httpContext);
-    SocketListener listener = new SocketListener();
-    listener.setPort(4444);
-    server.addListener(listener);
-    server.start();
-  }
-
   public synchronized void generateSSLCertsForLoggingHosts(HttpServer server) {
     if (fakeCertsGenerated) return;
     log.info("Creating 16 fake SSL servers for browser side logging");
@@ -643,8 +530,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-  public void handleConnect(String pathInContext, String pathParams, HttpRequest request,
-      HttpResponse response) throws HttpException, IOException {
+  public void handleConnect(HttpRequest request, HttpResponse response) throws IOException {
     URI uri = request.getURI();
 
     try {
@@ -660,7 +546,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       }
 
       if (isForbidden(HttpMessage.__SSL_SCHEME, addrPort.getHost(), addrPort.getPort(), false)) {
-        sendForbid(request, response, uri);
+        sendForbid(response);
       } else {
         HttpConnection http_connection = request.getHttpConnection();
         http_connection.forceClose();
@@ -681,7 +567,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
         // Create the tunnel
         HttpTunnel tunnel =
-            newHttpTunnel(request, response, InetAddress.getByName(null), port, timeoutMs);
+            newHttpTunnel(response, InetAddress.getByName(null), port, timeoutMs);
 
         if (tunnel != null) {
           // TODO - need to setup semi-busy loop for IE.
@@ -694,7 +580,6 @@ public class ProxyHandler extends AbstractHttpHandler {
           }
           tunnel.setTimeoutMs(timeoutMs);
 
-          customizeConnection(pathInContext, pathParams, request, tunnel.getSocket());
           request.getHttpConnection().setHttpTunnel(tunnel);
           response.setStatus(HttpResponse.__200_OK);
           response.setContentLength(0);
@@ -773,7 +658,6 @@ public class ProxyHandler extends AbstractHttpHandler {
     is.close();
 
     listener.setKeystore(keystore.getAbsolutePath());
-    // listener.setKeystore("c:\\" + (_sslMap.size() + 1) + ".keystore");
     listener.setNukeDirOrFile(keystore);
   }
 
@@ -801,7 +685,7 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-  protected HttpTunnel newHttpTunnel(HttpRequest request, HttpResponse response, InetAddress iaddr,
+  protected HttpTunnel newHttpTunnel(HttpResponse response, InetAddress iaddr,
       int port, int timeoutMS) throws IOException {
     try {
       Socket socket = new Socket(iaddr, port);
@@ -813,25 +697,6 @@ public class ProxyHandler extends AbstractHttpHandler {
       response.sendError(HttpResponse.__400_Bad_Request);
       return null;
     }
-  }
-
-  /* ------------------------------------------------------------ */
-
-  /**
-   * Customize proxy Socket connection for CONNECT. Method to allow derived handlers to customize
-   * the tunnel sockets.
-   */
-  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request,
-      Socket socket) {
-  }
-
-  /* ------------------------------------------------------------ */
-
-  /**
-   * Customize proxy URL connection. Method to allow derived handlers to customize the connection.
-   */
-  protected void customizeConnection(String pathInContext, String pathParams, HttpRequest request,
-      URLConnection connection) {
   }
 
   /* ------------------------------------------------------------ */
@@ -878,14 +743,6 @@ public class ProxyHandler extends AbstractHttpHandler {
    * @return True if the request to the scheme,host and port is not forbidden.
    */
   protected boolean isForbidden(String scheme, String host, int port, boolean openNonPrivPorts) {
-    // Check port
-    if (false) { // DGF Don't check the port, SRC-354
-      if (port > 0 && !_allowedConnectPorts.contains(new Integer(port))) {
-        if (!openNonPrivPorts || port <= 1024)
-          return true;
-      }
-    }
-
     // Must be a scheme that can be proxied.
     if (scheme == null || !_ProxySchemes.containsKey(scheme))
       return true;
@@ -905,7 +762,7 @@ public class ProxyHandler extends AbstractHttpHandler {
    * Send Forbidden. Method called to send forbidden response. Default implementation calls
    * sendError(403)
    */
-  protected void sendForbid(HttpRequest request, HttpResponse response, URI uri) throws IOException {
+  protected void sendForbid(HttpResponse response) throws IOException {
     response.sendError(HttpResponse.__403_Forbidden, "Forbidden for Proxy");
   }
 
@@ -918,26 +775,6 @@ public class ProxyHandler extends AbstractHttpHandler {
   }
 
   /* ------------------------------------------------------------ */
-
-  /**
-   * @return Returns the anonymous.
-   */
-  public boolean isAnonymous() {
-    return _anonymous;
-  }
-
-  /* ------------------------------------------------------------ */
-
-  /**
-   * @param anonymous The anonymous to set.
-   */
-  public void setAnonymous(boolean anonymous) {
-    _anonymous = anonymous;
-  }
-
-  public void setSslKeystorePath(String sslKeystorePath) {
-    this.sslKeystorePath = sslKeystorePath;
-  }
 
   public void setShutdownLock(Object shutdownLock) {
 
