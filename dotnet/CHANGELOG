@@ -1,3 +1,8 @@
+v2.24.0
+=======
+ * Updated OpenQA.Selenium.Support.PageObjects.FindsByAttribute so that overridden
+   operators correctly handle the null case. Fixes issue #4070.
+
 v2.23.0
 =======
  * Removed the embedded IE server from the .NET bindings. From now on, you 
