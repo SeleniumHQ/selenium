@@ -31,11 +31,6 @@ py_test(
 py_test(
   name = "ie_test",
   deps = [ ":test_ie" ],
-  resources = [
-    {"//cpp:ie_win32_dll" : "selenium\\webdriver\\ie\\win32\\IEDriver.dll"},
-    {"//cpp:ie_x64_dll" : "selenium\\webdriver\\ie\\x64\\IEDriver.dll"}
-  ],
-
   browsers = [ "ie" ])
 
 py_test(

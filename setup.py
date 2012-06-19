@@ -101,9 +101,7 @@ setup(
     package_data={
         'selenium.webdriver.firefox': ['*.xpi'],
     },
-    data_files=[('selenium/webdriver/ie/win32',['py/selenium/webdriver/ie/win32/IEDriver.dll']),
-		    ('selenium/webdriver/ie/x64',['py/selenium/webdriver/ie/x64/IEDriver.dll']),
-            ('selenium/webdriver/firefox/x86', ['py/selenium/webdriver/firefox/x86/x_ignore_nofocus.so']),
+    data_files=[('selenium/webdriver/firefox/x86', ['py/selenium/webdriver/firefox/x86/x_ignore_nofocus.so']),
             ('selenium/webdriver/firefox/amd64', ['py/selenium/webdriver/firefox/amd64/x_ignore_nofocus.so'])],
     include_package_data=True,
     zip_safe=False,
