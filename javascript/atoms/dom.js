@@ -864,9 +864,8 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     // except when the previous sibling has a display: run-in.
     // Also, do not run-in the previous sibling if this element is floated.
 
-    var prevDisplay = (elem.previousElementSibling) ?
-        bot.dom.getEffectiveStyle(elem.previousElementSibling, 'display') :
-        '';
+    var prevDisplay = (elem.previousSibling) ?
+        bot.dom.getEffectiveStyle(elem.previousSibling, 'display') : '';
     var runIntoThis = prevDisplay == 'run-in' &&
         bot.dom.getEffectiveStyle(elem, 'float') == 'none';
     if (isBlock && !runIntoThis && !goog.string.isEmpty(currLine())) {
