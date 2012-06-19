@@ -26,7 +26,6 @@ import java.security.Security;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -60,6 +59,7 @@ public class KeyStoreManager {
   private final String CERTMAP_SER_FILE = "certmap.ser";
   private final String SUBJMAP_SER_FILE = "subjmap.ser";
 
+  @SuppressWarnings("FieldCanBeLocal")
   private final String EXPORTED_CERT_NAME = "cybervillainsCA.cer";
 
   private final char[] _keypassword = "password".toCharArray();
@@ -85,22 +85,19 @@ public class KeyStoreManager {
   public final KeyPairGenerator _rsaKpg;
   public final KeyPairGenerator _dsaKpg;
 
-  private SecureRandom _sr;
-
-
 
   private boolean persistImmediately = true;
   private File root;
-  private String certificateRevocationListPath;
+  private final String certificateRevocationList;
 
   @SuppressWarnings("unchecked")
-  public KeyStoreManager(File root, String certificateRevocationListPath) {
+  public KeyStoreManager(File root, String certificateRevocationList) {
     this.root = root;
-    this.certificateRevocationListPath = certificateRevocationListPath;
+    this.certificateRevocationList = certificateRevocationList;
 
     Security.insertProviderAt(new BouncyCastleProvider(), 2);
 
-    _sr = new SecureRandom();
+    SecureRandom _sr = new SecureRandom();
 
     try
     {
@@ -246,15 +243,13 @@ public class KeyStoreManager {
 
   }
 
-  private void reloadKeystore() throws FileNotFoundException, IOException,
+  private void reloadKeystore() throws IOException,
       NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException {
     InputStream is = new FileInputStream(new File(root, _caPrivateKeystore));
 
-    if (is != null) {
-      _ks.load(is, _keystorepass);
-      _caCert = (X509Certificate) _ks.getCertificate(_caCertAlias);
-      _caPrivKey = (PrivateKey) _ks.getKey(_caPrivKeyAlias, _keypassword);
-    }
+    _ks.load(is, _keystorepass);
+    _caCert = (X509Certificate) _ks.getCertificate(_caCertAlias);
+    _caPrivKey = (PrivateKey) _ks.getKey(_caPrivKeyAlias, _keypassword);
   }
 
   /**
@@ -262,8 +257,8 @@ public class KeyStoreManager {
    */
   protected void createKeystore() {
 
-    Certificate signingCert = null;
-    PrivateKey caPrivKey = null;
+    Certificate signingCert;
+    PrivateKey caPrivKey;
 
     if (_caCert == null || _caPrivKey == null)
     {
@@ -326,9 +321,7 @@ public class KeyStoreManager {
   /**
    * Stores a new certificate and its associated private key in the keystore.
    * 
-   * @param hostname
-   * @param cert
-   * @param privKey @throws KeyStoreException
+   * @throws KeyStoreException
    * @throws CertificateException
    * @throws NoSuchAlgorithmException
    */
@@ -379,8 +372,6 @@ public class KeyStoreManager {
    * Returns the aliased certificate. Certificates are aliased by their SHA1 digest.
    * 
    * @see ThumbprintUtil
-   * @param alias
-   * @return
    * @throws KeyStoreException
    */
   public synchronized X509Certificate getCertificateByAlias(final String alias)
@@ -392,8 +383,6 @@ public class KeyStoreManager {
    * Returns the aliased certificate. Certificates are aliased by their hostname.
    * 
    * @see ThumbprintUtil
-   * @param alias
-   * @return
    * @throws KeyStoreException
    * @throws UnrecoverableKeyException
    * @throws NoSuchProviderException
@@ -406,10 +395,8 @@ public class KeyStoreManager {
    * @throws CertificateParsingException
    */
   public synchronized X509Certificate getCertificateByHostname(final String hostname)
-      throws KeyStoreException, CertificateParsingException, InvalidKeyException,
-      CertificateExpiredException, CertificateNotYetValidException, SignatureException,
-      CertificateException, NoSuchAlgorithmException, NoSuchProviderException,
-      UnrecoverableKeyException {
+      throws KeyStoreException, InvalidKeyException, SignatureException, CertificateException,
+             NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableKeyException {
 
     String alias = _subjectMap.get(getSubjectForHostname(hostname));
 
@@ -422,7 +409,6 @@ public class KeyStoreManager {
   /**
    * Gets the authority root signing cert.
    * 
-   * @return
    * @throws KeyStoreException
    */
   public synchronized X509Certificate getSigningCert() throws KeyStoreException {
@@ -432,7 +418,6 @@ public class KeyStoreManager {
   /**
    * Gets the authority private signing key.
    * 
-   * @return
    * @throws KeyStoreException
    * @throws NoSuchAlgorithmException
    * @throws UnrecoverableKeyException
@@ -443,124 +428,10 @@ public class KeyStoreManager {
   }
 
   /**
-   * Whether updates are immediately written to disk.
-   * 
-   * @return
-   */
-  public boolean getPersistImmediately() {
-    return persistImmediately;
-  }
-
-  /**
-   * Whether updates are immediately written to disk.
-   * 
-   * @param persistImmediately
-   */
-  public void setPersistImmediately(final boolean persistImmediately) {
-    this.persistImmediately = persistImmediately;
-  }
-
-  /**
-   * This method returns the duplicated certificate mapped to the passed in cert, or creates and
-   * returns one if no mapping has yet been performed. If a naked public key has already been mapped
-   * that matches the key in the cert, the already mapped keypair will be reused for the mapped
-   * cert.
-   * 
-   * @param cert
-   * @return
-   * @throws CertificateEncodingException
-   * @throws InvalidKeyException
-   * @throws CertificateException
-   * @throws CertificateNotYetValidException
-   * @throws NoSuchAlgorithmException
-   * @throws NoSuchProviderException
-   * @throws SignatureException
-   * @throws KeyStoreException
-   * @throws UnrecoverableKeyException
-   */
-  public synchronized X509Certificate getMappedCertificate(final X509Certificate cert)
-      throws CertificateEncodingException,
-      InvalidKeyException,
-      CertificateException,
-      CertificateNotYetValidException,
-      NoSuchAlgorithmException,
-      NoSuchProviderException,
-      SignatureException,
-      KeyStoreException,
-      UnrecoverableKeyException
-  {
-
-    String thumbprint = ThumbprintUtil.getThumbprint(cert);
-
-    String mappedCertThumbprint = _certMap.get(thumbprint);
-
-    if (mappedCertThumbprint == null)
-    {
-
-      // Check if we've already mapped this public key from a KeyValue
-      PublicKey mappedPk = getMappedPublicKey(cert.getPublicKey());
-      PrivateKey privKey;
-
-      if (mappedPk == null)
-      {
-        PublicKey pk = cert.getPublicKey();
-
-        String algo = pk.getAlgorithm();
-
-        KeyPair kp;
-
-        if (algo.equals("RSA")) {
-          kp = getRSAKeyPair();
-        }
-        else if (algo.equals("DSA")) {
-          kp = getDSAKeyPair();
-        }
-        else
-        {
-          throw new InvalidKeyException("Key algorithm " + algo + " not supported.");
-        }
-        mappedPk = kp.getPublic();
-        privKey = kp.getPrivate();
-
-        mapPublicKeys(cert.getPublicKey(), mappedPk);
-      }
-      else
-      {
-        privKey = getPrivateKey(mappedPk);
-      }
-
-
-      X509Certificate replacementCert =
-          CertificateCreator.mitmDuplicateCertificate(
-              cert,
-              mappedPk,
-              getSigningCert(),
-              getSigningPrivateKey());
-
-      addCertAndPrivateKey(null, replacementCert, privKey);
-
-      mappedCertThumbprint = ThumbprintUtil.getThumbprint(replacementCert);
-
-      _certMap.put(thumbprint, mappedCertThumbprint);
-      _certMap.put(mappedCertThumbprint, thumbprint);
-      _subjectMap.put(replacementCert.getSubjectX500Principal().getName(), thumbprint);
-
-      if (persistImmediately) {
-        persist();
-      }
-      return replacementCert;
-    }
-    return getCertificateByAlias(mappedCertThumbprint);
-
-  }
-
-  /**
    * This method returns the mapped certificate for a hostname, or generates a "standard" SSL server
    * certificate issued by the CA to the supplied subject if no mapping has been created. This is
    * not a true duplication, just a shortcut method that is adequate for web browsers.
    * 
-   * @param hostname
-   * @return
    * @throws CertificateParsingException
    * @throws InvalidKeyException
    * @throws CertificateExpiredException
@@ -573,8 +444,7 @@ public class KeyStoreManager {
    * @throws UnrecoverableKeyException
    */
   public X509Certificate getMappedCertificateForHostname(String hostname)
-      throws CertificateParsingException, InvalidKeyException, CertificateExpiredException,
-      CertificateNotYetValidException, SignatureException, CertificateException,
+      throws InvalidKeyException, SignatureException, CertificateException,
       NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException,
       UnrecoverableKeyException
   {
@@ -590,7 +460,7 @@ public class KeyStoreManager {
           getSigningCert(),
           getSigningPrivateKey(),
           subject,
-          certificateRevocationListPath);
+          certificateRevocationList);
 
       addCertAndPrivateKey(hostname, newCert, kp.getPrivate());
 
@@ -611,11 +481,7 @@ public class KeyStoreManager {
   }
 
   private String getSubjectForHostname(String hostname) {
-    // String subject = "C=USA, ST=WA, L=Seattle, O=Cybervillains, OU=CertificationAutority, CN=" +
-    // hostname + ", EmailAddress=evilRoot@cybervillains.com";
-    String subject =
-        "CN=" + hostname + ", OU=Test, O=CyberVillainsCA, L=Seattle, S=Washington, C=US";
-    return subject;
+    return "CN=" + hostname + ", OU=Test, O=CyberVillainsCA, L=Seattle, S=Washington, C=US";
   }
 
   private synchronized void persistCertMap() {
@@ -654,31 +520,8 @@ public class KeyStoreManager {
     }
   }
 
-
-  /**
-   * For a cert we have generated, return the private key.
-   * 
-   * @param cert
-   * @return
-   * @throws CertificateEncodingException
-   * @throws KeyStoreException
-   * @throws UnrecoverableKeyException
-   * @throws NoSuchAlgorithmException
-   */
-  public synchronized PrivateKey getPrivateKeyForLocalCert(final X509Certificate cert)
-      throws CertificateEncodingException, KeyStoreException, UnrecoverableKeyException,
-      NoSuchAlgorithmException
-  {
-    String thumbprint = ThumbprintUtil.getThumbprint(cert);
-
-    return (PrivateKey) _ks.getKey(thumbprint, _keypassword);
-  }
-
-
   /**
    * Generate an RSA Key Pair
-   * 
-   * @return
    */
   public KeyPair getRSAKeyPair()
   {
@@ -687,19 +530,6 @@ public class KeyStoreManager {
     return kp;
 
   }
-
-  /**
-   * Generate a DSA Key Pair
-   * 
-   * @return
-   */
-  public KeyPair getDSAKeyPair()
-  {
-    KeyPair kp = _dsaKpg.generateKeyPair();
-    rememberKeyPair(kp);
-    return kp;
-  }
-
 
   private synchronized void persistPublicKeyMap() {
     try {
@@ -741,44 +571,6 @@ public class KeyStoreManager {
     if (persistImmediately) {
       persistKeyPairMap();
     }
-  }
-
-  /**
-   * Stores a public key mapping.
-   * 
-   * @param original
-   * @param substitute
-   */
-  public synchronized void mapPublicKeys(final PublicKey original, final PublicKey substitute)
-  {
-    _mappedPublicKeys.put(original, substitute);
-    if (persistImmediately) {
-      persistPublicKeyMap();
-    }
-  }
-
-  /**
-   * If we get a KeyValue with a given public key, then later see an X509Data with the same public
-   * key, we shouldn't split this in our MITM impl. So when creating a new cert, we should check if
-   * we've already assigned a substitute key and re-use it, and vice-versa.
-   * 
-   * @param pk
-   * @return
-   */
-  public synchronized PublicKey getMappedPublicKey(final PublicKey original)
-  {
-    return _mappedPublicKeys.get(original);
-  }
-
-  /**
-   * Returns the private key for a public key we have generated.
-   * 
-   * @param pk
-   * @return
-   */
-  public synchronized PrivateKey getPrivateKey(final PublicKey pk)
-  {
-    return _rememberedPrivateKeys.get(pk);
   }
 
   public KeyStore getKeyStore() {
