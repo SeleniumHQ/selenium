@@ -88,10 +88,13 @@ module CrazyFunVisualStudio
         else
           googlecode_password = ENV["googlecodepassword"]
         end
+		featured = ""
+		if args.has_key?(:featured)
+		  featured = " -l Featured"
+		end
         puts "Uploading file #{file_name}..."
 		platform_file_name = file_name.gsub("/", Platform.dir_separator)
-		command_line = "#{py} third_party/py/googlecode/googlecode_upload.py -s \"#{args[:desc]}\" -p selenium #{platform_file_name} -l Featured -u #{googlecode_username} -w #{googlecode_password}"
-		puts command_line
+		command_line = "#{py} third_party/py/googlecode/googlecode_upload.py -s \"#{args[:desc]}\"#{featured} -p selenium #{platform_file_name} -u #{googlecode_username} -w #{googlecode_password}"
         sh command_line
       end
     end
