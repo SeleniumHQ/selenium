@@ -179,6 +179,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     return this->managed_browsers_.size();
   }
 
+  ELEMENT_SCROLL_BEHAVIOR scroll_behavior(void) const { return this->scroll_behavior_; }
+  void set_scroll_behavior(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
+    this->scroll_behavior_ = scroll_behavior;
+  }
+
   CComVariant keyboard_state(void) const { return this->keyboard_state_; }
   void set_keyboard_state(VARIANT state) { this->keyboard_state_ = state; }
 
@@ -227,6 +232,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   long last_known_mouse_x_;
   long last_known_mouse_y_;
+
+  ELEMENT_SCROLL_BEHAVIOR scroll_behavior_;
 
   CComVariant keyboard_state_;
   CComVariant mouse_state_;

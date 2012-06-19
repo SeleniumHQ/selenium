@@ -24,6 +24,22 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium.IE
 {
     /// <summary>
+    /// Specifies the scroll behavior of elements scrolled into view in the IE driver.
+    /// </summary>
+    public enum InternetExplorerElementScrollBehavior
+    {
+        /// <summary>
+        /// Scrolls elements to align with the top of the viewport.
+        /// </summary>
+        Top,
+
+        /// <summary>
+        /// Scrolls elements to align with the bottom of the viewport.
+        /// </summary>
+        Bottom
+    }
+
+    /// <summary>
     /// Class to manage options specific to <see cref="InternetExplorerDriver"/>
     /// </summary>
     /// <example>
@@ -49,10 +65,12 @@ namespace OpenQA.Selenium.IE
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
         private const string EnableNativeEventsCapability = "nativeEvents";
+        private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
 
         private bool ignoreProtectedModeSettings;
         private bool enableNativeEvents = true;
         private string initialBrowserUrl = string.Empty;
+        private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the settings of the Internet Explorer Protected Mode.
@@ -89,6 +107,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets the value for describing how elements are scrolled into view in the IE driver. Defaults
+        /// to scrolling the element to the top of the viewport.
+        /// </summary>
+        public InternetExplorerElementScrollBehavior ElementScrollBehavior
+        {
+            get { return this.elementScrollBehavior; }
+            set { this.elementScrollBehavior = value; }
+        }
+
+        /// <summary>
         /// Returns DesiredCapabiliites for IE with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
@@ -106,6 +134,11 @@ namespace OpenQA.Selenium.IE
             if (!string.IsNullOrEmpty(this.initialBrowserUrl))
             {
                 capabilities.SetCapability(InitialBrowserUrlCapability, this.initialBrowserUrl);
+            }
+
+            if (this.elementScrollBehavior == InternetExplorerElementScrollBehavior.Bottom)
+            {
+                capabilities.SetCapability(ElementScrollBehaviorCapability, 1);
             }
 
             return capabilities;

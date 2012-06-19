@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.24.1.0
+=========
+ * Added elementScrollBehavior capability to allow users to specify how
+   elements scroll into the viewport for interaction. Default behavior is
+   unchanged (the capability is set to 0), but can be set to scroll to align
+   to the bottom of the viewport by setting the capability to 1.
+ * Updates to JavaScript automation atoms.
+
 v2.24.0.0
 =========
  * Updates to JavaScript automation atoms.

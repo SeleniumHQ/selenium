@@ -58,7 +58,7 @@ class ClickElementCommandHandler : public IECommandHandler {
             this->ClickOption(browser_wrapper, element_wrapper, response);
             return;
           } else {
-            status_code = element_wrapper->Click();
+            status_code = element_wrapper->Click(executor.scroll_behavior());
             browser_wrapper->set_wait_required(true);
             if (status_code != SUCCESS) {
               if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {

@@ -42,6 +42,8 @@ class NewSessionCommandHandler : public IECommandHandler {
       mutable_executor.set_enable_native_events(enable_native_events.asBool());
       Json::Value initial_url = it->second.get("initialBrowserUrl", "");
       mutable_executor.set_initial_browser_url(initial_url.asString());
+      Json::Value scroll_behavior = it->second.get("elementScrollBehavior", 0);
+      mutable_executor.set_scroll_behavior(static_cast<ELEMENT_SCROLL_BEHAVIOR>(scroll_behavior.asInt()));
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);

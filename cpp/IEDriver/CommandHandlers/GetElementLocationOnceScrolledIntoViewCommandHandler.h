@@ -52,7 +52,8 @@ class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHan
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == SUCCESS) {
         long x, y, width, height;
-        status_code = element_wrapper->GetLocationOnceScrolledIntoView(&x,
+        status_code = element_wrapper->GetLocationOnceScrolledIntoView(executor.scroll_behavior(),
+                                                                       &x,
                                                                        &y,
                                                                        &width,
                                                                        &height);

@@ -113,9 +113,9 @@ bool Element::IsEnabled() {
   return result;
 }
 
-int Element::Click() {
+int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
   long x = 0, y = 0, w = 0, h = 0;
-  int status_code = this->GetLocationOnceScrolledIntoView(&x, &y, &w, &h);
+  int status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &x, &y, &w, &h);
 
   if (status_code == SUCCESS) {
     long click_x;
@@ -174,7 +174,8 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   return SUCCESS;
 }
 
-int Element::GetLocationOnceScrolledIntoView(long* x,
+int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
+                                             long* x,
                                              long* y,
                                              long* width,
                                              long* height) {
@@ -207,7 +208,11 @@ int Element::GetLocationOnceScrolledIntoView(long* x,
       this->IsHiddenByOverflow()) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
-    hr = this->element_->scrollIntoView(CComVariant(VARIANT_TRUE));
+    CComVariant scroll_behavior = VARIANT_TRUE;
+    if (scroll == BOTTOM) {
+      scroll_behavior = VARIANT_FALSE;
+    }
+    hr = this->element_->scrollIntoView(scroll_behavior);
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "Cannot scroll element into view";
       return EOBSOLETEELEMENT;

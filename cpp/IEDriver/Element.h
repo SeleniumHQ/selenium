@@ -19,6 +19,11 @@
 
 namespace webdriver {
 
+enum ELEMENT_SCROLL_BEHAVIOR {
+  TOP,
+  BOTTOM
+};
+
 // Forward declaration of classes to avoid
 // circular include files.
 class Browser;
@@ -29,7 +34,8 @@ class Element {
   virtual ~Element(void);
   Json::Value ConvertToJson(void);
   std::string GetTagName(void);
-  int GetLocationOnceScrolledIntoView(long* x,
+  int GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
+                                      long* x,
                                       long* y,
                                       long* width,
                                       long* height);
@@ -39,7 +45,7 @@ class Element {
   int IsDisplayed(bool* result);
   bool IsEnabled(void);
   bool IsSelected(void);
-  int Click(void);
+  int Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }

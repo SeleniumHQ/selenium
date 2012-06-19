@@ -98,7 +98,12 @@ class SendKeysCommandHandler : public IECommandHandler {
 
         CComQIPtr<IHTMLElement> element(element_wrapper->element());
 
-        element->scrollIntoView(CComVariant(VARIANT_TRUE));
+        ELEMENT_SCROLL_BEHAVIOR scroll = executor.scroll_behavior();
+        CComVariant scroll_behavior = VARIANT_TRUE;
+        if (scroll == BOTTOM) {
+          scroll_behavior = VARIANT_FALSE;
+        }
+        element->scrollIntoView(scroll_behavior);
 
         CComQIPtr<IHTMLInputFileElement> file(element);
         CComQIPtr<IHTMLInputElement> input(element);
