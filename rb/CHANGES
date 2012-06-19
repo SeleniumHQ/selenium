@@ -1,3 +1,16 @@
+2.24.0 (2012-06-19)
+===================
+
+* bot.dom.getVisibleText does not properly handle display:run-in or display:table (#1584).
+* CSS selectors now support compound selectors.
+* IE:
+  * Failure to click on an element in the IE Driver will yield a more meaningful error.
+  * Crash on IE8 when S_FALSE is returned from get_Document (#4064)
+  * DLLs are no longer bundled with the gem, users must use the standalone server from now on.
+* Firefox:
+  * Support for Firefox 13
+  * Ability to pass :proxy directly as Firefox option (no Profile needed).
+
 2.22.2 (2012-06-05)
 ===================
 
@@ -15,7 +28,7 @@
 * Fix conflict with ActiveSupport's Object#load (#3819)
 * IE:
   * Default to standalone server executable, fall back to bundled DLLs.
-  * The 'nativeEvents' capabilitiy is exposed as :native_events in the Ruby client (mode still experimental). 
+  * The 'nativeEvents' capabilitiy is exposed as :native_events in the Ruby client (mode still experimental).
 * Firefox:
   * Native events for Firefox 12.
   * Native events retained for Firefox 3.x, 10 and 11.

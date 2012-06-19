@@ -1,5 +1,5 @@
 rubygem(
-  version = "2.22.2",
+  version = "2.24.0",
   name = "selenium-webdriver",
   dir = "build/rb",
   deps = [
