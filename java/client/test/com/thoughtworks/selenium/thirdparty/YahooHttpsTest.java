@@ -20,16 +20,25 @@ package com.thoughtworks.selenium.thirdparty;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Test;
 
 public class YahooHttpsTest extends InternalSelenseTestBase {
 
-  @Test(dataProvider = "system-properties")
+  @After
+  public void resetTimeout() {
+    selenium.setTimeout("30000");
+  }
+
+  @Test
   public void testYahoo() throws Exception {
+    selenium.setTimeout("120000");
+
     // this site has **two** HTTPS hosts (akamai and yahoo), so it's a good test of the new
     // multi-domain keystore support we just added
     selenium
-        .open("https://login11.marketingsolutions.yahoo.com/adui/signin/loadSignin.do?d=U2FsdGVkX1_evOPYuoCCKbeDENMTzoQ6O.oTzifl7TwsO8IqXh6duToE2tI2&p=11&s=21");
+        .open(
+            "https://login11.marketingsolutions.yahoo.com/adui/signin/loadSignin.do?d=U2FsdGVkX1_evOPYuoCCKbeDENMTzoQ6O.oTzifl7TwsO8IqXh6duToE2tI2&p=11&s=21");
   }
 
 }
