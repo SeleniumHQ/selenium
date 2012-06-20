@@ -16,14 +16,13 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.support;
+package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 public class ColorTest {
-
   @Test
   public void rgbToRgb() {
     String rgb = "rgb(1, 2, 3)";
@@ -31,10 +30,34 @@ public class ColorTest {
   }
 
   @Test
+  public void rgbToRgba() {
+    String rgb = "rgb(1, 2, 3)";
+    assertEquals("rgba(1, 2, 3, 1)", Color.fromString(rgb).asRgba());
+  }
+
+  @Test
+  public void rgbPctToRgba() {
+    String rgba = "rgb(10%, 20%, 30%)";
+    assertEquals("rgba(25, 51, 76, 1)", Color.fromString(rgba).asRgba());
+  }
+
+  @Test
   public void rgbAllowsWhitespace() {
     String rgb = "rgb(\t1,   2    , 3)";
     String canonicalRgb = "rgb(1, 2, 3)";
     assertEquals(canonicalRgb, Color.fromString(rgb).asRgb());
+  }
+
+  @Test
+  public void rgbaToRgba() {
+    String rgba = "rgba(1, 2, 3, 0.5)";
+    assertEquals("rgba(1, 2, 3, 0.5)", Color.fromString(rgba).asRgba());
+  }
+
+  @Test
+  public void rgbaPctToRgba() {
+    String rgba = "rgba(10%, 20%, 30%, 0.5)";
+    assertEquals("rgba(25, 51, 76, 0.5)", Color.fromString(rgba).asRgba());
   }
 
   @Test
@@ -61,36 +84,11 @@ public class ColorTest {
     assertEquals(rgba, Color.fromString(hex).asRgba());
   }
 
-
   @Test
   public void rgbToHex() {
     String hex = "#01ff03";
     String rgb = "rgb(1, 255, 3)";
     assertEquals(hex, Color.fromString(rgb).asHex());
-  }
-
-  @Test
-  public void rgbaToRgba() {
-    Color color = Color.fromString("rgba(255,238,136,0.5)");
-    assertEquals("rgba(255, 238, 136, 0.5)", color.asRgba());
-  }
-
-  @Test
-  public void rgbToRgba() {
-    String rgb = "rgb(1, 2, 3)";
-    assertEquals("rgba(1, 2, 3, 1)", Color.fromString(rgb).asRgba());
-  }
-
-  @Test
-  public void rgbPctToRgba() {
-    String rgba = "rgb(10%, 20%, 30%)";
-    assertEquals("rgba(25, 51, 76, 1)", Color.fromString(rgba).asRgba());
-  }
-
-  @Test
-  public void rgbaPctToRgba() {
-    String rgba = "rgba(10%, 20%, 30%, 0.5)";
-    assertEquals("rgba(25, 51, 76, 0.5)", Color.fromString(rgba).asRgba());
   }
 
   @Test

@@ -42,20 +42,21 @@ bot.color.standardizeColor = function(propertyName, propertyValue) {
 
 
 /**
- * Returns a color in RGBA format - rgba(r,g,b,a).
+ * Returns a color in RGBA format - rgba(r, g, b, a).
  * @param {string} propertyValue The value of the CSS property.
  * @return {string} The value, in RGBA format.
  * @private
  */
 bot.color.standardizeToRgba_ = function(propertyValue) {
-  if (!bot.color.parseRgbaColor(propertyValue).length) {
-    var rgba = bot.color.convertToRgba_(propertyValue);
-    if (rgba.length) {
-      bot.color.addAlphaIfNecessary_(rgba);
-      return bot.color.toRgbaStyle_(rgba);
-    }
+  var rgba = bot.color.parseRgbaColor(propertyValue);
+  if (!rgba.length) {
+    rgba = bot.color.convertToRgba_(propertyValue);
+    bot.color.addAlphaIfNecessary_(rgba);
   }
-  return propertyValue;
+  if (rgba.length != 4) {
+    return propertyValue;
+  }
+  return bot.color.toRgbaStyle_(rgba);
 };
 
 
@@ -330,10 +331,10 @@ bot.color.addAlphaIfNecessary_ = function(arr) {
  * Takes an array of [r, g, b, a] and converts it into a string appropriate for
  * CSS styles.
  * @param {!Array.<number>} rgba An array with four elements.
- * @return {string} string of the form 'rgba(r,g,b,a)'.
+ * @return {string} string of the form 'rgba(r, g, b, a)'.
  * @private
  */
 bot.color.toRgbaStyle_ = function(rgba) {
-  return 'rgba(' + rgba.join(',') + ')';
+  return 'rgba(' + rgba.join(', ') + ')';
 };
 

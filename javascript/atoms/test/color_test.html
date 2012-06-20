@@ -41,24 +41,24 @@ function testStandardizeColorShouldNotConvertInvalidColorProperties() {
 }
 
 function testStandardizeColorShouldReturnRGBAStringUnchanged() {
-  assertEquals('rgba(1,2,3,1)',
+  assertEquals('rgba(1, 2, 3, 1)',
       bot.color.standardizeColor('color','rgba(1,2,3,1)'));
 }
 
 function testStandardizeColorShouldReturnRGBStringAsRGBAString() {
-  assertEquals('rgba(1,2,3,1)',
+  assertEquals('rgba(1, 2, 3, 1)',
       bot.color.standardizeColor('color','rgb(1,2,3)'));
 }
 
 function testStandardizeColorShouldReturnNamedColorStringAsRGBAString() {
-  assertEquals('rgba(0,128,0,1)',
+  assertEquals('rgba(0, 128, 0, 1)',
       bot.color.standardizeColor('color','green'));
 }
 
 function testStandardizeColorShouldReturnHexColorStringAsRGBAString() {
-  assertEquals('rgba(0,128,0,1)',
+  assertEquals('rgba(0, 128, 0, 1)',
       bot.color.standardizeColor('color','#008000'));
-  assertEquals('rgba(0,128,0,1)',
+  assertEquals('rgba(0, 128, 0, 1)',
       bot.color.standardizeColor('color','008000'));
 }
 

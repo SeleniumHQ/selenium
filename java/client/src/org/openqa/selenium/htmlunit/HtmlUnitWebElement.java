@@ -39,6 +39,7 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.Color;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ScriptResult;
@@ -71,8 +72,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class HtmlUnitWebElement implements WrapsDriver,
@@ -911,31 +910,13 @@ public class HtmlUnitWebElement implements WrapsDriver,
       current = (HtmlElement) current.getParentNode();
     }
 
-    if (value.startsWith("rgb")) {
-      return rgbToHex(value);
+    try {
+      String color = Color.fromString(value).asRgba();
+      value = color;
+    } finally {
+      return value;
     }
 
-    return value;
-  }
-
-  // Convert colours to hex if possible
-  private String rgbToHex(final String value) {
-    final Pattern pattern = Pattern.compile("rgb\\((\\d{1,3}),\\s(\\d{1,3}),\\s(\\d{1,3})\\)");
-    final Matcher matcher = pattern.matcher(value);
-    if (matcher.find()) {
-      String hex = "#";
-      for (int i = 1; i <= 3; i++) {
-        int colour = Integer.parseInt(matcher.group(i));
-        String s = Integer.toHexString(colour);
-        if (s.length() == 1)
-          s = "0" + s;
-        hex += s;
-      }
-      hex = hex.toLowerCase();
-      return hex;
-    }
-
-    return value;
   }
 
   @Override

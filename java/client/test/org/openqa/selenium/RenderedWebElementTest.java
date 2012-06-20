@@ -43,7 +43,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE})
+  @Ignore({ANDROID, CHROME, OPERA, SELENESE})
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -51,13 +51,30 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("green-parent"));
     String backgroundColour = element.getCssValue("background-color");
 
-    assertEquals("rgba(0,128,0,1)", backgroundColour);
+    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
 
     element = driver.findElement(By.id("red-item"));
     backgroundColour = element.getCssValue("background-color");
 
-    assertEquals("rgba(255,0,0,1)", backgroundColour);
+    assertEquals("rgba(255, 0, 0, 1)", backgroundColour);
   }
+
+  @JavascriptEnabled
+  @Ignore({ANDROID, CHROME, OPERA, SELENESE})
+  @Test
+  public void testGetCssValueShouldReturnStandardizedColour() {
+    driver.get(pages.colorPage);
+
+    WebElement element = driver.findElement(By.id("namedColor"));
+    String backgroundColour = element.getCssValue("background-color");
+    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
+
+    element = driver.findElement(By.id("rgb"));
+    backgroundColour = element.getCssValue("background-color");
+    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
+
+  }
+
 
   // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
@@ -83,7 +100,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
@@ -94,12 +111,12 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     // TODO: How should this be standardized? Should it be standardized?
     assertThat(backgroundColour, anyOf(
         equalTo("transparent"),
-        equalTo("rgba(0,0,0,0)")));
+        equalTo("rgba(0, 0, 0, 0)")));
   }
 
   @JavascriptEnabled
   @Ignore(
-      value = {FIREFOX, HTMLUNIT, IPHONE, SELENESE, OPERA},
+      value = {FIREFOX, HTMLUNIT, IPHONE,  OPERA, SELENESE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.")
   @Test
   public void testShouldAllowUsersToHoverOverElements() {

@@ -81,12 +81,7 @@ limitations under the License.
               webdriver.atoms.inject.dom.getValueOfCssProperty(
                       getValueFromJSONObject(e), "background-color"));
 
-      // Depending on the browser, we get different values back.
-      var expected = ['green', 'rgba(0,128,0,1)', '#008000'];
-      assertTrue(
-          'Expected to be one of [' + expected.join(', ') + '], but was: ' +
-              prop,
-          goog.array.contains(expected, prop));
+      assertEquals('rgba(0, 128, 0, 1)', prop);
     }
 
     function testIsEnabled() {

@@ -69,6 +69,7 @@ public class Pages {
   public String veryLargeCanvas;
   public String readOnlyPage;
   public String booleanAttributes;
+  public String colorPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -121,5 +122,6 @@ public class Pages {
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
     booleanAttributes = appServer.whereIs("booleanAttributes.html");
+    colorPage = appServer.whereIs("colorPage.html");
   }
 }
