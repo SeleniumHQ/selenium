@@ -17,13 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.util.URI;
@@ -31,11 +25,19 @@ import org.openqa.jetty.util.URI;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-public class ProxyHanderUnitTest extends TestCase {
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+public class ProxyHanderUnitTest {
 
   private final int port = 8086;
 
-  public void testSendNotFoundSends404ResponseCode() throws Exception {
+  @Test
+  public void sendNotFoundSends404ResponseCode() throws Exception {
     ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     HttpResponse httpResponseMock = createMock(HttpResponse.class);
     httpResponseMock.sendError(HttpResponse.__404_Not_Found, "Not found");
@@ -45,7 +47,8 @@ public class ProxyHanderUnitTest extends TestCase {
     verify(httpResponseMock);
   }
 
-  public void testUnknownHostExceptionDoesNotBubble() throws Exception {
+  @Test
+  public void unknownHostExceptionDoesNotBubble() throws Exception {
     ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
@@ -60,7 +63,8 @@ public class ProxyHanderUnitTest extends TestCase {
     proxyHandler.handle("foo", "bar", request, response);
   }
 
-  public void testUnknownHostExceptionProvidesUsefulErrorMessage() throws Exception {
+  @Test
+  public void unknownHostExceptionProvidesUsefulErrorMessage() throws Exception {
     ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
@@ -78,7 +82,8 @@ public class ProxyHanderUnitTest extends TestCase {
     assertTrue(responseText.contains("Check the address for typing errors"));
   }
 
-  public void testConnectExceptionDoesNotBubble() throws Exception {
+  @Test
+  public void connectExceptionDoesNotBubble() throws Exception {
     ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
@@ -93,7 +98,8 @@ public class ProxyHanderUnitTest extends TestCase {
     proxyHandler.handle("foo", "bar", request, response);
   }
 
-  public void testConnectExceptionProvidesUsefulErrorMessage() throws Exception {
+  @Test
+  public void connectExceptionProvidesUsefulErrorMessage() throws Exception {
     ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
@@ -111,7 +117,8 @@ public class ProxyHanderUnitTest extends TestCase {
     assertTrue(responseText.contains("The site could be temporarily unavailable or too busy"));
   }
 
-  public void testHandleCallsSendNotFoundWhenAskingForNonExistentResource()
+  @Test
+  public void handleCallsSendNotFoundWhenAskingForNonExistentResource()
       throws Exception {
     ProxyHandler proxyHandlerMock = createMock(ProxyHandler.class,
         ProxyHandler.class.getDeclaredMethod(
