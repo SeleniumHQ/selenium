@@ -32,7 +32,7 @@ import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class ProxyHanderUnitTest {
+public class ProxyHandlerUnitTest {
 
   private final int port = 8086;
 

@@ -45,6 +45,7 @@ import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
     HTMLSuiteResultUnitTest.class,
     MakeProxyPacUnitTest.class,
     MockPIFrameUnitTest.class,
+    ProxyHandlerUnitTest.class,
     RemoteControlConfigurationUnitTest.class,
     SeleniumDriverResourceHandlerUnitTest.class,
     SeleniumServerUnitTest.class,
