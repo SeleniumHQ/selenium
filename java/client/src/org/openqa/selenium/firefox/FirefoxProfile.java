@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
 import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
 import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
+import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_UNEXPECTED_ALERT_BEHAVIOUR;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
@@ -28,6 +29,7 @@ import com.google.common.io.Resources;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
@@ -55,11 +57,13 @@ public class FirefoxProfile {
 
   private Map<String, Extension> extensions = Maps.newHashMap();
   private boolean enableNativeEvents;
+  private UnexpectedAlertBehaviour unexpectedAlertBehaviour;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
   private File model;
   private static final String ENABLE_NATIVE_EVENTS_PREF = "webdriver_enable_native_events";
+  private static final String UNEXPECTED_ALERT_BEHAVIOUR_PREF = "webdriver_unexpected_alert_behaviour";
   private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
   private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
 
@@ -97,6 +101,9 @@ public class FirefoxProfile {
       Preferences existingPrefs = new Preferences(reader, prefsInModel);
       enableNativeEvents = getBooleanPreference(existingPrefs, ENABLE_NATIVE_EVENTS_PREF,
                                                 DEFAULT_ENABLE_NATIVE_EVENTS);
+      unexpectedAlertBehaviour = UnexpectedAlertBehaviour.fromString(
+          getStringPreference(existingPrefs, UNEXPECTED_ALERT_BEHAVIOUR_PREF,
+                              DEFAULT_UNEXPECTED_ALERT_BEHAVIOUR.toString()));
       acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF,
                                                   ACCEPT_UNTRUSTED_CERTIFICATES);
       untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF,
@@ -104,6 +111,7 @@ public class FirefoxProfile {
       existingPrefs.addTo(additionalPrefs);
     } else {
       enableNativeEvents = DEFAULT_ENABLE_NATIVE_EVENTS;
+      unexpectedAlertBehaviour = DEFAULT_UNEXPECTED_ALERT_BEHAVIOUR;
       acceptUntrustedCerts = ACCEPT_UNTRUSTED_CERTIFICATES;
       untrustedCertIssuer = ASSUME_UNTRUSTED_ISSUER;
     }
@@ -139,6 +147,19 @@ public class FirefoxProfile {
     }
 
     throw new WebDriverException("Expected boolean value is not a boolean. It is: " + value);
+  }
+
+  private String getStringPreference(Preferences prefs, String key, String defaultValue) {
+    Object value = prefs.getPreference(key);
+    if (value == null) {
+      return defaultValue;
+    }
+
+    if (value instanceof String) {
+      return (String) value;
+    }
+
+    throw new WebDriverException("Expected string value is not a string. It is: " + value);
   }
 
   private void verifyModel(File model) {
@@ -304,6 +325,9 @@ public class FirefoxProfile {
     // Should we use native events?
     prefs.setPreference(ENABLE_NATIVE_EVENTS_PREF, enableNativeEvents);
 
+    // What to do with unexpected alerts?
+    prefs.setPreference(UNEXPECTED_ALERT_BEHAVIOUR_PREF, unexpectedAlertBehaviour.toString());
+
     // Should we accept untrusted certificates or not?
     prefs.setPreference(ACCEPT_UNTRUSTED_CERTS_PREF, acceptUntrustedCerts);
 
@@ -351,6 +375,14 @@ public class FirefoxProfile {
 
   public void setEnableNativeEvents(boolean enableNativeEvents) {
     this.enableNativeEvents = enableNativeEvents;
+  }
+
+  public UnexpectedAlertBehaviour getUnexpectedAlertBehaviour() {
+    return unexpectedAlertBehaviour;
+  }
+
+  public void setUnexpectedAlertBehaviour(UnexpectedAlertBehaviour unexpectedAlertBehaviour) {
+    this.unexpectedAlertBehaviour = unexpectedAlertBehaviour;
   }
 
   /**

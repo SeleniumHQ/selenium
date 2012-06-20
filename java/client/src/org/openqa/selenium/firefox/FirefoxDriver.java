@@ -32,6 +32,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
@@ -43,7 +44,6 @@ import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -78,6 +78,9 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
+
+  public static final UnexpectedAlertBehaviour DEFAULT_UNEXPECTED_ALERT_BEHAVIOUR
+    = UnexpectedAlertBehaviour.DISMISS;
 
   // Accept untrusted SSL certificates.
   @Deprecated

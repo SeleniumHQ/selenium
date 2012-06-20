@@ -493,7 +493,17 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
         command.name != 'acceptAlert' &&
         command.name != 'dismissAlert') {
       var modalText = driver.modalOpen;
-      fxdriver.modals.dismissAlert(driver);
+      var unexpectedAlertBehaviour = Utils.getUnexpectedAlertBehaviour();
+      if (unexpectedAlertBehaviour == "dismiss") {
+        fxdriver.modals.dismissAlert(driver);
+      } else if (unexpectedAlertBehaviour == "accept") {
+        fxdriver.modals.acceptAlert(driver);
+      } else if (unexpectedAlertBehaviour == "ignore") {
+        // do nothing, ignore the alert
+      } else {
+        // by defaul dismiss the alert
+        fxdriver.modals.dismissAlert(driver);
+      }
       fxdriver.Logger.dumpn(
           'Sending error from command ' + command.name + ' with alertText: ' + modalText);
       response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
