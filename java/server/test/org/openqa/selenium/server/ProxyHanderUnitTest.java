@@ -36,7 +36,7 @@ public class ProxyHanderUnitTest extends TestCase {
   private final int port = 8086;
 
   public void testSendNotFoundSends404ResponseCode() throws Exception {
-    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
+    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     HttpResponse httpResponseMock = createMock(HttpResponse.class);
     httpResponseMock.sendError(HttpResponse.__404_Not_Found, "Not found");
     expectLastCall().once();
@@ -46,7 +46,7 @@ public class ProxyHanderUnitTest extends TestCase {
   }
 
   public void testUnknownHostExceptionDoesNotBubble() throws Exception {
-    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
+    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
       @Override
@@ -61,7 +61,7 @@ public class ProxyHanderUnitTest extends TestCase {
   }
 
   public void testUnknownHostExceptionProvidesUsefulErrorMessage() throws Exception {
-    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
+    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
       @Override
@@ -79,7 +79,7 @@ public class ProxyHanderUnitTest extends TestCase {
   }
 
   public void testConnectExceptionDoesNotBubble() throws Exception {
-    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
+    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
       @Override
@@ -94,7 +94,7 @@ public class ProxyHanderUnitTest extends TestCase {
   }
 
   public void testConnectExceptionProvidesUsefulErrorMessage() throws Exception {
-    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port);
+    ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
     HttpResponse response = new HttpResponse() {
       @Override
