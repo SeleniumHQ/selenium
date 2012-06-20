@@ -500,8 +500,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       return;
     }
 
-    int numThreads = 10;
-    final int numRoundsPerThread = 50;
+    int numThreads = 2;
+    final int numRoundsPerThread = 5;
     WebDriver[] drivers = new WebDriver[numThreads];
     List<Worker> workers = new ArrayList<Worker>(numThreads);
     try {

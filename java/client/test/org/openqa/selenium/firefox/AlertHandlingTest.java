@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -27,6 +28,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
@@ -68,6 +70,21 @@ public class AlertHandlingTest extends JUnit4TestBase {
       // this is expected
     }
     driver2.switchTo().alert().dismiss();
+  }
+  
+  @Test
+  public void canSpecifyUnnandledAlertBehaviourUsingCapabilities() {
+    DesiredCapabilities caps = DesiredCapabilities.firefox();
+    caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+    driver2 = new FirefoxDriver(caps);
+    driver2.get(pages.alertsPage);
+    driver2.findElement(By.id("prompt-with-default")).click();
+    try {
+      driver2.findElement(By.id("text")).getText();
+    } catch (UnhandledAlertException ex) {
+      // this is expected
+    }
+    waitFor(elementTextToEqual(driver2, By.id("text"), "This is a default value"));
   }
 
   private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour, String text) {
