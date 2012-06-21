@@ -38,35 +38,61 @@ module Selenium
             lambda { client.send :http }.should raise_error(Error::WebDriverError)
           end
 
-          it "honors the http_proxy environment varable" do
-            with_env("http_proxy" => "http://proxy.org:8080") do
-              http = client.send :http
+          ["http_proxy", "HTTP_PROXY"].each { |proxy_var|
+            it "honors the #{proxy_var} environment varable" do
+              with_env(proxy_var => "http://proxy.org:8080") do
+                http = client.send :http
 
-              http.should be_proxy
-              http.proxy_address.should == "proxy.org"
-              http.proxy_port.should == 8080
+                http.should be_proxy
+                http.proxy_address.should == "proxy.org"
+                http.proxy_port.should == 8080
+              end
+            end
+
+            it "handles #{proxy_var} without http://" do
+              with_env(proxy_var => "proxy.org:8080") do
+                http = client.send :http
+
+                http.should be_proxy
+                http.proxy_address.should == "proxy.org"
+                http.proxy_port.should == 8080
+              end
+            end
+          }
+
+          ["no_proxy", "NO_PROXY"].each do |no_proxy_var|
+            it "honors the #{no_proxy_var} environment variable when matching" do
+              with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "example.com") do
+                http = client.send :http
+                http.should_not be_proxy
+              end
+            end
+
+            it "ignores the #{no_proxy_var} environment variable when not matching" do
+              with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "foo.com") do
+                http = client.send :http
+
+                http.should be_proxy
+                http.proxy_address.should == "proxy.org"
+                http.proxy_port.should == 8080
+              end
+            end
+
+            it "understands a comma separated list of domains in #{no_proxy_var}" do
+              with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "example.com,foo.com") do
+                http = client.send :http
+                http.should_not be_proxy
+              end
+            end
+
+            it "understands an asterisk in #{no_proxy_var}" do
+              with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "*") do
+                http = client.send :http
+                http.should_not be_proxy
+              end
             end
           end
 
-          it "honors the HTTP_PROXY environment variable" do
-            with_env("HTTP_PROXY" => "http://proxy.org:8080") do
-              http = client.send :http
-
-              http.should be_proxy
-              http.proxy_address.should == "proxy.org"
-              http.proxy_port.should == 8080
-            end
-          end
-
-          it "handles HTTP_PROXY without http://" do
-            with_env("HTTP_PROXY" => "proxy.org:8080") do
-              http = client.send :http
-
-              http.should be_proxy
-              http.proxy_address.should == "proxy.org"
-              http.proxy_port.should == 8080
-            end
-          end
         end
 
       end # Http

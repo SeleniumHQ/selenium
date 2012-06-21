@@ -22,4 +22,6 @@ end
 
 RSpec.configure do |c|
   c.include Selenium::WebDriver::UnitSpecHelper
+
+  c.filter_run :focus => true if ENV['focus']
 end

@@ -77,7 +77,7 @@ module Selenium
           end
 
           def new_http_client
-            if proxy
+            if use_proxy?
               unless proxy.respond_to?(:http) && url = @proxy.http
                 raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
               end
@@ -94,11 +94,24 @@ module Selenium
           def proxy
             @proxy ||= (
               proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+
               if proxy
                 proxy = "http://#{proxy}" unless proxy.start_with?("http://")
-                Proxy.new(:http => proxy)
+                Proxy.new(:http => proxy, :no_proxy => no_proxy)
               end
             )
+          end
+
+          def use_proxy?
+            return false if proxy.nil?
+
+            if proxy.no_proxy
+              hosts = proxy.no_proxy.split(",")
+              !(hosts.include?(server_url.host) || hosts.first == "*")
+            else
+              true
+            end
           end
 
         end # Default
