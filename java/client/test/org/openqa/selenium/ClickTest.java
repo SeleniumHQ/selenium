@@ -220,6 +220,12 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
+    driver.findElement(By.id("embeddedBlock")).click();
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  @Test
   public void testCanClickOnAnElementEnclosedInALink() {
     driver.findElement(By.id("link-with-enclosed-span")).findElement(By.tagName("span")).click();
 

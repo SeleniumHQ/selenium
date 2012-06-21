@@ -101,7 +101,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore] // TODO(jimevans): Unignore
         public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
         {
             driver.FindElement(By.Id("twoClientRects")).Click();
@@ -189,13 +188,19 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Firefox has not corrected")]
-        [IgnoreBrowser(Browser.Chrome, "Chrome has not corrected")]
         public void ShouldBeAbleToClickLinkContainingLineBreak()
         {
             driver.Url = simpleTestPage;
             driver.FindElement(By.Id("multilinelink")).Click();
             Assert.AreEqual("We Arrive Here", driver.Title);
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickLinkContainingEmbeddedBlockElement()
+        {
+            driver.FindElement(By.Id("embeddedBlock")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
         private bool IsNativeEventsEnabled(IWebDriver driver)

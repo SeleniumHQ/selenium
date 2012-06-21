@@ -727,7 +727,16 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
     element = element.wrappedJSObject ? element.wrappedJSObject : element;
     var clientRect = undefined;
     if (opt_onlyFirstRect && element.getClientRects().length > 1) {
-      clientRect = element.getClientRects()[0];
+      for (var i = 0; i < element.getClientRects().length; i++) {
+        var candidate = element.getClientRects()[0];
+        if (candidate.width != 0 && candidate.height != 0) {
+          clientRect = candidate;
+          break;
+        }
+      }
+      if (!clientRect) {
+        clientRect = element.getBoundingClientRect();
+      }
     } else {
       clientRect = element.getBoundingClientRect();
     }
