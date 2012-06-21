@@ -93,6 +93,17 @@ module Selenium
             end
           end
 
+          it "raises a sane error if a proxy is refusing connections" do
+            with_env("http_proxy" => "http://localhost:1234") do
+              http = client.send :http
+              http.should_receive(:request).and_raise Errno::ECONNREFUSED
+
+              lambda {
+                client.call :post, 'http://example.com/foo/bar', {}
+              }.should raise_error(Errno::ECONNREFUSED, %r[using proxy: http://localhost:1234])
+            end
+          end
+
         end
 
       end # Http

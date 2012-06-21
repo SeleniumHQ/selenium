@@ -50,6 +50,12 @@ module Selenium
               retries += 1
 
               retry
+            rescue Errno::ECONNREFUSED => ex
+              if use_proxy?
+                raise ex.class, "using proxy: #{proxy.http}"
+              else
+                raise
+              end
             end
 
             if response.kind_of? Net::HTTPRedirection
