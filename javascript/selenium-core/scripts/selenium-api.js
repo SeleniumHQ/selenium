@@ -302,7 +302,7 @@ Selenium.prototype.doClick = function(locator) {
           var d = elementWithHref.ownerDocument;
           var html = d ? d.documentElement : null;
           var curElem = elementWithHref;
-          while (curElem && html && !curElem.isSameNode(html)) {
+          while (curElem && html && (curElem.isSameNode ? !curElem.isSameNode(html) : curElem != html)) {
             curElem = curElem.parentNode;
           }
           if (!html || !curElem) {
