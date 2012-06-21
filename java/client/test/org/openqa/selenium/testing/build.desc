@@ -60,8 +60,9 @@ java_library(name = "junit",
 java_library(name = "junit_4",
   srcs = [
     "JUnit4TestBase.java",
-    "SeleniumTestRunner.java",
     "MockTestBase.java",
+    "ParallelSuite.java",
+    "SeleniumTestRunner.java",
   ],
   deps = [
     ":junit",

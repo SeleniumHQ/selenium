@@ -36,7 +36,7 @@ public class GlobalTestEnvironment {
     GlobalTestEnvironment.environment = environment;
   }
 
-  public static TestEnvironment get(
+  public static synchronized TestEnvironment get(
       Class<? extends TestEnvironment> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
       try {

@@ -27,8 +27,9 @@ import org.openqa.selenium.html5.Html5Tests;
 import org.openqa.selenium.interactions.InteractionTests;
 import org.openqa.selenium.support.ui.SelectElementTest;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.ParallelSuite;
 
-@RunWith(Suite.class)
+@RunWith(ParallelSuite.class)
 @Suite.SuiteClasses({
     AlertsTest.class,
     AtomsInjectionTest.class,
