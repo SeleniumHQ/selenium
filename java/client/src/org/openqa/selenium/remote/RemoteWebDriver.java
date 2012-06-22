@@ -36,6 +36,7 @@ import org.openqa.selenium.Mouse;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -52,6 +53,7 @@ import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.security.Credentials;
 
 import java.net.URL;
 import java.util.Date;
@@ -771,6 +773,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     public void sendKeys(String keysToSend) {
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
+    }
+
+    @Override
+    public void authenticateUsing(Credentials credentials) {
+      throw new UnsupportedCommandException("Not implemented yet");
     }
   }
 

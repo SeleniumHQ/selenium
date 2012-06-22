@@ -21,6 +21,8 @@ import android.webkit.JsResult;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.security.Credentials;
 
 /**
  * This class represents an Android alert.
@@ -64,6 +66,11 @@ public class AndroidAlert implements Alert {
 
   public String getText() {
     return message;
+  }
+
+  @Override
+  public void authenticateUsing(Credentials credentials) {
+    throw new UnsupportedCommandException("Not implemented yet");
   }
 
   public void sendKeys(String keys) {

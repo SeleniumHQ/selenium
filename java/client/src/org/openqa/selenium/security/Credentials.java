@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
+Copyright 2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,20 +13,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+*/
+
+package org.openqa.selenium.security;
+
+/**
+ * Marker interface used to indicate that this object can be used for
+ * authentication.
  */
-
-package org.openqa.selenium;
-
-import org.openqa.selenium.security.Credentials;
-
-public interface Alert {
-  void dismiss();
-
-  void accept();
-
-  String getText();
-
-  void sendKeys(String keysToSend);
-
-  void authenticateUsing(Credentials credentials);
+public interface Credentials {
 }

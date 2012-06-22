@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.security.Credentials;
+
 import java.io.Serializable;
 
 public class UnhandledAlertException extends WebDriverException {
@@ -63,7 +65,12 @@ public class UnhandledAlertException extends WebDriverException {
     public void sendKeys(String keysToSend) {
       throwAlreadyDismissed();
     }
-    
+
+    @Override
+    public void authenticateUsing(Credentials credentials) {
+      throwAlreadyDismissed();
+    }
+
     private void throwAlreadyDismissed() {
       throw new UnsupportedOperationException("Alert was already dismissed");
     }
