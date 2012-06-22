@@ -19,13 +19,11 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.SeleniumTestRunner;
@@ -55,39 +53,6 @@ public class NativeEventsTest {
     driver2 = new FirefoxDriver(p);
 
     assertTrue("Native events were explicitly enabled and should be on.",
-        (Boolean) driver2.getCapabilities().getCapability(
-            CapabilityType.HAS_NATIVE_EVENTS));
-  }
-
-  @Test
-  public void nativeEventsCanBeDisabled() {
-    FirefoxProfile p = new FirefoxProfile();
-    p.setEnableNativeEvents(false);
-    driver2 = new FirefoxDriver(p);
-
-    assertFalse("Native events were explicitly disabled and should be off.",
-        (Boolean) driver2.getCapabilities().getCapability(
-            CapabilityType.HAS_NATIVE_EVENTS));
-  }
-
-  @Test
-  public void nativeEventsCanBeEnabledUsingCapabilities() {
-    DesiredCapabilities caps = DesiredCapabilities.firefox();
-    caps.setCapability(CapabilityType.HAS_NATIVE_EVENTS, true);
-    driver2 = new FirefoxDriver(caps);
-
-    assertTrue("Native events were explicitly enabled and should be on.",
-        (Boolean) driver2.getCapabilities().getCapability(
-            CapabilityType.HAS_NATIVE_EVENTS));
-  }
-
-  @Test
-  public void nativeEventsCanBeDisabledUsingCapabilities() {
-    DesiredCapabilities caps = DesiredCapabilities.firefox();
-    caps.setCapability(CapabilityType.HAS_NATIVE_EVENTS, false);
-    driver2 = new FirefoxDriver(caps);
-
-    assertFalse("Native events were explicitly enabled and should be on.",
         (Boolean) driver2.getCapabilities().getCapability(
             CapabilityType.HAS_NATIVE_EVENTS));
   }
