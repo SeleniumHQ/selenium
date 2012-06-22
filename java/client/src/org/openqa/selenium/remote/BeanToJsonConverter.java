@@ -147,12 +147,7 @@ public class BeanToJsonConverter {
     }
 
     if (toConvert instanceof LogEntries) {
-      LogEntries entries = (LogEntries) toConvert;
-      JSONArray converted = new JSONArray();
-      for (LogEntry entry : entries) {
-        converted.put(mapObject(entry, 1, false));
-      }
-      return converted;
+      return convertObject(((LogEntries)toConvert).getAll(), maxDepth - 1);
     }
 
     if (toConvert instanceof Map) {

@@ -373,6 +373,15 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
+  public void testConvertsLogEntryToJson() throws JSONException {
+    JSONObject object = new JSONObject(new BeanToJsonConverter().convert(new LogEntry(Level.OFF, 17, "foo")));
+    assertEquals("foo", object.get("message"));
+    assertEquals(17, object.get("timestamp"));
+    assertEquals(Level.OFF.intValue(), object.get("level"));
+    
+  }
+
+  @Test
   public void testConvertLogEntriesToJson() throws JSONException {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");

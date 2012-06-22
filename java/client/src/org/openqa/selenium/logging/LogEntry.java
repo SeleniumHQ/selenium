@@ -20,6 +20,10 @@ package org.openqa.selenium.logging;
 
 import java.util.logging.Level;
 
+import org.json.JSONObject;
+
+import com.google.common.collect.ImmutableMap;
+
 /**
  * Represents a single log statement.
  */
@@ -55,5 +59,12 @@ public class LogEntry {
   @Override
   public String toString() {
     return String.format("%d %s %s", timestamp, level, message);
+  }
+
+  public JSONObject toJson() {
+    return new JSONObject(ImmutableMap.of(
+      "timestamp", timestamp,
+      "message", message,
+      "level", level.intValue()));
   }
 }
