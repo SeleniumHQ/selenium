@@ -113,7 +113,7 @@ class Proxy(object):
     @ssl_proxy.setter
     def ssl_proxy(self, value):
         self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
-        self.proxyType = value
+        self.proxyType = ProxyType.MANUAL
         self.sslProxy = value
 
     def _verify_proxy_type_compatilibily(self, compatibleProxy):

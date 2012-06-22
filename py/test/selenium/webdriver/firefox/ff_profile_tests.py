@@ -119,6 +119,17 @@ class TestFirefoxProfile:
         assert profile.default_preferences["network.proxy.http"] == '"test.hostname"'
         assert profile.default_preferences["network.proxy.http_port"] == '1234'
 
+    def test_sets_ssl_proxy(self):
+        self.driver.quit()
+
+        profile = webdriver.FirefoxProfile()
+        proxy = Proxy()
+        proxy.ssl_proxy = 'https://test.hostname:1234'
+        profile.set_proxy(proxy)
+        assert profile.default_preferences["network.proxy.type"] == str(ProxyType.MANUAL['ff_value'])
+        assert profile.default_preferences["network.proxy.ssl"] == '"test.hostname"'
+        assert profile.default_preferences["network.proxy.ssl_port"] == '1234'
+
     def teardown_method(self, method):
         try:
             self.driver.quit()
