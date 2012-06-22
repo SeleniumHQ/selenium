@@ -61,6 +61,12 @@ public interface WebElement extends SearchContext {
   /**
    * If this element is a text entry element, this will clear the value. Has no effect on other
    * elements. Text entry elements are INPUT and TEXTAREA elements.
+   *
+   * Note that the events fired by this event may not be as you'd expect.  In particular, we don't
+   * fire any keyboard or mouse events.  If you want to ensure keyboard events are fired, consider
+   * using something like {@link #sendKeys(CharSequence...)} with the backspace key.  To ensure
+   * you get a change event, consider following with a call to {@link #sendKeys(CharSequence...)}
+   * with the tab key.
    */
   void clear();
 
