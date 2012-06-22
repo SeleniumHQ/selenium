@@ -62,7 +62,7 @@ class FirefoxBinary(object):
             self._modify_link_library_path()
         
         Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=STDOUT,
-              env=self._firefox_env).wait()
+              env=self._firefox_env).communicate()
         self.process = Popen(
             [self._start_cmd, "-foreground"], stdout=PIPE, stderr=STDOUT,
             env=self._firefox_env)
@@ -116,6 +116,8 @@ class FirefoxBinary(object):
         elif platform.system() == "Windows":
             start_cmd = (self._find_exe_in_registry() or 
                 self._default_windows_location())
+        elif platform.system() == 'Java' and os._name == 'nt':
+            start_cmd = self._default_windows_location()
         else:
             # Maybe iceweasel (Debian) is another candidate...
             for ffname in ["firefox2", "firefox", "firefox-3.0", "firefox-4.0"]:
