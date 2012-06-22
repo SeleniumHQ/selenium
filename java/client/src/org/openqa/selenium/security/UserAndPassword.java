@@ -17,9 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.security;
 
+import org.openqa.selenium.Beta;
+
 /**
  * Represents the authentication credentials for a user with username and password
  */
+@Beta
 public class UserAndPassword implements Credentials {
 
   private final String username;

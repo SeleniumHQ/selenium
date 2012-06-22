@@ -28,5 +28,6 @@ public interface Alert {
 
   void sendKeys(String keysToSend);
 
+  @Beta
   void authenticateUsing(Credentials credentials);
 }

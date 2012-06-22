@@ -9,13 +9,20 @@ java_library(name = "selenium",
     "//java/client/src/org/openqa/selenium/net",
   ])
 
+java_library(name = "beta",
+  srcs = [
+    "Beta.java"
+  ])
+
 java_library(name = "base",
   srcs = [
-    "Beta.java",
     "Capabilities.java",
     "Platform.java",
     "WebDriverException.java",
     "internal/BuildInfo.java",
+  ],
+  deps = [
+    ":beta",
   ])
 
 java_library(name = "webdriver-api",

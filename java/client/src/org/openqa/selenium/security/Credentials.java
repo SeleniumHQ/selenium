@@ -17,9 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.security;
 
+import org.openqa.selenium.Beta;
+
 /**
  * Marker interface used to indicate that this object can be used for
  * authentication.
  */
+@Beta
 public interface Credentials {
 }
