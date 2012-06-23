@@ -73,7 +73,7 @@ public class AlertHandlingTest extends JUnit4TestBase {
   }
   
   @Test
-  public void canSpecifyUnnandledAlertBehaviourUsingCapabilities() {
+  public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     DesiredCapabilities caps = DesiredCapabilities.firefox();
     caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
     driver2 = new FirefoxDriver(caps);

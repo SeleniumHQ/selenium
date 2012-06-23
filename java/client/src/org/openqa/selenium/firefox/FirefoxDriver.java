@@ -21,6 +21,7 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.base.Predicate;
@@ -138,6 +139,12 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
       for (String logtype : logsPrefs.getEnabledLogTypes()) {
         profile.setPreference("webdriver.log." + logtype, logsPrefs.getLevel(logtype).intValue());
       }
+    }
+
+    if (capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR) != null) {
+      UnexpectedAlertBehaviour unexpectedAlertBehaviour = (UnexpectedAlertBehaviour)
+          capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
+      profile.setUnexpectedAlertBehaviour(unexpectedAlertBehaviour);
     }
 
     return profile;
