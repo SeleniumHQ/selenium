@@ -14,6 +14,7 @@ java_library(name = "page-factory",
   srcs = [
     "ByIdOrName.java",
     "CacheLookup.java",
+    "Color.java",
     "FindBy.java",
     "FindBys.java",
     "How.java",
