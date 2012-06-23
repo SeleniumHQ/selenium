@@ -47,13 +47,14 @@
                                         <exclude name="org/openqa/selenium/SuppliesWebDriver.java" />
                                         <exclude name="org/openqa/selenium/WebDriverBackedSelenium.java" />
                                         <exclude name="org/openqa/selenium/WebDriverCommandProcessor.java" />
-					<include name="org/openqa/selenium/logging/**/*.java" />
+                                        <include name="org/openqa/selenium/logging/**/*.java" />
                                         <include name="org/openqa/selenium/browserlaunchers/CapabilityType.java" />
                                         <include name="org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.java" />
                                         <include name="org/openqa/selenium/browserlaunchers/Proxies.java" />
                                         <include name="org/openqa/selenium/html5/*.java" />
                                         <include name="org/openqa/selenium/interactions/**/*.java" />
                                         <include name="org/openqa/selenium/internal/*.java" />
+                                        <include name="org/openqa/selenium/security/*.java" />
                                         <include name="org/openqa/selenium/remote/CapabilityType.java" />
                                         <include name="org/openqa/selenium/remote/DesiredCapabilities.java" />
                                     </fileset>
