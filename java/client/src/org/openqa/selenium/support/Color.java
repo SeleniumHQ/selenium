@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium;
+package org.openqa.selenium.support;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
