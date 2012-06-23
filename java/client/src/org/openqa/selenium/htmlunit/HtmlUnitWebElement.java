@@ -39,7 +39,6 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.Color;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ScriptResult;
@@ -910,12 +909,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       current = (HtmlElement) current.getParentNode();
     }
 
-    try {
-      String color = Color.fromString(value).asRgba();
-      value = color;
-    } finally {
-      return value;
-    }
+    return value;
 
   }
 

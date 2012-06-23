@@ -37,6 +37,7 @@ import org.junit.runners.Suite;
     AjaxElementLocatorTest.class,
     AnnotationsTest.class,
     ByChainedTest.class,
+    ColorTest.class,
     DefaultElementLocatorTest.class,
     DefaultFieldDecoratorTest.class,
     EventFiringWebDriverTest.class,

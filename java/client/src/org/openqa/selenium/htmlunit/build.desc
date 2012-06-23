@@ -2,7 +2,6 @@
 java_library(name = "htmlunit",
   srcs = [ "*.java" ],
   deps = [
-    "//java/client/src/org/openqa/selenium:color",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/browserlaunchers",
     "//java/client/src/org/openqa/selenium/interactions",

@@ -1,7 +1,6 @@
 
 java_library(name = "selenium",
   deps = [
-    ":color",
     ":webdriver-api",
     "//java/client/src/com/thoughtworks/selenium:api",
     "//java/client/src/org/openqa/selenium/browserlaunchers",
@@ -152,9 +151,4 @@ java_library(name = "client-combined",
     "//java/client/src/org/openqa/selenium/support",
     "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
     "//third_party/java/opera-driver",
-  ])
-
-java_library(name = "color",
-  srcs = [
-    "Color.java",
   ])

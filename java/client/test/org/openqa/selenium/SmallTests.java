@@ -36,7 +36,6 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
     ActionsTest.class,
     Base64EncoderTest.class,
     ByTest.class,
-    ColorTest.class,
     CommandLineTest.class,
     CookieTest.class,
     CompositeActionTest.class,

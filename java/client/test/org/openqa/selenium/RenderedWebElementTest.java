@@ -43,7 +43,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, OPERA, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE})
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -60,7 +60,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, OPERA, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE})
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
