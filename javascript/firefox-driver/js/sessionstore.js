@@ -19,6 +19,7 @@
 goog.provide('wdSessionStoreService');
 
 goog.require('fxdriver.Logger');
+goog.require('fxdriver.modals');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.proxy');
 goog.require('wdSession');
@@ -106,6 +107,7 @@ wdSessionStoreService.prototype.createSession = function(capabilities) {
   }
 
   fxdriver.proxy.configure(capabilities['proxy']);
+  fxdriver.modals.configure(capabilities['unexpectedAlertBehaviour']);
 
   this.sessions_[id] = session;
   return session;

@@ -17,13 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -34,7 +27,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
@@ -43,8 +35,8 @@ import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -60,6 +52,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
 
 /**
@@ -80,9 +78,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
-
-  public static final UnexpectedAlertBehaviour DEFAULT_UNEXPECTED_ALERT_BEHAVIOUR
-    = UnexpectedAlertBehaviour.DISMISS;
 
   // Accept untrusted SSL certificates.
   @Deprecated
@@ -139,12 +134,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
       for (String logtype : logsPrefs.getEnabledLogTypes()) {
         profile.setPreference("webdriver.log." + logtype, logsPrefs.getLevel(logtype).intValue());
       }
-    }
-
-    if (capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR) != null) {
-      UnexpectedAlertBehaviour unexpectedAlertBehaviour = (UnexpectedAlertBehaviour)
-          capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
-      profile.setUnexpectedAlertBehaviour(unexpectedAlertBehaviour);
     }
 
     return profile;

@@ -172,6 +172,7 @@ js_binary(name = "session_store",
   ],
   deps = [
     ":logging",
+    ":modals",
     ":moz",
     ":proxy",
     ":session",

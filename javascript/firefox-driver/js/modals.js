@@ -196,3 +196,49 @@ fxdriver.modals.signalOpenModal = function(parent, text) {
     }
   }
 };
+
+
+/**
+ * Ensure that the given value is an acceptable one for the unexpected alert
+ * behaviour setting.
+ *
+ * @param {string?} value The value to check.
+ * @return {string} The acceptable value, or 'dismiss'.
+ */
+fxdriver.modals.asAcceptableAlertValue = function(value) {
+  if ('accept' == value || 'ignore' == value) {
+    return value;
+  }
+
+  return 'dismiss';
+}
+
+
+/**
+ * Configure modal behaviours for the firefox driver.
+ *
+ * @param {string?} unexpectedAlertBehaviour How to handle unexpected alerts.
+ */
+fxdriver.modals.configure = function(unexpectedAlertBehaviour) {
+  var prefs = fxdriver.moz.getService(
+      "@mozilla.org/preferences-service;1", "nsIPrefBranch");
+
+  var value = fxdriver.modals.asAcceptableAlertValue(unexpectedAlertBehaviour);
+  prefs.setCharPref("webdriver_unexpected_alert_behaviour", value);
+};
+
+
+/**
+ * @return {string} The behavior when an unexpected alert is seen.
+ */
+fxdriver.modals.getUnexpectedAlertBehaviour = function() {
+  var prefs = fxdriver.moz.getService(
+      "@mozilla.org/preferences-service;1", "nsIPrefBranch");
+
+  if (!prefs.prefHasUserValue("webdriver_unexpected_alert_behaviour")) {
+    return 'dismiss';
+  }
+
+  var raw = prefs.getCharPref("webdriver_unexpected_alert_behaviour");
+  return fxdriver.modals.asAcceptableAlertValue(raw);
+};
