@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 public class WebDriverJsTestSuite {
 
-  private static final boolean USE_WEBBIT = true;
+  private static final boolean USE_WEBBIT = false;
 
   public static Test suite() {
     final AppServerAndTestEventSupplier appServerAndTestEventSupplier = createAppServer();
