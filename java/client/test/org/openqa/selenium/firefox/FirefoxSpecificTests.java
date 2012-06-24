@@ -30,7 +30,6 @@ import org.openqa.selenium.firefox.internal.StreamsTest;
     FirefoxDriverTest.class,
     FirefoxProfileTest.class,
     NativeEventsTest.class,
-    AlertHandlingTest.class,
     PreferencesTest.class,
     SocketLockTest.class,
     StreamsTest.class
