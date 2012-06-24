@@ -87,8 +87,8 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     Platform current = Platform.getCurrent();
     if (!current.is(Platform.WINDOWS)) {
       throw new WebDriverException(
-          String
-              .format("You appear to be running %s. The IE driver only runs on Windows.", current));
+          String.format(
+              "You appear to be running %s. The IE driver only runs on Windows.", current));
     }
   }
 

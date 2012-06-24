@@ -37,10 +37,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class InternetExplorerDriverServer {
+  private static final Logger log = Logger.getLogger(InternetExplorerDriverServer.class.getName());
   // Constantly reloading the DLL causes JVM crashes. Prefer a static field this one time.
-  private static IEServer lib = initializeLib();
+  private static final IEServer lib = initializeLib();
 
   private Pointer server;
   private int port;
@@ -85,6 +87,9 @@ public class InternetExplorerDriverServer {
     if (lib != null) {
       return lib;
     }
+    log.warning("This method of starting the IE driver is deprecated and will be removed in "
+        + "selenium 2.26. Please download the IEDriverServer.exe from "
+        + "http://code.google.com/p/selenium/downloads/list and ensure that it is in your PATH.");
     File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "libs");
     try {
       FileHandler.copyResource(parentDir, InternetExplorerDriverServer.class, "IEDriver.dll");
