@@ -33,6 +33,7 @@ import org.openqa.selenium.testing.ParallelSuite;
 @Suite.SuiteClasses({
     AlertsTest.class,
     AtomsInjectionTest.class,
+    AuthenticatedPageLoadingTest.class,
     ByTest.class,
     ChildrenFindingTest.class,
     ClearTest.class,
@@ -71,6 +72,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     TextHandlingTest.class,
     TextPagesTest.class,
     TypingTest.class,
+    UnexpectedAlertBehaviorTest.class,
     UploadTest.class,
     VisibilityTest.class,
     WebElementTest.class,
