@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.security.UserAndPassword;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.concurrent.Callable;
@@ -26,6 +27,7 @@ import java.util.concurrent.Callable;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.TestWaiter.waitFor;
 
+@Ignore
 public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
   @Test
