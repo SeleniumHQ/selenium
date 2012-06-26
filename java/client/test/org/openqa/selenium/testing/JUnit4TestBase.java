@@ -80,6 +80,9 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   }
 
   public static void removeDriver() {
+    if (Boolean.getBoolean("webdriver.singletestsuite.leaverunning")) {
+      return;
+    }
     WebDriver current = storedDriver.get();
 
     if (current == null) {
