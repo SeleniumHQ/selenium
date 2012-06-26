@@ -18,10 +18,12 @@ package org.openqa.selenium.firefox;
 
 import junit.framework.TestSuite;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -33,5 +35,10 @@ public class NativeEventsFirefoxDriverTests extends TestSuite {
   @BeforeClass
   public static void forceNativeEvents() {
     System.setProperty("selenium.browser.native_events", "true");
+  }
+
+  @AfterClass
+  public static void cleanUpDriver() {
+    JUnit4TestBase.removeDriver();
   }
 }
