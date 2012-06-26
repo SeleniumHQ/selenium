@@ -218,4 +218,30 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     assertEquals("abc defabc def", element.getAttribute("value"));
   }
+
+  @Ignore({SELENESE, HTMLUNIT, OPERA, IE, SELENESE})
+  @Test
+  public void testCombiningShiftAndClickResultsInANewWindow() {
+    if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
+      System.out.println("Skipping testCombiningShiftAndClickResultsInANewWindow: " +
+          "Only works with native events on Linux.");
+      return;
+    }
+
+    driver.get(pages.linkedImage);
+    WebElement link = driver.findElement(By.id("link"));
+    String originalTitle = driver.getTitle();
+
+    int nWindows = driver.getWindowHandles().size();
+    new Actions(driver)
+        .moveToElement(link)
+        .keyDown(Keys.SHIFT)
+        .click()
+        .keyUp(Keys.SHIFT)
+        .perform();
+
+    assertEquals("Should have opened a new window.",
+        nWindows + 1, driver.getWindowHandles().size());
+    assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
+  }
 }
