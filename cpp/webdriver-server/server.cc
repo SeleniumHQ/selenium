@@ -211,6 +211,7 @@ std::string Server::DispatchCommand(const std::string& uri,
   } else if (command == Status) {
     // Status command must be handled by the server, not by the session.
     serialized_response = this->GetStatus();
+  } else if (command == GetSessionList) {
     // GetSessionList command must be handled by the server,
     // not by the session.
     serialized_response = this->ListSessions();
