@@ -52,7 +52,7 @@ class GetWindowPositionCommandHandler : public IECommandHandler {
         return;
       }
 
-      // Though there is an atom for getting window postion, we cannot use it
+      // Though there is an atom for getting window position, we cannot use it
       // as IE doesn't allow JavaScript to get the outer window dimensions
       // (including chrome).
       HWND browser_window_handle = browser_wrapper->GetTopLevelWindowHandle();

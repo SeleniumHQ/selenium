@@ -119,6 +119,11 @@ int Server::ProcessRequest(struct mg_connection* conn,
     request_body = this->ReadRequestBody(conn, request_info);
   }
 
+  LOG(TRACE) << "Process request with: " <<
+    "URI: "  << request_info->uri <<
+    "verb: " << http_verb <<
+    "\nbody: " << request_body;
+
   if (strcmp(request_info->uri, "/") == 0) {
     this->SendHttpOk(conn,
                      request_info,
@@ -193,6 +198,8 @@ std::string Server::ReadRequestBody(struct mg_connection* conn,
 std::string Server::DispatchCommand(const std::string& uri,
                                      const std::string& http_verb,
                                      const std::string& command_body) {
+  LOG(TRACE) << "Entering Server::DispatchCommand";
+
   std::string session_id = "";
   std::string locator_parameters = "";
   std::string serialized_response = "";
@@ -200,6 +207,8 @@ std::string Server::DispatchCommand(const std::string& uri,
                                     http_verb,
                                     &session_id,
                                     &locator_parameters);
+  LOG(DEBUG) << "Command: " << http_verb << " " << uri << " " << command_body;
+
   if (command == NoCommand) {
     if (locator_parameters.size() != 0) {
       // Hand-code the response for an invalid HTTP verb for URL
@@ -260,6 +269,7 @@ std::string Server::DispatchCommand(const std::string& uri,
       }
     }
   }
+  LOG(DEBUG) << "Response: " << serialized_response;
   return serialized_response;
 }
 

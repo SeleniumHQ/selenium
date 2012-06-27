@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include "IECommandExecutor.h"
+#include "logging.h"
 #include "CommandHandlers/AcceptAlertCommandHandler.h"
 #include "CommandHandlers/AddCookieCommandHandler.h"
 #include "CommandHandlers/ClickElementCommandHandler.h"
@@ -79,7 +80,9 @@ LRESULT IECommandExecutor::OnInit(UINT uMsg,
                                   WPARAM wParam,
                                   LPARAM lParam,
                                   BOOL& bHandled) {
-  // If we wanted to be a little more clever, we could create a struct 
+  LOG(TRACE) << "Entering IECommandExecutor::OnInit";
+
+  // If we wanted to be a little more clever, we could create a struct
   // containing the HWND and the port number and pass them into the
   // ThreadProc via lpParameter and avoid this message handler altogether.
   this->port_ = (int)wParam;
@@ -90,6 +93,8 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
                                     WPARAM wParam,
                                     LPARAM lParam,
                                     BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnCreate";
+
   // NOTE: COM should be initialized on this thread, so we
   // could use CoCreateGuid() and StringFromGUID2() instead.
   UUID guid;
@@ -129,6 +134,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   CComVariant mouse_state;
   mouse_state.vt = VT_NULL;
   this->mouse_state_ = mouse_state;
+
   return 0;
 }
 
@@ -136,6 +142,8 @@ LRESULT IECommandExecutor::OnClose(UINT uMsg,
                                    WPARAM wParam,
                                    LPARAM lParam,
                                    BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnClose";
+
   this->managed_elements_.clear();
   this->DestroyWindow();
   return 0;
@@ -145,6 +153,8 @@ LRESULT IECommandExecutor::OnDestroy(UINT uMsg,
                                      WPARAM wParam,
                                      LPARAM lParam,
                                      BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnDestroy";
+
   ::PostQuitMessage(0);
   return 0;
 }
@@ -153,6 +163,8 @@ LRESULT IECommandExecutor::OnSetCommand(UINT uMsg,
                                         WPARAM wParam,
                                         LPARAM lParam,
                                         BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnSetCommand";
+
   LPCSTR json_command = reinterpret_cast<LPCSTR>(lParam);
   this->current_command_.Populate(json_command);
   return 0;
@@ -162,6 +174,8 @@ LRESULT IECommandExecutor::OnExecCommand(UINT uMsg,
                                          WPARAM wParam,
                                          LPARAM lParam,
                                          BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnExecCommand";
+
   this->DispatchCommand();
   return 0;
 }
@@ -170,6 +184,8 @@ LRESULT IECommandExecutor::OnGetResponseLength(UINT uMsg,
                                                WPARAM wParam,
                                                LPARAM lParam,
                                                BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnGetResponseLength";
+
   size_t response_length = 0;
   if (!this->is_waiting_) {
     response_length = this->serialized_response_.size();
@@ -181,6 +197,8 @@ LRESULT IECommandExecutor::OnGetResponse(UINT uMsg,
                                          WPARAM wParam,
                                          LPARAM lParam,
                                          BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnGetResponse";
+
   LPSTR str = reinterpret_cast<LPSTR>(lParam);
   strcpy_s(str,
            this->serialized_response_.size() + 1,
@@ -195,6 +213,8 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
                                   WPARAM wParam,
                                   LPARAM lParam,
                                   BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnWait";
+
   BrowserHandle browser;
   int status_code = this->GetCurrentBrowser(&browser);
   if (status_code == SUCCESS && !browser->is_closing()) {
@@ -234,6 +254,8 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
                                               WPARAM wParam,
                                               LPARAM lParam,
                                               BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnBrowserNewWindow";
+
   IWebBrowser2* browser = this->factory_.CreateBrowser();
   BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
   this->AddManagedBrowser(new_window_wrapper);
@@ -248,6 +270,8 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
                                          WPARAM wParam,
                                          LPARAM lParam,
                                          BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnBrowserQuit";
+
   LPCSTR str = reinterpret_cast<LPCSTR>(lParam);
   std::string browser_id(str);
   delete[] str;
@@ -257,6 +281,8 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
     if (this->managed_browsers_.size() == 0) {
       this->current_browser_id_ = "";
     }
+  } else {
+    LOG(WARN) << "Unable to find browser to quit with ID" << browser_id;
   }
   return 0;
 }
@@ -265,6 +291,8 @@ LRESULT IECommandExecutor::OnIsSessionValid(UINT uMsg,
                                             WPARAM wParam,
                                             LPARAM lParam,
                                             BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnIsSessionValid";
+
   return this->is_valid_ ? 1 : 0;
 }
 
@@ -272,10 +300,13 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
                                            WPARAM wParam,
                                            LPARAM lParam,
                                            BOOL& bHandles) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnNewHtmlDialog";
+
   HWND dialog_handle = reinterpret_cast<HWND>(lParam);
   BrowserMap::const_iterator it = this->managed_browsers_.begin();
   for (; it != this->managed_browsers_.end(); ++it) {
     if (dialog_handle == it->second->window_handle()) {
+      LOG(DEBUG) << "Dialog is equal to one managed browser";
       return 0;
     }
   }
@@ -287,6 +318,8 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
     this->AddManagedBrowser(BrowserHandle(new HtmlDialog(window,
                                                          dialog_handle,
                                                          this->m_hWnd)));
+  } else {
+    LOG(WARN) << "Unable to get document from dialog";
   }
   return 0;
 }
@@ -312,6 +345,7 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
                                                   CWindow::rcDefault);
   if (session_window_handle == NULL) {
     error = ::GetLastError();
+    LOG(WARN) << "Unable to create new session: " << error;
   }
 
   // Return the HWND back through lpParameter, and signal that the
@@ -335,11 +369,14 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
 }
 
 void IECommandExecutor::DispatchCommand() {
+  LOG(TRACE) << "Entering IECommandExecutor::DispatchCommand";
+
   Response response(this->session_id_);
   CommandHandlerMap::const_iterator found_iterator = 
       this->command_handlers_.find(this->current_command_.command_type());
 
   if (found_iterator == this->command_handlers_.end()) {
+    LOG(WARN) << "Unable to find command handler for " << this->current_command_.command_type();
     response.SetErrorResponse(501, "Command not implemented");
   } else {
     BrowserHandle browser;
@@ -352,9 +389,13 @@ void IECommandExecutor::DispatchCommand() {
         // and not a showModalDialog() window.
         vector<char> window_class_name(34);
         ::GetClassNameA(alert_handle, &window_class_name[0], 34);
-        if (strcmp("#32770", &window_class_name[0]) == 0) {
+        if (strcmp(ALERT_WINDOW_CLASS, &window_class_name[0]) == 0) {
           alert_is_active = true;
+        } else {
+          LOG(WARN) << "Found alert handle does not have a window class consistent with an alert";
         }
+      } else {
+        LOG(DEBUG) << "No alert handle is found";
       }
       int command_type = this->current_command_.command_type();
       if (alert_is_active &&
@@ -362,14 +403,19 @@ void IECommandExecutor::DispatchCommand() {
           command_type != SendKeysToAlert &&
           command_type != AcceptAlert &&
           command_type != DismissAlert) {
+        LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
         response.SetErrorResponse(EMODALDIALOGOPENED, "Modal dialog present");
         ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
         this->serialized_response_ = response.Serialize();
         return;
+      } else if (alert_is_active) {
+        LOG(DEBUG) << "Alert is detected, and the sent command is valid";
       }
+    } else {
+      LOG(WARN) << "Unable to find current browser";
     }
 
-	CommandHandlerHandle command_handler = found_iterator->second;
+	  CommandHandlerHandle command_handler = found_iterator->second;
     command_handler->Execute(*this, this->current_command_, &response);
 
     status_code = this->GetCurrentBrowser(&browser);
@@ -381,6 +427,8 @@ void IECommandExecutor::DispatchCommand() {
         }
         ::PostMessage(this->m_hWnd, WD_WAIT, NULL, NULL);
       }
+    } else {
+      LOG(WARN) << "Unable to get current browser";
     }
   }
 
@@ -388,18 +436,23 @@ void IECommandExecutor::DispatchCommand() {
 }
 
 int IECommandExecutor::GetCurrentBrowser(BrowserHandle* browser_wrapper) const {
+  LOG(TRACE) << "Entering IECommandExecutor::GetCurrentBrowser";
   return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
 }
 
 int IECommandExecutor::GetManagedBrowser(const std::string& browser_id,
                                          BrowserHandle* browser_wrapper) const {
+  LOG(TRACE) << "Entering IECommandExecutor::GetManagedBrowser";
+
   if (browser_id == "") {
+    LOG(WARN) << "Browser ID requested was an empty string";
     return ENOSUCHDRIVER;
   }
 
   BrowserMap::const_iterator found_iterator = 
       this->managed_browsers_.find(browser_id);
   if (found_iterator == this->managed_browsers_.end()) {
+    LOG(WARN) << "Unable to find managed browser with id " << browser_id;
     return ENOSUCHDRIVER;
   }
 
@@ -408,6 +461,8 @@ int IECommandExecutor::GetManagedBrowser(const std::string& browser_id,
 }
 
 void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::string>* managed_browser_handles) const {
+  LOG(TRACE) << "Entering IECommandExecutor::GetManagedBrowserHandles";
+
   BrowserMap::const_iterator it = this->managed_browsers_.begin();
   for (; it != this->managed_browsers_.end(); ++it) {
     managed_browser_handles->push_back(it->first);
@@ -418,13 +473,18 @@ void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::string>* manag
 }
 
 void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
+  LOG(TRACE) << "Entering IECommandExecutor::AddManagedBrowser";
+
   this->managed_browsers_[browser_wrapper->browser_id()] = browser_wrapper;
   if (this->current_browser_id_ == "") {
+    LOG(TRACE) << "Setting current browser id to " << browser_wrapper->browser_id();
     this->current_browser_id_ = browser_wrapper->browser_id();
   }
 }
 
 int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
+  LOG(TRACE) << "Entering IECommandExecutor::CreateNewBrowser";
+
   vector<char> port_buffer(10);
   _itoa_s(this->port_, &port_buffer[0], 10, 10);
   std::string port(&port_buffer[0]);
@@ -437,9 +497,11 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   DWORD process_id = this->factory_.LaunchBrowserProcess(initial_url,
       this->ignore_protected_mode_settings_, error_message);
   if (process_id == NULL) {
+    LOG(WARN) << "Unable to launch browser, received process ID of NULL";
     this->is_waiting_ = false;
     return ENOSUCHDRIVER;
   }
+
   ProcessWindowInfo process_window_info;
   process_window_info.dwProcessId = process_id;
   process_window_info.hwndBrowser = NULL;
@@ -454,8 +516,11 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
 
 int IECommandExecutor::GetManagedElement(const std::string& element_id,
                                          ElementHandle* element_wrapper) const {
+  LOG(TRACE) << "Entering IECommandExecutor::GetManagedElement";
+
   ElementMap::const_iterator found_iterator = this->managed_elements_.find(element_id);
   if (found_iterator == this->managed_elements_.end()) {
+    LOG(DEBUG) << "Unable to find managed element with id " << element_id;
     return ENOSUCHELEMENT;
   }
 
@@ -465,6 +530,8 @@ int IECommandExecutor::GetManagedElement(const std::string& element_id,
 
 void IECommandExecutor::AddManagedElement(IHTMLElement* element,
                                           ElementHandle* element_wrapper) {
+  LOG(TRACE) << "Entering IECommandExecutor::AddManagedElement";
+
   // TODO: This method needs much work. If we are already managing a
   // given element, we don't want to assign it a new ID, but to find
   // out if we're managing it already, we need to compare to all of 
@@ -483,34 +550,46 @@ void IECommandExecutor::AddManagedElement(IHTMLElement* element,
   }
 
   if (!element_already_managed) {
+    LOG(DEBUG) << "Element is not yet managed";
     BrowserHandle current_browser;
     this->GetCurrentBrowser(&current_browser);
     ElementHandle new_wrapper(new Element(element,
                                           current_browser->GetWindowHandle()));
     this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
     *element_wrapper = new_wrapper;
+  } else {
+    LOG(DEBUG) << "Element is already managed";
   }
 }
 
 void IECommandExecutor::RemoveManagedElement(const std::string& element_id) {
+  LOG(TRACE) << "Entering IECommandExecutor::RemoveManagedElement";
+
   ElementMap::iterator found_iterator = this->managed_elements_.find(element_id);
   if (found_iterator != this->managed_elements_.end()) {
     this->managed_elements_.erase(element_id);
+  } else {
+    LOG(DEBUG) << "Unable to find element to remove with id " << element_id;
   }
 }
 
 void IECommandExecutor::ListManagedElements() {
+  LOG(TRACE) << "Entering IECommandExecutor::ListManagedElements";
+
   ElementMap::iterator it = this->managed_elements_.begin();
   for (; it != this->managed_elements_.end(); ++it) {
-    std::cout << it->first << "\n";
+    LOG(DEBUG) << it->first;
   }
 }
 
 int IECommandExecutor::GetElementFindMethod(const std::string& mechanism,
                                             std::wstring* translation) const {
+  LOG(TRACE) << "Entering IECommandExecutor::GetElementFindMethod";
+
   ElementFindMethodMap::const_iterator found_iterator =
       this->element_find_methods_.find(mechanism);
   if (found_iterator == this->element_find_methods_.end()) {
+    LOG(WARN) << "Unable to determine find method " << mechanism;
     return EUNHANDLEDERROR;
   }
 
@@ -522,12 +601,16 @@ int IECommandExecutor::LocateElement(const ElementHandle parent_wrapper,
                                      const std::string& mechanism,
                                      const std::string& criteria,
                                      Json::Value* found_element) const {
+  LOG(TRACE) << "Entering IECommandExecutor::LocateElement";
+
   std::wstring mechanism_translation = L"";
   int status_code = this->GetElementFindMethod(mechanism,
                                                &mechanism_translation);
   if (status_code != SUCCESS) {
+    LOG(WARN) << "Unable to determine mechanism translation for " << mechanism;
     return status_code;
   }
+
   std::wstring wide_criteria = CA2W(criteria.c_str(), CP_UTF8);
   return this->element_finder().FindElement(*this,
                                             parent_wrapper,
@@ -540,12 +623,16 @@ int IECommandExecutor::LocateElements(const ElementHandle parent_wrapper,
                                       const std::string& mechanism,
                                       const std::string& criteria,
                                       Json::Value* found_elements) const {
+  LOG(TRACE) << "Entering IECommandExecutor::LocateElements";
+
   std::wstring mechanism_translation = L"";
   int status_code = this->GetElementFindMethod(mechanism,
                                                &mechanism_translation);
   if (status_code != SUCCESS) {
+    LOG(WARN) << "Unable to determine mechanism translation for " << mechanism;
     return status_code;
   }
+
   std::wstring wide_criteria = CA2W(criteria.c_str(), CP_UTF8);
   return this->element_finder().FindElements(*this,
                                              parent_wrapper,
@@ -555,6 +642,8 @@ int IECommandExecutor::LocateElements(const ElementHandle parent_wrapper,
 }
 
 void IECommandExecutor::PopulateElementFinderMethods(void) {
+  LOG(TRACE) << "Entering IECommandExecutor::PopulateElementFinderMethods";
+
   this->element_find_methods_["id"] = L"id";
   this->element_find_methods_["name"] = L"name";
   this->element_find_methods_["tag name"] = L"tagName";
@@ -566,6 +655,8 @@ void IECommandExecutor::PopulateElementFinderMethods(void) {
 }
 
 void IECommandExecutor::PopulateCommandHandlers() {
+  LOG(TRACE) << "Entering IECommandExecutor::PopulateCommandHandlers";
+
   this->command_handlers_[NoCommand] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[GetCurrentWindowHandle] = CommandHandlerHandle(new GetCurrentWindowHandleCommandHandler);
   this->command_handlers_[GetWindowHandles] = CommandHandlerHandle(new GetAllWindowHandlesCommandHandler);

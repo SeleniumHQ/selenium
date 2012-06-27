@@ -184,7 +184,7 @@ BOOL CALLBACK HtmlDialog::FindChildDialogWindow(HWND hwnd, LPARAM arg) {
   if (::GetWindow(hwnd, GW_OWNER) == window_info->hwndOwner) {
     vector<char> window_class_name(34);
     if (GetClassNameA(hwnd, &window_class_name[0], 34)) {
-      if (strcmp("Internet Explorer_TridentDlgFrame",
+      if (strcmp(HTML_DIALOG_WINDOW_CLASS,
           &window_class_name[0]) == 0) {
         window_info->hwndDialog = hwnd;
         return FALSE;

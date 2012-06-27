@@ -20,6 +20,7 @@
 #include <mshtmdid.h>
 #include "DocumentHost.h"
 #include "messages.h"
+#include "BrowserFactory.h"
 
 using namespace std;
 

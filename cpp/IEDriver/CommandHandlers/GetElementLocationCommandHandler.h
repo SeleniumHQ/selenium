@@ -57,9 +57,9 @@ class GetElementLocationCommandHandler : public IECommandHandler {
         // Furthermore, we need to invoke the function that is the atom and
         // get the result, but we need to wrap the execution in another function
         // so that it can be invoked without polluting the current namespace.
-				std::wstring script_source = L"(function() { return function() { var result = ";
+        std::wstring script_source = L"(function() { return function() { var result = ";
         script_source += L"(function() { return (";
-				script_source += atoms::asString(atoms::GET_LOCATION);
+        script_source += atoms::asString(atoms::GET_LOCATION);
         script_source += L")})().apply(null, arguments);";
         script_source += L"return [result.x, result.y]; };})();";
 

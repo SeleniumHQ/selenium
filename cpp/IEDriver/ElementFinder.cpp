@@ -15,6 +15,7 @@
 #include "Generated/jsxpath.h"
 #include "Generated/sizzle.h"
 #include "IECommandExecutor.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -29,6 +30,8 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
                                const std::wstring& mechanism,
                                const std::wstring& criteria,
                                Json::Value* found_element) {
+  LOG(TRACE) << "Entering ElmentFinder::FindElement";
+
   BrowserHandle browser;
   int status_code = executor.GetCurrentBrowser(&browser);
   if (status_code == SUCCESS) {
@@ -76,12 +79,16 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
         if (status_code == SUCCESS && script_wrapper.ResultIsElement()) {
           script_wrapper.ConvertResultToJsonValue(executor, found_element);
         } else {
+          LOG(WARN) << "Unable to find element by mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
           status_code = ENOSUCHELEMENT;
         }
       } else {
+        LOG(WARN) << "Unable to create criteria object for mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
         status_code = ENOSUCHELEMENT;
       }
     }
+  } else {
+    LOG(WARN) << "Unable to get browser";
   }
   return status_code;
 }
@@ -91,6 +98,8 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
                                 const std::wstring& mechanism,
                                 const std::wstring& criteria,
                                 Json::Value* found_elements) {
+  LOG(TRACE) << "Entering ElmentFinder::FindElements";
+
   BrowserHandle browser;
   int status_code = executor.GetCurrentBrowser(&browser);
   if (status_code == SUCCESS) {
@@ -136,10 +145,20 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
           if (script_wrapper.ResultIsArray() || 
               script_wrapper.ResultIsElementCollection()) {
             script_wrapper.ConvertResultToJsonValue(executor, found_elements);
+          } else {
+            LOG(WARN) << "Returned value is not an array or element collection";
           }
+        } else {
+          LOG(WARN) << "Unable to find elements by mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
+          status_code = ENOSUCHELEMENT;
         }
+      } else {
+        LOG(WARN) << "Unable to create criteria object for mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
+        status_code = ENOSUCHELEMENT;
       }
     }
+  } else {
+    LOG(WARN) << "Unable to get browser";
   }
   return status_code;
 }
@@ -148,11 +167,14 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
                                             const ElementHandle parent_wrapper,
                                             const std::wstring& criteria,
                                             Json::Value* found_element) {
-  int result = ENOSUCHELEMENT;
+  LOG(TRACE) << "Entering ElementFinder::FindElementByCssSelector";
+
+  int result;
 
   BrowserHandle browser;
   result = executor.GetCurrentBrowser(&browser);
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to get browser";
     return result;
   }
 
@@ -179,11 +201,14 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
 
   if (result == SUCCESS) {
     if (!script_wrapper.ResultIsElement()) {
+      LOG(WARN) << "Found result is not element";
       result = ENOSUCHELEMENT;
     } else {
       result = script_wrapper.ConvertResultToJsonValue(executor,
                                                        found_element);
     }
+  } else {
+    LOG(WARN) << "Unable to find elements";
   }
 
   return result;
@@ -193,11 +218,14 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
                                              const ElementHandle parent_wrapper,
                                              const std::wstring& criteria,
                                              Json::Value* found_elements) {
-  int result = ENOSUCHELEMENT;
+  LOG(TRACE) << "Entering ElementFinder::FindElementsByCssSelector";
+
+  int result;
 
   BrowserHandle browser;
   result = executor.GetCurrentBrowser(&browser);
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to get browser";
     return result;
   }
 
@@ -224,29 +252,43 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
   }
 
   result = script_wrapper.Execute();
-  CComVariant snapshot = script_wrapper.result();
-
-  std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].length;}})();";
-  Script get_element_count_script_wrapper(doc, get_element_count_script, 1);
-  get_element_count_script_wrapper.AddArgument(snapshot);
-  result = get_element_count_script_wrapper.Execute();
   if (result == SUCCESS) {
-    if (!get_element_count_script_wrapper.ResultIsInteger()) {
-      result = EUNEXPECTEDJSERROR;
-    } else {
-      long length = get_element_count_script_wrapper.result().lVal;
-      std::wstring get_next_element_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
-      for (long i = 0; i < length; ++i) {
-        Script get_element_script_wrapper(doc, get_next_element_script, 2);
-        get_element_script_wrapper.AddArgument(snapshot);
-        get_element_script_wrapper.AddArgument(i);
-        result = get_element_script_wrapper.Execute();
-        Json::Value json_element;
-        get_element_script_wrapper.ConvertResultToJsonValue(executor,
+
+    CComVariant snapshot = script_wrapper.result();
+
+    std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].length;}})();";
+    Script get_element_count_script_wrapper(doc, get_element_count_script, 1);
+    get_element_count_script_wrapper.AddArgument(snapshot);
+    result = get_element_count_script_wrapper.Execute();
+    if (result == SUCCESS) {
+      if (!get_element_count_script_wrapper.ResultIsInteger()) {
+        LOG(WARN) << "Found elements count is not integer";
+        result = EUNEXPECTEDJSERROR;
+      } else {
+        long length = get_element_count_script_wrapper.result().lVal;
+        std::wstring get_next_element_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
+        for (long i = 0; i < length; ++i) {
+          Script get_element_script_wrapper(doc, get_next_element_script, 2);
+          get_element_script_wrapper.AddArgument(snapshot);
+          get_element_script_wrapper.AddArgument(i);
+          result = get_element_script_wrapper.Execute();
+          if (result == SUCCESS) {
+            Json::Value json_element;
+            get_element_script_wrapper.ConvertResultToJsonValue(executor,
                                                             &json_element);
-        found_elements->append(json_element);
+            found_elements->append(json_element);
+          } else {
+            LOG(WARN) << "Unable to get " << i << " found element";
+          }
+        }
       }
+    } else {
+      LOG(WARN) << "Unable to get count of found elements";
+      result = EUNEXPECTEDJSERROR;
     }
+
+  } else {
+    LOG(WARN) << "Execution returned error";
   }
 
   return result;
@@ -256,17 +298,21 @@ int ElementFinder::FindElementByXPath(const IECommandExecutor& executor,
                                       const ElementHandle parent_wrapper,
                                       const std::wstring& criteria,
                                       Json::Value* found_element) {
-  int result = ENOSUCHELEMENT;
+  LOG(TRACE) << "Entering ElementFinder::FindElementByXPath";
+
+  int result;
 
   BrowserHandle browser;
   result = executor.GetCurrentBrowser(&browser);
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to get browser";
     return result;
   }
 
   result = this->InjectXPathEngine(browser);
   // TODO(simon): Why does the injecting sometimes fail?
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to inject xpath engine";
     return result;
   }
 
@@ -292,10 +338,12 @@ int ElementFinder::FindElementByXPath(const IECommandExecutor& executor,
 
   if (result == SUCCESS) {
     if(script_wrapper.ResultIsEmpty()){
+      LOG(WARN) << "Unable to find elements by xpath";
       result = ENOSUCHELEMENT;
     } else if (!script_wrapper.ResultIsElement()) {
       // The xpath expression did not result in the selection of an element,
-      // so the expression was invalid. 
+      // so the expression was invalid.
+      LOG(WARN) << "No elements we found by xpath";
       result = EINVALIDSELECTOR;
     } else {
       result = script_wrapper.ConvertResultToJsonValue(executor, found_element);
@@ -303,6 +351,10 @@ int ElementFinder::FindElementByXPath(const IECommandExecutor& executor,
   } else if (result == EUNEXPECTEDJSERROR) {
     // The given xpath expression caused an error. We change the error code so that it is
     // consistent with the error  codes of the other browsers.
+    LOG(WARN) << "Unable to exec xpath due js error";
+    result = EINVALIDSELECTOR;
+  } else {
+    LOG(WARN) << "Unable to exec xpath";
     result = EINVALIDSELECTOR;
   }
 
@@ -313,16 +365,20 @@ int ElementFinder::FindElementsByXPath(const IECommandExecutor& executor,
                                        const ElementHandle parent_wrapper,
                                        const std::wstring& criteria,
                                        Json::Value* found_elements) {
-  int result = ENOSUCHELEMENT;
+  LOG(TRACE) << "Entering ElementFinder::FindElementsByXPath";
+
+  int result;
 
   BrowserHandle browser;
   result = executor.GetCurrentBrowser(&browser);
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to get browser";
     return result;
   }
   result = this->InjectXPathEngine(browser);
   // TODO(simon): Why does the injecting sometimes fail?
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to inject xpath engine";
     return result;
   }
 
@@ -351,6 +407,7 @@ int ElementFinder::FindElementsByXPath(const IECommandExecutor& executor,
   if (result != SUCCESS) {
     // The given xpath expression caused an error. We change the error code so that it is 
     // consistent with the error codes of the other browsers.
+    LOG(WARN) << "Unable to exec xpath";
     return EINVALIDSELECTOR;
   }
 
@@ -362,6 +419,7 @@ int ElementFinder::FindElementsByXPath(const IECommandExecutor& executor,
   result = get_element_count_script_wrapper.Execute();
   if (result == SUCCESS) {
     if (!get_element_count_script_wrapper.ResultIsInteger()) {
+      LOG(WARN) << "Unable to parse xpath result count as integer";
       result = EUNEXPECTEDJSERROR;
     } else {
       long length = get_element_count_script_wrapper.result().lVal;
@@ -371,18 +429,26 @@ int ElementFinder::FindElementsByXPath(const IECommandExecutor& executor,
         get_element_script_wrapper.AddArgument(snapshot);
         get_element_script_wrapper.AddArgument(i);
         result = get_element_script_wrapper.Execute();
-        Json::Value json_element;
-        get_element_script_wrapper.ConvertResultToJsonValue(executor,
+        if (result == SUCCESS) {
+          Json::Value json_element;
+          get_element_script_wrapper.ConvertResultToJsonValue(executor,
                                                             &json_element);
-        found_elements->append(json_element);
+          found_elements->append(json_element);
+        } else {
+          LOG(WARN) << "Unable to load " << i << " element found by xpath";
+        }
       }
     }
+  } else {
+    LOG(WARN) << "Unable to exec xpath result count";
   }
 
   return result;
 }
 
 int ElementFinder::InjectXPathEngine(BrowserHandle browser_wrapper) {
+  LOG(TRACE) << "Entering ElementFinder::InjectXPathEngine";
+
   // Inject the XPath engine
   std::wstring script_source;
   for (int i = 0; XPATHJS[i]; i++) {
@@ -399,6 +465,8 @@ int ElementFinder::InjectXPathEngine(BrowserHandle browser_wrapper) {
 
 void ElementFinder::SanitizeCriteria(const std::wstring& mechanism,
                                      std::wstring* criteria) {
+  LOG(TRACE) << "Entering ElementFinder::SanitizeCriteria";
+
   if (mechanism == L"linkText" || mechanism == L"partialLinkText") {
     this->ReplaceAllSubstrings(L"\\", L"\\\\", criteria);
     this->ReplaceAllSubstrings(L"\"", L"\\\"", criteria);
@@ -408,6 +476,8 @@ void ElementFinder::SanitizeCriteria(const std::wstring& mechanism,
 void ElementFinder::ReplaceAllSubstrings(const std::wstring& to_replace,
                                          const std::wstring& replace_with,
                                          std::wstring* str) {
+  LOG(TRACE) << "Entering ElementFinder::ReplaceAllSubstrings";
+
   size_t pos = str->find(to_replace);
   while (pos != std::wstring::npos) {
     str->replace(pos, to_replace.length(), replace_with);

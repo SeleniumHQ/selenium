@@ -31,6 +31,8 @@
 namespace webdriver {
 
 Element::Element(IHTMLElement* element, HWND containing_window_handle) {
+  LOG(TRACE) << "Entering Element::Element";
+
   // NOTE: COM should be initialized on this thread, so we
   // could use CoCreateGuid() and StringFromGUID2() instead.
   UUID guid;
@@ -53,12 +55,17 @@ Element::~Element(void) {
 }
 
 Json::Value Element::ConvertToJson() {
+  LOG(TRACE) << "Entering Element::ConvertToJson";
+
   Json::Value json_wrapper;
   json_wrapper["ELEMENT"] = this->element_id_;
+
   return json_wrapper;
 }
 
 int Element::IsDisplayed(bool* result) {
+  LOG(TRACE) << "Entering Element::IsDisplayed";
+
   int status_code = SUCCESS;
 
   // The atom is just the definition of an anonymous
@@ -83,6 +90,8 @@ int Element::IsDisplayed(bool* result) {
 }
 
 std::string Element::GetTagName() {
+  LOG(TRACE) << "Entering Element::GetTagName";
+
   CComBSTR tag_name_bstr;
   this->element_->get_tagName(&tag_name_bstr);
   tag_name_bstr.ToLower();
@@ -91,6 +100,8 @@ std::string Element::GetTagName() {
 }
 
 bool Element::IsEnabled() {
+  LOG(TRACE) << "Entering Element::IsEnabled";
+
   bool result(false);
 
   // The atom is just the definition of an anonymous
@@ -114,6 +125,8 @@ bool Element::IsEnabled() {
 }
 
 int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
+  LOG(TRACE) << "Entering Element::Click";
+
   long x = 0, y = 0, w = 0, h = 0;
   int status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &x, &y, &w, &h);
 
@@ -130,6 +143,7 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
                                  click_x,
                                  click_y);
     if (result != SUCCESS) {
+      LOG(WARN) << "Unable to move mouse, mouseMoveTo returned non-zero value";
       return static_cast<int>(result);
     }
     
@@ -138,17 +152,23 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
                      click_y,
                      MOUSEBUTTON_LEFT);
     if (result != SUCCESS) {
+      LOG(WARN) << "Unable to click at by mouse, clickAt returned non-zero value";
       return static_cast<int>(result);
     }
 
     //wait(50);
+  } else {
+    LOG(WARN) << "Unable to get location of clicked element";
   }
+
   return status_code;
 }
 
 int Element::GetAttributeValue(const std::string& attribute_name,
                                std::string* attribute_value,
                                bool* value_is_null) {
+  LOG(TRACE) << "Entering Element::GetAttributeValue";
+
   std::wstring wide_attribute_name = CA2W(attribute_name.c_str(), CP_UTF8);
   int status_code = SUCCESS;
 
@@ -179,22 +199,26 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
                                              long* y,
                                              long* width,
                                              long* height) {
+  LOG(TRACE) << "Entering Element::GetLocationOnceScrolledIntoView";
+
   int status_code = SUCCESS;
   CComPtr<IHTMLDOMNode2> node;
   HRESULT hr = this->element_->QueryInterface(&node);
 
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Cannot cast html element to node";
+    LOGHR(WARN, hr) << "Cannot cast html element to node, QI on IHTMLElement for IHTMLDOMNode2 failed";
     return ENOSUCHELEMENT;
   }
 
   bool displayed;
   int result = this->IsDisplayed(&displayed);
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to determine element is displayed";
     return result;
   } 
 
   if (!displayed) {
+    LOG(WARN) << "Element is not displayed";
     return EELEMENTNOTDISPLAYED;
   }
 
@@ -214,12 +238,13 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
     }
     hr = this->element_->scrollIntoView(scroll_behavior);
     if (FAILED(hr)) {
-      LOGHR(WARN, hr) << "Cannot scroll element into view";
+      LOGHR(WARN, hr) << "Cannot scroll element into view, IHTMLElement::scrollIntoView failed";
       return EOBSOLETEELEMENT;
     }
 
     result = this->GetLocation(&left, &top, &element_width, &element_height);
     if (result != SUCCESS) {
+      LOG(WARN) << "Unable to get location of scrolled to element";
       return result;
     }
 
@@ -227,6 +252,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
                                       top,
                                       element_width,
                                       element_height)) {
+      LOG(WARN) << "Scrolled element is not in view";
       status_code = EELEMENTCLICKPOINTNOTSCROLLED;
     }
   }
@@ -237,16 +263,19 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
   // style attributes, and we've made a best effort at scrolling it so
   // that it's completely within the viewport. We will always return
   // the coordinates of the element, even if the scrolling is unsuccessful.
-  // However, we will stgill return the "element not displayed" status code
+  // However, we will still return the "element not displayed" status code
   // if the click point has not been scrolled to the viewport.
   *x = left;
   *y = top;
   *width = element_width;
   *height = element_height;
+
   return status_code;
 }
 
 bool Element::IsHiddenByOverflow() {
+  LOG(TRACE) << "Entering Element::IsHiddenByOverflow";
+
   bool isOverflow = false;
 
   // Use JavaScript for this rather than COM calls to avoid dependency
@@ -289,6 +318,8 @@ bool Element::IsHiddenByOverflow() {
 }
 
 bool Element::IsSelected() {
+  LOG(TRACE) << "Entering Element::IsSelected";
+
   bool selected(false);
   // The atom is just the definition of an anonymous
   // function: "function() {...}"; Wrap it in another function so we can
@@ -311,6 +342,8 @@ bool Element::IsSelected() {
 }
 
 int Element::GetLocation(long* x, long* y, long* width, long* height) {
+  LOG(TRACE) << "Entering Element::GetLocation";
+
   *x = 0, *y = 0, *width = 0, *height = 0;
 
   bool hasAbsolutePositionReadyToReturn = false;
@@ -318,7 +351,7 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
   CComPtr<IHTMLElement2> element2;
   HRESULT hr = this->element_->QueryInterface(&element2);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to cast element to correct type";
+    LOGHR(WARN, hr) << "Unable to cast element to IHTMLElement2";
     return EOBSOLETEELEMENT;
   }
 
@@ -329,6 +362,7 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     long rect_count;
     rects->get_length(&rect_count);
     if (rect_count > 1) {
+      LOG(DEBUG) << "Element is inline with multiple client rects, finding first non-zero sized client rect";
       for (long i = 0; i < rect_count; ++i) {
         CComVariant index(i);
         CComVariant rect_variant;
@@ -344,13 +378,15 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
         }
       }
     } else {
+      LOG(DEBUG) << "Element is inline with one client rect, using IHTMLElement2::getBoundingClientRect";
       hr = element2->getBoundingClientRect(&rect);
     }
   } else {
+    LOG(DEBUG) << "Element is a block element, using IHTMLElement2::getBoundingClientRect";
     hr = element2->getBoundingClientRect(&rect);
   }
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Cannot figure out where the element is on screen";
+    LOGHR(WARN, hr) << "Cannot figure out where the element is on screen, client rect retrieval failed";
     return EUNHANDLEDERROR;
   }
 
@@ -358,6 +394,7 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
   // children to see if any of them have width and height, in which
   // case, this element will be visible.
   if (!RectHasNonZeroDimensions(rect)) {
+    LOG(DEBUG) << "Element has client rect with zero dimension, checking children for non-zero dimension client rects";
     CComPtr<IHTMLDOMNode> node;
     element2->QueryInterface(&node);
     CComPtr<IDispatch> childrenDispatch;
@@ -420,6 +457,8 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
 }
 
 bool Element::IsInline() {
+  LOG(TRACE) << "Entering Element::IsInline";
+
   // TODO(jimevans): Clean up this extreme lameness.
   // We should be checking styles here for whether the
   // element is inline or not.
@@ -439,6 +478,8 @@ bool Element::IsInline() {
 }
 
 bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect) {
+  LOG(TRACE) << "Entering Element::RectHasNonZeroDimensions";
+
   long top = 0, bottom = 0, left = 0, right = 0;
 
   rect->get_top(&top);
@@ -448,20 +489,24 @@ bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect) {
 
   long w = right - left;
   long h = bottom - top;
+
   return w > 0 && h > 0;
 }
 
 int Element::GetFrameOffset(long* x, long* y) {
+  LOG(TRACE) << "Entering Element::GetFrameOffset";
+
   CComPtr<IHTMLDocument2> owner_doc;
   int status_code = this->GetContainingDocument(true, &owner_doc);
   if (status_code != SUCCESS) {
+    LOG(WARN) << "Unable to get containing document";
     return status_code;
   }
 
   CComPtr<IHTMLWindow2> owner_doc_window;
   HRESULT hr = owner_doc->get_parentWindow(&owner_doc_window);
   if (!owner_doc_window) {
-    LOG(WARN) << "Unable to get parent window";
+    LOG(WARN) << "Unable to get parent window, call to IHTMLDocument2::get_parentWindow failed";
     return ENOSUCHDOCUMENT;
   }
 
@@ -521,10 +566,13 @@ int Element::GetFrameOffset(long* x, long* y) {
       }
     }
   }
+
   return SUCCESS;
 }
 
 void Element::GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y) {
+  LOG(TRACE) << "Entering Element::GetClickPoint";
+
   //Note: This logic is duplicated in javascript in Element::IsHiddenByOverflow
   *click_x = x + (width / 2);
   *click_y = y + (height / 2);
@@ -534,17 +582,23 @@ bool Element::IsClickPointInViewPort(const long x,
                                      const long y,
                                      const long width,
                                      const long height) {
+  LOG(TRACE) << "Entering Element::IsClickPointInViewPort";
+
   long click_x, click_y;
   GetClickPoint(x, y, width, height, &click_x, &click_y);
 
   WINDOWINFO window_info;
   if (!::GetWindowInfo(this->containing_window_handle_, &window_info)) {
-    LOG(WARN) << "Cannot determine size of window";
+    LOG(WARN) << "Cannot determine size of window, call to GetWindowInfo API failed";
     return false;
   }
 
-    long window_width = window_info.rcClient.right - window_info.rcClient.left;
-    long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
+  long window_width = window_info.rcClient.right - window_info.rcClient.left;
+  long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
+
+  long window_x_border = window_info.cxWindowBorders;
+  long window_y_border = window_info.cyWindowBorders;
+  LOG(DEBUG) << "x border: " << window_x_border << ", y border: " << window_y_border;
 
   // Hurrah! Now we know what the visible area of the viewport is
   // Is the element visible in the X axis?
@@ -553,37 +607,43 @@ bool Element::IsClickPointInViewPort(const long x,
   // within the client area. We are assuming n == 2, but that's strictly
   // a wild guess, not based on any research.
   if (click_x < 0 || click_x >= window_width - 2) {
+    LOG(WARN) << "Click X coordinate is out of element area";
     return false;
   }
 
   // And in the Y?
   if (click_y < 0 || click_y >= window_height - 2) {
+    LOG(WARN) << "Click Y coordinate is out of element area";
     return false;
   }
+
   return true;
 }
 
 int Element::GetContainingDocument(const bool use_dom_node,
                                    IHTMLDocument2** doc) {
+  LOG(TRACE) << "Entering Element::GetContainingDocument";
+
   HRESULT hr = S_OK;
   CComPtr<IDispatch> dispatch_doc;
+
   if (use_dom_node) {
     CComPtr<IHTMLDOMNode2> node;
     hr = this->element_->QueryInterface(&node);
     if (FAILED(hr)) {
-      LOG(WARN) << "Unable to cast element to IHTMLDomNode2";
+      LOGHR(WARN, hr) << "Unable to cast element to IHTMLDomNode2";
       return ENOSUCHDOCUMENT;
     }
 
     hr = node->get_ownerDocument(&dispatch_doc);
     if (FAILED(hr)) {
-      LOG(WARN) << "Unable to locate owning document";
+      LOGHR(WARN, hr) << "Unable to locate owning document, call to IHTMLDOMNode2::get_ownerDocument failed";
       return ENOSUCHDOCUMENT;
     }
   } else {
     hr = this->element_->get_document(&dispatch_doc);
     if (FAILED(hr)) {
-      LOG(WARN) << "Unable to locate document property";
+      LOGHR(WARN, hr) << "Unable to locate document property, call to IHTMLELement::get_document failed";
       return ENOSUCHDOCUMENT;
     }
 
@@ -592,10 +652,11 @@ int Element::GetContainingDocument(const bool use_dom_node,
   try {
     hr = dispatch_doc.QueryInterface<IHTMLDocument2>(doc);
     if (FAILED(hr)) {
-      LOG(WARN) << "Found document but it's not the expected type";
+      LOGHR(WARN, hr) << "Found document but it's not the expected type (IHTMLDocument2)";
       return ENOSUCHDOCUMENT;
     }
   } catch(...) {
+    LOG(WARN) << "Found document but it's not the expected type (IHTMLDocument2)";
     return ENOSUCHDOCUMENT;
   }
 
@@ -604,27 +665,38 @@ int Element::GetContainingDocument(const bool use_dom_node,
 
 int Element::GetParentDocument(IHTMLWindow2* parent_window,
                                IHTMLDocument2** parent_doc) {
+  LOG(TRACE) << "Entering Element::GetParentDocument";
+
   HRESULT hr = parent_window->get_document(parent_doc);
-  if (hr == E_ACCESSDENIED) {
-    // Cross-domain documents may throw Access Denied. If so,
-    // get the document through the IWebBrowser2 interface.
-    CComPtr<IWebBrowser2> window_browser;
-    CComQIPtr<IServiceProvider> service_provider(parent_window);
-    hr = service_provider->QueryService(IID_IWebBrowserApp, &window_browser);
-    if (FAILED(hr)) {
-      return ENOSUCHDOCUMENT;
-    }
-    CComQIPtr<IDispatch> parent_doc_dispatch;
-    hr = window_browser->get_Document(&parent_doc_dispatch);
-    if (FAILED(hr)) {
-      return ENOSUCHDOCUMENT;
-    }
-    try {
-      hr = parent_doc_dispatch->QueryInterface<IHTMLDocument2>(parent_doc);
+  if (FAILED(hr)) {
+    if (hr == E_ACCESSDENIED) {
+      // Cross-domain documents may throw Access Denied. If so,
+      // get the document through the IWebBrowser2 interface.
+      CComPtr<IWebBrowser2> window_browser;
+      CComQIPtr<IServiceProvider> service_provider(parent_window);
+      hr = service_provider->QueryService(IID_IWebBrowserApp, &window_browser);
       if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Unable to get browser, call to IServiceProvider::QueryService failed for IID_IWebBrowserApp";
         return ENOSUCHDOCUMENT;
       }
-    } catch(...) {
+      CComQIPtr<IDispatch> parent_doc_dispatch;
+      hr = window_browser->get_Document(&parent_doc_dispatch);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Unable to get document, call to IWebBrowser2::get_Document failed";
+        return ENOSUCHDOCUMENT;
+      }
+      try {
+        hr = parent_doc_dispatch->QueryInterface<IHTMLDocument2>(parent_doc);
+        if (FAILED(hr)) {
+          LOGHR(WARN, hr) << "Unable to get document, QueryInterface for IHTMLDocument2 failed";
+          return ENOSUCHDOCUMENT;
+        }
+      } catch(...) {
+        LOG(WARN) << "Unable to get document, exception thrown attempting to QueryInterface for IHTMLDocument2";
+       return ENOSUCHDOCUMENT;
+      }
+    } else {
+      LOG(WARN) << "Unable to get document, IHTMLWindow2::get_document failed with error code other than E_ACCESSDENIED";
       return ENOSUCHDOCUMENT;
     }
   }

@@ -20,11 +20,12 @@ namespace webdriver {
 IESession::IESession() {
 }
 
-
 IESession::~IESession(void) {
 }
 
 void IESession::Initialize(void* init_params) {
+  LOG(TRACE) << "Entering IESession::Initialize";
+
   unsigned int thread_id = 0;
   HWND executor_window_handle = NULL;
   HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
@@ -59,6 +60,8 @@ void IESession::Initialize(void* init_params) {
 }
 
 void IESession::ShutDown(void) {
+  LOG(TRACE) << "Entering IESession::ShutDown";
+
   DWORD process_id;
   DWORD thread_id = ::GetWindowThreadProcessId(this->executor_window_handle_,
                                                &process_id);
@@ -75,6 +78,8 @@ void IESession::ShutDown(void) {
 
 bool IESession::ExecuteCommand(const std::string& serialized_command,
                                std::string* serialized_response) {
+  LOG(TRACE) << "Entering IESession::ExecuteCommand";
+
   // Sending a command consists of five actions:
   // 1. Setting the command to be executed
   // 2. Executing the command

@@ -13,10 +13,13 @@
 
 #include "BrowserFactory.h"
 #include <iostream>
+#include "logging.h"
 
 namespace webdriver {
 
 BrowserFactory::BrowserFactory(void) {
+  LOG(TRACE) << "Entering BrowserFactory::BrowserFactory";
+
   this->GetExecutableLocation();
   this->GetIEVersion();
   this->GetOSVersion();
@@ -35,6 +38,8 @@ BrowserFactory::~BrowserFactory(void) {
 DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                                            const bool ignore_protected_mode_settings,
                                            std::string* error_message) {
+  LOG(TRACE) << "Entering BrowserFactory::LaunchBrowserProcess";
+
   DWORD process_id = NULL;
   if (ignore_protected_mode_settings || this->ProtectedModeSettingsAreValid()) {
     STARTUPINFO start_info;
@@ -131,6 +136,8 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
 
 bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
                                                  IHTMLDocument2** document) {
+  LOG(TRACE) << "Entering BrowserFactory::GetDocumentFromWindowHandle";
+
   if (window_handle != NULL && this->oleacc_instance_handle_) {
     LRESULT result;
     ::SendMessageTimeout(window_handle,
@@ -157,6 +164,8 @@ bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
 }
 
 void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
+  LOG(TRACE) << "Entering BrowserFactory::AttachToBrowser";
+
   while (process_window_info->hwndBrowser == NULL) {
     // TODO: create a timeout for this. We shouldn't need it, since
     // we got a valid process ID, but we should bulletproof it.
@@ -170,9 +179,9 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
   CComPtr<IHTMLDocument2> document;
   if (this->GetDocumentFromWindowHandle(process_window_info->hwndBrowser,
                                         &document)) {
-     CComPtr<IHTMLWindow2> window;
-     HRESULT hr = document->get_parentWindow(&window);
-     if (SUCCEEDED(hr)) {
+    CComPtr<IHTMLWindow2> window;
+    HRESULT hr = document->get_parentWindow(&window);
+    if (SUCCEEDED(hr)) {
       // http://support.microsoft.com/kb/257717
       CComQIPtr<IServiceProvider> provider(window);
       if (provider) {
@@ -187,14 +196,24 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
                                             reinterpret_cast<void**>(&browser));
           if (SUCCEEDED(hr)) {
             process_window_info->pBrowser = browser;
+          } else {
+            LOGHR(WARN, hr) << "IServiceProvider::QueryService for SID_SWebBrowserApp failed";
           }
+        } else {
+          LOGHR(WARN, hr) << "IServiceProvider::QueryService for SID_STopLevelBrowser failed";
         }
+      } else {
+        LOG(WARN) << "QueryInterface for IServiceProvider failed";
       }
+    } else {
+      LOGHR(WARN, hr) << "Call to IHTMLDocument2::get_parentWindow failed";
     }
   }
 }
 
 IWebBrowser2* BrowserFactory::CreateBrowser() {
+  LOG(TRACE) << "Entering BrowserFactory::CreateBrowser";
+
   // TODO: Error and exception handling and return value checking.
   IWebBrowser2* browser;
   if (this->windows_major_version_ >= 6) {
@@ -224,8 +243,9 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
   return browser;
 }
 
-
 void BrowserFactory::SetThreadIntegrityLevel() {
+  LOG(TRACE) << "Entering BrowserFactory::SetThreadIntegrityLevel";
+
   // TODO: Error handling and return value checking.
   HANDLE process_token = NULL;
   HANDLE process_handle = ::GetCurrentProcess();
@@ -264,6 +284,7 @@ void BrowserFactory::SetThreadIntegrityLevel() {
 }
 
 void BrowserFactory::ResetThreadIntegrityLevel() {
+  LOG(TRACE) << "Entering BrowserFactory::ResetThreadIntegrityLevel";
   ::RevertToSelf();
 }
 
@@ -349,6 +370,8 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 }
 
 void BrowserFactory::GetExecutableLocation() {
+  LOG(TRACE) << "Entering BrowserFactory::GetExecutableLocation";
+
   std::wstring class_id;
   if (this->GetRegistryValue(HKEY_LOCAL_MACHINE,
                              IE_CLSID_REGISTRY_KEY,
@@ -399,6 +422,8 @@ bool BrowserFactory::GetRegistryValue(const HKEY root_key,
                                       const std::wstring& subkey,
                                       const std::wstring& value_name,
                                       std::wstring *value) {
+  LOG(TRACE) << "Entering BrowserFactory::GetRegistryValue";
+
   bool value_retrieved = false;
   DWORD required_buffer_size;
   HKEY key_handle;
@@ -423,14 +448,22 @@ bool BrowserFactory::GetRegistryValue(const HKEY root_key,
                                              &required_buffer_size)) {
         *value = &value_buffer[0];
         value_retrieved = true;
+      } else {
+        LOG(WARN) << "RegQueryValueEx failed retrieving value name";
       }
+    } else {
+      LOG(WARN) << "RegQueryValueEx failed for retrieving required buffer size";
     }
     ::RegCloseKey(key_handle);
+  } else {
+    LOG(WARN) << "RegOpenKeyEx failed";
   }
   return value_retrieved;
 }
 
 void BrowserFactory::GetIEVersion() {
+  LOG(TRACE) << "Entering BrowserFactory::GetIEVersion";
+
   struct LANGANDCODEPAGE {
     WORD language;
     WORD code_page;
@@ -442,11 +475,10 @@ void BrowserFactory::GetIEVersion() {
   if (length == 0) {
     // 64-bit Windows 8 has a bug where it does not return the executable location properly
     this->ie_major_version_ = -1;
-    std::wcerr << L"Couldn't find IE version for executable "
-               << this->ie_executable_location_
-               << L", falling back to "
-               << this->ie_major_version_
-               << std::endl;
+    LOG(WARN) << "Couldn't find IE version for executable "
+               << this->ie_executable_location_.c_str()
+               << ", falling back to "
+               << this->ie_major_version_;
     return;
   }
   std::vector<BYTE> version_buffer(length);
@@ -462,18 +494,18 @@ void BrowserFactory::GetIEVersion() {
                                       &page_count);
     
   wchar_t sub_block[MAX_PATH];
-    _snwprintf_s(sub_block,
-                 MAX_PATH,
-                 MAX_PATH,
-                 FILE_VERSION_INFO,
-                 lpTranslate->language,
-                 lpTranslate->code_page);
-    LPVOID value = NULL;
-    UINT size;
-    query_result = ::VerQueryValue(&version_buffer[0],
-                                   sub_block,
-                                   &value,
-                                   &size);
+  _snwprintf_s(sub_block,
+               MAX_PATH,
+               MAX_PATH,
+               FILE_VERSION_INFO,
+               lpTranslate->language,
+               lpTranslate->code_page);
+  LPVOID value = NULL;
+  UINT size;
+  query_result = ::VerQueryValue(&version_buffer[0],
+                                 sub_block,
+                                 &value,
+                                 &size);
   std::wstring ie_version;
   ie_version.assign(static_cast<wchar_t*>(value));
   std::wstringstream version_stream(ie_version);
@@ -481,6 +513,8 @@ void BrowserFactory::GetIEVersion() {
 }
 
 void BrowserFactory::GetOSVersion() {
+  LOG(TRACE) << "Entering BrowserFactory::GetOSVersion";
+
   OSVERSIONINFO osVersion;
   osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   ::GetVersionEx(&osVersion);
@@ -488,7 +522,10 @@ void BrowserFactory::GetOSVersion() {
 }
 
 bool BrowserFactory::ProtectedModeSettingsAreValid() {
+  LOG(TRACE) << "Entering BrowserFactory::ProtectedModeSettingsAreValid";
+
   bool settings_are_valid = true;
+  LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_ << ", detected Windows version: " << this->windows_major_version_;
   // Only need to check Protected Mode settings on IE 7 or higher
   // and on Windows Vista or higher. Otherwise, Protected Mode
   // doesn't come into play, and are valid.
@@ -544,9 +581,12 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
             }
           }
         }
+      } else {
+        LOG(WARN) << "RegQueryInfoKey to get count of zone setting subkeys failed";
       }
       ::RegCloseKey(key_handle);
     } else {
+      LOG(WARN) << "RegOpenKeyEx for zone settings registry key in HKEY_CURRENT_USER failed";
     }
   }
   return settings_are_valid;
@@ -554,6 +594,8 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
 
 int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
                                                 const std::wstring& zone_subkey_name) {
+  LOG(TRACE) << "Entering BrowserFactory::GetZoneProtectedModeSetting";
+
   int protected_mode_value = 3;
   HKEY subkey_handle;
   if (ERROR_SUCCESS == ::RegOpenKeyEx(key_handle,
@@ -569,7 +611,12 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
                                            NULL,
                                            reinterpret_cast<LPBYTE>(&value),
                                            &value_length)) {
+      LOG(DEBUG) << "Found Protected Mode setting value of "
+                 << value << " for zone " << zone_subkey_name.c_str();
       protected_mode_value = value;
+    } else {
+      LOG(DEBUG) << "RegQueryValueEx failed for getting Protected Mode setting for a zone: "
+                 << zone_subkey_name.c_str();
     }
     ::RegCloseKey(subkey_handle);
   } else {
@@ -586,6 +633,9 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
         (zone_subkey_name == ZONE_LOCAL_INTRANET && this->ie_major_version_ == 7)) {
       protected_mode_value = 0;
     }
+    LOG(DEBUG) << "Protected Mode zone setting value does not exist for zone "
+               << zone_subkey_name.c_str() << ". Using default value of "
+               << protected_mode_value;
   }
   return protected_mode_value;
 }

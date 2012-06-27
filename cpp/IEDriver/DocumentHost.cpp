@@ -19,6 +19,8 @@
 namespace webdriver {
 
 DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
+  LOG(TRACE) << "DocumentHost object is instantiated";
+
   // NOTE: COM should be initialized on this thread, so we
   // could use CoCreateGuid() and StringFromGUID2() instead.
   UUID guid;
@@ -44,18 +46,19 @@ DocumentHost::~DocumentHost(void) {
 }
 
 std::string DocumentHost::GetCurrentUrl() {
+  LOG(TRACE) << "Entering DocumentHost::GetCurrentUrl";
+
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
-
   if (!doc) {
-    LOG(WARN) << "Unable to get document object";
+    LOG(WARN) << "Unable to get document object, DocumentHost::GetDocument returned NULL";
     return "";
   }
 
   CComBSTR url;
   HRESULT hr = doc->get_URL(&url);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to get current URL";
+    LOGHR(WARN, hr) << "Unable to get current URL, call to IHTMLDocument2::get_URL failed";
     return "";
   }
 
@@ -63,7 +66,9 @@ std::string DocumentHost::GetCurrentUrl() {
   return current_url;
 }
 
-std::string DocumentHost::GetPageSource() { 
+std::string DocumentHost::GetPageSource() {
+  LOG(TRACE) << "Entering DocumentHost::GetPageSource";
+
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
     
@@ -74,21 +79,21 @@ std::string DocumentHost::GetPageSource() {
   }
 
   if (!doc3) {
-    LOG(WARN) << "Unable to get document object";
+    LOG(WARN) << "Unable to get document object, QueryInterface to IHTMLDocument3 failed";
     return "";
   }
 
   CComPtr<IHTMLElement> document_element;
   HRESULT hr = doc3->get_documentElement(&document_element);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to get document element from page";
+    LOGHR(WARN, hr) << "Unable to get document element from page, call to IHTMLDocument3::get_documentElement failed";
     return "";
   }
 
   CComBSTR html;
   hr = document_element->get_outerHTML(&html);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Have document element but cannot read source.";
+    LOGHR(WARN, hr) << "Have document element but cannot read source, call to IHTMLElement::get_outerHTML failed";
     return "";
   }
 
@@ -97,6 +102,8 @@ std::string DocumentHost::GetPageSource() {
 }
 
 int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
+  LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByElement";
+
   HRESULT hr = S_OK;
   if (!frame_element) {
     this->focused_frame_window_ = NULL;
@@ -105,14 +112,14 @@ int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
 
   CComQIPtr<IHTMLFrameBase2> frame_base(frame_element);
   if (!frame_base) {
-    // IHTMLElement is not a FRAME or IFRAME element.
+    LOG(WARN) << "IHTMLElement is not a FRAME or IFRAME element";
     return ENOSUCHFRAME;
   }
 
   CComQIPtr<IHTMLWindow2> interim_result;
   hr = frame_base->get_contentWindow(&interim_result);
   if (FAILED(hr)) {
-    // Cannot get contentWindow from IHTMLFrameBase2.
+    LOGHR(WARN, hr) << "Cannot get contentWindow from IHTMLFrameBase2, call to IHTMLFrameBase2::get_contentWindow failed";
     return ENOSUCHFRAME;
   }
 
@@ -121,21 +128,23 @@ int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
 }
 
 int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
+  LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByName";
+
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
 
   CComQIPtr<IHTMLFramesCollection2> frames;
   HRESULT hr = doc->get_frames(&frames);
 
-  if (frames == NULL) { 
-    // No frames in document. Exit.
+  if (frames == NULL) {
+    LOG(WARN) << "No frames in document are set, IHTMLDocument2::get_frames returned NULL";
     return ENOSUCHFRAME;
   }
 
   long length = 0;
   frames->get_length(&length);
   if (!length) { 
-    // No frames in document. Exit.
+    LOG(WARN) << "No frames in document are found IHTMLFramesCollection2::get_length returned 0";
     return ENOSUCHFRAME;
   }
 
@@ -148,13 +157,13 @@ int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
   hr = frames->item(&name, &frame_holder);
 
   if (FAILED(hr)) {
-    // Error retrieving frame. Exit.
+    LOGHR(WARN, hr) << "Error retrieving frame holder, call to IHTMLFramesCollection2::item failed";
     return ENOSUCHFRAME;
   }
 
   CComQIPtr<IHTMLWindow2> interim_result = frame_holder.pdispVal;
   if (!interim_result) {
-    // Error retrieving frame. Exit.
+    LOG(WARN) << "Error retrieving frame, IDispatch cannot be cast to IHTMLWindow2";
     return ENOSUCHFRAME;
   }
 
@@ -163,21 +172,23 @@ int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
 }
 
 int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
+  LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByIndex";
+
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
 
   CComQIPtr<IHTMLFramesCollection2> frames;
   HRESULT hr = doc->get_frames(&frames);
 
-  if (frames == NULL) { 
-    // No frames in document. Exit.
+  if (frames == NULL) {
+    LOG(WARN) << "No frames in document are set, IHTMLDocument2::get_frames returned NULL";
     return ENOSUCHFRAME;
   }
 
   long length = 0;
   frames->get_length(&length);
-  if (!length) { 
-    // No frames in document. Exit.
+  if (!length) {
+    LOG(WARN) << "No frames in document are found IHTMLFramesCollection2::get_length returned 0";
     return ENOSUCHFRAME;
   }
 
@@ -190,13 +201,13 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
   hr = frames->item(&index, &frame_holder);
 
   if (FAILED(hr)) {
-    // Error retrieving frame. Exit.
+    LOGHR(WARN, hr) << "Error retrieving frame holder, call to IHTMLFramesCollection2::item failed";
     return ENOSUCHFRAME;
   }
 
   CComQIPtr<IHTMLWindow2> interim_result = frame_holder.pdispVal;
   if (!interim_result) {
-    // Error retrieving frame. Exit.
+    LOG(WARN) << "Error retrieving frame, IDispatch cannot be cast to IHTMLWindow2";
     return ENOSUCHFRAME;
   }
 
@@ -205,16 +216,20 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
 }
 
 void DocumentHost::GetCookies(std::map<std::string, std::string>* cookies) {
+  LOG(TRACE) << "Entering DocumentHost::GetCookies";
+
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
 
   if (!doc) {
+    LOG(WARN) << "Unable to get document";
     return;
   }
 
   CComBSTR cookie_bstr;
   HRESULT hr = doc->get_cookie(&cookie_bstr);
   if (!cookie_bstr) {
+    LOG(WARN) << "Unable to get cookie str, call to IHTMLDocument2::get_cookie failed";
     cookie_bstr = L"";
   }
 
@@ -235,20 +250,26 @@ void DocumentHost::GetCookies(std::map<std::string, std::string>* cookies) {
 }
 
 int DocumentHost::AddCookie(const std::string& cookie) {
+  LOG(TRACE) << "Entering DocumentHost::AddCookie";
+
   CComBSTR cookie_bstr(CA2W(cookie.c_str(), CP_UTF8));
 
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
 
   if (!doc) {
+    LOG(WARN) << "Unable to get document";
     return EUNHANDLEDERROR;
   }
 
   if (!this->IsHtmlPage(doc)) {
+    LOG(WARN) << "Unable to add cookie, document does not appear to be an HTML page";
     return ENOSUCHDOCUMENT;
   }
 
-  if (FAILED(doc->put_cookie(cookie_bstr))) {
+  HRESULT hr = doc->put_cookie(cookie_bstr);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to put cookie to document, call to IHTMLDocument2::put_cookie failed";
     return EUNHANDLEDERROR;
   }
 
@@ -256,6 +277,8 @@ int DocumentHost::AddCookie(const std::string& cookie) {
 }
 
 int DocumentHost::DeleteCookie(const std::string& cookie_name) {
+  LOG(TRACE) << "Entering DocumentHost::DeleteCookie";
+
   // Construct the delete cookie script
   std::wstring script_source;
   for (int i = 0; DELETECOOKIES[i]; i++) {
@@ -271,7 +294,10 @@ int DocumentHost::DeleteCookie(const std::string& cookie_name) {
 }
 
 void DocumentHost::PostQuitMessage() {
+  LOG(TRACE) << "Entering DocumentHost::PostQuitMessage";
+
   this->set_is_closing(true);
+
   LPSTR message_payload = new CHAR[this->browser_id_.size() + 1];
   strcpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
   ::PostMessage(this->executor_handle(),
@@ -281,8 +307,11 @@ void DocumentHost::PostQuitMessage() {
 }
 
 bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
+  LOG(TRACE) << "Entering DocumentHost::IsHtmlPage";
+
   CComBSTR type;
   if (!SUCCEEDED(doc->get_mimeType(&type))) {
+    LOG(WARN) << "Unable to get mime type for document, call to IHTMLDocument2::get_mimeType failed";
     return false;
   }
 
@@ -297,8 +326,11 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
     if (document_type_key_name == L"IE.HTTP") {
       document_type_key_name = L"htmlfile";
     } else {
+      LOG(DEBUG) << "Unable to support custom document type: " << document_type_key_name.c_str();
       document_type_key_name = L"";
     }
+  } else {
+    LOG(DEBUG) << "Unable to read document type from registry";
   }
 
   if (document_type_key_name == L"") {
@@ -314,6 +346,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
                                          L".htm",
                                          L"",
                                          &document_type_key_name)) {
+      LOG(WARN) << "Unable to read document type from registry for '.htm'";
       return false;
     }
   }
@@ -323,6 +356,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
                                        document_type_key_name,
                                        L"",
                                        &mime_type_name)) {
+    LOG(WARN) << "Unable to read mime type from registry for document type";
     return false;
   }
 
@@ -331,10 +365,11 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
 }
 
 HWND DocumentHost::FindContentWindowHandle(HWND top_level_window_handle) {
+  LOG(TRACE) << "Entering DocumentHost::FindContentWindowHandle";
+
   ProcessWindowInfo process_window_info;
   process_window_info.pBrowser = NULL;
   process_window_info.hwndBrowser = NULL;
-
   DWORD process_id;
   ::GetWindowThreadProcessId(top_level_window_handle, &process_id);
   process_window_info.dwProcessId = process_id;

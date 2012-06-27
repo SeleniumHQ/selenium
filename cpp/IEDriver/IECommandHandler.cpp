@@ -14,6 +14,7 @@
 #include "command_handler.h"
 #include "IECommandHandler.h"
 #include "IECommandExecutor.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -27,16 +28,20 @@ void IECommandHandler::ExecuteInternal(const IECommandExecutor& executor,
                                        const LocatorMap& locator_parameters,
                                        const ParametersMap& command_parameters,
                                        Response* response) {
+  LOG(TRACE) << "Entering IECommandHandler::ExecuteInternal";
   response->SetErrorResponse(501, "Command not implemented");
 }
 
 int IECommandHandler::GetElement(const IECommandExecutor& executor,
                                  const std::string& element_id,
                                  ElementHandle* element_wrapper) {
+  LOG(TRACE) << "Entering IECommandHandler::GetElement";
+
   int status_code = EOBSOLETEELEMENT;
   ElementHandle candidate_wrapper;
   int result = executor.GetManagedElement(element_id, &candidate_wrapper);
   if (result != SUCCESS) {
+    LOG(WARN) << "Unable to get managed element, element not found";
     status_code = 404;
   } else {
     // Verify that the element is still valid by walking up the
@@ -53,18 +58,19 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
       CComPtr<IHTMLElement> next;
       HRESULT hr = parent->get_parentElement(&next);
       if (FAILED(hr)) {
-        //std::cout << hr << " [" << (_bstr_t(_com_error((DWORD) hr).ErrorMessage())) << "]";
+        LOGHR(WARN, hr) << "Unable to get parent element, call to IHTMLElement::get_parentElement failed";
       }
 
       if (next == NULL) {
         BSTR tag;
         parent->get_tagName(&tag);
-        //std::cout << "Found null parent of element with tag " << _bstr_t(tag);
+        LOG(TRACE) << "Found null parent of element with tag " << _bstr_t(tag);
       }
       parent = next;
     }
 
     if (status_code != SUCCESS) {
+      LOG(WARN) << "Found managed element is no longer valid";
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       mutable_executor.RemoveManagedElement(element_id);
     } else {
@@ -79,6 +85,7 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
       parent->get_document(&parent_doc_dispatch);
 
       if (!focused_doc.IsEqualObject(parent_doc_dispatch)) {
+        LOG(WARN) << "Found managed element's document is not currently focused";
         status_code = EOBSOLETEELEMENT;
       }
     }

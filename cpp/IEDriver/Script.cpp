@@ -37,6 +37,8 @@ Script::~Script(void) {
 void Script::Initialize(IHTMLDocument2* document,
                         const std::wstring& script_source,
                         const unsigned long argument_count) {
+  LOG(TRACE) << "Entering Script::Initialize";
+
   this->script_engine_host_ = document;
   this->source_code_ = script_source;
   this->argument_count_ = argument_count;
@@ -52,40 +54,48 @@ void Script::Initialize(IHTMLDocument2* document,
 }
 
 void Script::AddArgument(const std::string& argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(std::string)";
   std::wstring wide_argument = CA2W(argument.c_str(), CP_UTF8);
   this->AddArgument(wide_argument);
 }
 
 void Script::AddArgument(const std::wstring& argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(std::wstring)";
   CComVariant dest_argument(argument.c_str());
   this->AddArgument(dest_argument);
 }
 
 void Script::AddArgument(const int argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(int)";
   CComVariant dest_argument((long)argument);
   this->AddArgument(dest_argument);
 }
 
 void Script::AddArgument(const double argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(double)";
   CComVariant dest_argument(argument);
   this->AddArgument(dest_argument);
 }
 
 void Script::AddArgument(const bool argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(bool)";
   CComVariant dest_argument(argument);
   this->AddArgument(dest_argument);
 }
 
 void Script::AddArgument(ElementHandle argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(ElementHandle)";
   this->AddArgument(argument->element());
 }
 
 void Script::AddArgument(IHTMLElement* argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(IHTMLElement*)";
   CComVariant dest_argument(argument);
   this->AddArgument(dest_argument);
 }
 
 void Script::AddArgument(VARIANT argument) {
+  LOG(TRACE) << "Entering Script::AddArgument(VARIANT)";
   HRESULT hr = ::SafeArrayPutElement(this->argument_array_,
                                      &this->current_arg_index_,
                                      &argument);
@@ -93,36 +103,45 @@ void Script::AddArgument(VARIANT argument) {
 }
 
 void Script::AddNullArgument() {
+  LOG(TRACE) << "Entering Script::AddNullArgument";
   CComVariant null_arg;
   null_arg.vt = VT_NULL;
   this->AddArgument(null_arg);
 }
 
 bool Script::ResultIsString() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
   return this->result_.vt == VT_BSTR;
 }
 
 bool Script::ResultIsInteger() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
   return this->result_.vt == VT_I4 || this->result_.vt == VT_I8;
 }
 
 bool Script::ResultIsDouble() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
   return this->result_.vt == VT_R4 || this->result_.vt == VT_R8;
 }
 
 bool Script::ResultIsBoolean() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
   return this->result_.vt == VT_BOOL;
 }
 
 bool Script::ResultIsEmpty() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
   return this->result_.vt == VT_EMPTY;
 }
 
 bool Script::ResultIsIDispatch() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
   return this->result_.vt == VT_DISPATCH;
 }
 
 bool Script::ResultIsElementCollection() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
+
   if (this->result_.vt == VT_DISPATCH) {
     CComQIPtr<IHTMLElementCollection> is_collection(this->result_.pdispVal);
     if (is_collection) {
@@ -133,6 +152,8 @@ bool Script::ResultIsElementCollection() {
 }
 
 bool Script::ResultIsElement() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
+
   if (this->result_.vt == VT_DISPATCH) {
     CComQIPtr<IHTMLElement> is_element(this->result_.pdispVal);
     if (is_element) {
@@ -143,12 +164,15 @@ bool Script::ResultIsElement() {
 }
 
 bool Script::ResultIsArray() {
+  LOG(TRACE) << "Entering Script::ResultIsString";
+
   std::wstring type_name = this->GetResultObjectTypeName();
 
   // If the name is DispStaticNodeList, we can be pretty sure it's an array
   // (or at least has array semantics). It is unclear to what extent checking
   // for DispStaticNodeList is supported behaviour.
   if (type_name == L"DispStaticNodeList") {
+    LOG(DEBUG) << "Result type is DispStaticNodeList";
     return true;
   }
 
@@ -161,6 +185,7 @@ bool Script::ResultIsArray() {
   // IMPORTANT: Using this script, user-defined objects with a length
   // property defined will be seen as arrays instead of objects.
   if (type_name == L"JScriptTypeInfo") {
+    LOG(DEBUG) << "Result type is JScriptTypeInfo";
     const std::wstring script_source = L"(function() { return function(){ return arguments[0] && arguments[0].hasOwnProperty('length') && typeof arguments[0] === 'object' && typeof arguments[0].length === 'number';};})();";
     Script is_array_wrapper(this->script_engine_host_, script_source, 1);
     is_array_wrapper.AddArgument(this->result_);
@@ -172,6 +197,8 @@ bool Script::ResultIsArray() {
 }
 
 bool Script::ResultIsObject() {
+  LOG(TRACE) << "Entring Script::ResultIsObject";
+
   std::wstring type_name = this->GetResultObjectTypeName();
   if (type_name == L"JScriptTypeInfo") {
     return true;
@@ -180,20 +207,23 @@ bool Script::ResultIsObject() {
 }
 
 int Script::Execute() {
+  LOG(TRACE) << "Entering Script::Execute";
+
   VARIANT result;
+
   if (this->script_engine_host_ == NULL) {
+    LOG(WARN) << "script engine host is NULL";
     return ENOSUCHDOCUMENT;
   }
+
   CComVariant temp_function;
   if (!this->CreateAnonymousFunction(&temp_function)) {
-    // Debug level since this is normally the point we find out that 
-    // a page refresh has occured. *sigh*
-    // LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
+    LOG(WARN) << "Cannot create anonymous function";
     return EUNEXPECTEDJSERROR;
   }
 
   if (temp_function.vt != VT_DISPATCH) {
-    // No return value that we care about
+    LOG(DEBUG) << "No return value that we care about";
     return SUCCESS;
   }
 
@@ -206,7 +236,7 @@ int Script::Execute() {
                                                      LOCALE_USER_DEFAULT,
                                                      &call_member_id);
   if (FAILED(hr)) {
-//		LOGHR(DEBUG, hr) << "Cannot locate call method on anonymous function: " << _bstr_t(script) << endl;
+    LOGHR(WARN, hr) << "Cannot locate call method on anonymous function";
     return EUNEXPECTEDJSERROR;
   }
 
@@ -223,7 +253,7 @@ int Script::Execute() {
   CComPtr<IHTMLWindow2> win;
   hr = this->script_engine_host_->get_parentWindow(&win);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Cannot get parent window";
+    LOGHR(WARN, hr) << "Cannot get parent window, IHTMLDocument2::get_parentWindow failed";
     return EUNEXPECTEDJSERROR;
   }
   _variant_t* vargs = new _variant_t[nargs + 1];
@@ -255,9 +285,11 @@ int Script::Execute() {
   if (FAILED(hr)) {
     if (DISP_E_EXCEPTION == hr) {
       CComBSTR error_description(exception.bstrDescription ? exception.bstrDescription : L"EUNEXPECTEDJSERROR");
-      LOG(INFO) << "Exception message was: " << error_description;
+      CComBSTR error_source(exception.bstrSource ? exception.bstrSource : L"EUNEXPECTEDJSERROR");
+      LOG(INFO) << "Exception message was: '" << error_description << "'";
+      LOG(INFO) << "Exception source was: '" << error_source << "'";
     } else {
-      // LOGHR(DEBUG, hr) << "Failed to execute: " << _bstr_t(script);
+      LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
     }
 
     ::VariantClear(&result);
@@ -289,6 +321,8 @@ int Script::Execute() {
 
 int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
                                      Json::Value* value) {
+  LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
+
   int status_code = SUCCESS;
   if (this->ResultIsString()) { 
     std::string string_value = "";
@@ -354,6 +388,7 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
       }
       *value = result_object;
     } else {
+      LOG(INFO) << "Unknown type of dispatch is found in result, assuming IHTMLElement";
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       IHTMLElement* node = reinterpret_cast<IHTMLElement*>(this->result_.pdispVal);
       ElementHandle element_wrapper;
@@ -361,19 +396,25 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
       *value = element_wrapper->ConvertToJson();
     }
   } else {
+    LOG(WARN) << "Unknown type of result is found";
     status_code = EUNKNOWNSCRIPTRESULT;
   }
   return status_code;
 }
 
 bool Script::ConvertResultToString(std::string* value) {
+  LOG(TRACE) << "Entering Script::ConvertResultToString";
+
   VARTYPE type = this->result_.vt;
   switch(type) {
+
     case VT_BOOL:
+      LOG(DEBUG) << "result type is boolean";
       *value = this->result_.boolVal == VARIANT_TRUE ? "true" : "false";
       return true;
 
     case VT_BSTR:
+      LOG(DEBUG) << "result type is string";
       if (!this->result_.bstrVal) {
         *value = "";
       } else {
@@ -383,6 +424,7 @@ bool Script::ConvertResultToString(std::string* value) {
       return true;
   
     case VT_I4:
+      LOG(DEBUG) << "result type is int";
       {
         char* buffer = reinterpret_cast<char*>(malloc(sizeof(char) * MAX_DIGITS_OF_NUMBER));
         if (buffer != NULL) {
@@ -394,18 +436,25 @@ bool Script::ConvertResultToString(std::string* value) {
 
     case VT_EMPTY:
     case VT_NULL:
+      LOG(DEBUG) << "result type is empty";
       *value = "";
       return false;
 
     // This is lame
     case VT_DISPATCH:
+      LOG(DEBUG) << "result type is dispatch";
       *value = "";
       return true;
+
+    default:
+      LOG(DEBUG) << "result type is unknown: " << type;
   }
   return false;
 }
 
 std::wstring Script::GetResultObjectTypeName() {
+  LOG(TRACE) << "Entering Script::GetResultObjectTypeName";
+
   std::wstring name = L"";
   if (this->result_.vt == VT_DISPATCH && this->result_.pdispVal) {
     CComPtr<ITypeInfo> typeinfo;
@@ -419,14 +468,20 @@ std::wstring Script::GetResultObjectTypeName() {
         SUCCEEDED(typeinfo->GetDocumentation(-1, &name_bstr, 0, 0, 0))) {
       typeinfo->ReleaseTypeAttr(type_attr);
       name = name_bstr.Copy();
+    } else {
+      LOG(WARN) << "Unable to get object type";
     }
+  } else {
+    LOG(DEBUG) << "Unable to get object type for non-object result, result is not IDispatch or IDispatch pointer is NULL";
   }
   return name;
 }
 
 int Script::GetPropertyNameList(std::wstring* property_names) {
+  LOG(TRACE) << "Entering Script::GetPropertyNameList";
+
   // Loop through the properties, appending the name of each one to the string.
-  std::wstring get_names_script = L"(function(){return function() { var name_list = ''; for (var name in arguments[0]) { if (name_list.length > 0) name_list+= ','; name_list += name } return name_list;}})();";
+  std::wstring get_names_script = L"(function(){return function() { var name_list = ''; for (var name in arguments[0]) { if (name_list.length > 0) name_list += ','; name_list += name } return name_list;}})();";
   Script get_names_script_wrapper(this->script_engine_host_,
                                   get_names_script,
                                   1);
@@ -434,12 +489,13 @@ int Script::GetPropertyNameList(std::wstring* property_names) {
   int get_names_result = get_names_script_wrapper.Execute();
 
   if (get_names_result != SUCCESS) {
+    LOG(WARN) << "Unable to get property name list, script execution returned error code";
     return get_names_result;
   }
 
-  // Expect the return type to be an integer. A non-integer means this was
-  // not an array after all.
+  // Expect the return type to be an string. A non-string means ... (what?)
   if (!get_names_script_wrapper.ResultIsString()) {
+    LOG(WARN) << "Result properties are not string";
     return EUNEXPECTEDJSERROR;
   }
 
@@ -450,7 +506,9 @@ int Script::GetPropertyNameList(std::wstring* property_names) {
 int Script::GetPropertyValue(const IECommandExecutor& executor,
                              const std::wstring& property_name,
                              Json::Value* property_value){
-  std::wstring get_value_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();"; 
+  LOG(TRACE) << "Entering Script::GetPropertyValue";
+
+  std::wstring get_value_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
   Script get_value_script_wrapper(this->script_engine_host_,
                                   get_value_script,
                                   2);
@@ -458,6 +516,7 @@ int Script::GetPropertyValue(const IECommandExecutor& executor,
   get_value_script_wrapper.AddArgument(property_name);
   int get_value_result = get_value_script_wrapper.Execute();
   if (get_value_result != SUCCESS) {
+    LOG(WARN) << "Unable to get property value, script execution returned error code";
     return get_value_result;
   }
 
@@ -466,6 +525,8 @@ int Script::GetPropertyValue(const IECommandExecutor& executor,
 }
 
 int Script::GetArrayLength(long* length) {
+  LOG(TRACE) << "Entering Script::GetArrayLength";
+
   // Prepare an array for the Javascript execution, containing only one
   // element - the original returned array from a JS execution.
   std::wstring get_length_script = L"(function(){return function() {return arguments[0].length;}})();";
@@ -476,12 +537,14 @@ int Script::GetArrayLength(long* length) {
   int length_result = get_length_script_wrapper.Execute();
 
   if (length_result != SUCCESS) {
+    LOG(WARN) << "Unable to get array length, script execution returned error code";
     return length_result;
   }
 
   // Expect the return type to be an integer. A non-integer means this was
   // not an array after all.
   if (!get_length_script_wrapper.ResultIsInteger()) {
+    LOG(WARN) << "Array length is not integer";
     return EUNEXPECTEDJSERROR;
   }
 
@@ -492,7 +555,9 @@ int Script::GetArrayLength(long* length) {
 int Script::GetArrayItem(const IECommandExecutor& executor,
                          long index,
                          Json::Value* item){
-  std::wstring get_array_item_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();"; 
+  LOG(TRACE) << "Entering Script::GetArrayItem";
+
+  std::wstring get_array_item_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
   Script get_array_item_script_wrapper(this->script_engine_host_,
                                        get_array_item_script,
                                        2);
@@ -500,6 +565,7 @@ int Script::GetArrayItem(const IECommandExecutor& executor,
   get_array_item_script_wrapper.AddArgument(index);
   int get_item_result = get_array_item_script_wrapper.Execute();
   if (get_item_result != SUCCESS) {
+    LOG(WARN) << "Unable to get array item, script execution returned error";
     return get_item_result;
   }
 
@@ -508,19 +574,24 @@ int Script::GetArrayItem(const IECommandExecutor& executor,
 }
 
 bool Script::CreateAnonymousFunction(VARIANT* result) {
+  LOG(TRACE) << "Entering Script::CreateAnonymousFunction";
+
   CComBSTR function_eval_script(L"window.document.__webdriver_script_fn = ");
   HRESULT hr = function_eval_script.Append(this->source_code_.c_str());
   CComBSTR code(function_eval_script);
   CComBSTR lang(L"JScript");
   CComVariant exec_script_result;
+
   CComPtr<IHTMLWindow2> window;
   hr = this->script_engine_host_->get_parentWindow(&window);
   if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get parent window, call to IHTMLDocument2::get_parentWindow failed";
     return false;
   }
 
   hr = window->execScript(code, lang, &exec_script_result);
   if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to execute code, call to IHTMLWindow2::execScript failed";
     return false;
   }
 
@@ -532,6 +603,7 @@ bool Script::CreateAnonymousFunction(VARIANT* result) {
                                                 LOCALE_USER_DEFAULT,
                                                 &dispid_function_object);
   if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get id of name __webdriver_script_fn";
     return false;
   }
 
@@ -546,9 +618,9 @@ bool Script::CreateAnonymousFunction(VARIANT* result) {
                                          NULL,
                                          NULL);
   if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get value of eval result";
     return false;
   }
-
   return true;
 }
 } // namespace webdriver

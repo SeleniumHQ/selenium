@@ -11,6 +11,26 @@ not made generally available on the downloads page.
 
 v2.24.1.0
 =========
+ * Refactoring command line argument handling in IEDriverServer.exe, now that
+   the number of valid arguments is growing.
+ * Added ability to control log level and log file via command line switches to
+   IEDriverServer.exe (on behalf of AlexandrSavchuk).
+ * Re-added else-if for GetSessionList command inadvertently removed in r15345.
+   Fixes issue #4160.
+ * Added logging message to a large portion of the IE driver (on behalf of 
+   AlexandrSavchuk). Set the log file with
+
+       --log-file="C:\full\path\to\filename.log"
+
+   (default is to log to the console). Set the logging level with
+
+       --log-level=LOGLEVEL
+
+   where LOGLEVEL is one of TRACE, DEBUG, INFO, WARN, ERROR, or FATAL (default
+   is FATAL). Fixes issue #4159
+
+v2.24.1.0
+=========
  * Added elementScrollBehavior capability to allow users to specify how
    elements scroll into the viewport for interaction. Default behavior is
    unchanged (the capability is set to 0), but can be set to scroll to align

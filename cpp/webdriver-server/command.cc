@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include "command.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -22,18 +23,21 @@ Command::~Command() {
 }
 
 void Command::Populate(const std::string& json_command) {
+  LOG(TRACE) << "Populate method is run";
+
   // Clear the existing maps.
   this->command_parameters_.clear();
   this->locator_parameters_.clear();
+
+  LOG(TRACE) << "Raw json command: " << json_command;
 
   Json::Value root;
   Json::Reader reader;
   bool successful_parse = reader.parse(json_command, root);
   if (!successful_parse) {
     // report to the user the failure and their locations in the document.
-    // std::cout  << "\nFailed to parse configuration\n"
-    //            << reader.getFormatedErrorMessages()
-    //            << "\nJSON: " << json_command << "\n";
+    LOG(WARN) << "\nFailed to parse configuration: '" << reader.getFormatedErrorMessages()
+        << "'\nJSON: '" << json_command << "'";
   }
 
   this->command_type_ = root.get("command", 0).asInt();
@@ -55,6 +59,8 @@ void Command::Populate(const std::string& json_command) {
       Json::Value value = command_parameter_object[key];
       this->command_parameters_[key] = value;
     }
+  } else {
+    LOG(DEBUG) << "Zero command type is found";
   }
 }
 

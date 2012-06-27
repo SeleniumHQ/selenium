@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include "response.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -27,6 +28,8 @@ Response::~Response(void) {
 }
 
 void Response::Deserialize(const std::string& json) {
+  LOG(TRACE) << "Deserialize method is run";
+
   Json::Value response_object;
   Json::Reader reader;
   reader.parse(json, response_object);
@@ -36,6 +39,8 @@ void Response::Deserialize(const std::string& json) {
 }
 
 std::string Response::Serialize(void) {
+  LOG(TRACE) << "Serialize method is run";
+
   Json::Value json_object;
   json_object["status"] = this->status_code_;
   json_object["sessionId"] = this->session_id_;
@@ -46,17 +51,21 @@ std::string Response::Serialize(void) {
 }
 
 void Response::SetSuccessResponse(const Json::Value& response_value) {
+  LOG(TRACE) << "SetSuccessResponse method is run";
   this->SetResponse(0, response_value);
 }
 
 void Response::SetResponse(const int status_code,
                            const Json::Value& response_value) {
+  LOG(TRACE) << "SetResponse method is run";
   this->status_code_ = status_code;
   this->value_ = response_value;
 }
 
 void Response::SetErrorResponse(const int status_code,
                                 const std::string& message) {
+  LOG(TRACE) << "SetErrorResponse method is run";
+  LOG(WARN) << "Error response message is: " << message;
   this->status_code_ = status_code;
   this->value_["message"] = message;
 }
