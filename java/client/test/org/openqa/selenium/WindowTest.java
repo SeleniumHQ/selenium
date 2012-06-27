@@ -95,16 +95,21 @@ public class WindowTest extends JUnit4TestBase {
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
     Point position = window.getPosition();
+    Dimension originalSize = window.getSize();
 
-    // Some Linux window managers start taking liberties wrt window positions when moving the window
-    // off-screen. Therefore, try to stay on-screen. Hopefully you have more than 210 px,
-    // or this may fail.
-    window.setSize(new Dimension(200, 200));
-    Point targetPosition = new Point(position.x + 10, position.y + 10);
-    window.setPosition(targetPosition);
-
-    waitFor(xEqual(driver, targetPosition));
-    waitFor(yEqual(driver, targetPosition));
+    try {
+      // Some Linux window managers start taking liberties wrt window positions when moving the window
+      // off-screen. Therefore, try to stay on-screen. Hopefully you have more than 210 px,
+      // or this may fail.
+      window.setSize(new Dimension(200, 200));
+      Point targetPosition = new Point(position.x + 10, position.y + 10);
+      window.setPosition(targetPosition);
+  
+      waitFor(xEqual(driver, targetPosition));
+      waitFor(yEqual(driver, targetPosition));
+    } finally {
+      window.setSize(originalSize);
+    }
   }
 
   @Ignore(value = {CHROME}, reason = "Not yet implemented.")
