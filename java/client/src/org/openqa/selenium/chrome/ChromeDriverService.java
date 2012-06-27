@@ -16,6 +16,7 @@
 
 package org.openqa.selenium.chrome;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -40,13 +41,13 @@ public class ChromeDriverService extends DriverService {
    *
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
+   * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
-   * @param logFile Optional file to dump logs to.
    * @throws IOException If an I/O error occurs.
    */
-  private ChromeDriverService(File executable, int port,
-      ImmutableMap<String, String> environment, File logFile) throws IOException {
-    super(executable, port, environment, logFile);
+  private ChromeDriverService(File executable, int port, ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, args, environment);
   }
 
   /**
@@ -118,7 +119,12 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected DriverService buildDriverService() throws IOException {
-      return new ChromeDriverService(exe, port, environment, logFile);
+      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
+      argsBuilder.add(String.format("--port=%d", port));
+      if (logFile != null) {
+        argsBuilder.add(String.format("--log-path=%s", logFile.getAbsolutePath()));
+      }
+      return new ChromeDriverService(exe, port, argsBuilder.build(), environment);
     }
   }
 }

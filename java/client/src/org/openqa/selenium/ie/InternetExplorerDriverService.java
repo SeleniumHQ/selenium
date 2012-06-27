@@ -16,6 +16,7 @@
 
 package org.openqa.selenium.ie;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.remote.service.DriverService;
@@ -38,13 +39,13 @@ public class InternetExplorerDriverService extends DriverService {
    *
    * @param executable The IEDriverServer executable.
    * @param port Which port to start the IEDriverServer on.
+   * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
-   * @param logFile Optional file to dump logs to.
    * @throws IOException If an I/O error occurs.
    */
-  private InternetExplorerDriverService(File executable, int port,
-      ImmutableMap<String, String> environment, File logFile) throws IOException {
-    super(executable, port, environment, logFile);
+  private InternetExplorerDriverService(File executable, int port, ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, args, environment);
   }
 
   /**
@@ -68,7 +69,12 @@ public class InternetExplorerDriverService extends DriverService {
   public static class Builder extends DriverService.Builder {
 
     protected DriverService buildDriverService() throws IOException {
-      return new InternetExplorerDriverService(exe, port, environment, logFile);
+      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
+      argsBuilder.add(String.format("--port=%d", port));
+      if (logFile != null) {
+        argsBuilder.add(String.format("--log-path=%s", logFile.getAbsolutePath()));
+      }
+      return new InternetExplorerDriverService(exe, port, argsBuilder.build(), environment);
     }
   }
 }

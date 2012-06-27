@@ -70,29 +70,20 @@ public class DriverService {
   private final ImmutableMap<String, String> environment;
 
   /**
-   *
-   * @param executable The driver executable.
-   * @param port Which port to start the driver on.
-   * @param environment The environment for the launched server.
-   * @param logFile Optional file to dump logs to.
-   * @throws IOException If an I/O error occurs.
-   */
-  protected DriverService(File executable, int port,
-      ImmutableMap<String, String> environment, File logFile) throws IOException {
-    this.executable = executable.getCanonicalPath();
-    args = buildArgsFrom(port, logFile);
-    url = new URL(String.format("http://localhost:%d", port));
-    this.environment = environment;
-  }
-
-  private ImmutableList<String> buildArgsFrom(int port, File logFile) {
-    ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-    argsBuilder.add(String.format("--port=%d", port));
-    if (logFile != null) {
-      argsBuilder.add(String.format("--log-path=%s", logFile.getAbsolutePath()));
-    }
-    return argsBuilder.build();
-  }
+  *
+  * @param executable The driver executable.
+  * @param port Which port to start the driver server on.
+  * @param args The arguments to the launched server.
+  * @param environment The environment for the launched server.
+  * @throws IOException If an I/O error occurs.
+  */
+ protected DriverService(File executable, int port, ImmutableList<String> args,
+     ImmutableMap<String, String> environment) throws IOException {
+   this.executable = executable.getCanonicalPath();
+   url = new URL(String.format("http://localhost:%d", port));
+   this.args = args;
+   this.environment = environment;
+ }
 
   /**
    * @return The base URL for the managed driver server.
