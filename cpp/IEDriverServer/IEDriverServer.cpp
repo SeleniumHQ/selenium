@@ -17,7 +17,7 @@
 
 // TODO(JimEvans): Change the prototypes of these functions in the
 // IEDriver project to match the prototype specified here.
-typedef void* (__cdecl *STARTSERVEREXPROC)(int, const std::string& host); 
+typedef void* (__cdecl *STARTSERVEREXPROC)(int, const std::string&, const std::string&, const std::string&);
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
@@ -114,6 +114,40 @@ std::string GetHost(int argc, _TCHAR* argv[]) {
     }
   }
   return host;
+}
+
+std::string GetLogLevel(int argc, _TCHAR* argv[]) {
+  std::string log_level = "";
+  if (argc >= 2) {
+    for (int i = 1; i < argc; i++) {
+      std::wstring arg(argv[i]);
+      if (arg.find(L"--log-level=") == 0 ||
+          arg.find(L"-loglevel=") == 0 ||
+          arg.find(L"/LOGLEVEL=") == 0) {
+        size_t equal_pos = arg.find(L"=");
+        log_level = CW2A(arg.substr(equal_pos + 1).c_str(), CP_UTF8);
+        break;
+      }
+    }
+  }
+  return log_level;
+}
+
+std::string GetLogFile(int argc, _TCHAR* argv[]) {
+  std::string log_file = "";
+  if (argc >= 2) {
+    for (int i = 1; i < argc; i++) {
+      std::wstring arg(argv[i]);
+      if (arg.find(L"--log-file=") == 0 ||
+          arg.find(L"-logfile=") == 0 ||
+          arg.find(L"/LOGFILE=") == 0) {
+        size_t equal_pos = arg.find(L"=");
+        log_file = CW2A(arg.substr(equal_pos + 1).c_str(), CP_UTF8);
+        break;
+      }
+    }
+  }
+  return log_file;
 }
 
 std::string GetProcessArchitectureDescription() {
@@ -213,9 +247,19 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
   int port = GetPort(argc, argv);
   std::string host_address = GetHost(argc, argv);
-  void* server_value = start_server_ex_proc(port, host_address);
+  std::string log_level = GetLogLevel(argc, argv);
+  std::string log_file = GetLogFile(argc, argv);
+  void* server_value = start_server_ex_proc(port,
+                                            host_address,
+                                            log_level,
+                                            log_file);
   if (server_value == NULL) {
-    std::cout << "Start of server failed";
+    std::cout << L"Failed to start the server with: "
+              << L"port = '" << port << "', "
+              << L"host = '" << host_address << "', "
+              << L"log level = '" << log_level << "', "
+              << L"log file = '" << log_file << "'";
+    ;
     return ERR_SERVER_START;
   }
   std::cout << "Started InternetExplorerDriver server"
@@ -227,6 +271,16 @@ int _tmain(int argc, _TCHAR* argv[]) {
   if (host_address.size() > 0) {
     std::cout << "Bound to network adapter with IP address " 
               << host_address
+              << std::endl;
+  }
+  if (log_level.size() > 0) {
+    std::cout << "Log level is set to "
+              << log_level
+              << std::endl;
+  }
+  if (log_file.size() > 0) {
+    std::cout << "Log file is set to "
+              << log_file
               << std::endl;
   }
 

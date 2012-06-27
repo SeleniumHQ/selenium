@@ -49,7 +49,7 @@ template <class _LOGGER> class Logger {
   Logger() : fatal_(false) {}
 
   enum LogLevel {
-    logFATAL = 0, logERROR, logWARN, logINFO, logDEBUG };
+    logFATAL = 0, logERROR, logWARN, logINFO, logDEBUG, logTRACE };
 
   ~Logger() {
     os_ << std::endl, _LOGGER::Log(os_.str(), fatal_);
@@ -59,7 +59,7 @@ template <class _LOGGER> class Logger {
   }
 
   static void Level(const std::string& level) {
-    if (Level() = logFATAL, level == "ERROR") {
+    if (level == "ERROR") {
       Level() = logERROR;
     } else if (level == "WARN" ) {
       Level() = logWARN;
@@ -67,6 +67,10 @@ template <class _LOGGER> class Logger {
       Level() = logINFO;
     } else if (level == "DEBUG") {
       Level() = logDEBUG;
+    } else if (level == "TRACE") {
+      Level() = logTRACE;
+    } else {
+      Level() = logFATAL;
     }
   }
 
@@ -76,8 +80,8 @@ template <class _LOGGER> class Logger {
   }
 
   std::ostringstream& Stream(LogLevel level) {
-    static char severity[] = { 'F', 'E', 'W', 'I', 'D' };
-    os_ << severity[level] << Time();
+    static char severity[] = { 'F', 'E', 'W', 'I', 'D', 'T' };
+    os_ << severity[level] << ' ' << Time();
     if (level == logFATAL)
       fatal_ = true, os_ << L"FATAL ";
     return os_;
@@ -86,10 +90,11 @@ template <class _LOGGER> class Logger {
   static std::string Time() {
     struct timeb tb; ftime(&tb);
 
-    char time[20];
-    size_t length = strftime(time, sizeof(time), "%H:%M:%S:",
+    char time[26];
+    size_t length = strftime(time, sizeof(time), "%Y-%m-%d %H:%M:%S:",
       localtime(reinterpret_cast<const time_t*>(&tb.time)));
     sprintf(time + length, "%03u ", tb.millitm);
+
     return time;
   }
 
@@ -166,7 +171,7 @@ class LOG : public Logger<LOG> {
   else LOG().Stream(LOG::log ## LEVEL) << __FILE__ << "(" << __LINE__ << ") " /* << stuff here */
 
 #ifdef _WIN32
-  #define LOGHR(LEVEL,HR) LOG( ## LEVEL) << HR<< " [" << (_bstr_t(_com_error((DWORD) HR).ErrorMessage())) << "]: "
+  #define LOGHR(LEVEL,HR) LOG( ## LEVEL) << HR << " [" << (_bstr_t(_com_error((DWORD) HR).ErrorMessage())) << "]: "
 #endif
 
 

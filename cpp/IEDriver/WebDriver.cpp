@@ -14,12 +14,15 @@
 #include "WebDriver.h"
 
 webdriver::Server* StartServer(int port) {
-  return StartServerEx(port, "");
+  return StartServerEx(port, "", "", "");
 }
 
-webdriver::Server* StartServerEx(int port, const std::string& host) {
+webdriver::Server* StartServerEx(int port,
+                                 const std::string& host,
+                                 const std::string& log_level,
+                                 const std::string& log_file) {
   if (server == NULL) {
-    server = new webdriver::IEServer(port, host);
+    server = new webdriver::IEServer(port, host, log_level, log_file);
     if (!server->Start()) {
       delete server;
       server = NULL;

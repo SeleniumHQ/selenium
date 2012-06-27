@@ -22,11 +22,18 @@
 namespace webdriver {
 
 Server::Server(const int port) {
-  this->Initialize(port, "");
+  this->Initialize(port, "", "", "");
 }
 
 Server::Server(const int port, const std::string& host) {
-  this->Initialize(port, host);
+  this->Initialize(port, host, "", "");
+}
+
+Server::Server(const int port,
+               const std::string& host,
+               const std::string& log_level,
+               const std::string& log_file) {
+  this->Initialize(port, host, log_level, log_file);
 }
 
 Server::~Server(void) {
@@ -37,10 +44,13 @@ Server::~Server(void) {
   }
 }
 
-void Server::Initialize(const int port, const std::string& host) {
-  // It's possible to set the log level at compile time using this:
-  LOG::Level("FATAL");
-  LOG(INFO) << "Starting WebDriver server on port: " << port;
+void Server::Initialize(const int port,
+                        const std::string& host,
+                        const std::string& log_level,
+                        const std::string& log_file) {
+  LOG::Level(log_level);
+  LOG::File(log_file);
+  LOG(INFO) << "Starting WebDriver server on port: '" << port << "' on host: '" << host << "'";
   this->port_ = port;
   this->host_ = host;
   this->PopulateCommandRepository();

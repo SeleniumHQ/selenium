@@ -26,7 +26,10 @@ namespace webdriver
 class IEServer : public Server
 {
  public:
-  IEServer(int port, const std::string& host);
+  IEServer(int port,
+           const std::string& host,
+           const std::string& log_level,
+           const std::string& log_file);
   virtual ~IEServer(void);
 
  protected:

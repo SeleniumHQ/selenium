@@ -32,6 +32,7 @@ class Server {
  public:
   explicit Server(const int port);
   Server(const int port, const std::string& host);
+  Server(const int port, const std::string& host, const std::string& log_level, const std::string& log_file);
   virtual ~Server(void);
 
   static void* OnHttpEvent(enum mg_event event_raised,
@@ -58,7 +59,10 @@ class Server {
   typedef std::map<std::string, VerbMap> UrlMap;
   typedef std::map<std::string, SessionHandle> SessionMap;
 
-  void Initialize(const int port, const std::string& host);
+  void Initialize(const int port,
+                  const std::string& host,
+                  const std::string& log_level,
+                  const std::string& log_file);
 
   std::string ListSessions(void);
   int LookupCommand(const std::string& uri,
