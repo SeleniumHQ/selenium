@@ -75,6 +75,14 @@ namespace OpenQA.Selenium
             get;
         }
 
+        /// <summary>
+        /// Gets the command-line arguments for the driver service.
+        /// </summary>
+        protected virtual string CommandLineArguments
+        {
+            get { return string.Format(CultureInfo.InvariantCulture, "-port={0}", this.driverServicePort); }
+        }
+
         #region IDisposable Members
         /// <summary>
         /// Releases all resources associated with this <see cref="DriverService"/>.
@@ -94,7 +102,7 @@ namespace OpenQA.Selenium
         {
             this.driverServiceProcess = new Process();
             this.driverServiceProcess.StartInfo.FileName = this.driverServicePath;
-            this.driverServiceProcess.StartInfo.Arguments = string.Format(CultureInfo.InvariantCulture, "-port={0}", this.driverServicePort);
+            this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.Start();
             DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
