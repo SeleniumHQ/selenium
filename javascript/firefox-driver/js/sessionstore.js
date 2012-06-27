@@ -88,7 +88,7 @@ wdSessionStoreService.prototype.QueryInterface = function(aIID) {
  * @param {boolean} enableProfiling Whether to enable profiling.
  * @return {wdSession} A new WebDriver session.
  */
-wdSessionStoreService.prototype.createSession = function(capabilities) {
+wdSessionStoreService.prototype.createSession = function(capabilities, driver) {
   var id = Components.classes['@mozilla.org/uuid-generator;1'].
       getService(Components.interfaces.nsIUUIDGenerator).
       generateUUID().
@@ -109,8 +109,65 @@ wdSessionStoreService.prototype.createSession = function(capabilities) {
   fxdriver.proxy.configure(capabilities['proxy']);
   fxdriver.modals.configure(capabilities['unexpectedAlertBehaviour']);
 
+  this.configure_(capabilities, driver);
+
   this.sessions_[id] = session;
   return session;
+};
+
+
+/** 
+ * Read-only capabilities for FirefoxDriver
+ * @type {!Array.<string>}
+ * @const
+ * @private
+ */ 
+wdSessionStoreService.READ_ONLY_CAPABILITIES_ = ['javascriptEnabled', 'rotatable'];
+
+
+/** 
+ * Read-write capabilities for FirefoxDriver (except nativeEvents), corresponding to
+ * (boolean) profile preferences.
+ * @type {!Object.<string, *>}
+ * @const
+ * @private
+ */ 
+wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING_ = {
+  'webStorageEnabled':'dom.storage.enabled',
+  'applicationCacheEnabled':'browser.cache.offline.enabled',
+  'databaseEnabled':'dom.indexedDB.enabled',
+  'locationContextEnabled':'geo.enabled',
+  'browserConnectionEnabled':'dom.network.enabled',
+  'acceptSslCerts':'webdriver_accept_untrusted_certs'
+};
+// TODO: don't save webdriver specific capability acceptSslCerts as preference
+
+
+/**
+ * @param {!Object.<*>} capabilities A map describing desired capabilities
+ * @param {!FirefoxDriver} driver The FirefoxDriver instance to set the native event capability on
+ * @private
+ */
+wdSessionStoreService.prototype.configure_ = function(capabilities, driver) {
+  fxdriver.Logger.dumpn('Setting preferences based on desired capabilities');
+  var prefStore = fxdriver.moz.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+
+  for (var i = 0; i < capabilities.length; i++) {
+    var cap = capabilities[i];
+
+    if (cap in wdSessionStoreService.READ_ONLY_CAPABILITIES_) {
+      var msg = 'Capability ' + cap + ' cannot be configured for FireFoxDriver';
+      fxdriver.Logger.dumpn(msg);
+      throw new WebDriverError(bot.ErrorCode.UNSUPPORTED_OPERATION, msg);
+    } else if (cap in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING_) {
+      var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING_[cap];
+      fxdriver.Logger.dumpn('Setting ' + cap + ' (' + pref + ') to ' + capabilities[cap]);
+      prefStore.setBoolPref(pref, capabilities[cap]);
+    } else if (cap == 'nativeEvents') {
+      fxdriver.Logger.dumpn('Setting ' + cap + ' to ' + capabilities[cap]);
+      driver.enableNativeEvents = capabilities[cap];
+    }
+  }
 };
 
 
