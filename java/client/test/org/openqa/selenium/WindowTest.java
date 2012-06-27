@@ -34,13 +34,12 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 
-@Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE},
+@Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE},
         reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 
@@ -84,7 +83,6 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(IE)
   @Test
   public void testGetsThePositionOfTheCurrentWindow() {
     Point position = driver.manage().window().getPosition();
@@ -109,7 +107,7 @@ public class WindowTest extends JUnit4TestBase {
     waitFor(yEqual(driver, targetPosition));
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+  @Ignore(value = {CHROME}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindow() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
@@ -121,7 +119,7 @@ public class WindowTest extends JUnit4TestBase {
     maximize();
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+  @Ignore(value = {CHROME}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
@@ -140,7 +138,7 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
+  @Ignore(value = {CHROME}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
