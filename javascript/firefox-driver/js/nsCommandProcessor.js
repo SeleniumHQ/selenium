@@ -710,7 +710,7 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
     var desiredCapabilities = parameters['desiredCapabilities'];
     var session =
-        sessionStore.wrappedJSObject.createSession(desiredCapabilities, driver);
+        sessionStore.wrappedJSObject.createSession(desiredCapabilities);
     session = session.wrappedJSObject;  // XPConnect...
     session.setChromeWindow(win);
 
@@ -744,6 +744,7 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
 
   response.send();
 };
+
 
 /**
  * Deletes the session associated with the current request.
