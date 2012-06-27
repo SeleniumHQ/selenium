@@ -60,7 +60,6 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeBy(-20, -20);
   }
 
-  @Ignore(issues = {3897})
   @Test
   public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
     driver.get(pages.framesetPage);
@@ -73,7 +72,6 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(issues = {3897})
   @Test
   public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
     driver.get(pages.iframePage);

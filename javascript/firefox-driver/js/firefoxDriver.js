@@ -1412,7 +1412,7 @@ FirefoxDriver.prototype.setWindowSize = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
   var size = new goog.math.Size(parameters.width, parameters.height);
-  var win = respond.session.getWindow();
+  var win = respond.session.getWindow().top;
 
   bot.window.setSize(size, win);
   respond.send();
