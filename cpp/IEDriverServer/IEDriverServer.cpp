@@ -14,6 +14,11 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "IEServer.h"
+#include "CommandLineArguments.h"
+#include <algorithm>
+#include <map>
+#include <string>
+#include <vector>
 
 // TODO(JimEvans): Change the prototypes of these functions in the
 // IEDriver project to match the prototype specified here.
@@ -29,6 +34,11 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define TEMP_FILE_PREFIX L"IEDriver"
 #define START_SERVER_EX_API_NAME "StartServerEx"
 #define STOP_SERVER_API_NAME "StopServer"
+
+#define PORT_COMMAND_LINE_ARG "port"
+#define HOST_COMMAND_LINE_ARG "host"
+#define LOGLEVEL_COMMAND_LINE_ARG "log-level"
+#define LOGFILE_COMMAND_LINE_ARG "log-file"
 
 bool ExtractResource(unsigned short resource_id,
                      const std::wstring& output_file_name) {
@@ -76,78 +86,6 @@ bool ExtractResource(unsigned short resource_id,
     // Ignore all type of errors
   } 
   return success;
-}
-
-int GetPort(int argc, _TCHAR* argv[]) {
-  int port = 5555;
-  if (argc >= 2) {
-    for (int i = 1; i < argc; i++) {
-      std::wstring arg(argv[i]);
-      if (arg.find(L"--port=") == 0 ||
-          arg.find(L"-port=") == 0 ||
-          arg.find(L"/port=") == 0) {
-        size_t equal_pos = arg.find(L"=");
-        std::wstring port_string = arg.substr(equal_pos + 1);
-        int port_value = _wtoi(port_string.c_str());
-        if (port_value > 0) {
-          port = port_value;
-        }
-        break;
-      }
-    }
-  }
-  return port;
-}
-
-std::string GetHost(int argc, _TCHAR* argv[]) {
-  std::string host = "";
-  if (argc >= 2) {
-    for (int i = 1; i < argc; i++) {
-      std::wstring arg(argv[i]);
-      if (arg.find(L"--host=") == 0 ||
-          arg.find(L"-host=") == 0 ||
-          arg.find(L"/host=") == 0) {
-        size_t equal_pos = arg.find(L"=");
-        host = CW2A(arg.substr(equal_pos + 1).c_str(), CP_UTF8);
-        break;
-      }
-    }
-  }
-  return host;
-}
-
-std::string GetLogLevel(int argc, _TCHAR* argv[]) {
-  std::string log_level = "";
-  if (argc >= 2) {
-    for (int i = 1; i < argc; i++) {
-      std::wstring arg(argv[i]);
-      if (arg.find(L"--log-level=") == 0 ||
-          arg.find(L"-loglevel=") == 0 ||
-          arg.find(L"/LOGLEVEL=") == 0) {
-        size_t equal_pos = arg.find(L"=");
-        log_level = CW2A(arg.substr(equal_pos + 1).c_str(), CP_UTF8);
-        break;
-      }
-    }
-  }
-  return log_level;
-}
-
-std::string GetLogFile(int argc, _TCHAR* argv[]) {
-  std::string log_file = "";
-  if (argc >= 2) {
-    for (int i = 1; i < argc; i++) {
-      std::wstring arg(argv[i]);
-      if (arg.find(L"--log-file=") == 0 ||
-          arg.find(L"-logfile=") == 0 ||
-          arg.find(L"/LOGFILE=") == 0) {
-        size_t equal_pos = arg.find(L"=");
-        log_file = CW2A(arg.substr(equal_pos + 1).c_str(), CP_UTF8);
-        break;
-      }
-    }
-  }
-  return log_file;
 }
 
 std::string GetProcessArchitectureDescription() {
@@ -209,6 +147,7 @@ std::string GetExecutableVersion() {
 }
 
 int _tmain(int argc, _TCHAR* argv[]) {
+  CommandLineArguments args(argc, argv);
   vector<TCHAR> temp_file_name_buffer(MAX_PATH);
   vector<TCHAR> temp_path_buffer(MAX_PATH);
 
@@ -245,10 +184,10 @@ int _tmain(int argc, _TCHAR* argv[]) {
     return ERR_FUNCTION_NOT_FOUND;
   }
 
-  int port = GetPort(argc, argv);
-  std::string host_address = GetHost(argc, argv);
-  std::string log_level = GetLogLevel(argc, argv);
-  std::string log_file = GetLogFile(argc, argv);
+  int port = atoi(args.GetValue(PORT_COMMAND_LINE_ARG, "5555").c_str());
+  std::string host_address = args.GetValue(HOST_COMMAND_LINE_ARG, "");
+  std::string log_level = args.GetValue(LOGLEVEL_COMMAND_LINE_ARG, "");
+  std::string log_file = args.GetValue(LOGFILE_COMMAND_LINE_ARG, "");
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
