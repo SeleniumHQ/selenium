@@ -1199,7 +1199,8 @@ location for correctly generating native events.''').
            'is specified, the move is relative to the current mouse cursor. If an '
            'element is provided but no offset, the mouse will be moved to the center'
            ' of the element. If the element is not visible, it will be scrolled into view.').
-      AddJsonParameter('element', '{string}', 'ID of the element to move to. If not specified'
+      AddJsonParameter('element', '{string}', 'Opaque ID assigned to the element to move to, as '
+                       'described in the WebElement JSON Object. If not specified'
                        ' or is null, the offset is relative to current position of the mouse.').
       AddJsonParameter('xoffset', '{number}', 'X offset to move to, relative to the top-left '
                        'corner of the element. If not specified, the mouse'
@@ -1221,13 +1222,17 @@ location for correctly generating native events.''').
       Post('Click and hold the left mouse button (at the coordinates set by the last moveto '
            'command). Note that the next mouse-related command that should follow is buttondown'
            ' . Any other mouse command (such as click or another call to buttondown) will yield'
-           ' undefined behaviour.'))
+           ' undefined behaviour.').
+      AddJsonParameter('button', '{number}', 'Which button, enum: `{LEFT = 0, MIDDLE = 1 '
+                       ', RIGHT = 2}`. Defaults to the left mouse button if not specified.'))
 
   resources.append(
       SessionResource('/session/:sessionId/buttonup').
       Post('Releases the mouse button previously held (where the mouse is currently at). '
            'Must be called once for every buttondown command issued. See the note in click and '
-           'buttondown about implications of out-of-order commands.'))
+           'buttondown about implications of out-of-order commands.').
+      AddJsonParameter('button', '{number}', 'Which button, enum: `{LEFT = 0, MIDDLE = 1 '
+                       ', RIGHT = 2}`. Defaults to the left mouse button if not specified.'))
 
   resources.append(
       SessionResource('/session/:sessionId/doubleclick').
