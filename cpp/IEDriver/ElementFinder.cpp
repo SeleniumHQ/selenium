@@ -79,11 +79,15 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
         if (status_code == SUCCESS && script_wrapper.ResultIsElement()) {
           script_wrapper.ConvertResultToJsonValue(executor, found_element);
         } else {
-          LOG(WARN) << "Unable to find element by mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
+          LOG(WARN) << "Unable to find element by mechanism "
+                    << LOGWSTRING(mechanism.c_str()) << " and criteria" 
+                    << LOGWSTRING(sanitized_criteria.c_str());
           status_code = ENOSUCHELEMENT;
         }
       } else {
-        LOG(WARN) << "Unable to create criteria object for mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
+        LOG(WARN) << "Unable to create criteria object for mechanism "
+                  << LOGWSTRING(mechanism.c_str()) << " and criteria" 
+                  << LOGWSTRING(sanitized_criteria.c_str());
         status_code = ENOSUCHELEMENT;
       }
     }
@@ -149,11 +153,15 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
             LOG(WARN) << "Returned value is not an array or element collection";
           }
         } else {
-          LOG(WARN) << "Unable to find elements by mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
+          LOG(WARN) << "Unable to find elements by mechanism "
+                    << LOGWSTRING(mechanism.c_str()) << " and criteria"
+                    << LOGWSTRING(sanitized_criteria.c_str());
           status_code = ENOSUCHELEMENT;
         }
       } else {
-        LOG(WARN) << "Unable to create criteria object for mechanism " << mechanism.c_str() << " and criteria" << sanitized_criteria.c_str();
+        LOG(WARN) << "Unable to create criteria object for mechanism "
+                  << LOGWSTRING(mechanism.c_str()) << " and criteria"
+                  << LOGWSTRING(sanitized_criteria.c_str());
         status_code = ENOSUCHELEMENT;
       }
     }

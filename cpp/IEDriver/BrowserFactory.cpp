@@ -449,14 +449,14 @@ bool BrowserFactory::GetRegistryValue(const HKEY root_key,
         *value = &value_buffer[0];
         value_retrieved = true;
       } else {
-        LOG(WARN) << "RegQueryValueEx failed retrieving value name";
+        LOG(WARN) << "RegQueryValueEx failed retrieving value " << LOGWSTRING(value_name.c_str());
       }
     } else {
       LOG(WARN) << "RegQueryValueEx failed for retrieving required buffer size";
     }
     ::RegCloseKey(key_handle);
   } else {
-    LOG(WARN) << "RegOpenKeyEx failed";
+    LOG(WARN) << "RegOpenKeyEx failed for subkey " << LOGWSTRING(subkey.c_str());
   }
   return value_retrieved;
 }
@@ -476,7 +476,7 @@ void BrowserFactory::GetIEVersion() {
     // 64-bit Windows 8 has a bug where it does not return the executable location properly
     this->ie_major_version_ = -1;
     LOG(WARN) << "Couldn't find IE version for executable "
-               << this->ie_executable_location_.c_str()
+               << LOGWSTRING(this->ie_executable_location_.c_str())
                << ", falling back to "
                << this->ie_major_version_;
     return;
@@ -525,7 +525,8 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
   LOG(TRACE) << "Entering BrowserFactory::ProtectedModeSettingsAreValid";
 
   bool settings_are_valid = true;
-  LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_ << ", detected Windows version: " << this->windows_major_version_;
+  LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_
+             << ", detected Windows version: " << this->windows_major_version_;
   // Only need to check Protected Mode settings on IE 7 or higher
   // and on Windows Vista or higher. Otherwise, Protected Mode
   // doesn't come into play, and are valid.
@@ -586,7 +587,9 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
       }
       ::RegCloseKey(key_handle);
     } else {
-      LOG(WARN) << "RegOpenKeyEx for zone settings registry key in HKEY_CURRENT_USER failed";
+      LOG(WARN) << "RegOpenKeyEx for zone settings registry key "
+                << LOGWSTRING(IE_SECURITY_ZONES_REGISTRY_KEY)
+                << " in HKEY_CURRENT_USER failed";
     }
   }
   return settings_are_valid;
@@ -612,11 +615,11 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
                                            reinterpret_cast<LPBYTE>(&value),
                                            &value_length)) {
       LOG(DEBUG) << "Found Protected Mode setting value of "
-                 << value << " for zone " << zone_subkey_name.c_str();
+                 << value << " for zone " << LOGWSTRING(zone_subkey_name.c_str());
       protected_mode_value = value;
     } else {
       LOG(DEBUG) << "RegQueryValueEx failed for getting Protected Mode setting for a zone: "
-                 << zone_subkey_name.c_str();
+                 << LOGWSTRING(zone_subkey_name.c_str());
     }
     ::RegCloseKey(subkey_handle);
   } else {
@@ -634,7 +637,7 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
       protected_mode_value = 0;
     }
     LOG(DEBUG) << "Protected Mode zone setting value does not exist for zone "
-               << zone_subkey_name.c_str() << ". Using default value of "
+               << LOGWSTRING(zone_subkey_name.c_str()) << ". Using default value of "
                << protected_mode_value;
   }
   return protected_mode_value;
