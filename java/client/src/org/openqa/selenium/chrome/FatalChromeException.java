@@ -20,6 +20,9 @@ package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.WebDriverException;
 
+/**
+ * @deprecated This class has no uses in the code anymore. To be deleted soon. 
+ */
 public class FatalChromeException extends WebDriverException {
 
   FatalChromeException(Throwable cause) {

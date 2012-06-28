@@ -1,33 +1,30 @@
 /*
- Copyright 2011 Software Freedom Conservancy.
+Copyright 2011-2012 Selenium committers
+Copyright 2011-2012 Software Freedom Conservancy
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
 
 package org.openqa.selenium.remote.service;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 
@@ -35,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -117,7 +113,7 @@ public class DriverService {
     return exe;
   }
 
-  private static void checkExecutable(File exe) {
+  protected static void checkExecutable(File exe) {
     checkState(exe.exists(),
         "The driver executable does not exist: %s", exe.getAbsolutePath());
     checkState(!exe.isDirectory(),
@@ -196,108 +192,5 @@ public class DriverService {
       process = null;
       lock.unlock();
     }
-  }
-
-  /**
-   * Builder used to configure new {@link DriverService} instances.
-   */
-  public abstract static class Builder {
-
-    protected int port = 0;
-    protected File exe = null;
-    protected ImmutableMap<String, String> environment = ImmutableMap.of();
-    protected File logFile;
-
-    /**
-     * Sets which driver executable the builder will use.
-     *
-     * @param file The executable to use.
-     * @return A self reference.
-     */
-    public Builder usingDriverExecutable(File file) {
-      checkNotNull(file);
-      checkExecutable(file);
-      this.exe = file;
-      return this;
-    }
-
-    /**
-     * Sets which port the driver server should be started on. A value of 0 indicates that any
-     * free port may be used.
-     *
-     * @param port The port to use; must be non-negative.
-     * @return A self reference.
-     */
-    public Builder usingPort(int port) {
-      checkArgument(port >= 0, "Invalid port number: %d", port);
-      this.port = port;
-      return this;
-    }
-
-    /**
-     * Configures the driver server to start on any available port.
-     *
-     * @return A self reference.
-     */
-    public Builder usingAnyFreePort() {
-      this.port = 0;
-      return this;
-    }
-
-    /**
-     * Defines the environment for the launched driver server. These
-     * settings will be inherited by every browser session launched by the
-     * server.
-     *
-     * @param environment A map of the environment variables to launch the
-     *     server with.
-     * @return A self reference.
-     */
-    @Beta
-    public Builder withEnvironment(Map<String, String> environment) {
-      this.environment = ImmutableMap.copyOf(environment);
-      return this;
-    }
-    
-    /**
-     * Configures the driver server to write log to the given file.
-     *
-     * @param logFile A file to write log to.
-     * @return A self reference.
-     */
-    public Builder withLogFile(File logFile) {
-      this.logFile = logFile;
-      return this;
-    }
-
-    /**
-     * Creates a new service to manage the driver server. Before creating a new service, the
-     * builder will find a port for the server to listen to.
-     *
-     * @return The new service object.
-     * @see #buildDriverService
-     */
-    public DriverService build() {
-      if (port == 0) {
-        port = PortProber.findFreePort();
-      }
-
-      checkState(exe != null, "Path to the driver executable not specified");
-
-      try {
-        return buildDriverService();
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
-    }
-
-    /**
-     * Used by a template method {@link #build} to perform the driver specific checks
-     * and instantiate the specific service object.
-     * 
-     * @return The new service object.
-     * @throws IOException If an I/O error occurs.
-     */
-    protected abstract DriverService buildDriverService() throws IOException;
   }
 }

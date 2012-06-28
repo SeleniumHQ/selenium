@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2010 Selenium committers
+Copyright 2007-2012 Selenium committers
+Portions copyright 2011-2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,10 +34,7 @@ import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
-import java.util.logging.Logger;
-
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
-  private static Logger log = Logger.getLogger(InternetExplorerDriver.class.getName());
 
   /**
    * Setting this capability will make your tests unstable and hard to debug.

@@ -71,7 +71,7 @@ class ChromeCommandExecutor extends HttpCommandExecutor {
       if (rootCause instanceof ConnectException &&
           "Connection refused".equals(rootCause.getMessage()) &&
           !service.isRunning()) {
-        throw new FatalChromeException(t);
+        throw new WebDriverException("The chromedriver server has unexpectedly died!", t);
       }
       Throwables.propagateIfPossible(t);
       throw new WebDriverException(t);
