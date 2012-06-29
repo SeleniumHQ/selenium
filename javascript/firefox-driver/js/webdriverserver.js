@@ -57,15 +57,8 @@ WebDriverServer = function() {
 
 
 WebDriverServer.prototype.newDriver = function(window) {
-  if (null == this.useNativeEvents) {
-    var prefs =
-        fxdriver.moz.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
-    if (!prefs.prefHasUserValue("webdriver_enable_native_events")) {
-      fxdriver.Logger.dumpn('webdriver_enable_native_events not set; defaulting to false');
-    }
-    this.enableNativeEvents =
-    prefs.prefHasUserValue("webdriver_enable_native_events") ?
-      prefs.getBoolPref("webdriver_enable_native_events") : false;
+  if (!this.enableNativeEvents) {
+    this.enableNativeEvents = Utils.useNativeEvents();
     fxdriver.Logger.dumpn('Using native events: ' + this.enableNativeEvents);
   }
   window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
