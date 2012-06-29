@@ -29,12 +29,12 @@ public final class R {
         public static final int app_name=0x7f050009;
         public static final int ctx_menu_navigate=0x7f050001;
         public static final int default_session_status=0x7f050002;
-        public static final int jetty_already_started=0x7f050005;
-        public static final int jetty_not_running=0x7f050008;
-        public static final int jetty_not_started=0x7f050004;
-        public static final int jetty_not_stopped=0x7f050007;
-        public static final int jetty_started=0x7f050003;
-        public static final int jetty_stopped=0x7f050006;
+        public static final int httpd_already_started=0x7f050005;
+        public static final int httpd_not_running=0x7f050008;
+        public static final int httpd_not_started=0x7f050004;
+        public static final int httpd_not_stopped=0x7f050007;
+        public static final int httpd_started=0x7f050003;
+        public static final int httpd_stopped=0x7f050006;
         public static final int main_title=0x7f050000;
     }
     public static final class xml {
