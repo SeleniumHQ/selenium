@@ -19,7 +19,6 @@ package org.openqa.selenium.ie;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -66,10 +65,7 @@ public class InternetExplorerDriverService extends DriverService {
    * @return A new InternetExplorerDriverService using the default configuration.
    */
   public static InternetExplorerDriverService createDefaultService() {
-    File exe = findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-      "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
-      "http://code.google.com/p/selenium/downloads/list");
-    return (InternetExplorerDriverService) new Builder().usingDriverExecutable(exe).usingAnyFreePort().build();
+    return (InternetExplorerDriverService) new Builder().usingAnyFreePort().build();
   }
 
   /**
@@ -166,8 +162,11 @@ public class InternetExplorerDriverService extends DriverService {
       if (port == 0) {
         port = PortProber.findFreePort();
       }
-
-      checkState(exe != null, "Path to the driver executable not specified");
+      if (exe == null) {
+        exe = findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
+            "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
+            "http://code.google.com/p/selenium/downloads/list");
+      }
 
       try {
         ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();

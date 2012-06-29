@@ -66,6 +66,17 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     setup(DesiredCapabilities.internetExplorer(), port);
   }
 
+  public InternetExplorerDriver(InternetExplorerDriverService service) {
+    this(service, DesiredCapabilities.internetExplorer());
+  }
+
+  public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
+    assertOnWindows();
+
+    setCommandExecutor(new DriverCommandExecutor(service));
+    startSession(capabilities);
+  }
+
   @Override
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
@@ -91,25 +102,35 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   }
 
   private void setup(Capabilities capabilities, int port) {
-    if (capabilities.is("useLegacyInternalServer")) {
+    setupService(capabilities.is("useLegacyInternalServer"), port);
+    startSession(capabilities);
+  }
+
+  private void setupService(boolean useLegacyInternalServer, int port) {
+    if (useLegacyInternalServer) {
       setupLegacyServer(port);
     } else {
       try {
-        setCommandExecutor(new DriverCommandExecutor(
-            InternetExplorerDriverService.createDefaultService()));
+        InternetExplorerDriverService service = new InternetExplorerDriverService.Builder()
+          .usingPort(port).build();
+        setCommandExecutor(new DriverCommandExecutor(service));
       } catch (IllegalStateException ex) {
         System.err.println(ex.getMessage());
         // fallback
         setupLegacyServer(port);
       }
     }
+  }
+  
+  @Override
+  protected void startSession(Capabilities desiredCapabilities) {
     setElementConverter(new JsonToWebElementConverter(this) {
       @Override
       protected RemoteWebElement newRemoteWebElement() {
         return new InternetExplorerElement(InternetExplorerDriver.this);
       }
     });
-    startSession(capabilities);
+    super.startSession(desiredCapabilities);
   }
 
   private void setupLegacyServer(int port) {
