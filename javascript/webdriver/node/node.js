@@ -113,8 +113,9 @@ webdriver.node.HttpClient.prototype.send = function(httpRequest, callback) {
   var data;
   httpRequest.headers['Content-Length'] = 0;
   if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
-     data = JSON.stringify(httpRequest.data);
-     httpRequest.headers['Content-Length'] = data.length;
+    data = JSON.stringify(httpRequest.data);
+    httpRequest.headers['Content-Length'] = data.length;
+    httpRequest.headers['Content-Type'] = 'application/json;charset=UTF-8';
   }
 
   webdriver.node.HttpClient.sendRequest_({
