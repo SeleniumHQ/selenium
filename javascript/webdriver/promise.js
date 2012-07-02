@@ -525,17 +525,14 @@ webdriver.promise.checkedNodeCall = function(fn) {
   var deferred = new webdriver.promise.Deferred(function() {
     throw Error('This Deferred may not be cancelled');
   });
-  var resolved = false;
   try {
     fn(function(error, value) {
-      if (!resolved) {
-        resolved = true;
+      if (deferred.isPending()) {
         error ? deferred.reject(error) : deferred.resolve(value);
       }
     });
   } catch (ex) {
-    if (!resolved) {
-      resolved = true;
+    if (deferred.isPending()) {
       deferred.reject(ex);
     }
   }
@@ -682,15 +679,9 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
   }
 
   var numResolved = 0;
-  var rejected = false;
-  var wasCancelled = false;
-  var deferred = new webdriver.promise.Deferred(function() {
-    wasCancelled = true;
-  });
+  var deferred = new webdriver.promise.Deferred();
 
   forEachKey(obj, function(partialValue, key) {
-    if (wasCancelled) return;
-
     var type = goog.typeOf(partialValue);
     if (type != 'array' && type != 'object') {
       return maybeResolveValue();
@@ -698,18 +689,19 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
 
     webdriver.promise.fullyResolved(partialValue).then(
         function(resolvedValue) {
-          obj[key] = resolvedValue;
-          maybeResolveValue();
+          if (deferred.isPending()) {
+            obj[key] = resolvedValue;
+            maybeResolveValue();
+          }
         },
         function(err) {
-          if (!rejected && !wasCancelled) {
-            rejected = true;
+          if (deferred.isPending()) {
             deferred.reject(err);
           }
         });
 
     function maybeResolveValue() {
-      if (++numResolved == numKeys && !wasCancelled) {
+      if (++numResolved == numKeys && deferred.isPending()) {
         deferred.resolve(obj);
       }
     }
