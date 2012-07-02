@@ -28,6 +28,7 @@ goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
+goog.require('goog.string');
 
 
 /**
@@ -937,8 +938,6 @@ Utils.wrapResult = function(result, doc) {
         return array;
       }
 
-
-
       try {
         var nodeList = result.QueryInterface(CI.nsIDOMNodeList);
         var array = [];
@@ -948,6 +947,11 @@ Utils.wrapResult = function(result, doc) {
         return array;
       } catch (ignored) {
         fxdriver.Logger.dumpn(ignored);
+      }
+
+      // There's got to be a better way, but 'result instanceof Error' returns false
+      if (goog.string.endsWith(Object.getPrototypeOf(result).toString(), 'Error')) {
+        return result.toString();
       }
 
       var convertedObj = {};

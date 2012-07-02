@@ -291,6 +291,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
       fail("Expected an exception");
     } catch (Exception e) {
       // This is expected
+      assertFalse(e.getMessage(), e.getMessage().startsWith("null "));
     }
   }
 
