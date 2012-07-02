@@ -35,13 +35,11 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
                        Response* response) {
     Json::Value frame_id = Json::Value::null;
     ParametersMap::const_iterator it = command_parameters.find("id");
-    // TODO: When issue 1133 is fixed, the else block in the following code
-    // should be uncommented.
     if (it != command_parameters.end()) {
       frame_id = it->second;
-    //} else {
-    //	response->SetErrorResponse(400, "Missing parameter: id");
-    //	return;
+    } else {
+      response->SetErrorResponse(400, "Missing parameter: id");
+      return;
     }
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);

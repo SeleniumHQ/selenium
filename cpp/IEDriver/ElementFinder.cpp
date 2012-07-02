@@ -30,7 +30,7 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
                                const std::wstring& mechanism,
                                const std::wstring& criteria,
                                Json::Value* found_element) {
-  LOG(TRACE) << "Entering ElmentFinder::FindElement";
+  LOG(TRACE) << "Entering ElementFinder::FindElement";
 
   BrowserHandle browser;
   int status_code = executor.GetCurrentBrowser(&browser);
@@ -102,7 +102,7 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
                                 const std::wstring& mechanism,
                                 const std::wstring& criteria,
                                 Json::Value* found_elements) {
-  LOG(TRACE) << "Entering ElmentFinder::FindElements";
+  LOG(TRACE) << "Entering ElementFinder::FindElements";
 
   BrowserHandle browser;
   int status_code = executor.GetCurrentBrowser(&browser);
@@ -151,6 +151,7 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
             script_wrapper.ConvertResultToJsonValue(executor, found_elements);
           } else {
             LOG(WARN) << "Returned value is not an array or element collection";
+            status_code = ENOSUCHELEMENT;
           }
         } else {
           LOG(WARN) << "Unable to find elements by mechanism "
@@ -217,6 +218,7 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
     }
   } else {
     LOG(WARN) << "Unable to find elements";
+    result = ENOSUCHELEMENT;
   }
 
   return result;
@@ -358,11 +360,10 @@ int ElementFinder::FindElementByXPath(const IECommandExecutor& executor,
     }
   } else if (result == EUNEXPECTEDJSERROR) {
     // The given xpath expression caused an error. We change the error code so that it is
-    // consistent with the error  codes of the other browsers.
+    // consistent with the error codes of the other browsers.
     LOG(WARN) << "Unable to exec xpath due js error";
     result = EINVALIDSELECTOR;
-  } else {
-    LOG(WARN) << "Unable to exec xpath";
+  } else {    LOG(WARN) << "Unable to exec xpath";
     result = EINVALIDSELECTOR;
   }
 

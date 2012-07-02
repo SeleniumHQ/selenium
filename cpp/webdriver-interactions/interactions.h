@@ -45,6 +45,10 @@ limitations under the License.
 #define MOUSEBUTTON_MIDDLE (2)
 #define MOUSEBUTTON_RIGHT (3)
 
+#define WD_CLIENT_LEFT_MOUSE_BUTTON 0
+#define WD_CLIENT_MIDDLE_MOUSE_BUTTON 1
+#define WD_CLIENT_RIGHT_MOUSE_BUTTON 2
+
 #ifdef __cplusplus
 extern "C" {
 #endif

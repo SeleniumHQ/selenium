@@ -60,12 +60,17 @@ class MouseClickCommandHandler : public IECommandHandler {
                                      atoms::asString(atoms::INPUTS) + 
                                      L"; return webdriver.atoms.inputs.click(arguments[0], arguments[1]);" + 
                                      L"};})();";
-        if (button == 2) {
+        if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
           script_arg_count = 1;
           script_source = L"(function() { return function(){" + 
                          atoms::asString(atoms::INPUTS) + 
                          L"; return webdriver.atoms.inputs.rightClick(arguments[0]);" + 
                          L"};})();";
+        } else if (button == WD_CLIENT_MIDDLE_MOUSE_BUTTON) {
+          LOG(WARN) << "Only right and left mouse click types are supported by synthetic events. A left mouse click will be performed.";
+        } else if (button < WD_CLIENT_LEFT_MOUSE_BUTTON || button > WD_CLIENT_RIGHT_MOUSE_BUTTON) {
+          // Write to the log, but still attempt the "click" anyway. The atom should catch the error.
+          LOG(ERROR) << "Unsupported mouse button type is specified: " << button;
         }
 
         CComPtr<IHTMLDocument2> doc;
@@ -73,9 +78,11 @@ class MouseClickCommandHandler : public IECommandHandler {
         Script script_wrapper(doc, script_source, script_arg_count);
 
         if (script_arg_count > 1) {
-          CComVariant null_element;
-          null_element.vt = VT_NULL;
-          script_wrapper.AddArgument(null_element);
+          // The click input atom takes an element as its first argument,
+          // but if we're passing a mouse state (which we are), it contains
+          // the element we're interested in, so pass a null value. Other
+          // input atoms only take a single argument.
+          script_wrapper.AddNullArgument();
         }
 
         script_wrapper.AddArgument(executor.mouse_state());
@@ -83,6 +90,8 @@ class MouseClickCommandHandler : public IECommandHandler {
         if (status_code == SUCCESS) {
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
           mutable_executor.set_mouse_state(script_wrapper.result());
+        } else {
+          LOG(WARN) << "Unable to execute js to perform mouse click";
         }
       }
       response->SetSuccessResponse(Json::Value::null);

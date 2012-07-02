@@ -59,21 +59,28 @@ void Server::Initialize(const int port,
 void* Server::OnHttpEvent(enum mg_event event_raised,
                           struct mg_connection* conn,
                           const struct mg_request_info* request_info) {
+  LOG(TRACE) << "Entering Server::OnHttpEvent";
+
+  // Mongoose calls method with the following events:
+  // - MG_EVENT_LOG - on crying to log
+  // - MG_NEW_REQUEST - on processing new HTTP request
+  // - MG_HTTP_ERROR - on sending HTTP error
+  // - MG_REQUEST_COMPLETE - on request processing is completed (in last version of code)
   int handler_result_code = 0;
   if (event_raised == MG_NEW_REQUEST) {
     handler_result_code = reinterpret_cast<Server*>(request_info->user_data)->
         ProcessRequest(conn, request_info);
   } else if (event_raised == MG_EVENT_LOG) {
-    if (NULL != strstr(request_info->log_message, "cannot bind to") || 
-        NULL != strstr(request_info->log_message, "invalid port spec")) {
-      std::cout << request_info->log_message;
-    }
+    LOG(WARN) << "Mongoose log event: " << request_info->log_message;
+  } else if (event_raised == MG_HTTP_ERROR) {
+    // do nothing due it will be reported as MG_EVENT_LOG with more info
   }
 
   return reinterpret_cast<void*>(handler_result_code);
 }
 
 bool Server::Start() {
+  LOG(TRACE) << "Entering Server::Start";
   std::string port_format_string = "%s:%d";
   if (this->host_.size() == 0) {
     // If the host name is an empty string, then we don't want the colon
@@ -92,18 +99,24 @@ bool Server::Start() {
               port_format_string.c_str(),
               this->host_.c_str(),
               this->port_);
+
+  std::string acl = "-0.0.0.0/0,+127.0.0.1";
+  LOG(DEBUG) << "Mongoose ACL is " << acl;
+
   const char* options[] = { "listening_ports", listening_ports_buffer,
-                            "access_control_list", "-0.0.0.0/0,+127.0.0.1",
+                            "access_control_list", acl.c_str(),
                             // "enable_keep_alive", "yes",
                             NULL };
   context_ = mg_start(&OnHttpEvent, this, options);
   if (context_ == NULL) {
+    LOG(WARN) << "Failed to start Mongoose";
     return false;
   }
   return true;
 }
 
 void Server::Stop() {
+  LOG(TRACE) << "Entering Server::Stop";
   if (context_) {
     mg_stop(context_);
     context_ = NULL;
@@ -112,6 +125,8 @@ void Server::Stop() {
 
 int Server::ProcessRequest(struct mg_connection* conn,
     const struct mg_request_info* request_info) {
+  LOG(TRACE) << "Entering Server::ProcessRequest";
+
   int http_response_code = NULL;
   std::string http_verb = request_info->request_method;
   std::string request_body = "{}";
@@ -119,10 +134,10 @@ int Server::ProcessRequest(struct mg_connection* conn,
     request_body = this->ReadRequestBody(conn, request_info);
   }
 
-  LOG(TRACE) << "Process request with: " <<
-    "URI: "  << request_info->uri <<
-    "verb: " << http_verb <<
-    "\nbody: " << request_body;
+  LOG(TRACE) << "Process request with: "
+             << "URI: "  << request_info->uri
+             << "HTTP verb: " << http_verb << std::endl
+             << "body: " << request_body;
 
   if (strcmp(request_info->uri, "/") == 0) {
     this->SendHttpOk(conn,
@@ -150,6 +165,8 @@ int Server::ProcessRequest(struct mg_connection* conn,
 }
 
 std::string Server::CreateSession() {
+  LOG(TRACE) << "Entering Server::CreateSession";
+
   SessionHandle session_handle= this->InitializeSession();
   std::string session_id = session_handle->session_id();
   this->sessions_[session_id] = session_handle;
@@ -157,15 +174,21 @@ std::string Server::CreateSession() {
 }
 
 void Server::ShutDownSession(const std::string& session_id) {
+  LOG(TRACE) << "Entering Server::ShutDownSession";
+
   SessionMap::iterator it = this->sessions_.find(session_id);
   if (it != this->sessions_.end()) {
     it->second->ShutDown();
     this->sessions_.erase(session_id);
+  } else {
+    LOG(DEBUG) << "Shutdown session is not found";
   }
 }
 
 std::string Server::ReadRequestBody(struct mg_connection* conn,
     const struct mg_request_info* request_info) {
+  LOG(TRACE) << "Entering Server::ReadRequestBody";
+
   std::string request_body = "";
   int content_length = 0;
   for (int header_index = 0; header_index < 64; ++header_index) {
@@ -274,6 +297,8 @@ std::string Server::DispatchCommand(const std::string& uri,
 }
 
 std::string Server::ListSessions() {
+  LOG(TRACE) << "Entering Server::ListSessions";
+
   // Manually construct the serialized command for getting 
   // session capabilities.
   std::vector<char> command_value_buffer(3);
@@ -311,6 +336,8 @@ std::string Server::ListSessions() {
 
 bool Server::LookupSession(const std::string& session_id,
                            SessionHandle* session_handle) {
+  LOG(TRACE) << "Entering Server::LookupSession";
+
   SessionMap::iterator it = this->sessions_.find(session_id);
   if (it == this->sessions_.end()) {
     return false;
@@ -322,6 +349,8 @@ bool Server::LookupSession(const std::string& session_id,
 int Server::SendResponseToClient(struct mg_connection* conn,
                                  const struct mg_request_info* request_info,
                                  const std::string& serialized_response) {
+  LOG(TRACE) << "Entering Server::SendResponseToClient";
+
   int return_code = 0;
   if (serialized_response.size() > 0) {
     Response response;
@@ -374,6 +403,8 @@ void Server::SendHttpOk(struct mg_connection* connection,
                         const struct mg_request_info* request_info,
                         const std::string& body,
                         const std::string& content_type) {
+  LOG(TRACE) << "Entering Server::SendHttpOk";
+
   std::ostringstream out;
   out << "HTTP/1.1 200 OK\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
@@ -391,6 +422,8 @@ void Server::SendHttpOk(struct mg_connection* connection,
 void Server::SendHttpBadRequest(struct mg_connection* const connection,
                                 const struct mg_request_info* request_info,
                                 const std::string& body) {
+  LOG(TRACE) << "Entering Server::SendHttpBadRequest";
+
   std::ostringstream out;
   out << "HTTP/1.1 400 Bad Request\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
@@ -408,6 +441,8 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
 void Server::SendHttpInternalError(struct mg_connection* connection,
                                    const struct mg_request_info* request_info,
                                    const std::string& body) {
+  LOG(TRACE) << "Entering Server::SendHttpInternalError";
+
   std::ostringstream out;
   out << "HTTP/1.1 500 Internal Server Error\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
@@ -425,6 +460,8 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
 void Server::SendHttpNotFound(struct mg_connection* const connection,
                               const struct mg_request_info* request_info,
                               const std::string& body) {
+  LOG(TRACE) << "Entering Server::SendHttpNotFound";
+
   std::ostringstream out;
   out << "HTTP/1.1 404 Not Found\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
@@ -443,6 +480,8 @@ void Server::SendHttpMethodNotAllowed(
     struct mg_connection* connection,
     const struct mg_request_info* request_info,
     const std::string& allowed_methods) {
+  LOG(TRACE) << "Entering Server::SendHttpMethodNotAllowed";
+
   std::ostringstream out;
   out << "HTTP/1.1 405 Method Not Allowed\r\n"
     << "Content-Type: text/html\r\n"
@@ -455,6 +494,8 @@ void Server::SendHttpMethodNotAllowed(
 void Server::SendHttpNotImplemented(struct mg_connection* connection,
                                     const struct mg_request_info* request_info,
                                     const std::string& body) {
+  LOG(TRACE) << "Entering Server::SendHttpNotImplemented";
+
   std::ostringstream out;
   out << "HTTP/1.1 501 Not Implemented\r\n\r\n";
 
@@ -464,6 +505,8 @@ void Server::SendHttpNotImplemented(struct mg_connection* connection,
 void Server::SendHttpSeeOther(struct mg_connection* connection,
                               const struct mg_request_info* request_info,
                               const std::string& location) {
+  LOG(TRACE) << "Entering Server::SendHttpSeeOther";
+
   std::ostringstream out;
   out << "HTTP/1.1 303 See Other\r\n"
     << "Location: " << location << "\r\n"
@@ -477,6 +520,8 @@ int Server::LookupCommand(const std::string& uri,
                           const std::string& http_verb,
                           std::string* session_id,
                           std::string* locator) {
+  LOG(TRACE) << "Entering Server::LookupCommand";
+
   int value = NoCommand;
   UrlMap::const_iterator it = this->commands_.begin();
   for (; it != this->commands_.end(); ++it) {
@@ -545,6 +590,8 @@ int Server::LookupCommand(const std::string& uri,
 }
 
 void Server::PopulateCommandRepository() {
+  LOG(TRACE) << "Entering Server::PopulateCommandRepository";
+
   this->commands_["/status"]["GET"] = Status;
   this->commands_["/session"]["POST"] = NewSession;
   this->commands_["/sessions"]["GET"] = GetSessionList;

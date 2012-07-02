@@ -51,7 +51,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get window");
+      response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
 
@@ -65,6 +65,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
       this->image_ = new CImage();
       hr = this->CaptureBrowser(browser_wrapper);
       if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Failed to capture browser image at " << i << " try";
         delete this->image_;
         this->image_ = NULL;
         response->SetSuccessResponse("");
@@ -73,6 +74,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
       isSameColour = IsSameColour();
       if (isSameColour) {
         ::Sleep(2000);
+        LOG(DEBUG) << "Failed to capture non single color browser image at " << i << " try";
       }
       i++;
     } while (i < 4 && isSameColour);
@@ -80,6 +82,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     std::string base64_screenshot = "";
     hr = this->GetBase64Data(base64_screenshot);
     if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Unable to transform browser image to Base64 format";
       response->SetSuccessResponse("");
       return;
     }
@@ -105,6 +108,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                              &image_width,
                                              &image_height);
     if (FAILED(hr)) {
+      LOGHR(DEBUG, hr) << "Unable to get document dimensions";
       return hr;
     }
 
@@ -152,7 +156,10 @@ class ScreenshotCommandHandler : public IECommandHandler {
     browser->SetHeight(max_height);
 
     // Capture the window's canvas to a DIB.
-    this->image_->Create(image_width, image_height, 32);
+    BOOL created = this->image_->Create(image_width, image_height, /*numbers of bits per pixel = */ 32);
+    if (!created) {
+      LOG(WARN) << "Unable to create image";
+    }
     HDC device_context_handle = this->image_->GetDC();
 
     BOOL print_result = ::PrintWindow(content_window_handle,
@@ -192,7 +199,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
   HRESULT GetBase64Data(std::string& data) {
     if (this->image_ == NULL) {
-      // CImage was not initialized.
+      LOG(DEBUG) << "CImage was not initialized.";
       return E_POINTER;
     }
 
@@ -220,12 +227,12 @@ class ScreenshotCommandHandler : public IECommandHandler {
     HGLOBAL global_memory_handle = NULL;
     hr = ::GetHGlobalFromStream(stream, &global_memory_handle);
     if (FAILED(hr)) {
-        LOGHR(WARN, hr) << "No HGlobal in stream";
+      LOGHR(WARN, hr) << "No HGlobal in stream";
       return hr;
     }
 
     // TODO: What if the file is bigger than max_int?
-    // LOG(INFO) << "Size of stream: " << statstg.cbSize.QuadPart;
+    LOG(DEBUG) << "Size of stream: " << statstg.cbSize.QuadPart;
     int length = ::Base64EncodeGetRequiredLength(static_cast<int>(statstg.cbSize.QuadPart),
                                                  ATL_BASE64_FLAG_NOCRLF);
     if (length <= 0) {
@@ -297,7 +304,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
     CComQIPtr<IHTMLDocument5> html_document5(document);
     if (!html_document5) {
-      LOG(WARN) << L"Requires IE6 or greater.";
+      LOG(WARN) << L"Unable to cast document to IHTMLDocument5. IE6 or greater is required.";
       return E_FAIL;
     }
 
@@ -310,6 +317,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     if (compatibility_mode == L"BackCompat") {
       document->get_body(&canvas_element);
       if (!canvas_element) {
+        LOG(WARN) << "Unable to get canvas element from document in compatibility mode";
         return E_FAIL;
       }
     } else {

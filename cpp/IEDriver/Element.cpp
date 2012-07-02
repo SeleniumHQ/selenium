@@ -77,6 +77,7 @@ int Element::IsDisplayed(bool* result) {
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
+  // N.B., The second argument to the IsDisplayed atom is "ignoreOpacity".
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
   script_wrapper.AddArgument(true);
@@ -84,6 +85,8 @@ int Element::IsDisplayed(bool* result) {
 
   if (status_code == SUCCESS) {
     *result = script_wrapper.result().boolVal == VARIANT_TRUE;
+  } else {
+    LOG(WARN) << "Failed to determine is element displayed";
   }
 
   return status_code;
@@ -119,6 +122,8 @@ bool Element::IsEnabled() {
 
   if (status_code == SUCCESS) {
     result = script_wrapper.result().boolVal == VARIANT_TRUE;
+  } else {
+    LOG(WARN) << "Failed to determine is element enabled";
   }
 
   return result;
@@ -137,7 +142,7 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
 
     // Create a mouse move, mouse down, mouse up OS event
     LRESULT result = mouseMoveTo(this->containing_window_handle_,
-                                 10,
+                                 /* duration of move in ms = */ 10,
                                  x,
                                  y,
                                  click_x,
@@ -189,6 +194,8 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   CComVariant value_variant;
   if (status_code == SUCCESS) {
     *value_is_null = !script_wrapper.ConvertResultToString(attribute_value);
+  } else {
+    LOG(WARN) << "Failed to determine element attribute";
   }
 
   return SUCCESS;
@@ -257,7 +264,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
     }
   }
 
-  LOG(DEBUG) << "(x, y, w, h): " << left << ", " << top << ", " << element_width << ", " << element_height << endl;
+  LOG(DEBUG) << "(x, y, w, h): " << left << ", " << top << ", " << element_width << ", " << element_height;
 
   // At this point, we know the element is displayed according to its
   // style attributes, and we've made a best effort at scrolling it so
@@ -278,6 +285,7 @@ bool Element::IsHiddenByOverflow() {
 
   bool isOverflow = false;
 
+  // what is more correct: this code or JS dom.bot.isShown.isOverflowHiding ?
   // Use JavaScript for this rather than COM calls to avoid dependency
   // on the IHTMLWindow7 interface, which is IE9-specific.
   std::wstring script_source = L"(function() { return function(){";
@@ -313,7 +321,10 @@ bool Element::IsHiddenByOverflow() {
   int status_code = script_wrapper.Execute();
   if (status_code == SUCCESS) {
     isOverflow = script_wrapper.result().boolVal == VARIANT_TRUE;
+  } else {
+    LOG(WARN) << "Unable to determine is element hidden by overflow";
   }
+
   return isOverflow;
 }
 
@@ -336,6 +347,8 @@ bool Element::IsSelected() {
 
   if (status_code == SUCCESS && script_wrapper.ResultIsBoolean()) {
     selected = script_wrapper.result().boolVal == VARIANT_TRUE;
+  } else {
+    LOG(WARN) << "Unable to determine is element selected";
   }
 
   return selected;
@@ -693,10 +706,10 @@ int Element::GetParentDocument(IHTMLWindow2* parent_window,
         }
       } catch(...) {
         LOG(WARN) << "Unable to get document, exception thrown attempting to QueryInterface for IHTMLDocument2";
-       return ENOSUCHDOCUMENT;
+        return ENOSUCHDOCUMENT;
       }
     } else {
-      LOG(WARN) << "Unable to get document, IHTMLWindow2::get_document failed with error code other than E_ACCESSDENIED";
+      LOGHR(WARN, hr) << "Unable to get document, IHTMLWindow2::get_document failed with error code other than E_ACCESSDENIED";
       return ENOSUCHDOCUMENT;
     }
   }

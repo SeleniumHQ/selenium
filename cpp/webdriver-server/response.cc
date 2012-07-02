@@ -28,7 +28,7 @@ Response::~Response(void) {
 }
 
 void Response::Deserialize(const std::string& json) {
-  LOG(TRACE) << "Deserialize method is run";
+  LOG(TRACE) << "Entering Response::Deserialize";
 
   Json::Value response_object;
   Json::Reader reader;
@@ -39,7 +39,7 @@ void Response::Deserialize(const std::string& json) {
 }
 
 std::string Response::Serialize(void) {
-  LOG(TRACE) << "Serialize method is run";
+  LOG(TRACE) << "Entering Response::Serialize";
 
   Json::Value json_object;
   json_object["status"] = this->status_code_;
@@ -51,21 +51,21 @@ std::string Response::Serialize(void) {
 }
 
 void Response::SetSuccessResponse(const Json::Value& response_value) {
-  LOG(TRACE) << "SetSuccessResponse method is run";
+  LOG(TRACE) << "Entering Response::SetSuccessResponse";
   this->SetResponse(0, response_value);
 }
 
 void Response::SetResponse(const int status_code,
                            const Json::Value& response_value) {
-  LOG(TRACE) << "SetResponse method is run";
+  LOG(TRACE) << "Entering Response::SetResponse";
   this->status_code_ = status_code;
   this->value_ = response_value;
 }
 
 void Response::SetErrorResponse(const int status_code,
                                 const std::string& message) {
-  LOG(TRACE) << "SetErrorResponse method is run";
-  LOG(WARN) << "Error response message is: " << message;
+  LOG(TRACE) << "Entering Response::SetErrorResponse";
+  LOG(WARN) << "Error response has status code " << status_code << " and message '" << message << "' message";
   this->status_code_ = status_code;
   this->value_["message"] = message;
 }

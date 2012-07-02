@@ -71,14 +71,19 @@ class GetElementSizeCommandHandler : public IECommandHandler {
         script_wrapper.AddArgument(element_wrapper);
         status_code = script_wrapper.Execute();
 
-        script_wrapper.ConvertResultToJsonValue(executor, &size_array);
+        if (status_code == SUCCESS) {
+          script_wrapper.ConvertResultToJsonValue(executor, &size_array);
 
-        Json::UInt index = 0;
-        Json::Value response_value;
-        response_value["width"] = size_array[index];
-        ++index;
-        response_value["height"] = size_array[index];
-        response->SetSuccessResponse(response_value);
+          Json::UInt index = 0;
+          Json::Value response_value;
+          response_value["width"] = size_array[index];
+          ++index;
+          response_value["height"] = size_array[index];
+          response->SetSuccessResponse(response_value);
+        } else {
+          response->SetErrorResponse(status_code, "Unable to get element sizes");
+          return;
+        }
       } else {
         response->SetErrorResponse(status_code, "Element is no longer valid");
         return;

@@ -26,8 +26,6 @@ limitations under the License.
 #include "interactions_common.h"
 #include "logging.h"
 
-#define WD_CLIENT_RIGHT_MOUSE_BUTTON 2
-
 using namespace std;
 
 #pragma data_seg(".LISTENER")
@@ -104,7 +102,7 @@ void sendModifierKeyDown(HWND hwnd, HKL layout, int modifierKeyCode,
 
     LPARAM modifierKey = 1 | MapVirtualKeyEx(modifierKeyCode, 0, layout) << 16;
     if (!PostMessage(hwnd, WM_KEYDOWN, modifierKeyCode, modifierKey)) {
-        cerr << "Modifier keydown failed: " << GetLastError() << endl;
+        LOG(WARN) << "Modifier keydown failed: " << GetLastError();
     }
 
     wait(pause);
@@ -118,7 +116,7 @@ void sendModifierKeyUp(HWND hwnd, HKL layout, int modifierKeyCode,
     modifierKey |= 0x3 << 30;
 
     if (!PostMessage(hwnd, WM_KEYUP, modifierKeyCode, modifierKey)) {
-        cerr << "Modifier keyup failed: " << GetLastError() << endl;
+        LOG(WARN) << "Modifier keyup failed: " << GetLastError();
     }
     wait(pause);
 
@@ -196,7 +194,7 @@ void backgroundKeyDown(HWND hwnd, HKL layout, BYTE keyboardState[256],
 
     pressed = false;
     if (!PostMessage(hwnd, WM_KEYDOWN, keyCode, lparam)) {
-      cerr << "Key down failed: " << GetLastError() << endl;
+      LOG(WARN) << "Key down failed: " << GetLastError();
     }
 
     PostMessage(hwnd, WM_USER, 1234, 5678);
@@ -209,7 +207,7 @@ void backgroundKeyDown(HWND hwnd, HKL layout, BYTE keyboardState[256],
     while (!pressed) {
       wait(5);
       if (clock() >= maxWait) {
-        cerr << "Timeout awaiting keypress: " << keyCode << endl;
+        LOG(WARN) << "Timeout awaiting keypress: " << keyCode;
         break;
       }
     }
@@ -225,7 +223,7 @@ void backgroundKeyUp(HWND hwnd, HKL layout, BYTE keyboardState[256],
     LPARAM lparam = generateKeyMessageParam(scanCode, extended);
 	lparam |= 0x3 << 30;
 	if (!PostMessage(hwnd, WM_KEYUP, keyCode, lparam)) {
-	    cerr << "Key up failed: " << GetLastError() << endl;
+	    LOG(WARN) << "Key up failed: " << GetLastError();
 	}
 
 	wait(pause);
@@ -384,7 +382,10 @@ extern "C"
 {
 void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 {
-	if (!windowHandle) { return; }
+	if (!windowHandle) {
+	  LOG(WARN) << "Window handle is invalid";
+	  return;
+	}
 
 	HWND directInputTo = static_cast<HWND>(windowHandle);
 
@@ -601,7 +602,7 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 			keyCode = VkKeyScanExW(c, layout);
 			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
 			if (!scanCode || (keyCode == 0xFFFFU)) {
-				cerr << "No translation for key. Assuming unicode input: " << c << endl;
+				LOG(WARN) << "No translation for key. Assuming unicode input: " << c;
 				backgroundUnicodeKeyPress(directInputTo, c, timePerKey);
 				continue;  // bogus
 			}
@@ -640,7 +641,11 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 
 void releaseModifierKeys(WINDOW_HANDLE windowHandle, int timePerKey)
 {
-	if (!windowHandle) { return; }
+	if (!windowHandle) {
+	  LOG(WARN) << "Window handle is invalid";
+	  return;
+	}
+
 	HWND directInputTo = static_cast<HWND>(windowHandle);
 
 	HKL layout = attachInputToIEThread(directInputTo);
@@ -674,7 +679,10 @@ bool isSameThreadAs(HWND other)
 
 LRESULT clickAt(WINDOW_HANDLE handle, long x, long y, long button)
 {
-	if (!handle) { return ENULLPOINTER; }
+	if (!handle) {
+	  LOG(WARN) << "Window handle is invalid";
+	  return ENULLPOINTER;
+	}
 
 	HWND directInputTo = (HWND) handle;
 
@@ -689,7 +697,10 @@ LRESULT clickAt(WINDOW_HANDLE handle, long x, long y, long button)
 
 static LRESULT mouseDoubleClickDown(WINDOW_HANDLE directInputTo, long x, long y)
 {
-  if (!directInputTo) { return ENULLPOINTER; }
+  if (!directInputTo) {
+    LOG(WARN) << "Window handle is invalid";
+    return ENULLPOINTER;
+  }
 
   if (!isSameThreadAs((HWND) directInputTo)) {
     BOOL toReturn = PostMessage((HWND) directInputTo, WM_LBUTTONDBLCLK, MK_LBUTTON, MAKELONG(x, y));
@@ -713,6 +724,7 @@ LRESULT doubleClickAt(WINDOW_HANDLE handle, long x, long y)
   // is replaced by a doubleClick event.
 
   if (!handle) {
+    LOG(WARN) << "Window handle is invalid";
     return ENULLPOINTER;
   }
 
@@ -740,7 +752,7 @@ static void fillEventData(long button, bool buttonDown, UINT *message, WPARAM *w
       *message = WM_RBUTTONUP;
     }
     *wparam = MK_RBUTTON;
-  } else {
+  } else { // middle button support is declared in json wire protocol but it is not supported
     leftMouseButtonPressed = buttonDown;
     if(buttonDown) {
       *message = WM_LBUTTONDOWN;
@@ -756,7 +768,10 @@ static void fillEventData(long button, bool buttonDown, UINT *message, WPARAM *w
 
 LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
-	if (!directInputTo) { return ENULLPOINTER; }
+	if (!directInputTo) {
+	  LOG(WARN) << "Window handle is invalid";
+	  return ENULLPOINTER;
+	}
 
 	UINT message;
 	WPARAM wparam;
@@ -776,7 +791,10 @@ LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 
 LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 {
-	if (!directInputTo) { return ENULLPOINTER; }
+	if (!directInputTo) {
+	  LOG(WARN) << "Window handle is invalid";
+	  return ENULLPOINTER;
+	}
 
  	UINT message;
  	WPARAM wparam;
@@ -797,10 +815,12 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 
 LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY, long toX, long toY)
 {
-	if (!handle) { return ENULLPOINTER; }
+	if (!handle) {
+	  LOG(WARN) << "Window handle is invalid";
+	  return ENULLPOINTER;
+	}
 
 	HWND directInputTo = (HWND) handle;
-
   long pointsDistance = distanceBetweenPoints(fromX, fromY, toX, toY);
   const int stepSizeInPixels = 5;
   int steps = pointsDistance / stepSizeInPixels;

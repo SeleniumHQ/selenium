@@ -282,7 +282,7 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
       this->current_browser_id_ = "";
     }
   } else {
-    LOG(WARN) << "Unable to find browser to quit with ID" << browser_id;
+    LOG(WARN) << "Unable to find browser to quit with ID " << browser_id;
   }
   return 0;
 }
@@ -497,7 +497,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   DWORD process_id = this->factory_.LaunchBrowserProcess(initial_url,
       this->ignore_protected_mode_settings_, error_message);
   if (process_id == NULL) {
-    LOG(WARN) << "Unable to launch browser, received process ID of NULL";
+    LOG(WARN) << "Unable to launch browser, received NULL process ID";
     this->is_waiting_ = false;
     return ENOSUCHDRIVER;
   }
@@ -578,7 +578,7 @@ void IECommandExecutor::ListManagedElements() {
 
   ElementMap::iterator it = this->managed_elements_.begin();
   for (; it != this->managed_elements_.end(); ++it) {
-    LOG(DEBUG) << it->first;
+    LOG(DEBUG) << "Managed element: " << it->first;
   }
 }
 

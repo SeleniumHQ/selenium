@@ -23,21 +23,22 @@ Command::~Command() {
 }
 
 void Command::Populate(const std::string& json_command) {
-  LOG(TRACE) << "Populate method is run";
+  LOG(TRACE) << "Entering Command::Populate";
 
   // Clear the existing maps.
   this->command_parameters_.clear();
   this->locator_parameters_.clear();
 
-  LOG(TRACE) << "Raw json command: " << json_command;
+  LOG(DEBUG) << "Raw JSON command: " << json_command;
 
   Json::Value root;
   Json::Reader reader;
   bool successful_parse = reader.parse(json_command, root);
   if (!successful_parse) {
     // report to the user the failure and their locations in the document.
-    LOG(WARN) << "\nFailed to parse configuration: '" << reader.getFormatedErrorMessages()
-        << "'\nJSON: '" << json_command << "'";
+    LOG(WARN) << "Failed to parse configuration due "
+              << reader.getFormatedErrorMessages() << std::endl
+              << "JSON command: '" << json_command << "'";
   }
 
   this->command_type_ = root.get("command", 0).asInt();
@@ -60,7 +61,7 @@ void Command::Populate(const std::string& json_command) {
       this->command_parameters_[key] = value;
     }
   } else {
-    LOG(DEBUG) << "Zero command type is found";
+    LOG(DEBUG) << "Command type is zero, no 'command' attribute in JSON object";
   }
 }
 

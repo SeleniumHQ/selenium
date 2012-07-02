@@ -111,9 +111,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
       bool bool_arg = arg.asBool();
       script_wrapper.AddArgument(bool_arg);
     } else if (arg.isNull()) {
-      CComVariant null_var;
-      null_var.vt = VT_NULL;
-      script_wrapper.AddArgument(null_var);
+      script_wrapper.AddNullArgument();
     } else if (arg.isArray()) {
       this->WalkArray(executor, script_wrapper, arg);
     } else if (arg.isObject()) {

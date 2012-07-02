@@ -43,7 +43,7 @@ class GetActiveElementCommandHandler : public IECommandHandler {
     CComPtr<IHTMLDocument2> doc;
     browser_wrapper->GetDocument(&doc);
     if (!doc) {
-      response->SetErrorResponse(ENOSUCHDOCUMENT, "Document not found");
+      response->SetErrorResponse(ENOSUCHDOCUMENT, "Document is not found");
       return;
     }
 

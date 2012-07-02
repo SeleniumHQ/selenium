@@ -19,7 +19,7 @@
 namespace webdriver {
 
 DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
-  LOG(TRACE) << "DocumentHost object is instantiated";
+  LOG(TRACE) << "Entering DocumentHost::DocumentHost";
 
   // NOTE: COM should be initialized on this thread, so we
   // could use CoCreateGuid() and StringFromGUID2() instead.
@@ -326,7 +326,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
     if (document_type_key_name == L"IE.HTTP") {
       document_type_key_name = L"htmlfile";
     } else {
-      LOG(DEBUG) << "Unable to support custom document type: " << document_type_key_name.c_str();
+      LOG(DEBUG) << "Unable to support custom document type: " << LOGWSTRING(document_type_key_name.c_str());
       document_type_key_name = L"";
     }
   } else {

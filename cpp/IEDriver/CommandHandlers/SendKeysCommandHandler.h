@@ -159,6 +159,8 @@ class SendKeysCommandHandler : public IECommandHandler {
           if (status_code == SUCCESS) {
             IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
             mutable_executor.set_keyboard_state(script_wrapper.result());
+          } else {
+            LOG(WARN) << "Failed to execute js to send keys";
           }
         }
         response->SetSuccessResponse(Json::Value::null);
@@ -303,7 +305,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     }
 
     if (!has_focus) {
-      cout << "We don't have focus on element." << endl;
+      LOG(WARN) << "We don't have focus on element.";
     }
 
     return has_focus;

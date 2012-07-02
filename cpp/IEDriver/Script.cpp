@@ -115,32 +115,32 @@ bool Script::ResultIsString() {
 }
 
 bool Script::ResultIsInteger() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsInteger";
   return this->result_.vt == VT_I4 || this->result_.vt == VT_I8;
 }
 
 bool Script::ResultIsDouble() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsDouble";
   return this->result_.vt == VT_R4 || this->result_.vt == VT_R8;
 }
 
 bool Script::ResultIsBoolean() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsBoolean";
   return this->result_.vt == VT_BOOL;
 }
 
 bool Script::ResultIsEmpty() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsEmpty";
   return this->result_.vt == VT_EMPTY;
 }
 
 bool Script::ResultIsIDispatch() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsIDispatch";
   return this->result_.vt == VT_DISPATCH;
 }
 
 bool Script::ResultIsElementCollection() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsElementCollection";
 
   if (this->result_.vt == VT_DISPATCH) {
     CComQIPtr<IHTMLElementCollection> is_collection(this->result_.pdispVal);
@@ -152,7 +152,7 @@ bool Script::ResultIsElementCollection() {
 }
 
 bool Script::ResultIsElement() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsElement";
 
   if (this->result_.vt == VT_DISPATCH) {
     CComQIPtr<IHTMLElement> is_element(this->result_.pdispVal);
@@ -164,7 +164,7 @@ bool Script::ResultIsElement() {
 }
 
 bool Script::ResultIsArray() {
-  LOG(TRACE) << "Entering Script::ResultIsString";
+  LOG(TRACE) << "Entering Script::ResultIsArray";
 
   std::wstring type_name = this->GetResultObjectTypeName();
 
@@ -197,7 +197,7 @@ bool Script::ResultIsArray() {
 }
 
 bool Script::ResultIsObject() {
-  LOG(TRACE) << "Entring Script::ResultIsObject";
+  LOG(TRACE) << "Entering Script::ResultIsObject";
 
   std::wstring type_name = this->GetResultObjectTypeName();
   if (type_name == L"JScriptTypeInfo") {
@@ -212,10 +212,9 @@ int Script::Execute() {
   VARIANT result;
 
   if (this->script_engine_host_ == NULL) {
-    LOG(WARN) << "script engine host is NULL";
+    LOG(WARN) << "Script engine host is NULL";
     return ENOSUCHDOCUMENT;
   }
-
   CComVariant temp_function;
   if (!this->CreateAnonymousFunction(&temp_function)) {
     LOG(WARN) << "Cannot create anonymous function";

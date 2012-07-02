@@ -58,6 +58,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
     }
 
     std::string launch_api = "The IELaunchURL() API";
+    std::string launch_error = "";
     if (proc_address != 0) {
       // If we have the IELaunchURL API, expressly use it. This will
       // guarantee a new session. Simply using CoCreateInstance to 
@@ -77,7 +78,8 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                     IELAUNCHURL_ERROR_MESSAGE,
                     launch_result,
                     initial_url);
-        *error_message = &launch_result_msg[0];
+        launch_error = &launch_result_msg[0];
+        *error_message = launch_error;
       }
     } else {
       launch_api = "The CreateProcess() API";
@@ -107,14 +109,24 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                      create_proc_msg_count,
                      CREATEPROCESS_ERROR_MESSAGE,
                      command_line);
-        *error_message = CW2A(&create_proc_result_msg[0], CP_UTF8);
+        launch_error = CW2A(&create_proc_result_msg[0], CP_UTF8);
+        *error_message = launch_error;
       }
       delete[] command_line;
     }
 
     process_id = proc_info.dwProcessId;
     if (process_id == NULL) {
-      *error_message = launch_api + NULL_PROCESS_ID_ERROR_MESSAGE;
+      // If whatever API we are using failed to launch the browser, we should
+      // have a NULL value in the dwProcessId member of the PROCESS_INFORMATION
+      // structure. In that case, we will have already set the approprate error
+      // message. On the off chance that we haven't yet set the appropriate
+      // error message, that means we successfully launched the browser (i.e.,
+      // the browser launch API returned a success code), but we still have a
+      // NULL process ID.
+      if (launch_error.size() == 0) {
+        *error_message = launch_api + NULL_PROCESS_ID_ERROR_MESSAGE;
+      }
     }
 
     if (proc_info.hThread != NULL) {
@@ -157,8 +169,14 @@ bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
                              reinterpret_cast<void**>(document));
       if (SUCCEEDED(hr)) {
         return true;
+      } else {
+        LOGHR(WARN, hr) << "Unable to convert document object pointer to IHTMLDocument2 object via ObjectFromLresult";
       }
+    } else {
+      LOG(WARN) << "Unable to get address of ObjectFromLresult method from library; GetProcAddress() for ObjectFromLresult returned NULL";
     }
+  } else {
+    LOG(WARN) << "Window handle is invalid or OLEACC.DLL is not loaded properly";
   }
   return false;
 }
@@ -414,10 +432,13 @@ void BrowserFactory::GetExecutableLocation() {
         this->ie_executable_location_.erase(0, 1);
         this->ie_executable_location_.erase(this->ie_executable_location_.size() - 1, 1);
       }
+    } else {
+      LOG(WARN) << "Unable to get IE executable location from registry";
     }
+  } else {
+    LOG(WARN) << "Unable to get IE class id from registry";
   }
 }
-
 bool BrowserFactory::GetRegistryValue(const HKEY root_key,
                                       const std::wstring& subkey,
                                       const std::wstring& value_name,

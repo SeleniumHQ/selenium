@@ -58,6 +58,8 @@ class MouseDoubleClickCommandHandler : public IECommandHandler {
       if (status_code == SUCCESS) {
         IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
         mutable_executor.set_mouse_state(script_wrapper.result());
+      } else {
+        LOG(WARN) << "Unable to execute js to double click";
       }
     }
     response->SetSuccessResponse(Json::Value::null);

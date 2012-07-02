@@ -414,6 +414,7 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
       CComVariant result;
       hr = frames->item(&index, &result);
       if (FAILED(hr)) {
+        LOGHR(DEBUG, hr) << "Could not get frame item for index " << i << ", call to IHTMLFramesCollection2::item failed";
         return true;
       }
 
@@ -441,7 +442,7 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
       }
     }
   } else {
-    LOG(DEBUG) << "frames collection is empty";
+    LOG(DEBUG) << "IHTMLDocument2.get_frames() returned empty collection";
   }
   return is_navigating;
 }

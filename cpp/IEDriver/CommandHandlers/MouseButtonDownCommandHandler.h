@@ -43,6 +43,7 @@ class MouseButtonDownCommandHandler : public IECommandHandler {
 
     if (executor.enable_native_events()) {
       HWND browser_window_handle = browser_wrapper->GetWindowHandle();
+      //TODO: json wire protocol allows 3 mouse button types for this command
       mouseDownAt(browser_window_handle,
                   executor.last_known_mouse_x(),
                   executor.last_known_mouse_y(),
@@ -62,6 +63,8 @@ class MouseButtonDownCommandHandler : public IECommandHandler {
       if (status_code == SUCCESS) {
         IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
         mutable_executor.set_mouse_state(script_wrapper.result());
+      } else {
+        LOG(WARN) << "Unable to execute js to perform mouse button down";
       }
     }
   }

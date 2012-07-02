@@ -125,6 +125,8 @@ class MouseMoveToCommandHandler : public IECommandHandler {
         status_code = script_wrapper.Execute();
         if (status_code == SUCCESS) {
           mutable_executor.set_mouse_state(script_wrapper.result());
+        } else {
+          LOG(WARN) << "Unable to execute js to mose move";
         }
       }
       response->SetSuccessResponse(Json::Value::null);
@@ -141,6 +143,7 @@ class MouseMoveToCommandHandler : public IECommandHandler {
     ElementHandle target_element;
     int status_code = this->GetElement(executor, element_id, &target_element);
     if (status_code != SUCCESS) {
+      LOG(WARN) << "Unable to get element";
       return status_code;
     }
 
@@ -156,6 +159,7 @@ class MouseMoveToCommandHandler : public IECommandHandler {
     // we might still be able to move to whatever portion of the element *is*
     // visible in the viewport, so we have to have an extra check.
     if (status_code != SUCCESS && element_width == 0 && element_height == 0) {
+      LOG(WARN) << "Unable to get location after scrolling or element sizes are zero";
       return status_code;
     }
 
