@@ -54,6 +54,7 @@ goog.provide('webdriver.promise.Promise');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('webdriver.EventEmitter');
+goog.require('webdriver.stacktrace.Snapshot');
 
 
 /**
@@ -758,8 +759,10 @@ webdriver.promise.Application = function() {
   webdriver.EventEmitter.call(this);
 
   /**
-   * A history of commands executed by this Application.
-   * @type {!Array.<string>}
+   * A list of recently completed tasks. Each time a new task is started or a
+   * frame is completed, the previously recorded task is removed from this
+   * list.
+   * @type {!Array.<!webdriver.promise.Application.Task>}
    * @private
    */
   this.history_ = [];
@@ -871,12 +874,12 @@ webdriver.promise.Application.prototype.pendingRejections_ = 0;
 
 
 /**
- * The number of currently pending tasks. Task N+1 is considered a sub-task of
- * task N.
+ * The number of aborted frames since the last time a task was executed or a
+ * frame completed successfully.
  * @type {number}
  * @private
  */
-webdriver.promise.Application.prototype.pendingTasks_ = 0;
+webdriver.promise.Application.prototype.numAbortedFrames_ = 0;
 
 
 /**
@@ -892,18 +895,78 @@ webdriver.promise.Application.prototype.reset = function() {
 
 
 /**
- * Returns this instance's current task history, with each task listed on a
- * separate line.
- * @return {string} The task history.
+ * Returns a summary of the recent task activity for this instance. This
+ * includes the most recently completed task, as well as any parent tasks. In
+ * the returned summary, the task at index N is considered a sub-task of the
+ * task at index N+1.
+ * @return {!Array.<string>}
  */
 webdriver.promise.Application.prototype.getHistory = function() {
-  return this.history_.join('\n');
+  var pendingTasks = [];
+  var currentFrame = this.activeFrame_;
+  while (currentFrame) {
+    var task = currentFrame.getPendingTask();
+    if (task) {
+      pendingTasks.push(task);
+    }
+    // A frame's parent node will always be another frame.
+    currentFrame =
+        (/** @type {webdriver.promise.Application.Frame} */currentFrame.
+            getParent());
+  }
+
+  var fullHistory = goog.array.concat(this.history_, pendingTasks);
+  return goog.array.map(fullHistory, function(task) {
+    return task.toString();
+  });
 };
 
 
 /** Clears this instance's task history. */
 webdriver.promise.Application.prototype.clearHistory = function() {
   this.history_ = [];
+};
+
+
+/**
+ * Removes a completed task from this application's history record. If any
+ * tasks remain from aborted frames, those will be removed as well.
+ * @private
+ */
+webdriver.promise.Application.prototype.trimHistory_ = function() {
+  if (this.numAbortedFrames_) {
+    goog.array.splice(this.history_,
+        this.history_.length - this.numAbortedFrames_,
+        this.numAbortedFrames_);
+    this.numAbortedFrames_ = 0;
+  }
+  this.history_.pop();
+};
+
+
+/**
+ * Appends a summary of this application's recent task history to the given
+ * error's message.
+ * @param {(string|!Error)} e The error to annotate.
+ * @return {(string|!Error)} The annotated error.
+ */
+webdriver.promise.Application.prototype.annotateError = function(e) {
+  var tasks = goog.array.map(this.getHistory(), function(task) {
+    return task.split('\n').join('\n| ');
+  });
+
+  var history = [
+    '\n+------------------------- Recent Task(s) -------------------------',
+    '\n| ', tasks.join('\n| ----- scheduled in -----\n| '),
+    '\n+-------------------------------------------------------------------'
+  ].join('');
+
+  if (e && goog.isString(e.message)) {
+    e.message += history;
+  } else {
+    e = e + history;
+  }
+  return e;
 };
 
 
@@ -933,7 +996,8 @@ webdriver.promise.Application.prototype.schedule = function(description, fn) {
     this.activeFrame_ = new webdriver.promise.Application.Frame();
   }
 
-  var task = new webdriver.promise.Application.Task(fn, description);
+  var task = new webdriver.promise.Application.Task(fn, description,
+      new webdriver.stacktrace.Snapshot(3));
   var scheduleIn = this.schedulingFrame_ || this.activeFrame_;
   scheduleIn.addChild(task);
 
@@ -994,21 +1058,6 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
   var self = this;
 
   return this.schedule(description, function() {
-    var lastCommand = goog.array.peek(self.history_);
-    var prefix = lastCommand.match(/^(\.\.)+/);
-    prefix = prefix ? prefix[0] : '';
-
-    // Describes a sequence of commands executed in each iteration of a wait
-    // loop. Tracks where the sequence begins the application's history, its
-    // value (as a single string), and the number of loop iterations have
-    // executed this sequence of commands. This is used to remove clutter from
-    // the task history in optimizeWaitHistory below.
-    var sequence = {
-      start: self.history_.length,
-      value: '',
-      count: 0
-    };
-
     var startTime = goog.now();
     var waitResult = new webdriver.promise.Deferred();
     var waitFrame = self.activeFrame_;
@@ -1019,8 +1068,6 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
     function pollCondition() {
       var result = self.runInNewFrame_(condition);
       return webdriver.promise.when(result, function(value) {
-        optimizeWaitHistory();
-
         var elapsed = goog.now() - startTime;
         if (!!value) {
           waitFrame.isWaiting = false;
@@ -1031,45 +1078,7 @@ webdriver.promise.Application.prototype.scheduleWait = function(description,
         } else {
           setTimeout(pollCondition, sleep);
         }
-      }, function(error) {
-        optimizeWaitHistory();
-        waitResult.reject(error);
-      });
-    }
-
-    // Called after each iteration of polling the condition function to remove
-    // repeated sequences of commands from the task history. Each repeated
-    // sequence of commands is replaced with annotated version that indicates
-    // how many of iterations of the loop executed that sequence.
-    function optimizeWaitHistory() {
-      if (self.history_.length == sequence.start) {
-        return;  // No tasks executed in the wait loop.
-      }
-
-      // Remove all of the tasks recorded during the last iteration of the
-      // wait loop so we can check if this is an exact repeat of the last
-      // iteration.
-      var loopHistory = goog.array.splice(self.history_, sequence.start,
-          self.history_.length - sequence.start);
-
-      var loopHistoryStr = loopHistory.join('\n');
-      if (!sequence.count || loopHistoryStr != sequence.value) {
-        // We've started a new sequence of commands. Update the history with
-        // the annotated version of our sequence and advance the start
-        // index forward so we don't count the annotation on the next pass.
-        self.history_.push(prefix + '..[[[wait loop; 1 iteration]]]');
-        self.history_.push('..' + loopHistory.join('\n..'));
-        sequence.start += 2;
-        sequence.value = loopHistoryStr;
-        sequence.count = 1;
-
-      } else {
-        // Repeat of the previous sequence entry. Update the annotated header
-        // for the sequence.
-        sequence.count++;
-        goog.array.splice(self.history_, sequence.start - 2, 1,
-            prefix + '..[[[wait loop; ' + sequence.count + ' iterations]]]');
-      }
+      }, waitResult.reject);
     }
   });
 };
@@ -1133,17 +1142,14 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
     return;
   }
 
-  var prefix = new Array(this.pendingTasks_ + 1).join('..');
-  this.history_.push(prefix + task.description);
-
   var activeFrame = this.activeFrame_;
   activeFrame.setPendingTask(task);
   var markTaskComplete = goog.bind(function() {
-    this.pendingTasks_--;
+    this.history_.push(task);
     activeFrame.setPendingTask(null);
   }, this);
 
-  this.pendingTasks_++;
+  this.trimHistory_();
   var result = this.runInNewFrame_(task.execute, true);
   webdriver.promise.asap(result, function(result) {
     markTaskComplete();
@@ -1194,6 +1200,7 @@ webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
   if (frame.getParent()) {
     frame.getParent().removeChild(frame);
   }
+  this.trimHistory_();
   frame.resolve();
 
   if (!this.activeFrame_) {
@@ -1211,6 +1218,8 @@ webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
  * @private
  */
 webdriver.promise.Application.prototype.abortFrame_ = function(error) {
+  this.numAbortedFrames_++;
+
   if (!this.activeFrame_) {
     this.abortNow_(error);
     return;
@@ -1587,31 +1596,46 @@ webdriver.promise.Application.Frame.prototype.toString = function() {
  * @param {!Function} fn The function to call when the task executes. If it
  *     returns a {@code webdriver.promise.Promise}, the application will wait
  *     for it to be resolved before starting the next task.
- * @param {string=} opt_description A description of the task for debugging.
+ * @param {string} description A description of the task for debugging.
+ * @param {!webdriver.stacktrace.Snapshot} snapshot A snapshot of the stack
+ *     when this task was scheduled.
  * @constructor
  * @extends {webdriver.promise.Application.Node}
  * @private
  */
-webdriver.promise.Application.Task = function(fn, opt_description) {
+webdriver.promise.Application.Task = function(fn, description, snapshot) {
   webdriver.promise.Application.Node.call(this);
 
   /**
    * Executes this task.
-   * @return {*} The function result.
+   * @type {!Function}
    */
   this.execute = fn;
 
   /**
-   * The description of this task.
    * @type {string}
+   * @private
    */
-  this.description = opt_description || '(anonymous task)';
+  this.description_ = description;
+
+  /**
+   * @type {!webdriver.stacktrace.Snapshot}
+   * @private
+   */
+  this.snapshot_ = snapshot;
 };
 goog.inherits(webdriver.promise.Application.Task,
     webdriver.promise.Application.Node);
 
 
+/** @return {string} This task's description. */
+webdriver.promise.Application.Task.prototype.getDescription = function() {
+  return this.description_;
+};
+
+
 /** @override */
 webdriver.promise.Application.Task.prototype.toString = function() {
-  return this.description;
+  var stack = this.snapshot_.getStacktrace();
+  return this.description_ + '\n  > ' + stack.split('\n').join('\n  > ');
 };

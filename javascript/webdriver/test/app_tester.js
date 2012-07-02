@@ -151,32 +151,6 @@ webdriver.test.AppTester.prototype.$runApplication = function(
 };
 
 
-webdriver.test.AppTester.prototype.$runIdleWaitLoopNTimes = function(n) {
-  for (var i = 0; i < n; ++i) {
-    this.watcher_.reset();
-    this.$runApplication(null, null, true);
-    webdriver.test.testutil.consumeTimeouts();
-    this.$assertAppNotRunning();
-  }
-};
-
-
-/**
- * Verifies the application's task history.
- * @param {...string} var_args The expected entries in the application's
- *     task history.
- */
-webdriver.test.AppTester.prototype.$assertAppHistory = function(var_args) {
-  var expectedHistory = goog.array.slice(arguments, 0);
-  if (expectedHistory.length == 0) {
-    expectedHistory = [''];
-  }
-  assertArrayEquals(
-      expectedHistory.join('\n') + '\n----\n' + this.app_.getHistory(),
-      expectedHistory, this.app_.getHistory().split('\n'));
-};
-
-
 webdriver.test.AppTester.prototype.$assertAppNotRunning = function() {
   this.watcher_.assertEither('App is still running!');
 };
@@ -184,26 +158,6 @@ webdriver.test.AppTester.prototype.$assertAppNotRunning = function() {
 
 webdriver.test.AppTester.prototype.$assertAppIsStillRunning = function() {
   this.watcher_.assertNeither('App should not be done yet');
-};
-
-
-webdriver.test.AppTester.prototype.$assertFrameCount = function(n) {
-  assertEquals('Wrong # of task frames', n, this.app_.frames_.length);
-};
-
-
-/**
- * @param {string} msg Task message.
- * @param {string} value Value to push to the messages queue.
- * @param {!webdriver.promise.Promise=} opt_taskPromise Promise to return
- *     from the scheduled task.
- */
-webdriver.test.AppTester.prototype.$schedulePush = function(msg, value,
-                                                            opt_taskPromise) {
-  return this.app_.schedule(msg, function() {
-    webdriver.test.testutil.messages.push(value);
-    return opt_taskPromise;
-  });
 };
 
 

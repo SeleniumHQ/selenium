@@ -76,7 +76,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
 
   function onError(e) {
     hadError = true;
-    self.doError(test, webdriver.testing.TestCase.annotateError_(app, e));
+    self.doError(test, app.annotateError(e));
   }
 
   function onExpectationFailures(description, errors) {
@@ -94,21 +94,6 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
     hadError = true;
     self.result_.errors.push(errors);
   }
-};
-
-
-webdriver.testing.TestCase.annotateError_ = function(app, e) {
-  var history = [
-    '\n+---------- Task History ------------------',
-    '\n|', app.getHistory().split('\n').join('\n|'),
-    '\n+------------------------------------------'
-  ].join('');
-  if (e && goog.isString(e.message)) {
-    e.message += history;
-  } else {
-    e = e + history;
-  }
-  return e;
 };
 
 
@@ -149,10 +134,10 @@ webdriver.testing.TestCase.prototype.runSingleTest_ = function(
   webdriver.testing.asserts.on(webdriver.testing.asserts.EXPECTATION_FAILURE,
       recordExpectationFailure);
 
-  return schedule(test.name + '.setUp', this.setUp)().
-      addCallback(schedule(test.name, test.ref)).
+  return schedule(test.name + '.setUp()', this.setUp)().
+      addCallback(schedule(test.name + '()', test.ref)).
       addErrback(onError).
-      addCallback(schedule(test.name + '.tearDown', this.tearDown)).
+      addCallback(schedule(test.name + '.tearDown()', this.tearDown)).
       addErrback(onError).
       addBoth(removeRecordExpectationFailure);
 
@@ -168,8 +153,7 @@ webdriver.testing.TestCase.prototype.runSingleTest_ = function(
   }
 
   function recordExpectationFailure(e) {
-    expectationFailures.push(
-        webdriver.testing.TestCase.annotateError_(app, e));
+    expectationFailures.push(app.annotateError(e));
   }
 
   function removeRecordExpectationFailure() {

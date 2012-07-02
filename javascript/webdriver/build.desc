@@ -2,7 +2,8 @@ js_library(name = "base_lib",
   srcs = [
     "command.js",
     "events.js",
-    "promise.js"
+    "promise.js",
+    "stacktrace.js",
   ],
   deps = [
     "//javascript/atoms:error_lib"

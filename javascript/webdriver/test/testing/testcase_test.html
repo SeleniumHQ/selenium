@@ -88,14 +88,6 @@ limitations under the License.
     });
   }
 
-  /** @see {@link webdriver.test.AppTester#$assertAppHistory}. */
-  function assertAppHistory(var_args) {
-    var args = goog.array.slice(arguments, 0);
-    return function() {
-      appTester.$assertAppHistory.apply(appTester, args);
-    };
-  }
-
   function runTest() {
     webdriver.testing.TestCase.prototype.runSingleTest_.
         call(mockTestCase, testStub, mockOnError, mockOnExpectationFailures).
@@ -118,10 +110,7 @@ limitations under the License.
     mockTestCase.setUp().$does(function() { schedule('a'); });
     mockTestCase.testFn().$does(function() { schedule('b'); });
     mockTestCase.tearDown().$does(function() { schedule('c'); });
-    mockOnComplete(IGNORE_ARGUMENT).$does(assertAppHistory(
-        'testStub.setUp', '..a',
-        'testStub', '..b',
-        'testStub.tearDown', '..c'));
+    mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
     runTest();
@@ -184,10 +173,6 @@ limitations under the License.
     control.$replayAll();
 
     runTest();
-    appTester.$assertAppHistory(
-        'testStub.setUp', '..a',
-        'testStub', '..b',
-        'testStub.tearDown', '..c');
   }
 
   function testRecordsErrorsFromTestFnBeforeTearDown() {
@@ -239,7 +224,7 @@ limitations under the License.
     mockTestCase.setUp().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
     mockTestCase.testFn();
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
@@ -253,7 +238,7 @@ limitations under the License.
       expectThat(false, equals(true));
       throwStubError();
     });
-    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
     mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
@@ -267,7 +252,7 @@ limitations under the License.
     mockTestCase.testFn().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub()', IS_ARRAY_ARGUMENT);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
@@ -281,7 +266,7 @@ limitations under the License.
       expectThat(false, equals(true));
       throwStubError();
     });
-    mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub()', IS_ARRAY_ARGUMENT);
     mockOnError(STUB_ERROR);
     mockTestCase.tearDown();
     mockOnComplete(IGNORE_ARGUMENT);
@@ -296,7 +281,7 @@ limitations under the License.
     mockTestCase.tearDown().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
@@ -310,7 +295,7 @@ limitations under the License.
       expectThat(false, equals(true));
       throwStubError();
     });
-    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
     mockOnError(STUB_ERROR);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
@@ -323,13 +308,13 @@ limitations under the License.
       expectThat(false, equals(true));
       throwStubError();
     });
-    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
     mockOnError(STUB_ERROR);
     mockTestCase.tearDown().$does(function() {
       expectThat(false, equals(true));
       throwStubError();
     });
-    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
     mockOnError(STUB_ERROR);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
@@ -341,15 +326,15 @@ limitations under the License.
     mockTestCase.setUp().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures('testStub.setUp', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
     mockTestCase.testFn().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures('testStub', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub()', IS_ARRAY_ARGUMENT);
     mockTestCase.tearDown().$does(function() {
       expectThat(false, equals(true));
     });
-    mockOnExpectationFailures('testStub.tearDown', IS_ARRAY_ARGUMENT);
+    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 

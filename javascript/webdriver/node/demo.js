@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var fs = require('fs'),
-    url = require('url');
+var url = require('url');
 
 var webdriver = require('../../../build/javascript/webdriver/webdriver'),
     optparse = require('./optparse');
+
+var app = webdriver.promise.Application.getInstance();
+app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, function(e) {
+  console.error('Uncaught exception!\n' + app.annotateError(e));
+});
 
 
 const DEFAULT_SERVER_URL = 'http://localhost:4444/wd/hub';

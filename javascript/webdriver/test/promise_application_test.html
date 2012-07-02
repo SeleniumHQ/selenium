@@ -24,6 +24,7 @@ limitations under the License.
     goog.require('goog.testing.FunctionMock');
     goog.require('goog.testing.jsunit');
     goog.require('webdriver.promise.Application');
+    goog.require('webdriver.stacktrace.Snapshot');
     goog.require('webdriver.test.AppTester');
     goog.require('webdriver.test.testutil');
   </script>
@@ -38,13 +39,14 @@ limitations under the License.
       callbackHelper = webdriver.test.testutil.callbackHelper,
       callbackPair = webdriver.test.testutil.callbackPair;
 
-  var appTester, clock;
+  var appTester, clock, history;
 
 
   function setUp() {
     clock = webdriver.test.testutil.createMockClock();
     appTester = new webdriver.test.AppTester(clock);
     webdriver.test.testutil.messages = [];
+    history = [];
   }
 
 
@@ -53,14 +55,33 @@ limitations under the License.
   }
 
   function schedule(msg, opt_return) {
-    return appTester.schedule(msg, function() {
+    return scheduleAction(msg, function() {
       return opt_return;
     });
   }
 
-  /** @see {@link webdriver.test.AppTester#$schedulePush}. */
   function schedulePush(msg, value, opt_taskPromise) {
-    return appTester.$schedulePush.apply(appTester, arguments);
+    return scheduleAction(msg, function() {
+      webdriver.test.testutil.messages.push(value);
+      return opt_taskPromise;
+    });
+  }
+
+  function scheduleAction(msg, actionFn) {
+    return appTester.schedule(msg, function() {
+      history.push(msg);
+      return actionFn();
+    });
+  }
+
+  function scheduleWait(msg, condition, timeout, opt_message) {
+    // It's not possible to hook into when the wait itself is scheduled, so
+    // we record each iteration of the wait loop.
+    var count = 0;
+    return appTester.scheduleWait(msg, function() {
+      history.push((count++) + ': ' + msg);
+      return condition();
+    }, timeout, opt_message);
   }
 
 
@@ -78,13 +99,8 @@ limitations under the License.
 
   /** @see {@link webdriver.test.AppTester#$assertAppHistory}. */
   function assertAppHistory(var_args) {
-    appTester.$assertAppHistory.apply(appTester, arguments);
-  }
-
-
-  /** @see {@link webdriver.test.AppTester#$assertFrameCount}. */
-  function assertFrameCount(n) {
-    appTester.$assertFrameCount(n);
+    var expected = goog.array.slice(arguments, 0);
+    assertArrayEquals(expected, history);
   }
 
 
@@ -94,7 +110,8 @@ limitations under the License.
    */
   function createTask(opt_description) {
     return new webdriver.promise.Application.Task(goog.nullFunction,
-        opt_description);
+        opt_description || '',
+        new webdriver.stacktrace.Snapshot());
   }
 
 
@@ -199,8 +216,14 @@ limitations under the License.
     frame2.resolve = callbackHelper();
     frame3.resolve = callbackHelper();
 
-    var obj = {activeFrame_: frame2, commenceShutdown_: callbackHelper()};
+    var obj = {
+      activeFrame_: frame2,
+      commenceShutdown_: callbackHelper(),
+      trimHistory_: callbackHelper(),
+      history_: []
+    };
     webdriver.promise.Application.prototype.resolveFrame_.call(obj, frame3);
+    assertEquals(1, obj.trimHistory_.getCallCount());
     frame3.resolve.assertCalled('frame 3 not resolved');
     frame2.resolve.assertNotCalled('frame 2 should not be resolved yet');
     frame1.resolve.assertNotCalled('frame 1 should not be resolved yet');
@@ -210,6 +233,7 @@ limitations under the License.
     assertEquals(frame2, obj.activeFrame_);
 
     webdriver.promise.Application.prototype.resolveFrame_.call(obj, frame2);
+    assertEquals(2, obj.trimHistory_.getCallCount());
     frame2.resolve.assertCalled('frame 2 not resolved');
     frame1.resolve.assertNotCalled('frame 1 should not be resolved yet');
     assertNull(frame2.getParent());
@@ -218,6 +242,7 @@ limitations under the License.
 
     obj.commenceShutdown_.assertNotCalled();
     webdriver.promise.Application.prototype.resolveFrame_.call(obj, frame1);
+    assertEquals(3, obj.trimHistory_.getCallCount());
     frame1.resolve.assertCalled('frame 1 not resolved');
     obj.commenceShutdown_.assertCalled();
     assertNull(frame1.getParent());
@@ -623,7 +648,7 @@ limitations under the License.
     assertEquals(root, app.activeFrame_);
 
     var task = app.getNextTask_();
-    assertEquals('task3', task.description);
+    assertEquals('task3', task.getDescription());
     assertEquals(root.children_[0], app.activeFrame_);
     pair.assertNeither('active frame still not resolved yet');
 
@@ -640,7 +665,7 @@ limitations under the License.
 
     schedule('task1');
     schedule('task2');
-    assertEquals('task1', app.getNextTask_().description);
+    assertEquals('task1', app.getNextTask_().getDescription());
 
     var pair1 = callbackPair(), pair2 = callbackPair();
     app.runInNewFrame_(function() {
@@ -652,8 +677,8 @@ limitations under the License.
 
     pair1.assertNeither();
     pair2.assertNeither();
-    assertEquals('task3', app.getNextTask_().description);
-    assertEquals('task4', app.getNextTask_().description);
+    assertEquals('task3', app.getNextTask_().getDescription());
+    assertEquals('task4', app.getNextTask_().getDescription());
     assertNull(app.getNextTask_());
     pair1.assertNeither();
     pair2.assertCallback();
@@ -661,7 +686,7 @@ limitations under the License.
     pair1.assertCallback();
 
     assertEquals(root, app.activeFrame_);
-    assertEquals('task2', app.getNextTask_().description);
+    assertEquals('task2', app.getNextTask_().getDescription());
   }
 
 
@@ -741,7 +766,7 @@ limitations under the License.
     var count = 0;
     function incr() { count++; }
 
-    appTester.schedule('', incr);
+    scheduleAction('', incr);
 
     assertEquals(0, count);
 
@@ -756,8 +781,8 @@ limitations under the License.
     var count = 0;
     function incr() { count++; }
 
-    appTester.schedule('', incr);
-    appTester.schedule('', incr);
+    scheduleAction('', incr);
+    scheduleAction('', incr);
 
     assertEquals(0, count);
     turnEventLoop();
@@ -906,7 +931,7 @@ limitations under the License.
 
   function testErrorHandling_thrownErrorsArePassedToTaskErrback() {
     var callbacks = callbackPair(null, assertIsStubError);
-    appTester.schedule('function that throws', throwStubError).
+    scheduleAction('function that throws', throwStubError).
         then(callbacks.callback, callbacks.errback);
     runApplication(callbacks.assertErrback);
   }
@@ -914,7 +939,7 @@ limitations under the License.
 
   function testErrorHandling_thrownErrorsPropagateThroughPromiseChain() {
     var callbacks = callbackPair(null, assertIsStubError);
-    appTester.schedule('function that throws', throwStubError).
+    scheduleAction('function that throws', throwStubError).
         then(callbacks.callback).
         then(null, callbacks.errback);
     runApplication(callbacks.assertErrback);
@@ -927,7 +952,7 @@ limitations under the License.
     schedule('a').
         then(function() {
           schedule('b');
-          appTester.schedule('function that throws', throwStubError);
+          scheduleAction('function that throws', throwStubError);
         }).
         then(null, errback = callbackHelper(assertIsStubError));
 
@@ -937,14 +962,14 @@ limitations under the License.
 
 
   function testErrorHandling_abortsAppIfOnlyTaskThrowsAnError() {
-    appTester.schedule('function that throws', throwStubError);
+    scheduleAction('function that throws', throwStubError);
     runApplication(null, assertIsStubError);
   }
 
 
   function testErrorHandling_abortsAppIfOnlyTaskReturnsAnUnhandledRejection() {
     var rejected = webdriver.promise.rejected(STUB_ERROR);
-    appTester.schedule('function that throws', function() { return rejected; });
+    scheduleAction('function that throws', function() { return rejected; });
     runApplication(null, assertIsStubError);
   }
 
@@ -960,7 +985,7 @@ limitations under the License.
   function testErrorHandling_abortsSequenceIfATaskFails() {
     schedule('a');
     schedule('b');
-    appTester.schedule('c', throwStubError);
+    scheduleAction('c', throwStubError);
     schedule('d');  // Should never execute.
 
     runApplication(null, assertIsStubError);
@@ -970,7 +995,7 @@ limitations under the License.
 
   function testErrorHandling_abortsFromUnhandledFramedTaskFailures_1() {
     schedule('outer task').then(function() {
-      appTester.schedule('inner task', throwStubError);
+      scheduleAction('inner task', throwStubError);
     });
     schedule('this should not run');
     runApplication(null, assertIsStubError);
@@ -981,7 +1006,7 @@ limitations under the License.
   function testErrorHandling_abortsFromUnhandledFramedTaskFailures_2() {
     schedule('a').then(function() {
       schedule('b').then(function() {
-        appTester.schedule('c', throwStubError);
+        scheduleAction('c', throwStubError);
         // This should not execute.
         schedule('d');
       });
@@ -994,7 +1019,7 @@ limitations under the License.
 
   function testErrorHandling_abortsWhenErrorBubblesUpFromFullyResolvingAnObject() {
     var obj = {'foo': webdriver.promise.rejected(STUB_ERROR)};
-    appTester.schedule('', function() {
+    scheduleAction('', function() {
       return webdriver.promise.fullyResolved(obj).
           then(function() {
             // Should never get here; STUB_ERROR should abort the app above.
@@ -1008,7 +1033,7 @@ limitations under the License.
   function testErrorHandling_abortsWhenErrorBubblesUpFromFullyResolvingAnObject_withCallback() {
     var obj = {'foo': webdriver.promise.rejected(STUB_ERROR)};
     var callback;
-    appTester.schedule('', function() {
+    scheduleAction('', function() {
       return webdriver.promise.fullyResolved(obj).
           then(function() {
             // Should never get here; STUB_ERROR should abort the app above.
@@ -1025,7 +1050,7 @@ limitations under the License.
     var errback;
     schedule('a').
         then(function() {
-          return appTester.schedule('b', throwStubError);
+          return scheduleAction('b', throwStubError);
         }).
         addErrback(errback = callbackHelper(assertIsStubError));
     runApplication();
@@ -1051,7 +1076,7 @@ limitations under the License.
 
   function testErrorHandling_aTaskWithAnUnhandledPromiseRejection() {
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
+    scheduleAction('sub-tasks', function() {
       webdriver.promise.rejected(STUB_ERROR);
     });
     schedule('should never run');
@@ -1062,7 +1087,7 @@ limitations under the License.
 
   function testErrorHandling_aTaskThatReutrnsARejectedPromise() {
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
+    scheduleAction('sub-tasks', function() {
       return webdriver.promise.rejected(STUB_ERROR);
     });
     schedule('should never run');
@@ -1074,7 +1099,7 @@ limitations under the License.
 
   function testErrorHandling_discardsSubtasksIfTaskThrows() {
     var pair = callbackPair(null, assertIsStubError);
-    appTester.schedule('a', function() {
+    scheduleAction('a', function() {
       schedule('b');
       schedule('c');
       throwStubError();
@@ -1089,16 +1114,16 @@ limitations under the License.
 
   function testErrorHandling_discardsRemainingSubtasksIfASubtaskFails() {
     var pair = callbackPair(null, assertIsStubError);
-    appTester.schedule('a', function() {
+    scheduleAction('a', function() {
       schedule('b');
-      appTester.schedule('c', throwStubError);
+      scheduleAction('c', throwStubError);
       schedule('d');
     }).then(pair.callback, pair.errback);
     schedule('e');
 
     runApplication();
     pair.assertErrback();
-    assertAppHistory('a', '..b', '..c', 'e');
+    assertAppHistory('a', 'b', 'c', 'e');
   }
 
 
@@ -1129,7 +1154,7 @@ limitations under the License.
        }
      */
 
-    appTester.schedule('doFoo and throw', function() {
+    scheduleAction('doFoo and throw', function() {
       webdriver.test.testutil.messages.push('foo');
       throw new Error('ouch');
     }).then(goog.partial(schedulePush, 'doBar', 'bar')).
@@ -1150,7 +1175,7 @@ limitations under the License.
 
     schedulePush('doFoo', 'foo').
         then(function() {
-          return appTester.schedule('doBar and throw', function() {
+          return scheduleAction('doBar and throw', function() {
             webdriver.test.testutil.messages.push('bar');
             throw STUB_ERROR;
           });
@@ -1250,15 +1275,15 @@ limitations under the License.
   }
 
   function testWaiting_onAConditionThatIsAlwaysTrue() {
-    appTester.scheduleWait('waiting on true', function() { return true;}, 0);
+    scheduleWait('waiting on true', function() { return true;}, 0);
     runApplication();
-    assertAppHistory('waiting on true');
+    assertAppHistory('0: waiting on true');
   }
 
 
   function testWaiting_aSimpleCountingCondition() {
     var count = 0;
-    appTester.scheduleWait('counting to 3', function() {
+    scheduleWait('counting to 3', function() {
       return ++count == 3;
     }, 200);
 
@@ -1275,7 +1300,7 @@ limitations under the License.
   function testWaiting_aConditionThatReturnsAPromise() {
     var d = new webdriver.promise.Deferred();
 
-    appTester.scheduleWait('waiting for promise', function() {
+    scheduleWait('waiting for promise', function() {
       return d.promise;
     }, 0);
 
@@ -1294,7 +1319,7 @@ limitations under the License.
 
   function testWaiting_aConditionThatReturnsAPromise_2() {
     var count = 0;
-    appTester.scheduleWait('waiting for promise', function() {
+    scheduleWait('waiting for promise', function() {
       return webdriver.promise.resolved(++count == 3);
     }, 200);
 
@@ -1309,8 +1334,8 @@ limitations under the License.
 
   function testWaiting_aConditionThatReturnsATaskResult() {
     var count = 0;
-    appTester.scheduleWait('counting to 3', function() {
-      return appTester.schedule('increment count', function() {
+    scheduleWait('counting to 3', function() {
+      return scheduleAction('increment count', function() {
         return ++count == 3;
       });
     }, 200);
@@ -1318,14 +1343,12 @@ limitations under the License.
 
     turnEventLoop();
     assertEquals(0, count);
-    assertAppHistory('counting to 3');
+    assertAppHistory('0: counting to 3');
 
     turnEventLoop();  // Runs scheduled task.
     turnEventLoop();
     assertAppHistory(
-        'counting to 3',
-        '..[[[wait loop; 1 iteration]]]',
-        '....increment count');
+        '0: counting to 3', 'increment count');
     assertEquals(1, count);
 
     clock.tick(100);  // Advance clock for next polling pass.
@@ -1334,9 +1357,8 @@ limitations under the License.
     assertEquals(2, count);
     turnEventLoop();
     assertAppHistory(
-        'counting to 3',
-        '..[[[wait loop; 2 iterations]]]',
-        '....increment count');
+        '0: counting to 3', 'increment count',
+        '1: counting to 3', 'increment count');
 
     clock.tick(100);  // Advance clock for next polling pass.
     assertEquals(2, count);
@@ -1344,23 +1366,23 @@ limitations under the License.
     assertEquals(3, count);
     turnEventLoop();
     assertAppHistory(
-        'counting to 3',
-        '..[[[wait loop; 3 iterations]]]',
-        '....increment count');
+        '0: counting to 3', 'increment count',
+        '1: counting to 3', 'increment count',
+        '2: counting to 3', 'increment count');
 
     runApplication();
     assertEquals(3, count);
     assertAppHistory(
-        'counting to 3',
-        '..[[[wait loop; 3 iterations]]]',
-        '....increment count',
+        '0: counting to 3', 'increment count',
+        '1: counting to 3', 'increment count',
+        '2: counting to 3', 'increment count',
         'post wait');
   }
 
 
   function testWaiting_conditionContainsASubtask() {
     var count = 0;
-    appTester.scheduleWait('counting to 3', function() {
+    scheduleWait('counting to 3', function() {
       schedule('sub task');
       return ++count == 3;
     }, 200);
@@ -1369,17 +1391,17 @@ limitations under the License.
     runApplication();
     assertEquals(3, count);
     assertAppHistory(
-        'counting to 3',
-        '..[[[wait loop; 3 iterations]]]',
-        '....sub task',
+        '0: counting to 3', 'sub task',
+        '1: counting to 3', 'sub task',
+        '2: counting to 3', 'sub task',
         'post wait');
   }
 
 
   function testWaiting_cancelsWaitIfScheduledTaskFails() {
     var pair = callbackPair(null, assertIsStubError);
-    appTester.scheduleWait('waiting to go boom', function() {
-      appTester.schedule('boom', throwStubError);
+    scheduleWait('waiting to go boom', function() {
+      scheduleAction('boom', throwStubError);
       schedule('this should not run');
       return true;
     }, 200).then(pair.callback, pair.errback);
@@ -1387,32 +1409,30 @@ limitations under the License.
 
     runApplication();
     assertAppHistory(
-        'waiting to go boom',
-        '..[[[wait loop; 1 iteration]]]',
-        '....boom',
+        '0: waiting to go boom', 'boom',
         'post wait');
   }
 
 
   function testWaiting_failsIfConditionThrows() {
     var callbacks = callbackPair(null, assertIsStubError);
-    appTester.scheduleWait('goes boom', throwStubError).
+    scheduleWait('goes boom', throwStubError).
         then(callbacks.callback, callbacks.errback);
     schedule('post wait');
     runApplication();
-    assertAppHistory('goes boom', 'post wait');
+    assertAppHistory('0: goes boom', 'post wait');
     callbacks.assertErrback();
   }
 
 
   function testWaiting_failsIfConditionReturnsARejectedPromise() {
     var callbacks = callbackPair(null, assertIsStubError);
-    appTester.scheduleWait('goes boom', function() {
+    scheduleWait('goes boom', function() {
       return webdriver.promise.rejected(STUB_ERROR);
     }).then(callbacks.callback, callbacks.errback);
     schedule('post wait');
     runApplication();
-    assertAppHistory('goes boom', 'post wait');
+    assertAppHistory('0: goes boom', 'post wait');
     callbacks.assertErrback();
   }
 
@@ -1420,8 +1440,8 @@ limitations under the License.
   function testWaiting_failsIfConditionHasAFailedSubtask() {
     var callbacks = callbackPair(null, assertIsStubError);
     var count = 0;
-    appTester.scheduleWait('waiting', function() {
-      appTester.schedule('maybe throw', function() {
+    scheduleWait('waiting', function() {
+      scheduleAction('maybe throw', function() {
         if (++count == 2) {
           throw STUB_ERROR;
         }
@@ -1441,17 +1461,16 @@ limitations under the License.
     runApplication();
     assertEquals(2, count);
     assertAppHistory(
-        'waiting',
-        '..[[[wait loop; 2 iterations]]]',
-        '....maybe throw',
+        '0: waiting', 'maybe throw',
+        '1: waiting', 'maybe throw',
         'post wait');
   }
 
 
   function testWaiting_pollingLoopWaitsForAllScheduledTasksInCondition() {
     var count = 0;
-    appTester.scheduleWait('counting to 3', function() {
-      appTester.schedule('increment count', function() { ++count; });
+    scheduleWait('counting to 3', function() {
+      scheduleAction('increment count', function() { ++count; });
       return count >= 3;
     }, 300);
     schedule('post wait');
@@ -1474,44 +1493,52 @@ limitations under the License.
     runApplication();
     assertEquals(4, count);
     assertAppHistory(
-        'counting to 3',
-        '..[[[wait loop; 4 iterations]]]',
-        '....increment count',
+        '0: counting to 3', 'increment count',
+        '1: counting to 3', 'increment count',
+        '2: counting to 3', 'increment count',
+        '3: counting to 3', 'increment count',
         'post wait');
   }
 
 
   function testWaiting_blocksNextTaskOnWait() {
     var count = 0;
-    appTester.scheduleWait('counting to 3', function() {
+    scheduleWait('counting to 3', function() {
       return ++count == 3;
     }, 200);
     schedule('post wait');
 
     turnEventLoop();  // Start the application; triggers first condition poll.
-    assertAppHistory('counting to 3');
+    assertAppHistory('0: counting to 3');
     assertEquals(1, count);
     clock.tick(100);  // Poll 2 more times.
-    assertAppHistory('counting to 3');
+    assertAppHistory(
+        '0: counting to 3',
+        '1: counting to 3');
     clock.tick(100);
-    assertAppHistory('counting to 3');
+    assertAppHistory(
+        '0: counting to 3',
+        '1: counting to 3',
+        '2: counting to 3');
     assertEquals(3, count);
 
     runApplication();
-    assertAppHistory('counting to 3', 'post wait');
+    assertAppHistory(
+        '0: counting to 3',
+        '1: counting to 3',
+        '2: counting to 3',
+        'post wait');
   }
 
 
   function testWaiting_timesOut_zeroTimeout() {
-    appTester.scheduleWait('always false', function() { return false; }, 0);
-    runApplication(null, function() {
-      assertAppHistory('always false');
-    });
+    scheduleWait('always false', function() { return false; }, 0);
+    runApplication(null, goog.nullFunction);
   }
 
   function testWaiting_timesOut_nonZeroTimeout() {
     var count = 0;
-    appTester.scheduleWait('counting to 3', function() {
+    scheduleWait('counting to 3', function() {
       return ++count == 3;
     }, 100);
 
@@ -1520,7 +1547,7 @@ limitations under the License.
     assertEquals(2, count);
 
     runApplication(null, function() {
-      assertAppHistory('counting to 3');
+      assertAppHistory('0: counting to 3', '1: counting to 3');
       assertEquals(2, count);
     });
   }
@@ -1528,7 +1555,7 @@ limitations under the License.
 
   function testWaiting_shouldFailIfConditionReturnsARejectedPromise() {
     var count = 0;
-    appTester.scheduleWait('counting to 3', function() {
+    scheduleWait('counting to 3', function() {
       return webdriver.promise.rejected(STUB_ERROR);
     }, 100);
 
@@ -1539,7 +1566,7 @@ limitations under the License.
   function testWaiting_callbacks() {
     var pair = callbackPair();
 
-    appTester.scheduleWait('waiting on true', function() { return true;}, 0).
+    scheduleWait('waiting on true', function() { return true;}, 0).
         then(pair.callback, pair.errback);
     pair.assertNeither('Wait not expected to be done yet');
     turnEventLoop();
@@ -1550,7 +1577,7 @@ limitations under the License.
 
   function testWaiting_errbacks() {
     var callbacks = callbackPair();
-    appTester.scheduleWait('always false', function() { return false; }, 0).
+    scheduleWait('always false', function() { return false; }, 0).
         then(callbacks.callback, callbacks.errback);
     turnEventLoop();
     callbacks.assertErrback('Wait should have timed out');
@@ -1560,54 +1587,55 @@ limitations under the License.
 
   function testWaiting_scheduleWithIntermittentWaits() {
     schedule('a');
-    appTester.scheduleWait('wait 1', function() { return true; }, 0);
+    scheduleWait('wait 1', function() { return true; }, 0);
     schedule('b');
-    appTester.scheduleWait('wait 2', function() { return true; }, 0);
+    scheduleWait('wait 2', function() { return true; }, 0);
     schedule('c');
-    appTester.scheduleWait('wait 3', function() { return true; }, 0);
+    scheduleWait('wait 3', function() { return true; }, 0);
 
     runApplication();
-    assertAppHistory('a', 'wait 1', 'b', 'wait 2', 'c', 'wait 3');
+    assertAppHistory('a', '0: wait 1', 'b', '0: wait 2', 'c', '0: wait 3');
   }
 
 
   function testWaiting_scheduleWithIntermittentAndNestedWaits() {
     schedule('a');
-    appTester.scheduleWait('wait 1', function() { return true; }, 0).
+    scheduleWait('wait 1', function() { return true; }, 0).
         then(function() {
           schedule('d');
-          appTester.scheduleWait('wait 2', function() { return true; }, 0);
+          scheduleWait('wait 2', function() { return true; }, 0);
           schedule('e');
         });
     schedule('b');
-    appTester.scheduleWait('wait 3', function() { return true; }, 0);
+    scheduleWait('wait 3', function() { return true; }, 0);
     schedule('c');
-    appTester.scheduleWait('wait 4', function() { return true; }, 0);
+    scheduleWait('wait 4', function() { return true; }, 0);
 
     runApplication();
     assertAppHistory(
-        'a', 'wait 1', 'd', 'wait 2', 'e', 'b', 'wait 3', 'c', 'wait 4');
+        'a', '0: wait 1', 'd', '0: wait 2', 'e', 'b', '0: wait 3', 'c',
+        '0: wait 4');
   }
 
 
   function testSubtasks() {
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
+    scheduleAction('sub-tasks', function() {
       schedule('c');
       schedule('d');
     });
     schedule('b');
 
     runApplication();
-    assertAppHistory('a', 'sub-tasks', '..c', '..d', 'b');
+    assertAppHistory('a', 'sub-tasks', 'c', 'd', 'b');
   }
 
 
   function testSubtasks_nesting() {
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
+    scheduleAction('sub-tasks', function() {
       schedule('b');
-      appTester.schedule('sub-sub-tasks', function() {
+      scheduleAction('sub-sub-tasks', function() {
         schedule('c');
         schedule('d');
       });
@@ -1617,26 +1645,19 @@ limitations under the License.
 
     runApplication();
     assertAppHistory(
-        'a',
-        'sub-tasks',
-        '..b',
-        '..sub-sub-tasks',
-        '....c',
-        '....d',
-        '..e',
-        'f');
+        'a', 'sub-tasks', 'b', 'sub-sub-tasks', 'c', 'd', 'e', 'f');
   }
 
 
   function testSubtasks_taskReturnsSubTaskResult_1() {
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
+    scheduleAction('sub-tasks', function() {
       return schedule('c');
     });
     schedule('b');
 
     runApplication();
-    assertAppHistory('a', 'sub-tasks', '..c', 'b');
+    assertAppHistory('a', 'sub-tasks', 'c', 'b');
   }
 
 
@@ -1657,19 +1678,19 @@ limitations under the License.
 
   function testSubtasks_subTaskFails_1() {
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
-      appTester.schedule('sub-task that fails', throwStubError);
+    scheduleAction('sub-tasks', function() {
+      scheduleAction('sub-task that fails', throwStubError);
     });
     schedule('should never execute');
 
     runApplication(null, assertIsStubError);
-    assertAppHistory('a', 'sub-tasks', '..sub-task that fails');
+    assertAppHistory('a', 'sub-tasks', 'sub-task that fails');
   }
 
 
   function testSubtasks_subTaskFails_2() {
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
+    scheduleAction('sub-tasks', function() {
       return webdriver.promise.rejected(STUB_ERROR);
     });
     schedule('should never execute');
@@ -1683,7 +1704,7 @@ limitations under the License.
     var callbacks = callbackPair(null, assertIsStubError);
 
     schedule('a');
-    appTester.schedule('sub-tasks', function() {
+    scheduleAction('sub-tasks', function() {
       return webdriver.promise.rejected(STUB_ERROR);
     }).then(callbacks.callback, callbacks.errback);
     schedule('b');
@@ -1699,10 +1720,10 @@ limitations under the License.
     appTester.$attachAppListener(pair);
 
     var d = new webdriver.promise.Deferred;
-    appTester.schedule('one', function() {
+    scheduleAction('one', function() {
       return d.promise;
     });
-    appTester.schedule('two', goog.nullFunction);
+    scheduleAction('two', goog.nullFunction);
 
     turn();
     assertAppHistory('one');
@@ -1731,8 +1752,8 @@ limitations under the License.
     var pair = callbackPair(null, onError);
     appTester.$attachAppListener(pair);
 
-    appTester.schedule('one', goog.nullFunction);
-    appTester.schedule('two', goog.nullFunction);
+    scheduleAction('one', goog.nullFunction);
+    scheduleAction('two', goog.nullFunction);
 
     turn();
     assertAppHistory('one');
@@ -1761,7 +1782,7 @@ limitations under the License.
 
     webdriver.promise.resolved().
         then(function() {
-          appTester.schedule('boom', throwStubError);
+          scheduleAction('boom', throwStubError);
           schedule('this should not run');
           return d.promise;
         }).
@@ -1782,7 +1803,7 @@ limitations under the License.
 
     schedule('a').
         then(function() {
-          appTester.schedule('boom', throwStubError);
+          scheduleAction('boom', throwStubError);
           schedule('this should not run');
           return d.promise;
         }).
@@ -1809,6 +1830,89 @@ limitations under the License.
     runApplication();
     assertAppHistory('start', 'mid', 'finish');
     webdriver.test.testutil.assertMessages('a', 'c', 'b', 'd', 'e');
+  }
+
+  function assertFrame(description, frame) {
+    var regexp = new RegExp('^' + description + '(\\n  > .*)+$');
+    assertTrue(
+        'Frame did not match expected regex:' +
+            '\n expected: ' + regexp +
+            '\n was: ' + frame,
+       regexp.test(frame));
+  }
+
+  function testHistory_removesLastTaskEachTimeANewTaskIsStarted() {
+    schedule('one').then(function() {
+      var history = appTester.getHistory();
+      assertEquals(1, history.length);
+      assertFrame('one', history[0]);
+    });
+    schedule('two').then(function() {
+      var history = appTester.getHistory();
+      assertEquals(1, history.length);
+      assertFrame('two', history[0]);
+    });
+    schedule('three').then(function() {
+      var history = appTester.getHistory();
+      assertEquals(1, history.length);
+      assertFrame('three', history[0]);
+    });
+    runApplication();
+    assertEquals(0, appTester.getHistory().length);
+  }
+
+  function testHistory_clearsSubtaskHistoryWhenParentTaskCompletes() {
+    scheduleAction('one', function() {
+      schedule('two').then(function() {
+        var history = appTester.getHistory();
+        assertEquals(2, history.length);
+        assertFrame('two', history[0]);
+        assertFrame('one', history[1]);
+      });
+    }).then(function() {
+      var history = appTester.getHistory();
+      assertEquals(1, history.length);
+      assertFrame('one', history[0]);
+    });
+    runApplication();
+    assertAppHistory('one', 'two');
+    assertEquals(0, appTester.getHistory().length);
+  }
+
+  function testHistory_preservesHistoryWhenChildTaskFails() {
+    scheduleAction('one', function() {
+      scheduleAction('two', function() {
+        scheduleAction('three', throwStubError);
+      });
+    }).then(fail, function() {
+      var history = appTester.getHistory();
+      assertEquals(3, history.length);
+      assertFrame('three', history[0]);
+      assertFrame('two', history[1]);
+      assertFrame('one', history[2]);
+    });
+    runApplication();
+    assertAppHistory('one', 'two', 'three');
+    assertEquals(0, appTester.getHistory().length);
+  }
+
+  function testHistory_subtaskFailureIsIgnoredByErrback() {
+    scheduleAction('one', function() {
+
+      scheduleAction('two', function() {
+        scheduleAction('three', throwStubError);
+      }).addErrback(goog.nullFunction);
+
+      schedule('post error').then(function() {
+        var history = appTester.getHistory();
+        assertEquals(2, history.length);
+        assertFrame('post error', history[0]);
+        assertFrame('one', history[1]);
+      });
+    });
+    runApplication();
+    assertAppHistory('one', 'two', 'three', 'post error');
+    assertEquals(0, appTester.getHistory().length);
   }
 </script>
 </body>
