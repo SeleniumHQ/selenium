@@ -172,7 +172,7 @@ public class InternetExplorerDriverService extends DriverService {
         ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
         argsBuilder.add(String.format("--port=%d", port));
         if (logFile != null) {
-          argsBuilder.add(String.format("--log-path=%s", logFile.getAbsolutePath()));
+          argsBuilder.add(String.format("--log-file=%s", logFile.getAbsolutePath()));
         }
         if (logLevel != null) {
           argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
