@@ -950,7 +950,7 @@ Utils.wrapResult = function(result, doc) {
       }
 
       // There's got to be a better way, but 'result instanceof Error' returns false
-      if (goog.string.endsWith(Object.getPrototypeOf(result).toString(), 'Error')) {
+      if (Object.getPrototypeOf(result) != null && goog.string.endsWith(Object.getPrototypeOf(result).toString(), 'Error')) {
         return result.toString();
       }
 
