@@ -19,6 +19,9 @@ package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.remote.RemoteWebElement;
 
+/**
+ * @deprecated This class is historical relic, use RemoteWebElement instead 
+ */
 public class FirefoxWebElement extends RemoteWebElement {
 
   public FirefoxWebElement(FirefoxDriver parent) {

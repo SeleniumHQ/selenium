@@ -26,6 +26,9 @@ import org.openqa.selenium.remote.Response;
 
 import java.util.List;
 
+/**
+ * @deprecated This class is historical relic, use RemoteWebElement instead 
+ */
 public class InternetExplorerElement extends RemoteWebElement {
   public InternetExplorerElement(InternetExplorerDriver parent) {
     setParent(parent);
