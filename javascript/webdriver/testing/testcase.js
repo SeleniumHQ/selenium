@@ -67,7 +67,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
   var hadError = false;
   var app = webdriver.promise.Application.getInstance();
 
-  this.runSingleTest_(test, onError, onExpectationFailures).then(function() {
+  this.runSingleTest_(test, onError).then(function() {
     hadError || self.doSuccess(test);
     self.timeout(function() {
       self.cycleTests();
@@ -77,22 +77,6 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
   function onError(e) {
     hadError = true;
     self.doError(test, app.annotateError(e));
-  }
-
-  function onExpectationFailures(description, errors) {
-    errors = goog.array.map(errors, function(error) {
-      // Patch the error to ensure it is not double logged by
-      // goog.testing.TestCase.prototype.logError.
-      error['isJsUnitException'] = error['loggedJsUnitException'] = true;
-      return self.logError(description, error);
-    });
-
-    errors.unshift(description + ': FAILED EXPECTATIONS');
-    errors = errors.join('\n').split('\n').join('\n  ');
-    self.saveMessage(errors);
-
-    hadError = true;
-    self.result_.errors.push(errors);
   }
 };
 
@@ -118,54 +102,23 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
  * @param {!goog.testing.TestCase.Test} test The test to run.
  * @param {function(*)} onError The function to call each time an error is
  *     detected.
- * @param {function(!Array.<Error>)} onExpectationFailures The function to call
- *     after each test phase if there were any expectation failures.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     test has finished running.
  * @private
  */
-webdriver.testing.TestCase.prototype.runSingleTest_ = function(
-    test, onError, onExpectationFailures) {
+webdriver.testing.TestCase.prototype.runSingleTest_ = function(test, onError) {
   var app = webdriver.promise.Application.getInstance();
   app.clearHistory();
-
-  var expectationFailures = [];
-
-  webdriver.testing.asserts.on(webdriver.testing.asserts.EXPECTATION_FAILURE,
-      recordExpectationFailure);
 
   return schedule(test.name + '.setUp()', this.setUp)().
       addCallback(schedule(test.name + '()', test.ref)).
       addErrback(onError).
       addCallback(schedule(test.name + '.tearDown()', this.tearDown)).
-      addErrback(onError).
-      addBoth(removeRecordExpectationFailure);
+      addErrback(onError);
 
   function schedule(description, fn) {
-    var tmp = goog.partial(handleExpectationFailures, description);
     return function() {
-      return app.schedule(description, goog.bind(fn, test.scope)).
-          then(tmp, function(e) {
-            tmp();
-            throw e;
-          });
-    }
-  }
-
-  function recordExpectationFailure(e) {
-    expectationFailures.push(app.annotateError(e));
-  }
-
-  function removeRecordExpectationFailure() {
-    webdriver.testing.asserts.removeListener(
-        webdriver.testing.asserts.EXPECTATION_FAILURE,
-        recordExpectationFailure);
-  }
-
-  function handleExpectationFailures(description) {
-    if (expectationFailures.length) {
-      onExpectationFailures(description, expectationFailures);
-      expectationFailures = [];
+      return app.schedule(description, goog.bind(fn, test.scope));
     }
   }
 };

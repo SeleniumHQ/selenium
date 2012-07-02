@@ -40,8 +40,7 @@ limitations under the License.
       assertIsStubError = webdriver.test.testutil.assertIsStubError;
 
   var control = new goog.testing.MockControl();
-  var appTester, clock, mockTestCase, testStub, mockOnComplete, mockOnError,
-      mockOnExpectationFailures;
+  var appTester, clock, mockTestCase, testStub, mockOnComplete, mockOnError;
 
   function setUp() {
     clock = webdriver.test.testutil.createMockClock();
@@ -53,14 +52,11 @@ limitations under the License.
       testFn: goog.nullFunction,
       tearDown: goog.nullFunction,
       onComplete: goog.nullFunction,
-      onError: goog.nullFunction,
-      onExpectationFailures: goog.nullFunction
+      onError: goog.nullFunction
     }, true);
 
     mockOnComplete = goog.bind(mockTestCase.onComplete, mockTestCase);
     mockOnError = goog.bind(mockTestCase.onError, mockTestCase);
-    mockOnExpectationFailures = goog.bind(mockTestCase.onExpectationFailures,
-        mockTestCase);
 
     testStub = {
       name: 'testStub',
@@ -90,7 +86,7 @@ limitations under the License.
 
   function runTest() {
     webdriver.testing.TestCase.prototype.runSingleTest_.
-        call(mockTestCase, testStub, mockOnError, mockOnExpectationFailures).
+        call(mockTestCase, testStub, mockOnError).
         then(mockOnComplete);
     appTester.$runApplication();
     control.$verifyAll();
@@ -214,127 +210,6 @@ limitations under the License.
     mockOnError('error1');
     mockTestCase.tearDown().$does(function() { throw 'error2' });
     mockOnError('error2');
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationFailures_inSetup() {
-    mockTestCase.setUp().$does(function() {
-      expectThat(false, equals(true));
-    });
-    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
-    mockTestCase.testFn();
-    mockTestCase.tearDown();
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationAndAssertionFailures_inSetup() {
-    mockTestCase.setUp().$does(function() {
-      expectThat(false, equals(true));
-      throwStubError();
-    });
-    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
-    mockOnError(STUB_ERROR);
-    mockTestCase.tearDown();
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationFailures_inTestFn() {
-    mockTestCase.setUp();
-    mockTestCase.testFn().$does(function() {
-      expectThat(false, equals(true));
-    });
-    mockOnExpectationFailures('testStub()', IS_ARRAY_ARGUMENT);
-    mockTestCase.tearDown();
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationAndAssertionFailures_inTestFn() {
-    mockTestCase.setUp();
-    mockTestCase.testFn().$does(function() {
-      expectThat(false, equals(true));
-      throwStubError();
-    });
-    mockOnExpectationFailures('testStub()', IS_ARRAY_ARGUMENT);
-    mockOnError(STUB_ERROR);
-    mockTestCase.tearDown();
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationFailures_inTearDown() {
-    mockTestCase.setUp();
-    mockTestCase.testFn();
-    mockTestCase.tearDown().$does(function() {
-      expectThat(false, equals(true));
-    });
-    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationAndAssertionFailures_inTearDown() {
-    mockTestCase.setUp();
-    mockTestCase.testFn();
-    mockTestCase.tearDown().$does(function() {
-      expectThat(false, equals(true));
-      throwStubError();
-    });
-    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
-    mockOnError(STUB_ERROR);
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationAndAssertionFailures_inSetupAndTearDown() {
-    mockTestCase.setUp().$does(function() {
-      expectThat(false, equals(true));
-      throwStubError();
-    });
-    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
-    mockOnError(STUB_ERROR);
-    mockTestCase.tearDown().$does(function() {
-      expectThat(false, equals(true));
-      throwStubError();
-    });
-    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
-    mockOnError(STUB_ERROR);
-    mockOnComplete(IGNORE_ARGUMENT);
-    control.$replayAll();
-
-    runTest();
-  }
-
-  function testExpectationFailures_inEachPhase() {
-    mockTestCase.setUp().$does(function() {
-      expectThat(false, equals(true));
-    });
-    mockOnExpectationFailures('testStub.setUp()', IS_ARRAY_ARGUMENT);
-    mockTestCase.testFn().$does(function() {
-      expectThat(false, equals(true));
-    });
-    mockOnExpectationFailures('testStub()', IS_ARRAY_ARGUMENT);
-    mockTestCase.tearDown().$does(function() {
-      expectThat(false, equals(true));
-    });
-    mockOnExpectationFailures('testStub.tearDown()', IS_ARRAY_ARGUMENT);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 

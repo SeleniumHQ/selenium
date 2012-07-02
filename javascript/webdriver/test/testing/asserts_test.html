@@ -24,17 +24,14 @@ limitations under the License.
     goog.require('webdriver.testing.asserts');
   </script>
   <script>
-    var result, expectationFailure;
+    var result;
 
     function setUp() {
       result = webdriver.test.testutil.callbackPair();
-      expectationFailure = webdriver.test.testutil.callbackHelper();
-      webdriver.testing.asserts.on('expectationFailure', expectationFailure);
     }
 
 
     function tearDown() {
-      webdriver.testing.asserts.removeAllListeners('expectationFailure');
     }
 
 
@@ -42,7 +39,6 @@ limitations under the License.
       webdriver.testing.asserts.applyMatcher('foo', equals('foo')).
           then(result.callback, result.errback);
       result.assertCallback();
-      expectationFailure.assertNotCalled();
     }
 
 
@@ -50,7 +46,6 @@ limitations under the License.
       webdriver.testing.asserts.applyMatcher('foo', equals('bar')).
           then(result.callback, result.errback);
       result.assertErrback();
-      expectationFailure.assertNotCalled();
     }
 
 
@@ -59,10 +54,8 @@ limitations under the License.
       webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
-      expectationFailure.assertNotCalled();
       d.resolve('foo');
       result.assertCallback();
-      expectationFailure.assertNotCalled();
     }
 
 
@@ -71,10 +64,8 @@ limitations under the License.
       webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
-      expectationFailure.assertNotCalled();
       d.resolve('bar');
       result.assertErrback();
-      expectationFailure.assertNotCalled();
     }
 
 
@@ -83,46 +74,8 @@ limitations under the License.
       webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
-      expectationFailure.assertNotCalled();
       d.reject();
       result.assertErrback();
-      expectationFailure.assertNotCalled();
-    }
-
-
-    function testExpectThat_nonPromiseValue_valueMatches() {
-      expectThat('foo', equals('foo'));
-      expectationFailure.assertNotCalled();
-    }
-
-
-    function testExpectThat_nonPromiseValue_notValueMatches() {
-      expectThat('foo', equals('bar'));
-      expectationFailure.assertCalled();
-    }
-
-
-    function testExpectThat_promiseValue_valueMatches() {
-      expectThat(webdriver.promise.resolved('foo'), equals('foo'));
-      expectationFailure.assertNotCalled();
-    }
-
-
-    function testExpectThat_promiseValue_notValueMatches() {
-      var d = new webdriver.promise.Deferred();
-      expectThat(d, equals('foo'));
-      expectationFailure.assertNotCalled();
-      d.resolve('bar');
-      expectationFailure.assertCalled();
-    }
-
-
-    function testExpectThat_promiseValue_promiseRejected() {
-      var d = new webdriver.promise.Deferred();
-      expectThat(d, equals('foo'));
-      expectationFailure.assertNotCalled();
-      d.reject();
-      expectationFailure.assertCalled();
     }
   </script>
 </head>
