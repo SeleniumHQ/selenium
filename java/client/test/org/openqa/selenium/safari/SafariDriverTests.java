@@ -64,8 +64,8 @@ public class SafariDriverTests {
 
     searchBox.sendKeys("webdriver");
     assertEquals("webdriver", searchBox.getAttribute("value"));
-
-    driver.findElement(By.name("btnG")).click();
+    
+    searchBox.submit();
 
     new WebDriverWait(driver, 3)
         .until(ExpectedConditions.titleIs("webdriver - Google Search"));
