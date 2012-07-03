@@ -30,6 +30,7 @@ goog.require('safaridriver.console');
 goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message.Encode');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.MessageTarget');
@@ -85,7 +86,14 @@ safaridriver.inject.page.init = function() {
 
   var message = new safaridriver.message.Load();
   safaridriver.inject.page.LOG_.info('Sending ' + message);
-  message.send(window);
+  message.sendSync(window);
+
+  window.alert = goog.partial(safaridriver.inject.page.sendAlert_,
+      'alert', window.alert);
+  window.confirm = goog.partial(safaridriver.inject.page.sendAlert_,
+      'confirm', window.confirm);
+  window.prompt = goog.partial(safaridriver.inject.page.sendAlert_,
+      'prompt', window.prompt);
 
   var script = document.querySelector(
       safaridriver.inject.page.SCRIPT_SELECTOR_);
@@ -98,6 +106,40 @@ safaridriver.inject.page.init = function() {
   }
 };
 goog.exportSymbol('init', safaridriver.inject.page.init);
+
+
+/**
+ * @param {string} type The type of alert.
+ * @param {function(string): (boolean|string|undefined)} nativeFn The native
+ *     alert function that was intercepted.
+ * @param {string} text The text message passed to the alert.
+ * @return {(boolean|string|undefined)} The alert response.
+ * @private
+ */
+safaridriver.inject.page.sendAlert_ = function(type, nativeFn, text) {
+  safaridriver.inject.page.LOG_.info('Sending alert notification; ' +
+      'type: ' + type + ', text: ' + text);
+  var message = new safaridriver.message.Alert(text);
+  var ignoreAlert = message.sendSync(window);
+
+  if (ignoreAlert == '1') {
+    safaridriver.inject.page.LOG_.info('Invoking native alert');
+    return nativeFn(text);
+  }
+
+  safaridriver.inject.page.LOG_.info('Dismissing unexpected alert');
+  var undef;
+  switch (type) {
+    case 'alert':
+      return undef;
+
+    case 'cancel':
+      return false;
+
+    case 'prompt':
+      return '';
+  }
+};
 
 
 /**

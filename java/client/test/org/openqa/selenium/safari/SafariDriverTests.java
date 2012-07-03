@@ -17,58 +17,30 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeThat;
+import static org.junit.Assume.assumeTrue;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.runners.Suite;
 
-@RunWith(JUnit4.class)
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    AlertTests.class,
+    BasicSafariDriverTests.class
+})
 public class SafariDriverTests {
-  
-  private WebDriver driver = null;
-  
-  private static boolean isSupportedPlatform() {
+
+  @BeforeClass
+  public static void isSupportedPlatform() {
     Platform current = Platform.getCurrent();
-    return Platform.MAC.is(current) || Platform.WINDOWS.is(current);
+    assumeTrue(Platform.MAC.is(current) || Platform.WINDOWS.is(current));
   }
   
-  @Before
-  public void createDriver() {
-    assumeThat(isSupportedPlatform(), is(true));
-    driver = new SafariDriver();
-  }
-  
-  @After
-  public void quitDriver() {
-    driver.quit();
-  }
-  
-  @Test
-  public void shouldBeAbleToPerformAGoogleSearch() {
-    driver.get("http://www.google.com");
-
-    WebElement searchBox = driver.findElement(By.name("q"));
-    assertEquals("input", searchBox.getTagName().toLowerCase());
-
-    searchBox.sendKeys("webdriver");
-    assertEquals("webdriver", searchBox.getAttribute("value"));
-    
-    searchBox.submit();
-
-    new WebDriverWait(driver, 3)
-        .until(ExpectedConditions.titleIs("webdriver - Google Search"));
-    // If we don't time out, we're good to go.
+  @AfterClass
+  public static void quitDriver() {
+    SafariTestBase.quitDriver();
   }
 }

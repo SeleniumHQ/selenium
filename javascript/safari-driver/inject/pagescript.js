@@ -78,9 +78,8 @@ safaridriver.inject.PageScript.prototype.installedPageScript_ = null;
  * sandboxed environment and the web page.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     page has been fully initialized.
- * @private
  */
-safaridriver.inject.PageScript.prototype.installPageScript_ = function() {
+safaridriver.inject.PageScript.prototype.installPageScript = function() {
   if (!this.installedPageScript_) {
     this.log_.info('Installing page script');
     this.installedPageScript_ = new webdriver.promise.Deferred();
@@ -88,7 +87,13 @@ safaridriver.inject.PageScript.prototype.installPageScript_ = function() {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = safari.extension.baseURI + 'page.js';
-    document.documentElement.appendChild(script);
+
+    var docEl = document.documentElement;
+    if (docEl.firstChild) {
+      goog.dom.insertSiblingBefore(script, docEl.firstChild);
+    } else {
+      goog.dom.appendChild(docEl, script);
+    }
 
     var installedPageScript = this.installedPageScript_;
 
@@ -125,7 +130,7 @@ safaridriver.inject.PageScript.prototype.execute = function(command) {
         'for execution: ' + command);
   }
 
-  return this.installPageScript_().addCallback(function() {
+  return this.installPageScript().addCallback(function() {
     var parameters = command.getParameters();
     parameters = (/** @type {!Object.<*>} */this.encoder_.encode(parameters));
     command.setParameters(parameters);

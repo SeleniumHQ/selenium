@@ -394,3 +394,20 @@ safaridriver.extension.commands.executeAsyncScript = function(session,
   command.setParameter('timeout', timeout);
   return safaridriver.extension.commands.sendCommand(session, command, timeout);
 };
+
+
+/**
+ * Alert handling is not supported yet. To prevent tests from hanging, alerts
+ * are always immediately dimissed. This command handler, used for all of the
+ * alert commands, provides users with a friendly error for the unsupported
+ * feature.
+ * TODO: Fully support alerts.
+ * @see http://code.google.com/p/selenium/issues/detail?id=3862
+ */
+safaridriver.extension.commands.handleNoAlertsPresent = function() {
+  throw new bot.Error(bot.ErrorCode.NO_MODAL_DIALOG_OPEN,
+      'The SafariDriver does not support alert handling. To prevent tests ' +
+          'from handing when an alert is opened, they are always immediately ' +
+          'dismissed. For more information, see ' +
+          'http://code.google.com/p/selenium/issues/detail?id=3862');
+};

@@ -20,6 +20,7 @@
 
 goog.provide('safaridriver.extension');
 
+goog.require('goog.asserts');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.console');
@@ -27,6 +28,7 @@ goog.require('safaridriver.extension.Server');
 goog.require('safaridriver.extension.Session');
 goog.require('safaridriver.extension.TabManager');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Connect');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
@@ -83,22 +85,45 @@ safaridriver.extension.driver;
 
 
 /**
+ * The number of WebDriver client connections active with this extension.
+ * @type {number}
+ * @private
+ */
+safaridriver.extension.numConnections_ = 0;
+
+
+/**
  * Responds to a message from an injected script.
  * @param {!SafariExtensionMessageEvent} e The event.
  * @private
  */
 safaridriver.extension.onMessage_ = function(e) {
   var message = safaridriver.message.fromEvent(e);
-  if (message.isType(safaridriver.message.Connect.TYPE)) {
-    var url = (/** @type {!safaridriver.message.Connect} */ message).
-        getUrl();
-    safaridriver.extension.createSessionServer_().connect(url).
-        then(function() {
-          safaridriver.extension.LOG_.info('Connected to client: ' + url);
-        }, function(e) {
-          safaridriver.extension.LOG_.severe(
-              'Failed to connect to client: ' + url, e);
-        });
+  switch (message.getType()) {
+    case safaridriver.message.Connect.TYPE:
+      var url = (/** @type {!safaridriver.message.Connect} */ message).getUrl();
+      var server =  safaridriver.extension.createSessionServer_();
+      server.connect(url).
+          then(function() {
+            safaridriver.extension.LOG_.info('Connected to client: ' + url);
+            safaridriver.extension.numConnections_++;
+            server.onDispose(function() {
+              safaridriver.extension.numConnections_--;
+            });
+          }, function(e) {
+            safaridriver.extension.LOG_.severe(
+                'Failed to connect to client: ' + url, e);
+          });
+      break;
+
+    case safaridriver.message.Alert.TYPE:
+      goog.asserts.assert(e.name === 'canLoad',
+          'Received an async alert message');
+      // TODO: Fully support alerts. See
+      // http://code.google.com/p/selenium/issues/detail?id=3862
+      e.message = !!safaridriver.extension.numConnections_;
+      e.stopPropagation();
+      break;
   }
 };
 

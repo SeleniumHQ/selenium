@@ -1,6 +1,6 @@
 java_test(name = "test",
   srcs = [
-    "SafariDriverTests.java",
+    "*.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/safari",

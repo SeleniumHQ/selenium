@@ -63,6 +63,12 @@ safaridriver.extension.Server = function(session) {
    * @private
    */
   this.ready_ = new webdriver.promise.Deferred();
+
+  /**
+   * @type {!Array.<function()>}
+   * @private
+   */
+  this.disposeCallbacks_ = [];
 };
 goog.inherits(safaridriver.extension.Server, goog.Disposable);
 
@@ -150,6 +156,12 @@ goog.scope(function() {
   map[CommandName.SET_SCRIPT_TIMEOUT] = commands.setScriptTimeout;
 
   map[CommandName.SCREENSHOT] = commands.takeScreenshot;
+
+  map[CommandName.GET_ALERT] = commands.handleNoAlertsPresent;
+  map[CommandName.ACCEPT_ALERT] = commands.handleNoAlertsPresent;
+  map[CommandName.DISMISS_ALERT] = commands.handleNoAlertsPresent;
+  map[CommandName.GET_ALERT_TEXT] = commands.handleNoAlertsPresent;
+  map[CommandName.SET_ALERT_VALUE] = commands.handleNoAlertsPresent;
 });
 
 
@@ -172,6 +184,12 @@ safaridriver.extension.Server.prototype.disposeInternal = function() {
     this.webSocket_.close();
   }
 
+  while (this.disposeCallbacks_.length) {
+    var callback = this.disposeCallbacks_.shift();
+    callback();
+  }
+
+  delete this.disposeCallbacks_;
   delete this.log_;
   delete this.session_;
   delete this.ready_;
@@ -184,6 +202,20 @@ safaridriver.extension.Server.prototype.disposeInternal = function() {
 /** @return {!safaridriver.extension.Session} The session for this server. */
 safaridriver.extension.Server.prototype.getSession = function() {
   return this.session_;
+};
+
+
+/**
+ * Registers a callback to be called when this server is disposed. If the server
+ * has already been disposed, the callback will be invoked immediately.
+ * @param {function()} fn The callback function.
+ */
+safaridriver.extension.Server.prototype.onDispose = function(fn) {
+  if (this.isDisposed()) {
+    fn();
+  } else {
+    this.disposeCallbacks_.push(fn);
+  }
 };
 
 

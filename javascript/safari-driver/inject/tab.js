@@ -34,8 +34,10 @@ goog.require('safaridriver.inject.message.Activate');
 goog.require('safaridriver.inject.message.ActivateFrame');
 goog.require('safaridriver.inject.message.ReactivateFrame');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');
+goog.require('safaridriver.message.Message');
 goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.PendingFrame');
 goog.require('safaridriver.message.Response');
@@ -167,8 +169,11 @@ safaridriver.inject.Tab.prototype.init = function() {
       'Loaded injected script for: ' + window.location.href +
           ' (is ' + (this.isActive_ ? '' : 'not ') + 'active)');
 
+  this.pageScript_.installPageScript();
+
   var tab = this;
   tab.on(safaridriver.inject.message.Activate.TYPE, tab.onActivate_, tab).
+      on(safaridriver.message.Alert.TYPE, tab.onAlert_, tab).
       on(safaridriver.message.Load.TYPE, tab.onLoad_, tab).
       on(safaridriver.inject.message.ReactivateFrame.TYPE,
           tab.onReactivateFrame_, tab);
@@ -218,6 +223,37 @@ safaridriver.inject.Tab.prototype.init = function() {
       message.sendSync(safari.self.tab);
     }
   }, true);
+};
+
+
+/**
+ * @param {!safaridriver.message.Alert} message The alert message.
+ * @param {!MessageEvent} e The original message event.
+ * @private
+ */
+safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
+  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
+    return;
+  }
+  // TODO: Fully support alerts. See
+  // http://code.google.com/p/selenium/issues/detail?id=3862
+  var unexpectedAlert = message.sendSync(safari.self.tab);
+  if (!unexpectedAlert) {
+    safaridriver.message.Message.setSynchronousMessageResponse('1');
+  }
+
+  // Abort any pending commands and point users towards the bug for proper
+  // alert handling.
+  goog.object.forEach(this.pendingCommands_, function(cmd) {
+    var error = new bot.Error(bot.ErrorCode.MODAL_DIALOG_OPENED,
+        'An alert was opened while the command was executing; the ' +
+            'SafariDriver does not provide 1st class support for alert ' +
+            'handling. To avoid hanging your test, the alert has been ' +
+            'dismissed. For more information, see ' +
+            'http://code.google.com/p/selenium/issues/detail?id=3862');
+    var response = bot.response.createErrorResponse(error);
+    this.sendResponse_(cmd, response);
+  }, this);
 };
 
 

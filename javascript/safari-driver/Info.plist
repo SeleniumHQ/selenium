@@ -25,7 +25,7 @@
 	<dict>
 		<key>Scripts</key>
 		<dict>
-			<key>End</key>
+			<key>Start</key>
 			<array>
 				<string>injected.js</string>
 			</array>

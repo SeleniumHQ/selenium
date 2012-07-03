@@ -2,6 +2,7 @@ js_library(name = "common_lib",
   srcs = [
     "command.js",
     "console.js",
+    "message/alert.js",
     "message/command.js",
     "message/load.js",
     "message/message.js",

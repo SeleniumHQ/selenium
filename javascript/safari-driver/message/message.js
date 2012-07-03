@@ -247,6 +247,28 @@ safaridriver.message.Message.prototype.send = function(target) {
 
 
 /**
+ * Attribute on the documentElement containing the response to a synchronous
+ * message sent to a window object.
+ * @type {string}
+ * @const
+ * @private
+ */
+safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_ =
+    'safaridriver.message.syncResponse';
+
+
+/**
+ * @param {string} response The response value.
+ */
+safaridriver.message.Message.setSynchronousMessageResponse = function(
+    response) {
+  document.documentElement.setAttribute(
+      safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_,
+      response);
+};
+
+
+/**
  * Sends this message synchronously to the proved tab proxy or window.
  * @param {!(SafariContentBrowserTabProxy|Window)} target The proxy to send
  *     this message to.
@@ -255,11 +277,21 @@ safaridriver.message.Message.prototype.send = function(target) {
  */
 safaridriver.message.Message.prototype.sendSync = function(target) {
   if (target.postMessage) {
+    goog.asserts.assert(target === window,
+        'Synchrnous messages may only be sent to a window when that ' +
+            'window is the same as the current context');
+
     var messageEvent = document.createEvent('MessageEvent');
     messageEvent.initMessageEvent('message', false, false, this.data_,
         // origin is a non-standard property on location.
         window.location['origin'], '0', window, null);
     target.dispatchEvent(messageEvent);
+
+    var response = document.documentElement.getAttribute(
+        safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_);
+    document.documentElement.removeAttribute(
+        safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_);
+    return response;
   } else {
     // Create a beforeload event, which is required by the canLoad function.
     var stubEvent = document.createEvent('Events');
