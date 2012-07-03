@@ -161,13 +161,15 @@ module Selenium
         ensure
           Socket.do_not_reverse_lookup = orig
         end
+      rescue Errno::ENETUNREACH
+        # no external ip
       end
 
       def interfaces
         interfaces = Socket.getaddrinfo("localhost", 8080).map { |e| e[3] }
         interfaces += ["0.0.0.0", Platform.ip]
 
-        interfaces.uniq
+        interfaces.compact.uniq
       end
 
     end # Platform
