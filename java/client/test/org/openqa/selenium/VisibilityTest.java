@@ -161,4 +161,25 @@ public class VisibilityTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("suggest"));
     assertTrue(element.isDisplayed());
   }
+
+  @Test
+  @Ignore
+  public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
+    WebDriver.Window window = driver.manage().window();
+    Dimension originalSize = window.getSize();
+
+    try {
+      // Short in the Y dimension
+      window.setSize(new Dimension(1024, 500));
+
+      String url = appServer.whereIs("overflow-body.html");
+      driver.get(url);
+
+      WebElement element = driver.findElement(By.name("resultsFrame"));
+      assertTrue(element.isDisplayed());
+    } finally {
+      window.setSize(originalSize);
+    }
+  }
+
 }
