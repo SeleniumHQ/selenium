@@ -465,7 +465,9 @@ an interactions operation are invalid.'),
       ErrorCode(31, 'IMEEngineActivationFailed', 'An IME engine could not be \
 started.'),
       ErrorCode(32, 'InvalidSelector', 'Argument was an invalid selector \
-(e.g. XPath/CSS).')
+(e.g. XPath/CSS).'),
+      ErrorCode(33, 'SessionNotCreatedException', 'A new session could not be created.'),
+      ErrorCode(34, 'MoveTargetOutOfBounds', 'Target provided for a move action is out of bounds.')
   ]
 
   error_checker = ErrorCodeChecker() \
