@@ -632,6 +632,37 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
 
 
 /**
+ * Would a user see scroll bars on the BODY element? In the case where the BODY
+ * has "overflow: hidden", and HTML has "overflow: auto" or "overflow: scroll"
+ * set, there's a scroll bar, so it's as if the BODY has "overflow: auto" set.
+ * In all other cases where BODY has "overflow: hidden", there are no
+ * scrollbars. http://www.w3.org/TR/CSS21/visufx.html#overflow
+ *
+ * @param {!Element} bodyElement The element, which must be a BODY element.
+ * @return {boolean} Whether scrollbars would be visible to a user.
+ * @private
+ */
+bot.dom.isBodyScrollBarShown_ = function(bodyElement) {
+  if (!bot.dom.isElement(bodyElement, goog.dom.TagName.BODY)) {
+    // bail
+  }
+
+  var bodyOverflow = bot.dom.getEffectiveStyle(bodyElement, 'overflow');
+  if (bodyOverflow != 'hidden') {
+    return true;
+  }
+
+  var html = bot.dom.getParentElement(bodyElement);
+  if (!html || !bot.dom.isElement(html, goog.dom.TagName.HTML)) {
+    return true; // Seems like a reasonable default.
+  }
+
+  var viewportOverflow = bot.dom.getEffectiveStyle(html, 'overflow');
+  return viewportOverflow == 'auto' || viewportOverflow == 'scroll';
+};
+
+
+/**
  * @param {!Element} element The element to use.
  * @return {!goog.math.Size} The dimensions of the element.
  */
@@ -654,7 +685,7 @@ bot.dom.getElementSize = function(element) {
   if (bot.dom.isElement(element, goog.dom.TagName.BODY)) {
     var doc = goog.dom.getOwnerDocument(element);
     var win = goog.dom.getWindow(doc) || undefined;
-    if (bot.dom.getEffectiveStyle(element, 'overflow') == 'hidden') {
+    if (!bot.dom.isBodyScrollBarShown_(element)) {
       return goog.dom.getViewportSize(win);
     }
     return bot.window.getInteractableSize(win);
@@ -785,6 +816,16 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // size of the parent
   function isOverflowHiding(e) {
     var parent = goog.style.getOffsetParent(e);
+    var parentNode = goog.userAgent.GECKO ? bot.dom.getParentElement(e) : parent;
+
+    // Gecko will skip the BODY tag when calling getOffsetParent. However, the
+    // combination of the overflow values on the BODY _and_ HTML tags determine
+    // whether scroll bars are shown, so we need to guarantee that both values
+    // are checked.
+    if (goog.userAgent.GECKO && bot.dom.isElement(parentNode, goog.dom.TagName.BODY)) {
+      parent = parentNode;
+    }
+
     if (parent && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden') {
       var sizeOfParent = bot.dom.getElementSize(parent);
       var locOfParent = goog.style.getClientPosition(parent);
@@ -800,11 +841,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return true;
   }
 
-  if (!isOverflowHiding(elem)) {
-    return false;
-  }
-
-  return true;
+  return isOverflowHiding(elem);
 };
 
 

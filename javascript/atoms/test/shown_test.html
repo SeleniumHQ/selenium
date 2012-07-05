@@ -328,6 +328,27 @@
       var shown = isShown(target);
       assertTrue(shown);
     }
+
+    function testElementsAreVisibleWhenBodyIsOverflowHiddenButHtmlMayNotBe() {
+      var iframe = findElement({id: 'body-overflow'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var html = findElement({tagName: 'html'}, iframeDoc);
+      var alwaysSeen = findElement({id: 'always_seen'}, iframeDoc);
+      var sometimesSeen = findElement({id: 'sometimes_seen'}, iframeDoc);
+
+      var possibilities = [
+        ['auto', true],
+        ['scroll', true],
+        ['', false],
+        ['visible', false]
+      ];
+
+      goog.array.forEach(possibilities, function(possibility) {
+          html.style.overflow = possibility[0];
+          assertTrue(isShown(alwaysSeen));
+          assertEquals(possibility[1], isShown(sometimesSeen));
+      });
+    }
   </script>
 
   <style type="text/css">
@@ -462,5 +483,11 @@
     <div id="iHaveAbsolutePosition" style="display:block">I am over here</div>
   </div>
 </div>
+
+<div>
+<!-- This iframe is deliberately diminutive -->
+<iframe src="overflow_hidden.html" id="body-overflow" width="75%" height="100px"></iframe>
+</div>
+
 </body>
 </html>
