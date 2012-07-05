@@ -361,7 +361,24 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
   }
 
   std::wstring type_string = type;
-  return type_string == mime_type_name;
+
+  if (type_string == mime_type_name) {
+	  return true;
+  }
+
+  // If the user set Firefox as a default browser at any point, the MIME type
+  // appears to be "sticky". This isn't elegant, but it appears to alleviate
+  // the worst symptoms. Tested by using both Safari and Opera as the default
+  // browser, even after setting IE as the default after Firefox (so the chain
+  // of defaults looks like (IE -> Firefox -> IE -> Opera)
+
+  if (L"Firefox HTML Document" == mime_type_name) {
+	  LOG(INFO) << "It looks like Firefox was once the default browser. " 
+		  << "Guessing the page type from mime type alone";
+	  return true;
+  }
+
+  return false;
 }
 
 HWND DocumentHost::FindContentWindowHandle(HWND top_level_window_handle) {
