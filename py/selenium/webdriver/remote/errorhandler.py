@@ -115,7 +115,7 @@ class ErrorHandler(object):
         elif status == ErrorCode.IME_NOT_AVAILABLE:
             exception_class = ImeNotAvailableException
         elif status == ErrorCode.IME_ENGINE_ACTIVATION_FAILED:
-            exception_class = ErrorCode.ImeActivationFailedException
+            exception_class = ImeActivationFailedException
         else:
             exception_class = WebDriverException
         value = response['value']

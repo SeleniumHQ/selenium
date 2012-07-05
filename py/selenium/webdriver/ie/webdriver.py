@@ -25,14 +25,24 @@ from service import Service
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
+DEFAULT_HOST = None
+DEFAULT_LOG_LEVEL = None
+DEFAULT_LOG_FILE = None
 
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='IEDriverServer.exe', 
-                    port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT):
+                 port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
+                 log_level=DEFAULT_LOG_LEVEL, log_file=DEFAULT_LOG_FILE):
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
+        self.host = host
+        self.log_level = log_level
+        self.log_file = log_file
+
+        self.iedriver = Service(executable_path, port=self.port,
+             host=self.host, log_level=self.log_level, log_file=self.log_file)
 
         self.iedriver = Service(executable_path, port=self.port)
         self.iedriver.start()

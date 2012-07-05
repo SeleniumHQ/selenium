@@ -227,8 +227,6 @@ class RemoteConnection(object):
             Command.EXECUTE_ASYNC_SCRIPT: ('POST','/session/$sessionId/execute_async'),
             Command.SET_SCRIPT_TIMEOUT:
                 ('POST', '/session/$sessionId/timeouts/async_script'),
-            Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
-                ('GET', '/session/$sessionId/element/$id/css/$propertyName'),
             Command.SET_TIMEOUTS:
                 ('POST', '/session/$sessionId/timeouts'),
             Command.DISMISS_ALERT:

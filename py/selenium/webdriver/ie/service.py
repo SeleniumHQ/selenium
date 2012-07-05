@@ -27,18 +27,26 @@ class Service(object):
     Object that manages the starting and stopping of the IEDriver
     """
 
-    def __init__(self, executable_path, port=0):
+    def __init__(self, executable_path, port=0, host=None, log_level=None, log_file=None):
         """
         Creates a new instance of the Service
         
         :Args:
          - executable_path : Path to the IEDriver
-         - port : Port the service is running on """
+         - port : Port the service is running on
+         - host : IP address the service port is bound
+         - log_level : Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE".
+           Default is "FATAL".
+         - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
+           Default is "stdout"."""
 
         self.port = port
         self.path = executable_path
         if self.port == 0:
             self.port = utils.free_port()
+        self.host = host
+        self.log_level = log_level
+        self.log_file = log_file
 
     def start(self):
         """
@@ -49,7 +57,14 @@ class Service(object):
            or when it can't connect to the service
         """
         try:
-            self.process = subprocess.Popen([self.path, "--port=%d" % self.port],
+            cmd = [self.path, "--port=%d" % self.port]
+            if self.host is not None:
+                cmd.append("--host=%s" % self.host)
+            if self.host is not None:
+                cmd.append("--log-level=%s" % self.log_level)
+            if self.host is not None:
+                cmd.append("--log-file=%s" % self.log_file)
+            self.process = subprocess.Popen(cmd,
                     stdout=PIPE, stderr=PIPE)
         except:
             raise WebDriverException(

@@ -37,7 +37,6 @@ class FirefoxProfile(object):
     DEFAULT_PREFERENCES = {
         "app.update.auto": "false",
         "app.update.enabled": "false",
-        "browser.startup.page" : "0",
         "browser.download.manager.showWhenStarting": "false",
         "browser.EULA.override": "true",
         "browser.EULA.3.accepted": "true",
@@ -67,7 +66,6 @@ class FirefoxProfile(object):
         "security.fileuri.origin_policy": "3",
         "security.fileuri.strict_origin_policy": "false",
         "security.warn_entering_secure": "false",
-        "security.warn_submit_insecure": "false",
         "security.warn_entering_secure.show_once": "false",
         "security.warn_entering_weak": "false",
         "security.warn_entering_weak.show_once": "false",
