@@ -104,18 +104,16 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   private static FirefoxProfile extractProfile(Capabilities capabilities) {
     FirefoxProfile profile = null;
 
-    if (capabilities == null || capabilities.getCapability(PROFILE) == null) {
-      return profile;
-    }
-
-    Object raw = capabilities.getCapability(PROFILE);
-    if (raw instanceof FirefoxProfile) {
-      profile = (FirefoxProfile) raw;
-    } else if (raw instanceof String) {
-      try {
-        profile = FirefoxProfile.fromJson((String) raw);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
+    if (capabilities != null && capabilities.getCapability(PROFILE) != null) {
+      Object raw = capabilities.getCapability(PROFILE);
+      if (raw instanceof FirefoxProfile) {
+        profile = (FirefoxProfile) raw;
+      } else if (raw instanceof String) {
+        try {
+          profile = FirefoxProfile.fromJson((String) raw);
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
       }
     }
 
