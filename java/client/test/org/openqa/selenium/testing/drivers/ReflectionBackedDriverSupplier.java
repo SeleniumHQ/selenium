@@ -1,6 +1,6 @@
 /*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
@@ -67,6 +68,8 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       }
 
       return driverClass.getConstructor(Capabilities.class).newInstance(toUse);
+    } catch (InvocationTargetException e) {
+      throw Throwables.propagate(e.getTargetException());
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }

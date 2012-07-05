@@ -1,6 +1,6 @@
 /*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     } catch (NoSuchMethodException e) {
       throw Throwables.propagate(e);
     } catch (InvocationTargetException e) {
-      throw Throwables.propagate(e);
+      throw Throwables.propagate(e.getTargetException());
     }
   }
 }
