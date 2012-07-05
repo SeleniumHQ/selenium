@@ -104,16 +104,18 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   private static FirefoxProfile extractProfile(Capabilities capabilities) {
     FirefoxProfile profile = null;
 
-    if (capabilities.getCapability(PROFILE) != null) {
-      Object raw = capabilities.getCapability(PROFILE);
-      if (raw instanceof FirefoxProfile) {
-        profile = (FirefoxProfile) raw;
-      } else if (raw instanceof String) {
-        try {
-          profile = FirefoxProfile.fromJson((String) raw);
-        } catch (IOException e) {
-          throw new WebDriverException(e);
-        }
+    if (capabilities == null || capabilities.getCapability(PROFILE) == null) {
+      return profile;
+    }
+
+    Object raw = capabilities.getCapability(PROFILE);
+    if (raw instanceof FirefoxProfile) {
+      profile = (FirefoxProfile) raw;
+    } else if (raw instanceof String) {
+      try {
+        profile = FirefoxProfile.fromJson((String) raw);
+      } catch (IOException e) {
+        throw new WebDriverException(e);
       }
     }
 
@@ -140,7 +142,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   }
 
   private static FirefoxBinary getBinary(Capabilities capabilities) {
-    if (capabilities.getCapability(BINARY) != null) {
+    if (capabilities != null && capabilities.getCapability(BINARY) != null) {
       Object raw = capabilities.getCapability(BINARY);
       if (raw instanceof FirefoxBinary) {
         return (FirefoxBinary) raw;
@@ -268,6 +270,9 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
    * launcher.
    */
   private static Capabilities dropCapabilities(Capabilities capabilities, String... keysToRemove) {
+    if (capabilities == null) {
+      return new DesiredCapabilities();
+    }
     final Set<String> toRemove = Sets.newHashSet(keysToRemove);
     DesiredCapabilities caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
       public boolean apply(String key) {

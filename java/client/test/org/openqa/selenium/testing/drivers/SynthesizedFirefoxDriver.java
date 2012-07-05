@@ -52,6 +52,9 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   }
 
   private static Capabilities tweakCapabilities(Capabilities caps) {
+    if (caps == null) {
+      return null;
+    }
     DesiredCapabilities tweaked = new DesiredCapabilities(caps.asMap());
     if (tweaked.getCapability(PROFILE) == null) {
       tweaked.setCapability(PROFILE, createTemporaryProfile());

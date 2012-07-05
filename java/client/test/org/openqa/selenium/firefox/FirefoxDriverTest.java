@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
@@ -599,6 +600,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
         ((JavascriptExecutor) driver).executeScript("return typeof Sizzle == 'undefined';"));
   }
 
+  @Test
+  @NeedsLocalEnvironment
+  public void constructorArgsAreNullable() {
+    new SynthesizedFirefoxDriver((Capabilities)null).quit();
+  }
   /**
    * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
    */
