@@ -44,7 +44,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   public WebDriver get() {
     Capabilities caps = BrowserToCapabilities.of(browser);
-    caps = new DesiredCapabilities(capabilities, caps);
+    caps = new DesiredCapabilities(caps, capabilities);
 
     List<Supplier<WebDriver>> suppliers = getSuppliers(caps);
 
