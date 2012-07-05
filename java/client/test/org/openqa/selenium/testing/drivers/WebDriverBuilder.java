@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
-  private Capabilities capabilities;
+  private Capabilities additionalCapabilities;
   private final Browser browser;
 
   public WebDriverBuilder() {
@@ -43,10 +43,11 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   }
 
   public WebDriver get() {
-    Capabilities caps = BrowserToCapabilities.of(browser);
-    caps = new DesiredCapabilities(caps, capabilities);
+    Capabilities standardCapabilities = BrowserToCapabilities.of(browser);
+    Capabilities desiredCapabilities =
+        new DesiredCapabilities(standardCapabilities, additionalCapabilities);
 
-    List<Supplier<WebDriver>> suppliers = getSuppliers(caps);
+    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCapabilities);
 
     for (Supplier<WebDriver> supplier : suppliers) {
       WebDriver driver = supplier.get();
@@ -56,11 +57,11 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       }
     }
 
-    throw new RuntimeException("Cannot instantiate driver instance: " + caps);
+    throw new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities);
   }
 
   private void modifyLogLevel(WebDriver driver) {
-    Class[] args = {Level.class};
+    Class<?>[] args = {Level.class};
     Method setLogLevel;
     try {
       setLogLevel = driver.getClass().getMethod("setLogLevel", args);
@@ -88,8 +89,8 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     return suppliers;
   }
 
-  public WebDriverBuilder setCapabilities(Capabilities capabilities) {
-    this.capabilities = capabilities;
+  public WebDriverBuilder setCapabilities(Capabilities additionalCapabilities) {
+    this.additionalCapabilities = additionalCapabilities;
 
     return this;
   }
