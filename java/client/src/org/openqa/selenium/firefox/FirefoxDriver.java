@@ -270,7 +270,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   private static Capabilities dropCapabilities(Capabilities capabilities, String... keysToRemove) {
     final Set<String> toRemove = Sets.newHashSet(keysToRemove);
     DesiredCapabilities caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
-      @Override
       public boolean apply(String key) {
         return !toRemove.contains(key);
       }
@@ -330,7 +329,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
       return connection.execute(command);
     }
 
-    @Override
     public void setLocalLogs(LocalLogs logs) {
       this.logs = logs;
       if (connection != null) {
