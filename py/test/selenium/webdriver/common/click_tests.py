@@ -14,6 +14,10 @@ class ClickTest(unittest.TestCase):
         self.driver.find_element(By.ID, "overflowLink").click(); 
         self.assertEqual(self.driver.title, "XHTML Test Page")
 
+    def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(self):
+        self.driver.find_element(By.LINK_TEXT, "333333").click(); 
+        self.assertEqual(self.driver.title, "XHTML Test Page")
+
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
 
