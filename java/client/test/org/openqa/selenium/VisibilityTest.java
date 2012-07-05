@@ -167,7 +167,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IPHONE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     WebDriver.Window window = driver.manage().window();
     Dimension originalSize = window.getSize();
