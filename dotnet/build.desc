@@ -6,7 +6,7 @@ dotnet_library(name = "dotnet",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
-    "third_party/csharp/json-net-4.5r1/net35/Newtonsoft.Json.dll",
+    "third_party/csharp/json-net-4.5r7/net35/Newtonsoft.Json.dll",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
@@ -26,7 +26,7 @@ dotnet_library(name = "dotnet4",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
-    "third_party/csharp/json-net-4.5r1/net/Newtonsoft.Json.dll",
+    "third_party/csharp/json-net-4.5r7/net40/Newtonsoft.Json.dll",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
   ],
   resources = [
@@ -50,7 +50,7 @@ dotnet_package(name = "dotnet-package",
   description = "Selenium is a set of different software tools each with a different approach to supporting browser automation. These tools are highly flexible, allowing many options for locating and manipulating elements within a browser, and one of its key features is the support for automating multiple browser platforms. This package contains the .NET bindings for the newer, more concise and object-based Selenium WebDriver API, which uses native OS-level events to manipulate the browser, bypassing the JavaScript sandbox, and does not require the Selenium Server to automate the browser.",
   tags = "Selenium WebDriver browser automation",
   packagedeps = [
-    {"Newtonsoft.Json" : "4.5.1"},
+    {"Newtonsoft.Json" : "4.5"},
     {"DotNetZip" : "1.9.1.8"}
   ],
   assemblies = [

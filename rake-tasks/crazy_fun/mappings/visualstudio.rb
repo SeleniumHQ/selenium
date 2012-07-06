@@ -409,11 +409,7 @@ module CrazyFunDotNet
             if Rake::Task.task_defined? package_dependency_task
               package_id = Rake::Task[package_dependency_task].out
             else
-              # For package dependencies, specify the *exact* version of
-              # the dependency, since we're tightly bound because we use
-              # csc.exe to build instead of loose versioning via Visual
-              # Studio.
-              package_version = "[#{dep.fetch(package_id)}]"
+              package_version = "#{dep.fetch(package_id)}"
             end
             nuspec_task.dependency package_id, package_version
           end
