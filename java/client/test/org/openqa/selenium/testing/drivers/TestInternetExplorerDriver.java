@@ -18,23 +18,52 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerDriverLogLevel;
+import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import com.google.common.base.Throwables;
+
 public class TestInternetExplorerDriver extends InternetExplorerDriver {
+
+  private static InternetExplorerDriverService service;
 
   public TestInternetExplorerDriver() {
     this(buildDesiredCapabilities());
   }
 
   public TestInternetExplorerDriver(Capabilities extraCapabilities) {
-    super(buildDesiredCapabilities().merge(extraCapabilities));
+    super(getService(), buildDesiredCapabilities().merge(extraCapabilities));
   }
 
   private static DesiredCapabilities buildDesiredCapabilities() {
     DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
     caps.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
     return caps;
+  }
+
+  private static InternetExplorerDriverService getService() {
+    if (service == null && !SauceDriver.shouldUseSauce()) {
+      service = new InternetExplorerDriverService.Builder().usingAnyFreePort()
+          .withLogFile(new File("iedriver.log")).withLogLevel(InternetExplorerDriverLogLevel.DEBUG).build();
+      try {
+        service.start();
+      } catch (IOException e) {
+        throw Throwables.propagate(e);
+      }
+
+      Runtime.getRuntime().addShutdownHook(new Thread() {
+        @Override
+        public void run() {
+          service.stop();
+        }
+      });
+    }
+    return service;
   }
 }
