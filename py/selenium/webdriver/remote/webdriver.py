@@ -21,6 +21,7 @@ from webelement import WebElement
 from remote_connection import RemoteConnection
 from errorhandler import ErrorHandler
 from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 
@@ -663,6 +664,9 @@ class WebDriver(object):
         :Usage:
             Use the corresponding find_element_by_* instead of this.
         """
+        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+            raise InvalidSelectorException("Invalid locator values passed in")
+            
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
 
@@ -673,6 +677,9 @@ class WebDriver(object):
         :Usage:
             Use the corresponding find_elements_by_* instead of this.
         """
+        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+            raise InvalidSelectorException("Invalid locator values passed in")
+
         return self.execute(Command.FIND_ELEMENTS,
                              {'using': by, 'value': value})['value']
     @property

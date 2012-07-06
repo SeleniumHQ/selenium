@@ -16,14 +16,9 @@
 # limitations under the License.
 
 
-import os
-import re
-import tempfile
-import time
-import shutil
 import unittest
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import InvalidSelectorException
 
 
 class DriverElementFindingTests(unittest.TestCase):
@@ -115,6 +110,22 @@ class DriverElementFindingTests(unittest.TestCase):
         self.assertEqual(1, len(elements))
         self.assertEqual("frame", elements[0].tag_name.lower())
         self.assertEqual("sixth", elements[0].get_attribute("id"))
+
+    def testShouldThrowAnErrorIfUserPassesInInteger(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_element(By.ID, 333333) 
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInTuple(self):
+        self._loadSimplePage()
+        try:
+           self.driver.find_element((By.ID, 333333)) 
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
