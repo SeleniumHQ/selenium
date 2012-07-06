@@ -118,8 +118,6 @@ task :iphone => [:iphone_server, :iphone_client]
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
 
-task :test_single => "//java/client/test/org/openqa/selenium:single:run"
-
 task :ide => [ "//ide:selenium-ide-multi" ]
 task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
 task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
