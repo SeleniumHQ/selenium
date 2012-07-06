@@ -17,7 +17,7 @@ from selenium.common.exceptions import ElementNotSelectableException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import InvalidCookieDomainException
 from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import InvalidSelectiorException
+from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import ImeNotAvailableException
 from selenium.common.exceptions import ImeActivationFailedException
 from selenium.common.exceptions import NoSuchElementException
@@ -97,7 +97,7 @@ class ErrorHandler(object):
         elif status == ErrorCode.INVALID_SELECTOR \
                 or status == ErrorCode.INVALID_XPATH_SELECTOR \
                 or status == ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:
-            exception_class = InvalidSelectiorException
+            exception_class = InvalidSelectorException
         elif status == ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
         elif status == ErrorCode.INVALID_COOKIE_DOMAIN:

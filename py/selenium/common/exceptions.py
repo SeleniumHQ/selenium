@@ -97,7 +97,7 @@ class UnexpectedTagNameException(WebDriverException):
     """Thrown when a support class did not get an expected web element"""
     pass
 
-class InvalidSelectiorException(NoSuchElementException):
+class InvalidSelectorException(NoSuchElementException):
     """ Thrown when the selector which is used to find an element does not return
     a WebElement. Currently this only happens when the selector is an xpath
     expression is used which is either syntactically invalid (i.e. it is not a
