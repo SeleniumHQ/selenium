@@ -60,9 +60,9 @@ class Service(object):
             cmd = [self.path, "--port=%d" % self.port]
             if self.host is not None:
                 cmd.append("--host=%s" % self.host)
-            if self.host is not None:
+            if self.log_level is not None:
                 cmd.append("--log-level=%s" % self.log_level)
-            if self.host is not None:
+            if self.log_file is not None:
                 cmd.append("--log-file=%s" % self.log_file)
             self.process = subprocess.Popen(cmd,
                     stdout=PIPE, stderr=PIPE)
