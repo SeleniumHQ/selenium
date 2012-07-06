@@ -33,7 +33,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path="chromedriver", port=0,
-                 desired_capabilities=None, chrome_options=None):
+                 chrome_options=None):
         """
         Creates a new instance of the chrome driver.
 
@@ -51,11 +51,7 @@ class WebDriver(RemoteWebDriver):
         else:
             options = chrome_options
 
-        if desired_capabilities is not None:
-            warnings.warn("Desired Capabilities has been deprecated, please user chrome_options.", DeprecationWarning)
-            desired_capabilities.update(options.to_capabilities())
-        else:
-            desired_capabilities = options.to_capabilities()
+        desired_capabilities = options.to_capabilities()
 
         self.service = Service(executable_path, port=port)
         self.service.start()

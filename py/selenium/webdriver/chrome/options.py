@@ -103,13 +103,5 @@ class Options(object):
         chrome_options["args"] = self.arguments
         
         chrome["chromeOptions"] = chrome_options
-        
-        #TODO (DavidB) Remove when we have fully deprecated desired capabilies
-        #               in favour of ChromeOptions
-
-        if not self.binary_location == '':
-            chrome["chrome.binary"] = self.binary_location
-
-        chrome["chrome.switches"] = self.arguments
 
         return chrome
