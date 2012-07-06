@@ -373,9 +373,9 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
   // of defaults looks like (IE -> Firefox -> IE -> Opera)
 
   if (L"Firefox HTML Document" == mime_type_name) {
-	  LOG(INFO) << "It looks like Firefox was once the default browser. " 
-		  << "Guessing the page type from mime type alone";
-	  return true;
+    LOG(INFO) << "It looks like Firefox was once the default browser. " 
+      << "Guessing the page type from mime type alone";
+    return true;
   }
 
   return false;

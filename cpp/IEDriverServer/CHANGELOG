@@ -9,7 +9,7 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
-v2.24.1.0
+v2.24.2.0
 =========
  * Refactoring command line argument handling in IEDriverServer.exe, now that
    the number of valid arguments is growing.
