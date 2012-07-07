@@ -105,7 +105,9 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
   // we're asked to load such a URL.
   var uri = new goog.Uri(url);
   if (uri.getScheme() === 'file') {
-    throw Error('Unsupported URL protocol: ' + url);
+    throw Error('Unsupported URL protocol: ' + url +
+        '; for more information, see ' +
+        'http://code.google.com/p/selenium/issues/detail?id=3773');
   }
 
   var response = new webdriver.promise.Deferred();
