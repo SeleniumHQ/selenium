@@ -157,6 +157,7 @@ goog.scope(function() {
   map[CommandName.SET_WINDOW_POSITION] = commands.sendWindowCommand;
   map[CommandName.GET_WINDOW_SIZE] = commands.sendWindowCommand;
   map[CommandName.GET_WINDOW_POSITION] = commands.sendWindowCommand;
+  map[CommandName.MAXIMIZE_WINDOW] = commands.sendWindowCommand;
 
   map[CommandName.EXECUTE_SCRIPT] = commands.sendCommand;
   map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeAsyncScript;

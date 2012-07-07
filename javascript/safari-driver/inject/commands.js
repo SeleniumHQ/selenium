@@ -273,7 +273,9 @@ safaridriver.inject.commands.sendKeysToElement =
     safaridriver.inject.commands.elementCommand_(
         webdriver.atoms.element.type, 'value');
 
-safaridriver.inject.commands.getWindowPosition = bot.window.getPosition;
+safaridriver.inject.commands.getWindowPosition = function() {
+  return bot.window.getPosition();
+};
 
 safaridriver.inject.commands.setWindowPosition = function(command) {
   var position = new goog.math.Coordinate(
@@ -281,12 +283,20 @@ safaridriver.inject.commands.setWindowPosition = function(command) {
   bot.window.setPosition(position);
 };
 
-safaridriver.inject.commands.getWindowSize = bot.window.getSize;
+safaridriver.inject.commands.getWindowSize = function() {
+  return bot.window.getSize();
+};
 
 safaridriver.inject.commands.setWindowSize = function(command) {
   var size = new goog.math.Size(
       command.getParameter('width'), command.getParameter('height'));
   bot.window.setSize(size);
+};
+
+
+safaridriver.inject.commands.maximizeWindow = function() {
+  window.moveTo(0, 0);
+  window.resizeTo(window.screen.width, window.screen.height);
 };
 
 

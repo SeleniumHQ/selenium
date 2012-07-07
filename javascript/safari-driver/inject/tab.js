@@ -577,6 +577,11 @@ goog.scope(function() {
   // The extension handles window switches. It sends the command to this
   // injected script only as a means of retrieving the window name.
   topMap[CommandName.SWITCH_TO_WINDOW] = commands.getWindowName;
+  topMap[CommandName.GET_WINDOW_POSITION] = commands.getWindowPosition;
+  topMap[CommandName.GET_WINDOW_SIZE] = commands.getWindowSize;
+  topMap[CommandName.SET_WINDOW_POSITION] = commands.setWindowPosition;
+  topMap[CommandName.SET_WINDOW_SIZE] = commands.setWindowSize;
+  topMap[CommandName.MAXIMIZE_WINDOW] = commands.maximizeWindow;
 
   map[CommandName.GET_CURRENT_URL] = commands.getCurrentUrl;
   map[CommandName.GET_PAGE_SOURCE] = commands.getPageSource;
@@ -607,11 +612,6 @@ goog.scope(function() {
   map[CommandName.ELEMENT_EQUALS] = commands.elementEquals;
   map[CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY] = commands.getCssValue;
   map[CommandName.SEND_KEYS_TO_ELEMENT] = commands.sendKeysToElement;
-
-  map[CommandName.GET_WINDOW_POSITION] = commands.getWindowPosition;
-  map[CommandName.GET_WINDOW_SIZE] = commands.getWindowSize;
-  map[CommandName.SET_WINDOW_POSITION] = commands.setWindowPosition;
-  map[CommandName.SET_WINDOW_SIZE] = commands.setWindowSize;
 
   map[CommandName.EXECUTE_SCRIPT] = commands.executeScript;
   map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeScript;
