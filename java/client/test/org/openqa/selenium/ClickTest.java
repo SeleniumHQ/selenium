@@ -35,6 +35,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
@@ -172,7 +173,8 @@ public class ClickTest extends JUnit4TestBase {
   
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE}, reason = "Doesn't support multiple windows")
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, SELENESE},
+      reason = "Doesn't support multiple windows; Safari: issue 3693")
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);

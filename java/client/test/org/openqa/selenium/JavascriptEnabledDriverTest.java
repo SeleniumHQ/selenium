@@ -43,6 +43,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 /**
@@ -285,7 +286,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore({IE, SELENESE, IPHONE, OPERA})
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, SAFARI}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test
