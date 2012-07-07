@@ -214,11 +214,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     cleanUp();
 
     self.log('Received response: ' + message);
-    try {
-      response.resolve(bot.response.checkResponse(message.getResponse()));
-    } catch (ex) {
-      response.reject(ex);
-    }
+    response.resolve(message.getResponse());
   }
 
   // If an unload event is received before a command response, it indicates

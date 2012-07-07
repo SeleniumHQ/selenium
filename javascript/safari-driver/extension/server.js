@@ -22,6 +22,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('safaridriver.Command');
+goog.require('safaridriver.alert');
 goog.require('safaridriver.extension.commands');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Response');
@@ -74,10 +75,16 @@ goog.inherits(safaridriver.extension.Server, goog.Disposable);
 
 
 /**
+ * @typedef {(function(!safaridriver.extension.Session, !safaridriver.Command)|
+ *            function(!safaridriver.extension.Session))}
+ */
+safaridriver.extension.Server.CommandHandler;
+
+
+/**
  * Maps command names to their handler functions.
- * @type {!Object.<(function(!safaridriver.extension.Session,
- *                           !safaridriver.Command)|
- *                  function(!safaridriver.extension.Session))>}
+ * @type {!Object.<webdriver.CommandName,
+ *                 safaridriver.extension.Server.CommandHandler>}
  * @const
  * @private
  */
@@ -279,12 +286,14 @@ safaridriver.extension.Server.prototype.execute = function(command,
 
   this.logMessage_('Scheduling command: ' + command.getName());
   var description = this.session_.getId() + '::' + command.getName();
+  var fn = goog.bind(this.executeCommand_, this, command, handler);
   var result = webdriver.promise.Application.getInstance().
-      schedule(description, goog.bind(function() {
-        this.logMessage_('Executing command: ' + command.getName());
-        return handler(this.session_, command);
-      }, this)).
-      then(bot.response.createResponse, bot.response.createErrorResponse);
+      schedule(description, fn).
+      then(bot.response.createResponse, bot.response.createErrorResponse).
+      addBoth(function(response) {
+        this.session_.setCurrentCommand(null);
+        return response;
+      }, this);
 
   // If we were given a callback, massage the result to fit the
   // webdriver.CommandExecutor contract.
@@ -294,6 +303,28 @@ safaridriver.extension.Server.prototype.execute = function(command,
   }
 
   return result;
+};
+
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @param {safaridriver.extension.Server.CommandHandler} handler The command
+ *     handler.
+ * @return {*} The command result.
+ * @private
+ */
+safaridriver.extension.Server.prototype.executeCommand_ = function(command,
+    handler) {
+  this.logMessage_('Executing command: ' + command.getName());
+
+  var alertText = this.session_.getUnhandledAlertText();
+  if (!goog.isNull(alertText)) {
+    this.session_.setUnhandledAlertText(null);
+    return safaridriver.alert.createResponse(alertText);
+  }
+
+  this.session_.setCurrentCommand(command);
+  return handler(this.session_, command);
 };
 
 

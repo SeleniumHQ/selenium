@@ -20,11 +20,13 @@ package org.openqa.selenium.safari;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
@@ -78,5 +80,17 @@ public class BasicSafariDriverTests extends SafariTestBase {
     driver.switchTo().defaultContent();
 
     assertEquals("", text);
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateASingleElementThatDoesNotExist() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElement(By.id("nonExistantButton"));
+      fail("Should not have succeeded");
+    } catch (NoSuchElementException e) {
+      // this is expected
+    }
   }
 }

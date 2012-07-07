@@ -41,8 +41,10 @@ safaridriver.extension.init = function() {
   goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
   safaridriver.console.init();
 
-  safaridriver.extension.LOG_.info('Initializing tab manager...');
+  safaridriver.extension.LOG_.info('Creating global session...');
   safaridriver.extension.tabManager_ = new safaridriver.extension.TabManager();
+  safaridriver.extension.session_ = new safaridriver.extension.Session(
+      safaridriver.extension.tabManager_);
 
   safaridriver.extension.LOG_.info('Creating debug driver...');
   var server = safaridriver.extension.createSessionServer_();
@@ -74,6 +76,15 @@ safaridriver.extension.LOG_ = goog.debug.Logger.getLogger(
  * @private
  */
 safaridriver.extension.tabManager_;
+
+
+/**
+ * Global session shared by eash clinet; lazily initialized in
+ * {@link safaridriver.extension.init}.
+ * @type {!safaridriver.extension.Session}
+ * @private
+ */
+safaridriver.extension.session_;
 
 
 /**
@@ -119,6 +130,11 @@ safaridriver.extension.onMessage_ = function(e) {
     case safaridriver.message.Alert.TYPE:
       goog.asserts.assert(e.name === 'canLoad',
           'Received an async alert message');
+      if (!safaridriver.extension.session_.isExecutingCommand()) {
+        safaridriver.extension.session_.setUnhandledAlertText(
+            message.getMessage());
+      }
+
       // TODO: Fully support alerts. See
       // http://code.google.com/p/selenium/issues/detail?id=3862
       e.message = !!safaridriver.extension.numConnections_;
@@ -135,7 +151,5 @@ safaridriver.extension.onMessage_ = function(e) {
  * @private
  */
 safaridriver.extension.createSessionServer_ = function() {
-  var session = new safaridriver.extension.Session(
-      safaridriver.extension.tabManager_);
-  return new safaridriver.extension.Server(session);
+  return new safaridriver.extension.Server(safaridriver.extension.session_);
 };

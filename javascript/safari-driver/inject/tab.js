@@ -27,6 +27,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.Tab');
+goog.require('safaridriver.alert');
 goog.require('safaridriver.inject.PageScript');
 goog.require('safaridriver.inject.commands');
 goog.require('safaridriver.inject.message');
@@ -244,14 +245,9 @@ safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
 
   // Abort any pending commands and point users towards the bug for proper
   // alert handling.
+  var alertText = message.getMessage();
   goog.object.forEach(this.pendingCommands_, function(cmd) {
-    var error = new bot.Error(bot.ErrorCode.MODAL_DIALOG_OPENED,
-        'An alert was opened while the command was executing; the ' +
-            'SafariDriver does not provide 1st class support for alert ' +
-            'handling. To avoid hanging your test, the alert has been ' +
-            'dismissed. For more information, see ' +
-            'http://code.google.com/p/selenium/issues/detail?id=3862');
-    var response = bot.response.createErrorResponse(error);
+    var response = safaridriver.alert.createResponse(alertText);
     this.sendResponse_(cmd, response);
   }, this);
 };

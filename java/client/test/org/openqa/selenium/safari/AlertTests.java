@@ -115,6 +115,7 @@ public class AlertTests extends SafariTestBase {
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException expected) {
       // Expected exception
+      expected.printStackTrace();
     }
     // Shouldn't throw
     driver.getTitle();
@@ -133,4 +134,32 @@ public class AlertTests extends SafariTestBase {
     // Shouldn't throw
     driver.getTitle();
   }
+
+  @Test
+  public void testIncludesAlertInUnhandledAlertException() {
+    try {
+      driver.findElement(By.id("alert")).click();
+      fail("Expected UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      Alert alert = e.getAlert();
+      assertNotNull(alert);
+      assertEquals("cheese", alert.getText());
+    }
+  }
+
+  @Test
+  public void shouldCatchAlertsOpenedBetweenCommandsAndReportThemOnTheNextCommand()
+      throws InterruptedException {
+    driver.get(pages.alertsPage);
+    ((JavascriptExecutor)driver).executeScript(
+        "setTimeout(function() { alert('hi'); }, 250);");
+    Thread.sleep(1000);
+    try {
+      driver.getTitle();
+    } catch (UnhandledAlertException expected) {
+      assertEquals("hi", expected.getAlert().getText());
+    }
+    // Shouldn't throw
+    driver.getTitle();
+ }
 }
