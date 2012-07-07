@@ -214,8 +214,10 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE, SELENESE},
-          reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = {IE, FIREFOX, REMOTE, SAFARI, SELENESE},
+          reason = "Firefox: Window demands focus to work." +
+              " Safari: issue 4061." +
+              " Other platforms: not properly tested")
   @Test
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
