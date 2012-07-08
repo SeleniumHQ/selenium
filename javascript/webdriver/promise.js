@@ -1629,5 +1629,9 @@ webdriver.promise.Application.Task.prototype.getDescription = function() {
 /** @override */
 webdriver.promise.Application.Task.prototype.toString = function() {
   var stack = this.snapshot_.getStacktrace();
-  return this.description_ + '\n  > ' + stack.split('\n').join('\n  > ');
+  var ret = this.description_;
+  if (stack) {
+    ret += + '\n  > ' + stack.split('\n').join('\n  > ');
+  }
+  return ret;
 };
