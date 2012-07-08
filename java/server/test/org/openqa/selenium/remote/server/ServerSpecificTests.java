@@ -22,11 +22,13 @@ import org.junit.runners.Suite;
 import org.openqa.selenium.remote.server.rest.ResultConfigTest;
 import org.openqa.selenium.remote.server.rest.UrlMapperTest;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcRendererTest;
 import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxyTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     CrossDomainRpcLoaderTest.class,
+    CrossDomainRpcRendererTest.class,
     DriverFactoryTest.class,
     DriverServletTest.class,
     DriverSessionTest.class,

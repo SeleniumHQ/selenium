@@ -16,50 +16,40 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import com.google.common.base.Charsets;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
+import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.server.FakeHttpRequest;
+import org.openqa.selenium.remote.server.FakeHttpResponse;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
+
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.server.HttpRequest;
-import org.openqa.selenium.remote.server.HttpResponse;
-import org.openqa.selenium.remote.server.rest.RestishHandler;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.ServletOutputStream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for {@link CrossDomainRpcRenderer}
  */
 public class CrossDomainRpcRendererTest {
-  
-  private Mockery mockery;
-  private HttpRequest mockRequest;
-  private HttpResponse mockResponse;
-  private RestishHandler mockHandler;
 
-  private StringWriter stringWriter;
-  private ServletOutputStream servletOutputStream;
+  private FakeHttpRequest fakeRequest;
+  private FakeHttpResponse fakeResponse;
+  private RestishHandler nullHandler;
 
   @Before
   public void setUp() {
-    mockery = new Mockery();
-    mockRequest = mockery.mock(HttpRequest.class);
-    mockResponse = mockery.mock(HttpResponse.class);
-    mockHandler = mockery.mock(RestishHandler.class);
-    
-    stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    servletOutputStream = new StringServletOutputStream(printWriter);
+    fakeRequest = new FakeHttpRequest();
+    fakeResponse = new FakeHttpResponse();
+    nullHandler = null;
+  }
+
+  private static String getContent(FakeHttpResponse response) {
+    byte[] data = response.getContent();
+    return new String(data);
   }
 
   @Test
@@ -67,26 +57,19 @@ public class CrossDomainRpcRendererTest {
     final String response = new JSONObject().put("foo", "bar").toString();
     final CrossDomainRpc rpc = new CrossDomainRpc("GET", "/session", "");
 
-    mockery.checking(new Expectations() {{
-      allowing(mockRequest).getAttribute("rpc");
-      will(returnValue(rpc));
-
-      allowing(mockRequest).getAttribute("response");
-      will(returnValue(response));
-
-      one(mockResponse).setStatus(200);
-      one(mockResponse).setContentType("application/json");
-      one(mockResponse).setEncoding(Charsets.UTF_8);
-//      allowing(mockResponse).getOutputStream();
-//      will(returnValue(servletOutputStream));
-    }});
+    fakeRequest.setAttribute("rpc", rpc);
+    fakeRequest.setAttribute("response", response);
 
     new CrossDomainRpcRenderer(":response", ":error")
-        .render(mockRequest, mockResponse, mockHandler);
+        .render(fakeRequest, fakeResponse, nullHandler);
 
-    mockery.assertIsSatisfied();
+    assertEquals(200, fakeResponse.getStatus());
+    assertEquals("application/json", fakeResponse.getContentType());
+    assertEquals(Charsets.UTF_8, fakeResponse.getEncoding());
+    assertTrue(fakeResponse.isTerminated());
+
     assertEqualsStringPlusTheDifferenceInNullCharacters(
-        response, stringWriter.toString());
+        response, getContent(fakeResponse));
   }
   
   @Test
@@ -94,33 +77,19 @@ public class CrossDomainRpcRendererTest {
       throws Exception {
     final CrossDomainRpc rpc = new CrossDomainRpc("POST", "/session/foo/url",
         "{\"url\":\"http://www.google.com\"}");
-    
-    mockery.checking(new Expectations() {{
-      allowing(mockRequest).getAttribute("rpc");
-      will(returnValue(rpc));
 
-      allowing(mockRequest).getAttribute("response");
-      will(returnValue(null));
-      allowing(mockRequest).getAttribute("error");
-      will(returnValue(null));
-      
-      allowing(mockRequest).getUri();
-      will(returnValue("http://localhost:4444/wd/hub/session/foo/url"));
-
-      one(mockResponse).setStatus(200);
-      one(mockResponse).setContentType("application/json");
-      one(mockResponse).setEncoding(Charsets.UTF_8);
-//      one(mockResponse).setContentLength(with(any(Integer.class)));
-//      allowing(mockResponse).getOutputStream();
-//      will(returnValue(servletOutputStream));
-    }});
+    fakeRequest.setAttribute("rpc", rpc);
+    fakeRequest.setUri("http://localhost:1234/session/foo");
 
     new CrossDomainRpcRenderer(":response", ":error")
-        .render(mockRequest, mockResponse, mockHandler);
+        .render(fakeRequest, fakeResponse, nullHandler);
 
-    mockery.assertIsSatisfied();
+    assertEquals(200, fakeResponse.getStatus());
+    assertEquals("application/json", fakeResponse.getContentType());
+    assertEquals(Charsets.UTF_8, fakeResponse.getEncoding());
+    assertTrue(fakeResponse.isTerminated());
 
-    JSONObject response = new JSONObject(stringWriter.toString());
+    JSONObject response = new JSONObject(getContent(fakeResponse));
     assertEquals(ErrorCodes.SUCCESS, response.getInt("status"));
     assertTrue(response.isNull("value"));
     assertEquals("foo", response.getString("sessionId"));
@@ -138,7 +107,7 @@ public class CrossDomainRpcRendererTest {
       String expected, String actual) {
     int difference = actual.length() - expected.length();
     assertEquals(expected, actual.substring(0, expected.length()));
-    assertEquals(repeat('\0', difference),
+    assertEquals(Strings.repeat("\0", difference),
         actual.substring(expected.length()));
   }
 
@@ -148,19 +117,5 @@ public class CrossDomainRpcRendererTest {
       builder.append(c);
     }
     return builder.toString();
-  }
-
-  private static class StringServletOutputStream extends ServletOutputStream {
-
-    private final PrintWriter printWriter;
-
-    private StringServletOutputStream(PrintWriter printWriter) {
-      this.printWriter = printWriter;
-    }
-
-    @Override
-    public void write(int i) throws IOException {
-      printWriter.write(i);
-    }
   }
 }
