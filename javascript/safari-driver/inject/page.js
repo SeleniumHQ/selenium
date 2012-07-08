@@ -188,10 +188,16 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
       break;
   }
 
-  if (handlerFn) {
-    handlerFn(command).then(response.resolve, response.reject);
-  } else {
+  if (!handlerFn) {
     response.reject(Error('Unknown command: ' + command.getName()));
+    return;
+  }
+
+  try {
+    webdriver.promise.asap(handlerFn(command),
+        response.resolve, response.reject);
+  } catch (ex) {
+    response.reject(ex);
   }
 };
 
@@ -204,23 +210,14 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
  * @private
  */
 safaridriver.inject.page.executeScript_ = function(command) {
-  var response = new webdriver.promise.Deferred();
-  try {
-    // TODO: clean-up bot.inject.executeScript so it doesn't pull in so many
-    // extra dependencies.
-    var fn = new Function(command.getParameter('script'));
+  // TODO: clean-up bot.inject.executeScript so it doesn't pull in so many
+  // extra dependencies.
+  var fn = new Function(command.getParameter('script'));
 
-    var args = command.getParameter('args');
-    args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(
-        args));
+  var args = command.getParameter('args');
+  args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(args));
 
-    var result = fn.apply(window, args);
-    response.resolve(result);
-  } catch (ex) {
-    response.reject(ex);
-  }
-
-  return response.promise;
+  return fn.apply(window, args);
 };
 
 
@@ -234,44 +231,37 @@ safaridriver.inject.page.executeScript_ = function(command) {
 safaridriver.inject.page.executeAsyncScript_ = function(command) {
   var response = new webdriver.promise.Deferred();
 
-  try {
-    var script = (/** @type {string} */command.getParameter('script'));
-    var scriptFn = new Function(script);
+  var script = (/** @type {string} */command.getParameter('script'));
+  var scriptFn = new Function(script);
 
-    var args = command.getParameter('args');
-    args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(
-        args));
-    // The last argument for an async script is the callback that triggers the
-    // response.
-    args.push(function(value) {
-      window.clearTimeout(timeoutId);
-      if (response.isPending()) {
-        response.resolve(value);
-      }
-    });
-
-    var startTime = goog.now();
-    scriptFn.apply(window, args);
-
-    // Register our timeout *after* the function has been invoked. This will
-    // ensure we don't timeout on a function that invokes its callback after a
-    // 0-based timeout:
-    // var scriptFn = function(callback) {
-    //   setTimeout(callback, 0);
-    // };
-    var timeout = (/** @type {number} */command.getParameter('timeout'));
-    var timeoutId = window.setTimeout(function() {
-      if (response.isPending()) {
-        response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
-            'Timed out waiting for an asynchronous script result after ' +
-                (goog.now() - startTime) +  ' ms'));
-      }
-    }, Math.max(0, timeout));
-  } catch (ex) {
+  var args = command.getParameter('args');
+  args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(args));
+  // The last argument for an async script is the callback that triggers the
+  // response.
+  args.push(function(value) {
+    window.clearTimeout(timeoutId);
     if (response.isPending()) {
-      response.reject(ex);
+      response.resolve(value);
     }
-  }
+  });
+
+  var startTime = goog.now();
+  scriptFn.apply(window, args);
+
+  // Register our timeout *after* the function has been invoked. This will
+  // ensure we don't timeout on a function that invokes its callback after a
+  // 0-based timeout:
+  // var scriptFn = function(callback) {
+  //   setTimeout(callback, 0);
+  // };
+  var timeout = (/** @type {number} */command.getParameter('timeout'));
+  var timeoutId = window.setTimeout(function() {
+    if (response.isPending()) {
+      response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
+          'Timed out waiting for an asynchronous script result after ' +
+              (goog.now() - startTime) +  ' ms'));
+    }
+  }, Math.max(0, timeout));
 
   return response.promise;
 };
