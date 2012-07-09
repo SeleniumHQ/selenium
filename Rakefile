@@ -261,6 +261,7 @@ task :clean do
   rm_rf 'android/build/'
   rm_rf 'android/libs/'
   rm_rf 'android/client/bin/'
+  rm_rf 'java/client/build/'
   Android::Clean.new()
 end
 

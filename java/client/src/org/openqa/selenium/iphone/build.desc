@@ -5,6 +5,12 @@ java_library(name = "iphone",
     "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/commons-exec",
   ],
-  resources = [
-    {"//third_party/objc/iphonesim:iphonesim-binary" : "mac/iphonesim"},
+  embedded = [
+    ":mac"
   ])
+
+folder(name = "mac",
+  deps = [
+    "//third_party/objc/iphonesim:iphonesim-binary"
+  ],
+  out = "mac")
