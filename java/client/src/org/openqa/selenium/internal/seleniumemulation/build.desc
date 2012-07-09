@@ -35,3 +35,9 @@ java_library(name="api",
                "//java/client/src/org/openqa/selenium/io",
                "//third_party/java/guava-libraries",
               ])
+
+export_file(name = "injectableSelenium",
+  srcs = [ "injectableSelenium.js" ])
+
+export_file(name = "htmlutils",
+  srcs = [ "htmlutils.js" ])

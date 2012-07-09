@@ -115,14 +115,14 @@ java_library(name = "webdriver-backed-selenium",
   srcs = [
     "WebDriverBackedSelenium.java",
   ],
-  resources = [
-    { "internal/seleniumemulation/injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
-    { "internal/seleniumemulation/htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
-  ],
   deps = [
     ":selenium-api",
     "//java/client/src/com/thoughtworks/selenium",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
+  ],
+  embedded = [
+    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:injectableSelenium",
+    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:htmlutils",
   ])
 
 java_library(name = "selenium-backed-webdriver",
