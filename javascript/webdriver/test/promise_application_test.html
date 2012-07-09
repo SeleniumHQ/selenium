@@ -39,14 +39,14 @@ limitations under the License.
       callbackHelper = webdriver.test.testutil.callbackHelper,
       callbackPair = webdriver.test.testutil.callbackPair;
 
-  var appTester, clock, history;
+  var appHistory, appTester, clock;
 
 
   function setUp() {
     clock = webdriver.test.testutil.createMockClock();
     appTester = new webdriver.test.AppTester(clock);
     webdriver.test.testutil.messages = [];
-    history = [];
+    appHistory = [];
   }
 
 
@@ -69,7 +69,7 @@ limitations under the License.
 
   function scheduleAction(msg, actionFn) {
     return appTester.schedule(msg, function() {
-      history.push(msg);
+      appHistory.push(msg);
       return actionFn();
     });
   }
@@ -79,7 +79,7 @@ limitations under the License.
     // we record each iteration of the wait loop.
     var count = 0;
     return appTester.scheduleWait(msg, function() {
-      history.push((count++) + ': ' + msg);
+      appHistory.push((count++) + ': ' + msg);
       return condition();
     }, timeout, opt_message);
   }
@@ -100,7 +100,7 @@ limitations under the License.
   /** @see {@link webdriver.test.AppTester#$assertAppHistory}. */
   function assertAppHistory(var_args) {
     var expected = goog.array.slice(arguments, 0);
-    assertArrayEquals(expected, history);
+    assertArrayEquals(expected, appHistory);
   }
 
 
@@ -1843,19 +1843,19 @@ limitations under the License.
 
   function testHistory_removesLastTaskEachTimeANewTaskIsStarted() {
     schedule('one').then(function() {
-      var history = appTester.getHistory();
-      assertEquals(1, history.length);
-      assertFrame('one', history[0]);
+      var appHistory = appTester.getHistory();
+      assertEquals(1, appHistory.length);
+      assertFrame('one', appHistory[0]);
     });
     schedule('two').then(function() {
-      var history = appTester.getHistory();
-      assertEquals(1, history.length);
-      assertFrame('two', history[0]);
+      var appHistory = appTester.getHistory();
+      assertEquals(1, appHistory.length);
+      assertFrame('two', appHistory[0]);
     });
     schedule('three').then(function() {
-      var history = appTester.getHistory();
-      assertEquals(1, history.length);
-      assertFrame('three', history[0]);
+      var appHistory = appTester.getHistory();
+      assertEquals(1, appHistory.length);
+      assertFrame('three', appHistory[0]);
     });
     runApplication();
     assertEquals(0, appTester.getHistory().length);
@@ -1864,15 +1864,15 @@ limitations under the License.
   function testHistory_clearsSubtaskHistoryWhenParentTaskCompletes() {
     scheduleAction('one', function() {
       schedule('two').then(function() {
-        var history = appTester.getHistory();
-        assertEquals(2, history.length);
-        assertFrame('two', history[0]);
-        assertFrame('one', history[1]);
+        var appHistory = appTester.getHistory();
+        assertEquals(2, appHistory.length);
+        assertFrame('two', appHistory[0]);
+        assertFrame('one', appHistory[1]);
       });
     }).then(function() {
-      var history = appTester.getHistory();
-      assertEquals(1, history.length);
-      assertFrame('one', history[0]);
+      var appHistory = appTester.getHistory();
+      assertEquals(1, appHistory.length);
+      assertFrame('one', appHistory[0]);
     });
     runApplication();
     assertAppHistory('one', 'two');
@@ -1885,11 +1885,11 @@ limitations under the License.
         scheduleAction('three', throwStubError);
       });
     }).then(fail, function() {
-      var history = appTester.getHistory();
-      assertEquals(3, history.length);
-      assertFrame('three', history[0]);
-      assertFrame('two', history[1]);
-      assertFrame('one', history[2]);
+      var appHistory = appTester.getHistory();
+      assertEquals(3, appHistory.length);
+      assertFrame('three', appHistory[0]);
+      assertFrame('two', appHistory[1]);
+      assertFrame('one', appHistory[2]);
     });
     runApplication();
     assertAppHistory('one', 'two', 'three');
@@ -1904,10 +1904,10 @@ limitations under the License.
       }).addErrback(goog.nullFunction);
 
       schedule('post error').then(function() {
-        var history = appTester.getHistory();
-        assertEquals(2, history.length);
-        assertFrame('post error', history[0]);
-        assertFrame('one', history[1]);
+        var appHistory = appTester.getHistory();
+        assertEquals(2, appHistory.length);
+        assertFrame('post error', appHistory[0]);
+        assertFrame('one', appHistory[1]);
       });
     });
     runApplication();
