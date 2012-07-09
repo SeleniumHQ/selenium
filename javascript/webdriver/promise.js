@@ -1631,7 +1631,7 @@ webdriver.promise.Application.Task.prototype.toString = function() {
   var stack = this.snapshot_.getStacktrace();
   var ret = this.description_;
   if (stack) {
-    ret += + '\n  > ' + stack.split('\n').join('\n  > ');
+    ret += '\n  > ' + stack.split('\n').join('\n  > ');
   }
   return ret;
 };
