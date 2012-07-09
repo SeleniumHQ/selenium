@@ -1,3 +1,43 @@
+v2.25.0
+=======
+
+WebDriver:
+  * Added API for dealing with BASIC and DIGEST authentication
+    dialogs. Currently not implemented in any drivers.
+  * Warn users that the IE driver will no longer use the DLL in the
+    next release.
+  * Deprecated browser specific WebElement subclasses.
+  * Added the ability to determine how unhandled alerts should be
+    handled. This is handled by the "unexpectedAlertBehaviour"
+    capability, which can be one of "accept", "dismiss" or
+    "ignore". Java code should use the UnexpectedAlertBehaviour
+    enum. This is only implemented in Firefox for now.
+  * Allow native events to be configured in Firefox and
+    (experimentally) in IE using the "nativeEvents" capability.
+  * Updated supported versions of Firefox to 16.
+  * Firefox driver will enumerate through client rects until finding
+    one with non-zero dimensions when clicking.
+  * Safari driver will dismiss open alerts to prevent tests from
+    hanging.
+  * Better handling of overflow edge cases when determining element
+    visibility.
+  * Point users in the right direction when Safari fails to load a
+    file:// URL.
+  * FIXED: 3897: Allow windows to be resized from a frame.
+  * FIXED: 4170: IEDriverServer option renamed to "--log-file".
+
+WebDriverJS:
+  * Better stack traces from test code.
+
+Grid:
+  * FIXED: 3230: Implementing /lifecycle-manager?action=shutdown
+    command for the Grid Hub to ensure backward compatibility with
+    Grid1 behaviour.
+
+Selenium Server:
+  * Reworked SSL certificate generation code when proxying HTTPS
+    connections to use non-deprecated APIs in BouncyCastle.
+
 v2.24.1
 =======
 WebDriver:
@@ -672,3 +712,5 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
+
+
