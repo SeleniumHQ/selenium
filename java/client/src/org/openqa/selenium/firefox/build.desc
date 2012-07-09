@@ -3,12 +3,6 @@ java_library(name = "firefox",
     "*.java",
     "internal/*.java",
   ],
-  resources = [
-    { "//cpp:noblur" : "org/openqa/selenium/firefox/x86/x_ignore_nofocus.so" },
-    { "//cpp:noblur64" : "org/openqa/selenium/firefox/amd64/x_ignore_nofocus.so" },
-    { "//cpp:imehandler" : "org/openqa/selenium/firefox/x86/libibushandler.so" },
-    { "//cpp:imehandler64" : "org/openqa/selenium/firefox/amd64/libibushandler.so" }
-  ],
   deps = [
     "//java/client/src/org/openqa/selenium/browserlaunchers:proxies",
     "//java/client/src/org/openqa/selenium/io",
@@ -20,5 +14,19 @@ java_library(name = "firefox",
   ],
   embedded = [
     "//javascript/firefox-driver:webdriver",
-    "//javascript/firefox-driver:webdriver_prefs"
+    "//javascript/firefox-driver:webdriver_prefs",
+    ":amd64",
+    ":x86",
+  ])
+
+folder(name = "x86",
+  deps = [
+    "//cpp:noblur",
+    "//cpp:imehandler",
+  ])
+
+folder(name = "amd64",
+  deps = [
+    "//cpp:noblur64",
+    "//cpp:imehandler64",
   ])
