@@ -38,11 +38,14 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
   public void canStartMultipleIeDriverInstances() {
     WebDriver firstDriver = new InternetExplorerDriver();
     WebDriver secondDriver = new InternetExplorerDriver();
-    firstDriver.get(pages.xhtmlTestPage);
-    secondDriver.get(pages.formPage);
-    assertEquals("XHTML Test Page", driver.getTitle());
-    assertEquals("We Leave From Here", secondDriver.getTitle());
-    firstDriver.quit();
-    secondDriver.quit();
+    try {
+      firstDriver.get(pages.xhtmlTestPage);
+      secondDriver.get(pages.formPage);
+      assertEquals("XHTML Test Page", firstDriver.getTitle());
+      assertEquals("We Leave From Here", secondDriver.getTitle());
+    } finally {
+      firstDriver.quit();
+      secondDriver.quit();
+    }
   }
 }
