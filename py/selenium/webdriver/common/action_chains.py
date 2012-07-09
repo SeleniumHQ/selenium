@@ -56,7 +56,7 @@ class ActionChains(object):
             self._driver.execute(Command.CLICK, {'button': 0}))
         return self
 
-    def click_and_hold(self, on_element):
+    def click_and_hold(self, on_element=None):
         """
         Holds down the left mouse button on an element.
         
@@ -69,7 +69,7 @@ class ActionChains(object):
             self._driver.execute(Command.MOUSE_DOWN, {}))
         return self
 
-    def context_click(self, on_element):
+    def context_click(self, on_element=None):
         """
         Performs a context-click (right click) on an element.
         
@@ -82,7 +82,7 @@ class ActionChains(object):
             self._driver.execute(Command.CLICK, {'button': 2}))
         return self
 
-    def double_click(self, on_element):
+    def double_click(self, on_element=None):
         """
         Double-clicks an element.
         
