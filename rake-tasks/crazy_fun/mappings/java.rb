@@ -335,23 +335,23 @@ module CrazyFunJava
 
   class CopyResources < BaseJava
     def handle(fun, dir, args)
-      unless args[:embedded].nil?
-        args[:embedded].each do |to_copy|
-          from = "build/#{dir}/#{to_copy}"
-          package_dir = package_name("#{dir}/.") # Append a /. because package_name expects file names not folder names
-          to = "#{temp_dir(dir, args[:name])}/#{package_dir}"
-          mkdir_p to
-          cp_r from, to
+      task task_name(dir, args[:name]) do
+        unless args[:embedded].nil?
+          args[:embedded].each do |to_copy|
+            from = "build/#{dir}/#{to_copy}"
+            package_dir = package_name("#{dir}/.") # Append a /. because package_name expects file names not folder names
+            to = "#{temp_dir(dir, args[:name])}/#{package_dir}"
+            mkdir_p to
+            cp_r from, to
+          end
         end
-      end
 
-      if (args[:resources].nil?)
-        return
-      end
-
-      file jar_name(dir, args[:name]) do
-        out_dir = temp_dir(dir, args[:name])
-        copy_resources(dir, args[:resources], out_dir)
+        unless args[:resources].nil?
+          file jar_name(dir, args[:name]) do
+            out_dir = temp_dir(dir, args[:name])
+            copy_resources(dir, args[:resources], out_dir)
+          end
+        end
       end
     end
   end
