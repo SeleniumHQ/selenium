@@ -186,12 +186,14 @@ class SendKeysCommandHandler : public IECommandHandler {
 
     if (!dialog_window_handle ||
         (dialog_window_handle == ie_main_window_handle)) {
+      LOG(WARN) << "No dialog directly owned by the top-level window";
       // No dialog directly owned by the top-level window.
       // Look for a dialog belonging to the same process as
       // the IE server window. This isn't perfect, but it's
       // all we have for now.
-      max_wait = 10;
+      max_wait = 50;
       while ((dialog_window_handle == ie_main_window_handle) && --max_wait) {
+        ::Sleep(100);
         ProcessWindowInfo process_win_info;
         process_win_info.dwProcessId = data->ieProcId;
         ::EnumWindows(&BrowserFactory::FindDialogWindowForProcess,
