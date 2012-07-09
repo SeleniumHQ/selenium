@@ -38,12 +38,15 @@ module Folder
     def handle(fun, dir, args)
       folder = dest_dir(dir, args)
 
-      task task_name(dir, args[:name]) do
-        puts "Preparing: #{task_name(dir, args[:name])} as #{folder}"
+      name = task_name(dir, args[:name])
+      task name do
+        puts "Preparing: #{name} as #{folder}"
         mkdir_p folder
         copy_resources(dir, args[:srcs], folder) unless args[:srcs].nil?
         copy_resources(dir, args[:deps], folder) unless args[:deps].nil?
       end
+
+      Rake::Task[name].out = folder
     end
   end
 

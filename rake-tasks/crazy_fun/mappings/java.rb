@@ -338,7 +338,7 @@ module CrazyFunJava
       unless args[:embedded].nil?
         file jar_name(dir, args[:name]) do
           args[:embedded].each do |to_copy|
-            from = "build/#{dir}/#{to_copy}"
+            from = Rake::Task[task_name(dir, to_copy)].out
             package_dir = package_name("#{dir}/.") # Append a /. because package_name expects file names not folder names
             to = "#{temp_dir(dir, args[:name])}/#{package_dir}"
             mkdir_p to
