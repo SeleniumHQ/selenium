@@ -218,7 +218,7 @@ class ActionChains(object):
                 'yoffset': yoffset}))
         return self
 
-    def release(self, on_element):
+    def release(self, on_element=None):
         """
         Releasing a held mouse button.
 
