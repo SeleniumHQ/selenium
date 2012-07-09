@@ -49,7 +49,7 @@ import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EV
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
 
-  private static final String defaultPrefs = "/org/openqa/selenium/firefox/webdriver.json";
+  private static final String defaultPrefs = "/org/openqa/selenium/firefox/webdriver_prefs.json";
 
   private Preferences additionalPrefs;
 
