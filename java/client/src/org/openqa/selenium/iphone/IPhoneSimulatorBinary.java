@@ -67,11 +67,11 @@ public class IPhoneSimulatorBinary {
       "%s launch %s", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
   }
 
-  protected String getIphoneSimPath() {
+  protected static String getIphoneSimPath() {
     String filename = "iphonesim";
     File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "libs");
     try {
-      FileHandler.copyResource(parentDir, this.getClass(), filename);
+      FileHandler.copyResource(parentDir, IPhoneSimulatorBinary.class, filename);
       File file = new File(parentDir, filename);
       FileHandler.makeExecutable(file);
       return file.getAbsolutePath();
