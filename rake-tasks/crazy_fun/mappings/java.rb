@@ -212,7 +212,7 @@ module CrazyFunJava
       name = task_name(dir, args[:name])
       task name
 
-      if args[:srcs] or args[:resources] or args[:embedded]
+      if args[:srcs] or args[:resources]
         jar_name = jar_name(dir, args[:name])
         file jar_name
       else
@@ -245,14 +245,12 @@ module CrazyFunJava
       add_dependencies(target, dir, args[:deps])
       add_dependencies(target, dir, args[:srcs])
       add_dependencies(target, dir, args[:resources])
-      add_dependencies(target, dir, args[:embedded])
 
       if (args[:srcs].nil?)
         target_name = jar_name(dir, args[:name])
         target = Rake::Task[target_name]
         add_dependencies(target, dir, args[:deps])
         add_dependencies(target, dir, args[:resources])
-        add_dependencies(target, dir, args[:embedded])
       end
 
     end
@@ -277,7 +275,7 @@ module CrazyFunJava
 
   class TidyTempDir < BaseJava
     def handle(fun, dir, args)
-      return if args[:srcs].nil? and args[:resources].nil? and args[:embedded].nil?
+      return if args[:srcs].nil? and args[:resources].nil?
 
       file jar_name(dir, args[:name]) do
         rm_rf temp_dir(dir, args[:name])
@@ -287,7 +285,7 @@ module CrazyFunJava
 
   class Javac < BaseJava
     def handle(fun, dir, args)
-      return if args[:srcs].nil? and args[:resources].nil? and args[:embedded].nil?
+      return if args[:srcs].nil? and args[:resources].nil?
 
       jar = jar_name(dir, args[:name])
       out_dir = temp_dir(dir, args[:name])
@@ -335,30 +333,20 @@ module CrazyFunJava
 
   class CopyResources < BaseJava
     def handle(fun, dir, args)
-      task task_name(dir, args[:name]) do
-        unless args[:embedded].nil?
-          args[:embedded].each do |to_copy|
-            from = "build/#{dir}/#{to_copy}"
-            package_dir = package_name("#{dir}/.") # Append a /. because package_name expects file names not folder names
-            to = "#{temp_dir(dir, args[:name])}/#{package_dir}"
-            mkdir_p to
-            cp_r from, to
-          end
-        end
+      if (args[:resources].nil?)
+        return
+      end
 
-        unless args[:resources].nil?
-          file jar_name(dir, args[:name]) do
-            out_dir = temp_dir(dir, args[:name])
-            copy_resources(dir, args[:resources], out_dir)
-          end
-        end
+      file jar_name(dir, args[:name]) do
+        out_dir = temp_dir(dir, args[:name])
+        copy_resources(dir, args[:resources], out_dir)
       end
     end
   end
 
   class Jar < BaseJava
     def handle(fun, dir, args)
-      return if args[:srcs].nil? and args[:resources].nil? and args[:embedded].nil?
+      return if args[:srcs].nil? and args[:resources].nil?
 
       jar = jar_name(dir, args[:name])
 
@@ -675,7 +663,7 @@ module CrazyFunJava
         real_file = File.join(dir, dep.to_s)
         File.exists?(real_file) ? real_file : task_name(dir, dep)
       end
-      deps << jar_name(dir, args[:name]) if (args[:srcs] or args[:resources] or args[:embedded])
+      deps << jar_name(dir, args[:name]) if (args[:srcs] or args[:resources])
 
       file jar => deps do
         puts "Uber-jar: #{task_name(dir, args[:name])} as #{jar}"
@@ -683,7 +671,7 @@ module CrazyFunJava
         mkdir_p File.dirname(jar)
 
         cp = ClassPath.new(jar_name(dir, args[:name])).all
-        cp.push(jar_name(dir, args[:name])) if args[:srcs] or args[:resources] or args[:embedded]
+        cp.push(jar_name(dir, args[:name])) if args[:srcs] or args[:resources]
 
         CrazyFunJava.ant.jarjar(:jarfile => jar, :duplicate => 'preserve') do |ant|
           cp.each do |j|

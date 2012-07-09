@@ -26,7 +26,7 @@ module Folder
   class CheckPreconditions < Tasks
     def handle(fun, dir, args)
       raise StandardError, ":name must be set" if args[:name].nil?
-      raise StandardError, ":srcs or :deps must be set" if args[:srcs].nil? and args[:deps].nil?
+      raise StandardError, ":srcs must be set" if args[:srcs].nil?
     end
   end
 
@@ -41,7 +41,7 @@ module Folder
       task task_name(dir, args[:name]) do
         puts "Preparing: #{task_name(dir, args[:name])} as #{folder}"
         mkdir_p folder
-        copy_resources(dir, args[:srcs], folder) unless args[:srcs].nil?
+        copy_resources(dir, args[:srcs], folder)
         copy_resources(dir, args[:deps], folder) unless args[:deps].nil?
       end
     end
