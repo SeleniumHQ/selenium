@@ -118,6 +118,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     }
 
     profile = getProfile(profile);
+    
+    if (capabilities == null) {
+      return profile;
+    }
 
     if (capabilities.getCapability(SUPPORTS_WEB_STORAGE) != null) {
       Boolean supportsWebStorage = (Boolean) capabilities.getCapability(SUPPORTS_WEB_STORAGE);
