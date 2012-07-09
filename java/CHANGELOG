@@ -23,8 +23,8 @@ WebDriver:
     visibility.
   * Point users in the right direction when Safari fails to load a
     file:// URL.
+  * Allowed to use IEDriverServer logging abilities in Java binding.
   * FIXED: 3897: Allow windows to be resized from a frame.
-  * FIXED: 4170: IEDriverServer option renamed to "--log-file".
 
 WebDriverJS:
   * Better stack traces from test code.
