@@ -147,7 +147,7 @@ class MouseMoveToCommandHandler : public IECommandHandler {
       return status_code;
     }
 
-    long element_x, element_y, element_width, element_height;
+    long element_x = 0, element_y = 0, element_width = 0, element_height = 0;
     status_code = target_element->GetLocationOnceScrolledIntoView(executor.scroll_behavior(),
                                                                   &element_x,
                                                                   &element_y,

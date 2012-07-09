@@ -14,6 +14,10 @@ v2.25.0.0
  * Handle quirky handling of mime types if Firefox was ever the default browser
    on a Windows installation, but now a different (non-IE) browser has stepped
    into that role.
+ * Increased timeout for finding file upload dialog in uploading file. Fixes
+   issue #3858.
+ * Updated initialization of variables in MouseMoveToCommandHandler.h and in
+   GetElementLocationOnceScrolledIntoViewCommandHandler.h. Fixes issue #4205.
  * Updates to JavaScript automation atoms.
  * Release to coincide with full Selenium release.
 
