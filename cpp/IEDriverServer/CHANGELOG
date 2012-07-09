@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.25.0.0
+=========
+ * Handle quirky handling of mime types if Firefox was ever the default browser
+   on a Windows installation, but now a different (non-IE) browser has stepped
+   into that role.
+ * Updates to JavaScript automation atoms.
+ * Release to coincide with full Selenium release.
+
 v2.24.2.0
 =========
  * Refactoring command line argument handling in IEDriverServer.exe, now that
