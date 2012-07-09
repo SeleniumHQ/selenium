@@ -53,7 +53,7 @@ function windowTitle()
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 &nbsp;<A HREF="../../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../../index.html?org/openqa/selenium/remote/service/DriverService.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="DriverService.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
@@ -73,7 +73,7 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
@@ -114,24 +114,7 @@ Manages the life and death of a native executable driver server.
 <HR>
 
 <P>
-<!-- ======== NESTED CLASS SUMMARY ======== -->
 
-<A NAME="nested_class_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Nested Class Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Builder used to configure new <A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><CODE>DriverService</CODE></A> instances.</TD>
-</TR>
-</TABLE>
-&nbsp;
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 
 <A NAME="constructor_summary"><!-- --></A>
@@ -143,10 +126,10 @@ Manages the life and death of a native executable driver server.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>protected </CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html#DriverService(java.io.File, int, com.google.common.collect.ImmutableMap, java.io.File)">DriverService</A></B>(java.io.File&nbsp;executable,
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html#DriverService(java.io.File, int, com.google.common.collect.ImmutableList, com.google.common.collect.ImmutableMap)">DriverService</A></B>(java.io.File&nbsp;executable,
               int&nbsp;port,
-              com.google.common.collect.ImmutableMap&lt;java.lang.String,java.lang.String&gt;&nbsp;environment,
-              java.io.File&nbsp;logFile)</CODE>
+              com.google.common.collect.ImmutableList&lt;java.lang.String&gt;&nbsp;args,
+              com.google.common.collect.ImmutableMap&lt;java.lang.String,java.lang.String&gt;&nbsp;environment)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -160,6 +143,14 @@ Manages the life and death of a native executable driver server.
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
 <TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
 <B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected static&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.html#checkExecutable(java.io.File)">checkExecutable</A></B>(java.io.File&nbsp;exe)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -227,17 +218,17 @@ Manages the life and death of a native executable driver server.
 </TR>
 </TABLE>
 
-<A NAME="DriverService(java.io.File, int, com.google.common.collect.ImmutableMap, java.io.File)"><!-- --></A><H3>
+<A NAME="DriverService(java.io.File, int, com.google.common.collect.ImmutableList, com.google.common.collect.ImmutableMap)"><!-- --></A><H3>
 DriverService</H3>
 <PRE>
 protected <B>DriverService</B>(java.io.File&nbsp;executable,
                         int&nbsp;port,
-                        com.google.common.collect.ImmutableMap&lt;java.lang.String,java.lang.String&gt;&nbsp;environment,
-                        java.io.File&nbsp;logFile)
+                        com.google.common.collect.ImmutableList&lt;java.lang.String&gt;&nbsp;args,
+                        com.google.common.collect.ImmutableMap&lt;java.lang.String,java.lang.String&gt;&nbsp;environment)
                  throws java.io.IOException</PRE>
 <DL>
 <DL>
-<DT><B>Parameters:</B><DD><CODE>executable</CODE> - The driver executable.<DD><CODE>port</CODE> - Which port to start the driver on.<DD><CODE>environment</CODE> - The environment for the launched server.<DD><CODE>logFile</CODE> - Optional file to dump logs to.
+<DT><B>Parameters:</B><DD><CODE>executable</CODE> - The driver executable.<DD><CODE>port</CODE> - Which port to start the driver server on.<DD><CODE>args</CODE> - The arguments to the launched server.<DD><CODE>environment</CODE> - The environment for the launched server.
 <DT><B>Throws:</B>
 <DD><CODE>java.io.IOException</CODE> - If an I/O error occurs.</DL>
 </DL>
@@ -277,6 +268,17 @@ protected static java.io.File <B>findExecutable</B>(java.lang.String&nbsp;exeNam
 <DT><B>Returns:</B><DD>The driver executable as a <CODE>File</CODE> object
 <DT><B>Throws:</B>
 <DD><CODE>java.lang.IllegalStateException</CODE> - If the executable not found or cannot be executed</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="checkExecutable(java.io.File)"><!-- --></A><H3>
+checkExecutable</H3>
+<PRE>
+protected static void <B>checkExecutable</B>(java.io.File&nbsp;exe)</PRE>
+<DL>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <HR>
@@ -355,7 +357,7 @@ public void <B>stop</B>()</PRE>
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
 &nbsp;<A HREF="../../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;NEXT CLASS</FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../../index.html?org/openqa/selenium/remote/service/DriverService.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="DriverService.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
@@ -375,7 +377,7 @@ public void <B>stop</B>()</PRE>
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>

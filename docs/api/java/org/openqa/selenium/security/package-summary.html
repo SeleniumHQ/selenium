@@ -3,7 +3,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-org.openqa.selenium.support
+org.openqa.selenium.security
 </TITLE>
 
 
@@ -13,7 +13,7 @@ org.openqa.selenium.support
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="org.openqa.selenium.support";
+        parent.document.title="org.openqa.selenium.security";
     }
 }
 </SCRIPT>
@@ -52,10 +52,10 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/security/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/support/events/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/safari/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/support/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/support/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/security/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
@@ -77,8 +77,23 @@ function windowTitle()
 
 <HR>
 <H2>
-Package org.openqa.selenium.support
+Package org.openqa.selenium.security
 </H2>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Interface Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</A></B></TD>
+<TD>Marker interface used to indicate that this object can be used for
+ authentication.</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>
 
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
@@ -86,66 +101,8 @@ Package org.openqa.selenium.support
 <B>Class Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/ByIdOrName.html" title="class in org.openqa.selenium.support">ByIdOrName</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/Color.html" title="class in org.openqa.selenium.support">Color</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/PageFactory.html" title="class in org.openqa.selenium.support">PageFactory</A></B></TD>
-<TD>Factory class to make using Page Objects simpler and easier.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/ThreadGuard.html" title="class in org.openqa.selenium.support">ThreadGuard</A></B></TD>
-<TD>Multithreaded client code should use this to assert that it accesses webdriver in a
- thread-safe manner.</TD>
-</TR>
-</TABLE>
-&nbsp;
-
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Enum Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/How.html" title="enum in org.openqa.selenium.support">How</A></B></TD>
-<TD>&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
-
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Annotation Types Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/CacheLookup.html" title="annotation in org.openqa.selenium.support">CacheLookup</A></B></TD>
-<TD>Marker annotation to be applied to WebElements to indicate that it never changes (that is, that
- the same instance in the DOM will always be used)</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</A></B></TD>
-<TD>Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
- element or a list of elements.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/support/FindBys.html" title="annotation in org.openqa.selenium.support">FindBys</A></B></TD>
-<TD>Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
- in a chain as described in <A HREF="../../../../org/openqa/selenium/support/pagefactory/ByChained.html" title="class in org.openqa.selenium.support.pagefactory"><CODE>ByChained</CODE></A>
- 
- Eg:
-
- <pre class="code">
- &#64;FindBys({&#64;FindBy(id = "foo"),
-           &#64;FindBy(className = "bar")})</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../org/openqa/selenium/security/UserAndPassword.html" title="class in org.openqa.selenium.security">UserAndPassword</A></B></TD>
+<TD>Represents the authentication credentials for a user with username and password</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -182,10 +139,10 @@ Package org.openqa.selenium.support
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/security/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/openqa/selenium/support/events/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../org/openqa/selenium/safari/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/openqa/selenium/support/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/support/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/openqa/selenium/security/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
