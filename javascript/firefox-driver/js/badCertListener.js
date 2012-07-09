@@ -46,6 +46,9 @@ function getPreferenceFromProfile(prefName, prefDefaultValue) {
 }
 
 function shouldAcceptUntrustedCerts() {
+  // Defaults to true - accepting untrusted certificates.
+  // This puts the module into effect - setting it to false
+  // will delegate all calls to the original service.
   return getPreferenceFromProfile("webdriver_accept_untrusted_certs", true);
 }
 
@@ -54,11 +57,6 @@ function shouldAssumeUntrustedIssuer() {
 }
 
 WdCertOverrideService = function() {
-  // Defaults to true - accepting untrusted certificates.
-  // This puts the module into effect - setting it to false
-  // will delegate all calls to the original service.
-  this.acceptAll = shouldAcceptUntrustedCerts();
-
   // If untrusted issuer is set to false by the user,
   // the initial bitmask will not include ERROR_UNTRUSTED.
   //
@@ -71,7 +69,7 @@ WdCertOverrideService = function() {
     this.default_bits = 0;
   }
 
-  fxdriver.Logger.dumpn("Accept untrusted certificates: " + this.acceptAll);
+  fxdriver.Logger.dumpn("Accept untrusted certificates: " + shouldAcceptUntrustedCerts());
 
   // UUID of the original implementor of this service.
   var ORIGINAL_OVERRIDE_SERVICE_ID = "{67ba681d-5485-4fff-952c-2ee337ffdcd6}";
@@ -175,7 +173,8 @@ WdCertOverrideService.prototype.hasMatchingOverride = function(
     aHostName, aPort, aCert, aOverrideBits, aIsTemporary) {
   var retval = false;
 
-  if (this.acceptAll === true) {
+  var acceptAll = shouldAcceptUntrustedCerts();
+  if (acceptAll === true) {
     fxdriver.Logger.dumpn("Allowing certificate from site: " + aHostName + ":" + aPort);
     retval = true;
     aIsTemporary.value = false;
