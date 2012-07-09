@@ -1358,6 +1358,15 @@ location for correctly generating native events.''').
       Get('Get the number of items in the storage.').
       SetReturnType('{number}', 'The number of items in the storage.'))
 
+  resources.append(
+      SessionResource('/session/:sessionId/log').
+      Post('Get the log for a given log type. Log buffer is reset after each request.').
+      AddJsonParameter('type', '{string}', 'The type of the log as defined in '
+                       '[http://selenium.googlecode.com/svn/trunk/docs/api/'
+                       'java/org/openqa/selenium/logging/LogType.html '
+                       'LogType]: `{DRIVER|PROFILER}. A log type must be provided.').
+      SetReturnType('{Array.<object>}', 'The list of [Log_Entry_JSON_Object log entries].'))
+
   logging.info('Generating %s', wiki_path)
   f = open(wiki_path, 'w')
   try:
@@ -1522,6 +1531,18 @@ seconds since midnight, January 1, 1970 UTC.^1^ ||
 
 ^1^ When returning Cookie objects, the server should only omit an optional \
 field if it is incapable of providing the information.</dd>
+
+<dt>
+==== Log Entry JSON Object ====
+</dt>
+<dd>
+A JSON object describing a log entry.
+
+|| *Key* || *Type* || *Description* ||
+|| timestamp || number || The timestamp of the entry. ||
+|| level || number || The log level of the entry. ||
+|| message || string || The log message. ||
+</dd>
 
 <dt>
 === Proxy JSON Object ===
