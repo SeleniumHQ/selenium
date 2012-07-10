@@ -80,7 +80,6 @@ module Rename
       name = task_name(dir, args[:name])
       task = Rake::Task[name]
 
-      puts "Setting up task: #{name}"
       task name do
         from = Rake::Task[args[:srcs].nil? ? args[:deps][0] : args[:srcs][0]].out
         to = Rake::Task[task].out
