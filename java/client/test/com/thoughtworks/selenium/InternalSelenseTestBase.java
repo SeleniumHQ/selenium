@@ -76,6 +76,10 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       ).go();
 
       File buildDir = InProject.locate("java/client/build/production/org/openqa/selenium/internal/seleniumemulation");
+      buildDir = new File(buildDir, "selenium_atoms");
+      if (!buildDir.exists()) {
+        assertTrue(buildDir.mkdir());
+      }
       File atomsDir = InProject.locate("build/javascript/selenium-atoms");
 
       for (File file : atomsDir.listFiles()) {
