@@ -13,14 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import re
-import tempfile
-import time
-import shutil
 import unittest
 import pytest
-from selenium.common.exceptions import NoSuchElementException
+
 from selenium.webdriver.common.by import By
 
 
@@ -33,12 +28,12 @@ class RenderedWebElementTests(unittest.TestCase):
         element = self.driver.find_element(by=By.ID, value="green-parent")
         backgroundColour = element.value_of_css_property("background-color")
 
-        self.assertEqual("rgb(0, 128, 0)", backgroundColour)
+        self.assertEqual("rgba(0, 128, 0, 1)", backgroundColour)
 
         element = self.driver.find_element(by=By.ID, value="red-item")
         backgroundColour = element.value_of_css_property("background-color")
 
-        self.assertEqual("rgb(255, 0, 0)", backgroundColour)
+        self.assertEqual("rgba(255, 0, 0, 1)", backgroundColour)
 
     @pytest.mark.ignore_chrome
     def testShouldAllowInheritedStylesToBeUsed(self):
