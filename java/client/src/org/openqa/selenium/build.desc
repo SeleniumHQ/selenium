@@ -97,7 +97,6 @@ java_library(name = "selenium-api",
   srcs = [
     "ExplodingSupplier.java",
     "WebDriverCommandProcessor.java",
-    "internal/seleniumemulation/**/*.java",
   ],
   deps = [
     ":webdriver-api",
@@ -106,6 +105,7 @@ java_library(name = "selenium-api",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/src/org/openqa/selenium/htmlunit",
+    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:api",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])
