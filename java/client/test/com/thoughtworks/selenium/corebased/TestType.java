@@ -18,10 +18,15 @@ limitations under the License.
 
 package com.thoughtworks.selenium.corebased;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Test;
 import org.openqa.selenium.internal.WrapsDriver;
+
+import java.io.File;
 
 public class TestType extends InternalSelenseTestBase {
   @Test
@@ -42,7 +47,10 @@ public class TestType extends InternalSelenseTestBase {
     selenium.type("password", "testUserPassword");
     verifyEquals(selenium.getValue("password"), "testUserPassword");
     if (isAbleToUpdateFileElements()) {
-      selenium.type("file", "/test/file");
+      File tempFile = File.createTempFile("example", "upload");
+      tempFile.deleteOnExit();
+      Files.write("I like cheese", tempFile, Charsets.UTF_8);
+      selenium.type("file", tempFile.getAbsolutePath());
       selenium.click("submitButton");
       selenium.waitForPageToLoad("30000");
       verifyTrue(selenium.isTextPresent("Welcome, TestUser!"));
