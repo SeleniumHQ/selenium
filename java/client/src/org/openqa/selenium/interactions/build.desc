@@ -2,6 +2,12 @@
 java_library(name = "api",
   srcs = [
     "Action.java",
+    "InvalidCoordinatesException.java",
+    "MoveTargetOutOfBoundsException.java",
+    "internal/Coordinates.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:base",
   ])
 
 java_library(name = "interactions",
@@ -11,6 +17,7 @@ java_library(name = "interactions",
     "touch/*.java",
   ],
   deps = [
+    "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium:webdriver-api",
   ])
 

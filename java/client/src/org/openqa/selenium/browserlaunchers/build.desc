@@ -5,17 +5,13 @@ java_library(name = "browserlaunchers",
     "MacProxyManager.java",
   ],
   deps = [
+    ":launcher-utils",
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium:webdriver-api",
-    "//java/client/src/org/openqa/selenium/net",
-    "//java/client/src/org/openqa/selenium/os",
-    "//third_party/java/guava-libraries",
-  ],
-  deps = [
-    ":launcher-utils",
     "//java/client/src/org/openqa/selenium/browserlaunchers/locators",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/os",
+    "//third_party/java/guava-libraries",
   ])
 
 java_library(name = "proxies",
