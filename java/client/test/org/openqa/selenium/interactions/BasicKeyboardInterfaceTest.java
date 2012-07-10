@@ -22,6 +22,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
@@ -43,7 +44,9 @@ import org.openqa.selenium.testing.drivers.Browser;
  * Tests interaction through the advanced gestures API of keyboard handling.
  * 
  */
-@Ignore(IE)
+@Ignore(value = {IE, SAFARI},
+    reason = "Safari: not implemented (issue 4136)",
+    issues = {4136})
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);

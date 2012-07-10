@@ -46,6 +46,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
@@ -55,6 +56,9 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 /**
  * Tests operations that involve mouse and keyboard.
  */
+@Ignore(value = {IE, SAFARI},
+    reason = "Safari: not implemented (issue 4136)",
+    issues = {4136})
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   private Actions getBuilder(WebDriver driver) {
