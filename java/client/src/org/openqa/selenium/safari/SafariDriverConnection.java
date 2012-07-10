@@ -109,12 +109,6 @@ class SafariDriverConnection {
       // TODO(jleyba): Introduce proper abstractions here.
       JSONObject jsonResponse = new JSONObject(message);
 
-      if ("multipart".equals(jsonResponse.get("type"))) {
-        jsonResponse.remove("data");
-        LOG.warning("Got fragment: " + jsonResponse);
-        return;
-      }
-
       response = new JsonToBeanConverter().convert(Response.class,
           jsonResponse.getJSONObject("response").toString());
       if (response.getStatus() == ErrorCodes.SUCCESS) {
