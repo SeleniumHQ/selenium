@@ -22,7 +22,7 @@ module Selenium
           when RGBA_PATTERN
             new $1, $2, $3, $4
           when RGBA_PCT_PATTERN
-            new(*[$1, $2, $3].map { |e| Float(e) / 100 * 255 }, $4)
+            new(*[$1, $2, $3].map { |e| Float(e) / 100 * 255 } << $4)
           when HEX_PATTERN
             new(*[$1, $2, $3].map { |e| e.to_i(16) })
           when HEX3_PATTERN
