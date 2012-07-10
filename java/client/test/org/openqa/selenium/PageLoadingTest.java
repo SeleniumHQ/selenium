@@ -41,6 +41,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class PageLoadingTest extends JUnit4TestBase {
@@ -74,7 +75,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.findElement(By.id("id1"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(value = {SAFARI, SELENESE}, issues = { 4062 })
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     try {
@@ -87,7 +88,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IPHONE, SELENESE})
+  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = { 4062 })
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
@@ -108,7 +109,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore({IPHONE, SELENESE})
+  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = { 3771 })
   @NeedsFreshDriver
   @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
@@ -128,7 +129,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
   }
 
-  @Ignore({SELENESE, ANDROID})
+  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = { 3771 })
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -140,7 +141,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Leave From Here"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(value = {SAFARI, SELENESE}, issues = { 3771 })
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(pages.xhtmlTestPage);
@@ -155,7 +156,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
   }
 
-  @Ignore({SELENESE, ANDROID})
+  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = { 3771 })
   @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -173,7 +174,8 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID})
+  @Ignore(value = {IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID, SAFARI},
+      reason = "Safari: does not support insecure SSL")
   @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
@@ -201,7 +203,9 @@ public class PageLoadingTest extends JUnit4TestBase {
    * a new driver after it.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID}, reason = "Untested user-agents")
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID, SAFARI},
+      reason = "Safari: issue 4062; Others: Untested user-agents",
+      issues = { 4062 })
   @NoDriverAfterTest
   @JavascriptEnabled
   @Test
@@ -240,7 +244,9 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 5*1000);
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE}, reason = "Not implemented")
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE},
+      reason = "Not implemented; Safari: see issue 687, comment 41",
+      issues = { 687 })
   @NeedsLocalEnvironment
   @Test
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {

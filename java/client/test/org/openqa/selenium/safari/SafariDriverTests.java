@@ -20,6 +20,7 @@ package org.openqa.selenium.safari;
 import static org.junit.Assume.assumeTrue;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.StandardSeleniumTests;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -29,7 +30,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     AlertTests.class,
-    BasicSafariDriverTests.class
+    CrossDomainTest.class,
+    StandardSeleniumTests.class
 })
 public class SafariDriverTests {
 
@@ -37,10 +39,5 @@ public class SafariDriverTests {
   public static void isSupportedPlatform() {
     Platform current = Platform.getCurrent();
     assumeTrue(Platform.MAC.is(current) || Platform.WINDOWS.is(current));
-  }
-  
-  @AfterClass
-  public static void quitDriver() {
-    SafariTestBase.quitDriver();
   }
 }

@@ -40,7 +40,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-@Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE})
+@Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE},
+    issues = {3862})
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   private WebDriver driver2;
   private DesiredCapabilities caps = new DesiredCapabilities();

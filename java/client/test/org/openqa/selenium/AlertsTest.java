@@ -16,17 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -35,17 +31,23 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Set;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE})
+@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE})
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
@@ -392,7 +394,7 @@ public class AlertsTest extends JUnit4TestBase {
         TestUtilities.isNativeEventsEnabled(driver) &&
         TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
       System.err.println("x_ignore_nofocus can cause a firefox crash here. Ignoring test. See issue 2987.");
-      return;
+      assumeTrue(false);
     }
     String mainWindow = driver.getWindowHandle();
     try {

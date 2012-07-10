@@ -110,6 +110,8 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     	className = "org.openqa.selenium.iphone.IPhoneDriverTests$TestIPhoneSimulatorDriver";
     } else if (DesiredCapabilities.iphone().getBrowserName().equals(name)) {
     	className = "org.openqa.selenium.iphone.IPhoneDriverTests$TestIPhoneSimulatorDriver";
+    } else if (DesiredCapabilities.safari().getBrowserName().equals(name)) {
+      className = "org.openqa.selenium.safari.SafariDriver";
     } else {
       // The last chance saloon.
       className = System.getProperty("selenium.browser.class_name");

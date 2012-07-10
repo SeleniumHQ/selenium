@@ -38,12 +38,18 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
 public class AlertTests extends SafariTestBase {
+
+  @AfterClass
+  public static void quitDriver() {
+    SafariTestBase.quitDriver();
+  }
 
   @Before
   public void setUp() throws Exception {

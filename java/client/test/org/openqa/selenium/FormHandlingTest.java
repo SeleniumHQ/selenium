@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
@@ -165,8 +166,8 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA},
-      reason = "Does not yet support file uploads")
+  @Ignore(value = {SELENESE, IPHONE, ANDROID, SAFARI, OPERA},
+      reason = "Does not yet support file uploads", issues = { 4220 })
   @Test
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
@@ -182,8 +183,8 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE},
-          reason = "Does not yet support file uploads")
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, SELENESE},
+          reason = "Does not yet support file uploads", issues = { 4220 })
   @Test
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument() throws IOException {
     // IE before 9 doesn't handle pages served with an XHTML content type, and just prompts for to
@@ -203,8 +204,8 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA},
-          reason = "Does not yet support file uploads")
+  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA, SAFARI},
+          reason = "Does not yet support file uploads", issues = { 4220 })
   @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");

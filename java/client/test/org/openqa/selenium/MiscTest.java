@@ -28,6 +28,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -61,8 +62,8 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, SELENESE, OPERA},
-      reason = "Chrome: returns XML content formatted for display as HTML document"
+  @Ignore(value = {ANDROID, CHROME, IE, SELENESE, SAFARI, OPERA},
+      reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
           + "Opera: includes XML doctype"
           + "Others: untested")
   @Test
@@ -73,8 +74,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
 
-  @Ignore
-  // See issue 2282
+  @Ignore(issues = { 2282 })
   @Test
   public void testStimulatesStrangeOnloadInteractionInFirefox()
       throws Exception {

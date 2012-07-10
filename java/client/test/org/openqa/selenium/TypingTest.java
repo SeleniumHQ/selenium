@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class TypingTest extends JUnit4TestBase {
@@ -495,8 +496,10 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID, OPERA},
-          reason = "untested user agents. Opera: F2 focuses location bar")
+  @Ignore(value = {HTMLUNIT, IPHONE, SELENESE, ANDROID, OPERA, SAFARI},
+          reason = "untested user agents. Opera: F2 focuses location bar" +
+              "Safari: issue 4221",
+          issues = { 4221 })
   @Test
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
@@ -645,7 +648,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, IPHONE}, reason = "firefox-specific")
+  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, SAFARI}, reason = "firefox-specific")
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     driver.get(pages.javascriptPage);
@@ -658,7 +661,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, SELENESE},
+      reason = "Android/iOS: does not support contentEditable;" +
+          "Safari/Selenium: cannot type on contentEditable with synthetic events")
   @Test
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
@@ -707,8 +712,10 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(value = {ANDROID, CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SELENESE},
-          reason = "Untested browsers.", issues = {3127})
+  @Ignore(value = {ANDROID, CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE},
+      reason = "Untested browsers;" +
+          " Safari: cannot type on contentEditable with synthetic events",
+      issues = {3127})
   @Test
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);

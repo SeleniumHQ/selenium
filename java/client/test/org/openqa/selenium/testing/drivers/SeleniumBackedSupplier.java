@@ -35,7 +35,7 @@ public class SeleniumBackedSupplier implements Supplier<WebDriver> {
   }
 
   public WebDriver get() {
-    if (!isSeleniumBacked(capabilities)) {
+    if (!isSeleniumBacked()) {
       return null;
     }
 
@@ -50,8 +50,7 @@ public class SeleniumBackedSupplier implements Supplier<WebDriver> {
     }
   }
 
-  private boolean isSeleniumBacked(Capabilities capabilities) {
-    return ("safari".equals(capabilities.getBrowserName()) ||
-      Boolean.getBoolean("selenium.browser.selenium"));
+  private boolean isSeleniumBacked() {
+    return Boolean.getBoolean("selenium.browser.selenium");
   }
 }

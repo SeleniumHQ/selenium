@@ -30,6 +30,7 @@ import com.google.common.io.Files;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToBeHidden;
@@ -44,7 +45,8 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
-@Ignore(value = {IPHONE, ANDROID}, reason = "File uploads not allowed on the iPhone")
+@Ignore(value = {IPHONE, ANDROID, SAFARI}, reason = "File uploads not allowed on the iPhone",
+        issues = { 4220 })
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";

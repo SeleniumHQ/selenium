@@ -63,8 +63,7 @@ public class BrowserToCapabilities {
         break;
 
       case safari:
-        caps = new DesiredCapabilities();
-        caps.setBrowserName("safari");
+        caps = DesiredCapabilities.safari();
         break;
 
       case ipad:

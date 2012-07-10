@@ -37,11 +37,14 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore(
-    value = {ANDROID, HTMLUNIT, IPHONE, SELENESE},
-    reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, SELENESE},
+    reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
+        "Safari: not implemented (issue 4136)",
+    issues = { 4136 })
 public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled

@@ -22,11 +22,12 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.OutputType.BASE64;
 
 import java.io.File;
 
-@Ignore(IPHONE)
+@Ignore(value = {IPHONE, SAFARI}, issues = { 4203 })
 public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testSaveScreenshotAsFile() throws Exception {

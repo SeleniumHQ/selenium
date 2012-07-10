@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 
@@ -300,7 +301,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("line has text"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE})
+  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = { 4203 })
   @Test
   public void testReadALargeAmountOfData() {
     driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));

@@ -29,6 +29,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.drivers.Browser.android;
 import static org.openqa.selenium.testing.drivers.Browser.chrome;
@@ -207,8 +208,7 @@ public class TestIgnorance {
         break;
 
       case safari:
-        comparator.addDriver(SELENESE);
-        comparator.addDriver(REMOTE);
+        comparator.addDriver(SAFARI);
         break;
 
       default:

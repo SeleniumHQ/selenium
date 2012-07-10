@@ -36,6 +36,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 
@@ -92,6 +93,9 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = { SAFARI },
+      reason = "Safari: getPosition after setPosition doesn't match up exactly, " +
+          "as expected - probably due to nuances in Mac OSX window manager.")
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
     WebDriver.Window window = driver.manage().window();
     Point position = window.getPosition();
@@ -104,7 +108,7 @@ public class WindowTest extends JUnit4TestBase {
       window.setSize(new Dimension(200, 200));
       Point targetPosition = new Point(position.x + 10, position.y + 10);
       window.setPosition(targetPosition);
-  
+
       waitFor(xEqual(driver, targetPosition));
       waitFor(yEqual(driver, targetPosition));
     } finally {

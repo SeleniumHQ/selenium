@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.safari;
 
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
@@ -37,7 +38,11 @@ public class SafariDriver extends RemoteWebDriver
     implements TakesScreenshot {
   
   public SafariDriver() {
-    super(new SafariDriverCommandExecutor(0), DesiredCapabilities.safari());
+    this(DesiredCapabilities.safari());
+  }
+
+  public SafariDriver(Capabilities desiredCapabilities) {
+    super(new SafariDriverCommandExecutor(0), desiredCapabilities);
   }
 
   @Override

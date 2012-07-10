@@ -25,6 +25,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class TextPagesTest extends JUnit4TestBase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore(value = {IE, FIREFOX, SELENESE, CHROME, IPHONE, OPERA, ANDROID},
+  @Ignore(value = {IE, FIREFOX, SELENESE, CHROME, IPHONE, OPERA, ANDROID, SAFARI},
       reason = "Android: WebView adds HTML tags to the page.")
   @Test
   public void testShouldBeAbleToLoadASimplePageOfText() {
@@ -64,8 +65,8 @@ public class TextPagesTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, IE, IPHONE, SELENESE, OPERA, ANDROID}, reason =
-      "Opera: creates DOM for displaying text pages")
+  @Ignore(value = {CHROME, IE, IPHONE, SELENESE, OPERA, ANDROID, SAFARI}, reason =
+      "Opera, Safari: creates DOM for displaying text pages")
   @Test
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
