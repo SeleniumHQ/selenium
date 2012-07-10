@@ -261,6 +261,7 @@ bot.Keyboard.Keys = {
   // Punctuation keys
   EQUALS: bot.Keyboard.newKey_(
       {gecko: 107, ieWebkit: 187, opera: 61}, '=', '+'),
+  SEPARATOR: bot.Keyboard.newKey_(108, ','),
   HYPHEN: bot.Keyboard.newKey_(
       {gecko: 109, ieWebkit: 189, opera: 109}, '-', '_'),
   COMMA: bot.Keyboard.newKey_(188, ',', '<'),

@@ -293,6 +293,7 @@ goog.scope(function() {
   map[key.SUBTRACT] = botKey.NUM_MINUS;
   map[key.DECIMAL] = botKey.NUM_PERIOD;
   map[key.DIVIDE] = botKey.NUM_DIVISION;
+  map[key.SEPARATOR] = botKey.SEPARATOR;
   map[key.F1] = botKey.F1;
   map[key.F2] = botKey.F2;
   map[key.F3] = botKey.F3;
