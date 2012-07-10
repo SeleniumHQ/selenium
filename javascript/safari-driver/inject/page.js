@@ -36,6 +36,7 @@ goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
+goog.require('webdriver.atoms.element');
 goog.require('webdriver.promise');
 
 
@@ -186,6 +187,10 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
     case webdriver.CommandName.EXECUTE_SCRIPT:
       handlerFn = safaridriver.inject.page.executeScript_;
       break;
+
+    case webdriver.CommandName.SEND_KEYS_TO_ELEMENT:
+      handlerFn = safaridriver.inject.page.sendKeysToElement_;
+      break;
   }
 
   if (!handlerFn) {
@@ -203,21 +208,42 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
 
 
 /**
+ * @param {!Function} fn The function to execute.
+ * @param {!Array.<*>} args Function arguments.
+ * @return {*} The function result.
+ * @throws {Error} If unable to decode the function arguments.
+ * @private
+ */
+safaridriver.inject.page.execute_ = function(fn, args) {
+  args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(args));
+  return fn.apply(window, args);
+};
+
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @private
+ */
+safaridriver.inject.page.sendKeysToElement_ = function(command) {
+  safaridriver.inject.page.execute_(webdriver.atoms.element.type, [
+    command.getParameter('id'),
+    command.getParameter('value')
+  ]);
+};
+
+
+/**
  * Handles an executeScript command.
  * @param {!safaridriver.Command} command The command to execute.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     the script result.
+ * @return {*} The script result.
  * @private
  */
 safaridriver.inject.page.executeScript_ = function(command) {
   // TODO: clean-up bot.inject.executeScript so it doesn't pull in so many
   // extra dependencies.
   var fn = new Function(command.getParameter('script'));
-
-  var args = command.getParameter('args');
-  args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(args));
-
-  return fn.apply(window, args);
+  var args = (/** @type {!Array.<*>} */command.getParameter('args'));
+  return safaridriver.inject.page.execute_(fn, args);
 };
 
 

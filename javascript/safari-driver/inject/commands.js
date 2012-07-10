@@ -195,8 +195,27 @@ safaridriver.inject.commands.deleteCookie = function(command) {
   goog.net.cookies.remove((/** @type {string} */command.getParameter('name')));
 };
 
+
 /**
- * Cretes a command that targets a specific DOM element.
+ * Ensures the provided command's element is encoded as a WebElement JSON
+ * object, as defined by the WebDriver wire protocol.
+ * @param {!safaridriver.Command} command The command to modify;
+ * @return {!safaridriver.Command} The modified command.
+ * @private
+ */
+safaridriver.inject.commands.prepareElementCommand_ = function(command) {
+  var element = command.getParameter('id');
+  if (goog.isDef(element) && !goog.isObject(element)) {
+    command.setParameter('id', {
+      'ELEMENT': element
+    });
+  }
+  return command;
+};
+
+
+/**
+ * Creates a command that targets a specific DOM element.
  * @param {!Function} handlerFn The actual handler function. The first parameter
  *     should be the Element to target.
  * @param {...string} var_args Any named parameters which should be extracted
@@ -207,10 +226,9 @@ safaridriver.inject.commands.deleteCookie = function(command) {
 safaridriver.inject.commands.elementCommand_ = function(handlerFn, var_args) {
   var keys = goog.array.slice(arguments, 1);
   return function(command) {
+    command = safaridriver.inject.commands.prepareElementCommand_(command);
     var element = command.getParameter('id');
-    if (!goog.isObject(element)) {
-      element = {'ELEMENT': element};
-    }
+
     var args = goog.array.concat(element, goog.array.map(keys, function(key) {
       return command.getParameter(key);
     }));
@@ -269,10 +287,6 @@ safaridriver.inject.commands.getCssValue =
     safaridriver.inject.commands.elementCommand_(bot.dom.getEffectiveStyle,
         'propertyName');
 
-safaridriver.inject.commands.sendKeysToElement =
-    safaridriver.inject.commands.elementCommand_(
-        webdriver.atoms.element.type, 'value');
-
 safaridriver.inject.commands.getWindowPosition = function() {
   return bot.window.getPosition();
 };
@@ -301,34 +315,17 @@ safaridriver.inject.commands.maximizeWindow = function() {
 
 
 /**
- * Sends a command to the page to have it execute a user-supplied bit of
- * JavaScript.
+ * Executes a command in the context of the current page.
  * @param {!safaridriver.Command} command The command to execute.
  * @param {!safaridriver.inject.PageScript} pageScript Object to use to execute
- *     the script command in the context of the page under test.
+ *     the command in the context of the page under test.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     {@link bot.response.ResponseObject} from the page.
  * @throws {Error} If there is an error while sending the command to the page.
  */
-safaridriver.inject.commands.executeScript = function(command, pageScript) {
-  // Decode the command arguments from WebDriver's wire protocol.
-  var sendResult = bot.inject.executeScript(function(args) {
-    command.setParameter('args', args);
-  }, [command.getParameter('args')]);
-  bot.response.checkResponse(
-      (/** @type {!bot.response.ResponseObject} */sendResult));
-
-  var response = new webdriver.promise.Deferred();
-
-  // Execute the command in the context of the page, then encode the response
-  // for WebDriver's wire protocol.
-  pageScript.execute(command).then(function(result) {
-    if (response.isPending()) {
-      response.resolve(bot.inject.wrapValue(result));
-    }
-  });
-
-  return response.promise;
+safaridriver.inject.commands.executeInPage = function(command, pageScript) {
+  command = safaridriver.inject.commands.prepareElementCommand_(command);
+  return pageScript.execute(command);
 };
 
 

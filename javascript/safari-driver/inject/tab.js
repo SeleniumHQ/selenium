@@ -611,10 +611,10 @@ goog.scope(function() {
   map[CommandName.IS_ELEMENT_SELECTED] = commands.isElementSelected;
   map[CommandName.ELEMENT_EQUALS] = commands.elementEquals;
   map[CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY] = commands.getCssValue;
-  map[CommandName.SEND_KEYS_TO_ELEMENT] = commands.sendKeysToElement;
+  map[CommandName.SEND_KEYS_TO_ELEMENT] = commands.executeInPage;
 
-  map[CommandName.EXECUTE_SCRIPT] = commands.executeScript;
-  map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeScript;
+  map[CommandName.EXECUTE_SCRIPT] = commands.executeInPage;
+  map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeInPage;
 
   map[CommandName.SWITCH_TO_FRAME] = commands.switchToFrame;
 });

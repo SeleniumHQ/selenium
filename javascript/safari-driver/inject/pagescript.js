@@ -15,6 +15,7 @@
 
 goog.provide('safaridriver.inject.PageScript');
 
+goog.require('bot.inject');
 goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.inject.Encoder');
@@ -124,11 +125,12 @@ safaridriver.inject.PageScript.prototype.installPageScript = function() {
  *     a response message has been received.
  */
 safaridriver.inject.PageScript.prototype.execute = function(command) {
-  if (command.getName() !== webdriver.CommandName.EXECUTE_SCRIPT &&
-      command.getName() !== webdriver.CommandName.EXECUTE_ASYNC_SCRIPT) {
-    throw Error('Only script-based commands may be sent to the page script ' +
-        'for execution: ' + command);
-  }
+  // Decode the command arguments from WebDriver's wire protocol.
+  var decodeResult = bot.inject.executeScript(function(decodedParams) {
+    command.setParameters(decodedParams);
+  }, [command.getParameters()]);
+  bot.response.checkResponse(
+      (/** @type {!bot.response.ResponseObject} */decodeResult));
 
   return this.installPageScript().addCallback(function() {
     var parameters = command.getParameters();
@@ -140,8 +142,12 @@ safaridriver.inject.PageScript.prototype.execute = function(command) {
 
     var commandResponse = new webdriver.promise.Deferred();
     this.pendingResponses_[command.getId()] = commandResponse;
+
     message.send(window);
-    return commandResponse.promise;
+
+    return commandResponse.then(function(result) {
+      return bot.inject.wrapValue(result);
+    });
   }, this);
 };
 
