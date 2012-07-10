@@ -199,13 +199,21 @@ public class SeleneseCommandExecutor implements CommandExecutor {
 
   private static String startCommand(Capabilities capabilities) {
     String browser = capabilities.getBrowserName();
+
+    if (browser.startsWith("*")) {
+      return browser;
+    }
+
     if (DesiredCapabilities.firefox().getBrowserName().equals(browser)) {
       return "*chrome";
-    } else if ("safari".equals(browser)) {
+    }
+
+    if ("safari".equals(browser)) {
       String path = findSafari();
       return "*safari " + path;
-    } else if (DesiredCapabilities.chrome().getBrowserName().equals(browser)) {
+    }
 
+    if (DesiredCapabilities.chrome().getBrowserName().equals(browser)) {
       return "*googlechrome /Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
     }
 

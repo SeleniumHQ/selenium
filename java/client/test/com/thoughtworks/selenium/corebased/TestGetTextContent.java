@@ -22,16 +22,15 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Test;
 
-import static org.openqa.selenium.testing.drivers.BackedBy.*;
-import static org.openqa.selenium.testing.drivers.Browser.*;
-
 public class TestGetTextContent extends InternalSelenseTestBase {
   @Test
   public void testGetTextContent() throws Exception {
     selenium.open("../tests/html/test_gettextcontent.html");
     verifyTrue(selenium.isTextPresent("Text1"));
 
-    if (!is(rc, ie)) {  // TODO(simon): Fix this lameness.
+    // TODO(simon): Fix this lameness.
+    if (Boolean.getBoolean("selenium.browser.selenium") &&
+        System.getProperty("selenium.browser").startsWith("*ie")) {
       verifyFalse(selenium.isTextPresent("Text2"));
       verifyFalse(selenium.isTextPresent("Text3"));
       verifyFalse(selenium.isTextPresent("Text4"));

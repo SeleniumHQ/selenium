@@ -36,7 +36,7 @@ java_library(name = "rc-tests",
 java_test(name = "firefox-emulation-test",
   test_suite = "com.thoughtworks.selenium.WebDriverSeleniumTestSuite",
   sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.firefox.FirefoxDriver" },
+    { "selenium.browser" : "ff" },
   ],
   deps = [
     ":rc-tests",
@@ -48,7 +48,7 @@ java_test(name = "chrome-emulation-test",
     ":rc-tests",
   ],
   sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.chrome.ChromeDriver" },
+    { "selenium.browser" : "chrome" },
   ],
   deps = [
     ":rc-tests",
@@ -60,7 +60,7 @@ java_test(name = "ie-emulation-test",
     ":rc-tests",
   ],
   sysproperties = [
-    { "selenium.browser" : "org.openqa.selenium.ie.InternetExplorerDriver" },
+    { "selenium.browser" : "ie" },
   ],
   deps = [
     ":rc-tests",
@@ -72,7 +72,7 @@ java_test(name = "opera-emulation-test",
     ":rc-tests",
   ],
   sysproperties = [
-    { "selenium.browser" : "com.opera.core.systems.OperaDriver" },
+    { "selenium.browser" : "opera" },
   ],
   deps = [
     ":rc-tests",
@@ -81,7 +81,7 @@ java_test(name = "opera-emulation-test",
 java_test(name = "chrome-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*googlechrome" },
+    { "selenium.browser" : "*googlechrome", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -90,7 +90,7 @@ java_test(name = "chrome-rc-test",
 java_test(name = "firefox-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*firefox" },
+    { "selenium.browser" : "*firefox", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -99,7 +99,7 @@ java_test(name = "firefox-rc-test",
 java_test(name = "firefox-proxy-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*firefoxproxy" },
+    { "selenium.browser" : "*firefoxproxy", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -108,7 +108,7 @@ java_test(name = "firefox-proxy-rc-test",
 java_test(name = "firefox-singlewindow-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*firefox", "singlewindow": "true" },
+    { "selenium.browser" : "*firefox", "singlewindow": "true", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -117,7 +117,7 @@ java_test(name = "firefox-singlewindow-rc-test",
 java_test(name = "ie-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*iehta" },
+    { "selenium.browser" : "*iehta", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -126,7 +126,7 @@ java_test(name = "ie-rc-test",
 java_test(name = "ie-proxy-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*iexploreproxy" },
+    { "selenium.browser" : "*iexploreproxy", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -135,7 +135,7 @@ java_test(name = "ie-proxy-rc-test",
 java_test(name = "ie-singlewindow-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*iexplore", "singlewindow": "true" },
+    { "selenium.browser" : "*iexplore", "singlewindow": "true", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -144,7 +144,7 @@ java_test(name = "ie-singlewindow-rc-test",
 java_test(name = "safari-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*safari" },
+    { "selenium.browser" : "*safari", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",
@@ -153,7 +153,7 @@ java_test(name = "safari-rc-test",
 java_test(name = "safari-proxy-rc-test",
   test_suite = "com.thoughtworks.selenium.SeleniumRcTestSuite",
   sysproperties = [
-    { "selenium.browser" : "*safariproxy" },
+    { "selenium.browser" : "*safariproxy", "selenium.browser.selenium" : "true" },
   ],
   deps = [
     ":rc-tests",

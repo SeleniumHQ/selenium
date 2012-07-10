@@ -43,7 +43,6 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
-  private static ThreadLocal<Selenium> instance = new ThreadLocal<Selenium>();
   private CommandLine command;
   private AppServer appServer;
 
@@ -104,82 +103,10 @@ public class SeleniumTestEnvironment implements TestEnvironment {
   }
 
   public void stop() {
-    if (instance.get() != null) {
-      instance.get().stop();
-      instance.set(null);
-    }
     command.destroy();
-  }
-
-  public Selenium getSeleniumInstance(String browserString) {
-    Selenium current = instance.get();
-    if (current != null) {
-      return current;
-    }
-
-    current = startBrowser(browserString);
-    instance.set(current);
-    return current;
   }
 
   public static void main(String[] args) {
     new SeleniumTestEnvironment(4444);
   }
-
-  private Selenium startBrowser(String browserString) {
-    final String browser = System.getProperty("selenium.browser", browserString);
-
-    String baseUrl = getAppServer().whereIs("/selenium-server/tests/");
-
-    Selenium selenium;
-    if (getDriverClass(browser) != null) {
-      selenium = new WebDriverBackedSelenium(new Supplier<WebDriver>() {
-        public WebDriver get() {
-          try {
-            return getDriverClass(browser).newInstance();
-          } catch (Exception e) {
-            throw Throwables.propagate(e);
-          }
-        }
-      }, baseUrl);
-      selenium.start();
-    } else {
-      int port = 0;
-      try {
-        port = new URL(baseUrl).getPort();
-      } catch (MalformedURLException e) {
-        throw Throwables.propagate(e);
-      }
-
-      BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-      if (Boolean.getBoolean("singlewindow")) {
-        options.setSingleWindow();
-      }
-
-      selenium = new DefaultSelenium("localhost", port, browser, baseUrl);
-      if (Boolean.getBoolean("webdriver.debug")) {
-        options.set("browserSideLog", "true");
-        selenium.start(options);
-        selenium.setBrowserLogLevel("debug");
-      } else {
-        selenium.start(options);
-      }
-    }
-
-    return selenium;
-  }
-
-
-  private Class<? extends WebDriver> getDriverClass(String browserString) {
-    if (browserString == null) {
-      return null;
-    }
-
-    try {
-      return Class.forName(browserString).asSubclass(WebDriver.class);
-    } catch (ClassNotFoundException e) {
-      return null;
-    }
-  }
-
 }

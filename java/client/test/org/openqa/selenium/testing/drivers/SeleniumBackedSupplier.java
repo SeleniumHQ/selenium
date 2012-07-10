@@ -25,6 +25,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.v1.SeleneseBackedWebDriver;
 
+import static org.junit.Assert.fail;
+
 public class SeleniumBackedSupplier implements Supplier<WebDriver> {
 
   private final Capabilities capabilities;
@@ -42,12 +44,44 @@ public class SeleniumBackedSupplier implements Supplier<WebDriver> {
     oops.start();
     Capabilities serverCapabilities = oops.describe();
     DesiredCapabilities toUse = new DesiredCapabilities(serverCapabilities, capabilities);
+    toUse.setBrowserName(determineBrowserName());
 
     try {
       return new SeleneseBackedWebDriver(toUse);
     } catch (Exception e) {
       throw Throwables.propagate(e);
     }
+  }
+
+  private String determineBrowserName() {
+    String property = System.getProperty("selenium.browser");
+    if (property == null) {
+      return "*chrome";  // Default to firefox
+    }
+
+    if (property.startsWith("*")) {
+      return property;
+    }
+
+    Browser browser = Browser.valueOf(property);
+    switch (browser) {
+      case chrome:
+        return "*googlechrome";
+
+      case ie:
+      return "*iexplore";
+
+      case ff:
+        return "*firefox";
+
+      case safari:
+        return "*safari";
+
+      default:
+        fail("Cannot determine browser from: " + property);
+    }
+
+    return null; // we never get here.
   }
 
   private boolean isSeleniumBacked() {

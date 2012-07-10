@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
+import com.thoughtworks.selenium.Selenium;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SeleneseCommandExecutor;
@@ -46,5 +48,9 @@ public class SeleneseBackedWebDriver extends RemoteWebDriver
   public <X> X getScreenshotAs(OutputType<X> target) {
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
     return target.convertFromBase64Png(base64);
+  }
+
+  public Selenium getWrappedSelenium() {
+    return ((SeleneseCommandExecutor) getCommandExecutor()).getWrappedSelenium();
   }
 }
