@@ -94,13 +94,13 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
     }
 
     try {
-      File prefs = locate("javascript/firefox-driver/webdriver.json");
+      File prefs = locate("build/javascript/firefox-driver/webdriver_prefs.json");
       File noFocus = locate("build/cpp/i386/libnoblur.so");
       File ime = locate("build/cpp/i386/libimehandler.so");
       File noFocus64 = locate("build/cpp/amd64/libnoblur64.so");
       File ime64 = locate("build/cpp/amd64/libimehandler64.so");
       File dest = locate("java/client/build/production/org/openqa/selenium/firefox");
-      Files.copy(prefs, new File(dest, "webdriver.json"));
+      Files.copy(prefs, new File(dest, "webdriver_prefs.json"));
 
       File libDir = new File(dest, "x86");
       if (!libDir.exists()) {
