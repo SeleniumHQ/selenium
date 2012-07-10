@@ -15,6 +15,15 @@ java_test(name = "java-test",
    ":base",
   ])
 
+java_test(name = "on-device-test",
+  srcs = [ "AndroidDriverTests.java" ],
+  sysproperties = [
+    { "selenium.browser" : "android_real_phone" },
+  ],
+  deps = [
+   ":base",
+  ])
+
 java_library(name = "base",
   srcs = [
     "**/*.java",
