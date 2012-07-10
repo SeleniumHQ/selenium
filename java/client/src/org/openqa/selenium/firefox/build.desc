@@ -19,14 +19,39 @@ java_library(name = "firefox",
     ":x86",
   ])
 
-folder(name = "x86",
-  deps = [
-    "//cpp:noblur",
-    "//cpp:imehandler",
-  ])
-
 folder(name = "amd64",
   deps = [
-    "//cpp:noblur64",
-    "//cpp:imehandler64",
+    ":noblur64",
+    ":imehandler64",
   ])
+
+folder(name = "x86",
+  deps = [
+    ":noblur",
+    ":imehandler",
+  ])
+
+# TODO(dawagner): These tmp folders are a horrible hack, and should disappear post haste
+rename(name = "noblur",
+  deps = [
+    "//cpp:noblur",
+  ],
+  out = "tmp_x86/x_ignore_nofocus.so")
+
+rename(name = "noblur64",
+  deps = [
+    "//cpp:noblur64",
+  ],
+  out = "tmp_amd64/x_ignore_nofocus.so")
+
+rename(name = "imehandler",
+  deps = [
+    "//cpp:imehandler",
+  ],
+  out = "tmp_x86/libibushandler.so")
+
+rename(name = "imehandler64",
+  deps = [
+    "//cpp:imehandler64",
+  ],
+  out = "tmp_amd64/libibushandler.so")
