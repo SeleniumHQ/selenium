@@ -121,8 +121,7 @@ java_library(name = "webdriver-backed-selenium",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
   ],
   embedded = [
-    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:injectableSelenium",
-    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:htmlutils",
+    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:scripts",
   ])
 
 java_library(name = "selenium-backed-webdriver",

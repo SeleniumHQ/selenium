@@ -1,29 +1,16 @@
 
 java_library(name = "seleniumemulation",
   srcs = [ "*.java" ],
-  resources = [
-    { "injectableSelenium.js" : "org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" },
-    { "htmlutils.js" : "org/openqa/selenium/internal/seleniumemulation/htmlutils.js" },
-    { "//javascript/selenium-atoms:findElement" : "org/openqa/selenium/internal/seleniumemulation/findElement.js" },
-    { "//javascript/selenium-atoms:findOption" : "org/openqa/selenium/internal/seleniumemulation/findOption.js" },
-    { "//javascript/selenium-atoms:fireEvent" : "org/openqa/selenium/internal/seleniumemulation/fireEvent.js" },
-    { "//javascript/selenium-atoms:fireEventAt" : "org/openqa/selenium/internal/seleniumemulation/fireEventAt.js" },
-    { "//javascript/selenium-atoms:getAttribute" : "org/openqa/selenium/internal/seleniumemulation/getAttribute.js" },
-    { "//javascript/selenium-atoms:getText" : "org/openqa/selenium/internal/seleniumemulation/getText.js" },
-    { "//javascript/selenium-atoms:linkLocator" : "org/openqa/selenium/internal/seleniumemulation/linkLocator.js" },
-    { "//javascript/selenium-atoms:isElementPresent" : "org/openqa/selenium/internal/seleniumemulation/isElementPresent.js" },
-    { "//javascript/selenium-atoms:isSomethingSelected" : "org/openqa/selenium/internal/seleniumemulation/isSomethingSelected.js" },
-    { "//javascript/selenium-atoms:isTextPresent" : "org/openqa/selenium/internal/seleniumemulation/isTextPresent.js" },
-    { "//javascript/selenium-atoms:isVisible" : "org/openqa/selenium/internal/seleniumemulation/isVisible.js" },
-    { "//javascript/selenium-atoms:type" : "org/openqa/selenium/internal/seleniumemulation/type.js" },
-    { "//third_party/js/sizzle" : "org/openqa/selenium/internal/seleniumemulation/sizzle.js" },
-  ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/io",
     "//third_party/java/guava-libraries",
+  ],
+  embedded = [
+    ":scripts",
+    ":selenium_atoms",
   ])
 
 java_library(name="api",
@@ -41,3 +28,26 @@ export_file(name = "injectableSelenium",
 
 export_file(name = "htmlutils",
   srcs = [ "htmlutils.js" ])
+
+folder(name = "scripts",
+  srcs = [
+    "injectableSelenium.js",
+    "htmlutils.js",
+  ])
+
+folder(name = "selenium_atoms",
+  deps = [
+    "//javascript/selenium-atoms:findElement",
+    "//javascript/selenium-atoms:findOption",
+    "//javascript/selenium-atoms:fireEvent",
+    "//javascript/selenium-atoms:fireEventAt",
+    "//javascript/selenium-atoms:getAttribute",
+    "//javascript/selenium-atoms:getText",
+    "//javascript/selenium-atoms:linkLocator",
+    "//javascript/selenium-atoms:isElementPresent",
+    "//javascript/selenium-atoms:isSomethingSelected",
+    "//javascript/selenium-atoms:isTextPresent",
+    "//javascript/selenium-atoms:isVisible",
+    "//javascript/selenium-atoms:type",
+    "//third_party/js/sizzle",
+  ])

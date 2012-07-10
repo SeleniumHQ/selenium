@@ -33,14 +33,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class JavascriptLibrary {
 
-  private static final String PREFIX = "/" + JavascriptLibrary.class.getPackage()
-      .getName().replace(".", "/") + "/";
+  static final String PREFIX = "/" + JavascriptLibrary.class.getPackage()
+      .getName().replace(".", "/") + "/selenium_atoms/";
   private final ConcurrentHashMap<String, String> scripts = new ConcurrentHashMap<String, String>();
 
   private static final String injectableSelenium =
-      "/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js";
+      "/org/openqa/selenium/internal/seleniumemulation/scripts/injectableSelenium.js";
   private static final String htmlUtils =
-      "/org/openqa/selenium/internal/seleniumemulation/htmlutils.js";
+      "/org/openqa/selenium/internal/seleniumemulation/scripts/htmlutils.js";
 
   /**
    * Loads the named Selenium script and returns it wrapped in an anonymous function.
@@ -100,7 +100,7 @@ public class JavascriptLibrary {
     return result;
   }
 
-  private String readScriptImpl(String script) {
+  String readScriptImpl(String script) {
     URL url = getClass().getResource(script);
 
     if (url == null) {
@@ -113,5 +113,4 @@ public class JavascriptLibrary {
       throw Throwables.propagate(e);
     }
   }
-
 }

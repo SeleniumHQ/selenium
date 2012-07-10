@@ -56,18 +56,12 @@ public class ElementFinder {
             ").call(null, arguments[0], document)";
     add("link", linkTextLocator);
 
-    try {
-      URL url =
-          Resources.getResource(getClass().getPackage().getName().replace(".", "/") + "/sizzle.js");
-      sizzle = Resources.toString(url, Charsets.UTF_8) +
-          "var results = []; " +
-          "try { Sizzle(arguments[0], document, results);} " +
-          "catch (ignored) {} " +
-          "return results.length ? results[0] : null;";
-      add("sizzle", sizzle);
-    } catch (IOException e) {
-      throw new SeleniumException("Cannot read sizzle");
-    }
+    sizzle = new JavascriptLibrary().readScriptImpl(JavascriptLibrary.PREFIX  + "sizzle.js") +
+        "var results = []; " +
+        "try { Sizzle(arguments[0], document, results);} " +
+        "catch (ignored) {} " +
+        "return results.length ? results[0] : null;";
+    add("sizzle", sizzle);
   }
 
   public WebElement findElement(WebDriver driver, String locator) {
