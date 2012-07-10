@@ -173,6 +173,24 @@ limitations under the License.
       var el = document.getElementById('image');
       assertEquals('true', webdriver.atoms.element.getAttribute(el, 'complete'));
     }
+
+    var newLine =
+        bot.userAgent.IE_DOC_PRE9 || goog.userAgent.OPERA ? '\r\n' : '\n';
+
+    function testTypingEnterKeyOnTextArea() {
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(el,
+          ['hello', webdriver.Key.ENTER, webdriver.Key.ENTER, 'world']);
+      assertEquals('hello' + newLine + newLine + 'world', el.value);
+    }
+
+    function testTypingNewlineOnTextArea() {
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(el, ['hello\n\nworld']);
+      assertEquals('hello' + newLine + newLine + 'world', el.value);
+    }
   </script>
 </head>
 <body id="body" style="" name="body">
@@ -180,6 +198,7 @@ limitations under the License.
 <p id="has_id" title="cheese">This has an ID</p>
 
 <textarea id="has_property" rows="2">This is an example</textarea>
+<textarea id="textarea"></textarea>
 
 <form action="#" name="fishy">
   <input type="text" id="normal">

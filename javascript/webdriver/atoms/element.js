@@ -226,8 +226,10 @@ webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
           case '\b':
             current.push(bot.Keyboard.Keys.BACKSPACE);
             break;
+          default:
+            current.push(key);
+            break;
         }
-        current.push(key);
       }
     });
   });
