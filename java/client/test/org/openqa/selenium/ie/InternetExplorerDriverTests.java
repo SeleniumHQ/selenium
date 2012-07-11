@@ -16,9 +16,11 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -26,4 +28,8 @@ import org.openqa.selenium.StandardSeleniumTests;
     InternetExplorerDriverTest.class
 })
 public class InternetExplorerDriverTests {
+  @AfterClass
+  public static void cleanUpDriver() {
+    JUnit4TestBase.removeDriver();
+  }
 }
