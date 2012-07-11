@@ -15,6 +15,8 @@ namespace Selenium.Tests.Environment
         SeleniumServer remoteServer;
         private int port = 4444;
 
+        private ISelenium selenium;
+
         private EnvironmentManager()
         {
             // TODO(andre.nogueira): Error checking to guard against malformed config files
@@ -63,6 +65,23 @@ namespace Selenium.Tests.Environment
         public int Port
         {
             get { return port; }
+        }
+
+        public ISelenium GetCurrentSelenium()
+        {
+            if (selenium == null)
+            {
+                selenium = new WebDriverBackedSelenium(StartDriver(), "http://localhost:" + this.port.ToString() + "/selenium-server/tests");
+                selenium.Start();
+            }
+
+            return selenium;
+        }
+
+        public void ShutdownSelenium()
+        {
+            selenium.Stop();
+            selenium = null;
         }
 
         public IWebDriver StartDriver()

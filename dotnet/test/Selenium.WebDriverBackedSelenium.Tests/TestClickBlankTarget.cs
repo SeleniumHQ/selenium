@@ -8,7 +8,7 @@ namespace Selenium.Tests
     [TestFixture]
     public class TestClickBlankTarget : SeleniumTestCaseBase
     {
-        [Test]
+        [Ignore]
         public void ClickBlankTarget()
         {
             selenium.Open("../tests/html/Frames.html");

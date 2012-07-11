@@ -77,6 +77,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompoundMutator.cs" />
+    <Compile Include="TestXPathLocators.cs" />
+    <Compile Include="TestWaitForNot.cs" />
+    <Compile Include="TestWait.cs" />
+    <Compile Include="TestVisibility.cs" />
+    <Compile Include="TestVerifications.cs" />
+    <Compile Include="TestTypeRichText.cs" />
+    <Compile Include="TestSelect.cs" />
+    <Compile Include="TestQuickOpen.cs" />
+    <Compile Include="TestPause.cs" />
+    <Compile Include="TestPatternMatching.cs" />
+    <Compile Include="TestOpenInTargetFrame.cs" />
+    <Compile Include="TestOpen.cs" />
+    <Compile Include="TestMultiSelect.cs" />
+    <Compile Include="TestLocators.cs" />
+    <Compile Include="TestHtmlSource.cs" />
+    <Compile Include="TestGoBack.cs" />
+    <Compile Include="TestGettingValueOfCheckbox.cs" />
+    <Compile Include="TestFunkyEventHandling.cs" />
+    <Compile Include="TestFramesOpen.cs" />
+    <Compile Include="TestFramesClick.cs" />
+    <Compile Include="TestDragAndDrop.cs" />
+    <Compile Include="TestImplicitLocators.cs" />
     <Compile Include="TestClickAt.cs" />
     <Compile Include="TestErrorChecking.cs" />
     <Compile Include="TestElementPresent.cs" />
