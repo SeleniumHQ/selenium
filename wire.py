@@ -1361,11 +1361,11 @@ location for correctly generating native events.''').
   resources.append(
       SessionResource('/session/:sessionId/log').
       Post('Get the log for a given log type. Log buffer is reset after each request.').
-      AddJsonParameter('type', '{string}', 'The type of the log as defined in '
+      AddJsonParameter('type', '{string}', 'The log type, as defined in '
                        '[http://selenium.googlecode.com/svn/trunk/docs/api/'
                        'java/org/openqa/selenium/logging/LogType.html '
-                       'LogType]: `{DRIVER|PROFILER}. A log type must be provided.').
-      SetReturnType('{Array.<object>}', 'The list of [Log_Entry_JSON_Object log entries].'))
+                       'LogType]. The log type must be provided.').
+      SetReturnType('{Array.<object>}', 'The list of [#Log_Entry_JSON_Object log entries].'))
 
   logging.info('Generating %s', wiki_path)
   f = open(wiki_path, 'w')
