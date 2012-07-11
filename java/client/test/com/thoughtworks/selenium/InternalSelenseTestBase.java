@@ -154,9 +154,6 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     }
   }
 
-//  protected boolean is(BackedBy backedBy, Browser browser) {
-//  }
-
   @Before
   public void initializeSelenium() {
     selenium = instance.get();
@@ -174,11 +171,14 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       caps.setCapability("browserSideLog", true);
     }
 
+    String baseUrl = whereIs("/selenium-server/tests/");
+    caps.setCapability("selenium.server.url", baseUrl);
+
+
     WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
     if (driver instanceof SeleneseBackedWebDriver) {
       selenium = ((SeleneseBackedWebDriver) driver).getWrappedSelenium();
     } else {
-      String baseUrl = GlobalTestEnvironment.get().getAppServer().whereIs("/selenium-server/tests/");
       selenium = new WebDriverBackedSelenium(driver, baseUrl);
     }
 
