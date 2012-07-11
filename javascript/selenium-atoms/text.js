@@ -23,6 +23,7 @@ goog.provide('core.text');
 
 
 goog.require('bot.dom');
+goog.require('bot.userAgent');
 goog.require('core.locators');
 goog.require('core.patternMatcher');
 goog.require('goog.dom');
@@ -76,7 +77,7 @@ core.text.getTextContent_ = function(element, preformatted) {
         element.tagName == 'HR' || element.tagName == 'DIV') {
       text += '\n';
     }
-    return text.replace(/&nbsp/, ' ');
+    return text.replace(/&nbsp/, ' ').replace(/&#100;/, ' ');
   }
   return '';
 };
@@ -120,7 +121,7 @@ core.text.replaceAll_ = function(text, oldText, newText) {
  */
 core.text.normalizeSpaces_ = function(text) {
   // IE has already done this conversion, so doing it again will remove multiple nbsp
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
     return text;
   }
 

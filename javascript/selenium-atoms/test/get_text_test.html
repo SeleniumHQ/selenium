@@ -37,6 +37,14 @@
 
           assertEquals('Text1', core.text.getText(element));
         }
+
+        function testHandlesNbspInTextProperly() {
+          var element = bot.locators.findElement({id: 'theSpan'});
+
+          var text = core.text.getText(element);
+
+          assertEquals('this is the span', core.text.getText(element));
+        }
     </script>
 </head>
 <body>
@@ -47,6 +55,7 @@
     <span id="text1">Text1</span><br/>
     <span style="visibility:hidden">Text2</span><br/>
     <span style="display:none">Text3</span><br/>
+    <span id="theSpan">this is the&nbsp;span</span><br/>
 
     <div style="visibility:hidden">
         <span>Text4</span><br/>
