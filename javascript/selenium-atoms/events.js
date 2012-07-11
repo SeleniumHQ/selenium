@@ -39,7 +39,7 @@ core.events.altKeyDown_ = false;
 core.events.metaKeyDown_ = false;
 core.events.shiftKeyDown_ = false;
 
-var XPCNativeWrapper = XPCNativeWrapper || function() {};
+var XPCNativeWrapper = XPCNativeWrapper || function(_) {};
 
 core.events.getEventFactory_ = function(eventName) {
   var type = bot.events.EventType[eventName.toUpperCase()];

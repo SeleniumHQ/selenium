@@ -130,7 +130,7 @@ core.patternMatcher.regexpFromGlob = function(glob) {
 
 
 /**
- * @typedef {function(string):string}
+ * @typedef {function(string,string):boolean}
  */
 core.patternMatcher.Strategy;
 
