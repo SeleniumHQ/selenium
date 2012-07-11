@@ -174,7 +174,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       caps.setCapability("browserSideLog", true);
     }
 
-    WebDriver driver = new WebDriverBuilder().get();
+    WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
     if (driver instanceof SeleneseBackedWebDriver) {
       selenium = ((SeleneseBackedWebDriver) driver).getWrappedSelenium();
     } else {

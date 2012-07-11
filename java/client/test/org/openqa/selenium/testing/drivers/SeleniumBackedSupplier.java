@@ -78,7 +78,7 @@ public class SeleniumBackedSupplier implements Supplier<WebDriver> {
         return "*safari";
 
       default:
-        fail("Cannot determine browser from: " + property);
+        fail("Attempt to use an unsupported browser: " + property);
     }
 
     return null; // we never get here.
