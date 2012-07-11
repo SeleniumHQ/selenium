@@ -42,13 +42,15 @@ core.events.shiftKeyDown_ = false;
 var XPCNativeWrapper = XPCNativeWrapper || function(_) {};
 
 core.events.getEventFactory_ = function(eventName) {
-  var type = bot.events.EventType[eventName.toUpperCase()];
-  if (type) {
-    return type;
+  for (var key in bot.events.EventType) {
+    var factory = bot.events.EventType[key];
+    if (factory.toString() == eventName) {
+      return factory;
+    }
   }
 
   return {
-    'create': function(target, opt_args) {
+    create: function(target, opt_args) {
       var doc = goog.dom.getOwnerDocument(target);
       var event;
 
