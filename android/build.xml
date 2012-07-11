@@ -32,7 +32,7 @@
     <property name="res.raw" value="res/raw"/>
 
     <copy file="${build.location}/java/client/src/org/openqa/selenium/base.jar" tofile="libs/base.jar" />
-    <copy file="${build.location}/java/client/src/org/openqa/selenium/internal/codecs.jar" tofile="libs/codecs.jar" />
+    <copy file="${build.location}/java/client/src/org/openqa/selenium/codecs.jar" tofile="libs/codecs.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/webdriver-api.jar" tofile="libs/webdriver-api.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/remote/common.jar" tofile="libs/webdriver-common.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/remote/remote.jar" tofile="libs/webdriver-client-remote.jar" />
