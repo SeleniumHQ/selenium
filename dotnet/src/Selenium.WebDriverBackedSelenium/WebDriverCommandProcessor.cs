@@ -335,7 +335,7 @@ namespace Selenium
             this.seleneseMethods.Add("setTimeout", new SetTimeout(this.timer));
             this.seleneseMethods.Add("shiftKeyDown", new ShiftKeyDown(keyState));
             this.seleneseMethods.Add("shiftKeyUp", new ShiftKeyUp(keyState));
-            this.seleneseMethods.Add("submit", new Submit(this.elementFinder));
+            this.seleneseMethods.Add("submit", new Submit(this.alertOverride, this.elementFinder));
             this.seleneseMethods.Add("type", new Selenium.Internal.SeleniumEmulation.Type(this.alertOverride, this.elementFinder, keyState));
             this.seleneseMethods.Add("typeKeys", new TypeKeys(this.alertOverride, this.elementFinder));
             this.seleneseMethods.Add("uncheck", new Uncheck(this.elementFinder));

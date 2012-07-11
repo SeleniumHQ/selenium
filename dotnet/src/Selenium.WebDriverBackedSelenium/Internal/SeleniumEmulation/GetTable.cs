@@ -45,9 +45,9 @@ namespace Selenium.Internal.SeleniumEmulation
             }
 
             Match tableMatch = TableParts.Match(locator);
-            string tableName = tableMatch.Groups[0].Value;
-            long row = int.Parse(tableMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-            long col = int.Parse(tableMatch.Groups[2].Value, CultureInfo.InvariantCulture);
+            string tableName = tableMatch.Groups[1].Value;
+            long row = int.Parse(tableMatch.Groups[2].Value, CultureInfo.InvariantCulture);
+            long col = int.Parse(tableMatch.Groups[3].Value, CultureInfo.InvariantCulture);
 
             IWebElement table = this.finder.FindElement(driver, tableName);
 

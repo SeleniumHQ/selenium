@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium;
 
@@ -117,12 +118,12 @@ namespace Selenium.Internal.SeleniumEmulation
         {
             if (locator.StartsWith("xpath=", StringComparison.Ordinal))
             {
-                return driver.FindElement(By.XPath(locator.Substring("xpath=".Length)));
+                return FindUsingXPath(driver, locator.Substring("xpath=".Length));
             }
 
             if (locator.StartsWith("//", StringComparison.Ordinal))
             {
-                return driver.FindElement(By.XPath(locator));
+                return FindUsingXPath(driver, locator);
             }
 
             if (locator.StartsWith("css=", StringComparison.Ordinal))
@@ -131,6 +132,24 @@ namespace Selenium.Internal.SeleniumEmulation
             }
 
             return null;
+        }
+
+        private static IWebElement FindUsingXPath(IWebDriver driver, string xpath)
+        {
+            try
+            {
+                return driver.FindElement(By.XPath(xpath));
+            }
+            catch (WebDriverException)
+            {
+                if (xpath.EndsWith("/"))
+                {
+                    xpath = xpath.Substring(0, xpath.Length - 1);
+                    return driver.FindElement(By.XPath(xpath));
+                }
+            }
+
+            throw new NoSuchElementException(string.Format(CultureInfo.InvariantCulture, "Cannot find element by XPath {0}", xpath));
         }
     }
 }

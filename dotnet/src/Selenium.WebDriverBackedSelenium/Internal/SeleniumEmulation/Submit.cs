@@ -11,13 +11,15 @@ namespace Selenium.Internal.SeleniumEmulation
     internal class Submit : SeleneseCommand
     {
         private ElementFinder finder;
+        private AlertOverride alert;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Submit"/> class.
         /// </summary>
         /// <param name="finder">An <see cref="ElementFinder"/> used to find the element on which to execute the command.</param>
-        public Submit(ElementFinder finder)
+        public Submit(AlertOverride alert, ElementFinder finder)
         {
+            this.alert = alert;
             this.finder = finder;
         }
 
@@ -30,6 +32,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <returns>The result of the command.</returns>
         protected override object HandleSeleneseCommand(IWebDriver driver, string locator, string value)
         {
+            this.alert.ReplaceAlertMethod();
             this.finder.FindElement(driver, locator).Submit();
             return null;
         }
