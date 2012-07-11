@@ -298,7 +298,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("setTimeout", new SetTimeout(timer));
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));
     seleneseMethods.put("shiftKeyUp", new ShiftKeyUp(keyState));
-    seleneseMethods.put("submit", new Submit(elementFinder));
+    seleneseMethods.put("submit", new Submit(alertOverride, elementFinder));
     seleneseMethods.put("type",
         new Type(alertOverride, javascriptLibrary, elementFinder, keyState));
     seleneseMethods.put("typeKeys", new TypeKeys(alertOverride, elementFinder));

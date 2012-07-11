@@ -19,14 +19,17 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class Submit extends SeleneseCommand<Void> {
-  private final ElementFinder finder;
+    private final AlertOverride alertOverride;
+    private final ElementFinder finder;
 
-  public Submit(ElementFinder finder) {
-    this.finder = finder;
+  public Submit(AlertOverride alertOverride, ElementFinder finder) {
+      this.alertOverride = alertOverride;
+      this.finder = finder;
   }
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String formLocator, String ignored) {
+    alertOverride.replaceAlertMethod(driver);
     finder.findElement(driver, formLocator).submit();
 
     return null;
