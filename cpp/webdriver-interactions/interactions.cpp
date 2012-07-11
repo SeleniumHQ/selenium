@@ -815,17 +815,17 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 
 LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY, long toX, long toY)
 {
-	if (!handle) {
-	  LOG(WARN) << "Window handle is invalid";
-	  return ENULLPOINTER;
-	}
+  if (!handle) {
+    LOG(WARN) << "Window handle is invalid";
+    return ENULLPOINTER;
+  }
 
-	HWND directInputTo = (HWND) handle;
+  HWND directInputTo = (HWND) handle;
   long pointsDistance = distanceBetweenPoints(fromX, fromY, toX, toY);
   const int stepSizeInPixels = 5;
   int steps = pointsDistance / stepSizeInPixels;
 
-	long sleep = duration / max(steps, 1);
+  long sleep = duration / max(steps, 1);
 
   LPRECT r = new RECT();
   GetWindowRect(directInputTo, r);
@@ -835,16 +835,16 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
     buttonValue |= MK_SHIFT;
   }
 
-	for (int i = 0; i < steps + 1; i++) {
-	  //To avoid integer division rounding and cumulative floating point errors,
-	  //calculate from scratch each time
-	  int currentX = (int)(fromX + ((toX - fromX) * ((double)i) / steps));
-		int currentY = (int)(fromY + ((toY - fromY) * ((double)i) / steps));
-	  SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(currentX, currentY));
-		wait(sleep);
-	}
-	
-	SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(toX, toY));
+  for (int i = 0; i < steps + 1; i++) {
+    //To avoid integer division rounding and cumulative floating point errors,
+    //calculate from scratch each time
+    int currentX = (int)(fromX + ((toX - fromX) * ((double)i) / steps));
+    int currentY = (int)(fromY + ((toY - fromY) * ((double)i) / steps));
+    SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(currentX, currentY));
+    wait(sleep);
+  }
+
+  SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(toX, toY));
 
   delete r;
   return 0;
