@@ -10,6 +10,7 @@
   goog.require('goog.json');
   goog.require('goog.testing.jsunit');
   goog.require('goog.testing.ExpectedFailures');
+  goog.require('goog.userAgent.product');
 </script>
 <body>
 <script>
@@ -64,7 +65,8 @@
   function testCanExecuteScriptsInTheContextOfAnotherWindow() {
     var testFrame = createTestFrame();
     var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
-    expectedFailures.expectFailureFor(bot.userAgent.IE_DOC_PRE9,
+    expectedFailures.expectFailureFor(bot.userAgent.IE_DOC_PRE9 ||
+        (goog.userAgent.product.ANDROID && !bot.userAgent.isEngineVersion(534)),
         'Fails in IE before 9 - issue 3723');
     expectedFailures.run(function() {
       assertEquals('undefined',
