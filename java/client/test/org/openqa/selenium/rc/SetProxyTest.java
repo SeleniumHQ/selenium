@@ -91,7 +91,7 @@ public class SetProxyTest {
     }
     caps.setCapability(PROXY, proxy);
 
-    WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
 
     driver.get(pages.simpleTestPage);
     driver.quit();
@@ -122,7 +122,7 @@ public class SetProxyTest {
     }
     caps.setCapability(PROXY, proxy);
 
-    WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
 
     driver.get(pages.simpleTestPage);
     driver.quit();

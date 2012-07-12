@@ -1,6 +1,6 @@
 /*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
-  private Capabilities additionalCapabilities;
+  private Capabilities desiredCapabilities;
+  private Capabilities requiredCapabilities;
   private final Browser browser;
 
   public WebDriverBuilder() {
@@ -44,10 +45,11 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   public WebDriver get() {
     Capabilities standardCapabilities = BrowserToCapabilities.of(browser);
-    Capabilities desiredCapabilities =
-        new DesiredCapabilities(standardCapabilities, additionalCapabilities);
+    Capabilities desiredCaps = new DesiredCapabilities(standardCapabilities, 
+        desiredCapabilities);
 
-    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCapabilities);
+    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps, 
+        requiredCapabilities);
 
     for (Supplier<WebDriver> supplier : suppliers) {
       WebDriver driver = supplier.get();
@@ -78,20 +80,25 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     }
   }
 
-  private List<Supplier<WebDriver>> getSuppliers(Capabilities caps) {
+  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps, 
+      Capabilities requiredCaps) {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
-    suppliers.add(new SauceBackedDriverSupplier(caps));
-    suppliers.add(new RemoteSupplier(caps));
-    suppliers.add(new SeleniumBackedSupplier(caps));
-    suppliers.add(new OperaDriverSupplier(caps));
-    suppliers.add(new ReflectionBackedDriverSupplier(caps));
-    suppliers.add(new DefaultDriverSupplier(caps));
+    suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
+    suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
+    suppliers.add(new SeleniumBackedSupplier(desiredCaps));
+    suppliers.add(new OperaDriverSupplier(desiredCaps));
+    suppliers.add(new ReflectionBackedDriverSupplier(desiredCaps, requiredCaps));
+    suppliers.add(new DefaultDriverSupplier(desiredCaps, requiredCaps));
     return suppliers;
   }
 
-  public WebDriverBuilder setCapabilities(Capabilities additionalCapabilities) {
-    this.additionalCapabilities = additionalCapabilities;
+  public WebDriverBuilder setDesiredCapabilities(Capabilities caps) {
+    this.desiredCapabilities = caps;
+    return this;
+  }
 
+  public WebDriverBuilder setRequiredCapabilities(Capabilities caps) {
+    this.requiredCapabilities = caps;
     return this;
   }
 

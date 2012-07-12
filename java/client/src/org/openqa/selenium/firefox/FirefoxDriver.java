@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
+Portions copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,12 @@ limitations under the License.
  */
 
 package org.openqa.selenium.firefox;
+
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
@@ -52,13 +58,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
-
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a
@@ -97,15 +96,28 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     this(new FirefoxBinary(), profile);
   }
 
-  public FirefoxDriver(Capabilities capabilities) {
-    this(getBinary(capabilities), extractProfile(capabilities), capabilities);
+  public FirefoxDriver(Capabilities desiredCapabilities) {
+    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null), 
+        desiredCapabilities);
+  }
+  
+  public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities), 
+        desiredCapabilities, requiredCapabilities);
   }
 
-  private static FirefoxProfile extractProfile(Capabilities capabilities) {
+  private static FirefoxProfile extractProfile(Capabilities desiredCapabilities, 
+      Capabilities requiredCapabilities) {
+    
     FirefoxProfile profile = null;
-
-    if (capabilities != null && capabilities.getCapability(PROFILE) != null) {
-      Object raw = capabilities.getCapability(PROFILE);
+    Object raw = null;
+    if (desiredCapabilities != null && desiredCapabilities.getCapability(PROFILE) != null) {
+      raw = desiredCapabilities.getCapability(PROFILE);
+    }
+    if (requiredCapabilities != null && requiredCapabilities.getCapability(PROFILE) != null) {
+      raw = requiredCapabilities.getCapability(PROFILE);
+    }
+    if (raw != null) {
       if (raw instanceof FirefoxProfile) {
         profile = (FirefoxProfile) raw;
       } else if (raw instanceof String) {
@@ -116,31 +128,34 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
         }
       }
     }
-
     profile = getProfile(profile);
     
+    populateProfile(profile, desiredCapabilities);
+    populateProfile(profile, requiredCapabilities);
+    
+    return profile;
+  }
+  
+  private static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
     if (capabilities == null) {
-      return profile;
+      return;
     }
-
     if (capabilities.getCapability(SUPPORTS_WEB_STORAGE) != null) {
       Boolean supportsWebStorage = (Boolean) capabilities.getCapability(SUPPORTS_WEB_STORAGE);
       profile.setPreference("dom.storage.enabled", supportsWebStorage.booleanValue());
     }
-    
     if (capabilities.getCapability(ACCEPT_SSL_CERTS) != null) {
       Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
       profile.setAcceptUntrustedCertificates(acceptCerts);
     }
-
     if (capabilities.getCapability(LOGGING_PREFS) != null) {
-      LoggingPreferences logsPrefs = (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
+      LoggingPreferences logsPrefs = 
+          (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
       for (String logtype : logsPrefs.getEnabledLogTypes()) {
-        profile.setPreference("webdriver.log." + logtype, logsPrefs.getLevel(logtype).intValue());
+        profile.setPreference("webdriver.log." + logtype, 
+            logsPrefs.getLevel(logtype).intValue());
       }
     }
-
-    return profile;
   }
 
   private static FirefoxBinary getBinary(Capabilities capabilities) {
@@ -160,8 +175,14 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
+    this(binary, profile, capabilities, null);
+  }
+  
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, 
+      Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     super(new LazyCommandExecutor(binary, profile),
-      dropCapabilities(capabilities, BINARY, PROFILE));
+      dropCapabilities(desiredCapabilities, BINARY, PROFILE), 
+      dropCapabilities(requiredCapabilities, BINARY, PROFILE));
     this.binary = binary;
     setElementConverter(new JsonToWebElementConverter(this) {
       @Override

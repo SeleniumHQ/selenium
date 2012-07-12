@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -94,8 +94,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   protected RemoteWebDriver() {
     init(false);
   }
-
-  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
+  
+  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities, 
+      Capabilities requiredCapabilities) {
     this.executor = executor;
 
     boolean isProfilingEnabled = desiredCapabilities != null &&
@@ -106,15 +107,25 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
     }
     startClient();
-    startSession(desiredCapabilities);
+    startSession(desiredCapabilities, requiredCapabilities);
+  }
+
+  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
+    this(executor, desiredCapabilities, null);
   }
 
   public RemoteWebDriver(Capabilities desiredCapabilities) {
     this((URL) null, desiredCapabilities);
   }
 
+  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities, 
+      Capabilities requiredCapabilities) {
+    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, 
+        requiredCapabilities);
+  }
+  
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
-    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
+    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
   }
 
   private void init(boolean isProfilingEnabled) {
@@ -152,10 +163,23 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     sessionId = new SessionId(opaqueKey);
   }
 
-  @SuppressWarnings({"unchecked"})
   protected void startSession(Capabilities desiredCapabilities) {
-    Response response = execute(DriverCommand.NEW_SESSION,
-        ImmutableMap.of("desiredCapabilities", desiredCapabilities));
+    startSession(desiredCapabilities, null);
+  }
+
+  @SuppressWarnings({"unchecked"})
+  protected void startSession(Capabilities desiredCapabilities, 
+      Capabilities requiredCapabilities) {
+    
+    ImmutableMap.Builder<String, Capabilities> paramBuilder = 
+        new ImmutableMap.Builder<String, Capabilities>();
+    paramBuilder.put("desiredCapabilities", desiredCapabilities);    
+    if (requiredCapabilities != null) { 
+      paramBuilder.put("requiredCapabilities", requiredCapabilities);
+    }
+    Map<String, ?> parameters = paramBuilder.build();
+    
+    Response response = execute(DriverCommand.NEW_SESSION, parameters);
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
     DesiredCapabilities returnedCapabilities = new DesiredCapabilities();

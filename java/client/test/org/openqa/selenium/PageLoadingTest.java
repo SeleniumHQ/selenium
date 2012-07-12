@@ -226,7 +226,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     Capabilities current = ((HasCapabilities) driver).getCapabilities();
     DesiredCapabilities caps = new DesiredCapabilities(current);
     caps.setCapability("webdriver.loading.strategy", "unstable");
-    WebDriver testDriver = new WebDriverBuilder().setCapabilities(caps).get();
+    WebDriver testDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
 
     long start = System.currentTimeMillis();
     testDriver.get(slowPage);

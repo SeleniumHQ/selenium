@@ -28,14 +28,17 @@ public class RemoteSupplier implements Supplier<WebDriver> {
 
   private static OutOfProcessSeleniumServer server = new OutOfProcessSeleniumServer();
   private static volatile boolean started;
-  private Capabilities caps;
+  private Capabilities desiredCapabilities;
+  private Capabilities requiredCapabilities;
 
-  public RemoteSupplier(Capabilities caps) {
-    this.caps = caps;
+  public RemoteSupplier(Capabilities desiredCapabilities, 
+      Capabilities requiredCapabilities) {
+    this.desiredCapabilities = desiredCapabilities;
+   this.requiredCapabilities = requiredCapabilities;
   }
 
   public WebDriver get() {
-    if (caps == null || !Boolean.getBoolean("selenium.browser.remote")) {
+    if (desiredCapabilities == null || !Boolean.getBoolean("selenium.browser.remote")) {
       return null;
     }
 
@@ -44,7 +47,7 @@ public class RemoteSupplier implements Supplier<WebDriver> {
     }
 
     RemoteWebDriver driver = new RemoteWebDriver(
-        server.getWebDriverUrl(), caps);
+        server.getWebDriverUrl(), desiredCapabilities, requiredCapabilities);  
     driver.setFileDetector(new LocalFileDetector());
     return driver;
   }

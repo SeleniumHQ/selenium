@@ -82,7 +82,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
-    driver2 = new WebDriverBuilder().setCapabilities(caps).get();
+    driver2 = new WebDriverBuilder().setDesiredCapabilities(caps).get();
 
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();
@@ -96,7 +96,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour, String text) {
     caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
-    driver2 = new WebDriverBuilder().setCapabilities(caps).get();
+    driver2 = new WebDriverBuilder().setDesiredCapabilities(caps).get();
 
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();

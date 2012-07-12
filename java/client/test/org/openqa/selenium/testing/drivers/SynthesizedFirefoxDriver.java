@@ -1,6 +1,6 @@
 /*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
+Copyright 2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,8 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium.testing.drivers;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import static org.openqa.selenium.testing.DevMode.isInDevMode;
+import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
@@ -30,11 +35,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
-import static org.openqa.selenium.testing.InProject.locate;
-
 public class SynthesizedFirefoxDriver extends FirefoxDriver {
 
   private static boolean runBuild = true;
@@ -47,15 +47,20 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
     super(copyExtensionTo(profile));
   }
 
-  public SynthesizedFirefoxDriver(Capabilities capabilities) {
-    super(tweakCapabilities(capabilities));
+  public SynthesizedFirefoxDriver(Capabilities desiredCapabilities) {
+    this(desiredCapabilities, null);
+  }
+  
+  public SynthesizedFirefoxDriver(Capabilities desiredCapabilities, 
+      Capabilities requiredCapabilities) {
+    super(tweakCapabilities(desiredCapabilities), requiredCapabilities);
   }
 
-  private static Capabilities tweakCapabilities(Capabilities caps) {
-    if (caps == null) {
+  private static Capabilities tweakCapabilities(Capabilities desiredCaps) {
+    if (desiredCaps == null) {
       return null;
     }
-    DesiredCapabilities tweaked = new DesiredCapabilities(caps.asMap());
+    DesiredCapabilities tweaked = new DesiredCapabilities(desiredCaps);
     if (tweaked.getCapability(PROFILE) == null) {
       tweaked.setCapability(PROFILE, createTemporaryProfile());
     } else {

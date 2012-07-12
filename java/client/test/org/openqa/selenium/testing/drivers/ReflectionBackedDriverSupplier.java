@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.testing.DevMode.isInDevMode;
+
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
@@ -34,28 +37,30 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
-
 public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
-  private final static Logger log = Logger.getLogger(ReflectionBackedDriverSupplier.class.getName());
-  private final Capabilities caps;
+  private final static Logger log = 
+      Logger.getLogger(ReflectionBackedDriverSupplier.class.getName());
+  private final Capabilities desiredCapabilities;
+  private final Capabilities requiredCapabilities;
 
-  public ReflectionBackedDriverSupplier(Capabilities caps) {
-    this.caps = caps;
+  public ReflectionBackedDriverSupplier(Capabilities desiredCapabilities, 
+      Capabilities requiredCapabilities) {
+    this.desiredCapabilities = desiredCapabilities;
+    this.requiredCapabilities = requiredCapabilities;
   }
 
   public WebDriver get() {
     try {
-      DesiredCapabilities toUse = new DesiredCapabilities(caps);
+      DesiredCapabilities desiredCapsToUse = new DesiredCapabilities(desiredCapabilities);
 
-      Class<? extends WebDriver> driverClass = mapToClass(toUse);
+      Class<? extends WebDriver> driverClass = mapToClass(desiredCapsToUse);
       if (driverClass == null) {
         return null;
       }
 
-      if (DesiredCapabilities.firefox().getBrowserName().equals(toUse.getBrowserName())) {
+      if (DesiredCapabilities.firefox().getBrowserName().
+          equals(desiredCapsToUse.getBrowserName())) {
         if (isInDevMode()) {
           copyFirefoxDriverDefaultsToOutputDir();
         }
@@ -64,10 +69,14 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         boolean enableNativeEvents = Boolean.getBoolean("selenium.browser.native_events") ||
                                Platform.getCurrent().is(WINDOWS);
         profile.setEnableNativeEvents(enableNativeEvents);
-        toUse.setCapability(FirefoxDriver.PROFILE, profile);
+        desiredCapsToUse.setCapability(FirefoxDriver.PROFILE, profile);
+        
+        return driverClass.getConstructor(Capabilities.class, 
+            Capabilities.class).newInstance(desiredCapsToUse, requiredCapabilities);
       }
 
-      return driverClass.getConstructor(Capabilities.class).newInstance(toUse);
+      //TODO: Call constructor with two Capabilities arguments for all driver classes
+      return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
     } catch (InvocationTargetException e) {
       throw Throwables.propagate(e.getTargetException());
     } catch (Exception e) {
