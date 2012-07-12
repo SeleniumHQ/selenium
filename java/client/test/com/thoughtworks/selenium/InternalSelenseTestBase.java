@@ -175,7 +175,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     caps.setCapability("selenium.server.url", baseUrl);
 
 
-    WebDriver driver = new WebDriverBuilder().setCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     if (driver instanceof SeleneseBackedWebDriver) {
       selenium = ((SeleneseBackedWebDriver) driver).getWrappedSelenium();
     } else {
