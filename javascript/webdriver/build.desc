@@ -44,8 +44,7 @@ js_binary(name = "webdriver",
     "*.js",
     "http/*.js",
     "node/node.js",
-    "exports/deployable.js",
-    "exports/standard.js",
+    "exports/exports.js",
   ],
   deps = [
     "//javascript/atoms:error_lib",
@@ -75,7 +74,7 @@ js_binary(name = "webdriver",
     "--jscomp_error=unknownDefines",
     "--jscomp_error=uselessCode",
     "--jscomp_error=visibility",
-    "--output_wrapper='(function(){%output%;for(var key in webdriver)this[key]=webdriver[key];delete this.webdriver;}).call(typeof exports==typeof {}&&exports===this?exports:this.webdriver=this.webdriver||{})'",
+    "--output_wrapper='(function(exports){%output%})(typeof exports===typeof {}&&exports===this?exports:this.webdriver=this.webdriver||{})'",
     "--third_party=false",
   ])
 

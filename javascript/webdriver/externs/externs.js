@@ -18,6 +18,10 @@
 
 
 /** @type {!Object} */
+var exports = {};
+
+
+/** @type {!Object} */
 var process = {};
 
 
