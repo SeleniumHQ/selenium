@@ -16,14 +16,15 @@ namespace Selenium.Tests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            selenium = new WebDriverBackedSelenium(EnvironmentManager.Instance.StartDriver(), baseUrl + "/tests");
-            selenium.Start();
+            //selenium = new WebDriverBackedSelenium(EnvironmentManager.Instance.StartDriver(), baseUrl + "/tests");
+            //selenium.Start();
+            selenium = EnvironmentManager.Instance.GetCurrentSelenium();
         }
 
         [TestFixtureTearDown]
         public void FixtureTearDown()
         {
-            selenium.Stop();
+            //selenium.Stop();
             
         }
 

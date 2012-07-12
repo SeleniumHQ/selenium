@@ -97,7 +97,6 @@
     <Compile Include="TestFunkyEventHandling.cs" />
     <Compile Include="TestFramesOpen.cs" />
     <Compile Include="TestFramesClick.cs" />
-    <Compile Include="TestDragAndDrop.cs" />
     <Compile Include="TestImplicitLocators.cs" />
     <Compile Include="TestClickAt.cs" />
     <Compile Include="TestErrorChecking.cs" />

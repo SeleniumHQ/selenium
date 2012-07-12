@@ -80,8 +80,11 @@ namespace Selenium.Tests.Environment
 
         public void ShutdownSelenium()
         {
-            selenium.Stop();
-            selenium = null;
+            if (selenium != null)
+            {
+                selenium.Stop();
+                selenium = null;
+            }
         }
 
         public IWebDriver StartDriver()

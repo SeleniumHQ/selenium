@@ -14,11 +14,13 @@ namespace Selenium.Tests
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.RemoteServer.Start();
+            EnvironmentManager.Instance.GetCurrentSelenium();
         }
 
         [TearDown]
         public void RunAfterAnyTests()
         {
+            EnvironmentManager.Instance.ShutdownSelenium();
             EnvironmentManager.Instance.RemoteServer.Stop();
         }
     }

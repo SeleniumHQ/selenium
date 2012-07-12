@@ -10,7 +10,6 @@ namespace Selenium.Tests
     public class TestConfirmations : SeleniumTestCaseBase
     {
         [Ignore("setting property on window object cross-navigation does not work properly")]
-        [Test]
         public void Confirmations()
         {
             selenium.Open("../tests/html/test_confirm.html");

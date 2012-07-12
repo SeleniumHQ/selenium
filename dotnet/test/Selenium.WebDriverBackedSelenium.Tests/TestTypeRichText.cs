@@ -10,7 +10,7 @@ namespace Selenium.Tests
     [TestFixture]
     public class TestTypeRichText : SeleniumTestCaseBase
     {
-        [Ignore]
+        [Ignore("GetEval of browserVersion fails.")]
         public void ShouldBeAbleToTypeInRichText()
         {
             String isIe = selenium.GetEval("browserVersion.isIE");
