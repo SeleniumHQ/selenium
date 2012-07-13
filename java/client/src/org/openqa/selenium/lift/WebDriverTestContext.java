@@ -146,7 +146,7 @@ public class WebDriverTestContext implements TestContext {
         new WebDriverWait(driver, clock, sleeper, millisToSeconds(timeoutMillis),
             sleepTimeout) {
           @Override
-          protected RuntimeException timeoutException(String message, RuntimeException lastException) {
+          protected RuntimeException timeoutException(String message, Throwable lastException) {
             throw new AssertionError("Element was not rendered within " + timeoutMillis + "ms");
           }
         };

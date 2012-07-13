@@ -23,6 +23,8 @@ import static org.junit.Assert.fail;
 
 import com.google.common.base.Function;
 
+import junit.framework.AssertionFailedError;
+
 import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -208,7 +210,7 @@ public class FluentWaitTest extends MockTestBase {
       assertSame(exception, expected.getCause());
     }
   }
-  
+
   @Test
   public void timeoutMessageIncludesCustomMessage() {
     TimeoutException expected = new TimeoutException(
@@ -262,6 +264,68 @@ public class FluentWaitTest extends MockTestBase {
       assertEquals(expected.getMessage(), actual.getMessage());
     }
   }
+
+  @Test
+  public void canIgnoreThrowables() {
+    final AssertionFailedError exception = new AssertionFailedError();
+
+    checking(new Expectations() {{
+        one(mockClock).laterBy(0L);
+        will(returnValue(2L));
+
+        one(mockCondition).apply(mockDriver);
+        will(throwException(exception));
+        one(mockClock).isNowBefore(2L);
+        will(returnValue(false));
+      }});
+
+    Wait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper)
+        .withTimeout(0, TimeUnit.MILLISECONDS)
+        .pollingEvery(2, TimeUnit.SECONDS)
+        .ignoring(AssertionFailedError.class);
+
+    try {
+      wait.until(mockCondition);
+      fail();
+    } catch (TimeoutException expected) {
+      assertSame(exception, expected.getCause());
+    }
+  }
+
+  @Test
+  public void callsDeprecatedHandlerForRuntimeExceptions() {
+    final TimeoutException exception = new TimeoutException();
+
+    checking(new Expectations() {{
+        one(mockClock).laterBy(0L);
+        will(returnValue(2L));
+
+        one(mockCondition).apply(mockDriver);
+        will(throwException(exception));
+        one(mockClock).isNowBefore(2L);
+        will(returnValue(false));
+      }});
+
+    final TestException sentinelException = new TestException();
+    FluentWait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper) {
+      @Deprecated
+      protected RuntimeException timeoutException(String message, RuntimeException lastException) {
+        throw sentinelException;
+      }
+    };
+    wait.withTimeout(0, TimeUnit.MILLISECONDS)
+        .pollingEvery(2, TimeUnit.SECONDS)
+        .ignoring(TimeoutException.class);
+
+    try {
+      wait.until(mockCondition);
+      fail();
+    } catch (TestException expected) {
+      assertSame(sentinelException, expected);
+    }
+  }
+
+  private static class TestException extends RuntimeException {}
 
   public interface GenericCondition extends ExpectedCondition<Object> {
   }

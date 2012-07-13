@@ -18,6 +18,7 @@ package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.openqa.selenium.TimeoutException;
@@ -34,14 +35,14 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 /**
  * An implementation of the {@link Wait} interface that may have its timeout and polling interval
  * configured on the fly.
- * 
+ *
  * <p>
  * Each FluentWait instance defines the maximum amount of time to wait for a condition, as well as
  * the frequency with which to check the condition. Furthermore, the user may configure the wait to
  * ignore specific types of exceptions whilst waiting, such as
  * {@link org.openqa.selenium.NoSuchElementException NoSuchElementExceptions} when searching for an
  * element on the page.
- * 
+ *
  * <p>
  * Sample usage: <code><pre>
  *   // Waiting 30 seconds for an element to be present on the page, checking
@@ -50,17 +51,17 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  *       .withTimeout(30, SECONDS)
  *       .pollingEvery(5, SECONDS)
  *       .ignoring(NoSuchElementException.class);
- * 
+ *
  *   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement&gt;() {
  *     public WebElement apply(WebDriver driver) {
  *       return driver.findElement(By.id("foo"));
  *     }
  *   });
  * </pre></code>
- * 
+ *
  * <p>
  * <em>This class makes no thread safety guarantees.</em>
- * 
+ *
  * @param <T> The input type for each condition used with this instance.
  */
 public class FluentWait<T> implements Wait<T> {
@@ -75,7 +76,7 @@ public class FluentWait<T> implements Wait<T> {
   private Duration interval = FIVE_HUNDRED_MILLIS;
   private String message = null;
 
-  private List<Class<? extends RuntimeException>> ignoredExceptions = Lists.newLinkedList();
+  private List<Class<? extends Throwable>> ignoredExceptions = Lists.newLinkedList();
 
   /**
    * @param input The input value to pass to the evaluated conditions.
@@ -98,7 +99,7 @@ public class FluentWait<T> implements Wait<T> {
   /**
    * Sets how long to wait for the evaluated condition to be true. The default timeout is
    * {@link #FIVE_HUNDRED_MILLIS}.
-   * 
+   *
    * @param duration The timeout duration.
    * @param unit The unit of time.
    * @return A self reference.
@@ -107,10 +108,10 @@ public class FluentWait<T> implements Wait<T> {
     this.timeout = new Duration(duration, unit);
     return this;
   }
-  
+
   /**
    * Sets the message to be displayed when time expires.
-   * 
+   *
    * @param message to be appended to default.
    * @return A self reference.
    */
@@ -121,11 +122,11 @@ public class FluentWait<T> implements Wait<T> {
 
   /**
    * Sets how often the condition should be evaluated.
-   * 
+   *
    * <p>
    * In reality, the interval may be greater as the cost of actually evaluating a condition function
    * is not factored in. The default polling interval is {@link #FIVE_HUNDRED_MILLIS}.
-   * 
+   *
    * @param duration The timeout duration.
    * @param unit The unit of time.
    * @return A self reference.
@@ -142,7 +143,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param types The types of exceptions to ignore.
    * @return A self reference.
    */
-  public FluentWait<T> ignoreAll(Collection<Class<? extends RuntimeException>> types) {
+  public FluentWait<T> ignoreAll(Collection<Class<? extends Throwable>> types) {
     ignoredExceptions.addAll(types);
     return this;
   }
@@ -150,23 +151,23 @@ public class FluentWait<T> implements Wait<T> {
   /**
    * @see #ignoreAll(Collection)
    */
-  public FluentWait<T> ignoring(Class<? extends RuntimeException> exceptionType) {
-    return this.ignoreAll(ImmutableList.<Class<? extends RuntimeException>>of(exceptionType));
+  public FluentWait<T> ignoring(Class<? extends Throwable> exceptionType) {
+    return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(exceptionType));
   }
 
   /**
    * @see #ignoreAll(Collection)
    */
-  public FluentWait<T> ignoring(Class<? extends RuntimeException> firstType,
-                                Class<? extends RuntimeException> secondType) {
+  public FluentWait<T> ignoring(Class<? extends Throwable> firstType,
+                                Class<? extends Throwable> secondType) {
 
-    return this.ignoreAll(ImmutableList.<Class<? extends RuntimeException>>of(firstType, secondType));
+    return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(firstType, secondType));
   }
 
   /**
    * Repeatedly applies this instance's input value to the given predicate until the timeout expires
    * or the predicate evaluates to true.
-   * 
+   *
    * @param isTrue The predicate to wait on.
    */
   public void until(final Predicate<T> isTrue) {
@@ -187,14 +188,14 @@ public class FluentWait<T> implements Wait<T> {
    * <li>
    * <li>the current thread is interrupted</li>
    * </ol>
-   * 
+   *
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
    * @param <V> The function's expected return type.
    * @return The functions' return value.
    */
   public <V> V until(Function<? super T, V> isTrue) {
     long end = clock.laterBy(timeout.in(MILLISECONDS));
-    RuntimeException lastException = null;
+    Throwable lastException = null;
     while (true) {
       try {
         V value = isTrue.apply(input);
@@ -205,7 +206,7 @@ public class FluentWait<T> implements Wait<T> {
         } else if (value != null) {
           return value;
         }
-      } catch (RuntimeException e) {
+      } catch (Throwable e) {
         lastException = propagateIfNotIngored(e);
       }
 
@@ -217,6 +218,9 @@ public class FluentWait<T> implements Wait<T> {
 
         String timeoutMessage = String.format("Timed out after %d seconds%s",
             timeout.in(SECONDS), toAppend);
+        if (lastException instanceof RuntimeException || lastException == null) {
+          throw timeoutException(timeoutMessage, (RuntimeException) lastException);
+        }
         throw timeoutException(timeoutMessage, lastException);
       }
 
@@ -229,25 +233,40 @@ public class FluentWait<T> implements Wait<T> {
     }
   }
 
-  private RuntimeException propagateIfNotIngored(RuntimeException e) {
-    for (Class<? extends RuntimeException> ignoredException : ignoredExceptions) {
+  private Throwable propagateIfNotIngored(Throwable e) {
+    for (Class<? extends Throwable> ignoredException : ignoredExceptions) {
       if (ignoredException.isInstance(e)) {
         return e;
       }
     }
-    throw e;
+    throw Throwables.propagate(e);
   }
 
   /**
    * Throws a timeout exception. This method may be overridden to throw an exception that is
    * idiomatic for a particular test infrastructure, such as an AssertionError in JUnit4.
-   * 
+   *
    * @param message The timeout message.
-   * @param lastException The last exception to be thrown and subsequently supressed while waiting
+   * @param lastException The last exception to be thrown and subsequently suppressed while waiting
    *        on a function.
-   * @return Nothing will ever be returned; this return type is only specified as a convience.
+   * @return Nothing will ever be returned; this return type is only specified as a convenience.
    */
-  protected RuntimeException timeoutException(String message, RuntimeException lastException) {
+  protected RuntimeException timeoutException(String message, Throwable lastException) {
     throw new TimeoutException(message, lastException);
+  }
+
+  /**
+   * Kept for backwards compatibility. New code, in particular code using {@link #ignoring(Class)}
+   * with {@link Throwable}s should override {@link #timeoutException(String, Throwable)}.
+   * @param message The timeout message.
+   * @param lastException The last exception to be thrown and subsequently suppressed while waiting
+   *        on a function.
+   * @return Nothing will ever be returned; this return type is only specified as a convenience.
+   * @deprecated Use {@link #timeoutException(String, Throwable)}. This method is scheduled for
+   *             removal in the Selenium 2.26 release.
+   */
+  @Deprecated
+  protected RuntimeException timeoutException(String message, RuntimeException lastException) {
+    throw timeoutException(message, (Throwable) lastException);
   }
 }
