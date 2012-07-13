@@ -33,7 +33,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -117,7 +116,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {FIREFOX, HTMLUNIT, IPHONE,  OPERA, SELENESE},
+      value = {HTMLUNIT, IPHONE,  OPERA, SELENESE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.")
   @Test
   public void testShouldAllowUsersToHoverOverElements() {
@@ -157,7 +156,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {FIREFOX, HTMLUNIT, IPHONE, SELENESE, OPERA},
+      value = {HTMLUNIT, IPHONE, SELENESE, OPERA},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testHoverPersists() throws Exception {
@@ -176,6 +175,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     }
 
     driver.get(pages.javascriptPage);
+    new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
 
     WebElement element = driver.findElement(By.id("menu1"));
 
