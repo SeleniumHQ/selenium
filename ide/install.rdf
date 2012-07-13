@@ -18,7 +18,7 @@
           <Description>
             <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- firefox -->
             <em:minVersion>3.6.*</em:minVersion>
-            <em:maxVersion>13.*</em:maxVersion>
+            <em:maxVersion>14.*</em:maxVersion>
           </Description>
         </em:targetApplication>
     </Description>
