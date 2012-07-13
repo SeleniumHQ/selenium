@@ -3,7 +3,7 @@
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
+# Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
@@ -16,8 +16,10 @@
 # limitations under the License.
 
 import unittest
+import pytest
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.by import By
 
 
 class WindowSwitchingTests(unittest.TestCase):
@@ -39,7 +41,83 @@ class WindowSwitchingTests(unittest.TestCase):
 
         self.assertEqual(self.driver.current_window_handle, handle)
 
+        self.driver.close()
         self.driver.switch_to_window(current)
+
+    def testShouldThrowNoSuchWindowException(self):
+        self._loadPage("xhtmlTest")
+        current = self.driver.current_window_handle
+        try:
+            self.driver.switch_to_window("invalid name")
+            self.fail("NoSuchWindowException expected")
+        except NoSuchWindowException:
+            pass # Expected
+
+        self.driver.switch_to_window(current)
+
+    @pytest.mark.ignore_chrome
+    @pytest.mark.ignore_opera
+    def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self):
+        self._loadPage("xhtmlTest")
+        current = self.driver.current_window_handle
+        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
+
+        self.driver.switch_to_window("result")
+        self.driver.close()
+
+        try :
+            self.driver.current_window_handle
+            self.fail("NoSuchWindowException expected")
+        except NoSuchWindowException: 
+            pass # Expected.
+        finally:
+            self.driver.switch_to_window(current)
+
+    @pytest.mark.ignore_chrome
+    @pytest.mark.ignore_opera
+    @pytest.mark.ignore_ie
+    def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(self):
+        self._loadPage("xhtmlTest")
+        current = self.driver.current_window_handle
+        
+        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
+
+        self.driver.switch_to_window("result")
+        self.driver.close()
+        try:
+            try :
+                self.driver.title
+                self.fail("NoSuchWindowException expected")
+            except NoSuchWindowException: 
+                pass # Expected.
+            
+            try :
+                self.driver.find_element_by_tag_name("body")
+                self.fail("NoSuchWindowException expected")
+            except NoSuchWindowException: 
+                pass # Expected.
+        finally:
+            self.driver.switch_to_window(current)
+    
+    @pytest.mark.ignore_chrome
+    @pytest.mark.ignore_opera
+    @pytest.mark.ignore_ie
+    def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self):
+        self._loadPage("xhtmlTest")
+        current = self.driver.current_window_handle
+        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
+
+        self.driver.switch_to_window("result")
+        element = self.driver.find_element_by_tag_name("body")
+        self.driver.close()
+
+        try :
+            element.text
+            self.fail("NoSuchWindowException expected")
+        except NoSuchWindowException: 
+            pass # Expected.
+        finally:
+            self.driver.switch_to_window(current)
 
     def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(self):
         self._loadPage("xhtmlTest")
