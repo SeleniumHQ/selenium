@@ -112,7 +112,13 @@ public interface JavascriptExecutor {
    *   JSONObject json = new JSONObject((String) response);
    *   assertEquals("cheese", json.getString("food"));
    * </pre></code>
-   * 
+   *
+   * <p>
+   * Script arguments must be a number, a boolean, a String, WebElement, or a List of any
+   * combination of the above. An exception will be thrown if the arguments do not meet these
+   * criteria. The arguments will be made available to the JavaScript via the "arguments"
+   * variable.
+   *
    * @param script The JavaScript to execute.
    * @param args The arguments to the script. May be empty.
    * @return One of Boolean, Long, String, List, WebElement, or null.
