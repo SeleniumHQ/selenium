@@ -52,13 +52,16 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> titleIs(final String title) {
     return new ExpectedCondition<Boolean>() {
+      private String currentTitle = "";
+
       public Boolean apply(WebDriver driver) {
-        return title.equals(driver.getTitle());
+        currentTitle = driver.getTitle();
+        return title.equals(currentTitle);
       }
 
       @Override
       public String toString() {
-        return "title to be: " + title;
+        return String.format("title to be \"%s\". Current title: \"%s\"", title, currentTitle);
       }
     };
   }
@@ -72,14 +75,16 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> titleContains(final String title) {
     return new ExpectedCondition<Boolean>() {
+      private String currentTitle = "";
+
       public Boolean apply(WebDriver driver) {
-        String currentTitle = driver.getTitle();
-        return currentTitle == null ? false : currentTitle.contains(title);
+        currentTitle = driver.getTitle();
+        return currentTitle != null && currentTitle.contains(title);
       }
 
       @Override
       public String toString() {
-        return "title to contain " + title;
+        return String.format("title to contain \"%s\". Current title: \"%s\"", title, currentTitle);
       }
     };
   }
