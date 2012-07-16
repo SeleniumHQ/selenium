@@ -453,18 +453,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     ScriptResult result = page.executeJavaScript(script);
     Function func = (Function) result.getJavaScriptResult();
 
-    final Scriptable scope = (Scriptable) page.getEnclosingWindow().getScriptObject();
-
-    final Object[] parameters = new Object[args.length];
-    final ContextAction action = new ContextAction() {
-      public Object run(final Context context) {
-        for (int i = 0; i < args.length; i++) {
-          parameters[i] = parseArgumentIntoJavsacriptParameter(context, scope, args[i]);
-        }
-        return null;
-      }
-    };
-    webClient.getJavaScriptEngine().getContextFactory().call(action);
+    Object[] parameters = convertScriptArgs(page, args);
 
     result = page.executeJavaScriptFunctionIfPossible(
         func,
@@ -477,11 +466,28 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   public Object executeAsyncScript(String script, Object... args) {
     HtmlPage page = getPageToInjectScriptInto();
+    args = convertScriptArgs(page, args);
 
     Object result = new AsyncScriptExecutor(page, scriptTimeout)
         .execute(script, args);
 
     return parseNativeJavascriptResult(result);
+  }
+  
+  private Object[] convertScriptArgs(HtmlPage page, final Object[] args) {
+    final Scriptable scope = (Scriptable) page.getEnclosingWindow().getScriptObject();
+
+    final Object[] parameters = new Object[args.length];
+    final ContextAction action = new ContextAction() {
+      public Object run(final Context context) {
+        for (int i = 0; i < args.length; i++) {
+          parameters[i] = parseArgumentIntoJavsacriptParameter(context, scope, args[i]);
+        }
+        return null;
+      }
+    };
+    webClient.getJavaScriptEngine().getContextFactory().call(action);
+    return parameters;
   }
 
   private HtmlPage getPageToInjectScriptInto() {
