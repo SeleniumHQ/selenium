@@ -207,7 +207,7 @@ options.header =
 	"import org.junit.Test;\n" +
 	"import java.util.regex.Pattern;\n" +
 	"\n" +
-    "public class ${className} extends ${superClass} {\n" + 
+    "public class ${className} {\n" + 
     "\t@Before\n" +
     "\tpublic void setUp() throws Exception {\n" +
     '\t\tselenium = new DefaultSelenium("localhost", 4444, "${environment}", "${baseURL}");\n' + 
