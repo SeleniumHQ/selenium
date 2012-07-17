@@ -403,8 +403,6 @@ module CrazyFunJava
   class RunTests < BaseJava
 
     def handle(fun, dir, args)
-      #    raise FailedPrecondition, "java_test targets need :srcs defined" if args[:srcs].nil || ar?
-
       task_name = task_name(dir, args[:name])
 
       desc "Run the tests for #{task_name}"
@@ -466,7 +464,8 @@ module CrazyFunJava
               :showoutput    => true,
               :printsummary  => 'on',
               :haltonerror   => halt_on_error?,
-              :haltonfailure => halt_on_failure?
+              :haltonfailure => halt_on_failure?,
+              :maxmemory     => "512m"
             ) do |ant|
               ant.classpath do |ant_cp|
                 cp.all.each do |jar|
