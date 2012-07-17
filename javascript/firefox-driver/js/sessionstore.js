@@ -85,10 +85,14 @@ wdSessionStoreService.prototype.QueryInterface = function(aIID) {
 
 
 /**
- * @param {boolean} enableProfiling Whether to enable profiling.
+ * @param {!Response} response The object to send the command response in.
+ * @param {!Object.<*>} desiredCaps A map describing desired capabilities.
+ * @param {Object.<*>} requiredCaps A map describing required capabilities.
+ * @param {!FirefoxDriver} driver The driver instance.
  * @return {wdSession} A new WebDriver session.
  */
-wdSessionStoreService.prototype.createSession = function(capabilities) {
+wdSessionStoreService.prototype.createSession = function(response, desiredCaps, 
+  requiredCaps, driver) {
   var id = Components.classes['@mozilla.org/uuid-generator;1'].
       getService(Components.interfaces.nsIUUIDGenerator).
       generateUUID().
@@ -101,16 +105,63 @@ wdSessionStoreService.prototype.createSession = function(capabilities) {
   // Ah, xpconnect...
   var wrappedSession = session.wrappedJSObject;
   wrappedSession.setId(id);
-  if (!capabilities['webdriver.logging.profiler.enabled']) {
+  if (!desiredCaps['webdriver.logging.profiler.enabled']) {
     wrappedSession.getLoggers().ignoreLogType(
         fxdriver.logging.LogType.PROFILER);
   }
 
-  fxdriver.proxy.configure(capabilities['proxy']);
-  fxdriver.modals.configure(capabilities['unexpectedAlertBehaviour']);
+  fxdriver.proxy.configure(desiredCaps['proxy']);
+  fxdriver.modals.configure(desiredCaps['unexpectedAlertBehaviour']);
 
+  this.configure_(response, requiredCaps, driver);
   this.sessions_[id] = session;
   return session;
+};
+
+/** 
+ * Read-only capabilities for FirefoxDriver and their default values.
+ * @type {!Object.<string, boolean>}
+ * @const
+ * @private
+ */ 
+wdSessionStoreService.READ_ONLY_CAPABILITIES_ = { 
+  'javascriptEnabled':true, 
+  'takesScreenshot':true, 
+  'handlesAlerts':true, 
+  'cssSelectorsEnabled':true,
+  'rotatable':false
+};
+
+/**
+ * @param {!Response} response The object to send the command response in.
+ * @param {Object.<*>} requiredCaps A map describing required capabilities.
+ * @param {!FirefoxDriver} driver The driver instance.
+ * @private
+ */
+wdSessionStoreService.prototype.configure_ = function(response, requiredCaps, 
+    driver) {
+  fxdriver.Logger.dumpn('Setting preferences based on required capabilities');
+  if (!requiredCaps) {
+    return;
+  }
+
+  var prefStore = fxdriver.moz.getService("@mozilla.org/preferences-service;1", 
+    "nsIPrefBranch");
+
+  goog.object.forEach(requiredCaps, function(value, key) {
+    if (!goog.isBoolean(value)) {
+      return;
+    }
+    if (key in wdSessionStoreService.READ_ONLY_CAPABILITIES_ &&
+        value != wdSessionStoreService.READ_ONLY_CAPABILITIES_[key]) {
+      var msg = 'Required capability ' + key + ' cannot be set to ' + value;
+      fxdriver.Logger.dumpn(msg);
+
+      response.sendError(new WebDriverError(bot.ErrorCode.SESSION_NOT_CREATED, 
+        msg));
+      wdSession.quitBrowser(0);
+    }
+  });
 };
 
 

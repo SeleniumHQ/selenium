@@ -28,6 +28,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
@@ -70,6 +71,7 @@ public class ErrorCodes {
   public static final int IME_NOT_AVAILABLE = 30;
   public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
   public static final int INVALID_SELECTOR_ERROR = 32;
+  public static final int SESSION_NOT_CREATED = 33;
   public static final int MOVE_TARGET_OUT_OF_BOUNDS = 34;
   public static final int INVALID_XPATH_SELECTOR = 51;
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
@@ -127,6 +129,8 @@ public class ErrorCodes {
         return ImeActivationFailedException.class;
       case NO_ALERT_PRESENT:
         return NoAlertPresentException.class;
+      case SESSION_NOT_CREATED:
+        return SessionNotCreatedException.class;
       case UNEXPECTED_ALERT_PRESENT:
         return UnhandledAlertException.class;
       default:
@@ -143,40 +147,42 @@ public class ErrorCodes {
   public int toStatusCode(Throwable thrown) {
     if (thrown == null) {
       return SUCCESS;
-    } else if (thrown instanceof InvalidCookieDomainException) {
-      return INVALID_COOKIE_DOMAIN;
-    } else if (thrown instanceof UnableToSetCookieException) {
-      return UNABLE_TO_SET_COOKIE;
-    } else if (thrown instanceof NoSuchWindowException) {
-      return NO_SUCH_WINDOW;
-    } else if (thrown instanceof InvalidSelectorException) {
-      return INVALID_SELECTOR_ERROR;
-    } else if (thrown instanceof NoSuchElementException) {
-      return NO_SUCH_ELEMENT;
-    } else if (thrown instanceof NoSuchFrameException) {
-      return NO_SUCH_FRAME;
-    } else if (thrown instanceof StaleElementReferenceException) {
-      return STALE_ELEMENT_REFERENCE;
-    } else if (thrown instanceof ElementNotVisibleException) {
-      return ELEMENT_NOT_VISIBLE;
-    } else if (thrown instanceof InvalidElementStateException) {
-      return INVALID_ELEMENT_STATE;
-    } else if (thrown instanceof XPathLookupException) {
-      return XPATH_LOOKUP_ERROR;
     } else if (thrown instanceof TimeoutException) {
       return ASYNC_SCRIPT_TIMEOUT;
+    } else if (thrown instanceof ElementNotVisibleException) {
+      return ELEMENT_NOT_VISIBLE;
+    } else if (thrown instanceof InvalidCookieDomainException) {
+      return INVALID_COOKIE_DOMAIN;
     } else if (thrown instanceof InvalidCoordinatesException) {
       return INVALID_ELEMENT_COORDINATES;
+    } else if (thrown instanceof InvalidElementStateException) {
+      return INVALID_ELEMENT_STATE;
+    } else if (thrown instanceof InvalidSelectorException) {
+      return INVALID_SELECTOR_ERROR;
     } else if (thrown instanceof ImeNotAvailableException) {
       return IME_NOT_AVAILABLE;
     } else if (thrown instanceof ImeActivationFailedException) {
       return IME_ENGINE_ACTIVATION_FAILED;
     } else if (thrown instanceof NoAlertPresentException) {
       return NO_ALERT_PRESENT;
-    } else if (thrown instanceof UnhandledAlertException) {
-      return UNEXPECTED_ALERT_PRESENT;
+    } else if (thrown instanceof NoSuchElementException) {
+      return NO_SUCH_ELEMENT;
+    } else if (thrown instanceof NoSuchFrameException) {
+      return NO_SUCH_FRAME;
+    } else if (thrown instanceof NoSuchWindowException) {
+      return NO_SUCH_WINDOW;
     } else if (thrown instanceof MoveTargetOutOfBoundsException) {
       return MOVE_TARGET_OUT_OF_BOUNDS;
+    } else if (thrown instanceof SessionNotCreatedException) {
+      return SESSION_NOT_CREATED;
+    } else if (thrown instanceof StaleElementReferenceException) {
+      return STALE_ELEMENT_REFERENCE;
+    } else if (thrown instanceof UnableToSetCookieException) {
+      return UNABLE_TO_SET_COOKIE;
+    } else if (thrown instanceof UnhandledAlertException) {
+      return UNEXPECTED_ALERT_PRESENT;
+    } else if (thrown instanceof XPathLookupException) {
+      return XPATH_LOOKUP_ERROR;
     } else {
       return UNHANDLED_ERROR;
     }

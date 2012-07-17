@@ -15,24 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.os.ExecutableTest;
-import org.openqa.selenium.firefox.internal.SocketLockTest;
-import org.openqa.selenium.firefox.internal.StreamsTest;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ExecutableTest.class,
-    FirefoxCapabilitiesTest.class,
-    FirefoxDriverTest.class,
-    FirefoxProfileTest.class,
-    NativeEventsTest.class,
-    PreferencesTest.class,
-    SocketLockTest.class,
-    StreamsTest.class
-})
-public class FirefoxSpecificTests {
+/**
+ * Indicates that a session could not be created.
+ */
+public class SessionNotCreatedException extends WebDriverException {
+  public SessionNotCreatedException(String msg) {
+    super(msg);
+  }
 }

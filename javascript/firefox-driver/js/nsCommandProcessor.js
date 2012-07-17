@@ -23,7 +23,6 @@
  *     unpriviledged code.
  */
 
-
 goog.require('FirefoxDriver');
 goog.require('Utils');
 goog.require('WebElement');
@@ -709,8 +708,10 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
         getService(Components.interfaces.nsISupports);
 
     var desiredCapabilities = parameters['desiredCapabilities'];
-    var session =
-        sessionStore.wrappedJSObject.createSession(desiredCapabilities);
+    var requiredCapabilities = parameters['requiredCapabilities'];
+    var session = sessionStore.wrappedJSObject.createSession(response, desiredCapabilities, 
+        requiredCapabilities, driver);
+
     session = session.wrappedJSObject;  // XPConnect...
     session.setChromeWindow(win);
 
@@ -771,18 +772,7 @@ nsCommandProcessor.prototype.quit = function(response) {
   // it in here.
   response.send();
 
-  // Use an nsITimer to give the response time to go out.
-  var event = function(timer) {
-      // Create a switch file so the native events library will
-      // let all events through in case of a close.
-      notifyOfCloseWindow();
-      Components.classes['@mozilla.org/toolkit/app-startup;1'].
-          getService(Components.interfaces.nsIAppStartup).
-          quit(Components.interfaces.nsIAppStartup.eForceQuit);
-  };
-
-  nsCommandProcessor.quitTimer = new fxdriver.Timer();
-  nsCommandProcessor.quitTimer.setTimeout(event, 500);
+  wdSession.quitBrowser(500);
 };
 
 

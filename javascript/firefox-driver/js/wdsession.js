@@ -21,7 +21,6 @@ goog.provide('wdSession');
 goog.require('fxdriver.logging.Loggers');
 goog.require('fxdriver.moz');
 
-
 /**
  * An active FirefoxDriver session.
  * @constructor
@@ -386,6 +385,26 @@ wdSession.prototype.getLoggers = function() {
  */
 wdSession.prototype.log = function(message, level, logType) {
   this.log_.log(message, level, logType);
+};
+
+/**
+ * Close the browser after a given time delay.
+ * @param {number} timeDelay The time delay to use.
+ * @return {!fxdriver.Timer} The timer for the close operation.
+ */
+wdSession.quitBrowser = function(timeDelay) {
+  // Use an nsITimer to give the response time to go out.
+  var event = function(timer) {
+      // Create a switch file so the native events library will
+      // let all events through in case of a close.
+      notifyOfCloseWindow();
+      Components.classes['@mozilla.org/toolkit/app-startup;1'].
+          getService(Components.interfaces.nsIAppStartup).
+          quit(Components.interfaces.nsIAppStartup.eForceQuit);
+  };
+  wdSession.quitTimer = new fxdriver.Timer();	
+  wdSession.quitTimer.setTimeout(event, timeDelay);
+  return wdSession.quitTimer;
 };
 
 
