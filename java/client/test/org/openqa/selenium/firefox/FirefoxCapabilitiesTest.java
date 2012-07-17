@@ -29,9 +29,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+@NeedsLocalEnvironment
 public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   
   private WebDriver localDriver;
