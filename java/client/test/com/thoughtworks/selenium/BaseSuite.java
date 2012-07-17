@@ -16,17 +16,21 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 public class BaseSuite {
   @BeforeClass
   public static void initializeServer() {
     GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
+  }
+
+  @AfterClass
+  public static void shutdownBrowser() {
+    InternalSelenseTestBase.destroyDriver();
   }
 
   @AfterClass

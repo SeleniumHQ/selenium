@@ -190,4 +190,12 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
   public void checkVerifications() {
     checkForVerificationErrors();
   }
+
+  public static void destroyDriver() {
+    Selenium selenium = instance.get();
+    if (selenium != null) {
+      selenium.stop();
+      instance.remove();
+    }
+  }
 }
