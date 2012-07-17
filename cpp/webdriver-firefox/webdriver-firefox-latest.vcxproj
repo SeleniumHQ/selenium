@@ -91,7 +91,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-13\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-14\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -112,7 +112,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-13\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-14\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -131,7 +131,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-13\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-14\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -155,7 +155,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-13\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-14\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
