@@ -30,7 +30,11 @@ public class BaseSuite {
 
   @AfterClass
   public static void shutdownBrowser() {
-    InternalSelenseTestBase.destroyDriver();
+    try {
+      InternalSelenseTestBase.destroyDriver();
+    } catch (SeleniumException ignored) {
+      // Nothing sane to do
+    }
   }
 
   @AfterClass
