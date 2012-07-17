@@ -515,14 +515,21 @@ currently running on: "windows", "linux", etc. ||
       Resource('/session').
       Post('''
 Create a new session. The server should attempt to create a session that most \
-closely matches the desired capabilities.''').
+closely matches the desired and required capabilities. Required capabilities \
+have higher priority than desired capabilities and must be set for the session \
+to be created.''').
       AddJsonParameter('desiredCapabilities',
                        '{object}',
                        'An object describing the session\'s '
                        '[#Desired_Capabilities desired capabilities].').
+      AddJsonParameter('requiredCapabilities',
+                       '{object}',
+                       'An object describing the session\'s '
+                       '[#Desired_Capabilities required capabilities] (Optional).').
       SetReturnType(None,
                     'A `303 See Other` redirect to `/session/:sessionId`, where'
-                    ' `:sessionId` is the ID of the newly created session.'))
+                    ' `:sessionId` is the ID of the newly created session.').
+      AddError('SessionNotCreatedException', 'If a required capability could not be set.'))
 
   resources.append(
       Resource('/sessions').
