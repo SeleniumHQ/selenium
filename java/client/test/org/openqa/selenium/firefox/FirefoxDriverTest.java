@@ -65,6 +65,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 
@@ -134,8 +135,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     String sentText = "I like cheese\n\nIt's really nice";
     String expectedText = textarea.getAttribute("value") + sentText;
     textarea.sendKeys(sentText);
-    String seenText = textarea.getAttribute("value");
-    assertThat(seenText, equalTo(expectedText));
+    waitFor(elementValueToEqual(textarea, expectedText));
     driver.quit();
   }
 
