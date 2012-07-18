@@ -91,8 +91,8 @@ class Service(object):
         #Tell the Server to properly die in case
         try:
             if self.process:
-                os.kill(self.process.pid, signal.SIGTERM)
-                os.wait()
+                self.process.kill()
+                self.process.wait()
         except AttributeError:
             # kill may not be available under windows environment
             pass
