@@ -124,12 +124,6 @@ core.text.replaceAll_ = function(text, oldText, newText) {
  * @private
  */
 core.text.normalizeSpaces_ = function(text) {
-  // IE has already done this conversion, so doing it again will remove
-  // multiple nbsp
-  if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
-    return text;
-  }
-
   // Replace multiple spaces with a single space
   // TODO - this shouldn't occur inside PRE elements
   text = text.replace(/\ +/g, ' ');

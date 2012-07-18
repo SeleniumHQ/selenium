@@ -45,6 +45,14 @@
 
           assertEquals('this is the span', core.text.getText(element));
         }
+
+        function testCollapsesMultipleNbspsProperly() {
+          var element = bot.locators.findElement({id: 'spaces'});
+
+          var text = core.text.getText(element);
+
+          assertEquals('1 space|2 space|3 space|1 nbsp|2  nbsp|3   nbsp|2  space_nbsp|2  nbsp_space|3   space_nbsp_space|3   nbsp_space_nbsp', text);
+        }
     </script>
 </head>
 <body>
@@ -56,6 +64,10 @@
     <span style="visibility:hidden">Text2</span><br/>
     <span style="display:none">Text3</span><br/>
     <span id="theSpan">this is the&nbsp;span</span><br/>
+
+    <div id="spaces">
+        <kbd>1 space|2  space|3   space|1&nbsp;nbsp|2&nbsp;&nbsp;nbsp|3&nbsp;&nbsp;&nbsp;nbsp|2 &nbsp;space_nbsp|2&nbsp; nbsp_space|3 &nbsp; space_nbsp_space|3&nbsp; &nbsp;nbsp_space_nbsp</kbd>
+    </div>
 
     <div style="visibility:hidden">
         <span>Text4</span><br/>
