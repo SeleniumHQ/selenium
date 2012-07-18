@@ -1,12 +1,15 @@
 v2.25.0
 =======
-
 WebDriver:
   * Added API for dealing with BASIC and DIGEST authentication
     dialogs. Currently not implemented in any drivers.
   * Warn users that the IE driver will no longer use the DLL in the
     next release.
   * Deprecated browser specific WebElement subclasses.
+  * Added support for "requiredCapabilities" to the remote webdrivers
+    and implemented basic support for these in the firefox
+    driver. Failure to fulfull a required capability will cause a
+    SessionNotCreatedException to be thrown.
   * Added the ability to determine how unhandled alerts should be
     handled. This is handled by the "unexpectedAlertBehaviour"
     capability, which can be one of "accept", "dismiss" or
@@ -14,9 +17,10 @@ WebDriver:
     enum. This is only implemented in Firefox for now.
   * Allow native events to be configured in Firefox and
     (experimentally) in IE using the "nativeEvents" capability.
-  * Updated supported versions of Firefox to 16.
+  * Updated supported versions of Firefox to 17.
   * Firefox driver will enumerate through client rects until finding
     one with non-zero dimensions when clicking.
+  * Better support for hovering on linux.
   * Safari driver will dismiss open alerts to prevent tests from
     hanging.
   * Better handling of overflow edge cases when determining element
@@ -24,10 +28,20 @@ WebDriver:
   * Point users in the right direction when Safari fails to load a
     file:// URL.
   * Allowed to use IEDriverServer logging abilities in Java binding.
+  * Avoid an issue where a call to submit could hang the firefox
+    driver.
+  * FluentWait will now handle any Throwable, not just
+    RuntimeExceptions.
   * FIXED: 3897: Allow windows to be resized from a frame.
 
 WebDriverJS:
   * Better stack traces from test code.
+  * Update webdriver.atoms.element.type to recognize
+    webdriver.Key.SEPARATOR
+
+RC:
+  * Better emulation provided by the WebDriver-backed Selenium when
+    using IE, particularly when emulating firing of events.
 
 Grid:
   * FIXED: 3230: Implementing /lifecycle-manager?action=shutdown
@@ -712,5 +726,3 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-
-
