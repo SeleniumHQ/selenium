@@ -90,7 +90,7 @@ class Service(object):
         import urllib2
         urllib2.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         count = 0
-        while not utils.is_connectable(self.port):
+        while utils.is_connectable(self.port):
             if count == 30:
                break 
             count += 1
@@ -99,8 +99,8 @@ class Service(object):
         #Tell the Server to properly die in case
         try:
             if self.process:
-                os.kill(self.process.pid, signal.SIGTERM)
-                os.wait()
+                self.process.kill()
+                self.process.wait()
         except AttributeError:
             # kill may not be available under windows environment
             pass
