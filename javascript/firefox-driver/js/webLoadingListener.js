@@ -140,12 +140,15 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
   this.handler = buildHandler(browser, func, opt_window);
   browser.addProgressListener(this.handler);
   var handler = this.handler;
-  if (timeout > 0) {
-      loadingListenerTimer.setTimeout(function() {
+
+  if (timeout <= 0) {
+    timeout = 100; // Small default timeout
+  }
+
+  loadingListenerTimer.setTimeout(function() {
       func(true);
       WebLoadingListener.removeListener(browser, handler);
-    }, timeout);
-  }
+  }, timeout);
 };
 
 
