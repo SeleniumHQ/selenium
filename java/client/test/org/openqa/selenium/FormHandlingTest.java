@@ -306,7 +306,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SAFARI},
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE},
           reason = "Untested on all other browsers, fails on chrome.")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
