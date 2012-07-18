@@ -142,7 +142,7 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
   var handler = this.handler;
 
   if (timeout <= 0) {
-    timeout = 100; // Small default timeout
+    timeout = 1000 * 60 * 30; // 30 minutes is a loooong time.
   }
 
   loadingListenerTimer.setTimeout(function() {
