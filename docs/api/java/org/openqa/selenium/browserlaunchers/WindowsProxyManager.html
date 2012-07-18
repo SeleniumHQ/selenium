@@ -1,590 +1,513 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<TITLE>
-WindowsProxyManager
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>WindowsProxyManager</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
         parent.document.title="WindowsProxyManager";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/Sleeper.html" title="class in org.openqa.selenium.browserlaunchers"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WindowsProxyManager.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../org/openqa/selenium/browserlaunchers/Sleeper.html" title="class in org.openqa.selenium.browserlaunchers"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../index.html?org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" target="_top">Frames</a></li>
+<li><a href="WindowsProxyManager.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.openqa.selenium.browserlaunchers</FONT>
-<BR>
-Class WindowsProxyManager</H2>
-<PRE>
-java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.browserlaunchers.WindowsProxyManager</B>
-</PRE>
-<HR>
-<DL>
-<DT><PRE>public class <B>WindowsProxyManager</B><DT>extends java.lang.Object</DL>
-</PRE>
-
-<P>
-<HR>
-
-<P>
+<div class="header">
+<div class="subTitle">org.openqa.selenium.browserlaunchers</div>
+<h2 title="Class WindowsProxyManager" class="title">Class WindowsProxyManager</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li>org.openqa.selenium.browserlaunchers.WindowsProxyManager</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public class <span class="strong">WindowsProxyManager</span>
+extends java.lang.Object</pre>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- =========== FIELD SUMMARY =========== -->
-
-<A NAME="field_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Field Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#COOKIE_SUFFIX">COOKIE_SUFFIX</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected static&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#HIDDEN_COOKIE_DIR">HIDDEN_COOKIE_DIR</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#REG_KEY_BACKUP_READY">REG_KEY_BACKUP_READY</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#REG_KEY_BASE">REG_KEY_BASE</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#COOKIE_SUFFIX">COOKIE_SUFFIX</a></strong></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected static java.io.File</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#HIDDEN_COOKIE_DIR">HIDDEN_COOKIE_DIR</a></strong></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#REG_KEY_BACKUP_READY">REG_KEY_BACKUP_READY</a></strong></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#REG_KEY_BASE">REG_KEY_BASE</a></strong></code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#WindowsProxyManager(boolean, java.lang.String, int, int)">WindowsProxyManager</A></B>(boolean&nbsp;customPACappropriate,
-                    java.lang.String&nbsp;sessionId,
-                    int&nbsp;port,
-                    int&nbsp;portDriversShouldContact)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#WindowsProxyManager(boolean, java.lang.String, int, int)">WindowsProxyManager</a></strong>(boolean&nbsp;customPACappropriate,
+                   java.lang.String&nbsp;sessionId,
+                   int&nbsp;port,
+                   int&nbsp;portDriversShouldContact)</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#backupRegistrySettings()">backupRegistrySettings</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#changeRegistrySettings(org.openqa.selenium.Capabilities)">changeRegistrySettings</A></B>(<A HREF="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</A>&nbsp;options)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#deleteFlatDirContents(java.io.File, java.lang.String)">deleteFlatDirContents</A></B>(java.io.File&nbsp;dir,
-                      java.lang.String&nbsp;suffix)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deletes all files contained by the given directory.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#getChangeMaxConnections()">getChangeMaxConnections</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#getCustomProxyPACDir()">getCustomProxyPACDir</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#handleEvilPopupMgrBackup()">handleEvilPopupMgrBackup</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#hideCookies(java.io.File, java.lang.String, java.io.File)">hideCookies</A></B>(java.io.File&nbsp;cookieDir,
-            java.lang.String&nbsp;cookieSuffix,
-            java.io.File&nbsp;hiddenCookieDir)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hides all previously existing user cookies, found in the WinXP directory structure, by moving
- them to a different directory.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#init()">init</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#restoreCookies(java.io.File, java.lang.String, java.io.File)">restoreCookies</A></B>(java.io.File&nbsp;cookieDir,
-               java.lang.String&nbsp;cookieSuffix,
-               java.io.File&nbsp;hiddenCookieDir)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Restores previously hidden user cookies, if any.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#restoreRegistrySettings(boolean)">restoreRegistrySettings</A></B>(boolean&nbsp;ensureCleanSession)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#setBaseRegKey(java.lang.String)">setBaseRegKey</A></B>(java.lang.String&nbsp;base)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#setChangeMaxConnections(boolean)">setChangeMaxConnections</A></B>(boolean&nbsp;changeMaxConnections)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#traceWith(java.util.logging.Logger)">traceWith</A></B>(java.util.logging.Logger&nbsp;log)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#backupRegistrySettings()">backupRegistrySettings</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#changeRegistrySettings(org.openqa.selenium.Capabilities)">changeRegistrySettings</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;options)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#deleteFlatDirContents(java.io.File, java.lang.String)">deleteFlatDirContents</a></strong>(java.io.File&nbsp;dir,
+                     java.lang.String&nbsp;suffix)</code>
+<div class="block">Deletes all files contained by the given directory.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#getChangeMaxConnections()">getChangeMaxConnections</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.io.File</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#getCustomProxyPACDir()">getCustomProxyPACDir</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#handleEvilPopupMgrBackup()">handleEvilPopupMgrBackup</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#hideCookies(java.io.File, java.lang.String, java.io.File)">hideCookies</a></strong>(java.io.File&nbsp;cookieDir,
+           java.lang.String&nbsp;cookieSuffix,
+           java.io.File&nbsp;hiddenCookieDir)</code>
+<div class="block">Hides all previously existing user cookies, found in the WinXP directory structure, by moving
+ them to a different directory.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#init()">init</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#restoreCookies(java.io.File, java.lang.String, java.io.File)">restoreCookies</a></strong>(java.io.File&nbsp;cookieDir,
+              java.lang.String&nbsp;cookieSuffix,
+              java.io.File&nbsp;hiddenCookieDir)</code>
+<div class="block">Restores previously hidden user cookies, if any.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#restoreRegistrySettings(boolean)">restoreRegistrySettings</a></strong>(boolean&nbsp;ensureCleanSession)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#setBaseRegKey(java.lang.String)">setBaseRegKey</a></strong>(java.lang.String&nbsp;base)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#setChangeMaxConnections(boolean)">setChangeMaxConnections</a></strong>(boolean&nbsp;changeMaxConnections)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/browserlaunchers/WindowsProxyManager.html#traceWith(java.util.logging.Logger)">traceWith</a></strong>(java.util.logging.Logger&nbsp;log)</code>&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ FIELD DETAIL =========== -->
-
-<A NAME="field_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Field Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="REG_KEY_BACKUP_READY"><!-- --></A><H3>
-REG_KEY_BACKUP_READY</H3>
-<PRE>
-protected static final java.lang.String <B>REG_KEY_BACKUP_READY</B></PRE>
-<DL>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.browserlaunchers.WindowsProxyManager.REG_KEY_BACKUP_READY">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="COOKIE_SUFFIX"><!-- --></A><H3>
-COOKIE_SUFFIX</H3>
-<PRE>
-protected static final java.lang.String <B>COOKIE_SUFFIX</B></PRE>
-<DL>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#org.openqa.selenium.browserlaunchers.WindowsProxyManager.COOKIE_SUFFIX">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="HIDDEN_COOKIE_DIR"><!-- --></A><H3>
-HIDDEN_COOKIE_DIR</H3>
-<PRE>
-protected static final java.io.File <B>HIDDEN_COOKIE_DIR</B></PRE>
-<DL>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="REG_KEY_BASE"><!-- --></A><H3>
-REG_KEY_BASE</H3>
-<PRE>
-protected static java.lang.String <B>REG_KEY_BASE</B></PRE>
-<DL>
-<DL>
-</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="REG_KEY_BACKUP_READY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>REG_KEY_BACKUP_READY</h4>
+<pre>protected static final&nbsp;java.lang.String REG_KEY_BACKUP_READY</pre>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.browserlaunchers.WindowsProxyManager.REG_KEY_BACKUP_READY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="COOKIE_SUFFIX">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>COOKIE_SUFFIX</h4>
+<pre>protected static final&nbsp;java.lang.String COOKIE_SUFFIX</pre>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.browserlaunchers.WindowsProxyManager.COOKIE_SUFFIX">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="HIDDEN_COOKIE_DIR">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HIDDEN_COOKIE_DIR</h4>
+<pre>protected static final&nbsp;java.io.File HIDDEN_COOKIE_DIR</pre>
+</li>
+</ul>
+<a name="REG_KEY_BASE">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>REG_KEY_BASE</h4>
+<pre>protected static&nbsp;java.lang.String REG_KEY_BASE</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="WindowsProxyManager(boolean, java.lang.String, int, int)"><!-- --></A><H3>
-WindowsProxyManager</H3>
-<PRE>
-public <B>WindowsProxyManager</B>(boolean&nbsp;customPACappropriate,
-                           java.lang.String&nbsp;sessionId,
-                           int&nbsp;port,
-                           int&nbsp;portDriversShouldContact)</PRE>
-<DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="WindowsProxyManager(boolean, java.lang.String, int, int)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>WindowsProxyManager</h4>
+<pre>public&nbsp;WindowsProxyManager(boolean&nbsp;customPACappropriate,
+                   java.lang.String&nbsp;sessionId,
+                   int&nbsp;port,
+                   int&nbsp;portDriversShouldContact)</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="setChangeMaxConnections(boolean)"><!-- --></A><H3>
-setChangeMaxConnections</H3>
-<PRE>
-public void <B>setChangeMaxConnections</B>(boolean&nbsp;changeMaxConnections)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getChangeMaxConnections()"><!-- --></A><H3>
-getChangeMaxConnections</H3>
-<PRE>
-public boolean <B>getChangeMaxConnections</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getCustomProxyPACDir()"><!-- --></A><H3>
-getCustomProxyPACDir</H3>
-<PRE>
-public java.io.File <B>getCustomProxyPACDir</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="init()"><!-- --></A><H3>
-init</H3>
-<PRE>
-protected void <B>init</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="handleEvilPopupMgrBackup()"><!-- --></A><H3>
-handleEvilPopupMgrBackup</H3>
-<PRE>
-protected void <B>handleEvilPopupMgrBackup</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setBaseRegKey(java.lang.String)"><!-- --></A><H3>
-setBaseRegKey</H3>
-<PRE>
-public static void <B>setBaseRegKey</B>(java.lang.String&nbsp;base)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="changeRegistrySettings(org.openqa.selenium.Capabilities)"><!-- --></A><H3>
-changeRegistrySettings</H3>
-<PRE>
-public void <B>changeRegistrySettings</B>(<A HREF="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</A>&nbsp;options)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="backupRegistrySettings()"><!-- --></A><H3>
-backupRegistrySettings</H3>
-<PRE>
-public void <B>backupRegistrySettings</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="restoreRegistrySettings(boolean)"><!-- --></A><H3>
-restoreRegistrySettings</H3>
-<PRE>
-public void <B>restoreRegistrySettings</B>(boolean&nbsp;ensureCleanSession)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="hideCookies(java.io.File, java.lang.String, java.io.File)"><!-- --></A><H3>
-hideCookies</H3>
-<PRE>
-protected static boolean <B>hideCookies</B>(java.io.File&nbsp;cookieDir,
-                                     java.lang.String&nbsp;cookieSuffix,
-                                     java.io.File&nbsp;hiddenCookieDir)</PRE>
-<DL>
-<DD>Hides all previously existing user cookies, found in the WinXP directory structure, by moving
- them to a different directory.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="restoreCookies(java.io.File, java.lang.String, java.io.File)"><!-- --></A><H3>
-restoreCookies</H3>
-<PRE>
-protected static boolean <B>restoreCookies</B>(java.io.File&nbsp;cookieDir,
-                                        java.lang.String&nbsp;cookieSuffix,
-                                        java.io.File&nbsp;hiddenCookieDir)</PRE>
-<DL>
-<DD>Restores previously hidden user cookies, if any.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="deleteFlatDirContents(java.io.File, java.lang.String)"><!-- --></A><H3>
-deleteFlatDirContents</H3>
-<PRE>
-protected static void <B>deleteFlatDirContents</B>(java.io.File&nbsp;dir,
-                                            java.lang.String&nbsp;suffix)</PRE>
-<DL>
-<DD>Deletes all files contained by the given directory.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>dir</CODE> - the directory to delete the contents of<DD><CODE>suffix</CODE> - if not null, only files with this suffix will be deleted.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="traceWith(java.util.logging.Logger)"><!-- --></A><H3>
-traceWith</H3>
-<PRE>
-public static void <B>traceWith</B>(java.util.logging.Logger&nbsp;log)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="setChangeMaxConnections(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setChangeMaxConnections</h4>
+<pre>public&nbsp;void&nbsp;setChangeMaxConnections(boolean&nbsp;changeMaxConnections)</pre>
+</li>
+</ul>
+<a name="getChangeMaxConnections()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getChangeMaxConnections</h4>
+<pre>public&nbsp;boolean&nbsp;getChangeMaxConnections()</pre>
+</li>
+</ul>
+<a name="getCustomProxyPACDir()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCustomProxyPACDir</h4>
+<pre>public&nbsp;java.io.File&nbsp;getCustomProxyPACDir()</pre>
+</li>
+</ul>
+<a name="init()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>init</h4>
+<pre>protected&nbsp;void&nbsp;init()</pre>
+</li>
+</ul>
+<a name="handleEvilPopupMgrBackup()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>handleEvilPopupMgrBackup</h4>
+<pre>protected&nbsp;void&nbsp;handleEvilPopupMgrBackup()</pre>
+</li>
+</ul>
+<a name="setBaseRegKey(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setBaseRegKey</h4>
+<pre>public static&nbsp;void&nbsp;setBaseRegKey(java.lang.String&nbsp;base)</pre>
+</li>
+</ul>
+<a name="changeRegistrySettings(org.openqa.selenium.Capabilities)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>changeRegistrySettings</h4>
+<pre>public&nbsp;void&nbsp;changeRegistrySettings(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;options)</pre>
+</li>
+</ul>
+<a name="backupRegistrySettings()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>backupRegistrySettings</h4>
+<pre>public&nbsp;void&nbsp;backupRegistrySettings()</pre>
+</li>
+</ul>
+<a name="restoreRegistrySettings(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>restoreRegistrySettings</h4>
+<pre>public&nbsp;void&nbsp;restoreRegistrySettings(boolean&nbsp;ensureCleanSession)</pre>
+</li>
+</ul>
+<a name="hideCookies(java.io.File, java.lang.String, java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hideCookies</h4>
+<pre>protected static&nbsp;boolean&nbsp;hideCookies(java.io.File&nbsp;cookieDir,
+                  java.lang.String&nbsp;cookieSuffix,
+                  java.io.File&nbsp;hiddenCookieDir)</pre>
+<div class="block">Hides all previously existing user cookies, found in the WinXP directory structure, by moving
+ them to a different directory.</div>
+</li>
+</ul>
+<a name="restoreCookies(java.io.File, java.lang.String, java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>restoreCookies</h4>
+<pre>protected static&nbsp;boolean&nbsp;restoreCookies(java.io.File&nbsp;cookieDir,
+                     java.lang.String&nbsp;cookieSuffix,
+                     java.io.File&nbsp;hiddenCookieDir)</pre>
+<div class="block">Restores previously hidden user cookies, if any.</div>
+</li>
+</ul>
+<a name="deleteFlatDirContents(java.io.File, java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>deleteFlatDirContents</h4>
+<pre>protected static&nbsp;void&nbsp;deleteFlatDirContents(java.io.File&nbsp;dir,
+                         java.lang.String&nbsp;suffix)</pre>
+<div class="block">Deletes all files contained by the given directory.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>dir</code> - the directory to delete the contents of</dd><dd><code>suffix</code> - if not null, only files with this suffix will be deleted.</dd></dl>
+</li>
+</ul>
+<a name="traceWith(java.util.logging.Logger)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>traceWith</h4>
+<pre>public static&nbsp;void&nbsp;traceWith(java.util.logging.Logger&nbsp;log)</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/browserlaunchers/Sleeper.html" title="class in org.openqa.selenium.browserlaunchers"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WindowsProxyManager.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../org/openqa/selenium/browserlaunchers/Sleeper.html" title="class in org.openqa.selenium.browserlaunchers"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../index.html?org/openqa/selenium/browserlaunchers/WindowsProxyManager.html" target="_top">Frames</a></li>
+<li><a href="WindowsProxyManager.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-
-</BODY>
-</HTML>
+</body>
+</html>

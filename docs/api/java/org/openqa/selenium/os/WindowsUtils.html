@@ -1,855 +1,712 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<TITLE>
-WindowsUtils
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>WindowsUtils</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
         parent.document.title="WindowsUtils";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/os/WindowsUtils.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WindowsUtils.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../index.html?org/openqa/selenium/os/WindowsUtils.html" target="_top">Frames</a></li>
+<li><a href="WindowsUtils.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.openqa.selenium.os</FONT>
-<BR>
-Class WindowsUtils</H2>
-<PRE>
-java.lang.Object
-  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.openqa.selenium.os.WindowsUtils</B>
-</PRE>
-<HR>
-<DL>
-<DT><PRE>public class <B>WindowsUtils</B><DT>extends java.lang.Object</DL>
-</PRE>
-
-<P>
-<HR>
-
-<P>
+<div class="header">
+<div class="subTitle">org.openqa.selenium.os</div>
+<h2 title="Class WindowsUtils" class="title">Class WindowsUtils</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li>org.openqa.selenium.os.WindowsUtils</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public class <span class="strong">WindowsUtils</span>
+extends java.lang.Object</pre>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- =========== FIELD SUMMARY =========== -->
-
-<A NAME="field_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Field Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.Boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#regVersion1">regVersion1</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.Boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#regVersion1">regVersion1</a></strong></code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#WindowsUtils()">WindowsUtils</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#WindowsUtils()">WindowsUtils</a></strong>()</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#deleteRegistryValue(java.lang.String)">deleteRegistryValue</A></B>(java.lang.String&nbsp;key)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.Class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#discoverRegistryKeyType(java.lang.String)">discoverRegistryKeyType</A></B>(java.lang.String&nbsp;key)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#doesRegistryValueExist(java.lang.String)">doesRegistryValueExist</A></B>(java.lang.String&nbsp;key)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#findReg()">findReg</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finds reg.exe</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#findSystemRoot()">findSystemRoot</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finds the system root directory, e.g.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#findTaskKill()">findTaskKill</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finds taskkill.exe</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.io.File</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#findWBEM()">findWBEM</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finds the WBEM directory in the systemRoot directory</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#findWMIC()">findWMIC</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finds WMIC.exe</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#getEnvVarIgnoreCase(java.lang.String)">getEnvVarIgnoreCase</A></B>(java.lang.String&nbsp;var)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#getLocalAppDataPath()">getLocalAppDataPath</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the path to Local AppData.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;com.google.common.collect.ImmutableList&lt;java.lang.String&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#getPathsInProgramFiles(java.lang.String)">getPathsInProgramFiles</A></B>(java.lang.String&nbsp;childPath)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#getProgramFiles86Path()">getProgramFiles86Path</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#getProgramFilesPath()">getProgramFilesPath</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the path to the Windows Program Files.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#isRegExeVersion1()">isRegExeVersion1</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#kill(java.lang.String[])">kill</A></B>(java.lang.String[]&nbsp;cmdarray)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Searches the process list for a process with the specified command line and kills it</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#killByName(java.lang.String)">killByName</A></B>(java.lang.String&nbsp;name)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kill processes by name</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.util.Properties</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#loadEnvironment()">loadEnvironment</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the current process environment variables</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#main(java.lang.String[])">main</A></B>(java.lang.String[]&nbsp;args)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.util.Map</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#procMap()">procMap</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a map of process IDs to command lines</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#readBooleanRegistryValue(java.lang.String)">readBooleanRegistryValue</A></B>(java.lang.String&nbsp;key)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#readIntRegistryValue(java.lang.String)">readIntRegistryValue</A></B>(java.lang.String&nbsp;key)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#readStringRegistryValue(java.lang.String)">readStringRegistryValue</A></B>(java.lang.String&nbsp;key)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#thisIsWindows()">thisIsWindows</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns true if the current OS is MS Windows; false otherwise</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#traceWith(java.util.logging.Logger)">traceWith</A></B>(java.util.logging.Logger&nbsp;log)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#tryToKillByName(java.lang.String)">tryToKillByName</A></B>(java.lang.String&nbsp;name)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kill processes by name, log and ignore errors</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#writeBooleanRegistryValue(java.lang.String, boolean)">writeBooleanRegistryValue</A></B>(java.lang.String&nbsp;key,
-                          boolean&nbsp;data)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#writeIntRegistryValue(java.lang.String, int)">writeIntRegistryValue</A></B>(java.lang.String&nbsp;key,
-                      int&nbsp;data)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/openqa/selenium/os/WindowsUtils.html#writeStringRegistryValue(java.lang.String, java.lang.String)">writeStringRegistryValue</A></B>(java.lang.String&nbsp;key,
-                         java.lang.String&nbsp;data)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#deleteRegistryValue(java.lang.String)">deleteRegistryValue</a></strong>(java.lang.String&nbsp;key)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.Class</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#discoverRegistryKeyType(java.lang.String)">discoverRegistryKeyType</a></strong>(java.lang.String&nbsp;key)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#doesRegistryValueExist(java.lang.String)">doesRegistryValueExist</a></strong>(java.lang.String&nbsp;key)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findReg()">findReg</a></strong>()</code>
+<div class="block">Finds reg.exe</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.io.File</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findSystemRoot()">findSystemRoot</a></strong>()</code>
+<div class="block">Finds the system root directory, e.g.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findTaskKill()">findTaskKill</a></strong>()</code>
+<div class="block">Finds taskkill.exe</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.io.File</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findWBEM()">findWBEM</a></strong>()</code>
+<div class="block">Finds the WBEM directory in the systemRoot directory</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findWMIC()">findWMIC</a></strong>()</code>
+<div class="block">Finds WMIC.exe</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getEnvVarIgnoreCase(java.lang.String)">getEnvVarIgnoreCase</a></strong>(java.lang.String&nbsp;var)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getLocalAppDataPath()">getLocalAppDataPath</a></strong>()</code>
+<div class="block">Returns the path to Local AppData.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static com.google.common.collect.ImmutableList&lt;java.lang.String&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getPathsInProgramFiles(java.lang.String)">getPathsInProgramFiles</a></strong>(java.lang.String&nbsp;childPath)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getProgramFiles86Path()">getProgramFiles86Path</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getProgramFilesPath()">getProgramFilesPath</a></strong>()</code>
+<div class="block">Returns the path to the Windows Program Files.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#isRegExeVersion1()">isRegExeVersion1</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#kill(java.lang.String[])">kill</a></strong>(java.lang.String[]&nbsp;cmdarray)</code>
+<div class="block">Searches the process list for a process with the specified command line and kills it</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#killByName(java.lang.String)">killByName</a></strong>(java.lang.String&nbsp;name)</code>
+<div class="block">Kill processes by name</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.util.Properties</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#loadEnvironment()">loadEnvironment</a></strong>()</code>
+<div class="block">Returns the current process environment variables</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#main(java.lang.String[])">main</a></strong>(java.lang.String[]&nbsp;args)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.util.Map</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#procMap()">procMap</a></strong>()</code>
+<div class="block">Returns a map of process IDs to command lines</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#readBooleanRegistryValue(java.lang.String)">readBooleanRegistryValue</a></strong>(java.lang.String&nbsp;key)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#readIntRegistryValue(java.lang.String)">readIntRegistryValue</a></strong>(java.lang.String&nbsp;key)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#readStringRegistryValue(java.lang.String)">readStringRegistryValue</a></strong>(java.lang.String&nbsp;key)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#thisIsWindows()">thisIsWindows</a></strong>()</code>
+<div class="block">Returns true if the current OS is MS Windows; false otherwise</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#traceWith(java.util.logging.Logger)">traceWith</a></strong>(java.util.logging.Logger&nbsp;log)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#tryToKillByName(java.lang.String)">tryToKillByName</a></strong>(java.lang.String&nbsp;name)</code>
+<div class="block">Kill processes by name, log and ignore errors</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#writeBooleanRegistryValue(java.lang.String, boolean)">writeBooleanRegistryValue</a></strong>(java.lang.String&nbsp;key,
+                         boolean&nbsp;data)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#writeIntRegistryValue(java.lang.String, int)">writeIntRegistryValue</a></strong>(java.lang.String&nbsp;key,
+                     int&nbsp;data)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#writeStringRegistryValue(java.lang.String, java.lang.String)">writeStringRegistryValue</a></strong>(java.lang.String&nbsp;key,
+                        java.lang.String&nbsp;data)</code>&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ FIELD DETAIL =========== -->
-
-<A NAME="field_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Field Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="regVersion1"><!-- --></A><H3>
-regVersion1</H3>
-<PRE>
-public static java.lang.Boolean <B>regVersion1</B></PRE>
-<DL>
-<DL>
-</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="regVersion1">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>regVersion1</h4>
+<pre>public static&nbsp;java.lang.Boolean regVersion1</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="WindowsUtils()"><!-- --></A><H3>
-WindowsUtils</H3>
-<PRE>
-public <B>WindowsUtils</B>()</PRE>
-<DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="WindowsUtils()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>WindowsUtils</h4>
+<pre>public&nbsp;WindowsUtils()</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="main(java.lang.String[])"><!-- --></A><H3>
-main</H3>
-<PRE>
-public static void <B>main</B>(java.lang.String[]&nbsp;args)
-                 throws java.lang.Exception</PRE>
-<DL>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>args</CODE> - 
-<DT><B>Throws:</B>
-<DD><CODE>java.lang.Exception</CODE></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="traceWith(java.util.logging.Logger)"><!-- --></A><H3>
-traceWith</H3>
-<PRE>
-public static void <B>traceWith</B>(java.util.logging.Logger&nbsp;log)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="killByName(java.lang.String)"><!-- --></A><H3>
-killByName</H3>
-<PRE>
-public static void <B>killByName</B>(java.lang.String&nbsp;name)</PRE>
-<DL>
-<DD>Kill processes by name
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="tryToKillByName(java.lang.String)"><!-- --></A><H3>
-tryToKillByName</H3>
-<PRE>
-public static void <B>tryToKillByName</B>(java.lang.String&nbsp;name)</PRE>
-<DL>
-<DD>Kill processes by name, log and ignore errors
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="kill(java.lang.String[])"><!-- --></A><H3>
-kill</H3>
-<PRE>
-public static void <B>kill</B>(java.lang.String[]&nbsp;cmdarray)
-                 throws java.lang.Exception</PRE>
-<DL>
-<DD>Searches the process list for a process with the specified command line and kills it
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>cmdarray</CODE> - the array of command line arguments
-<DT><B>Throws:</B>
-<DD><CODE>java.lang.Exception</CODE> - if something goes wrong while reading the process list or searching for your
-         command line</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="procMap()"><!-- --></A><H3>
-procMap</H3>
-<PRE>
-public static java.util.Map <B>procMap</B>()
-                             throws java.lang.Exception</PRE>
-<DL>
-<DD>Returns a map of process IDs to command lines
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a map of process IDs to command lines
-<DT><B>Throws:</B>
-<DD><CODE>java.lang.Exception</CODE> - - if something goes wrong while reading the process list</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="loadEnvironment()"><!-- --></A><H3>
-loadEnvironment</H3>
-<PRE>
-public static java.util.Properties <B>loadEnvironment</B>()</PRE>
-<DL>
-<DD>Returns the current process environment variables
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the current process environment variables</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getProgramFilesPath()"><!-- --></A><H3>
-getProgramFilesPath</H3>
-<PRE>
-public static java.lang.String <B>getProgramFilesPath</B>()</PRE>
-<DL>
-<DD>Returns the path to the Windows Program Files. On non-English versions, this is not necessarily
- "C:\Program Files".
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the path to the Windows Program Files</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getProgramFiles86Path()"><!-- --></A><H3>
-getProgramFiles86Path</H3>
-<PRE>
-public static java.lang.String <B>getProgramFiles86Path</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getPathsInProgramFiles(java.lang.String)"><!-- --></A><H3>
-getPathsInProgramFiles</H3>
-<PRE>
-public static com.google.common.collect.ImmutableList&lt;java.lang.String&gt; <B>getPathsInProgramFiles</B>(java.lang.String&nbsp;childPath)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getLocalAppDataPath()"><!-- --></A><H3>
-getLocalAppDataPath</H3>
-<PRE>
-public static java.lang.String <B>getLocalAppDataPath</B>()</PRE>
-<DL>
-<DD>Returns the path to Local AppData. For different users, this will be different.
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the path to Local AppData</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getEnvVarIgnoreCase(java.lang.String)"><!-- --></A><H3>
-getEnvVarIgnoreCase</H3>
-<PRE>
-public static java.lang.String <B>getEnvVarIgnoreCase</B>(java.lang.String&nbsp;var)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="findSystemRoot()"><!-- --></A><H3>
-findSystemRoot</H3>
-<PRE>
-public static java.io.File <B>findSystemRoot</B>()</PRE>
-<DL>
-<DD>Finds the system root directory, e.g. "c:\windows" or "c:\winnt"
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="findWMIC()"><!-- --></A><H3>
-findWMIC</H3>
-<PRE>
-public static java.lang.String <B>findWMIC</B>()</PRE>
-<DL>
-<DD>Finds WMIC.exe
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the exact path to wmic.exe, or just the string "wmic" if it couldn't be found (in which
-         case you can pass that to exec to try to run it from the path)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="findWBEM()"><!-- --></A><H3>
-findWBEM</H3>
-<PRE>
-public static java.io.File <B>findWBEM</B>()</PRE>
-<DL>
-<DD>Finds the WBEM directory in the systemRoot directory
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the WBEM directory, or <code>null</code> if it couldn't be found</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="findTaskKill()"><!-- --></A><H3>
-findTaskKill</H3>
-<PRE>
-public static java.lang.String <B>findTaskKill</B>()</PRE>
-<DL>
-<DD>Finds taskkill.exe
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found
-         (in which case you can pass that to exec to try to run it from the path)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="findReg()"><!-- --></A><H3>
-findReg</H3>
-<PRE>
-public static java.lang.String <B>findReg</B>()</PRE>
-<DL>
-<DD>Finds reg.exe
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the exact path to reg.exe, or just the string "reg" if it couldn't be found (in which
-         case you can pass that to exec to try to run it from the path)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isRegExeVersion1()"><!-- --></A><H3>
-isRegExeVersion1</H3>
-<PRE>
-public static boolean <B>isRegExeVersion1</B>()</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="discoverRegistryKeyType(java.lang.String)"><!-- --></A><H3>
-discoverRegistryKeyType</H3>
-<PRE>
-public static java.lang.Class <B>discoverRegistryKeyType</B>(java.lang.String&nbsp;key)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="readStringRegistryValue(java.lang.String)"><!-- --></A><H3>
-readStringRegistryValue</H3>
-<PRE>
-public static java.lang.String <B>readStringRegistryValue</B>(java.lang.String&nbsp;key)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="readIntRegistryValue(java.lang.String)"><!-- --></A><H3>
-readIntRegistryValue</H3>
-<PRE>
-public static int <B>readIntRegistryValue</B>(java.lang.String&nbsp;key)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="readBooleanRegistryValue(java.lang.String)"><!-- --></A><H3>
-readBooleanRegistryValue</H3>
-<PRE>
-public static boolean <B>readBooleanRegistryValue</B>(java.lang.String&nbsp;key)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="doesRegistryValueExist(java.lang.String)"><!-- --></A><H3>
-doesRegistryValueExist</H3>
-<PRE>
-public static boolean <B>doesRegistryValueExist</B>(java.lang.String&nbsp;key)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="writeStringRegistryValue(java.lang.String, java.lang.String)"><!-- --></A><H3>
-writeStringRegistryValue</H3>
-<PRE>
-public static void <B>writeStringRegistryValue</B>(java.lang.String&nbsp;key,
-                                            java.lang.String&nbsp;data)
-                                     throws <A HREF="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os">WindowsRegistryException</A></PRE>
-<DL>
-<DD><DL>
-
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os">WindowsRegistryException</A></CODE></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="writeIntRegistryValue(java.lang.String, int)"><!-- --></A><H3>
-writeIntRegistryValue</H3>
-<PRE>
-public static void <B>writeIntRegistryValue</B>(java.lang.String&nbsp;key,
-                                         int&nbsp;data)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="writeBooleanRegistryValue(java.lang.String, boolean)"><!-- --></A><H3>
-writeBooleanRegistryValue</H3>
-<PRE>
-public static void <B>writeBooleanRegistryValue</B>(java.lang.String&nbsp;key,
-                                             boolean&nbsp;data)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="deleteRegistryValue(java.lang.String)"><!-- --></A><H3>
-deleteRegistryValue</H3>
-<PRE>
-public static void <B>deleteRegistryValue</B>(java.lang.String&nbsp;key)</PRE>
-<DL>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="thisIsWindows()"><!-- --></A><H3>
-thisIsWindows</H3>
-<PRE>
-public static boolean <B>thisIsWindows</B>()</PRE>
-<DL>
-<DD>Returns true if the current OS is MS Windows; false otherwise
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>true if the current OS is MS Windows; false otherwise</DL>
-</DD>
-</DL>
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="main(java.lang.String[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>main</h4>
+<pre>public static&nbsp;void&nbsp;main(java.lang.String[]&nbsp;args)
+                 throws java.lang.Exception</pre>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>args</code> - </dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd></dl>
+</li>
+</ul>
+<a name="traceWith(java.util.logging.Logger)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>traceWith</h4>
+<pre>public static&nbsp;void&nbsp;traceWith(java.util.logging.Logger&nbsp;log)</pre>
+</li>
+</ul>
+<a name="killByName(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>killByName</h4>
+<pre>public static&nbsp;void&nbsp;killByName(java.lang.String&nbsp;name)</pre>
+<div class="block">Kill processes by name</div>
+</li>
+</ul>
+<a name="tryToKillByName(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tryToKillByName</h4>
+<pre>public static&nbsp;void&nbsp;tryToKillByName(java.lang.String&nbsp;name)</pre>
+<div class="block">Kill processes by name, log and ignore errors</div>
+</li>
+</ul>
+<a name="kill(java.lang.String[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>kill</h4>
+<pre>public static&nbsp;void&nbsp;kill(java.lang.String[]&nbsp;cmdarray)
+                 throws java.lang.Exception</pre>
+<div class="block">Searches the process list for a process with the specified command line and kills it</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>cmdarray</code> - the array of command line arguments</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - if something goes wrong while reading the process list or searching for your
+         command line</dd></dl>
+</li>
+</ul>
+<a name="procMap()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>procMap</h4>
+<pre>public static&nbsp;java.util.Map&nbsp;procMap()
+                             throws java.lang.Exception</pre>
+<div class="block">Returns a map of process IDs to command lines</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>a map of process IDs to command lines</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - - if something goes wrong while reading the process list</dd></dl>
+</li>
+</ul>
+<a name="loadEnvironment()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>loadEnvironment</h4>
+<pre>public static&nbsp;java.util.Properties&nbsp;loadEnvironment()</pre>
+<div class="block">Returns the current process environment variables</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the current process environment variables</dd></dl>
+</li>
+</ul>
+<a name="getProgramFilesPath()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getProgramFilesPath</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;getProgramFilesPath()</pre>
+<div class="block">Returns the path to the Windows Program Files. On non-English versions, this is not necessarily
+ "C:\Program Files".</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the path to the Windows Program Files</dd></dl>
+</li>
+</ul>
+<a name="getProgramFiles86Path()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getProgramFiles86Path</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;getProgramFiles86Path()</pre>
+</li>
+</ul>
+<a name="getPathsInProgramFiles(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPathsInProgramFiles</h4>
+<pre>public static&nbsp;com.google.common.collect.ImmutableList&lt;java.lang.String&gt;&nbsp;getPathsInProgramFiles(java.lang.String&nbsp;childPath)</pre>
+</li>
+</ul>
+<a name="getLocalAppDataPath()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLocalAppDataPath</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;getLocalAppDataPath()</pre>
+<div class="block">Returns the path to Local AppData. For different users, this will be different.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the path to Local AppData</dd></dl>
+</li>
+</ul>
+<a name="getEnvVarIgnoreCase(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getEnvVarIgnoreCase</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;getEnvVarIgnoreCase(java.lang.String&nbsp;var)</pre>
+</li>
+</ul>
+<a name="findSystemRoot()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findSystemRoot</h4>
+<pre>public static&nbsp;java.io.File&nbsp;findSystemRoot()</pre>
+<div class="block">Finds the system root directory, e.g. "c:\windows" or "c:\winnt"</div>
+</li>
+</ul>
+<a name="findWMIC()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findWMIC</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;findWMIC()</pre>
+<div class="block">Finds WMIC.exe</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the exact path to wmic.exe, or just the string "wmic" if it couldn't be found (in which
+         case you can pass that to exec to try to run it from the path)</dd></dl>
+</li>
+</ul>
+<a name="findWBEM()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findWBEM</h4>
+<pre>public static&nbsp;java.io.File&nbsp;findWBEM()</pre>
+<div class="block">Finds the WBEM directory in the systemRoot directory</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the WBEM directory, or <code>null</code> if it couldn't be found</dd></dl>
+</li>
+</ul>
+<a name="findTaskKill()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findTaskKill</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;findTaskKill()</pre>
+<div class="block">Finds taskkill.exe</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found
+         (in which case you can pass that to exec to try to run it from the path)</dd></dl>
+</li>
+</ul>
+<a name="findReg()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findReg</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;findReg()</pre>
+<div class="block">Finds reg.exe</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the exact path to reg.exe, or just the string "reg" if it couldn't be found (in which
+         case you can pass that to exec to try to run it from the path)</dd></dl>
+</li>
+</ul>
+<a name="isRegExeVersion1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isRegExeVersion1</h4>
+<pre>public static&nbsp;boolean&nbsp;isRegExeVersion1()</pre>
+</li>
+</ul>
+<a name="discoverRegistryKeyType(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>discoverRegistryKeyType</h4>
+<pre>public static&nbsp;java.lang.Class&nbsp;discoverRegistryKeyType(java.lang.String&nbsp;key)</pre>
+</li>
+</ul>
+<a name="readStringRegistryValue(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readStringRegistryValue</h4>
+<pre>public static&nbsp;java.lang.String&nbsp;readStringRegistryValue(java.lang.String&nbsp;key)</pre>
+</li>
+</ul>
+<a name="readIntRegistryValue(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readIntRegistryValue</h4>
+<pre>public static&nbsp;int&nbsp;readIntRegistryValue(java.lang.String&nbsp;key)</pre>
+</li>
+</ul>
+<a name="readBooleanRegistryValue(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readBooleanRegistryValue</h4>
+<pre>public static&nbsp;boolean&nbsp;readBooleanRegistryValue(java.lang.String&nbsp;key)</pre>
+</li>
+</ul>
+<a name="doesRegistryValueExist(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>doesRegistryValueExist</h4>
+<pre>public static&nbsp;boolean&nbsp;doesRegistryValueExist(java.lang.String&nbsp;key)</pre>
+</li>
+</ul>
+<a name="writeStringRegistryValue(java.lang.String, java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>writeStringRegistryValue</h4>
+<pre>public static&nbsp;void&nbsp;writeStringRegistryValue(java.lang.String&nbsp;key,
+                            java.lang.String&nbsp;data)
+                                     throws <a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os">WindowsRegistryException</a></pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os">WindowsRegistryException</a></code></dd></dl>
+</li>
+</ul>
+<a name="writeIntRegistryValue(java.lang.String, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>writeIntRegistryValue</h4>
+<pre>public static&nbsp;void&nbsp;writeIntRegistryValue(java.lang.String&nbsp;key,
+                         int&nbsp;data)</pre>
+</li>
+</ul>
+<a name="writeBooleanRegistryValue(java.lang.String, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>writeBooleanRegistryValue</h4>
+<pre>public static&nbsp;void&nbsp;writeBooleanRegistryValue(java.lang.String&nbsp;key,
+                             boolean&nbsp;data)</pre>
+</li>
+</ul>
+<a name="deleteRegistryValue(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>deleteRegistryValue</h4>
+<pre>public static&nbsp;void&nbsp;deleteRegistryValue(java.lang.String&nbsp;key)</pre>
+</li>
+</ul>
+<a name="thisIsWindows()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>thisIsWindows</h4>
+<pre>public static&nbsp;boolean&nbsp;thisIsWindows()</pre>
+<div class="block">Returns true if the current OS is MS Windows; false otherwise</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>true if the current OS is MS Windows; false otherwise</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;NEXT CLASS</FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/openqa/selenium/os/WindowsUtils.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="WindowsUtils.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../index.html?org/openqa/selenium/os/WindowsUtils.html" target="_top">Frames</a></li>
+<li><a href="WindowsUtils.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-
-</BODY>
-</HTML>
+</body>
+</html>
