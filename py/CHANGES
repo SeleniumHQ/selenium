@@ -1,3 +1,11 @@
+Selenium 2.25
+* Jython 2.7 Support - Bug 3988
+* EventFiringWebDriver added to Support module - Bug 2267
+* Added IEDriverServer logging that can be accessed via desired capabilities
+* Fixed by data being passed into find_elements - bug 3735
+* Removed deprecated ChromeDriver items around desiredcapabilites in favour of chrome options
+* Added default values for a number of action_chains calls
+
 Selenium 2.24
 * Removing the ctypes approach of invoking IEDriver, you will need to download the IEDriverServer from
   https://code.google.com/p/selenium/downloads/list
