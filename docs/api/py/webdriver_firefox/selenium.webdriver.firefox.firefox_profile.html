@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.firefox_profile &mdash; Selenium v2.0 documentation</title>
+    <title>selenium.webdriver.firefox.firefox_profile &mdash; Selenium 2.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium v2.0 documentation" href="../index.html" />
+    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
     <link rel="up" title="Selenium Documentation" href="../api.html" />
     <link rel="next" title="selenium.webdriver.firefox.webdriver" href="selenium.webdriver.firefox.webdriver.html" />
     <link rel="prev" title="selenium.webdriver.firefox.firefox_binary" href="selenium.webdriver.firefox.firefox_binary.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="selenium.webdriver.firefox.firefox_binary.html" title="selenium.webdriver.firefox.firefox_binary"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -63,7 +66,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
 <li>profile_directory: Directory of profile that you want to use.
 This defaults to None and will create a new
 directory when object is created.</li>
@@ -72,6 +75,16 @@ directory when object is created.</li>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.ANONYMOUS_PROFILE_NAME">
+<tt class="descname">ANONYMOUS_PROFILE_NAME</tt><em class="property"> = 'WEBDRIVER_ANONYMOUS_PROFILE'</em><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.ANONYMOUS_PROFILE_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.DEFAULT_PREFERENCES">
+<tt class="descname">DEFAULT_PREFERENCES</tt><em class="property"> = {'toolkit.networkmanager.disable': 'true', 'javascript.options.showInConsole': 'true', 'extensions.update.enabled': 'false', 'app.update.enabled': 'false', 'browser.search.update': 'false', 'offline-apps.allow_by_default': 'true', 'security.warn_leaving_secure.show_once': 'false', 'webdriver_assume_untrusted_issuer': 'true', 'browser.startup.page': '0', 'security.warn_leaving_secure': 'false', 'browser.sessionstore.resume_from_crash': 'false', 'browser.dom.window.dump.enabled': 'true', 'extensions.autoDisableScopes': 10, 'security.fileuri.origin_policy': '3', 'browser.link.open_newwindow': '2', 'toolkit.telemetry.enabled': 'false', 'browser.download.manager.showWhenStarting': 'false', 'app.update.auto': 'false', 'extensions.logging.enabled': 'true', 'browser.EULA.3.accepted': 'true', 'browser.tabs.warnOnClose': 'false', 'browser.safebrowsing.enabled': 'false', 'browser.link.open_external': '2', 'security.warn_entering_weak': 'false', 'webdriver_enable_native_events': 'true', 'toolkit.telemetry.rejected': 'true', 'browser.EULA.override': 'true', 'webdriver_accept_untrusted_certs': 'true', 'browser.safebrowsing.malware.enabled': 'false', 'browser.tabs.warnOnOpen': 'false', 'network.http.max-connections-per-server': '10', 'dom.max_script_run_time': '30', 'startup.homepage_welcome_url': '&quot;about:blank&quot;', 'devtools.errorconsole.enabled': 'true', 'security.warn_viewing_mixed': 'false', 'security.warn_viewing_mixed.show_once': 'false', 'network.http.phishy-userpass-length': '255', 'prompts.tab_modal.enabled': 'false', 'dom.disable_open_during_load': 'false', 'toolkit.telemetry.prompted': '2', 'security.warn_entering_secure': 'false', 'security.warn_entering_secure.show_once': 'false', 'security.fileuri.strict_origin_policy': 'false', 'extensions.update.notifyUser': 'false', 'network.manage-offline-status': 'false', 'browser.shell.checkDefaultBrowser': 'false', 'signon.rememberSignons': 'false', 'security.warn_entering_weak.show_once': 'false', 'browser.offline': 'false', 'security.warn_submit_insecure': 'false'}</em><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.DEFAULT_PREFERENCES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs">
 <tt class="descname">accept_untrusted_certs</tt><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_profile.html#FirefoxProfile.accept_untrusted_certs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.accept_untrusted_certs" title="Permalink to this definition">¶</a></dt>
@@ -151,7 +164,7 @@ for use with remote WebDriver JSON wire protocol</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -180,7 +193,7 @@ for use with remote WebDriver JSON wire protocol</p>
         <li class="right" >
           <a href="selenium.webdriver.firefox.firefox_binary.html" title="selenium.webdriver.firefox.firefox_binary"
              >previous</a> |</li>
-        <li><a href="../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
       </ul>
     </div>

@@ -29,6 +29,9 @@ $(function() {
   var sidebar = $('.sphinxsidebar');
   var sidebarwrapper = $('.sphinxsidebarwrapper');
 
+  // for some reason, the document has no sidebar; do not run into errors
+  if (!sidebar.length) return;
+
   // original margin-left of the bodywrapper and width of the sidebar
   // with the sidebar expanded
   var bw_margin_expanded = bodywrapper.css('margin-left');

@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.action_chains &mdash; Selenium v2.0 documentation</title>
+    <title>selenium.webdriver.common.action_chains &mdash; Selenium 2.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium v2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -104,7 +107,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLICK</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;button&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
-<div class="viewcode-block" id="ActionChains.click_and_hold"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.click_and_hold">[docs]</a>    <span class="k">def</span> <span class="nf">click_and_hold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionChains.click_and_hold"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.click_and_hold">[docs]</a>    <span class="k">def</span> <span class="nf">click_and_hold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Holds down the left mouse button on an element.</span>
 <span class="sd">        </span>
@@ -117,7 +120,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MOUSE_DOWN</span><span class="p">,</span> <span class="p">{}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
-<div class="viewcode-block" id="ActionChains.context_click"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.context_click">[docs]</a>    <span class="k">def</span> <span class="nf">context_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionChains.context_click"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.context_click">[docs]</a>    <span class="k">def</span> <span class="nf">context_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Performs a context-click (right click) on an element.</span>
 <span class="sd">        </span>
@@ -130,7 +133,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLICK</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;button&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
-<div class="viewcode-block" id="ActionChains.double_click"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.double_click">[docs]</a>    <span class="k">def</span> <span class="nf">double_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionChains.double_click"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.double_click">[docs]</a>    <span class="k">def</span> <span class="nf">double_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Double-clicks an element.</span>
 <span class="sd">        </span>
@@ -266,7 +269,7 @@
                 <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
-<div class="viewcode-block" id="ActionChains.release"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionChains.release"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Releasing a held mouse button.</span>
 
@@ -309,7 +312,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -332,7 +335,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

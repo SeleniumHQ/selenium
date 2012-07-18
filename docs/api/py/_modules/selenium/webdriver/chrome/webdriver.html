@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium v2.0 documentation</title>
+    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 2.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium v2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -81,7 +84,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;chromedriver&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">chrome_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">chrome_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new instance of the chrome driver.</span>
 
@@ -99,11 +102,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">options</span> <span class="o">=</span> <span class="n">chrome_options</span>
 
-        <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Desired Capabilities has been deprecated, please user chrome_options.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
-            <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+        <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -154,7 +153,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -177,7 +176,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

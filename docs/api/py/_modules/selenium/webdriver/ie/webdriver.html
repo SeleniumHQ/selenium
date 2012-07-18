@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.ie.webdriver &mdash; Selenium v2.0 documentation</title>
+    <title>selenium.webdriver.ie.webdriver &mdash; Selenium 2.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium v2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -68,48 +71,32 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.command import Command
 from selenium.common.exceptions import WebDriverException
-from ctypes import *
-import time
-import os
 import base64
 from service import Service
-import warnings
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
+DEFAULT_HOST = None
+DEFAULT_LOG_LEVEL = None
+DEFAULT_LOG_FILE = None
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver">[docs]</a>class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='IEDriverServer.exe', 
-                    port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT):
+                 port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
+                 log_level=DEFAULT_LOG_LEVEL, log_file=DEFAULT_LOG_FILE):
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
+        self.host = host
+        self.log_level = log_level
+        self.log_file = log_file
 
-        try:
-            self.iedriver = Service(executable_path, port=self.port)
-            self.iedriver.start()
-        except:
-            # Create IE Driver instance of the unmanaged code
-            try:
-                warnings.warn("You need to download the IEDriverServer. \
-                            Using the deprecated approach", DeprecationWarning)
-                self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"win32", "IEDriver.dll"))
-            except WindowsError:
-                try:
-                    self.iedriver = CDLL(os.path.join(os.path.dirname(__file__),"x64", "IEDriver.dll"))
-                except WindowsError:
-                    raise WebDriverException("Unable to load the IEDriver.dll component")
-            self.ptr = self.iedriver.StartServer(self.port)
+        self.iedriver = Service(executable_path, port=self.port,
+             host=self.host, log_level=self.log_level, log_file=self.log_file)
 
-            seconds = 0
-            while not utils.is_url_connectable(self.port):
-                seconds += 1
-                if seconds &gt; DEFAULT_TIMEOUT:
-                    # Clean up after ourselves
-                    self.quit()
-                    raise RuntimeError("Unable to connect to IE")
-                time.sleep(1)
+        self.iedriver = Service(executable_path, port=self.port)
+        self.iedriver.start()
 
         RemoteWebDriver.__init__(
             self,
@@ -118,12 +105,7 @@ DEFAULT_PORT = 0
 
 <div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.quit">[docs]</a>    def quit(self):
         RemoteWebDriver.quit(self)
-        try:
-            self.iedriver.stop()
-        except:
-            self.iedriver.StopServer(self.ptr)
-            del self.iedriver
-            del self.ptr
+        self.iedriver.stop()
 </div>
 <div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.save_screenshot">[docs]</a>    def save_screenshot(self, filename):
         """
@@ -150,7 +132,7 @@ DEFAULT_PORT = 0
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -173,7 +155,7 @@ DEFAULT_PORT = 0
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

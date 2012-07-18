@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.firefox_binary &mdash; Selenium v2.0 documentation</title>
+    <title>selenium.webdriver.firefox.firefox_binary &mdash; Selenium 2.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium v2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -35,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -110,7 +113,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_modify_link_library_path</span><span class="p">()</span>
         
         <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-silent&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
-              <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+              <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-foreground&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span>
@@ -164,6 +167,8 @@
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Windows&quot;</span><span class="p">:</span>
             <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span> 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;Java&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">_name</span> <span class="o">==</span> <span class="s">&#39;nt&#39;</span><span class="p">:</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># Maybe iceweasel (Debian) is another candidate...</span>
             <span class="k">for</span> <span class="n">ffname</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;firefox2&quot;</span><span class="p">,</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span> <span class="s">&quot;firefox-3.0&quot;</span><span class="p">,</span> <span class="s">&quot;firefox-4.0&quot;</span><span class="p">]:</span>
@@ -220,7 +225,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -243,7 +248,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium v2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
