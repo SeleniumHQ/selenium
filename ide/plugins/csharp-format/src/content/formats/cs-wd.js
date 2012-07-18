@@ -155,6 +155,44 @@ function formatComment(comment) {
   });
 }
 
+/**
+ * Returns a string representing the suite for this formatter language.
+ *
+ * @param testSuite  the suite to format
+ * @param filename   the file the formatted suite will be saved as
+ */
+function formatSuite(testSuite, filename) {
+  var suiteClass = /^(\w+)/.exec(filename)[1];
+  suiteClass = suiteClass[0].toUpperCase() + suiteClass.substring(1);
+
+  var formattedSuite = "using NUnit.Framework;\n"
+      + "using NUnit.Core;\n"
+      + "\n"
+      + "namespace " + this.options.namespace + "\n"
+      + '{\n'
+      + indents(1) + "public class " + suiteClass + "\n"
+      + indents(1) + '{\n'
+      + indents(2) + "[Suite] public static TestSuite Suite\n"
+      + indents(2) + '{\n'
+      + indents(3) + "get\n"
+      + indents(3) + '{\n'
+      + indents(4) + 'TestSuite suite = new TestSuite("'+ suiteClass +'");\n';
+
+  for (var i = 0; i < testSuite.tests.length; ++i) {
+    var testClass = testSuite.tests[i].getTitle();
+    formattedSuite += indents(4)
+        + "suite.Add(new " + testClass + "());\n";
+  }
+
+  formattedSuite += indents(4) + "return suite;\n"
+      + indents(3) + "}\n"
+      + indents(2) + "}\n"
+      + indents(1) + "}\n"
+      + "}\n";
+
+  return formattedSuite;
+}
+
 function defaultExtension() {
   return this.options.defaultExtension;
 }
