@@ -46,7 +46,7 @@ class PageLoadingTests(unittest.TestCase):
         try:
           # Of course, we're up the creek if this ever does get registered
           self.driver.get("http://www.thisurldoesnotexist.comx/")
-        except IllegalStateException:
+        except ValueError:
             pass
     
     @pytest.mark.ignore_safari
