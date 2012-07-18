@@ -25,6 +25,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('fxdriver.Logger');
+goog.require('fxdriver.io');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.preconditions');
 goog.require('goog.dom');
@@ -306,13 +307,15 @@ WebElement.submitElement = function(respond, parameters) {
       element = element.parentNode;
     }
     if (element.tagName && element.tagName.toLowerCase() == "form") {
-      if (Utils.fireHtmlEvent(element, "submit")) {
+      var current = respond.session.getWindow().location;
+      if (Utils.fireHtmlEvent(element, "submit") &&
+          fxdriver.io.isLoadExpected(current, element.action)) {
         new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
           if (timedOut) {
             respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
                 'Timed out waiting for page load.'));
           } else {
-          respond.send();
+            respond.send();
           }
         }, respond.session.getPageLoadTimeout(), respond.session.getWindow());
         element.submit();
@@ -326,10 +329,8 @@ WebElement.submitElement = function(respond, parameters) {
       throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
           "Element was not in a form so couldn't submit");
     }
-  } else {
-    respond.send();
-    return;
   }
+  respond.send();
 };
 
 WebElement.isElementSelected = function(respond, parameters) {

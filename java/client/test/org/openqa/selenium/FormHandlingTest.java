@@ -27,6 +27,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -301,5 +303,20 @@ public class FormHandlingTest extends JUnit4TestBase {
     value = element.getAttribute("value");
 
     assertThat(value.length(), is(0));
+  }
+
+  @Test
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SAFARI},
+          reason = "Untested on all other browsers, fails on chrome.")
+  public void handleFormWithJavascriptAction() {
+    String url = appServer.whereIs("form_handling_js_submit.html");
+    driver.get(url);
+    WebElement element = driver.findElement(By.id("theForm"));
+    element.submit();
+    Alert alert = driver.switchTo().alert();
+    String text = alert.getText();
+    alert.dismiss();
+
+    assertEquals("Tasty cheese", text);
   }
 }

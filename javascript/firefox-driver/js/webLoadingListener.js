@@ -17,8 +17,46 @@
  */
 
 goog.provide('WebLoadingListener');
+goog.provide('fxdriver.io');
 
 goog.require('fxdriver.Timer');
+goog.require('fxdriver.moz');
+
+
+/**
+ * @param {string} current The URL the browser is currently on.
+ * @param {?string} future The destination URL, if known.
+ * @return {Boolean} Whether a full page load would be expected if future is
+ *    followed.
+ */
+fxdriver.io.isLoadExpected = function(current, future) {
+  if (!future) {
+    // Assume that we'll go somewhere exciting.
+    return true;
+  }
+
+  var ioService =
+      fxdriver.moz.getService("@mozilla.org/network/io-service;1", "nsIIOService");
+  var currentUri = ioService.newURI(current, "", null);
+  var futureUri = ioService.newURI(future, "", currentUri);
+
+  var loadEventExpected = true;
+  if (futureUri.scheme == 'javascript') {
+    // Assume that we're just modifying the local page.
+    return false;
+  }
+
+  if (currentUri && futureUri &&
+      currentUri.prePath == futureUri.prePath &&
+      currentUri.filePath == futureUri.filePath) {
+    // Looks like we're at the same url with a ref
+    // Being clever and checking the ref was causing me headaches.
+    // Brute force for now
+    loadEventExpected = futureUri.path.indexOf("#") == -1;
+  }
+
+  return loadEventExpected;
+};
 
 
 var STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
@@ -141,7 +179,7 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
   browser.addProgressListener(this.handler);
   var handler = this.handler;
 
-  if (timeout <= 0) {
+  if (timeout == -1) {
     timeout = 1000 * 60 * 30; // 30 minutes is a loooong time.
   }
 

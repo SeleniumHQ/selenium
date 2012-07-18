@@ -26,6 +26,7 @@ goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('bot.window');
 goog.require('fxdriver.events');
+goog.require('fxdriver.io');
 goog.require('fxdriver.modals');
 goog.require('fxdriver.preconditions');
 goog.require('fxdriver.screenshot');
@@ -152,21 +153,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   // Check to see if the given url is the same as the current one, but
   // with a different anchor tag.
   var current = respond.session.getWindow().location;
-  var ioService =
-      fxdriver.moz.getService("@mozilla.org/network/io-service;1", "nsIIOService");
-  var currentUri = ioService.newURI(current, "", null);
-  var futureUri = ioService.newURI(url, "", currentUri);
-
-  var loadEventExpected = true;
-
-  if (currentUri && futureUri &&
-      currentUri.prePath == futureUri.prePath &&
-      currentUri.filePath == futureUri.filePath) {
-    // Looks like we're at the same url with a ref
-    // Being clever and checking the ref was causing me headaches.
-    // Brute force for now
-    loadEventExpected = futureUri.path.indexOf("#") == -1;
-  }
+  var loadEventExpected = fxdriver.io.isLoadExpected(current, url);
 
   if (loadEventExpected) {
     new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
