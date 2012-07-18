@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -28,11 +28,12 @@ import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
-import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
 
@@ -42,9 +43,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   public final static String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS =
       "ignoreProtectedModeSettings";
 
-  private InternetExplorerDriverServer server;
   private WindowsProxyManager proxyManager;
-  private boolean useLegacyServer = false;
 
   public InternetExplorerDriver() {
     assertOnWindows();
@@ -102,23 +101,17 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   }
 
   private void setup(Capabilities capabilities, int port) {
-    setupService(capabilities.is("useLegacyInternalServer"), port);
+    setupService(port);
     startSession(capabilities);
   }
 
-  private void setupService(boolean useLegacyInternalServer, int port) {
-    if (useLegacyInternalServer) {
-      setupLegacyServer(port);
-    } else {
-      try {
-        InternetExplorerDriverService service = new InternetExplorerDriverService.Builder()
-          .usingPort(port).build();
-        setCommandExecutor(new DriverCommandExecutor(service));
-      } catch (IllegalStateException ex) {
-        System.err.println(ex.getMessage());
-        // fallback
-        setupLegacyServer(port);
-      }
+  private void setupService(int port) {
+    try {
+      InternetExplorerDriverService service = new InternetExplorerDriverService.Builder()
+        .usingPort(port).build();
+      setCommandExecutor(new DriverCommandExecutor(service));
+    } catch (IllegalStateException ex) {
+      throw Throwables.propagate(ex);
     }
   }
   
@@ -131,27 +124,6 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
       }
     });
     super.startSession(desiredCapabilities);
-  }
-
-  private void setupLegacyServer(int port) {
-    useLegacyServer = true;
-    server = new InternetExplorerDriverServer(port);
-    startClient();
-    setCommandExecutor(new HttpCommandExecutor(server.getUrl()));
-  }
-
-  @Override
-  protected void startClient() {
-    if (useLegacyServer) {
-      server.start();
-    }
-  }
-
-  @Override
-  protected void stopClient() {
-    if (server != null) {
-      server.stop();
-    }
   }
 
   private void prepareProxy(Capabilities caps) {
