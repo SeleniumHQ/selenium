@@ -90,6 +90,27 @@ module Selenium
           Color.from_string(hsla).rgba.should == rgba
         end
 
+        it "is equal to a color with the same values" do
+          rgba  = "rgba(30, 30, 30, 0.2)"
+          other = "rgba(30, 30, 30, 1)"
+
+          Color.from_string(rgba).should == Color.from_string(rgba)
+          Color.from_string(rgba).should_not == Color.from_string(other)
+        end
+
+        it "implements #hash correctly" do
+          a = Color.from_string("#000")
+          b = Color.from_string("#001")
+          c = Color.from_string("#000")
+
+          h = {}
+          h[a] = 1
+          h[b] = 2
+          h[c] = 3
+
+          h.values.sort.should == [2, 3]
+        end
+
       end
     end
   end

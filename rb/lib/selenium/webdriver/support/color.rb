@@ -79,6 +79,18 @@ module Selenium
           @alpha = Float(alpha)
         end
 
+        def ==(other)
+          return true if equal?(other)
+          return false unless other.kind_of?(self.class)
+
+          [red, green, blue, alpha] == [other.red, other.green, other.blue, other.alpha]
+        end
+        alias_method :eql?, :==
+
+        def hash
+          [red, green, blue, alpha].hash ^ self.class.hash
+        end
+
         def rgb
           "rgb(#{red}, #{green}, #{blue})"
         end
