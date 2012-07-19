@@ -188,19 +188,11 @@ module Selenium
       ]
 
       # aliased for backwards compatibility
-      ObsoleteElementError = StaleElementReferenceError
-
-      # aliased for backwards compatibility
-      UnhandledError = UnknownError
-
-      # aliased for backwards compatibility
+      ObsoleteElementError      = StaleElementReferenceError
+      UnhandledError            = UnknownError
       UnexpectedJavascriptError = JavascriptError
-
-      # aliased for backwards compatibility
-      NoAlertOpenError = NoAlertPresentError
-
-      # aliased for backwards compatibility
-      ElementNotDisplayedError = ElementNotVisibleError
+      NoAlertOpenError          = NoAlertPresentError
+      ElementNotDisplayedError  = ElementNotVisibleError
 
       class << self
         def for_code(code)
