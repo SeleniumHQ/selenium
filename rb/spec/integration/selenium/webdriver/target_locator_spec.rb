@@ -161,6 +161,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       it "raises an UnhandledAlertError if an alert has not been dealt with" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
+        wait_for_alert
 
         lambda { driver.title }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
 
