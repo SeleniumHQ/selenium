@@ -20,13 +20,8 @@ module Selenium
           native_events = opts.delete(:native_events) != false
 
           @server = Server.get
-
-          # get rid of this when the DLL server is gone
-          if @server.respond_to?(:log_level=)
-            # TODO: docs for these options
-            @server.log_level = opts.delete(:log_level)
-            @server.log_file  = opts.delete(:log_file)
-          end
+          @server.log_level = opts.delete(:log_level)
+          @server.log_file  = opts.delete(:log_file)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
