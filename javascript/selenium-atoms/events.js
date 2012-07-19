@@ -114,7 +114,7 @@ core.events.parseCoordinates_ = function(coordString) {
  */
 core.events.fireAt = function(locator, eventName, opt_coordString) {
   var element = core.locators.findElement(locator);
-  var coords = core.events.parseCoordinates_(opt_coordString || "0,0");
+  var coords = core.events.parseCoordinates_(opt_coordString || '0,0');
 
   if (goog.userAgent.IE || goog.userAgent.product.CHROME) {
     var bounds = goog.style.getBounds(element);
@@ -123,7 +123,7 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
   }
 
   var type = core.events.getEventFactory_(eventName);
-  var args = { 
+  var args = {
       clientX: coords.x,
       clientY: coords.y,
       button: 0,
@@ -132,7 +132,7 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
       shiftKey: false,
       metaKey: false,
       relatedTarget: null
-  }; 
+  };
   bot.events.fire(element, type, (/** @type{!bot.events.MouseArgs} */args));
 };
 
@@ -157,19 +157,21 @@ core.events.replaceText_ = function(element, value) {
   if (bot.dom.isElement(element, goog.dom.TagName.BODY)) {
     if (element.ownerDocument && element.ownerDocument.designMode) {
       var designMode = new String(element.ownerDocument.designMode).toLowerCase();
-      if (designMode == "on") {
+      if (designMode == 'on') {
         // this must be a rich text control!
         element.innerHTML = actualValue;
       }
     }
   } else if (goog.userAgent.GECKO && bot.userAgent.FIREFOX_EXTENSION &&
              bot.userAgent.isEngineVersion(8)) {
-    // Firefox 8+ fails with a security error if typing into (XPCNativeWrapper) unwrapped objects
+    // Firefox 8+ fails with a security error if typing into (XPCNativeWrapper)
+    // unwrapped objects
     XPCNativeWrapper(element).value = actualValue;
   } else {
     element.value = actualValue;
   }
-  // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
+  // DGF this used to be skipped in chrome URLs, but no longer.
+  // Is xpcnativewrappers to blame?
   try {
     var elem = element;
 //    if (bot.userAgent.FIREFOX_EXTENSION && Components && Components['classes'] && XPCNativeWrapper) {

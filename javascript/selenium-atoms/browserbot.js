@@ -22,8 +22,8 @@ limitations under the License.
 goog.provide('core.browserbot');
 
 
-goog.require('bot.locators');
 goog.require('bot.dom');
+goog.require('bot.locators');
 goog.require('core.locators');
 goog.require('core.patternMatcher');
 
