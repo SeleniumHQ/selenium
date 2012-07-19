@@ -71,6 +71,10 @@ namespace OpenQA.Selenium.Safari
             this.LaunchSafariProcess(connectFileName);
             this.connection = this.server.WaitForConnection(TimeSpan.FromSeconds(45));
             this.DeleteConnectFile();
+            if (this.connection == null)
+            {
+                throw new WebDriverException("Did not receive a connection from the Safari extension. Please verify that it is properly installed and is the proper version.");
+            }
         }
 
         /// <summary>
