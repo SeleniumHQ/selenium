@@ -286,6 +286,8 @@ module Javascript
       desc "Compile and optimize #{name}"
       task task_name => name
 
+      task "#{task_name}.js" => task_name
+
       Rake::Task[task_name].out = name
     end
   end

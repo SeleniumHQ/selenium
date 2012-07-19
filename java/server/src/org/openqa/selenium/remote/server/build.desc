@@ -2,11 +2,6 @@
 # note that this server doesn't include the necessary drivers.
 
 java_library(name = "server",
-  resources = [
-    { "//javascript/remote:client" : "org/openqa/selenium/remote/server/resource/client.js" },
-    { "//javascript/remote:hub" : "org/openqa/selenium/remote/server/resource/hub.html" },
-    { "//javascript/remote:style" : "org/openqa/selenium/remote/server/resource/style.css" },
-  ],
   deps = [
     ":server_core",
     "//java/client/src/org/openqa/selenium:webdriver-api",
@@ -16,11 +11,20 @@ java_library(name = "server",
 
 java_library(name = "server_core",
   srcs = [
+    "DriverServlet.java",
+    "JsonHttpRemoteConfig.java",
+  ],
+  deps = [
+    ":server_very_core",
+    "//java/server/src/org/openqa/selenium/remote/server/resource",
+  ])
+
+java_library(name = "server_very_core",
+  srcs = [
     "CapabilitiesComparator.java",
     "DefaultDriverFactory.java",
     "DefaultDriverSessions.java",
     "DriverFactory.java",
-    "DriverServlet.java",
     "DriverSessions.java",
     "HttpRequest.java",
     "HttpResponse.java",
@@ -28,7 +32,6 @@ java_library(name = "server_core",
     "KnownElements.java",
     "JeeServletHttpRequest.java",
     "JeeServletHttpResponse.java",
-    "JsonHttpRemoteConfig.java",
     "JsonParametersAware.java",
     "MimeType.java",
     "Session.java",
@@ -39,7 +42,6 @@ java_library(name = "server_core",
     "WebbitHttpResponse.java",
     "handler/**/*.java",
     "renderer/*.java",
-    "resource/StaticResource.java",
     "rest/*.java",
     "xdrpc/*.java",
   ],

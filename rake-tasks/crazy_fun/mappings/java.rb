@@ -343,7 +343,7 @@ module CrazyFunJava
             path_to_file = "#{dir}/#{to_copy}"
             if File.exists?(path_to_file)
               from = path_to_file
-              to_prefix = File.dirname(to_copy)
+              to_prefix = File.dirname(to_copy.to_s)
             else
               from = Rake::Task[task_name(dir, to_copy)].out
               to_prefix = '.'

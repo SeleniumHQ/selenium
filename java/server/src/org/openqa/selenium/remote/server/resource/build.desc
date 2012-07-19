@@ -1,0 +1,24 @@
+java_library(name = "resource",
+  srcs = [
+    "StaticResource.java",
+  ],
+  deps = [
+    "//java/server/src/org/openqa/selenium/remote/server:server_very_core",
+  ],
+  embedded = [
+    ":client",
+    ":hub",
+    ":style",
+  ])
+
+rename(name = "client",
+  deps = ["//javascript/remote:client.js"],
+  out = "client.js")
+
+rename(name = "hub",
+  deps = ["//javascript/remote:hub.html"],
+  out = "hub.html")
+
+rename(name = "style",
+  deps = ["//javascript/remote:style.css"],
+  out = "style.css")

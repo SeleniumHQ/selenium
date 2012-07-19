@@ -40,6 +40,7 @@ module Export
 
       task_name = task_name(dir, args[:name])
       task task_name => name
+      task "#{task_name}#{File.extname(to_export)}" => task_name
       Rake::Task[task_name].out = name
     end
   end

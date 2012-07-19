@@ -102,7 +102,12 @@ class Tasks
       if (res.is_a? Symbol)
         out = Rake::Task[task_name(dir, res)].out
       elsif (Rake::Task.task_defined?(res))
-        out = Rake::Task[res].out
+        task = Rake::Task[res]
+        out = task.out
+        while out == nil and task.prerequisites.size == 1 do
+          task = Rake::Task[task.prerequisites[0]]
+          out = task.out
+        end
       elsif (res.is_a? Hash)
         # Copy the key to "out_dir + value"
         res.each do |from, to|
