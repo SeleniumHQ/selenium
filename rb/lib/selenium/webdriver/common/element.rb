@@ -128,7 +128,13 @@ module Selenium
       alias_method :send_key, :send_keys
 
       #
-      # Clear this element
+      # If this element is a text entry element, this will clear the value. Has no effect on other
+      # elements. Text entry elements are INPUT and TEXTAREA elements.
+      #
+      # Note that the events fired by this event may not be as you'd expect.  In particular, we don't
+      # fire any keyboard or mouse events.  If you want to ensure keyboard events are
+      # fired, consider using #send_keys with the backspace key. To ensure you get a change event, 
+      # consider following with a call to #send_keys with the tab key.
       #
 
       def clear
