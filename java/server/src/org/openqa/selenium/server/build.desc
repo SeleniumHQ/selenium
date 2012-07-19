@@ -26,7 +26,6 @@ java_library(name = "server_resources",
     "opera",
     "sslSupport",
     "VERSION.txt",
-    "//javascript/jsunit",
   ],
   deps = [
     "//javascript/selenium-core"
