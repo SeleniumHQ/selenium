@@ -2,7 +2,7 @@
 java_library(name = "common",
   srcs = [ "**/*.java" ],
   resources = [
-    "defaults/",
+    "defaults/*",
   ],
   deps = [
     "defaults/*.*",
