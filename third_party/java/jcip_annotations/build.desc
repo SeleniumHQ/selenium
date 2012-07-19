@@ -1,4 +1,4 @@
 java_library(name = "jcip_annotations",
   deps = [
-    "jcip_annotations-1.0.jar",
+    "jcip-annotations-1.0.jar",
    ])
