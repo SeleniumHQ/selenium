@@ -1,3 +1,15 @@
+v2.25.1
+=======
+ * Updated InternetExplorerOptions to allow users to set the IgnoreZoomLevel
+   setting.
+ * Exposed constructors in ChromeDriver and InternetExplorerDriver that allow
+   passing a DriverService object. This gives the user more control over the
+   properties of the DriverService.
+ * Updated exception thrown by .NET SafariDriver when a connection to the 
+   driver is not created within 45 seconds.
+ * Cleaned up documentation comment warning on build of the .NET implementation
+   of WebDriverBackedSelenium.
+
 v2.25.0
 =======
  * Updated Json.NET version to 4.5r7. Also changing NuGet packaging to no
@@ -10,6 +22,7 @@ v2.25.0
    unchanged (the capability is set to 0), but can be set to scroll to align 
    to the bottom of the viewport by setting the capability to 1. This commit
    includes an addition to the InternetExplorerOptions of the .NET bindings.
+ * Fixed element finding and table handling in .NET WebDriverBackedSelenium.
 
 v2.24.0
 =======
