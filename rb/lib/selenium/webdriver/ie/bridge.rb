@@ -20,8 +20,9 @@ module Selenium
           native_events = opts.delete(:native_events) != false
 
           @server = Server.get
-          @server.log_level = opts.delete(:log_level)
-          @server.log_file  = opts.delete(:log_file)
+          
+          @server.log_level = opts.delete(:log_level) if opts[:log_level]
+          @server.log_file  = opts.delete(:log_file) if opts[:log_file]
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
