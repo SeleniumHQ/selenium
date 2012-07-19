@@ -7,24 +7,4 @@ java_library(name = "ie",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/jna",
-  ],
-  embedded = [
-    ":x86",
-    ":amd64",
-  ])
-
-folder(name = "x86",
-  deps = [
-    "//cpp:ie_win32_dll",
-  ],
-  outs = [
-    "x86/IEDriver.dll",
-  ])
-
-folder(name = "amd64",
-  deps = [
-    "//cpp:ie_x64_dll",
-  ],
-  outs = [
-    "amd64/IEDriver.dll",
   ])
