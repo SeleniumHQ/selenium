@@ -1,4 +1,4 @@
-java_library(
+java_binary(
   name = "webserver",
   srcs = [ 
     "AppServer.java",

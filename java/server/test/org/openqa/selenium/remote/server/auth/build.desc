@@ -1,4 +1,4 @@
-java_library(name = "server",
+java_binary(name = "server",
   main_class = "org.openqa.selenium.remote.server.auth.AuthenticatedWebDriverServer",
   srcs = [ "*.java" ],
   deps = [

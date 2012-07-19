@@ -1,5 +1,5 @@
 
-java_library(name = "server-with-tests",
+java_binary(name = "server-with-tests",
   main_class = "org.openqa.grid.selenium.GridLauncher",
   resources = [
     "tests",

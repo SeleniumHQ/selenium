@@ -1,5 +1,5 @@
 
-java_library(name = "little_proxy",
+java_binary(name = "little_proxy",
   main_class = "org.littleshoot.proxy.Launcher",
   deps = [
     "littleproxy-0.5-SNAPSHOT.jar",

@@ -100,7 +100,7 @@ java_test(name = "RcBrowserLauncherTests",
     ":tests",
   ])
 
-java_library(name = "dump-ignores",
+java_binary(name = "dump-ignores",
   deps = [ ":tests" ],
   main_class = "org.openqa.selenium.internal.IgnoredTestPrinter"
 )
