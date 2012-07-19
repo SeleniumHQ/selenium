@@ -9,4 +9,5 @@ java_test(name = "test",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/test/org/openqa/selenium:tests",
     "//third_party/java/junit",
+    "//cpp:ie_win32_exe",
 ])

@@ -112,7 +112,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       if (isInDevMode()) {
         className = "org.openqa.selenium.testing.drivers.TestInternetExplorerDriver";
       } else {
-        className = "org.openqa.selenium.ie.InternetExplorerDriver";
+        className = "org.openqa.selenium.testing.drivers.LocallyBuiltInternetExplorerDriver";
       }
     } else if (DesiredCapabilities.ipad().getBrowserName().equals(name)) {
     	// for now using the iphone sim... TODO need to make the sim launch in ipad mode

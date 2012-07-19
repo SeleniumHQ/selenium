@@ -6,6 +6,7 @@ java_library(name = "drivers",
   srcs = [
     "BrowserToCapabilities.java",
     "Firebug.java",
+    "LocallyBuiltInternetExplorerDriver.java",
     "SauceDriver.java",
     "SynthesizedFirefoxDriver.java",
     "TestChromeDriver.java",
