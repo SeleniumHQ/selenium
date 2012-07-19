@@ -120,7 +120,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="service">The <see cref="DriverService"/> to use.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        private InternetExplorerDriver(DriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
+        public InternetExplorerDriver(DriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
         {
         }
