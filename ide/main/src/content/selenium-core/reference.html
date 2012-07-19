@@ -1513,6 +1513,32 @@ send the keystroke events corresponding to what you just typed.</p>
 </dd>
 <br>
 <dt>
+<strong><a name="sendKeys"></a>sendKeys
+		(
+			locator,value
+		)
+	</strong>
+</dt>
+<dd>Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+<p>This simulates a real user typing every character in the specified string; it is also bound by the limitations of a 
+real user, like not being able to type into a invisible or read only elements. This is useful for dynamic UI widgets 
+(like auto-completing combo boxes) that require explicit key events.</p>
+<p>Unlike the simple "type" command, which forces the specified value into the page directly, this command will not 
+replace the existing content. If you want to replace the existing contents, you need to use the simple "type" command to set the value of the 
+field to empty string to clear the field and then the "sendKeys" command to send the keystroke for what you want
+to type.</p>
+<p>For those who are interested in the details, unlike the typeKeys command, which tries to 
+fire the keyDown, the keyUp and the keyPress events, this command is backed by the atoms from Selenium 2 and provides a 
+much more robust implementation that will be maintained in the future.</p>
+<p>Arguments:</p>
+<ul>
+<li>locator - an <a href="#locators">element locator</a>
+</li>
+<li>value - the value to type</li>
+</ul>
+</dd>
+<br>
+<dt>
 <strong><a name="useXpathLibrary"></a>useXpathLibrary
 		(
 			libraryName

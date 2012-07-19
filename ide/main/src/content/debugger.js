@@ -48,6 +48,7 @@ function Debugger(editor) {
 		//subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/selenium-logging.js', this.runner);
 
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-api.js', this.runner);
+		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-api-override.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-commandhandlers.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-executionloop.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-browserbot.js', this.runner);

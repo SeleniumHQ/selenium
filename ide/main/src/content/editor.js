@@ -974,6 +974,7 @@ Editor.prototype.loadSeleniumAPI = function() {
         .getService(Components.interfaces.mozIJSSubScriptLoader);
     
     subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-api.js', this.seleniumAPI);
+    subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-api-override.js', this.seleniumAPI);
 
     // user supplied extensions
     if (this.getOptions().userExtensionsURL) {
