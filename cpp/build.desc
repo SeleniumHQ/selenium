@@ -122,31 +122,11 @@ visualc_library(name = "imehandler_dll",
   out = "Win32/Release/imehandler.dll"
 )
 
-visualc_library(name = "ie_win32_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "Win32",
-  project = "IEDriver/IEDriver.vcxproj",
-  out = "Win32/Release/IEDriver.dll"
-)
-
-visualc_library(name = "ie_x64_dll",
-  deps = [
-    ":atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "x64",
-  project = "IEDriver/IEDriver.vcxproj",
-  out = "x64/Release/IEDriver.dll"
-)
-
 visualc_library(name = "ie_win32_exe",
   deps = [
-    ":ie_win32_dll"
+    ":atoms",
+    ":ie_result_type_cpp",
+    ":sizzle"
   ],
   platform = "Win32",
   project = "IEDriverServer/IEDriverServer.vcxproj",
@@ -155,7 +135,9 @@ visualc_library(name = "ie_win32_exe",
 
 visualc_library(name = "ie_x64_exe",
   deps = [
-    ":ie_x64_dll"
+    ":atoms",
+    ":ie_result_type_cpp",
+    ":sizzle"
   ],
   platform = "x64",
   project = "IEDriverServer/IEDriverServer.vcxproj",
