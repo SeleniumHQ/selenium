@@ -17,6 +17,11 @@ folder(name = "resource",
     "//javascript/remote:client.js",
     "//javascript/remote:hub.html",
     "//javascript/remote:style.css"
+  ],
+  outs = [
+    "resource/client.js",
+    "resource/hub.html",
+    "resource/style.css",
   ])
 
 java_library(name = "server_core",
