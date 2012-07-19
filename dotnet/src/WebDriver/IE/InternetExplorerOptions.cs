@@ -63,11 +63,13 @@ namespace OpenQA.Selenium.IE
     public class InternetExplorerOptions
     {
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
+        private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
         private const string EnableNativeEventsCapability = "nativeEvents";
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
 
         private bool ignoreProtectedModeSettings;
+        private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
         private string initialBrowserUrl = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
@@ -79,6 +81,15 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.ignoreProtectedModeSettings; }
             set { this.ignoreProtectedModeSettings = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to ignore the zoom level of Internet Explorer .
+        /// </summary>
+        public bool IgnoreZoomLevel
+        {
+            get { return this.ignoreZoomLevel; }
+            set { this.ignoreZoomLevel = value; }
         }
 
         /// <summary>
@@ -129,6 +140,11 @@ namespace OpenQA.Selenium.IE
             if (this.ignoreProtectedModeSettings)
             {
                 capabilities.SetCapability(IgnoreProtectedModeSettingsCapability, true);
+            }
+
+            if (this.ignoreZoomLevel)
+            {
+                capabilities.SetCapability(IgnoreZoomSettingCapability, true);
             }
 
             if (!string.IsNullOrEmpty(this.initialBrowserUrl))
