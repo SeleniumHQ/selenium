@@ -15,11 +15,22 @@ module Selenium
           end
         end
 
-        def initialize(binary_path)
+        attr_accessor :log_level, :log_file
+
+        def initialize(binary_path, opts = {})
           Platform.assert_executable binary_path
 
           @binary_path = binary_path
-          @process     = nil
+          @process = nil
+
+          opts = opts.dup
+          @log_level   = opts.delete(:log_level)
+          @log_file    = opts.delete(:log_file)
+
+          unless opts.empty?
+            raise ArgumentError, "invalid option#{'s' if opts.size != 1}: #{opts.inspect}"
+          end
+
         end
 
         def start(port, timeout)
@@ -27,7 +38,7 @@ module Selenium
 
           @port = port
 
-          @process = ChildProcess.new(@binary_path, "--port=#{@port}")
+          @process = ChildProcess.new(@binary_path, *server_args)
           @process.io.inherit! if $DEBUG
           @process.start
 
@@ -56,6 +67,17 @@ module Selenium
 
         def running?
           @process && @process.alive?
+        end
+
+        private
+
+        def server_args
+          args = ["--port=#{@port}"]
+
+          args << "--log-level=#{@log_level.to_s.upcase}" if @log_level
+          args << "--log-file=#{@log_file}" if @log_file
+
+          args
         end
 
       end

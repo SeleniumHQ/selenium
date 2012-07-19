@@ -45,6 +45,17 @@ module Selenium
           caps['nativeEvents'].should be_false
         end
 
+        it 'sets the server log level and log file' do
+          server.should_receive(:log_level=).with :trace
+          server.should_receive(:log_file=).with '/foo/bar'
+
+          Bridge.new(
+            :log_level   => :trace,
+            :log_file    => '/foo/bar',
+            :http_client => http
+          )
+        end
+
       end
 
     end
