@@ -23,20 +23,12 @@ folder(name = "amd64",
   deps = [
     ":noblur64",
     ":imehandler64",
-  ],
-  outs = [
-    "amd64/x_ignore_nofocus.so",
-    "amd64/libibushandler.so",
   ])
 
 folder(name = "x86",
   deps = [
     ":noblur",
     ":imehandler",
-  ],
-  outs = [
-    "x86/x_ignore_nofocus.so",
-    "x86/libibushandler.so",
   ])
 
 # TODO(dawagner): These tmp folders are a horrible hack, and should disappear post haste

@@ -3,25 +3,15 @@
 
 java_library(name = "server",
   resources = [
-    ":resource",
+    { "//javascript/remote:client" : "org/openqa/selenium/remote/server/resource/client.js" },
+    { "//javascript/remote:hub" : "org/openqa/selenium/remote/server/resource/hub.html" },
+    { "//javascript/remote:style" : "org/openqa/selenium/remote/server/resource/style.css" },
   ],
   deps = [
     ":server_core",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/ie",
     "//java/client/src/org/openqa/selenium/firefox",
-  ])
-
-folder(name = "resource",
-  deps = [
-    "//javascript/remote:client.js",
-    "//javascript/remote:hub.html",
-    "//javascript/remote:style.css"
-  ],
-  outs = [
-    "resource/client.js",
-    "resource/hub.html",
-    "resource/style.css",
   ])
 
 java_library(name = "server_core",

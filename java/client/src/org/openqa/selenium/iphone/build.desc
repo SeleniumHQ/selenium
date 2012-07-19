@@ -13,6 +13,4 @@ folder(name = "mac",
   deps = [
     "//third_party/objc/iphonesim:iphonesim-binary"
   ],
-  outs = [
-    "mac/iphonesim",
-  ])
+  out = "mac")
