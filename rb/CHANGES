@@ -1,3 +1,22 @@
+2.25.0 (2012-07-19)
+===================
+
+* Respect no_proxy / NO_PROXY env vars (#4007).
+* Improve error message if a configured proxy refuses the connection.
+* Ignored exception can be configured on the Wait class.
+* Add Selenium::WebDriver::Support::Color class.
+* Ignore Errno::ENETUNREACH when trying to detect our local IP (#4165).
+* Ignore Errno::EADDRNOTAVAIL in PortProber (#3987).
+* Firefox:
+  * Enumerate through client rects until finding one with non-zero dimensions when clicking.
+  * Updated supported versions of Firefox to 17.
+  * Allow windows to be resized from a frame (#3897).
+  * Fix an issue where a call to submit could hang the driver.
+* IE:
+  * Ability to configure logging through the :log_file and :log_level options.
+  * Increasing stability of file upload dialog handling (#3858)
+* Better handling of overflow edge cases when determining element visibility.
+
 2.24.0 (2012-06-19)
 ===================
 
