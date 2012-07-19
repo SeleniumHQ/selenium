@@ -118,7 +118,8 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
 
-        driver.switch_to.alert.dismiss
+        alert = wait_for_alert
+        alert.dismiss
 
         driver.title.should == "Testing Alerts"
       end
@@ -129,7 +130,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "prompt").click
 
-        alert = driver.switch_to.alert
+        alert = wait_for_alert
         alert.send_keys "cheese"
         alert.accept
 
@@ -141,7 +142,7 @@ describe "Selenium::WebDriver::TargetLocator" do
         driver.navigate.to url_for("alerts.html")
         driver.find_element(:id => "alert").click
 
-        alert = driver.switch_to.alert
+        alert = wait_for_alert
         text = alert.text
         alert.accept
 
