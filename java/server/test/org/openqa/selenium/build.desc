@@ -1,6 +1,6 @@
 
 java_library(name = "server-with-tests",
-  main = "org.openqa.grid.selenium.GridLauncher",
+  main_class = "org.openqa.grid.selenium.GridLauncher",
   resources = [
     "tests",
   ],

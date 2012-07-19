@@ -37,7 +37,7 @@ java_library(
     "//third_party/java/commons-fileupload",
     "//third_party/java/webbit",
   ],
-  main = "org.openqa.selenium.environment.webserver.Jetty7AppServer")
+  main_class = "org.openqa.selenium.environment.webserver.Jetty7AppServer")
 
 java_test(name = "webserver_test",
   srcs = [

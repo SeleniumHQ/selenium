@@ -1,6 +1,6 @@
 
 java_library(name = "little_proxy",
-  main = "org.littleshoot.proxy.Launcher",
+  main_class = "org.littleshoot.proxy.Launcher",
   deps = [
     "littleproxy-0.5-SNAPSHOT.jar",
     "//third_party/java/commons_cli",

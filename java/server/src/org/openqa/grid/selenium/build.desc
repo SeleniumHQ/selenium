@@ -1,6 +1,6 @@
 
 java_library(name = "selenium",
-  main = "org.openqa.grid.selenium.GridLauncher",
+  main_class = "org.openqa.grid.selenium.GridLauncher",
   srcs = [ "**/*.java" ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",

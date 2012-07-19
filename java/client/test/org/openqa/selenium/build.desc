@@ -102,5 +102,5 @@ java_test(name = "RcBrowserLauncherTests",
 
 java_library(name = "dump-ignores",
   deps = [ ":tests" ],
-  main = "org.openqa.selenium.internal.IgnoredTestPrinter"
+  main_class = "org.openqa.selenium.internal.IgnoredTestPrinter"
 )

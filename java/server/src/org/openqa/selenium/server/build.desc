@@ -1,5 +1,5 @@
 java_library(name = "server",
-  main = "org.openqa.selenium.server.SeleniumServer",
+  main_class = "org.openqa.selenium.server.SeleniumServer",
   deps = [
     "//java/client/src/org/openqa/selenium:client-combined",
     ":server_lite",
@@ -7,7 +7,7 @@ java_library(name = "server",
   ])
 
 java_library(name = "server-with-tests",
-  main = "org.openqa.selenium.server.SeleniumServer",
+  main_class = "org.openqa.selenium.server.SeleniumServer",
   srcs = [
     "SeleniumServer.java",
   ],
@@ -22,7 +22,7 @@ java_library(name = "server-with-tests",
 # We need at least one source file in here to make this build the JAR
 # TODO(simon): Only resources should be fine
 java_library(name = "server_lite",
-  main = "org.openqa.selenium.server.SeleniumServer",
+  main_class = "org.openqa.selenium.server.SeleniumServer",
   deps = [
     ":base",
     ":server_resources",

@@ -366,8 +366,8 @@ module CrazyFunJava
         CrazyFunJava.ant.jar(:jarfile => jar, :basedir => temp_dir(dir, args[:name]),
                              :excludes => '.svn', :duplicate => 'preserve') do |ant|
           ant.manifest do |ant|
-            if (args[:main])
-              ant.attribute(:name => 'Main-Class', :value => args[:main])
+            if (args[:main_class])
+              ant.attribute(:name => 'Main-Class', :value => args[:main_class])
             end
             modify_manifest(ant)
           end
@@ -378,7 +378,7 @@ module CrazyFunJava
 
   class RunBinary < BaseJava
     def handle(fun, dir, args)
-      if (args[:main].nil?)
+      if (args[:main_class].nil?)
         return
       end
 
@@ -393,7 +393,7 @@ module CrazyFunJava
 
         CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
 
-        ant_java_task(task_name, args[:main], cp, nil, args[:sysproperties])
+        ant_java_task(task_name, args[:main_class], cp, nil, args[:sysproperties])
 
         CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
       end
@@ -436,7 +436,7 @@ module CrazyFunJava
           tests = [ args[:test_suite] ]
         end
 
-        if ("org.testng.TestNG" == args[:main])
+        if ("org.testng.TestNG" == args[:main_class])
           CrazyFunJava.ant.testng :outputdir => "build/test_logs", :haltOnFailure => halt_on_failure? do |ant|
             ant.classpath do |ant_cp|
               cp.all.each do |jar|
@@ -453,8 +453,8 @@ module CrazyFunJava
 
             ant.xmlfileset :dir => dir, :includes => args[:args]
           end
-        elsif (args[:main])
-          ant_java_task(task_name, args[:main], cp, args[:args], args[:sysproperties])
+        elsif (args[:main_class])
+          ant_java_task(task_name, args[:main_class], cp, args[:args], args[:sysproperties])
         else
           tests.each do |test|
             CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
@@ -689,8 +689,8 @@ module CrazyFunJava
             ant.zipfileset(:src => j, :excludes => "META-INF/BCKEY.DSA,META-INF/BCKEY.SF")
           end
           ant.manifest do |ant|
-            if (args[:main])
-              ant.attribute(:name => 'Main-Class', :value => args[:main])
+            if (args[:main_class])
+              ant.attribute(:name => 'Main-Class', :value => args[:main_class])
             end
             modify_manifest(ant)
           end
@@ -730,8 +730,8 @@ module CrazyFunJava
             end
           end
           ant.manifest do |ant|
-            if (args[:main])
-              ant.attribute(:name => 'Main-Class', :value => args[:main])
+            if (args[:main_class])
+              ant.attribute(:name => 'Main-Class', :value => args[:main_class])
             end
             modify_manifest(ant)
           end

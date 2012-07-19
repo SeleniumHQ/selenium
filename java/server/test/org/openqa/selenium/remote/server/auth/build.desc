@@ -1,5 +1,5 @@
 java_library(name = "server",
-  main = "org.openqa.selenium.remote.server.auth.AuthenticatedWebDriverServer",
+  main_class = "org.openqa.selenium.remote.server.auth.AuthenticatedWebDriverServer",
   srcs = [ "*.java" ],
   deps = [
     "//java/client/src/org/openqa/selenium/firefox",
