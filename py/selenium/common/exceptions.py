@@ -93,6 +93,10 @@ class TimeoutException(WebDriverException):
     """Thrown when a command does not complete in enough time."""
     pass
 
+class MoveTargetOutOfBoundsException(WebDriverException):
+    """Indicates that the target provided to the actions move() method is invalid"""
+    pass
+
 class UnexpectedTagNameException(WebDriverException):
     """Thrown when a support class did not get an expected web element"""
     pass

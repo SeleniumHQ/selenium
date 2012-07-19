@@ -29,7 +29,7 @@ from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import ErrorInResponseException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
-
+from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
 class ErrorCode(object):
     """
@@ -116,6 +116,8 @@ class ErrorHandler(object):
             exception_class = ImeNotAvailableException
         elif status == ErrorCode.IME_ENGINE_ACTIVATION_FAILED:
             exception_class = ImeActivationFailedException
+        elif status == ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
+            exception_class = MoveTargetOutOfBoundsException
         else:
             exception_class = WebDriverException
         value = response['value']
