@@ -16,6 +16,7 @@ namespace Selenium.Internal.SeleniumEmulation
         /// <summary>
         /// Initializes a new instance of the <see cref="Submit"/> class.
         /// </summary>
+        /// <param name="alert">An <see cref="AlertOverride"/> object used to override alerts displayed in an onSubmit event handler.</param>
         /// <param name="finder">An <see cref="ElementFinder"/> used to find the element on which to execute the command.</param>
         public Submit(AlertOverride alert, ElementFinder finder)
         {
