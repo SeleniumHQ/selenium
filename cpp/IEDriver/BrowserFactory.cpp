@@ -41,7 +41,16 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
   LOG(TRACE) << "Entering BrowserFactory::LaunchBrowserProcess";
 
   DWORD process_id = NULL;
-  if (ignore_protected_mode_settings || this->ProtectedModeSettingsAreValid()) {
+  bool has_valid_protected_mode_settings = false;
+  LOG(DEBUG) << "Ignoring Protected Mode Settings: "
+             << ignore_protected_mode_settings;
+  if (!ignore_protected_mode_settings) {
+    LOG(DEBUG) << "Checking validity of Protected Mode settings.";
+    has_valid_protected_mode_settings = this->ProtectedModeSettingsAreValid();
+  }
+  LOG(DEBUG) << "Has Valid Protected Mode Settings: "
+             << has_valid_protected_mode_settings;
+  if (ignore_protected_mode_settings || has_valid_protected_mode_settings) {
     STARTUPINFO start_info;
     PROCESS_INFORMATION proc_info;
 
@@ -181,9 +190,10 @@ bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
   return false;
 }
 
-void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
+bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
+                                     bool ignore_zoom_setting,
+                                     std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::AttachToBrowser";
-
   while (process_window_info->hwndBrowser == NULL) {
     // TODO: create a timeout for this. We shouldn't need it, since
     // we got a valid process ID, but we should bulletproof it.
@@ -199,6 +209,20 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
                                         &document)) {
     CComPtr<IHTMLWindow2> window;
     HRESULT hr = document->get_parentWindow(&window);
+
+    // Test for zoom level = 100%
+    int zoom_level = 100;
+    LOG(DEBUG) << "Ignoring zoom setting: " << ignore_zoom_setting;
+    if (!ignore_zoom_setting) {
+      zoom_level = this->GetZoomLevel(document, window);
+    }
+    if (zoom_level != 100) {
+      vector<char> zoom_level_buffer(10);
+      _itoa_s(zoom_level, &zoom_level_buffer[0], 10, 10);
+      std::string zoom(&zoom_level_buffer[0]);
+      *error_message = "Browser zoom level was set to " + zoom + "%. It should be set to 100%";
+      return false;
+    }
     if (SUCCEEDED(hr)) {
       // http://support.microsoft.com/kb/257717
       CComQIPtr<IServiceProvider> provider(window);
@@ -214,6 +238,7 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
                                             reinterpret_cast<void**>(&browser));
           if (SUCCEEDED(hr)) {
             process_window_info->pBrowser = browser;
+            return true;
           } else {
             LOGHR(WARN, hr) << "IServiceProvider::QueryService for SID_SWebBrowserApp failed";
           }
@@ -226,7 +251,92 @@ void BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info) {
     } else {
       LOGHR(WARN, hr) << "Call to IHTMLDocument2::get_parentWindow failed";
     }
+  } else {
+    *error_message = "Could not get document from window handle";
   }
+  return false;
+}
+
+int BrowserFactory::GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window) {
+  LOG(TRACE) << "Entering BrowserFactory::GetZoomLevel";
+  int zoom = 0;
+  HRESULT hr = S_OK;
+  if (this->ie_major_version_ == 7) {
+    CComPtr<IHTMLElement> body;
+    hr = document->get_body(&body);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLDocument2::get_body failed";
+      return zoom;
+    }
+
+    long offset_width = 0;
+    hr = body->get_offsetWidth(&offset_width);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLElement::get_offsetWidth failed";
+      return zoom;
+    }
+
+    CComPtr<IHTMLElement2> body2;
+    hr = body.QueryInterface<IHTMLElement2>(&body2);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Attempt to QueryInterface for IHTMLElement2 failed";
+      return zoom;
+    }
+
+    CComPtr<IHTMLRect> rect;
+    hr = body2->getBoundingClientRect(&rect);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLElement2::getBoundingClientRect failed";
+      return zoom;
+    }
+
+    long left = 0, right = 0;
+    hr = rect->get_left(&left);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLRect::get_left failed";
+      return zoom;
+    }
+
+    hr = rect->get_right(&right);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLRect::get_right failed";
+      return zoom;
+    }
+
+    zoom = static_cast<int>((static_cast<double>(right - left) / offset_width) * 100.0);
+  } else if (this->ie_major_version_ >= 8) {
+    CComPtr<IHTMLScreen> screen;
+    hr = window->get_screen(&screen);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLWindow2::get_screen failed";
+      return zoom;
+    }
+
+    CComPtr<IHTMLScreen2> screen2;
+    hr = screen.QueryInterface<IHTMLScreen2>(&screen2);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Attempt to QueryInterface for IHTMLScreen2 failed";
+      return zoom;
+    }
+
+    long device_xdpi=0, logical_xdpi = 0;
+    hr = screen2->get_deviceXDPI(&device_xdpi);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLScreen2::get_deviceXDPI failed";
+      return zoom;
+    }
+
+    hr = screen2->get_logicalXDPI(&logical_xdpi);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to IHTMLScreen2::get_logicalXDPI failed";
+      return zoom;
+    }
+
+    zoom = static_cast<int>((static_cast<double>(device_xdpi) / logical_xdpi) * 100.0);
+  }
+
+  LOG(DEBUG) << "Browser zoom level is " << zoom << "%";
+  return zoom;
 }
 
 IWebBrowser2* BrowserFactory::CreateBrowser() {

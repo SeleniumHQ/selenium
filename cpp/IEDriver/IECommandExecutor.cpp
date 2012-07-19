@@ -119,6 +119,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->serialized_response_ = "";
   this->initial_browser_url_ = "";
   this->ignore_protected_mode_settings_ = false;
+  this->ignore_zoom_setting_ = false;
   this->enable_native_events_ = true;
   this->speed_ = 0;
   this->implicit_wait_timeout_ = 0;
@@ -506,10 +507,18 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   process_window_info.dwProcessId = process_id;
   process_window_info.hwndBrowser = NULL;
   process_window_info.pBrowser = NULL;
-  this->factory_.AttachToBrowser(&process_window_info);
+  bool attached = this->factory_.AttachToBrowser(&process_window_info,
+                                                 this->ignore_zoom_setting_,
+                                                 error_message);
+  if (!attached) { 
+    LOG(WARN) << "Unable to attach to browser COM object";
+    this->is_waiting_ = false;
+    return ENOSUCHDRIVER;
+  }
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
                                     process_window_info.hwndBrowser,
                                     this->m_hWnd));
+
   this->AddManagedBrowser(wrapper);
   return SUCCESS;
 }

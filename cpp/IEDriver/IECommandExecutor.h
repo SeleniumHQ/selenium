@@ -158,6 +158,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->ignore_protected_mode_settings_ = ignore_settings;
   }
 
+  bool ignore_zoom_setting(void) const {
+    return this->ignore_zoom_setting_;
+  }
+  void set_ignore_zoom_setting(const bool ignore_zoom) {
+    this->ignore_zoom_setting_ = ignore_zoom;
+  }
+
   bool enable_native_events(void) const {
     return this->enable_native_events_;
   }
@@ -222,6 +229,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   int port_;
   bool ignore_protected_mode_settings_;
   bool enable_native_events_;
+  bool ignore_zoom_setting_;
   std::string initial_browser_url_;
 
   Command current_command_;

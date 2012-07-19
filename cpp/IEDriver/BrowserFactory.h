@@ -74,7 +74,9 @@ class BrowserFactory {
                              const bool ignore_protected_mode_settings,
                              std::string* error_message);
   IWebBrowser2* CreateBrowser();
-  void AttachToBrowser(ProcessWindowInfo* procWinInfo);
+  bool AttachToBrowser(ProcessWindowInfo* procWinInfo,
+                       const bool ignore_zoom_setting,
+                       std::string* error_message);
   bool GetDocumentFromWindowHandle(HWND window_handle,
                                    IHTMLDocument2** document);
   bool GetRegistryValue(const HKEY root_key,
@@ -101,6 +103,7 @@ class BrowserFactory {
   bool ProtectedModeSettingsAreValid(void);
   int GetZoneProtectedModeSetting(const HKEY key_handle,
                                   const std::wstring& zone_subkey_name);
+  int GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window);
 
   int ie_major_version_;
   int windows_major_version_;
