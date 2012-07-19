@@ -220,7 +220,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Clear this element.</p>
+<p>If this element is a text entry element, this will clear the value.</p>
 </div></span>
   
 </li>
@@ -771,12 +771,12 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
       <pre class="lines">
 
 
-268
-269
-270</pre>
+274
+275
+276</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 268</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 274</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='lbrace'>{</span> <span class='symbol'>:ELEMENT</span> <span class='op'>=&gt;</span> <span class='ivar'>@id</span> <span class='rbrace'>}</span>
@@ -900,7 +900,15 @@ are evaluated as expected:</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Clear this element</p>
+<p>If this element is a text entry element, this will clear the value. Has no
+effect on other elements. Text entry elements are INPUT and TEXTAREA
+elements.</p>
+
+<p>Note that the events fired by this event may not be as you'd expect.  In
+particular, we don't fire any keyboard or mouse events.  If you want to
+ensure keyboard events are fired, consider using #send_keys with the
+backspace key. To ensure you get a change event,  consider following with a
+call to #send_keys with the tab key.</p>
 
 
   </div>
@@ -914,12 +922,12 @@ are evaluated as expected:</p>
       <pre class="lines">
 
 
-134
-135
-136</pre>
+140
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 140</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear'>clear</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_clearElement'>clearElement</span> <span class='ivar'>@id</span>
@@ -1058,12 +1066,12 @@ background-color) to access the desired values.</p>
       <pre class="lines">
 
 
-187
-188
-189</pre>
+193
+194
+195</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_css_value'>css_value</span><span class='lparen'>(</span><span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementValueOfCssProperty'>getElementValueOfCssProperty</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span>
@@ -1112,12 +1120,12 @@ background-color) to access the desired values.</p>
       <pre class="lines">
 
 
-164
-165
-166</pre>
+170
+171
+172</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_displayed?'>displayed?</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementDisplayed'>isElementDisplayed</span> <span class='ivar'>@id</span>
@@ -1166,12 +1174,12 @@ background-color) to access the desired values.</p>
       <pre class="lines">
 
 
-144
-145
-146</pre>
+150
+151
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 144</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 150</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enabled?'>enabled?</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementEnabled'>isElementEnabled</span> <span class='ivar'>@id</span>
@@ -1280,12 +1288,12 @@ background-color) to access the desired values.</p>
       <pre class="lines">
 
 
-198
-199
-200</pre>
+204
+205
+206</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 198</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 204</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementLocation'>getElementLocation</span> <span class='ivar'>@id</span>
@@ -1335,12 +1343,12 @@ into view.</p>
       <pre class="lines">
 
 
-208
-209
-210</pre>
+214
+215
+216</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 208</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 214</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location_once_scrolled_into_view'>location_once_scrolled_into_view</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span> <span class='ivar'>@id</span>
@@ -1380,12 +1388,12 @@ into view.</p>
       <pre class="lines">
 
 
-247
-248
-249</pre>
+253
+254
+255</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 247</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 253</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
   <span class='ivar'>@id</span>
@@ -1434,12 +1442,12 @@ into view.</p>
       <pre class="lines">
 
 
-154
-155
-156</pre>
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 154</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 160</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_selected?'>selected?</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_isElementSelected'>isElementSelected</span> <span class='ivar'>@id</span>
@@ -1561,12 +1569,12 @@ into view.</p>
       <pre class="lines">
 
 
-218
-219
-220</pre>
+224
+225
+226</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 218</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 224</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getElementSize'>getElementSize</span> <span class='ivar'>@id</span>
@@ -1602,12 +1610,12 @@ into view.</p>
       <pre class="lines">
 
 
-172
-173
-174</pre>
+178
+179
+180</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 172</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 178</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit'>submit</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_submitElement'>submitElement</span> <span class='ivar'>@id</span>
@@ -1780,12 +1788,12 @@ into view.</p>
       <pre class="lines">
 
 
-258
-259
-260</pre>
+264
+265
+266</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 258</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 264</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_dump'>json_dump</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -1800,7 +1808,7 @@ into view.</p>
 </div>
 
     <div id="footer">
-  Generated on Wed May 30 00:28:02 2012 by
+  Generated on Thu Jul 19 12:32:29 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.1 (ruby-1.9.3).
 </div>

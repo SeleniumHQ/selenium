@@ -279,6 +279,19 @@
           
         </li>
       
+        <li>
+          <span class="name">:ignore</span>
+          <span class="type">(<tt>Array</tt>, <tt>Exception</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'>
+<p>Exceptions to ignore while polling (default: Error::NoSuchElementError)</p>
+</div>
+          
+        </li>
+      
     </ul>
   
 
@@ -289,19 +302,21 @@
       <pre class="lines">
 
 
-16
-17
 18
 19
-20</pre>
+20
+21
+22
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/wait.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/wait.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@timeout</span>  <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='comma'>,</span> <span class='const'>DEFAULT_TIMEOUT</span><span class='rparen'>)</span>
   <span class='ivar'>@interval</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:interval</span><span class='comma'>,</span> <span class='const'>DEFAULT_INTERVAL</span><span class='rparen'>)</span>
   <span class='ivar'>@message</span>  <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:message</span><span class='rbracket'>]</span>
+  <span class='ivar'>@ignored</span>  <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:ignore</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -372,9 +387,6 @@
       <pre class="lines">
 
 
-30
-31
-32
 33
 34
 35
@@ -397,10 +409,13 @@
 52
 53
 54
-55</pre>
+55
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/wait.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/wait.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='kw'>until</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_end_time'>end_time</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span> <span class='op'>+</span> <span class='ivar'>@timeout</span>
@@ -410,7 +425,7 @@
     <span class='kw'>begin</span>
       <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='kw'>yield</span>
       <span class='kw'>return</span> <span class='id identifier rubyid_result'>result</span> <span class='kw'>if</span> <span class='id identifier rubyid_result'>result</span>
-    <span class='kw'>rescue</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_last_error'>last_error</span>
+    <span class='kw'>rescue</span> <span class='op'>*</span><span class='ivar'>@ignored</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_last_error'>last_error</span>
       <span class='comment'># swallowed
 </span>    <span class='kw'>end</span>
 
@@ -438,7 +453,7 @@
 </div>
 
     <div id="footer">
-  Generated on Wed May 30 00:27:58 2012 by
+  Generated on Thu Jul 19 12:32:25 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.1 (ruby-1.9.3).
 </div>

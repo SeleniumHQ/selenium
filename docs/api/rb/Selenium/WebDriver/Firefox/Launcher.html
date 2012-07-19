@@ -574,12 +574,12 @@
       <pre class="lines">
 
 
-93
-94
-95</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 93</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_profile'>assert_profile</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>must create_profile first</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='ivar'>@profile</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@profile_dir</span>
@@ -617,17 +617,17 @@
       <pre class="lines">
 
 
-72
-73
 74
 75
 76
 77
 78
-79</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connect_until_stable'>connect_until_stable</span>
   <span class='id identifier rubyid_poller'>poller</span> <span class='op'>=</span> <span class='const'>SocketPoller</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='comma'>,</span> <span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='rparen'>)</span>
@@ -676,7 +676,9 @@
 55
 56
 57
-58</pre>
+58
+59
+60</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 52</span>
@@ -686,7 +688,9 @@
 
   <span class='ivar'>@profile</span><span class='period'>.</span><span class='id identifier rubyid_add_webdriver_extension'>add_webdriver_extension</span>
   <span class='ivar'>@profile</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='ivar'>@port</span>
+
   <span class='ivar'>@profile_dir</span> <span class='op'>=</span> <span class='ivar'>@profile</span><span class='period'>.</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span>
+  <span class='const'>FileReaper</span> <span class='op'>&lt;&lt;</span> <span class='ivar'>@profile_dir</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -721,8 +725,6 @@
       <pre class="lines">
 
 
-81
-82
 83
 84
 85
@@ -731,10 +733,12 @@
 88
 89
 90
-91</pre>
+91
+92
+93</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fetch_profile'>fetch_profile</span>
   <span class='kw'>if</span> <span class='ivar'>@profile_name</span>
@@ -927,12 +931,12 @@
       <pre class="lines">
 
 
-97
-98
-99</pre>
+99
+100
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socket_lock'>socket_lock</span>
   <span class='ivar'>@socket_lock</span> <span class='op'>||=</span> <span class='const'>SocketLock</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@port</span> <span class='op'>-</span> <span class='int'>1</span><span class='comma'>,</span> <span class='const'>SOCKET_LOCK_TIMEOUT</span><span class='rparen'>)</span>
@@ -970,13 +974,13 @@
       <pre class="lines">
 
 
-60
-61
 62
-63</pre>
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_assert_profile'>assert_profile</span>
@@ -1015,15 +1019,15 @@
       <pre class="lines">
 
 
-65
-66
 67
 68
 69
-70</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_silent_and_wait'>start_silent_and_wait</span>
   <span class='id identifier rubyid_assert_profile'>assert_profile</span>
@@ -1084,7 +1088,7 @@
 </div>
 
     <div id="footer">
-  Generated on Wed May 30 00:28:03 2012 by
+  Generated on Thu Jul 19 12:32:30 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.1 (ruby-1.9.3).
 </div>

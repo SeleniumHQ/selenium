@@ -314,7 +314,11 @@
 26
 27
 28
-29</pre>
+29
+30
+31
+32
+33</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/bridge.rb', line 8</span>
@@ -323,6 +327,7 @@
   <span class='id identifier rubyid_port'>port</span>        <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>DEFAULT_PORT</span>
   <span class='id identifier rubyid_profile'>profile</span>     <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:profile</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_http_client'>http_client</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http_client</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_proxy'>proxy</span>       <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:proxy</span><span class='rparen'>)</span>
 
   <span class='ivar'>@launcher</span>   <span class='op'>=</span> <span class='id identifier rubyid_create_launcher'>create_launcher</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_profile'>profile</span><span class='rparen'>)</span>
 
@@ -332,9 +337,12 @@
 
   <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_launch'>launch</span>
 
+  <span class='id identifier rubyid_caps'>caps</span> <span class='op'>=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='symbol'>:native_events</span> <span class='op'>=&gt;</span> <span class='const'>DEFAULT_ENABLE_NATIVE_EVENTS</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_proxy'>proxy</span> <span class='op'>=</span> <span class='id identifier rubyid_proxy'>proxy</span> <span class='kw'>if</span> <span class='id identifier rubyid_proxy'>proxy</span>
+
   <span class='id identifier rubyid_remote_opts'>remote_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span>
     <span class='symbol'>:url</span>                  <span class='op'>=&gt;</span> <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span><span class='comma'>,</span>
-    <span class='symbol'>:desired_capabilities</span> <span class='op'>=&gt;</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='symbol'>:native_events</span> <span class='op'>=&gt;</span> <span class='const'>DEFAULT_ENABLE_NATIVE_EVENTS</span><span class='rparen'>)</span>
+    <span class='symbol'>:desired_capabilities</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_caps'>caps</span>
   <span class='rbrace'>}</span>
 
   <span class='id identifier rubyid_remote_opts'>remote_opts</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='symbol'>:http_client</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_http_client'>http_client</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_http_client'>http_client</span>
@@ -381,12 +389,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/bridge.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/bridge.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:firefox</span>
@@ -424,15 +432,15 @@
       <pre class="lines">
 
 
-35
-36
-37
-38
 39
-40</pre>
+40
+41
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/bridge.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/bridge.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_extensions'>driver_extensions</span>
   <span class='lbracket'>[</span>
@@ -473,15 +481,15 @@
       <pre class="lines">
 
 
-42
-43
-44
-45
 46
-47</pre>
+47
+48
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/bridge.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/bridge.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -499,7 +507,7 @@
 </div>
 
     <div id="footer">
-  Generated on Wed May 30 00:28:02 2012 by
+  Generated on Thu Jul 19 12:32:30 2012 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.1 (ruby-1.9.3).
 </div>
