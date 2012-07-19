@@ -22,7 +22,7 @@ import pytest
 from selenium.webdriver.common.by import By
 
 
-class VisibilityTests(unittest.TestCase):
+class OpacityTests(unittest.TestCase):
 
     @pytest.mark.ignore_ie
     @pytest.mark.ignore_opera
