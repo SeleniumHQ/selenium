@@ -110,7 +110,7 @@ describe "Selenium::WebDriver::TargetLocator" do
       end
     end
 
-    not_compliant_on({:browser => :chrome, :platform => :macosx}, # http://code.google.com/p/chromium/issues/detail?id=90519
+    not_compliant_on({:browser => :chrome, :platform => :macosx}, # http://code.google.com/p/chromedriver/issues/detail?id=26
                      {:browser => :opera},
                      {:browser => :iphone},
                      {:browser => :safari}) do
