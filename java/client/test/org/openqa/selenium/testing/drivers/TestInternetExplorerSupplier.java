@@ -15,22 +15,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 package org.openqa.selenium.testing.drivers;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerDriverService;
-import org.openqa.selenium.testing.InProject;
+import com.google.common.base.Supplier;
 
-public class LocallyBuiltInternetExplorerDriver extends InternetExplorerDriver {
-  public LocallyBuiltInternetExplorerDriver(Capabilities capabilities) {
-    super(getService(), capabilities);
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
+  private Capabilities caps;
+
+  public TestInternetExplorerSupplier(Capabilities caps) {
+    this.caps = caps;
   }
 
-  private static InternetExplorerDriverService getService() {
-    InternetExplorerDriverService.Builder builder =
-        new InternetExplorerDriverService.Builder().usingDriverExecutable(
-            InProject.locate("build/cpp/Win32/Release/IEDriverServer.exe"));
-    return builder.build();
+  public WebDriver get() {
+    if (caps == null) {
+      return null;
+    }
+
+    if (!DesiredCapabilities.internetExplorer().getBrowserName().equals(caps.getBrowserName())) {
+      return null;
+    }
+
+    return new LocallyBuiltInternetExplorerDriver(caps);
   }
 }

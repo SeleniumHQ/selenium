@@ -87,6 +87,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
     suppliers.add(new SeleniumBackedSupplier(desiredCaps));
     suppliers.add(new OperaDriverSupplier(desiredCaps));
+    suppliers.add(new TestInternetExplorerSupplier(desiredCaps));
     suppliers.add(new ReflectionBackedDriverSupplier(desiredCaps, requiredCaps));
     suppliers.add(new DefaultDriverSupplier(desiredCaps, requiredCaps));
     return suppliers;

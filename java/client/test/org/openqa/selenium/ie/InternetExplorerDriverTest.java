@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class InternetExplorerDriverTest extends JUnit4TestBase {
@@ -29,15 +30,15 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
   @Test
   public void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
-      WebDriver driver = new InternetExplorerDriver();
+      WebDriver driver = newIeDriver();
       driver.quit();
     }
   }
   
   @Test
   public void canStartMultipleIeDriverInstances() {
-    WebDriver firstDriver = new InternetExplorerDriver();
-    WebDriver secondDriver = new InternetExplorerDriver();
+    WebDriver firstDriver = newIeDriver();
+    WebDriver secondDriver = newIeDriver();
     try {
       firstDriver.get(pages.xhtmlTestPage);
       secondDriver.get(pages.formPage);
@@ -47,5 +48,9 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
       firstDriver.quit();
       secondDriver.quit();
     }
+  }
+
+  private WebDriver newIeDriver() {
+    return new WebDriverBuilder().get();
   }
 }
