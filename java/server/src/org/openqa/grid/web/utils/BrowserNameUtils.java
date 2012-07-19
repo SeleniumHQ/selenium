@@ -99,7 +99,7 @@ public class BrowserNameUtils {
       ret = BrowserType.OPERA;
     }
 
-    return ret;
+    return ret.replace(" ", "_");
   }
 
 
