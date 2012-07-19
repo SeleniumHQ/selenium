@@ -268,6 +268,7 @@ int Browser::NavigateToUrl(const std::string& url) {
                                          &dummy);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Navigate2 failed";
+    return EUNHANDLEDERROR;
   }
 
   this->set_wait_required(true);

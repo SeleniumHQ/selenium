@@ -48,6 +48,12 @@ class GoToUrlCommandHandler : public IECommandHandler {
       // TODO: check result for error
       std::string url = url_parameter_iterator->second.asString();
       status_code = browser_wrapper->NavigateToUrl(url);
+      if (status_code != SUCCESS) {
+        response->SetErrorResponse(status_code, "Failed to navigate to "
+                                                    + url
+                                                    + ". This usually means that a call to the COM method IWebBrowser2::Navigate2() failed.");
+        return;
+      }
       browser_wrapper->SetFocusedFrameByElement(NULL);
       response->SetSuccessResponse(Json::Value::null);
     }
