@@ -340,8 +340,15 @@ module CrazyFunJava
       unless args[:embedded].nil?
         file jar_name(dir, args[:name]) do
           args[:embedded].each do |to_copy|
-            from = Rake::Task[task_name(dir, to_copy)].out
-            package_dir = package_name("#{dir}/.") # Append a /. because package_name expects file names not folder names
+            path_to_file = "#{dir}/#{to_copy}"
+            if File.exists?(path_to_file)
+              from = path_to_file
+              to_prefix = File.dirname(to_copy)
+            else
+              from = Rake::Task[task_name(dir, to_copy)].out
+              to_prefix = '.'
+            end
+            package_dir = package_name("#{dir}/#{to_prefix}/.") # Append a . because package_name expects file names not folder names
             to = "#{temp_dir(dir, args[:name])}/#{package_dir}"
             mkdir_p to
             cp_r from, to
