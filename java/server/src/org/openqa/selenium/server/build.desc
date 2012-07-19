@@ -7,18 +7,6 @@ java_binary(name = "server",
     "//third_party/java/opera-driver",
   ])
 
-java_library(name = "server-with-tests",
-  main_class = "org.openqa.selenium.server.SeleniumServer",
-  srcs = [
-    "SeleniumServer.java",
-  ],
-  resources = [
-    { "../../../../../test/org/openqa/selenium/tests" : "./" }
-  ],
-  deps = [
-    ":server"
-  ])
-
 # Light version of the server for drivers that don't need to depend on all other drivers.
 # We need at least one source file in here to make this build the JAR
 # TODO(simon): Only resources should be fine

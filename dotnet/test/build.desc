@@ -189,7 +189,7 @@ dotnet_test(name = "core",
 
 dotnet_test(name = "webdriverbackedselenium",
   deps = [
-    "//java/server/src/org/openqa/selenium/server:server-with-tests:uber"
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ],
   srcs = "Selenium.WebdriverBackedSelenium.Tests/**/*.cs",
   refs = [
