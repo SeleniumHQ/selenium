@@ -10,6 +10,6 @@
         var ide_api = new API();
         ide_api.addPlugin("csharpformatters@seleniumhq.org");
         ide_api.addPluginProvidedFormatter("csharpwdformatter", "C# / NUnit / WebDriver", "chrome://csharp-formatters/content/formats/cs-wd.js");
-        ide_api.addPluginProvidedFormatter("csharpformatter", "C# / NUnit / Remote Control)", "chrome://csharp-formatters/content/formats/cs-rc.js");
+        ide_api.addPluginProvidedFormatter("csharpformatter", "C# / NUnit / Remote Control", "chrome://csharp-formatters/content/formats/cs-rc.js");
     </html:script>
 </overlay>
