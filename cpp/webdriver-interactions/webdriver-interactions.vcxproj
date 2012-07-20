@@ -155,12 +155,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="event_firing_thread.cpp" />
     <ClCompile Include="interaction_utils.cpp" />
     <ClCompile Include="interactions.cpp" />
     <ClCompile Include="interactions_common.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="errorcodes.h" />
+    <ClInclude Include="event_firing_thread.h" />
     <ClInclude Include="interaction_utils.h" />
     <ClInclude Include="interactions.h" />
     <ClInclude Include="interactions_common.h" />

@@ -129,11 +129,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       return;
     }
 
-    if (!supportsHover()) {
-      System.out.println("Skipping hover test: Hover is very short-lived on Windows. Issue 2067.");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("menu1"));
@@ -169,12 +164,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       return;
     }
 
-    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
-      System.out.println("Skipping hover test: Hover is very short-lived on Windows. Issue 2067.");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
+    // Move to a different element to make sure the mouse is not over the
+    // element with id 'item1' (from a previous test).
     new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
 
     WebElement element = driver.findElement(By.id("menu1"));
@@ -185,14 +177,15 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     new Actions(driver).moveToElement(element).build().perform();
 
+    // Intentionally wait to make sure hover persists.
+    Thread.sleep(2000);
+
     waitFor(new Callable<Boolean>() {
 
       public Boolean call() throws Exception {
         return !item.getText().equals("");
       }
     });
-
-    Thread.sleep(1000);
 
     assertEquals("Item 1", item.getText());
   }
@@ -323,11 +316,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       return false;
     }
     return true;
-  }
-
-  private boolean supportsHover() {
-    return !(SauceDriver.shouldUseSauce() && TestUtilities
-        .getEffectivePlatform().is(Platform.WINDOWS));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {

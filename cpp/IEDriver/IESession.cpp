@@ -14,6 +14,7 @@
 #include "IESession.h"
 #include "IECommandExecutor.h"
 #include "logging.h"
+#include "interactions.h"
 
 namespace webdriver {
 
@@ -61,6 +62,9 @@ void IESession::Initialize(void* init_params) {
 
 void IESession::ShutDown(void) {
   LOG(TRACE) << "Entering IESession::ShutDown";
+
+  // Kill the background thread first - otherwise the IE process crashes.
+  stopPersistentEventFiring();
 
   DWORD process_id;
   DWORD thread_id = ::GetWindowThreadProcessId(this->executor_window_handle_,

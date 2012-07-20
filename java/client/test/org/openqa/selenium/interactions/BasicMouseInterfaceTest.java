@@ -56,7 +56,7 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 /**
  * Tests operations that involve mouse and keyboard.
  */
-@Ignore(value = {IE, SAFARI},
+@Ignore(value = {SAFARI},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
@@ -85,16 +85,19 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     assertEquals("Nothing happened.", dragReporter.getText());
 
-    holdItem.perform();
-    moveToSpecificItem.perform();
-    moveToOtherList.perform();
+    try {
+      holdItem.perform();
+      moveToSpecificItem.perform();
+      moveToOtherList.perform();
 
-    assertEquals("Nothing happened. DragOut", dragReporter.getText());
-    drop.perform();
+      assertEquals("Nothing happened. DragOut", dragReporter.getText());
+    } finally {
+      drop.perform();
+    }
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   @Test
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
@@ -104,7 +107,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, ANDROID, IE, IPHONE, SELENESE},
+      value = {HTMLUNIT, ANDROID, IPHONE, SELENESE},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
@@ -127,7 +130,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   @Test
   public void testDoubleClickThenGet() {
     // Fails in ff3 if WebLoadingListener removes browser listener
@@ -142,7 +145,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   @Test
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
@@ -211,7 +214,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE})
   @Test
   public void testMoveAndClick() {
     driver.get(pages.javascriptPage);

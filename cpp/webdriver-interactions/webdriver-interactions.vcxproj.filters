@@ -24,6 +24,9 @@
     <ClCompile Include="interactions_common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="event_firing_thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="errorcodes.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="event_firing_thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

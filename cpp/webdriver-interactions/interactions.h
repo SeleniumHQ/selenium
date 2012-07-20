@@ -57,6 +57,7 @@ extern "C" {
 EXPORT void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey);
 EXPORT void releaseModifierKeys(WINDOW_HANDLE windowHandle, int timePerKey);
 EXPORT BOOL_TYPE pending_input_events();
+EXPORT void stopPersistentEventFiring();
 
 // Mouse interactions
 EXPORT WD_RESULT clickAt(WINDOW_HANDLE directInputTo, long x, long y, long button);

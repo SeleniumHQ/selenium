@@ -145,4 +145,9 @@ bool pending_input_events()
   return ret_val;
 }
 
+// Does nothing on Linux
+void stopPersistentEventFiring()
+{
+}
+
 }

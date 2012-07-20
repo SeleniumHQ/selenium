@@ -168,7 +168,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     // Assert that only one mouse click took place and the mouse was moved
     // during it.
     String reporterText = reporter.getText();
-    Pattern pattern = Pattern.compile("start( move)* down( move)+ up");
+    Pattern pattern = Pattern.compile("start( move)* down( move)+ up( move)*");
 
     Matcher matcher = pattern.matcher(reporterText);
 

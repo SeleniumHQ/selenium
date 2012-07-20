@@ -25,6 +25,7 @@ limitations under the License.
 #include "interactions.h"
 #include "interactions_common.h"
 #include "logging.h"
+#include "event_firing_thread.h"
 
 using namespace std;
 
@@ -338,6 +339,9 @@ void sendModifierKeyEvent(wchar_t c, bool& shiftKey, bool& controlKey,
     sendSingleModifierEventAndAdjustState(isShiftCode(c), shiftKey, VK_SHIFT, sendData);
     sendSingleModifierEventAndAdjustState(isControlCode(c), controlKey, VK_CONTROL, sendData);
     sendSingleModifierEventAndAdjustState(isAltCode(c), altKey, VK_MENU, sendData);
+    if (isShiftCode(c)) {
+      updateShiftKeyState(shiftKey);
+    }
   }
 }
 
@@ -775,18 +779,28 @@ LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 
 	UINT message;
 	WPARAM wparam;
+        LRESULT returnValue;
 
 	fillEventData(button, true, &message, &wparam);
+        pausePersistentEventsFiring();
 
 	if (!isSameThreadAs((HWND) directInputTo)) {
 		BOOL toReturn = PostMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 
 		// Wait until we know that the previous message has been processed
 		SendMessage((HWND) directInputTo, WM_USER, 0, 0);
-		return toReturn ? 0 : 1;  // Because 0 means success.
+		returnValue = toReturn ? 0 : 1;  // Because 0 means success.
 	} else {
-		return SendMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
+		returnValue = SendMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 	}
+
+    // Assume it's the left mouse button.
+    if(WD_CLIENT_RIGHT_MOUSE_BUTTON != button) {
+      updateLeftMouseButtonState(true);
+    }
+    resumePersistentEventsFiring();
+
+        return returnValue;
 }
 
 LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
@@ -798,8 +812,10 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 
  	UINT message;
  	WPARAM wparam;
+        LRESULT returnValue;
  
  	fillEventData(button, false, &message, &wparam);
+        pausePersistentEventsFiring();
 
 	SendMessage((HWND) directInputTo, WM_MOUSEMOVE, (shiftPressed ? MK_SHIFT : 0), MAKELPARAM(x, y));
 	if (!isSameThreadAs((HWND) directInputTo)) {
@@ -807,10 +823,17 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y, long button)
 
 		// Wait until we know that the previous message has been processed
 		SendMessage((HWND) directInputTo, WM_USER, 0, 0);
-		return toReturn ? 0 : 1;  // Because 0 means success.
+		returnValue = toReturn ? 0 : 1;  // Because 0 means success.
 	} else {
- 		return SendMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
+ 		returnValue = SendMessage((HWND) directInputTo, message, wparam, MAKELONG(x, y));
 	}
+    // Assume it's the left mouse button.
+    if(WD_CLIENT_RIGHT_MOUSE_BUTTON != button) {
+      updateLeftMouseButtonState(false);
+    }
+    resumePersistentEventsFiring();
+
+    return returnValue;
 }
 
 LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY, long toX, long toY)
@@ -820,15 +843,14 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
     return ENULLPOINTER;
   }
 
+  pausePersistentEventsFiring();
+
   HWND directInputTo = (HWND) handle;
   long pointsDistance = distanceBetweenPoints(fromX, fromY, toX, toY);
   const int stepSizeInPixels = 5;
   int steps = pointsDistance / stepSizeInPixels;
 
   long sleep = duration / max(steps, 1);
-
-  LPRECT r = new RECT();
-  GetWindowRect(directInputTo, r);
 
   WPARAM buttonValue = (leftMouseButtonPressed ? MK_LBUTTON : 0);
   if (shiftPressed) {
@@ -845,8 +867,8 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
   }
 
   SendMessage(directInputTo, WM_MOUSEMOVE, buttonValue, MAKELPARAM(toX, toY));
+  resumePersistentEventsFiring(directInputTo, toX, toY, buttonValue);
 
-  delete r;
   return 0;
 }
 
