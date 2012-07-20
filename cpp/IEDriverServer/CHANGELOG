@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.25.1.0
+=========
+ * Added error checking for zoom level for IE. The IE driver will now throw an
+   exception if the zoom level isn't 100%. This behavior can be disabled in the
+   IE driver by setting the "ignoreZoomLevel" capability. Fixes Issue #4272.
+ * Stop execution when a call to IWebBrowser2::Navigate2() fails in the IE
+   driver. This prevents a hang when we weren't checking for an error
+   condition. Fixes issue #4279.
+
 v2.25.0.0
 =========
  * Handle quirky handling of mime types if Firefox was ever the default browser
