@@ -499,10 +499,6 @@ module CrazyFunJava
                 end
               end
 
-              if dev_mode
-                ant.sysproperty :key => 'webdriver.devmode', :value => dev_mode
-              end
-
               if only_run_class
                 ant.sysproperty :key => 'only_run', :value => only_run_class
               end
@@ -556,10 +552,6 @@ module CrazyFunJava
 
     def debug?
       ENV['debug'] == 'true'
-    end
-
-    def dev_mode
-      return ENV['devmode']
     end
 
     def only_run_class
