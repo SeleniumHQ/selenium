@@ -29,8 +29,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
@@ -115,17 +113,6 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     }
   }
   
-  @Override
-  protected void startSession(Capabilities desiredCapabilities) {
-    setElementConverter(new JsonToWebElementConverter(this) {
-      @Override
-      protected RemoteWebElement newRemoteWebElement() {
-        return new InternetExplorerElement(InternetExplorerDriver.this);
-      }
-    });
-    super.startSession(desiredCapabilities);
-  }
-
   private void prepareProxy(Capabilities caps) {
     if (caps == null || caps.getCapability(PROXY) == null) {
       return;

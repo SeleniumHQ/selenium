@@ -50,9 +50,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.io.File;
 import java.io.IOException;
@@ -184,12 +182,6 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
       dropCapabilities(desiredCapabilities, BINARY, PROFILE), 
       dropCapabilities(requiredCapabilities, BINARY, PROFILE));
     this.binary = binary;
-    setElementConverter(new JsonToWebElementConverter(this) {
-      @Override
-      protected RemoteWebElement newRemoteWebElement() {
-        return new FirefoxWebElement(FirefoxDriver.this);
-      }
-    });
   }
 
   @Override
