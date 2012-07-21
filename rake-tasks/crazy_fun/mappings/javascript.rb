@@ -5,6 +5,17 @@ require 'set'
 
 class JavascriptMappings
   def add_all(fun)
+    # Concatenates the transitive closure of its input files into a single
+    # file, without minification or type-checking.
+    # This rule is DEPRECATED and should not be used.
+    #
+    # Arguments:
+    #   name: The name of the rule.
+    #   srcs: A list of source .js files to include.
+    #   deps: A list of dependent js_deps rules to include.
+    #
+    # Outputs:
+    #   $name.js: The concatenated file.
     fun.add_mapping("js_deps", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_deps", Javascript::CreateTask.new)
     fun.add_mapping("js_deps", Javascript::CreateTaskShortName.new)
@@ -12,15 +23,58 @@ class JavascriptMappings
     fun.add_mapping("js_deps", Javascript::WriteOutput.new)
     fun.add_mapping("js_deps", Javascript::CreateHeader.new)
 
+    # Generates a JavaScript library.
+    #
+    # Arguments:
+    #   name: The name of the library.
+    #   srcs: A list of .js files in this library.
+    #   deps: A list of dependent js_library targets.
+    #
+    # Outputs:
+    #   $name.mf: A manifest with each of the sources contained in this
+    #       library listed on a separate line
     fun.add_mapping("js_library", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_library", Javascript::CreateLibrary.new)
 
+    # Runs the Closure compiler over a set of JavaScript files, producing a
+    # single, (optionally) minified file.
+    #
+    # Arguments:
+    #   name: The name of the binary.
+    #   srcs: A list of JavaScript files to include in the binary.
+    #   deps: A list of js_library or js_deps targets to include in the binary.
+    #       The transitive closure of all files listed in these targets will
+    #       be included.
+    #   defines: A list of symbols to define with the compiler. Each symbol
+    #       should be of the form "$key=$value" and is equivalent to including
+    #       the flag "--define=$key=$value".
+    #   externs: A list of files to include as externs.
+    #   flags: A list of flags to pass to the Closure compiler.
+    #   no_format: If specified, the output will not be pretty printed (the
+    #       value of this argument is irrelevant). If not specified, the
+    #       binary will be compiled using the flag "--formatting=PRETTY_PRINT".
+    #
+    # Outputs:
+    #   $name.js: The generated file.
     fun.add_mapping("js_binary", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_binary", Javascript::CreateTask.new)
     fun.add_mapping("js_binary", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_binary", Javascript::AddDependencies.new)
     fun.add_mapping("js_binary", Javascript::Compile.new)
 
+    # Runs the Closure compiler over a set of JavaScript files to produce a
+    # single script which can be easily injected into any page.
+    #
+    # Arguments:
+    #   name: The name of the fragment.
+    #   module: The name of the Closure module the main function is defined in.
+    #   function: Fully qualified name of the main function.
+    #   deps: A list of js_library or js_deps rules that this fragment depends
+    #       on.
+    #
+    # Outputs:
+    #   $name_exports.js: A file that exports main function to the global scope.
+    #   $name.js: The generated file.
     fun.add_mapping("js_fragment", Javascript::CheckFragmentPreconditions.new)
     fun.add_mapping("js_fragment", Javascript::CreateTask.new)
     fun.add_mapping("js_fragment", Javascript::CreateTaskShortName.new)
@@ -75,18 +129,35 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_cpp", Javascript::CopyHeader.new)
     fun.add_mapping("js_fragment_cpp", Javascript::CopySource.new)
 
-    # Compiles a list of |js_fragments| into a Java source file.
+    # Compiles a list of |js_fragments| into a Java class with each fragment
+    # defined as a string constant.
+    #
+    # Arguments:
+    #   name: The name of target. Will be used as the generated class name.
+    #   deps: A list of |js_fragment| files the target depends on.
+    #   utf: Whether to output using UTF8.
+    #   package: The package the generated class should belong to.
+    # Outputs:
+    #   The generated java file.
     fun.add_mapping("js_fragment_java", Javascript::CreateTask.new)
     fun.add_mapping("js_fragment_java", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_fragment_java", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_java", Javascript::ConcatenateJava.new)
 
+    # Executes JavaScript tests in the browser.
+    #
+    # Arguments:
+    #  srcs: List of test files.
+    #  path: Path, relative to the client root, that the test files can be
+    #      located.
+    #  deps: A list of test dependencies.
     fun.add_mapping("js_test", Javascript::CheckPreconditions.new)
     fun.add_mapping("js_test", Javascript::CreateTask.new)
     fun.add_mapping("js_test", Javascript::CreateTaskShortName.new)
     fun.add_mapping("js_test", Javascript::AddDependencies.new)
     fun.add_mapping("js_test", Javascript::RunTests.new)
 
+    # Executes a WebDriverJS test.  Arguments are the same as js_test.
     # TODO(jleyba): Really? We still need a special type of test for these?
     fun.add_mapping("webdriverjs_test", Javascript::CheckPreconditions.new)
     fun.add_mapping("webdriverjs_test", Javascript::CreateTask.new)
