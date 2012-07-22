@@ -5,7 +5,7 @@ java_library(name = "grid",
     "web/**/*.java",
   ],
   resources = [
-    "images/*",
+    "images/",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium:webdriver-api",
