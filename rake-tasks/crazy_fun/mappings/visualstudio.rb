@@ -1,3 +1,4 @@
+require 'iconv'
 require 'albacore'
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/checks'
@@ -375,7 +376,7 @@ module CrazyFunDotNet
         puts "Creating .nuspec for: #{task_name}"
         nuspec_task.output_file = spec_file
         nuspec_task.id = args[:packageid]
-        nuspec_task.version = version
+        nuspec_task.version = get_version(dir)
         nuspec_task.authors = "Selenium Committers"
         nuspec_task.description = args[:description]
         nuspec_task.owners = "Software Freedom Conservancy"
@@ -427,6 +428,24 @@ module CrazyFunDotNet
       target.out = args[:packageid]
       add_dependencies(target, dir, args[:deps])
     end
+
+	def get_version(dir)
+	  found_version = version
+	  list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
+	  if list.length > 0
+        regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
+        assembly_info = File.open list[0]
+        assembly_info.each do |line|
+          match = line.match regexp
+          if (not match.nil?)
+            found_version = match[1]
+			found_version = found_version[0..found_version.rindex(".") - 1]
+          end
+        end
+        assembly_info.close
+	  end
+	  found_version
+	end
   end
 
   class PackNuGetPackage < Tasks
@@ -470,7 +489,7 @@ module CrazyFunDotNet
   class DotNetRelease < Tasks
     def handle(fun, dir, args)
       output_dir = 'build/dotnet'
-      file_name = args[:out].chomp(File.extname(args[:out])) + "-" + version + File.extname(args[:out])
+      file_name = args[:out].chomp(File.extname(args[:out])) + "-" + get_version(dir) + File.extname(args[:out])
       output_file = File.join(output_dir, file_name)
 
       full_path = output_file.gsub("/", Platform.dir_separator)
@@ -493,6 +512,24 @@ module CrazyFunDotNet
       add_dependencies(target, dir, args[:deps])
       target.out = output_file
     end
+
+	def get_version(dir)
+	  found_version = version
+	  list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
+	  if list.length > 0
+        regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
+        assembly_info = File.open list[0]
+        assembly_info.each do |line|
+          match = line.match regexp
+          if (not match.nil?)
+            found_version = match[1]
+			found_version = found_version[0..found_version.rindex(".") - 1]
+          end
+        end
+        assembly_info.close
+	  end
+	  found_version
+	end
   end
 end
 
@@ -540,7 +577,7 @@ module CrazyFunVisualC
   class VisualCRelease < Tasks
     def handle(fun, dir, args)
       output_dir = 'build/cpp'
-      file_name = args[:out].chomp(File.extname(args[:out])) + "_" + args[:platform] + "_" + version + File.extname(args[:out])
+      file_name = args[:out].chomp(File.extname(args[:out])) + "_" + args[:platform] + "_" + get_version(dir) + File.extname(args[:out])
       output_file = File.join(output_dir, file_name)
 
       full_path = output_file.gsub("/", Platform.dir_separator)
@@ -562,6 +599,25 @@ module CrazyFunVisualC
       add_dependencies(target, dir, [args[:src]])
       target.out = output_file
     end
+
+	def get_version(dir)
+	  found_version = version
+	  list = FileList.new(dir + "/**/*.rc").to_a
+	  if list.length > 0
+        regexp = /^.*\"FileVersion\",\s*\"(.*)\".*$/
+        rc = File.open list[0]
+        rc.each do |data|
+		  line = data.gsub(/\x00/, "")
+          match = line.match regexp
+          if (not match.nil?)
+            found_version = match[1]
+			found_version = found_version[0..found_version.rindex(".") - 1]
+          end
+        end
+        rc.close
+	  end
+	  found_version
+	end
 
     def do_zip(src, dest)
       # Need our own zip implementation as zip in common.rb only
