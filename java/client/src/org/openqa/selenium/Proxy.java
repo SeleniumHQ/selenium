@@ -23,8 +23,8 @@ import java.util.Map;
  * Configuration parameters for using proxies in WebDriver. Generally you should pass an object of
  * this type to a WebDriver constructor, or in some cases to the profile object used in the
  * WebDriver construction.  For simplicity, setting values here commits the proxy to a certain
- * configuration. That is, it is an error to set an <code>httpProxy</code> manually and then turn on
- * proxy autodetect.
+ * configuration.  That is, it is an error to set an <code>httpProxy</code> manually and then turn
+ * on proxy autodetect.
  */
 public class Proxy {
 
