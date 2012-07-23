@@ -28,17 +28,19 @@ import java.util.Map;
  */
 public class Proxy {
 
-  // TODO: SOCKS.
-
   public enum ProxyType {
     // Keep these in sync with the Firefox preferences numbers:
     // http://kb.mozillazine.org/Network.proxy.type
-    DIRECT,      // Direct connection, no proxy (default on Windows).
-    MANUAL,      // Manual proxy settings (e.g., for httpProxy).
-    PAC,         // Proxy auto configuration from URL.
-    RESERVED_1,  // Never used.
-    AUTODETECT,  // Proxy auto detection (presumably with WPAD).
-    SYSTEM,      // Use system settings (default on Linux).
+
+    DIRECT,      // Direct connection, no proxy (default on Windows)
+    MANUAL,      // Manual proxy settings (e.g. for httpProxy)
+    PAC,         // Proxy auto-configuration from URL
+
+    RESERVED_1,  // Never used (but reserved in Firefox)
+
+    AUTODETECT,  // Proxy auto-detection (presumably with WPAD)
+    SYSTEM,      // Use system settings (default on Linux)
+
     UNSPECIFIED
   }
 
@@ -47,8 +49,9 @@ public class Proxy {
   private String ftpProxy;
   private String httpProxy;
   private String noProxy;
-  private String proxyAutoconfigUrl;
   private String sslProxy;
+  private String socksProxy;
+  private String proxyAutoconfigUrl;
 
   public Proxy() {
     // Empty default constructor
@@ -67,11 +70,14 @@ public class Proxy {
     if (raw.containsKey("noProxy") && raw.get("noProxy") != null) {
       setNoProxy((String) raw.get("noProxy"));
     }
-    if (raw.containsKey("proxyAutoconfigUrl") && raw.get("proxyAutoconfigUrl") != null) {
-      setProxyAutoconfigUrl((String) raw.get("proxyAutoconfigUrl"));
-    }
     if (raw.containsKey("sslProxy") && raw.get("sslProxy") != null) {
       setSslProxy((String) raw.get("sslProxy"));
+    }
+    if (raw.containsKey("socksProxy") && raw.get("socksProxy") != null) {
+      setSocksProxy((String) raw.get("socksProxy"));
+    }
+    if (raw.containsKey("proxyAutoconfigUrl") && raw.get("proxyAutoconfigUrl") != null) {
+      setProxyAutoconfigUrl((String) raw.get("proxyAutoconfigUrl"));
     }
     if (raw.containsKey("autodetect") && raw.get("autodetect") != null) {
       setAutodetect((Boolean) raw.get("autodetect"));
@@ -133,7 +139,7 @@ public class Proxy {
   /**
    * Gets the FTP proxy.
    *
-   * @return the FTP proxy hostname, or null if not set
+   * @return the FTP proxy hostname if present, or null if not set
    */
   public String getFtpProxy() {
     return ftpProxy;
@@ -155,7 +161,7 @@ public class Proxy {
   /**
    * Gets the HTTP proxy.
    *
-   * @return the HTTP proxy hostname, or null if not set
+   * @return the HTTP proxy hostname if present, or null if not set
    */
   public String getHttpProxy() {
     return httpProxy;
@@ -186,6 +192,52 @@ public class Proxy {
   }
 
   /**
+   * Gets the SSL tunnel proxy.
+   *
+   * @return the SSL tunnel proxy hostname if present, null otherwise
+   */
+  public String getSslProxy() {
+    return sslProxy;
+  }
+
+  /**
+   * Specify which proxy to use for SSL connections.
+   *
+   * @param sslProxy the proxy host, expected format is <code>hostname.com:1234</code>
+   * @return reference to self
+   */
+  public Proxy setSslProxy(String sslProxy) {
+    verifyProxyTypeCompatibility(ProxyType.MANUAL);
+    this.proxyType = ProxyType.MANUAL;
+    this.sslProxy = sslProxy;
+    return this;
+  }
+
+  /**
+   * Gets the SOCKS proxy.
+   *
+   * @return the SOCKS proxy if present, null otherwise
+   */
+  public String getSocksProxy() {
+    return socksProxy;
+  }
+
+  /**
+   * Specifies which proxy to use for SOCKS.  Currently only supported in {@link
+   * com.opera.core.systems.OperaDriver}.
+   *
+   * @param socksProxy the proxy host, expected format is <code>hostname.com:1234</code>
+   * @return reference to self
+   */
+  // TODO(andreastt): Implement this for Firefox
+  public Proxy setSocksProxy(String socksProxy) {
+    verifyProxyTypeCompatibility(ProxyType.MANUAL);
+    this.proxyType = ProxyType.MANUAL;
+    this.socksProxy = socksProxy;
+    return this;
+  }
+
+  /**
    * Gets the proxy auto-configuration URL.
    *
    * @return the proxy auto-configuration URL
@@ -206,28 +258,6 @@ public class Proxy {
     verifyProxyTypeCompatibility(ProxyType.PAC);
     this.proxyType = ProxyType.PAC;
     this.proxyAutoconfigUrl = proxyAutoconfigUrl;
-    return this;
-  }
-
-  /**
-   * Gets the SSL tunnel proxy.
-   *
-   * @return the SSL tunnel proxy hostname, null otherwise
-   */
-  public String getSslProxy() {
-    return sslProxy;
-  }
-
-  /**
-   * Specify which proxy to use for SSL connections.
-   *
-   * @param sslProxy the proxy host, expected format is <code>hostname.com:1234</code>
-   * @return reference to self
-   */
-  public Proxy setSslProxy(String sslProxy) {
-    verifyProxyTypeCompatibility(ProxyType.MANUAL);
-    this.proxyType = ProxyType.MANUAL;
-    this.sslProxy = sslProxy;
     return this;
   }
 
