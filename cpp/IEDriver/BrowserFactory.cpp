@@ -333,6 +333,9 @@ int BrowserFactory::GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window)
     }
 
     zoom = static_cast<int>((static_cast<double>(device_xdpi) / logical_xdpi) * 100.0);
+  } else {
+    // IE6 case
+    zoom = 100;
   }
 
   LOG(DEBUG) << "Browser zoom level is " << zoom << "%";

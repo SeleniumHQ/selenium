@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.25.2.0
+=========
+ * Fixed IE6 case for checking browser zoom level.
+ * Now repeatedly sending WM_MOUSEMOVE messages on a separate thread to try to
+   quell mouse hover issues.
+
 v2.25.1.0
 =========
  * Added error checking for zoom level for IE. The IE driver will now throw an
