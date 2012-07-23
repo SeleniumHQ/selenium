@@ -51,6 +51,8 @@ public class Proxy {
   private String noProxy;
   private String sslProxy;
   private String socksProxy;
+  private String socksUsername;
+  private String socksPassword;
   private String proxyAutoconfigUrl;
 
   public Proxy() {
@@ -75,6 +77,12 @@ public class Proxy {
     }
     if (raw.containsKey("socksProxy") && raw.get("socksProxy") != null) {
       setSocksProxy((String) raw.get("socksProxy"));
+    }
+    if (raw.containsKey("socksUsername") && raw.get("socksUsername") != null) {
+      setSocksUsername((String) raw.get("socksUsername"));
+    }
+    if (raw.containsKey("socksPassword") && raw.get("socksPassword") != null) {
+      setSocksPassword((String) raw.get("socksPassword"));
     }
     if (raw.containsKey("proxyAutoconfigUrl") && raw.get("proxyAutoconfigUrl") != null) {
       setProxyAutoconfigUrl((String) raw.get("proxyAutoconfigUrl"));
@@ -235,6 +243,42 @@ public class Proxy {
     this.proxyType = ProxyType.MANUAL;
     this.socksProxy = socksProxy;
     return this;
+  }
+
+  /**
+   * Gets the SOCKS proxy's username.  Supported by SOCKS v5 and above.
+   *
+   * @return the SOCKS proxy's username
+   */
+  public String getSocksUsername() {
+    return socksUsername;
+  }
+
+  /**
+   * Specifies a username for the SOCKS proxy.  Supported by SOCKS v5 and above.
+   *
+   * @param username username for the SOCKS proxy
+   */
+  public void setSocksUsername(String username) {
+    socksUsername = username;
+  }
+
+  /**
+   * Gets the SOCKS proxy's password.  Supported by SOCKS v5 and above.
+   *
+   * @return the SOCKS proxy's password
+   */
+  public String getSocksPassword() {
+    return socksPassword;
+  }
+
+  /**
+   * Specifies a password for the SOCKS proxy.  Supported by SOCKS v5 and above.
+   *
+   * @param password password for the SOCKS proxy
+   */
+  public void setSocksPassword(String password) {
+    socksPassword = password;
   }
 
   /**
