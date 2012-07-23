@@ -78,6 +78,13 @@ public class Proxy {
     }
   }
 
+  /**
+   * Gets the {@link ProxyType}.  This can signal if set to use a direct connection (without proxy),
+   * manually set proxy settings, auto-configured proxy settings, or whether to use the default
+   * system proxy settings.  It defaults to {@link ProxyType#UNSPECIFIED}.
+   *
+   * @return the proxy type employed
+   */
   public ProxyType getProxyType() {
     return this.proxyType;
   }
@@ -85,7 +92,7 @@ public class Proxy {
   /**
    * Explicitly sets the proxy type, useful for forcing direct connection on Linux.
    *
-   * @return self-reference
+   * @return reference to self
    */
   public Proxy setProxyType(ProxyType proxyType) {
     verifyProxyTypeCompatibility(ProxyType.AUTODETECT);
@@ -93,10 +100,22 @@ public class Proxy {
     return this;
   }
 
+  /**
+   * Whether to autodetect proxy settings.
+   *
+   * @return true if set to autodetect proxy settings, false otherwise
+   */
   public boolean isAutodetect() {
     return autodetect;
   }
 
+  /**
+   * Specifies whether to autodetect proxy settings.
+   *
+   * @param autodetect set to true to use proxy auto detection, false to leave proxy settings
+   *                   unspecified
+   * @return reference to self
+   */
   public Proxy setAutodetect(boolean autodetect) {
     if (this.autodetect == autodetect) {
       return this;
@@ -111,10 +130,21 @@ public class Proxy {
     return this;
   }
 
+  /**
+   * Gets the FTP proxy.
+   *
+   * @return the FTP proxy hostname, or null if not set
+   */
   public String getFtpProxy() {
     return ftpProxy;
   }
 
+  /**
+   * Specify which proxy to use for FTP connections.
+   *
+   * @param ftpProxy the proxy host, expected format is <code>hostname.com:1234</code>
+   * @return reference to self
+   */
   public Proxy setFtpProxy(String ftpProxy) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
@@ -122,10 +152,21 @@ public class Proxy {
     return this;
   }
 
+  /**
+   * Gets the HTTP proxy.
+   *
+   * @return the HTTP proxy hostname, or null if not set
+   */
   public String getHttpProxy() {
     return httpProxy;
   }
 
+  /**
+   * Specify which proxy to use for HTTP connections.
+   *
+   * @param httpProxy the proxy host, expected format is <code>hostname:1234</code>
+   * @return reference to self
+   */
   public Proxy setHttpProxy(String httpProxy) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
@@ -144,10 +185,23 @@ public class Proxy {
     return this;
   }
 
+  /**
+   * Gets the proxy auto-configuration URL.
+   *
+   * @return the proxy auto-configuration URL
+   */
   public String getProxyAutoconfigUrl() {
     return proxyAutoconfigUrl;
   }
 
+  /**
+   * Specifies the URL to be used for proxy auto-configuration.  Expected format is
+   * <code>http://hostname.com:1234/pacfile</code>.  This is required if {@link #getProxyType()} is
+   * set to {@link ProxyType#PAC}, ignored otherwise.
+   *
+   * @param proxyAutoconfigUrl the URL for proxy auto-configuration
+   * @return reference to self
+   */
   public Proxy setProxyAutoconfigUrl(String proxyAutoconfigUrl) {
     verifyProxyTypeCompatibility(ProxyType.PAC);
     this.proxyType = ProxyType.PAC;
@@ -155,10 +209,21 @@ public class Proxy {
     return this;
   }
 
+  /**
+   * Gets the SSL tunnel proxy.
+   *
+   * @return the SSL tunnel proxy hostname, null otherwise
+   */
   public String getSslProxy() {
     return sslProxy;
   }
 
+  /**
+   * Specify which proxy to use for SSL connections.
+   *
+   * @param sslProxy the proxy host, expected format is <code>hostname.com:1234</code>
+   * @return reference to self
+   */
   public Proxy setSslProxy(String sslProxy) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
