@@ -188,6 +188,9 @@ class WebElement(object):
     def id(self):
         return self._id
 
+    def __eq__(self, element):
+        return self._id == element.id
+
     # Private Methods
     def _execute(self, command, params=None):
         """Executes a command against the underlying HTML element.
