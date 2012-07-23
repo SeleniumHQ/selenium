@@ -198,7 +198,7 @@ public class Proxy {
    * @return the HTTPS proxy hostname if present, or null if not set
    */
   public String getHttpsProxy() {
-    return httpProxy;
+    return httpsProxy;
   }
 
   /**
