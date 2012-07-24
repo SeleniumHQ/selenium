@@ -38,11 +38,13 @@ namespace OpenQA.Selenium.Interactions
         public Actions(IWebDriver driver)
         {
             IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            if (inputDevicesDriver != null)
+            if (inputDevicesDriver == null)
             {
-                this.keyboard = inputDevicesDriver.Keyboard;
-                this.mouse = inputDevicesDriver.Mouse;
+                throw new ArgumentException("The IWebDriver object must implement IHasInputDevices.", "driver");
             }
+
+            this.keyboard = inputDevicesDriver.Keyboard;
+            this.mouse = inputDevicesDriver.Mouse;
         }
 
         #region IActionSequenceGenerator Members
