@@ -445,16 +445,20 @@ int IECommandExecutor::GetManagedBrowser(const std::string& browser_id,
                                          BrowserHandle* browser_wrapper) const {
   LOG(TRACE) << "Entering IECommandExecutor::GetManagedBrowser";
 
+  if (!is_valid()) {
+    return ENOSUCHDRIVER;
+  }
+
   if (browser_id == "") {
     LOG(WARN) << "Browser ID requested was an empty string";
-    return ENOSUCHDRIVER;
+    return ENOSUCHWINDOW;
   }
 
   BrowserMap::const_iterator found_iterator = 
       this->managed_browsers_.find(browser_id);
   if (found_iterator == this->managed_browsers_.end()) {
     LOG(WARN) << "Unable to find managed browser with id " << browser_id;
-    return ENOSUCHDRIVER;
+    return ENOSUCHWINDOW;
   }
 
   *browser_wrapper = found_iterator->second;
