@@ -26,20 +26,27 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.StubElement;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsByCssSelector;
 
 import org.junit.Test;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -171,7 +178,7 @@ public class AugmenterTest {
   }
 
   @Test
-  public void shouldAllowAnElementToBeAugmented() {
+  public void shouldAllowAnElementToBeAugmented() throws Exception {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("1234");
 
@@ -186,11 +193,13 @@ public class AugmenterTest {
       }
     });
 
-    RemoteWebDriver parent = new RemoteWebDriver() {
+    final DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("foo", true);
+
+    StubExecutor executor = new StubExecutor(caps);
+    RemoteWebDriver parent = new RemoteWebDriver(executor, caps) {
       @Override
       public Capabilities getCapabilities() {
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("foo", true);
         return caps;
       }
     };
@@ -199,6 +208,10 @@ public class AugmenterTest {
     WebElement returned = augmenter.augment(element);
 
     assertTrue(returned instanceof MyInterface);
+
+    executor.expect(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", "1234"),
+        null);
+    returned.click();
   }
 
   @Test
@@ -218,6 +231,104 @@ public class AugmenterTest {
     } catch (Exception e) {
       fail("This is not expected: " + e.getMessage());
     }
+  }
+
+  @Test
+  public void canUseTheAugmenterToInterceptConcreteMethodCalls() throws Exception {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setJavascriptEnabled(true);
+    StubExecutor stubExecutor = new StubExecutor(caps);
+    stubExecutor.expect(DriverCommand.GET_TITLE, Maps.<String, Object>newHashMap(),
+        "StubTitle");
+
+    final WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+
+    // Our AugmenterProvider needs to target the class that declares quit(),
+    // otherwise the Augmenter won't apply the method interceptor.
+    final Method quitMethod = driver.getClass().getMethod("quit");
+
+    AugmenterProvider augmentation = new AugmenterProvider() {
+      public Class<?> getDescribedInterface() {
+        return quitMethod.getDeclaringClass();
+      }
+
+      public InterfaceImplementation getImplementation(Object value) {
+        return new InterfaceImplementation() {
+          public Object invoke(ExecuteMethod executeMethod, Object self,
+              Method method, Object... args) {
+            if (quitMethod.equals(method)) {
+              return null;
+            }
+
+            try {
+              return method.invoke(driver, args);
+            } catch (IllegalAccessException e) {
+              throw Throwables.propagate(e);
+            } catch (InvocationTargetException e) {
+              throw Throwables.propagate(e.getTargetException());
+            }
+          }
+        };
+      }
+    };
+
+    Augmenter augmenter = new Augmenter();
+
+    // Set the capability that triggers the augmentation.
+    augmenter.addDriverAugmentation(CapabilityType.SUPPORTS_JAVASCRIPT, augmentation);
+
+    WebDriver returned = augmenter.augment(driver);
+    assertNotSame(driver, returned);
+    assertTrue(returned instanceof RemoteWebDriver);
+    assertEquals("StubTitle", returned.getTitle());
+
+    returned.quit();   // Should not fail because it's intercepted.
+
+    // Verify original is unmodified.
+    boolean threw = false;
+    try {
+      driver.quit();
+    } catch (AssertionError expected) {
+      assertTrue(expected.getMessage().startsWith("Unexpected method invocation"));
+      threw = true;
+    }
+    assertTrue("Did not throw", threw);
+  }
+
+  @Test
+  public void shouldBeAbleToAugmentMultipleTimes() {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("canRotate", true);
+    caps.setCapability("reallyTakesScreenshot", true);
+
+    StubExecutor stubExecutor = new StubExecutor(caps);
+    stubExecutor.expect(DriverCommand.GET_SCREEN_ORIENTATION,
+        ImmutableMap.<String, Object>of(),
+        ScreenOrientation.PORTRAIT.name());
+    RemoteWebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+
+    Augmenter augmenter = new Augmenter();
+    augmenter.addDriverAugmentation("canRotate", new AddRotatable());
+
+    WebDriver augmented = augmenter.augment(driver);
+    assertNotSame(augmented, driver);
+    assertTrue(augmented instanceof RemoteWebDriver);
+    assertTrue(augmented instanceof Rotatable);
+    assertFalse(augmented instanceof TakesScreenshot);
+
+    augmenter = new Augmenter();
+    augmenter.addDriverAugmentation("reallyTakesScreenshot", new AddTakesScreenshot());
+
+    WebDriver augmentedAgain = augmenter.augment(augmented);
+    assertNotSame(augmentedAgain, augmented);
+    assertTrue(augmentedAgain instanceof RemoteWebDriver);
+    assertTrue(augmentedAgain instanceof Rotatable);
+    assertTrue(augmentedAgain instanceof TakesScreenshot);
+
+    ((Rotatable) augmentedAgain).getOrientation();  // Should not throw.
+
+    assertSame(driver.getCapabilities(),
+        ((RemoteWebDriver) augmentedAgain).getCapabilities());
   }
 
   private static class StubExecutor implements CommandExecutor {

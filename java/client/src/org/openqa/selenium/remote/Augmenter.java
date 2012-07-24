@@ -26,6 +26,7 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -42,6 +43,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -124,7 +126,7 @@ public class Augmenter {
 
     Map<String, AugmenterProvider> augmentors = driverAugmentors;
 
-    CompoundHandler handler = determineAugmentation(driver, augmentors);
+    CompoundHandler handler = determineAugmentation(driver, augmentors, driver);
     RemoteWebDriver remote = create(handler, (RemoteWebDriver) driver);
 
     copyFields(driver.getClass(), driver, remote);
@@ -147,6 +149,10 @@ public class Augmenter {
 
   private void copyField(Object source, Object target, Field field) {
     if (Modifier.isFinal(field.getModifiers())) {
+      return;
+    }
+
+    if (field.getName().startsWith("CGLIB$")) {
       return;
     }
 
@@ -177,7 +183,7 @@ public class Augmenter {
     }
     Map<String, AugmenterProvider> augmentors = elementAugmentors;
 
-    CompoundHandler handler = determineAugmentation(parent, augmentors);
+    CompoundHandler handler = determineAugmentation(parent, augmentors, element);
     RemoteWebElement remote = create(handler, element);
 
     copyFields(element.getClass(), element, remote);
@@ -189,19 +195,19 @@ public class Augmenter {
   }
 
   private CompoundHandler determineAugmentation(WebDriver driver,
-      Map<String, AugmenterProvider> augmentors) {
+      Map<String, AugmenterProvider> augmentors, Object objectToAugment) {
     Map<String, ?> capabilities = ((RemoteWebDriver) driver).getCapabilities().asMap();
 
-    CompoundHandler handler = new CompoundHandler((RemoteWebDriver) driver);
+    CompoundHandler handler = new CompoundHandler((RemoteWebDriver) driver, objectToAugment);
 
-    for (Map.Entry<String, ?> capablityName : capabilities.entrySet()) {
-      AugmenterProvider augmenter = augmentors.get(capablityName.getKey());
+    for (Map.Entry<String, ?> capabilityName : capabilities.entrySet()) {
+      AugmenterProvider augmenter = augmentors.get(capabilityName.getKey());
       if (augmenter == null) {
         continue;
       }
 
-      Object value = capablityName.getValue();
-      if (value instanceof Boolean && !((Boolean) value).booleanValue()) {
+      Object value = capabilityName.getValue();
+      if (value instanceof Boolean && !((Boolean) value)) {
         continue;
       }
 
@@ -214,11 +220,17 @@ public class Augmenter {
   @SuppressWarnings({"unchecked"})
   protected <X> X create(CompoundHandler handler, X from) {
     if (handler.isNeedingApplication()) {
+      Class<?> superClass = from.getClass();
+      while (Enhancer.isEnhanced(superClass)) {
+        superClass = superClass.getSuperclass();
+      }
+
       Enhancer enhancer = new Enhancer();
       enhancer.setCallback(handler);
-      enhancer.setSuperclass(from.getClass());
+      enhancer.setSuperclass(superClass);
 
       Set<Class<?>> interfaces = Sets.newHashSet();
+      interfaces.addAll(ImmutableList.copyOf(from.getClass().getInterfaces()));
       interfaces.addAll(handler.getInterfaces());
       enhancer.setInterfaces(interfaces.toArray(new Class<?>[interfaces.size()]));
 
@@ -229,17 +241,23 @@ public class Augmenter {
   }
 
   private class CompoundHandler implements MethodInterceptor {
+
     private Map<Method, InterfaceImplementation> handlers =
         new HashMap<Method, InterfaceImplementation>();
     private Set<Class<?>> interfaces = new HashSet<Class<?>>();
-    private final RemoteWebDriver driver;
 
-    private CompoundHandler(RemoteWebDriver driver) {
+    private final RemoteWebDriver driver;
+    private final Object originalInstance;
+
+    private CompoundHandler(RemoteWebDriver driver, Object originalInstance) {
       this.driver = driver;
+      this.originalInstance = originalInstance;
     }
 
     public void addCapabilityHander(Class<?> fromInterface, InterfaceImplementation handledBy) {
-      interfaces.add(fromInterface);
+      if (fromInterface.isInterface()) {
+        interfaces.add(fromInterface);
+      }
       for (Method method : fromInterface.getDeclaredMethods()) {
         handlers.put(method, handledBy);
       }
@@ -250,7 +268,7 @@ public class Augmenter {
     }
 
     public boolean isNeedingApplication() {
-      return !interfaces.isEmpty();
+      return !handlers.isEmpty();
     }
 
     public Object intercept(Object self, Method method, Object[] args, MethodProxy methodProxy)
@@ -258,7 +276,11 @@ public class Augmenter {
       InterfaceImplementation handler = handlers.get(method);
 
       if (handler == null) {
-        return methodProxy.invokeSuper(self, args);
+        try {
+          return method.invoke(originalInstance, args);
+        } catch (InvocationTargetException e) {
+          throw e.getTargetException();
+        }
       }
 
       return handler.invoke(new RemoteExecuteMethod(driver), self, method, args);
