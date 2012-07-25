@@ -270,8 +270,10 @@ module CrazyFunJava
       desc "Write out the classpath for #{jar_name}"
       task "#{task_name}:classpath" => jar_name do
         puts "Writing: #{out_file}"
+        cp = ClassPath.new(jar_name)
+        cp.push jar_name
         File.open(out_file, "w") do |file|
-          file << ClassPath.new(jar_name).to_s
+          file << cp.to_s
         end
       end
     end
