@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <unistd.h>
+#include <elf.h>
 
 #ifndef TRUE
 #define TRUE 1
@@ -428,22 +429,27 @@ static int XSetInputFocus(Display *display, Window focus, int revert_to,
 
 #endif
 
-int is_emulated_32bit()
+int is_32bit_system()
 {
-#ifdef __i386__
     struct utsname sys_info;
     int uname_res = uname(&sys_info);
-    // In case of error, most chances are - not emulated.
+    // In case of error, arbitrarily decide it is.
     if (uname_res != 0) {
-      return FALSE;
+      return TRUE;
     }
 
     const char arch_64[] = "x86_64";
     if (strncmp(sys_info.machine, arch_64, strlen(arch_64)) == 0) {
-      return TRUE;
+      return FALSE;
     }
 
-    return FALSE;
+    return TRUE;
+}
+
+int is_emulated_32bit()
+{
+#ifdef __i386__
+    return !is_32bit_system();
 #else
     return FALSE;
 #endif
@@ -510,37 +516,83 @@ Window extract_window_id(XEvent* ev) {
   return 0;
 }
 
+int is_library_for_architecture(const char* lib_path, uint16_t arch)
+{
+  Elf32_Ehdr elf32_header;
+  int elf32_header_size = sizeof(elf32_header);
+
+  FILE* lib = fopen(lib_path, "r");
+  int bytes_read = fread(&elf32_header, 1, elf32_header_size, lib);
+  fclose(lib);
+  lib = NULL;
+
+  if (bytes_read != elf32_header_size) {
+    return FALSE;
+  }
+
+  if ((memcmp(elf32_header.e_ident, ELFMAG, sizeof(ELFMAG) - 1) == 0)
+      && (elf32_header.e_type == ET_DYN) && (elf32_header.e_machine == arch))
+  {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+int find_xlib_by_arch(const char* possible_locations[],
+    int locations_length, uint16_t desired_architecture)
+{
+  int i;
+  for (i = 0; i < locations_length; i++) {
+    const char* possible_location = possible_locations[i];
+
+    if (access(possible_location, F_OK) == 0 &&
+        is_library_for_architecture(possible_location, desired_architecture) == TRUE)
+    {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
 void* get_xlib_handle()
 {
   void* ret_handle = NULL;
   char library[MAX_LIBRARY_PATH + 1];
-  // If we're not emulating a 32 bit mode (which is either native 32 bit
-  // or native 64 bit) - use the ordinary path for libX11
-  if (is_emulated_32bit() == FALSE) {
-    // Usually, libX11 will reside in /usr/lib. On some 64-bit Linux
-    // distributions, it will reside in /usr/lib64.
-    const char default_x11_location[] = "/usr/lib/libX11.so.6";
-    const char debian_x11_location[] = "/usr/lib/x86_64-linux-gnu/libX11.so.6";
-    const char ubuntu_32bit_x11_location[] = "/usr/lib/i386-linux-gnu/libX11.so.6";
-    const char opensuse_x11_location[] = "/usr/lib64/libX11.so.6";
-    const char *possible_locations[] = {
-      default_x11_location, debian_x11_location, ubuntu_32bit_x11_location,
-      opensuse_x11_location};
-    int locations_len = sizeof(possible_locations) / sizeof(char*);
-    int i = 0;
-    while (i < (locations_len - 1) && access(possible_locations[i], F_OK) != 0) {
-      i++;
-    }
-    snprintf(library, MAX_LIBRARY_PATH, possible_locations[i]);
+
+  const char * possible_locations[] = {
+  		"/usr/lib/libX11.so.6",                   //default_x11_location
+  		"/usr/lib/x86_64-linux-gnu/libX11.so.6",  //debian_x11_location
+  		"/usr/lib/i386-linux-gnu/libX11.so.6",    //ubuntu_32bit_x11_location
+  		"/usr/lib64/libX11.so.6",                 //opensuse_x11_location
+		"/usr/lib32/libX11.so.6"
+  };
+  int locations_len = sizeof(possible_locations) / sizeof(char*);
+
+  uint16_t required_lib_arch;
+  if (is_32bit_system() || is_emulated_32bit()) {
+    required_lib_arch = EM_386;
   } else {
-    // Use a path that usually contains the 32 bit libs in a 64 bit system.
-    snprintf(library, MAX_LIBRARY_PATH, "/usr/lib32/libX11.so.6");
+    required_lib_arch = EM_X86_64;
+  }
+  int suitable_xlib_index = find_xlib_by_arch(possible_locations, locations_len, required_lib_arch);
+  if (suitable_xlib_index < 0) {
+    const char* desired_arch = (required_lib_arch == EM_386 ? "32-bit" : "64-bit");
+	  fprintf(stderr, "None of the following is a %s version of Xlib:", desired_arch);
+    int i;
+    for (i = 0; i < locations_len; i++) {
+		  fprintf(stderr, " %s\n", possible_locations[i]);
+    }
+    return NULL;
   }
 
-  ret_handle = dlopen(library, RTLD_LAZY);
+  snprintf(library, MAX_LIBRARY_PATH, possible_locations[suitable_xlib_index]);
+
+	ret_handle = dlopen(library, RTLD_LAZY);
   if (ret_handle == NULL) {
     fprintf(stderr, "Failed to dlopen %s\n", library);
-    fprintf(stderr, "dlerror says: %s\n", dlerror());
+		fprintf(stderr, "dlerror says: %s\n", dlerror());
   }
 
   return ret_handle;
