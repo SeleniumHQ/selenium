@@ -445,7 +445,7 @@ int IECommandExecutor::GetManagedBrowser(const std::string& browser_id,
                                          BrowserHandle* browser_wrapper) const {
   LOG(TRACE) << "Entering IECommandExecutor::GetManagedBrowser";
 
-  if (!is_valid()) {
+  if (!this->is_valid()) {
     return ENOSUCHDRIVER;
   }
 

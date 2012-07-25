@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.25.2.1
+=========
+ * Updated to return ENOSUCHWINDOW if trying to switch to a window ID that does
+   not exist.
+
 v2.25.2.0
 =========
  * Fixed IE6 case for checking browser zoom level.
