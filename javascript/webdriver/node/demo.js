@@ -116,7 +116,7 @@ if (browser) {
   log('--------------------------------------------------------------------\n');
   log('');
 
-  var repl = require('repl').start();
+  var repl = require('repl').start({});
 
   repl.context.webdriver = webdriver;
   repl.context.setDefaultUrl = setDefaultUrl;
