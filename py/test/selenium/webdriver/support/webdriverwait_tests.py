@@ -21,6 +21,9 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import InvalidElementStateException
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -42,6 +45,10 @@ def findAtLeastOneRedBox(driver):
     if len(boxes) > 0:
         return boxes
     return False
+
+
+def throwSERE(driver):
+  raise StaleElementReferenceException("test")
 
 class WebDriverWaitTest(unittest.TestCase):
 
@@ -105,6 +112,26 @@ class WebDriverWaitTest(unittest.TestCase):
     def testWaitUntilNotReturnsIfEvaluatesToFalse(self):
         falsum = lambda driver: False
         self.assertFalse(WebDriverWait(self.driver, 1).until_not(falsum))
+
+    def testWaitShouldStillFailIfProduceIgnoredException(self):
+        ignored = (InvalidElementStateException, StaleElementReferenceException)
+        try:
+            WebDriverWait(self.driver, 1, 0.5, ignored_exceptions=ignored).until(throwSERE)
+            self.fail("Expected TimeoutException to have been thrown")
+        except TimeoutException, e:
+            pass
+
+    def testWaitShouldStillFailIfProduceChildOfIgnoredException(self):
+        ignored = (WebDriverException)
+        try:
+            WebDriverWait(self.driver, 1, 0.5, ignored_exceptions=ignored).until(throwSERE)
+            self.fail("Expected TimeoutException to have been thrown")
+        except TimeoutException, e:
+            pass
+
+    def testWaitUntilNotShouldNotFailIfProduceIgnoredException(self):
+        ignored = (InvalidElementStateException, StaleElementReferenceException)
+        self.assertTrue(WebDriverWait(self.driver, 1, 0.5, ignored_exceptions=ignored).until_not(throwSERE))
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
