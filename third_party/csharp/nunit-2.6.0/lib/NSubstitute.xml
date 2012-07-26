@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NSubstitute</name>
+    </assembly>
+    <members>
+        <member name="M:NSubstitute.Raise.EventWith``1(System.Object,``0)">
+            <summary>
+            Raise an event for an <c>EventHandler&lt;TEventArgs&gt;</c> event with the provided <paramref name="sender"/> and <paramref name="eventArgs"/>.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.EventWith``1(``0)">
+            <summary>
+            Raise an event for an <c>EventHandler&lt;TEventArgs&gt;</c> event with the substitute as the sender and the provided <paramref name="eventArgs" />.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.EventWith``1">
+            <summary>
+            Raise an event for an <c>EventHandler&lt;EventArgsT&gt;</c> event with the substitute as the sender
+            and with a default instance of <typeparamref name="TEventArgs" />.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.Event">
+            <summary>
+            Raise an event for an <c>EventHandler</c> or <c>EventHandler&lt;EventArgs&gt;</c> event with the substitute
+            as the sender and with empty <c>EventArgs</c>.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.Event``1(System.Object[])">
+            <summary>
+            Raise an event of type <typeparamref name="THandler" /> with the provided arguments. If no arguments are provided
+            NSubstitute will try and provide reasonble defaults.
+            </summary>
+        </member>
+        <member name="T:NSubstitute.Substitute">
+            <summary>
+            Create a substitute for one or more types. For example: <c>Substitute.For&lt;ISomeType&gt;()</c> 
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Substitute.For``1(System.Object[])">
+            <summary>
+            Substitute for an interface or class.
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <typeparam name="T">The type of interface or class to substitute.</typeparam>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute for the interface or class.</returns>
+        </member>
+        <member name="M:NSubstitute.Substitute.For``2(System.Object[])">
+            <summary>
+            <para>Substitute for multiple interfaces or a class that implements an interface. At most one class can be specified.</para>
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <typeparam name="T1">The type of interface or class to substitute.</typeparam>
+            <typeparam name="T2">An additional interface or class (maximum of one class) the substitute should implement.</typeparam>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute of type T1, that also implements T2.</returns>
+        </member>
+        <member name="M:NSubstitute.Substitute.For``3(System.Object[])">
+            <summary>
+            <para>Substitute for multiple interfaces or a class that implements multiple interfaces. At most one class can be specified.</para>
+            If additional interfaces are required use the <see cref="M:NSubstitute.Substitute.For(System.Type[],System.Object[])"/> overload.
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <typeparam name="T1">The type of interface or class to substitute.</typeparam>
+            <typeparam name="T2">An additional interface or class (maximum of one class) the substitute should implement.</typeparam>
+            <typeparam name="T3">An additional interface or class (maximum of one class) the substitute should implement.</typeparam>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute of type T1, that also implements T2 and T3.</returns>
+        </member>
+        <member name="M:NSubstitute.Substitute.For(System.Type[],System.Object[])">
+            <summary>
+            <para>Substitute for multiple interfaces or a class that implements multiple interfaces. At most one class can be specified.</para>
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <param name="typesToProxy">The types of interfaces or a type of class and multiple interfaces the substitute should implement.</param>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute implementing the specified types.</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1000]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\NUnitTests.nunit</TopNode>
+  <SelectedNode>[0-1000]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\NUnitTests.nunit</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-1000]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\NUnitTests.nunit" Expanded="true" />
+    <Node UniqueName="[0-2888]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit.framework.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-2889]NUnit" Expanded="true" />
+    <Node UniqueName="[0-2890]NUnit.Framework" Expanded="true" />
+    <Node UniqueName="[0-2891]NUnit.Framework.Constraints" Expanded="true" />
+    <Node UniqueName="[0-2892]NUnit.Framework.Syntax" Expanded="true" />
+    <Node UniqueName="[0-2893]NUnit.Framework.Tests" Expanded="true" />
+    <Node UniqueName="[0-3987]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit.core.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-3988]NUnit" Expanded="true" />
+    <Node UniqueName="[0-3989]NUnit.Core" Expanded="true" />
+    <Node UniqueName="[0-3990]NUnit.Core.Tests" Expanded="true" />
+    <Node UniqueName="[0-3991]NUnit.Core.Tests.Generic" Expanded="true" />
+    <Node UniqueName="[0-2894]NUnit.Core.Tests.Generic.DeduceTypeArgsFromArgs&lt;T1,T2&gt;" Expanded="true" />
+    <Node UniqueName="[0-2901]NUnit.Core.Tests.Generic.SimpleGenericFixture&lt;TList&gt;" Expanded="true" />
+    <Node UniqueName="[0-2922]NUnit.Core.Tests.Generic.TypeParameterUsedWithTestMethod&lt;T&gt;" Expanded="true" />
+    <Node UniqueName="[0-3262]NUnit.Core.Tests.ParameterizedTestFixture" Expanded="true" />
+    <Node UniqueName="[0-3279]NUnit.Core.Tests.ParameterizedTestFixtureWithDataSources" Expanded="true" />
+    <Node UniqueName="[0-3272]NUnit.Core.Tests.ParameterizedTestFixtureWithNullArguments" Expanded="true" />
+    <Node UniqueName="[0-4363]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit.util.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4364]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4365]NUnit.Util" Expanded="true" />
+    <Node UniqueName="[0-4248]NUnit.Util.Tests.ServiceManagerSetUpFixture" Expanded="true" />
+    <Node UniqueName="[0-4415]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit.mocks.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4416]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4417]NUnit.Mocks" Expanded="true" />
+    <Node UniqueName="[0-4418]NUnit.Mocks.Tests" Expanded="true" />
+    <Node UniqueName="[0-4497]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit-console.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4498]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4499]NUnit.ConsoleRunner" Expanded="true" />
+    <Node UniqueName="[0-4500]NUnit.ConsoleRunner.Tests" Expanded="true" />
+    <Node UniqueName="[0-4740]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit.uiexception.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4741]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4742]NUnit.UiException" Expanded="true" />
+    <Node UniqueName="[0-4743]NUnit.UiException.Tests" Expanded="true" />
+    <Node UniqueName="[0-4744]NUnit.UiException.Tests.CodeFormatters" Expanded="true" />
+    <Node UniqueName="[0-4745]NUnit.UiException.Tests.Controls" Expanded="true" />
+    <Node UniqueName="[0-4746]NUnit.UiException.Tests.StackTraceAnalyzers" Expanded="true" />
+    <Node UniqueName="[0-4797]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit.uikit.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4798]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4799]NUnit.UiKit" Expanded="true" />
+    <Node UniqueName="[0-4800]NUnit.UiKit.Tests" Expanded="true" />
+    <Node UniqueName="[0-4819]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit-gui.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4820]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4821]NUnit.Gui" Expanded="true" />
+    <Node UniqueName="[0-4822]NUnit.Gui.Tests" Expanded="true" />
+    <Node UniqueName="[0-4969]D:\Dev\NUnit\nunit-2.6\work\builds\net\3.5\release\tests/nunit-editor.tests.dll" Expanded="true" />
+    <Node UniqueName="[0-4970]NUnit" Expanded="true" />
+    <Node UniqueName="[0-4971]NUnit.ProjectEditor" Expanded="true" />
+    <Node UniqueName="[0-4972]NUnit.ProjectEditor.Tests" Expanded="true" />
+    <Node UniqueName="[0-4973]NUnit.ProjectEditor.Tests.Model" Expanded="true" />
+    <Node UniqueName="[0-4974]NUnit.ProjectEditor.Tests.Presenters" Expanded="true" />
+    <Node UniqueName="[0-4975]NUnit.ProjectEditor.Tests.Views" Expanded="true" />
+  </Nodes>
+</VisualState>

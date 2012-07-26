@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Mocks;
+using NMock2;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
@@ -10,35 +10,38 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class ByTest
     {
+        private Mockery mocks = new Mockery();
+
         [Test]
         public void ShouldUseFindsByNameToLocateElementsByName() 
         {
-            DynamicMock driver = new DynamicMock(typeof(IAllDriver));
-
-            driver.Expect("FindElementByName", new object[] { "cheese" });
+            var mockDriver = mocks.NewMock<IAllDriver>();
+            var mockElement = mocks.NewMock<IWebElement>();
+            Expect.Once.On(mockDriver).Method("FindElementByName").With("cheese").Will(Return.Value(mockElement));
 
             By by = By.Name("cheese");
-            by.FindElement(driver.MockInstance as IAllDriver);
+            by.FindElement(mockDriver);
+            mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         // TODO (jimevan): This test is disabled in the Java implementation unit tests.
         // Is the functionality not implemented?
         public void ShouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName()
         {
-            DynamicMock driver = new DynamicMock(typeof(IOnlyXPath));
-
-            driver.Expect("FindElementByXPath", new object[] { "//*[@name='cheese']" });
+            var mockDriver = mocks.NewMock<IOnlyXPath>();
+            var mockElement = mocks.NewMock<IWebElement>();
+            Expect.Once.On(mockDriver).Method("FindElementByXPath").With("//*[@name='cheese']").Will(Return.Value(mockElement));
 
             By by = By.Name("cheese");
-
-            by.FindElement(driver.MockInstance as IOnlyXPath);
+            by.FindElement(mockDriver);
+            mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
-        private interface IAllDriver : IFindsById, IFindsByLinkText, IFindsByName, IFindsByXPath, ISearchContext
+        public interface IAllDriver : IFindsById, IFindsByLinkText, IFindsByName, IFindsByXPath, ISearchContext
         {
         }
 
-        private interface IOnlyXPath : IFindsByXPath, ISearchContext
+        public interface IOnlyXPath : IFindsByXPath, ISearchContext
         {
         }
     }

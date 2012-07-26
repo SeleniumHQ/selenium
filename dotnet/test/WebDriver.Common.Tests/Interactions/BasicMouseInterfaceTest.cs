@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -32,7 +33,7 @@ namespace OpenQA.Selenium.Interactions
             PerformDragAndDropWithMouse();
             IWebElement dragReporter = driver.FindElement(By.Id("dragging_reports"));
             // This is failing under HtmlUnit. A bug was filed.
-            Assert.AreEqual("Nothing happened. DragOut DropIn RightItem 3", dragReporter.Text);
+            Assert.IsTrue(Regex.IsMatch(dragReporter.Text, "Nothing happened\\. DragOut .*DropIn RightItem 3"));
         }
 
         [Test]
@@ -188,7 +189,7 @@ namespace OpenQA.Selenium.Interactions
             moveToSpecificItem.Perform();
             moveToOtherList.Perform();
 
-            Assert.AreEqual("Nothing happened. DragOut", dragReporter.Text);
+            Assert.IsTrue(Regex.IsMatch(dragReporter.Text, "Nothing happened\\. DragOut.*"));
             drop.Perform();
         }
 
