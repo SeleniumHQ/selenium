@@ -266,7 +266,7 @@ module CrazyFunDotNet
   class RunDotNetTests < Tasks
     def handle(fun, dir, args)
       base_output_dir = 'build'
-      output_dir = base_output_dir + '/dotnet/net35'
+      output_dir = base_output_dir + '/dotnet/net40'
       test_log_dir = base_output_dir + '/test_logs'
 
       task_name = task_name(dir, args[:name])
