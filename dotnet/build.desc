@@ -6,26 +6,6 @@ dotnet_library(name = "dotnet",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
-    "third_party/csharp/json-net-4.5r7/net35/Newtonsoft.Json.dll",
-    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
-  ],
-  resources = [
-    {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
-    {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
-  ],
-  keyfile = "WebDriver.snk",
-  out = "WebDriver.dll"
-)
-
-dotnet_library(name = "dotnet4",
-  srcs = "src/WebDriver/**/*.cs",
-  refs = [
-    "System.dll",
-    "System.Core.dll",
-    "System.Data.dll",
-    "System.Drawing.dll",
-    "System.Xml.dll",
     "third_party/csharp/json-net-4.5r7/net40/Newtonsoft.Json.dll",
     "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
   ],
@@ -39,11 +19,32 @@ dotnet_library(name = "dotnet4",
   out = "WebDriver.dll"
 )
 
+dotnet_library(name = "dotnet35",
+  srcs = "src/WebDriver/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "third_party/csharp/json-net-4.5r7/net35/Newtonsoft.Json.dll",
+    "third_party/csharp/dotnetzip-1.9/Ionic.Zip.dll"
+  ],
+  resources = [
+    {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
+    {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
+    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
+  ],
+  keyfile = "WebDriver.snk",
+  framework_ver = "net35",
+  out = "WebDriver.dll"
+)
+
 dotnet_package(name = "dotnet-package",
   packageid = "Selenium.WebDriver",
   deps = [
     ":dotnet",
-    ":dotnet4"
+    ":dotnet35"
   ],
   title = "Selenium WebDriver",
   summary = ".NET bindings for the Selenium WebDriver API",
@@ -67,13 +68,14 @@ dotnet_library(name = "support",
     "System.Drawing.dll",
     "System.Xml.dll",
     ":dotnet",
-    "third_party/csharp/Castle.Core.3.0.0/net35/Castle.Core.dll"
+    "third_party/csharp/Castle.Core.3.0.0/net40/Castle.Core.dll"
   ],
   keyfile = "WebDriver.snk",
+  framework_ver = "net40",
   out = "WebDriver.Support.dll"
 )
 
-dotnet_library(name = "support4",
+dotnet_library(name = "support35",
   srcs = "src/WebDriver.Support/**/*.cs",
   refs = [
     "System.dll",
@@ -81,10 +83,10 @@ dotnet_library(name = "support4",
     "System.Data.dll",
     "System.Drawing.dll",
     "System.Xml.dll",
-    ":dotnet4",
-    "third_party/csharp/Castle.Core.3.0.0/net40/Castle.Core.dll"
+    ":dotnet35",
+    "third_party/csharp/Castle.Core.3.0.0/net35/Castle.Core.dll"
   ],
-  framework_ver = "net40",
+  framework_ver = "net35",
   keyfile = "WebDriver.snk",
   out = "WebDriver.Support.dll"
 )
@@ -93,7 +95,7 @@ dotnet_package(name = "support-package",
   packageid = "Selenium.Support",
   deps = [
     ":support",
-    ":support4"
+    ":support35"
   ],
   title = "Selenium WebDriver Support Classes",
   summary = "Support classes for the .NET bindings of the Selenium WebDriver API",
@@ -118,10 +120,11 @@ dotnet_library(name = "core",
     "System.Web.dll"
   ],
   keyfile = "WebDriver.snk",
+  framework_ver = "net40",
   out = "ThoughtWorks.Selenium.Core.dll"
 )
 
-dotnet_library(name = "core4",
+dotnet_library(name = "core35",
   srcs = "src/Selenium.Core/**/*.cs",
   refs = [
     "System.dll",
@@ -130,7 +133,7 @@ dotnet_library(name = "core4",
     "System.Xml.dll",
     "System.Web.dll"
   ],
-  framework_ver = "net40",
+  framework_ver = "net35",
   keyfile = "WebDriver.snk",
   out = "ThoughtWorks.Selenium.Core.dll"
 )
@@ -139,7 +142,7 @@ dotnet_package(name = "core-package",
   packageid = "Selenium.RC",
   deps = [
     ":core",
-    ":core4"
+    ":core35"
   ],
   title = "Selenium Remote Control (RC)",
   summary = ".NET bindings for the Selenium RC API",
@@ -179,10 +182,11 @@ dotnet_library(name = "webdriverbackedselenium",
     {"//javascript/selenium-atoms:type" : "type.js" }
   ],
   keyfile = "WebDriver.snk",
+  framework_ver = "net40",
   out = "Selenium.WebDriverBackedSelenium.dll"
 )
 
-dotnet_library(name = "webdriverbackedselenium4",
+dotnet_library(name = "webdriverbackedselenium35",
   srcs = "src/Selenium.WebdriverBackedSelenium/**/*.cs",
   refs = [
     "System.dll",
@@ -191,8 +195,8 @@ dotnet_library(name = "webdriverbackedselenium4",
     "System.Drawing.dll",
     "System.Xml.dll",
     "System.Web.dll",
-    ":dotnet4",
-    ":core4"
+    ":dotnet35",
+    ":core35"
   ],
   resources = [
     {"java/client/src/org/openqa/selenium/internal/seleniumemulation/injectableSelenium.js" : "injectableSelenium.js"},
@@ -211,7 +215,7 @@ dotnet_library(name = "webdriverbackedselenium4",
     {"//javascript/selenium-atoms:type" : "type.js" }
   ],
   keyfile = "WebDriver.snk",
-  framework_ver = "net40",
+  framework_ver = "net35",
   out = "Selenium.WebDriverBackedSelenium.dll"
 )
 
@@ -219,7 +223,7 @@ dotnet_package(name = "webdriverbackedselenium-package",
   packageid = "Selenium.WebDriverBackedSelenium",
   deps = [
     ":webdriverbackedselenium",
-    ":webdriverbackedselenium4"
+    ":webdriverbackedselenium35"
   ],
   title = "WebDriver-backed Selenium",
   summary = "Implementation of the Selenium Remote Control (RC) API, using WebDriver technology",

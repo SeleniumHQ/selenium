@@ -106,7 +106,7 @@ module CrazyFunDotNet
   class DotNetLibrary < Tasks
     def handle(fun, dir, args)
       base_dir = "build/dotnet"
-      framework_ver = "net35"
+      framework_ver = "net40"
       unless args[:framework_ver].nil?
         framework_ver = args[:framework_ver]
       end
