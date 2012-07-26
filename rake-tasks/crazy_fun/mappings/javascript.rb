@@ -557,6 +557,7 @@ module Javascript
             "--output_wrapper='#{wrapper}' " <<
             "--compilation_level=#{compilation_level(minify)} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
+            "--define=bot.json.NATIVE_JSON=false " <<
             "#{defines} " <<
             "--js='" <<
             all_deps.join("' --js='") << "'"

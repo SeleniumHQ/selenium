@@ -26,13 +26,28 @@ goog.require('goog.userAgent');
 
 
 /**
+ * @define {boolean} NATIVE_JSON indicates whether the code should rely on the
+ * native {@ocde JSON} functions, if available.
+ *
+ * <p>The JSON functions can be defined by external libraries like Prototype
+ * and setting this flag to false forces the use of Closure's goog.json
+ * implementation.
+ *
+ * <p>If your JavaScript can be loaded by a third_party site and you are wary
+ * about relying on the native functions, specify
+ * "--define bot.json.NATIVE_JSON=false" to the Closure compiler.
+ */
+bot.json.NATIVE_JSON = true;
+
+
+/**
  * Whether the current browser supports the native JSON interface.
  * @type {boolean}
  * @const
  * @see http://caniuse.com/#search=JSON
  * @private
  */
-bot.json.NATIVE_JSON_ =
+bot.json.SUPPORTS_NATIVE_JSON_ =
     // List WebKit and Opera first since every supported version of these
     // browsers supports native JSON (and we can compile away large chunks of
     // code for individual fragments by setting the appropriate compiler flags).
@@ -50,8 +65,8 @@ bot.json.NATIVE_JSON_ =
  *     serialization to kick in.
  * @return {string} A JSON string representation of the input object.
  */
-bot.json.stringify = bot.json.NATIVE_JSON_ ? JSON.stringify :
-    goog.json.serialize;
+bot.json.stringify = bot.json.NATIVE_JSON && bot.json.SUPPORTS_NATIVE_JSON_ ?
+    JSON.stringify : goog.json.serialize;
 
 
 /**
@@ -60,4 +75,5 @@ bot.json.stringify = bot.json.NATIVE_JSON_ ? JSON.stringify :
  * @return {*} The JSON object.
  * @throws {Error} If the input string is an invalid JSON string.
  */
-bot.json.parse = bot.json.NATIVE_JSON_ ? JSON.parse : goog.json.parse;
+bot.json.parse = bot.json.NATIVE_JSON && bot.json.SUPPORTS_NATIVE_JSON_ ?
+    JSON.parse : goog.json.parse;
