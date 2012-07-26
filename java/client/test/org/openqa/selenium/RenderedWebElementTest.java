@@ -164,6 +164,14 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       return;
     }
 
+    // This test passes on IE. When running in Firefox on Windows, the test
+    // will fail if the mouse cursor is not in the window. Solution: Maximize.
+    if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
+        TestUtilities.isFirefox(driver)) {
+      driver.manage().window().maximize();
+    }
+
+
     driver.get(pages.javascriptPage);
     // Move to a different element to make sure the mouse is not over the
     // element with id 'item1' (from a previous test).
