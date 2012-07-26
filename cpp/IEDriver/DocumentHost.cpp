@@ -351,13 +351,21 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
     }
   }
 
+  // First try the (default) value for the subkey. Some browsers (Opera)
+  // do not write this information in the (default) value, so if that fails,
+  // try the FriendlyTypeName value.
   std::wstring mime_type_name;
   if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT,
                                        document_type_key_name,
                                        L"",
                                        &mime_type_name)) {
-    LOG(WARN) << "Unable to read mime type from registry for document type";
-    return false;
+    if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT,
+                                         document_type_key_name,
+                                         L"FriendlyTypeName",
+                                         &mime_type_name)) {
+      LOG(WARN) << "Unable to read mime type from registry for document type";
+      return false;
+    }
   }
 
   std::wstring type_string = type;
@@ -374,7 +382,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
 
   if (L"Firefox HTML Document" == mime_type_name) {
     LOG(INFO) << "It looks like Firefox was once the default browser. " 
-      << "Guessing the page type from mime type alone";
+        << "Guessing the page type from mime type alone";
     return true;
   }
 
