@@ -122,7 +122,7 @@ visualc_library(name = "imehandler_dll",
   out = "Win32/Release/imehandler.dll"
 )
 
-visualc_library(name = "ie_win32_exe",
+visualc_release(name = "ie_win32_exe",
   deps = [
     ":atoms",
     ":ie_result_type_cpp",
@@ -130,10 +130,11 @@ visualc_library(name = "ie_win32_exe",
   ],
   platform = "Win32",
   project = "IEDriverServer/IEDriverServer.vcxproj",
+  desc = "InternetExplorerDriver standalone server for 32-bit IE",
   out = "Win32/Release/IEDriverServer.exe"
 )
 
-visualc_library(name = "ie_x64_exe",
+visualc_release(name = "ie_x64_exe",
   deps = [
     ":atoms",
     ":ie_result_type_cpp",
@@ -141,21 +142,8 @@ visualc_library(name = "ie_x64_exe",
   ],
   platform = "x64",
   project = "IEDriverServer/IEDriverServer.vcxproj",
-  out = "x64/Release/IEDriverServer.exe"
-)
-
-visualc_release(name = "ie_win32_release",
-  src = ":ie_win32_exe",
-  platform = "Win32",
-  desc = "InternetExplorerDriver standalone server for 32-bit IE",
-  out = "Win32/Release/IEDriverServer.zip"
-)
-
-visualc_release(name = "ie_x64_release",
-  src = ":ie_x64_exe",
-  platform = "x64",
   desc = "InternetExplorerDriver standalone server for 64-bit IE",
-  out = "x64/Release/IEDriverServer.zip"
+  out = "x64/Release/IEDriverServer.exe"
 )
 
 js_fragment_header(name = "atoms",

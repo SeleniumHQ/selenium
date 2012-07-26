@@ -45,8 +45,8 @@ class VisualStudioMappings
   def add_all(fun)
     fun.add_mapping("visualc_library", CrazyFunVisualC::VisualCLibrary.new)
 
+    fun.add_mapping("visualc_release", CrazyFunVisualC::VisualCLibrary.new)
     fun.add_mapping("visualc_release", CrazyFunVisualC::VisualCRelease.new)
-    fun.add_mapping("visualc_release", CrazyFunVisualStudio::VisualStudioPush.new)
 
     fun.add_mapping("dotnet_library", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateShortTaskName.new)
@@ -62,42 +62,42 @@ class VisualStudioMappings
     fun.add_mapping("dotnet_test", CrazyFunDotNet::RunDotNetTests.new)
 
     fun.add_mapping("dotnet_release", CrazyFunDotNet::DotNetRelease.new)
-    fun.add_mapping("dotnet_release", CrazyFunVisualStudio::VisualStudioPush.new)
   end
 end
 
 module CrazyFunVisualStudio
-  class VisualStudioPush < Tasks
+  class UploadFile < Tasks
     def handle(fun, dir, args)
-      name = task_name(dir, args[:name])
-      task name do
-        file_name = Rake::Task[name].out
-        py = "java -jar third_party/py/jython.jar"
-        if (python?)
-          py = "python"
-        end
+      # Empty handle method as this will be a base class for tasks
+	  # requiring upload of their outputs.
+    end
 
-        if ENV["googlecodeusername"].nil?
-          print "Enter your googlecode username:"
-          googlecode_username = STDIN.gets.chomp
-        else
-          googlecode_username = ENV["googlecodeusername"]
-        end
-        if ENV["googlecodepassword"].nil?
-          print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
-          googlecode_password = STDIN.gets.chomp
-        else
-          googlecode_password = ENV["googlecodepassword"]
-        end
-		featured = ""
-		if args.has_key?(:featured)
-		  featured = " -l Featured"
-		end
-        puts "Uploading file #{file_name}..."
-		platform_file_name = file_name.gsub("/", Platform.dir_separator)
-		command_line = "#{py} third_party/py/googlecode/googlecode_upload.py -s \"#{args[:desc]}\"#{featured} -p selenium #{platform_file_name} -u #{googlecode_username} -w #{googlecode_password}"
-        sh command_line
+    def upload_file(file_name, file_description, featured_file)
+      py = "java -jar third_party/py/jython.jar"
+      if (python?)
+        py = "python"
       end
+
+      if ENV["googlecodeusername"].nil?
+        print "Enter your googlecode username:"
+        googlecode_username = STDIN.gets.chomp
+      else
+        googlecode_username = ENV["googlecodeusername"]
+      end
+      if ENV["googlecodepassword"].nil?
+        print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
+        googlecode_password = STDIN.gets.chomp
+      else
+        googlecode_password = ENV["googlecodepassword"]
+      end
+      featured = ""
+      if featured_file
+        featured = " -l Featured"
+      end
+      puts "Uploading file #{file_name}..."
+      platform_file_name = file_name.gsub("/", Platform.dir_separator)
+      command_line = "#{py} third_party/py/googlecode/googlecode_upload.py -s \"#{file_description}\"#{featured} -p selenium #{platform_file_name} -u #{googlecode_username} -w #{googlecode_password}"
+      sh command_line
     end
   end
 end
@@ -429,23 +429,23 @@ module CrazyFunDotNet
       add_dependencies(target, dir, args[:deps])
     end
 
-	def get_version(dir)
-	  found_version = version
-	  list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
-	  if list.length > 0
+    def get_version(dir)
+      found_version = version
+      list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
+      if list.length > 0
         regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
         assembly_info = File.open list[0]
         assembly_info.each do |line|
           match = line.match regexp
           if (not match.nil?)
             found_version = match[1]
-			found_version = found_version[0..found_version.rindex(".") - 1]
+            found_version = found_version[0..found_version.rindex(".") - 1]
           end
         end
         assembly_info.close
-	  end
-	  found_version
-	end
+      end
+      found_version
+    end
   end
 
   class PackNuGetPackage < Tasks
@@ -486,7 +486,7 @@ module CrazyFunDotNet
     end
   end
 
-  class DotNetRelease < Tasks
+  class DotNetRelease < CrazyFunVisualStudio::UploadFile
     def handle(fun, dir, args)
       output_dir = 'build/dotnet'
       file_name = args[:out].chomp(File.extname(args[:out])) + "-" + get_version(dir) + File.extname(args[:out])
@@ -507,29 +507,30 @@ module CrazyFunDotNet
         cp_r lst, tmp_dir
         zip(tmp_dir, output_file)
         rm_rf tmp_dir
+        upload_file output_file, args[:desc], args.has_key?(:featured)
       end
       
       add_dependencies(target, dir, args[:deps])
       target.out = output_file
     end
 
-	def get_version(dir)
-	  found_version = version
-	  list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
-	  if list.length > 0
+    def get_version(dir)
+      found_version = version
+      list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
+      if list.length > 0
         regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
         assembly_info = File.open list[0]
         assembly_info.each do |line|
           match = line.match regexp
           if (not match.nil?)
             found_version = match[1]
-			found_version = found_version[0..found_version.rindex(".") - 1]
+            found_version = found_version[0..found_version.rindex(".") - 1]
           end
         end
         assembly_info.close
-	  end
-	  found_version
-	end
+      end
+      found_version
+    end
   end
 end
 
@@ -574,50 +575,51 @@ module CrazyFunVisualC
     end
   end
 
-  class VisualCRelease < Tasks
+  class VisualCRelease < CrazyFunVisualStudio::UploadFile
     def handle(fun, dir, args)
       output_dir = 'build/cpp'
-      file_name = args[:out].chomp(File.extname(args[:out])) + "_" + args[:platform] + "_" + get_version(dir) + File.extname(args[:out])
+      file_name = args[:out].chomp(File.extname(args[:out])) + "_" + args[:platform] + "_" + get_version(dir) + ".zip"
       output_file = File.join(output_dir, file_name)
 
       full_path = output_file.gsub("/", Platform.dir_separator)
       desc "Prepares release file #{full_path}"
       task_name = task_name(dir, args[:name])
-      
-      target = file task_name do
+      release_task_name = task_name(dir, args[:name] + ":release")
+
+      target = file release_task_name do
         puts "Preparing release file: #{full_path}"
         if File.exists? output_file
           File.delete output_file
         end
-        dependency_task_name = task_name(dir, args[:src])
-        if Rake::Task.task_defined? dependency_task_name
-          dependency_output_file = Rake::Task[dependency_task_name].out
+        if Rake::Task.task_defined? task_name
+          dependency_output_file = Rake::Task[task_name].out
           do_zip(dependency_output_file, output_file)
+          upload_file output_file, args[:desc], args.has_key?(:featured)
         end
       end
       
-      add_dependencies(target, dir, [args[:src]])
+      add_dependencies(target, dir, [task_name])
       target.out = output_file
     end
 
-	def get_version(dir)
-	  found_version = version
-	  list = FileList.new(dir + "/**/*.rc").to_a
-	  if list.length > 0
+    def get_version(dir)
+      found_version = version
+      list = FileList.new(dir + "/**/*.rc").to_a
+      if list.length > 0
         regexp = /^.*\"FileVersion\",\s*\"(.*)\".*$/
         rc = File.open list[0]
         rc.each do |data|
-		  line = data.gsub(/\x00/, "")
+          line = data.gsub(/\x00/, "")
           match = line.match regexp
           if (not match.nil?)
             found_version = match[1]
-			found_version = found_version[0..found_version.rindex(".") - 1]
+            found_version = found_version[0..found_version.rindex(".") - 1]
           end
         end
         rc.close
-	  end
-	  found_version
-	end
+      end
+      found_version
+    end
 
     def do_zip(src, dest)
       # Need our own zip implementation as zip in common.rb only
