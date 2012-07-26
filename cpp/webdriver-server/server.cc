@@ -134,9 +134,9 @@ int Server::ProcessRequest(struct mg_connection* conn,
     request_body = this->ReadRequestBody(conn, request_info);
   }
 
-  LOG(TRACE) << "Process request with: "
-             << "URI: "  << request_info->uri
-             << "HTTP verb: " << http_verb << std::endl
+  LOG(TRACE) << "Process request with:"
+             << " URI: "  << request_info->uri
+             << " HTTP verb: " << http_verb << std::endl
              << "body: " << request_body;
 
   if (strcmp(request_info->uri, "/") == 0) {

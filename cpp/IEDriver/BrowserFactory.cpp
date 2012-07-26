@@ -558,39 +558,62 @@ bool BrowserFactory::GetRegistryValue(const HKEY root_key,
                                       std::wstring *value) {
   LOG(TRACE) << "Entering BrowserFactory::GetRegistryValue";
 
+  std::string root_key_description = "HKEY_CURRENT_USER";
+  if (root_key == HKEY_CLASSES_ROOT) {
+    root_key_description = "HKEY_CLASSES_ROOT";
+  } else if (root_key == HKEY_LOCAL_MACHINE) {
+    root_key_description = "HKEY_LOCAL_MACHINE";
+  }
+
   bool value_retrieved = false;
   DWORD required_buffer_size;
   HKEY key_handle;
-  if (ERROR_SUCCESS == ::RegOpenKeyEx(root_key,
+  long registry_call_result = ::RegOpenKeyEx(root_key,
                                       subkey.c_str(),
                                       0,
                                       KEY_QUERY_VALUE,
-                                      &key_handle)) {
-    if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle,
+                                      &key_handle);
+  if (ERROR_SUCCESS == registry_call_result) {
+    registry_call_result = ::RegQueryValueEx(key_handle,
                                            value_name.c_str(),
                                            NULL,
                                            NULL,
                                            NULL,
-                                           &required_buffer_size)) {
+                                           &required_buffer_size);
+    if (ERROR_SUCCESS == registry_call_result) {
       std::vector<TCHAR> value_buffer(required_buffer_size);
       DWORD value_type(0);
-      if (ERROR_SUCCESS == ::RegQueryValueEx(key_handle,
+      registry_call_result = ::RegQueryValueEx(key_handle,
                                              value_name.c_str(),
                                              NULL,
                                              &value_type,
                                              reinterpret_cast<LPBYTE>(&value_buffer[0]),
-                                             &required_buffer_size)) {
+                                             &required_buffer_size);
+      if (ERROR_SUCCESS == registry_call_result) {
         *value = &value_buffer[0];
         value_retrieved = true;
       } else {
-        LOG(WARN) << "RegQueryValueEx failed retrieving value " << LOGWSTRING(value_name.c_str());
+        LOG(WARN) << "RegQueryValueEx failed with error code "
+                  << registry_call_result << " retrieving value with name "
+                  << LOGWSTRING(value_name.c_str()) << " in subkey "
+                  << LOGWSTRING(subkey.c_str()) << "in hive "
+                  << root_key_description;
       }
     } else {
-      LOG(WARN) << "RegQueryValueEx failed for retrieving required buffer size";
+      LOG(WARN) << "RegQueryValueEx failed with error code "
+                << registry_call_result
+                << " retrieving required buffer size for value with name "
+                << LOGWSTRING(value_name.c_str()) << " in subkey "
+                << LOGWSTRING(subkey.c_str()) << "in hive "
+                << root_key_description;
     }
     ::RegCloseKey(key_handle);
   } else {
-    LOG(WARN) << "RegOpenKeyEx failed for subkey " << LOGWSTRING(subkey.c_str());
+    LOG(WARN) << "RegOpenKeyEx failed with error code "
+              << registry_call_result <<  " attempting to open subkey "
+              << LOGWSTRING(subkey.c_str()) << "in hive "
+              << root_key_description;
+
   }
   return value_retrieved;
 }
