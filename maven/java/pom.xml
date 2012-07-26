@@ -116,9 +116,7 @@
                                 <!-- Extract *.js files from client-combined-nodeps.jar to target/classes ... -->
                                 <unjar src="../../build/java/client/src/org/openqa/selenium/client-combined-nodeps.jar" dest="target/classes">
                                     <patternset>
-                                        <include name="scripts/selenium/*.js" />
-                                        <include name="**/seleniumemulation/*.js" />
-                                        <include name="org/openqa/selenium/internal/build.properties" />
+                                        <include name="**/seleniumemulation/selenium_atoms/*.js" />
                                     </patternset>
                                 </unjar>
                             </tasks>
