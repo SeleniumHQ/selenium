@@ -598,7 +598,9 @@ If this command is never sent, the driver should default to an implicit wait of\
   resources.append(
       SessionResource('/session/:sessionId/window_handle').
       Get('Retrieve the current window handle.').
-      SetReturnType('{string}', 'The current window handle.'))
+      SetReturnType('{string}', 'The current window handle.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/window_handles').
@@ -609,20 +611,30 @@ If this command is never sent, the driver should default to an implicit wait of\
       SessionResource('/session/:sessionId/url').
       Get('Retrieve the URL of the current page.').
       SetReturnType('{string}', 'The current URL.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       Post('Navigate to a new URL.').
-      AddJsonParameter('url', '{string}', 'The URL to navigate to.'))
+      AddJsonParameter('url', '{string}', 'The URL to navigate to.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/forward').
-      Post('Navigate forwards in the browser history, if possible.'))
+      Post('Navigate forwards in the browser history, if possible.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/back').
-      Post('Navigate backwards in the browser history, if possible.'))
+      Post('Navigate backwards in the browser history, if possible.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/refresh').
-      Post('Refresh the current page.'))
+      Post('Refresh the current page.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/execute').
@@ -647,6 +659,8 @@ JSON objects].''').
       AddError('StaleElementReference',
                'If one of the script arguments is a !WebElement that is not '
                'attached to the page\'s DOM.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       SetReturnType('{*}', 'The script result.'))
 
   resources.append(
@@ -685,11 +699,15 @@ JSON objects].''').
                'If the script callback is not invoked before the timout '
                'expires. Timeouts are controlled by the '
                '`/session/:sessionId/timeout/async_script` command.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       SetReturnType('{*}', 'The script result.'))
 
   resources.append(
       SessionResource('/session/:sessionId/screenshot').
       Get('Take a screenshot of the current page.').
+      AddError('NoSuchWindow',
+              'If the currently selected window has been closed.').
       SetReturnType('{string}', 'The screenshot as a base64 encoded PNG.'))
 
   resources.append(
@@ -737,6 +755,8 @@ Note that this is a platform-independent method of activating IME
 should switch to the page's default content.''').
       AddJsonParameter('id', '{string|number|null|WebElement JSON Object}',
                        'Identifier for the frame to change focus to.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       AddError('NoSuchFrame', 'If the frame specified by `id` cannot be found.'))
 
   resources.append(
@@ -745,8 +765,9 @@ should switch to the page's default content.''').
 may be specified by its
 server assigned window handle, or by the value of its `name` attribute.''').
       AddJsonParameter('name', '{string}', 'The window to change focus to.').
+      AddError('NoSuchWindow', 'If the window specified by `name` cannot be found.').
       Delete('''Close the current window.''').
-      AddError('NoSuchWindow', 'If the window specified by `name` cannot be found.'))
+      AddError('NoSuchWindow', 'If the currently selected window is already closed'))
 
   resources.append(
       SessionResource('/session/:sessionId/window/:windowHandle/size').
@@ -766,7 +787,8 @@ parameter is "current", the currently active window will be moved.''').
       AddJsonParameter('x', '{number}', 'The X coordinate to position the window at, \
 relative to the upper left corner of the screen.').
       AddJsonParameter('y', '{number}', 'The Y coordinate to position the window at, \
-relative to the upper left corner of the screen.').
+relative to the upper left corner of the screen.')      .
+      AddError('NoSuchWindow', 'If the specified window cannot be found.').
       Get('''Get the position of the specified window. If the :windowHandle URL \
       parameter is "current", the position of the currently active window will be returned.''').
       SetReturnType('{x: number, y: number}', 'The X and Y coordinates for the window, \
@@ -783,6 +805,8 @@ maximized.''').
   resources.append(
       SessionResource('/session/:sessionId/cookie').
       Get('Retrieve all cookies visible to the current page.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       SetReturnType('{Array.<object>}', 'A list of [#Cookie_JSON_Object cookies].').
       Post('''Set a cookie. If the [#Cookie_JSON_Object cookie] path is not \
 specified, it should be set to `"/"`. Likewise, if the domain is omitted, it \
@@ -793,6 +817,8 @@ should default to the current page's domain.''').
       Delete('''Delete all cookies visible to the current page.''').
       AddError('InvalidCookieDomain',
                'If the cookie\'s `domain` is not visible from the current page.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       AddError('UnableToSetCookie',
                'If attempting to set a cookie on a page that does not support '
                'cookies (e.g. pages with mime-type `text/plain`).'))
@@ -802,17 +828,23 @@ should default to the current page's domain.''').
       Delete('''Delete the cookie with the given name. This command should be \
 a no-op if there is no
 such cookie visible to the current page.''').
-      AddUrlParameter(':name', 'The name of the cookie to delete.'))
+      AddUrlParameter(':name', 'The name of the cookie to delete.').
+      AddError('NoSuchWindow',
+             'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/source').
       Get('Get the current page source.').
-      SetReturnType('{string}', 'The current page source.'))
+      SetReturnType('{string}', 'The current page source.').
+      AddError('NoSuchWindow',
+             'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/title').
       Get('Get the current page title.').
-      SetReturnType('{string}', 'The current page title.'))
+      SetReturnType('{string}', 'The current page title.').
+      AddError('NoSuchWindow',
+             'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/element').
@@ -840,7 +872,9 @@ partially matches the search value. ||
       SetReturnType('{ELEMENT:string}',
                     'A WebElement JSON object for the located element.').
       AddError('XPathLookupError', 'If using XPath and the input expression is invalid.').
-      AddError('NoSuchElement', 'If the element cannot be found.'))
+      AddError('NoSuchElement', 'If the element cannot be found.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/elements').
@@ -867,20 +901,26 @@ partially matches the search value. ||
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{Array.<{ELEMENT:string}>}',
                     'A list of WebElement JSON objects for the located elements.').
-      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.'))
+      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.')              .
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/element/active').
       Post('Get the element on the page that currently has focus. The element will be returned as '
            'a WebElement JSON object.').
-      SetReturnType('{ELEMENT:string}', 'A WebElement JSON object for the active element.'))
+      SetReturnType('{ELEMENT:string}', 'A WebElement JSON object for the active element.')     .
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id').
       Get('''Describe the identified element.
 
 *Note:* This command is reserved for future use; its return type is currently \
-undefined.'''))
+undefined.''').
+      AddError('NoSuchWindow',
+              'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/element').
@@ -912,7 +952,9 @@ element's subtree. ||
       SetReturnType('{ELEMENT:string}',
                     'A WebElement JSON object for the located element.').
       AddError('NoSuchElement', 'If the element cannot be found.').
-      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.'))
+      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/elements').
@@ -943,21 +985,29 @@ element's subtree. ||
       AddJsonParameter('value', '{string}', 'The The search target.').
       SetReturnType('{Array.<{ELEMENT:string}>}',
                     'A list of WebElement JSON objects for the located elements.').
-      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.'))
+      AddError('XPathLookupError', 'If using XPath and the input expression is invalid.')              .
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/click').
       Post('Click on an element.').
-      RequiresVisibility())
+      RequiresVisibility().
+      AddError('NoSuchWindow',
+             'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/submit').
       Post('Submit a `FORM` element. The submit command may also be applied to any element that is '
-           'a descendant of a `FORM` element.'))
+           'a descendant of a `FORM` element.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/text').
-      Get('Returns the visible text for the element.'))
+      Get('Returns the visible text for the element.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/value').
@@ -1068,7 +1118,9 @@ at the end of the sequence.
       AddJsonParameter('value', '{Array.<string>}',
                        'The sequence of keys to type. An array must be provided. '
                        'The server should flatten the array items to a single '
-                       'string to be typed.'))
+                       'string to be typed.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/keys').
@@ -1084,35 +1136,47 @@ at the end of the sequence.
                        'The keys sequence to be sent. The sequence is defined '
                        'in the'
                        '[JsonWireProtocol#/session/:sessionId/element/:id/value'
-                       ' send keys] command.'))
+                       ' send keys] command.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/name').
       Get('Query for an element\'s tag name.').
-      SetReturnType('{string}', 'The element\'s tag name, as a lowercase string.'))
+      SetReturnType('{string}', 'The element\'s tag name, as a lowercase string.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/clear').
       Post('Clear a `TEXTAREA` or `text INPUT` element\'s value.').
       RequiresVisibility().
-      RequiresEnabledState())
+      RequiresEnabledState().
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/selected').
       Get('Determine if an `OPTION` element, or an `INPUT` element of type `checkbox` or '
           '`radiobutton` is currently selected.').
-      SetReturnType('{boolean}', 'Whether the element is selected.'))
+      SetReturnType('{boolean}', 'Whether the element is selected.')    .
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/enabled').
       Get('Determine if an element is currently enabled.').
-      SetReturnType('{boolean}', 'Whether the element is enabled.'))
+      SetReturnType('{boolean}', 'Whether the element is enabled.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/attribute/:name').
       Get('Get the value of an element\'s attribute.').
       SetReturnType('{string|null}',
-                    'The value of the attribute, or null if it is not set on the element.'))
+                    'The value of the attribute, or null if it is not set on the element.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/equals/:other').
@@ -1121,19 +1185,25 @@ at the end of the sequence.
       SetReturnType('{boolean}', 'Whether the two IDs refer to the same element.').
       AddError('StaleElementReference',
                'If either the element refered to by `:id` or `:other` is no '
-               'longer attached to the page\'s DOM.'))
+               'longer attached to the page\'s DOM.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/displayed').
       Get('Determine if an element is currently displayed.').
-      SetReturnType('{boolean}', 'Whether the element is displayed.'))
+      SetReturnType('{boolean}', 'Whether the element is displayed.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/location').
       Get('Determine an element\'s location on the page. The point `(0, 0)` refers to the '
           'upper-left corner of the page. The element\'s coordinates are returned as a JSON object '
           'with `x` and `y` properties.').
-      SetReturnType('{x:number, y:number}', 'The X and Y coordinates for the element on the page.'))
+      SetReturnType('{x:number, y:number}', 'The X and Y coordinates for the element on the page.')    .
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/location_in_view').
@@ -1143,20 +1213,26 @@ scrolled into view.
 *Note:* This is considered an internal command and should *only* be used to \
 determine an element's
 location for correctly generating native events.''').
-      SetReturnType('{x:number, y:number}', 'The X and Y coordinates for the element.'))
+      SetReturnType('{x:number, y:number}', 'The X and Y coordinates for the element.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/size').
       Get('Determine an element\'s size in pixels. The size will be returned as a JSON object '
           ' with `width` and `height` properties.').
-      SetReturnType('{width:number, height:number}', 'The width and height of the element, in pixels.'))
+      SetReturnType('{width:number, height:number}', 'The width and height of the element, in pixels.')    .
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       ElementResource('/session/:sessionId/element/:id/css/:propertyName').
       Get('Query the value of an element\'s computed CSS property. The CSS property to query should'
           ' be specified using the CSS property name, *not* the !JavaScript property name (e.g. '
           '`background-color` instead of `backgroundColor`).').
-      SetReturnType('{string}', 'The value of the specified CSS property.'))
+      SetReturnType('{string}', 'The value of the specified CSS property.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/orientation').
@@ -1169,6 +1245,8 @@ location for correctly generating native events.''').
                     'svn/trunk/docs/api/java/org/openqa/selenium/'
                     'ScreenOrientation.html ScreenOrientation]: '
                     '`{LANDSCAPE|PORTRAIT}`.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       Post('Set the browser orientation. The orientation should be specified '
            'as defined in [http://selenium.googlecode.com/svn/trunk/docs/api/'
            'java/org/openqa/selenium/ScreenOrientation.html ScreenOrientation]'
@@ -1177,7 +1255,9 @@ location for correctly generating native events.''').
                        'The new browser orientation as defined in '
                        '[http://selenium.googlecode.com/svn/trunk/docs/api/'
                        'java/org/openqa/selenium/ScreenOrientation.html '
-                       'ScreenOrientation]: `{LANDSCAPE|PORTRAIT}`.'))
+                       'ScreenOrientation]: `{LANDSCAPE|PORTRAIT}`.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/alert_text').
@@ -1326,44 +1406,68 @@ location for correctly generating native events.''').
   resources.append(
       SessionResource('/session/:sessionId/local_storage').
       Get('Get all keys of the storage.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       SetReturnType('{Array.<string>}', 'The list of keys.').
       Post('Set the storage item for the given key.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       AddJsonParameter('key', '{string}', 'The key to set.').
       AddJsonParameter('value', '{string}', 'The value to set.').
-      Delete('Clear the storage.'))
+      Delete('Clear the storage.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/local_storage/key/:key').
       Get('Get the storage item for the given key.').
       AddUrlParameter(':key', 'The key to get.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       Delete('Remove the storage item for the given key.').
-      AddUrlParameter(':key', 'The key to remove.'))
+      AddUrlParameter(':key', 'The key to remove.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/local_storage/size').
       Get('Get the number of items in the storage.').
-      SetReturnType('{number}', 'The number of items in the storage.'))
+      SetReturnType('{number}', 'The number of items in the storage.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/session_storage').
       Get('Get all keys of the storage.').
       SetReturnType('{Array.<string>}', 'The list of keys.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       Post('Set the storage item for the given key.').
       AddJsonParameter('key', '{string}', 'The key to set.').
       AddJsonParameter('value', '{string}', 'The value to set.').
-      Delete('Clear the storage.'))
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
+      Delete('Clear the storage.')         .
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/session_storage/key/:key').
       Get('Get the storage item for the given key.').
       AddUrlParameter(':key', 'The key to get.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.').
       Delete('Remove the storage item for the given key.').
-      AddUrlParameter(':key', 'The key to remove.'))
+      AddUrlParameter(':key', 'The key to remove.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/session_storage/size').
       Get('Get the number of items in the storage.').
-      SetReturnType('{number}', 'The number of items in the storage.'))
+      SetReturnType('{number}', 'The number of items in the storage.').
+      AddError('NoSuchWindow',
+               'If the currently selected window has been closed.'))
 
   resources.append(
       SessionResource('/session/:sessionId/log').
@@ -1571,6 +1675,7 @@ Expected format example: http://hostname.com:1234/pacfile ||
 respectively. Behaviour is undefined if a request is made, where the proxy \
 for the particular protocol is undefined, if proxyType is manual. Expected \
 format example: hostname.com:1234 ||
+
 </dd>
 </dl>
 
