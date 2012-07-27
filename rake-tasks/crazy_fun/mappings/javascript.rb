@@ -812,7 +812,7 @@ module Javascript
 
           out << "  ;\n"
           out << "\n"
-          out << "  private String value;\n"
+          out << "  private final String value;\n"
           out << "\n"
           out << "  public String getValue() {\n"
           out << "    return value;\n"
