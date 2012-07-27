@@ -28,7 +28,6 @@ import org.openqa.jetty.http.HttpTunnel;
 import org.openqa.jetty.http.SslListener;
 import org.openqa.jetty.http.handler.AbstractHttpHandler;
 import org.openqa.jetty.util.IO;
-import org.openqa.jetty.util.InetAddrPort;
 import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
@@ -515,7 +514,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     for (int i = 1; i <= 16; i++) {
       String uri = i + ".selenium.doesnotexist:443";
       try {
-        getSslRelayOrCreateNew(new URI(uri), new InetAddrPort(443), server);
+        getSslRelayOrCreateNew(new URI(uri), "localhost", 443, server);
       } catch (Exception e) {
         log.log(Level.SEVERE, "Could not pre-create logging SSL relay for " + uri, e);
       }
@@ -529,17 +528,23 @@ public class ProxyHandler extends AbstractHttpHandler {
 
     try {
       log.fine("CONNECT: " + uri);
-      InetAddrPort addrPort;
+      String serverAddress = uri.toString();
+      String serverHost = serverAddress;
+      Integer serverPort = 443;
       // When logging, we'll attempt to send messages to hosts that don't exist
       if (uri.toString().endsWith(".selenium.doesnotexist:443")) {
         // so we have to do set the host to be localhost (you can't new up an IAP with a
         // non-existent hostname)
-        addrPort = new InetAddrPort(443);
+        serverHost = "localhost";
       } else {
-        addrPort = new InetAddrPort(uri.toString());
+        Integer colon = uri.toString().indexOf(':');
+        if (colon > 0) {
+            serverHost = serverAddress.substring(0, colon);
+            serverPort = Integer.parseInt(serverAddress.substring(colon + 1));
+        }
       }
 
-      if (isForbidden(HttpMessage.__SSL_SCHEME, addrPort.getHost())) {
+      if (isForbidden(HttpMessage.__SSL_SCHEME, serverHost)) {
         sendForbid(response);
       } else {
         HttpConnection http_connection = request.getHttpConnection();
@@ -547,7 +552,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
         HttpServer server = http_connection.getHttpServer();
 
-        SslRelay listener = getSslRelayOrCreateNew(uri, addrPort, server);
+        SslRelay listener = getSslRelayOrCreateNew(uri, serverHost, serverPort, server);
 
         int port = listener.getPort();
 
@@ -586,7 +591,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
   }
 
-  protected SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server)
+  protected SslRelay getSslRelayOrCreateNew(URI uri, String serverHost, Integer serverPort, HttpServer server)
       throws Exception {
     SslRelay listener;
     synchronized (_sslMap) {
@@ -596,7 +601,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         // null on getHost())
         String host = new URL("https://" + uri.toString()).getHost();
 
-        listener = new SslRelay(addrPort);
+        listener = new SslRelay(serverHost, serverPort);
 
         wireUpSslWithCyberVilliansCA(host, listener);
 
@@ -736,11 +741,13 @@ public class ProxyHandler extends AbstractHttpHandler {
   /* ------------------------------------------------------------ */
 
   public static class SslRelay extends SslListener {
-    InetAddrPort _addr;
+    String serverHost;
+    Integer serverPort;
     File nukeDirOrFile;
 
-    SslRelay(InetAddrPort addr) {
-      _addr = addr;
+    SslRelay(String host, Integer port) {
+        serverHost = host;
+        serverPort = port;
     }
 
     public void setNukeDirOrFile(File nukeDirOrFile) {
@@ -759,7 +766,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       // create a brand new URI that includes the protocol, the host, and the port, but leaves
       // intact the path + query string "as is" so that it does not get rewritten.
       request
-          .setURI(new URI("https://" + _addr.getHost() + ":" + _addr.getPort() + uri.toString()));
+          .setURI(new URI("https://" + serverHost + ":" + serverPort + uri.toString()));
     }
 
     @Override
