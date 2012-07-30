@@ -19,7 +19,6 @@ js_test(name = "test",
   srcs = [
     "test/*_test.html",
   ],
-  path = "/javascript/selenium-atoms/test",
   deps = [
     ":deps",
     "//java/client/test/org/openqa/selenium/javascript",

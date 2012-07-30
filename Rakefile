@@ -512,8 +512,7 @@ desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
 task :test_webdriverjs => [
-  "//javascript/webdriver:test:run",
-  "//javascript/webdriver:test_e2e:run"
+  "//javascript/webdriver:test:run"
 ]
 
 desc "Generate a single file with WebDriverJS' public API"

@@ -16,21 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.javascript;
 
-import junit.framework.Test;
-
-import org.openqa.selenium.EnvironmentStarter;
-
-import com.google.common.base.Function;
+import org.junit.runner.RunWith;
 
 
+@RunWith(JavaScriptTestSuite.class)
 public class ClosureTestSuite {
-
-  public static Test suite() {
-    Test suite = new JsTestSuiteBuilder().withTestFactory(new Function<String, Test>() {
-      public Test apply(String input) {
-        return new ClosureTestCase(input);
-      }
-    }).build();
-    return new EnvironmentStarter(suite);
-  }
 }

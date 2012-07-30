@@ -157,14 +157,6 @@ class JavascriptMappings
     fun.add_mapping("js_test", Javascript::AddDependencies.new)
     fun.add_mapping("js_test", Javascript::RunTests.new)
 
-    # Executes a WebDriverJS test.  Arguments are the same as js_test.
-    # TODO(jleyba): Really? We still need a special type of test for these?
-    fun.add_mapping("webdriverjs_test", Javascript::CheckPreconditions.new)
-    fun.add_mapping("webdriverjs_test", Javascript::CreateTask.new)
-    fun.add_mapping("webdriverjs_test", Javascript::CreateTaskShortName.new)
-    fun.add_mapping("webdriverjs_test", Javascript::AddDependencies.new)
-    fun.add_mapping("webdriverjs_test", Javascript::RunWebDriverJsTests.new)
-
   end
 end
 
@@ -950,8 +942,8 @@ module Javascript
             end
 
             test_dir = File.join(dir, 'test')
+            ant.sysproperty :key => 'js.test.name', :value => task_name
             ant.sysproperty :key => 'js.test.dir', :value => test_dir
-            ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
 
             if !args[:exclude].nil?
               excludes = File.join(dir, args[:exclude])
@@ -973,64 +965,6 @@ module Javascript
       end
 
       task "#{task_name}:run" => (listed_browsers & available_browsers).map { |browser,_| "#{task_name}_#{browser}:run" }
-    end
-  end
-
-  class RunWebDriverJsTests < BaseJs
-    def handle(fun, dir, args)
-      task_name = task_name(dir, args[:name])
-
-      browsers = BROWSERS.find_all { |k,v| v.has_key?(:browser_name) && [nil, true].include?(v[:available]) }
-
-      subtasks = []
-
-      browsers.each do |browser, all_browser_data|
-        browser_task_name = "#{task_name}_#{browser}"
-
-        desc "Run the tests for #{browser_task_name}"
-        task "#{browser_task_name}:run" => [task_name] do
-          puts "Testing: #{browser_task_name} " +
-              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/[\/:]+/, '-') : '')
-
-          cp = CrazyFunJava::ClassPath.new(task_name)
-          mkdir_p 'build/test_logs'
-
-          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
-          CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
-                                 :printsummary => 'on', :haltonerror => true, :haltonfailure => true) do |ant|
-            ant.classpath do |ant_cp|
-              cp.all.each do |jar|
-                ant_cp.pathelement(:location => jar)
-              end
-            end
-
-            sysprops = args[:sysproperties] || []
-
-            sysprops.each do |map|
-              map.each do |key, value|
-                ant.sysproperty :key => key, :value => value
-              end
-            end
-
-            test_dir = args[:test_dir].nil? ? 'test' : args[:test_dir]
-            ant.sysproperty :key => 'js.test.dir', :value => File.join(dir, test_dir)
-            ant.sysproperty :key => 'js.test.url.path', :value => args[:path]
-            ant.sysproperty :key => 'selenium.browser', :value => all_browser_data[:browser_name]
-
-            ant.formatter(:type => 'plain')
-            ant.formatter(:type => 'xml')
-
-            ant.test(:name => "org.openqa.selenium.javascript.WebDriverJsTestSuite",
-                     :outfile => "TEST-" + task_name.gsub(/[\/:]+/, "-"),
-                     :todir => 'build/test_logs')
-          end
-          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
-        end
-
-        subtasks << "#{browser_task_name}:run"
-      end
-
-      task "#{task_name}:run" => subtasks
     end
   end
 end

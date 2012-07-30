@@ -26,7 +26,6 @@ js_fragment(name = "get_page_zoom",
 
 js_test(name = "test",
   srcs = [ "test/*_test.html" ],
-  path = "/javascript/chrome-driver/test",
   deps = [
     ":deps",
     "//java/client/src/org/openqa/selenium/chrome",

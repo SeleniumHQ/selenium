@@ -34,7 +34,6 @@ js_test(name = "test",
     "test/*_test.html",
     "test/html5/*_test.html",
   ],
-  path = "/javascript/atoms/test",
   deps = [
     ":deps",
     "//java/client/test/org/openqa/selenium/javascript",

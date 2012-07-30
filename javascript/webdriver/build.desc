@@ -83,29 +83,8 @@ js_test(name = "test",
     "test/**/*.js",
     "test/**/*_test.html",
   ],
-  path = "/javascript/webdriver/test",
   deps = [
     ":test_lib",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])
-
-# Tests not run on Opera; requires Opera 12.
-# TODO(jleyba): Update rule when Opera 12 is the stable release for Opera.
-webdriverjs_test(name = "test_e2e",
-  srcs = [
-    "test_e2e/*.js",
-    "test_e2e/*_test.html"
-  ],
-  test_dir = "test_e2e",
-  path = "/javascript/webdriver/test_e2e",
-  deps = [
-    ":test_lib",
-    "//java/client/test/org/openqa/selenium/javascript:jsapi",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ],
-  browsers = [
-    "chrome",
-    "ff",
-    "ie",
   ])

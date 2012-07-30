@@ -24,7 +24,6 @@ export_file(name = "style",
 
 js_test(name = "test",
   srcs = [ "test/**/*_test.html" ],
-  path = "/javascript/remote/test",
   deps = [
     "./**/*.js",
     "//javascript/atoms:deps",
