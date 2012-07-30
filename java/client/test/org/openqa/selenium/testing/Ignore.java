@@ -36,6 +36,7 @@ public @interface Ignore {
     IE,
     IPHONE,
     OPERA,
+    OPERA_MOBILE,
     REMOTE,
     SAFARI,
     SELENESE,

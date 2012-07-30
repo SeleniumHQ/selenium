@@ -17,29 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.testing.drivers.Browser.android;
-import static org.openqa.selenium.testing.drivers.Browser.chrome;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
-import static org.openqa.selenium.testing.drivers.Browser.ie;
-import static org.openqa.selenium.testing.drivers.Browser.ipad;
-import static org.openqa.selenium.testing.drivers.Browser.iphone;
-import static org.openqa.selenium.testing.drivers.Browser.opera;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -55,10 +32,35 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.drivers.Browser.android;
+import static org.openqa.selenium.testing.drivers.Browser.chrome;
+import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
+import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
+import static org.openqa.selenium.testing.drivers.Browser.ie;
+import static org.openqa.selenium.testing.drivers.Browser.ipad;
+import static org.openqa.selenium.testing.drivers.Browser.iphone;
+import static org.openqa.selenium.testing.drivers.Browser.opera;
+
 /**
  * Class that decides whether a test class or method should be ignored.
  */
 public class TestIgnorance {
+
   private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
   private Set<Browser> neverNativeEvents = ImmutableSet.of(
       htmlunit, htmlunit_js, ipad, iphone, android);
@@ -92,7 +94,7 @@ public class TestIgnorance {
   // JUnit 4
   public boolean isIgnored(FrameworkMethod method, Object test) {
     boolean ignored = ignoreComparator.shouldIgnore(test.getClass().getAnnotation(Ignore.class)) ||
-        ignoreComparator.shouldIgnore(method.getMethod().getAnnotation(Ignore.class));
+                      ignoreComparator.shouldIgnore(method.getMethod().getAnnotation(Ignore.class));
 
     ignored |= isIgnoredBecauseOfJUnit4Ignore(test.getClass().getAnnotation(org.junit.Ignore.class));
     ignored |= isIgnoredBecauseOfJUnit4Ignore(method.getMethod().getAnnotation(org.junit.Ignore.class));
@@ -138,21 +140,18 @@ public class TestIgnorance {
 
   private boolean isIgnoredDueToBeingOnSauce(FrameworkMethod method, Object test) {
     return SauceDriver.shouldUseSauce() &&
-        (method.getMethod().getAnnotation(NeedsLocalEnvironment.class) != null ||
-         test.getClass().getAnnotation(NeedsLocalEnvironment.class) != null);
+           (method.getMethod().getAnnotation(NeedsLocalEnvironment.class) != null ||
+            test.getClass().getAnnotation(NeedsLocalEnvironment.class) != null);
   }
 
   private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {
-    if (enabled == null) {
-      return false;
-    }
+    return enabled != null && !browser.isJavascriptEnabled();
 
-    return !browser.isJavascriptEnabled();
   }
 
   private boolean isIgnoredDueToEnvironmentVariables(FrameworkMethod method, Object test) {
     return (!only.isEmpty() && !only.contains(test.getClass().getSimpleName())) ||
-        (!methods.isEmpty() && !methods.contains(method.getName()));
+           (!methods.isEmpty() && !methods.contains(method.getName()));
   }
 
   public void setBrowser(Browser browser) {
@@ -207,12 +206,18 @@ public class TestIgnorance {
         comparator.addDriver(REMOTE);
         break;
 
+      case opera_mobile:
+        comparator.addDriver(OPERA_MOBILE);
+        comparator.addDriver(REMOTE);
+        break;
+
       case safari:
         comparator.addDriver(SAFARI);
         break;
 
       default:
-        throw new RuntimeException("Cannot determine which ignore to use");
+        throw new RuntimeException("Cannot determine which ignore to add ignores rules for");
     }
   }
+
 }
