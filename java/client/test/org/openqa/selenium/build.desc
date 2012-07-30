@@ -90,6 +90,7 @@ java_test(name = "SmallTests",
   ],
   deps = [
     ":tests",
+    "//java/client/test/org/openqa/selenium/logging:tests",
   ])
 
 java_test(name = "RcBrowserLauncherTests",

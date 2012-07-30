@@ -377,7 +377,7 @@ public class BeanToJsonConverterTest {
     JSONObject object = new JSONObject(new BeanToJsonConverter().convert(new LogEntry(Level.OFF, 17, "foo")));
     assertEquals("foo", object.get("message"));
     assertEquals(17, object.get("timestamp"));
-    assertEquals(Level.OFF.intValue(), object.get("level"));
+    assertEquals("OFF", object.get("level"));
     
   }
 
@@ -391,10 +391,10 @@ public class BeanToJsonConverterTest {
     JSONArray json = new JSONArray(new BeanToJsonConverter().convert(entries));
     JSONObject obj1 = (JSONObject) json.get(0);
     JSONObject obj2 = (JSONObject) json.get(1);
-    assertEquals(Level.OFF.intValue(), obj1.get("level"));
+    assertEquals("OFF", obj1.get("level"));
     assertEquals(timestamp, obj1.get("timestamp"));
     assertEquals("entry1", obj1.get("message"));
-    assertEquals(Level.WARNING.intValue(), obj2.get("level"));
+    assertEquals("WARNING", obj2.get("level"));
     assertEquals(timestamp, obj2.get("timestamp"));
     assertEquals("entry2", obj2.get("message"));
   }

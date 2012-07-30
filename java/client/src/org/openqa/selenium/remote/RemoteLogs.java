@@ -26,7 +26,7 @@ import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogCombiner;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LoggingUtil;
+import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.Logs;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public class RemoteLogs implements Logs {
     List<LogEntry> remoteEntries = Lists.newArrayListWithCapacity(rawList.size());
 
     for (Map<String, Object> obj : rawList) {
-      remoteEntries.add(new LogEntry(LoggingUtil.toLevel(((Long)obj.get(LEVEL)).intValue()),
+      remoteEntries.add(new LogEntry(LogLevelMapping.toLevel((String)obj.get(LEVEL)),
           (Long) obj.get(TIMESTAMP),
           (String) obj.get(MESSAGE)));
     }

@@ -65,6 +65,6 @@ public class LogEntry {
     return new JSONObject(ImmutableMap.of(
       "timestamp", timestamp,
       "message", message,
-      "level", level.intValue()));
+      "level", level.getName()));
   }
 }

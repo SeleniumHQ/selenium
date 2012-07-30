@@ -58,14 +58,14 @@ fxdriver.logging.Logger = function() {
 
 /**
  * Logs message to the logger.
- * @param {!fxdrover.logging.LogLevel} level
+ * @param {!fxdriver.logging.LogLevel} level
  * @param {*} message
  */
 fxdriver.logging.Logger.prototype.log = function(level, message) {
   if (typeof(message) != 'string') {
     message = JSON.stringify(message);
   }
-  var logEntry = JSON.stringify(new fxdriver.logging.LogEntry(level, message));
+  var logEntry = JSON.stringify(new fxdriver.logging.LogEntry(level.name, message));
   logEntry = logEntry.replace(/\n/g, '');
   this.logFile_.append(logEntry + '\n');
 };
@@ -136,16 +136,17 @@ fxdriver.logging.Loggers.prototype.getLog = function(logType) {
   return [];
 };
 
-
 /**
  * Logging levels.
- * @enum {number}
+ * @enum {{number,string}}
  */
 fxdriver.logging.LogLevel = {
-  FINE: 500,
-  INFO: 800,
-  WARNING: 900,
-  SEVERE: 1000
+  ALL: { value: -Math.pow(2, 31), name: 'ALL' },
+  DEBUG: { value: 500, name: 'DEBUG' },
+  INFO: { value: 800, name: 'INFO' },
+  WARNING: { value: 900, name: 'WARNING' },
+  SEVERE: { value: 1000, name: 'SEVERE' },
+  OFF: { value: Math.pow(2, 31) - 1, name: 'OFF' }
 };
 
 

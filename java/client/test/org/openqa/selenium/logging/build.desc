@@ -1,0 +1,10 @@
+java_test(name = "tests",
+  srcs = [
+    "*.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/remote",
+    "//java/client/src/org/openqa/selenium/remote:common",
+    "//java/client/test/org/openqa/selenium:tests",
+    "//third_party/java/junit",
+  ])
