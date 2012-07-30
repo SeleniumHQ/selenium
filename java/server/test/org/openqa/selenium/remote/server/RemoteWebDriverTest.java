@@ -20,19 +20,24 @@ import com.google.common.io.ByteStreams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class RemoteWebDriverTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+public class RemoteWebDriverTest extends JUnit4TestBase {
+
+  @Test
   public void testCanCheckServerStatusIndependentlyOfSessions() throws IOException, JSONException {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");

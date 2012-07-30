@@ -16,27 +16,21 @@ limitations under the License.
 
 package org.openqa.selenium.javascript;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.System.getProperty;
-
-import org.openqa.selenium.DriverTestDecorator;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.InProject;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+
+import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.System.getProperty;
 
 /**
  * Builder for {@link junit.framework.TestSuite suites} that run JavaScript tests.

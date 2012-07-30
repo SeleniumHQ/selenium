@@ -19,12 +19,16 @@ package org.openqa.selenium.v1.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.Selenium;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Test;
 import org.openqa.selenium.WebDriverBackedSelenium;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import static org.junit.Assert.assertEquals;
 
 
-public class ScriptMutatorTest extends AbstractDriverTestCase {
+public class ScriptMutatorTest extends JUnit4TestBase {
 
+  @Test
   public void testShouldBeAbleToUseTheBrowserbot() {
     String url = pages.tables;
     Selenium selenium = new WebDriverBackedSelenium(driver, url);

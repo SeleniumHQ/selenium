@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.remote.server.handler.UploadFileTest;
 import org.openqa.selenium.remote.server.rest.ResultConfigTest;
 import org.openqa.selenium.remote.server.rest.UrlMapperTest;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
@@ -27,17 +28,20 @@ import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxyTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    CapabilitiesComparatorTest.class,
     CrossDomainRpcLoaderTest.class,
     CrossDomainRpcRendererTest.class,
+    DefaultSessionTest.class,
     DriverFactoryTest.class,
     DriverServletTest.class,
     DriverSessionTest.class,
     HttpServletRequestProxyTest.class,
     RemoteWebDriverScreenshotTest.class,
+    RemoteWebDriverTest.class,
     ResultConfigTest.class,
     SessionCleanerTest.class,
+    UploadFileTest.class,
     UrlMapperTest.class
-
 })
 public class ServerSpecificTests {
 }

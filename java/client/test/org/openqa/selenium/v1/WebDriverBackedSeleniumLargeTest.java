@@ -19,24 +19,28 @@ package org.openqa.selenium.v1;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.Wait;
 
-import org.openqa.selenium.AbstractDriverTestCase;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class WebDriverBackedSeleniumLargeTest extends AbstractDriverTestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
 
   private Selenium selenium;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUpEnvironment() throws Exception {
     String base = GlobalTestEnvironment.get().getAppServer().whereIs("");
     selenium = new WebDriverBackedSelenium(driver, base);
   }
 
-  public void xtestCanUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
+  @Test
+  public void canUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
     selenium.open(pages.dynamicPage);
 
     Wait waiter = new Wait() {
@@ -60,6 +64,7 @@ public class WebDriverBackedSeleniumLargeTest extends AbstractDriverTestCase {
   }
 
   @NoDriverAfterTest
+  @Test
   public void testCallingStopThenSleepDoesNotCauseAnExceptionToBeThrown() {
     // Stop selenium
     selenium.stop();
@@ -80,6 +85,7 @@ public class WebDriverBackedSeleniumLargeTest extends AbstractDriverTestCase {
     }
   }
 
+  @Test
   public void testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval() {
     selenium.open(pages.simpleTestPage);
     String tagName = selenium.getEval(

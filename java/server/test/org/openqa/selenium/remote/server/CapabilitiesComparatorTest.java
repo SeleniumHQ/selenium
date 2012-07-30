@@ -36,7 +36,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.util.Comparator;
 import java.util.List;
 
-@RunWith(BlockJUnit4ClassRunner.class)
 public class CapabilitiesComparatorTest {
 
   private Comparator<Capabilities> comparator;
