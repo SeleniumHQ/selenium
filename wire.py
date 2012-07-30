@@ -1651,8 +1651,23 @@ A JSON object describing a log entry.
 
 || *Key* || *Type* || *Description* ||
 || timestamp || number || The timestamp of the entry. ||
-|| level || number || The log level of the entry. ||
+|| level || string || The log level of the entry, for example, "INFO" (see [#Log_Levels log levels]). ||
 || message || string || The log message. ||
+</dd>
+
+<dt>
+==== Log Levels ====
+</dt>
+<dd>
+Log levels in order, with finest level on top and coarsest level at the bottom.
+
+|| *Level* || *Description* ||
+|| ALL || All log messages. Used for fetching of logs and configuration of logging. ||
+|| DEBUG || Messages for debugging. ||
+|| INFO || Messages with user information. ||
+|| WARNING || Messages corresponding to non-critical problems. ||
+|| SEVERE || Messages corresponding to critical errors. ||
+|| OFF || No log messages. Used for configuration of logging. ||
 </dd>
 
 <dt>
