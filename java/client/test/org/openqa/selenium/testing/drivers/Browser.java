@@ -21,6 +21,7 @@ package org.openqa.selenium.testing.drivers;
 import java.util.logging.Logger;
 
 public enum Browser {
+
   android,
   android_real_phone,
   chrome,
@@ -37,8 +38,8 @@ public enum Browser {
   iphone,
   none, // For those cases where you don't actually want a browser
   opera,
-  safari
-  ;
+  opera_mobile,
+  safari;
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
 
@@ -60,4 +61,5 @@ public enum Browser {
   public boolean isJavascriptEnabled() {
     return true;
   }
+
 }

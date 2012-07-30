@@ -18,6 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.testing.drivers;
 
+import com.opera.core.systems.OperaProduct;
+import com.opera.core.systems.OperaSettings;
+
 import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -61,6 +64,10 @@ public class BrowserToCapabilities {
       case opera:
         caps = DesiredCapabilities.opera();
         break;
+
+      case opera_mobile:
+        caps = DesiredCapabilities.opera();
+        caps.setCapability(OperaSettings.Capability.PRODUCT.getCapability(), OperaProduct.MOBILE);
 
       case safari:
         caps = DesiredCapabilities.safari();
