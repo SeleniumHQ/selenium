@@ -942,7 +942,6 @@ module Javascript
             end
 
             test_dir = File.join(dir, 'test')
-            ant.sysproperty :key => 'js.test.name', :value => task_name
             ant.sysproperty :key => 'js.test.dir', :value => test_dir
 
             if !args[:exclude].nil?

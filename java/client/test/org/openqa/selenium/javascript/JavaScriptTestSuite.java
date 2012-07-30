@@ -48,8 +48,6 @@ import java.util.List;
  */
 public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
-  private final String name;
-  private final long timeout;
   private final ImmutableList<Runner> children;
 
   private WebDriver webDriver = null;
@@ -57,9 +55,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
   public JavaScriptTestSuite(Class<?> testClass) throws InitializationError {
     super(testClass);
 
-    name = checkNotNull(System.getProperty("js.test.name"),
-        "You must specify the test suite name with the js.test.name system property");
-    timeout = Math.max(0, Long.getLong("js.test.timeout", 0));
+    long timeout = Math.max(0, Long.getLong("js.test.timeout", 0));
 
     Supplier<WebDriver> driverSupplier = new Supplier<WebDriver>() {
       @Override
@@ -102,11 +98,6 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
       }
     });
     return ImmutableList.copyOf(runners);
-  }
-
-  @Override
-  protected String getName() {
-    return name;
   }
 
   @Override
