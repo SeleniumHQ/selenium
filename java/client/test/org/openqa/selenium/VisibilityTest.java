@@ -17,6 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.util.concurrent.Callable;
+
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
@@ -34,13 +41,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.concurrent.Callable;
-
 public class VisibilityTest extends JUnit4TestBase {
 
   @JavascriptEnabled
@@ -49,7 +49,7 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
 
     assertThat(driver.findElement(By.id("displayed")).isDisplayed(),
-        is(true));
+               is(true));
     assertThat(driver.findElement(By.id("none")).isDisplayed(), is(false));
     assertThat(driver.findElement(By.id("suppressedParagraph")).isDisplayed(), is(false));
     assertThat(driver.findElement(By.id("hidden")).isDisplayed(), is(false));
@@ -168,7 +168,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE, OPERA_MOBILE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     WebDriver.Window window = driver.manage().window();
     Dimension originalSize = window.getSize();

@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,18 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.testing.Ignore;
+
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 /**
  * Tests the basic scroll operations on touch enabled devices..
  */
+@Ignore({OPERA, OPERA_MOBILE})
 public class TouchScrollTest extends TouchTestBase {
 
   private TouchActions getBuilder(WebDriver driver) {
@@ -111,4 +116,5 @@ public class TouchScrollTest extends TouchTestBase {
     // After scrolling, the location of the element should change accordingly.
     assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
   }
+
 }

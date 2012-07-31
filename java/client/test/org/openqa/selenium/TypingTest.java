@@ -651,7 +651,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, SAFARI, OPERA_MOBILE}, reason = "firefox-specific")
+  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, SAFARI, OPERA, OPERA_MOBILE},
+          reason = "firefox-specific")
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     driver.get(pages.javascriptPage);
