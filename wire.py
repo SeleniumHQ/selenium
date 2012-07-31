@@ -1472,11 +1472,14 @@ location for correctly generating native events.''').
   resources.append(
       SessionResource('/session/:sessionId/log').
       Post('Get the log for a given log type. Log buffer is reset after each request.').
-      AddJsonParameter('type', '{string}', 'The log type, as defined in '
-                       '[http://selenium.googlecode.com/svn/trunk/docs/api/'
-                       'java/org/openqa/selenium/logging/LogType.html '
-                       'LogType]. The log type must be provided.').
+      AddJsonParameter('type', '{string}', 'The [#Log_Type log type]. This must be provided.').
       SetReturnType('{Array.<object>}', 'The list of [#Log_Entry_JSON_Object log entries].'))
+
+  resources.append(
+      SessionResource('/session/:sessionId/log/types').
+      Get('Get available log types.').
+      SetReturnType('{Array.<string>}', 'The list of available [#Log_Type log types].'))
+
 
   logging.info('Generating %s', wiki_path)
   f = open(wiki_path, 'w')
@@ -1668,6 +1671,20 @@ Log levels in order, with finest level on top and coarsest level at the bottom.
 || WARNING || Messages corresponding to non-critical problems. ||
 || SEVERE || Messages corresponding to critical errors. ||
 || OFF || No log messages. Used for configuration of logging. ||
+</dd>
+
+<dt>
+==== Log Type ====
+</dt>
+<dd>
+The table below lists common log types. Other log types, for instance, for
+performance logging may also be available.
+
+|| *Log Type* || *Description* ||
+|| client || Logs from the client. ||
+|| driver || Logs from the webdriver. ||
+|| browser || Logs from the browser. ||
+|| server || Logs from the server. ||
 </dd>
 
 <dt>
