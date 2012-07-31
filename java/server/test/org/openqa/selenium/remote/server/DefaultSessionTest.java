@@ -39,6 +39,7 @@ public class DefaultSessionTest extends MockTestBase {
 
     checking(new Expectations() {{
       oneOf(tempFs).deleteTemporaryFiles();
+      oneOf(tempFs).deleteBaseDir();
     }});
 
     Session session = DefaultSession.createSession(factory, tempFs, null, DesiredCapabilities.firefox());
